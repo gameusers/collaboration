@@ -106,6 +106,7 @@
   },
   "dependencies": {
     "es6-promise-promise": "^1.0.0",
+    "express": "^4.16.2",
     "imagesloaded": "^4.1.4",
     "immutable": "^3.8.2",
     "izitoast": "^1.2.0",

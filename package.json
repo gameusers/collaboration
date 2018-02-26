@@ -1,0 +1,156 @@
+{
+  "name": "collaboration",
+  "version": "1.0.0",
+  "description": "Game Users Node.js Version",
+  "main": "public/react/js/root-build.min.js",
+  "scripts": {
+    "build": "webpack --display-error-details",
+    "watch": "webpack --watch",
+    "size": "webpack --json | webpack-bundle-size-analyzer"
+  },
+  "homepage": "https://gameusers.org/",
+  "author": {
+    "name": "Game Users"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gameusers/web"
+  },
+  "bugs": {
+    "url": "https://github.com/gameusers/web/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "babel": {
+    "presets": [
+      "react",
+      "env"
+    ],
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "alias": {
+            "alias-node-modules": "./node_modules"
+          }
+        }
+      ],
+      "transform-async-to-generator",
+      [
+        "transform-runtime",
+        {
+          "helpers": false,
+          "polyfill": false,
+          "regenerator": true,
+          "moduleName": "babel-runtime"
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "jquery": true,
+      "es6": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 2017,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "experimentalObjectRestSpread": true,
+        "jsx": true
+      }
+    },
+    "extends": "airbnb",
+    "rules": {
+      "comma-dangle": 0,
+      "func-names": 0,
+      "max-len": 0,
+      "no-multiple-empty-lines": [
+        2,
+        {
+          "max": 20
+        }
+      ],
+      "consistent-return": 0,
+      "no-undef": 0,
+      "padded-blocks": 0,
+      "no-unneeded-ternary": 0,
+      "class-methods-use-this": 0,
+      "import/no-named-as-default": 0,
+      "import/no-named-as-default-member": 0,
+      "function-paren-newline": 0,
+      "react/no-danger": 0,
+      "react/prefer-stateless-function": 0,
+      "jsx-a11y/anchor-is-valid": 0,
+      "prefer-destructuring": 0
+    },
+    "settings": {
+      "import/resolver": {
+        "babel-module": {}
+      }
+    }
+  },
+  "stylelint": {
+    "extends": "stylelint-config-standard",
+    "rules": {
+      "comment-whitespace-inside": null,
+      "comment-empty-line-before": null,
+      "max-empty-lines": null
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "dependencies": {
+    "es6-promise-promise": "^1.0.0",
+    "imagesloaded": "^4.1.4",
+    "immutable": "^3.8.2",
+    "izitoast": "^1.2.0",
+    "js-cookie": "^2.2.0",
+    "moment": "^2.20.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-adsense": "0.0.3",
+    "react-bootstrap": "^0.32.1",
+    "react-color": "^2.13.8",
+    "react-dom": "^16.2.0",
+    "react-ga": "^2.4.1",
+    "react-masonry-component": "^6.0.2",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-stripe-checkout": "^2.6.3",
+    "redux": "^3.7.2",
+    "velocity-react": "^1.3.3",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "autoprefixer": "^8.0.0",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-module-resolver": "^3.1.0",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "cpx": "^1.5.0",
+    "css-loader": "^0.28.9",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-import-resolver-babel-module": "^4.0.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "mkdirp": "^0.5.1",
+    "npm-run-all": "^4.1.2",
+    "postcss-loader": "^2.1.0",
+    "rimraf": "^2.6.2",
+    "style-loader": "^0.20.2",
+    "stylelint": "^8.4.0",
+    "stylelint-config-standard": "^18.0.0",
+    "webpack": "^3.11.0",
+    "webpack-bundle-size-analyzer": "^2.7.0"
+  }
+}

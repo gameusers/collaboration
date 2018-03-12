@@ -1,15 +1,48 @@
 const http = require('http');
+const path = require('path');
 const express = require('express');
+// const mongoose = require('mongoose');
+// const ejs = require('ejs');
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.send('Hello World AAA');
+
+// mongoose.connect('mongodb://192.168.99.100:27017/people', (err) => {
+//   if (err) {
+//     console.error(err);
+//   } else {
+//     console.log('successfully connected to MongoDB.');
+//   }
+// });
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.get('/', (req, res, next) => {
+  res.render('test', { title: 'タイトル' });
+  // res.send('Hello World');
 });
+
+app.get('/hoge', (req, res, next) => {
+  res.send('Hoge');
+});
+
+// app.use((req, res, next) => {
+//   res.send('Hello World AAA');
+// });
 
 const server = http.createServer(app);
 
-server.listen('5000');
+server.listen('3000');
+
+
+//
+// dctype html
+// html(lang='ja');
+//   head
+//     meta(charset='utf-8');
+//   body
+//   h1 #{title}
 
 
 

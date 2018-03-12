@@ -105,6 +105,7 @@
     }
   },
   "dependencies": {
+    "ejs": "^2.5.7",
     "es6-promise-promise": "^1.0.0",
     "express": "^4.16.2",
     "imagesloaded": "^4.1.4",
@@ -112,6 +113,7 @@
     "izitoast": "^1.2.0",
     "js-cookie": "^2.2.0",
     "moment": "^2.20.1",
+    "mongoose": "^5.0.9",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-adsense": "0.0.3",

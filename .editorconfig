@@ -11,10 +11,5 @@ insert_final_newline = true
 [*.{html,json}]
 insert_final_newline = false
 
-# PSR-2に準拠します
-[*.php]
-indent_style = space
-indent_size = 4
-
 [*.md]
 trim_trailing_whitespace = false

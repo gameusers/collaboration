@@ -12,6 +12,11 @@
 </head>
 
 <body>
-  title-カラムーチョ = <%= title %>
+  <h1>メッセージを保存</h1>
+  <form action="update" method="POST">
+    <input type="text" name="username" placeholder="名前">
+    <textarea placeholder="メッセージ" name="message"></textarea>
+    <button type="submit">送信</button>
+  </form>
 </body>
 </html>

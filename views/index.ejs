@@ -11,7 +11,11 @@
   <!-- <link rel="stylesheet" href="css/styles.css?v=1.0"> -->
 </head>
 
+
+
 <body>
-  title = <%= title %>
+  <% gameDataArr.forEach(function (value, key) { %>
+  <p><%= key %>: <%= value %></p>
+  <% }); %>
 </body>
 </html>

@@ -1,35 +1,83 @@
+// --------------------------------------------------
+//   Import
+// --------------------------------------------------
+
 const http = require('http');
 const express = require('express');
 const path = require('path');
-const bodyparser = require('body-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const Message = require('./schema/Message');
 
+// --------------------------------------------------
+//   Schema
+// --------------------------------------------------
+
+const Message = require('./schema/game');
+
+
+// --------------------------------------------------
+//   App
+// --------------------------------------------------
 
 const app = express();
 
-mongoose.connect('mongodb://192.168.99.100:27017/chatapp', (err) => {
-  if (err) {
-    console.error(err);
-  } else {
-    console.log('successfully connected to MongoDB.');
-  }
+
+// --------------------------------------------------
+//   Database
+// --------------------------------------------------
+
+mongoose.connect('mongodb://192.168.99.100:27017/test');
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () => {
+  console.log('MongoDB connected!');
 });
 
 
-app.use(bodyparser());
+// --------------------------------------------------
+//   Body Parser
+// --------------------------------------------------
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 
+// --------------------------------------------------
+//   View
+// --------------------------------------------------
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
+// --------------------------------------------------
+//   Page: Index
+// --------------------------------------------------
+
+// app.get('/', (req, res, next) => {
+//   res.render('test', { title: 'トップページ' });
+//   // res.send('Hello World');
+// });
+
 app.get('/', (req, res, next) => {
-  res.render('test', { title: 'トップページ' });
-  // res.send('Hello World');
+
+  Message.find({}, (err, dataArr) => {
+    // console.log(`err = ${err}`);
+    // console.log(`dataArr = ${dataArr}`);
+    if (err) throw err;
+    return res.render('index', { gameDataArr: dataArr });
+  });
+
 });
 
+
+// --------------------------------------------------
+//   Page: Update
+// --------------------------------------------------
 
 app.get('/update', (req, res, next) => {
   res.render('update');
@@ -38,8 +86,8 @@ app.get('/update', (req, res, next) => {
 app.post('/update', (req, res, next) => {
 
   const newMessage = new Message({
-    usersname: req.body.username,
-    message: req.body.message
+    name: req.body.name,
+    score: req.body.score
   });
 
   newMessage.save((err) => {
@@ -50,6 +98,9 @@ app.post('/update', (req, res, next) => {
 });
 
 
+// --------------------------------------------------
+//   Server
+// --------------------------------------------------
 
 const server = http.createServer(app);
 

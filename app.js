@@ -10,17 +10,22 @@ const mongoose = require('mongoose');
 
 
 // --------------------------------------------------
-//   Schema
+//   Model
 // --------------------------------------------------
 
-const Message = require('./schema/game');
+const ModelGames = require('./schema/games');
 
 
 // --------------------------------------------------
-//   App
+//   Middleware Setting
 // --------------------------------------------------
 
 const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 
 // --------------------------------------------------
@@ -34,16 +39,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => {
   console.log('MongoDB connected!');
 });
-
-
-// --------------------------------------------------
-//   Body Parser
-// --------------------------------------------------
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
 
 
 // --------------------------------------------------
@@ -62,10 +57,10 @@ app.set('view engine', 'ejs');
 //   res.render('test', { title: 'トップページ' });
 //   // res.send('Hello World');
 // });
-
+//
 app.get('/', (req, res, next) => {
 
-  Message.find({}, (err, dataArr) => {
+  ModelGames.find({}, (err, dataArr) => {
     // console.log(`err = ${err}`);
     // console.log(`dataArr = ${dataArr}`);
     if (err) throw err;
@@ -85,12 +80,12 @@ app.get('/update', (req, res, next) => {
 
 app.post('/update', (req, res, next) => {
 
-  const newMessage = new Message({
+  const newModelGames = new ModelGames({
     name: req.body.name,
     score: req.body.score
   });
 
-  newMessage.save((err) => {
+  newModelGames.save((err) => {
     if (err) throw err;
     return res.redirect('/');
   });

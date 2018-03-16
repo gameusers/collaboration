@@ -15,7 +15,13 @@
 
 <body>
   <% gameDataArr.forEach(function (value, key) { %>
+
   <p><%= key %>: <%= value %></p>
+
+  <% if (value.imagePath) { %>
+  <img src="<%= value.imagePath %>">
+  <% } %>
+
   <% }); %>
 </body>
 </html>

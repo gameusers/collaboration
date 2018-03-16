@@ -7,6 +7,8 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload');
+const passport = require('passport');
 
 
 // --------------------------------------------------
@@ -26,6 +28,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+app.use('/image', express.static(path.join(__dirname, 'image')));
 
 
 // --------------------------------------------------
@@ -78,19 +82,72 @@ app.get('/update', (req, res, next) => {
   res.render('update');
 });
 
-app.post('/update', (req, res, next) => {
+// app.post('/update', fileUpload(), (req, res, next) => {
+//   res.render('update');
+// });
 
-  const newModelGames = new ModelGames({
-    name: req.body.name,
-    score: req.body.score
-  });
+app.post('/update', fileUpload(), (req, res, next) => {
 
-  newModelGames.save((err) => {
-    if (err) throw err;
-    return res.redirect('/');
-  });
+  console.log(req.files.image);
+
+  // if (req.files && req.files.image) {
+  //   req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
+  //     if (err) throw err;
+  //     const
+  //   });
+  // }
+
+  if (req.files && req.files.image) {
+
+    req.files.image.mv(`./image/${req.files.image.name}`, (err) => {
+
+      if (err) throw err;
+
+      const newModelGames = new ModelGames({
+        name: req.body.name,
+        score: req.body.score,
+        imagePath: `/image/${req.files.image.name}`
+      });
+
+      newModelGames.save((err2) => {
+        if (err2) throw err2;
+        return res.redirect('/');
+      });
+
+    });
+
+  } else {
+
+    const newModelGames = new ModelGames({
+      name: req.body.name,
+      score: req.body.score
+    });
+
+    newModelGames.save((err) => {
+      if (err) throw err;
+      return res.redirect('/');
+    });
+
+  }
+
+
+  // const newModelGames = new ModelGames({
+  //   name: req.body.name,
+  //   score: req.body.score
+  // });
+  //
+  // newModelGames.save((err) => {
+  //   if (err) throw err;
+  //   return res.redirect('/');
+  // });
+
+
+
 
 });
+
+
+
 
 
 // --------------------------------------------------

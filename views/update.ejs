@@ -13,9 +13,10 @@
 
 <body>
   <h1>ゲーム名とスコアを入力</h1>
-  <form action="update" method="POST">
+  <form action="update" method="POST" enctype="multipart/form-data">
     <input type="text" name="name" placeholder="ゲーム名">
-    <textarea name="score" placeholder="スコア" ></textarea>
+    <input type="number" name="score" placeholder="スコア" >
+    <input type="file" name="image">
     <button type="submit">送信</button>
   </form>
 </body>

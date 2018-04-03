@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    build: .
+    image: node:8
     container_name: gameusers_web
     depends_on:
       - mariadb

@@ -14,8 +14,6 @@ nbproject/
 Thumbs.db
 desktop.ini
 
-# the composer package lock file and install directory
-/composer.lock
-
-# any of the fuel packages installed by default
+# ディレクトリ
 /node_modules/
+/.c9/

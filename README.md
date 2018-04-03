@@ -9,10 +9,22 @@
 
 Game Users を Node.js に書き換えたい！
 
-とりあえず Teletype for Atom を使ってみます。
+Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、みんなで開発できる環境を作ってみました。
 
-ここで使い方について解説していますのでチェックしてみてください。Teletype の使い勝手を試すだけでもいいので、参加は気軽にどうぞ。
+アカウントID：956477059000
+ユーザー名（どれかひとつ）：guest-1, guest-2
+パスワード：Password12345
 
+ゲストアカウントでログインすると以下のページが見れるようになります。
+
+[Cloud9 IDE](https://us-west-2.console.aws.amazon.com/cloud9/ide/df44294c8853471b8ddd609c09af06f3)
+[開発中のウェブサイト（リアルタイムでコードが反映されます）](https://df44294c8853471b8ddd609c09af06f3.vfs.cloud9.us-west-2.amazonaws.com/)
+[Mongo Express（Basic認証が表示されますが空欄で入れます）](https://df44294c8853471b8ddd609c09af06f3.vfs.cloud9.us-west-2.amazonaws.com:8081/)
+
+ログアウトするときはブラウザを閉じるだけでOKです
+ゴミ箱マークは押さないようにしてください
+
+ここで使い方について解説していますのでチェックしてみてください。
 記事にパスワードが表示されている時は 1979 を入力してください。
 
 https://gameusers.org/dev/blog/live/

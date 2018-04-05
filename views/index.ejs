@@ -15,16 +15,16 @@
 
 <body>
 
-  <% //if (user) { %>
+  <% if (user) { %>
 
-  <!--<span>user.username</span>-->
-  <!--<img src="user.imagePath">-->
+  <span><%= user.usernameh %></span>
+  <img src="<%= user.imagePath %>">
 
-  <% //} else { %>
+  <% } else { %>
   
   <a href="/oauth/twitter">ログイン</a>
   
-  <% //} %>
+  <% } %>
 
 
   <p>Passportを理解しました！問題解決してくれた方ありがとうございます。</p>
@@ -45,14 +45,6 @@
     
 <img src=https://gameusers.org/assets/img/announcement/1/image_1.jpg>
 
-  <% gameDataArr.forEach(function (value, key) { %>
-
-  <p><%= key %>: <%= value %></p>
-
-  <% if (value.imagePath) { %>
-  <img src="<%= value.imagePath %>">
-  <% } %>
-
-  <% }); %>
+  
 </body>
 </html>

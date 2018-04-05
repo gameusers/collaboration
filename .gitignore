@@ -17,3 +17,4 @@ desktop.ini
 # ディレクトリ
 /node_modules/
 /.c9/
+/db/mongodb/journal/

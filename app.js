@@ -2,17 +2,28 @@
 //   Import
 // --------------------------------------------------
 
+require('dotenv').config();
+
 const http = require('http');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const fileUpload = require('express-fileupload');
+
 const passport = require('passport');
 const TwitterStrategy = require('passport-twitter').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
+
+// const logger = require('./lib/logger');
+const log = require('./lib/error_logger');
+
+const helmet = require('helmet');
+const csrf = require('csurf');
+// const cors = require('cors');
 
 
 // --------------------------------------------------
@@ -22,7 +33,7 @@ const flash = require('connect-flash');
 const twitterConfigObj = {
   consumerKey: process.env.TWITTER_CONSUMER_KEY,
   consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
-  callbackURL: process.env.TWITTER_CONSUMER_URL
+  callbackURL: process.env.TWITTER_CALLBACK_URL
 };
 
 
@@ -35,7 +46,7 @@ const ModelGames = require('./schema/games');
 
 
 // --------------------------------------------------
-//   Middleware Setting
+//   Middleware Settings
 // --------------------------------------------------
 
 const app = express();
@@ -45,12 +56,32 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-app.use(session({ secret: 'nPv8ip9MYiNcxBJwmgwHW9pqAOksyE87', resave: false, saveUninitialized: false }));
+app.use(session({
+  secret: 'nPv8ip9MYiNcxBJwmgwHW9pqAOksyE87',
+  resave: false,
+  saveUninitialized: false,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    db: 'sessions',
+    ttl: 14 * 24 * 60 * 60,
+    // cookie: {
+    //   secure: true
+    // }
+  }),
+}));
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
 app.use('/image', express.static(path.join(__dirname, 'image')));
+
+app.use(helmet());
+
+const csrfProtection = csrf();
+
+
+
 
 
 // --------------------------------------------------
@@ -75,6 +106,34 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 
+
+// --------------------------------------------------
+//   Page: Index
+// --------------------------------------------------
+
+app.get('/', (req, res, next) => {
+  
+  // logger.warn(req.session.user);
+
+  ModelUsers.find({}, (err, dataArr) => {
+    // console.log(dataArr);
+    if (err) throw err;
+    
+    return res.render('index', {
+      userArr: dataArr,
+      user: req.session && req.session.user ? req.session.user : null
+    });
+    
+  });
+
+  // ModelGames.find({}, (err, dataArr) => {
+  //   if (err) throw err;
+  //   return res.render('index', { gameDataArr: dataArr });
+  // });
+
+});
+
+
 // --------------------------------------------------
 //   Page: Login
 //   
@@ -87,62 +146,63 @@ app.set('view engine', 'ejs');
 //   Page: Login / Twitter
 // --------------------------------------------------
 
-// passport.use(new TwitterStrategy(twitterConfigObj,
-//   (token, tokenSecret, profile, done) => {
+// ストラテジーの設定
+passport.use(new TwitterStrategy(twitterConfigObj,
+  (token, tokenSecret, profile, done) => {
     
-//     ModelUsers.findOne({ twitterProfileId: profile.id }, (err, user) => {
+    ModelUsers.findOne({ twitterProfileId: profile.id }, (err, user) => {
       
-//       if (err) {
+      if (err) {
         
-//         return done(err);
+        return done(err);
         
-//       } else if (!user) {
+      } else if (!user) {
         
-//         const _user = {
-//           username: profile.displayName,
-//           twitterProfileId: profile.id,
-//           imagePath: profile.photos[0].value
-//         };
+        const _user = {
+          username: profile.displayName,
+          twitterProfileId: profile.id,
+          imagePath: profile.photos[0].value
+        };
         
-//         const instanceModelUsers = new ModelUsers(_user);
+        const instanceModelUsers = new ModelUsers(_user);
         
-//         instanceModelUsers.save((err)=>{
-//           if(err) throw err
-//           return done(null, instanceModelUsers);
-//         });
+        instanceModelUsers.save((err)=>{
+          if(err) throw err
+          return done(null, instanceModelUsers);
+        });
         
-//       } else {
+      } else {
         
-//         return done(null, user);
+        return done(null, user);
         
-//       }
+      }
       
-//     });
-//   }
-// ));
+    });
+  }
+));
 
-// app.get('/oauth/twitter', passport.authenticate('twitter'));
+app.get('/oauth/twitter', passport.authenticate('twitter'));
 
-// app.get('/oauth/twitter/callback', passport.authenticate('twitter'),
-//   (req, res, next) => {
+app.get('/oauth/twitter/callback', passport.authenticate('twitter'),
+  (req, res, next) => {
 
-//     ModelUsers.findOne({ _id: req.session.passport.user }, (err, user) => {
+    ModelUsers.findOne({ _id: req.session.passport.user }, (err, user) => {
       
-//       // エラーが起こった場合、セッションがない場合は認証ページにリダイレクトする
-//       if (err || !req.session) return res.redirect('/oauth/twitter');
+      // エラーが起こった場合、セッションがない場合は認証ページにリダイレクトする
+      if (err || !req.session) return res.redirect('/oauth/twitter');
       
-//       // セッションに保存
-//       req.session.user = {
-//         username: user.username,
-//         imagePath: user.imagePath
-//       };
+      // セッションに保存
+      req.session.user = {
+        username: user.username,
+        imagePath: user.imagePath
+      };
       
-//       // ログインに成功した場合はトップページにリダイレクト
-//       return res.redirect('/');
+      // ログインに成功した場合はトップページにリダイレクト
+      return res.redirect('/');
       
-//     });
-//   }
-// );
+    });
+  }
+);
 
 
 // --------------------------------------------------
@@ -263,28 +323,16 @@ app.post('/signin', fileUpload(), (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Page: Index
-// --------------------------------------------------
-
-app.get('/', (req, res, next) => {
-
-  ModelGames.find({}, (err, dataArr) => {
-    if (err) throw err;
-    return res.render('index', { gameDataArr: dataArr });
-  });
-
-});
-
-
-// --------------------------------------------------
 //   Page: Update
 // --------------------------------------------------
 
-app.get('/update', (req, res, next) => {
-  res.render('update');
+app.get('/update', csrfProtection, (req, res, next) => {
+  res.render('update', {
+    csrf: req.csrfToken(),
+  });
 });
 
-app.post('/update', fileUpload(), (req, res, next) => {
+app.post('/update', fileUpload(), csrfProtection, (req, res, next) => {
 
   if (req.files && req.files.image) {
     
@@ -323,6 +371,74 @@ app.post('/update', fileUpload(), (req, res, next) => {
 
   }
 
+});
+
+
+
+// --------------------------------------------------
+//   Page: テスト
+// --------------------------------------------------
+
+// app.get('/test', (req, res, next) => {
+//   throw new Error('error');
+// });
+
+// app.get('/test', (req, res, next) => {
+//   return next(new Error('error'));
+// });
+
+
+// --------------------------------------------------
+//   Page: CORS
+// --------------------------------------------------
+// origin: 'https://df44294c8853471b8ddd609c09af06f3.vfs.cloud9.us-west-2.amazonaws.com',
+// const corsOptions = {
+//   origin: 'https://gameusers.org',
+//   methods: 'GET, POST'
+// }
+
+// app.get('/products/:id', cors(corsOptions), (req, res, next) => {
+//   res.json({
+//     msg: 'This is CORS-enabled for a whitelited domain.'
+//   })
+// });
+
+
+// --------------------------------------------------
+//   Page: 404
+// --------------------------------------------------
+
+app.use((req, res, next) => {
+  
+  const err = new Error('Not Found');
+  err.status = 404;
+
+  return res.render('error', {
+    status: err.status,
+  });
+  
+});
+
+
+// --------------------------------------------------
+//   Error 処理
+// --------------------------------------------------
+
+app.use((err, req, res, next) => {
+  
+  log.error(err);
+
+  if (err.code === 'EBADCSRFTOKEN') {
+    res.status(403);
+  } else {
+    res.status(err.status || 500);
+  }
+
+  return res.render('error', {
+    message: err.message,
+    status: err.status || 500,
+  });
+  
 });
 
 

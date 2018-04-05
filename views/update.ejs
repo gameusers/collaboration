@@ -17,6 +17,7 @@
     <input type="text" name="name" placeholder="ゲーム名">
     <input type="number" name="score" placeholder="スコア" >
     <input type="file" name="image">
+    <input type="hidden" name="_csrf" value="<%= csrf %>">
     <button type="submit">送信</button>
   </form>
 </body>

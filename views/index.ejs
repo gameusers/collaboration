@@ -25,6 +25,19 @@
   <a href="/oauth/twitter">ログイン</a>
   
   <% } %>
+  
+  
+   
+
+
+  <h1>ユーザー情報</h1>
+
+  <% usersArr.forEach(function (value, key) { %>
+
+  <p><%= key %>: <%= value %></p>
+  <p><%= moment(value.date).format('YYYY-MM-DD HH:mm:ss'); %></p>
+
+  <% }); %>
 
 
   <p>Passportを理解しました！問題解決してくれた方ありがとうございます。</p>

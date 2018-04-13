@@ -3,8 +3,6 @@
 // --------------------------------------------------
 
 const express = require('express');
-const moment = require('moment-timezone');
-
 const ModelUsers = require('../schemas/users');
 
 
@@ -15,22 +13,22 @@ const ModelUsers = require('../schemas/users');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
+router.get('/api', (req, res, next) => {
 
     // res.render('index', { user: null });
   
   // logger.warn(req.session.user);
 
+  // res.send({"Error" : true, "Message" : "CCC"});
+
   ModelUsers.find({}, (err, dataArr) => {
     console.log(dataArr);
-    if (err) throw err;
-    
-    return res.render('test', {
-      usersArr: dataArr,
-      user: req.session && req.session.user ? req.session.user : null,
-      moment: moment
-    });
-    
+    console.log(err);
+    if (err) {
+      res.send({"Error" : true, "Message" : "Error executing MySQL query"});
+    } else {
+      res.send({"Error" : false, "Message" : "Success", "Users" : 'AAA'});
+    }
   });
 
 });

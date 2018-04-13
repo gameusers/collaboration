@@ -17,4 +17,9 @@ desktop.ini
 # ディレクトリ
 /node_modules/
 /.c9/
+/.next/
 /db/mongodb/journal/
+/__/
+
+# ファイル
+__*.

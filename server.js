@@ -5,10 +5,8 @@
 require('dotenv').config();
 
 const express = require('express');
-// const path = require('path');
 const bodyParser = require('body-parser');
 const next = require('next');
-
 
 const port = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
@@ -16,11 +14,12 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const mobxReact = require('mobx-react');
-
 const mongoose = require('mongoose');
 
-// const indexRouter = require('./routes/index');
-const api = require('./api');
+const api = require('./routes/api');
+
+// console.log(`process.env.PORT = ${process.env.PORT}`);
+// console.log(`port = ${port}`);
 
 
 
@@ -55,7 +54,7 @@ app.prepare()
 
 
   // --------------------------------------------------
-  //   Database & API
+  //   Database API
   //   参考: http://thecodebarbarian.com/building-a-nextjs-app-with-mongodb.html
   // --------------------------------------------------
   
@@ -67,10 +66,17 @@ app.prepare()
     console.log('MongoDB connected!');
   });
 
-  server.use((req, res, next) => {
-    req.db = db;
-    next();
-  });
+  // server.use((req, res, next) => {
+  //   req.db = db;
+  //   next();
+  // });
+  
+  // CORSを許可する
+  // server.use((req, res, next) => {
+  //   res.header('Access-Control-Allow-Origin', '*');
+  //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  //   next();
+  // });
   
   server.use('/api', api(db));
 

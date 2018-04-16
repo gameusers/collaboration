@@ -2,7 +2,7 @@
 
 const color = 'yellow';
 
-const HelloWorld = () => (
+export default () => (
   <div>
     <p>Hello World!!　ぶるああああああああああああああ</p>
     <style jsx>{`
@@ -25,5 +25,3 @@ const HelloWorld = () => (
     `}</style>
   </div>
 );
-
-export default HelloWorld;

@@ -1,74 +1,49 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 import React from 'react';
-// const mongoose = require('mongoose');
-
-// const ModelUsers = require('../schemas/users');
-
+import Layout from '../components/layout';
+import { observer, Provider } from 'mobx-react';
+import StoreRoot from '../stores/root';
 
 
 // --------------------------------------------------
-//   Database
+//   Store
 // --------------------------------------------------
-  
-// mongoose.connect('mongodb://127.0.0.1:27017/test');
 
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', () => {
-//   console.log('MongoDB connected!');
-// });
+const stores = {
+  instanceStoreRoot: new StoreRoot()
+};
 
 
-// ModelUsers.find({}, (err, dataArr) => {
-//   console.log(dataArr);
-//   if (err) throw err;
-// });
+// --------------------------------------------------
+//   Class
+// --------------------------------------------------
 
-
+@observer
 export default class extends React.Component {
   
-  static async getInitialProps ({ req }) {
-    // if (req) {
-    //   // If `req` is defined, we're rendering on the server and should use
-    //   // MongoDB directly. You could also use the REST API, but that's slow
-    //   // and inelegant.
-    //   const { db } = req
-    //   // // Note that `db` above comes from express middleware
-    //   // const list = await db.collection('Book').find().sort({ createdAt: -1 })
-    //   //   .toArray()
-    //   // return { list }
-      
-    //   ModelUsers.find({}, (err, dataArr) => {
-    //     console.log(dataArr);
-    //     if (err) throw err;
-    //   });
-    // }
+  static getInitialProps({ pathname, query, asPath, req, res, jsonPageRes, err }) {
     
-
-    // Otherwise, we're rendering on the client and need to use the API
-    // const { list } = await superagent.get('http://localhost:3000/api')
-    //   .then(res => res.body)
-    // return { list }
+    // const instanceStoreRoot = new StoreRoot();
     
-    return { test: 'b' };
+    return { test: 'Text From b' };
+    
   }
 
   render() {
     return (
-      <div>
-        <p>b.jsx</p>
-      </div>
+      <Provider stores={stores}>
+        <Layout>
+          // this.props.test = { this.props.test }
+          <p>Counter: {stores.instanceStoreRoot.counter}</p>
+          
+          <button onClick={stores.instanceStoreRoot.increment}>++</button>
+          <button onClick={stores.instanceStoreRoot.decrement}>--</button>
+          <button onClick={stores.instanceStoreRoot.reset}>Reset</button>
+        </Layout>
+      </Provider>
     );
   }
 }
-
-// const Component = () => (
-//   <div>
-//     <p>b.jsx</p>
-//   </div>
-// );
-
-// export default Component;

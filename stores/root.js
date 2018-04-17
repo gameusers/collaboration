@@ -27,12 +27,12 @@ export default class StoreRoot {
   
   @action.bound
   increment() {
-    this.counter++;
+    this.counter += 1;
   }
   
   @action.bound
   decrement() {
-    this.counter--;
+    this.counter -= 1;
   }
   
   @action.bound

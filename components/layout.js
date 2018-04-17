@@ -29,7 +29,7 @@ export default class extends React.Component {
           <meta name="robots" content="noindex,nofollow" />
         </Head>
         
-        <header>
+        <header class="fortest">
           <nav>
             <Link href='/'><a>Home</a></Link> |
             <Link href='/about'><a>About</a></Link> |
@@ -39,9 +39,14 @@ export default class extends React.Component {
         
         {this.props.children}
         
-        <footer>
-          {'Fotter'}
+        <footer class="fortest">
+          {'Footer'}
         </footer>
+        <style jsx>{`
+          div {
+            margin: 50px 0 0 300px;
+          }
+        `}</style>
       </div>
     );
   }

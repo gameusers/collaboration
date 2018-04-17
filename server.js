@@ -78,7 +78,12 @@ app.prepare()
   //   next();
   // });
   
-  server.use('/api', api(db));
+  try {
+    server.use('/api', api(db));
+  } catch (e) {
+    
+  }
+  
 
 
 

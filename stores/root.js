@@ -4,7 +4,7 @@
 
 import { action, observable } from 'mobx';
 
-
+// const dom = document.getElementsByClassName('header-top');
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -12,7 +12,7 @@ import { action, observable } from 'mobx';
 export default class StoreRoot {
   
   @observable counter = 0;
-
+  
   // constructor (isServer, lastUpdate) {
   //   this.lastUpdate = lastUpdate
   // }
@@ -23,7 +23,6 @@ export default class StoreRoot {
   //     this.light = true
   //   }, 1000)
   // }
-
   
   @action.bound
   increment() {

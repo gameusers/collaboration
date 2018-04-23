@@ -54,9 +54,8 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 https://gameusers.org/dev/blog/live/
 
-<font color="red">※ GitHub 上の Wiki も参照してください。</font>
+<span style="color: red; ">※ GitHub 上の Wiki も参照してください。</span>
 <br><br>
-
 
 ## データベース
 MongoDB を使っています。<br /><br />

@@ -6,6 +6,7 @@ import React from 'react';
 import Layout from '../components/layout';
 import { observer, Provider } from 'mobx-react';
 import StoreRoot from '../stores/root';
+import StoreHeader from '../stores/header';
 
 
 // --------------------------------------------------
@@ -13,7 +14,8 @@ import StoreRoot from '../stores/root';
 // --------------------------------------------------
 
 const stores = {
-  instanceStoreRoot: new StoreRoot()
+  root: new StoreRoot(),
+  header: new StoreHeader()
 };
 
 

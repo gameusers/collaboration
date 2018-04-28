@@ -3,20 +3,20 @@
 // --------------------------------------------------
 
 import React from 'react';
-import Layout from '../components/layout';
 import { observer, Provider } from 'mobx-react';
-import StoreRoot from '../stores/root';
-import StoreHeader from '../stores/header';
+
+import Layout from '../components/layout';
+import initStoreHeader from '../stores/header';
 
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-const stores = {
-  root: new StoreRoot(),
-  header: new StoreHeader()
-};
+// const stores = {
+//   current: new StoreIndex(),
+//   header: new StoreHeader()
+// };
 
 
 // --------------------------------------------------
@@ -28,17 +28,30 @@ const stores = {
 export default class extends React.Component {
   
   static getInitialProps({ pathname, query, asPath, req, res, jsonPageRes, err }) {
+    const isServer = !!req;
+    return { isServer: isServer, pathname: pathname };
+  }
+  
+  
+  constructor (props) {
+    super(props);
     
-    // const instanceStoreRoot = new StoreRoot();
     
-    return { test: 'Text From b' };
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    this.stores = {
+      header: initStoreHeader(props.isServer, props.pathname),
+      pathname: props.pathname
+    };
     
   }
   
   
   render() {
     return (
-      <Provider stores={stores}>
+      <Provider stores={this.stores}>
         <Layout>
           
           index.js

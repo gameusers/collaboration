@@ -78,11 +78,7 @@ app.prepare()
   //   next();
   // });
   
-  try {
-    server.use('/api', api(db));
-  } catch (e) {
-    
-  }
+  server.use('/api', api(db));
   
 
 
@@ -99,8 +95,8 @@ app.prepare()
     return app.render(req, res, '/a', req.query);
   });
 
-  server.get('/posts/:id', (req, res) => {
-    return app.render(req, res, '/posts', { id: req.params.id });
+  server.get('/test/:id', (req, res) => {
+    return app.render(req, res, '/test', { id: req.params.id });
   });
 
   server.get('*', (req, res) => {

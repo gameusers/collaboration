@@ -37,10 +37,32 @@ import withRoot from '../lib/material-ui/withRoot';
 
 
 // --------------------------------------------------
-//   Material UI を使うときは styled-components でスタイルシートを書いてください
-//   設定方法がわからないため、現状 Material UI だけこの書き方になります
+//   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+const Header = styled.header`
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: white !important;
+`;
+
+const HeaderTop = styled.div`
+  display: flex !important;
+  flex-direction: row !important;
+`;
+
+const HeaderTopLogo = styled.div`
+  margin: 2px 0 0 10px !important;
+`;
+
+const HeaderTopSearch = styled.div`
+  display: flex !important;
+  flex-grow: 1 !important;
+  justify-content: center !important;
+  margin: 8px 0 0 0 !important;
+`;
+
 
 const IconButtonTopBell = styled(IconButton)`
   margin: 0 0 0 0 !important;
@@ -76,24 +98,6 @@ const AvatarTop = styled(Avatar)`
   // margin: 5px 10px 0 0 !important;
   padding: 0 !important;
   // background-color: pink !important;
-`;
-
-const ButtonBottomMenuActive = styled(Button)`
-  color: white !important;
-  border-top: solid 2px #25283D !important;
-  border-bottom: solid 2px #B40431 !important;
-  // box-sizing: content-box !important;
-  // &:hover {
-  //   color: black !important;
-  //   background-color: #0069d9 !important;
-  //   border-color: #0062cc !important;
-  // };
-`;
-
-const ButtonBottomMenu = styled(Button)`
-  color: #BDBDBD !important;
-  border-top: solid 2px #25283D !important;
-  border-bottom: solid 2px #25283D !important;
 `;
 
 const MenuTopLoginMenu = styled(Menu)`
@@ -149,68 +153,6 @@ class Component extends React.Component {
     // console.log(`header / stores.header.menuArr = ${stores.header.menuArr}`);
     
     
-    // const items = ['Sun', 'Mon', 'Tue', 'Wed'];
-    
-    
-    // --------------------------------------------------
-    //   メニュー
-    // --------------------------------------------------
-    
-    const codeMenuArr = [];
-    let menuActive = false;
-    let reverseMenuArr = {};
-    
-    
-    if (stores.pathname === '/') {
-      
-      reverseMenuArr = stores.header.menuObj.index.reverse();
-      
-    } else if (stores.pathname === '/gc') {
-      
-      reverseMenuArr = stores.header.menuObj.gc.reverse();
-      
-    }
-    
-    
-    // for(const [key, value] of stores.current.headerMenuArr) {
-    reverseMenuArr.forEach((value, index) => {
-      
-      // console.log(`header value.pathname = ${value.pathname}`);
-      // console.log(`index = ${index}`);
-      // console.log(`headerMenuReverseArr.length = ${headerMenuReverseArr.length}`);
-      
-      if (value.pathname === stores.pathname || (!menuActive && index + 1 === reverseMenuArr.length)) {
-        
-        codeMenuArr.unshift(
-          <ButtonBottomMenuActive key={index}>
-            {value.name}
-          </ButtonBottomMenuActive>
-        );
-        
-        menuActive = true;
-        
-      } else {
-        
-        codeMenuArr.unshift(
-          <Link prefetch href={value.pathname} key={index}>
-            <ButtonBottomMenu>
-              {value.name}
-            </ButtonBottomMenu>
-          </Link>
-        );
-        
-        // codeMenuArr.unshift(
-        //   <div className="hero-image-data" key={index}>
-        //     abc
-        //   </div>
-        // );
-        
-      }
-      
-    });
-    
-    
-    
     
     
     // --------------------------------------------------
@@ -223,12 +165,21 @@ class Component extends React.Component {
      */
     function HeroImage() {
       
-      const Container = styled.div`
+      
+      // --------------------------------------------------
+      //   Styled Components
+      // --------------------------------------------------
+      
+      let Container = styled.div`
         position: relative !important;
         width: 100% !important;
       `;
       
-      const BoxData = styled.div`
+      let Image = styled.img`
+        width: 100% !important;
+      `;
+      
+      let BoxData = styled.div`
         position: absolute !important;
         min-width: 150px !important;
         max-width: 300px !important;
@@ -241,10 +192,6 @@ class Component extends React.Component {
         bottom: 20px !important;
       `;
       
-      const HeroImage = styled.img`
-        width: 100% !important;
-      `;
-      
       const DataTitle = styled.p`
         padding: 0 10px !important;
         border-bottom: #d51a53 solid 1px !important;
@@ -252,19 +199,15 @@ class Component extends React.Component {
       `;
       
       const DataInfo = styled.p`
-        padding: 6px 20px 0 !important;
+        padding: 10px 20px 0 !important;
         font-size: 12px !important;
-        line-height: 1.6em !important;
+        line-height: 1em !important;
       `;
-      
-      // const DataLink = styled.div`
-      //   padding: 10px 10px 8px !important;
-      // `;
       
       const BoxDataLink = styled.div`
         display: flex !important;
         flex-direction: row !important;
-        padding: 4px 10px 0 !important;
+        padding: 7px 10px 0 !important;
       `;
       
       const DivDataLinkForButton = styled.div`
@@ -298,11 +241,41 @@ class Component extends React.Component {
       if (stores.header.heroImageArr) {
         
         const heroImageRandomNo = stores.header.heroImageArr[Math.floor(Math.random() * stores.header.heroImageArr.length)];
+        
         imgSrc = `/static/img/game/${stores.header.gameNo}/hero/${heroImageRandomNo}.jpg`;
         
+      } else {
+        
+        Container = styled.div`
+          display: flex !important;
+          flex-direction: row !important;
+          justify-content: center;
+          align-items: flex-start !important;
+          background: no-repeat center center url('/static/img/common/header-back.jpg') !important;
+          background-size: cover !important;
+          width: 100% !important;
+          padding: 20px 0 !important;
+        `;
+        
+        Image = styled.img`
+          margin: 0 15px !important;
+          border-radius: 8px !important;
+          box-shadow: 4px 4px 10px #383838 !important;
+        `;
+        
+        BoxData = styled.div`
+          min-width: 150px !important;
+          max-width: 300px !important;
+          border-radius: 8px !important;
+          background-color: #000 !important;
+          background-color: rgba(0, 0, 0, 0.5) !important;
+          color: #fff !important;
+          padding: 4px 0 6px 0 !important;
+        `;
+        
+        imgSrc = `/static/img/game/${stores.header.gameNo}/thumbnail.jpg`;
+        
       }
-      
-      // console.log(imgSrc);
       
       
       
@@ -381,9 +354,9 @@ class Component extends React.Component {
       
       return (
         <Container>
-        
-          <HeroImage src={imgSrc} />
-            
+          
+          <Image src={imgSrc} />
+          
           <BoxData>
             <DataTitle>{stores.header.dataTitle}</DataTitle>
             <DataInfo>ハード | {stores.header.dataHardware}</DataInfo>
@@ -394,6 +367,91 @@ class Component extends React.Component {
             <BoxDataLink>{codeDataLinkArr}</BoxDataLink>
           </BoxData>
           
+        </Container>
+      );
+      
+    }
+    
+    
+    
+    /**
+     * 下部の紺色メニュー
+     */
+    function Menu() {
+      
+      const Container = styled.div`
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        height: 46px !important;
+        background-color: #25283D !important;
+      `;
+      
+      const ButtonMenuActive = styled(Button)`
+        color: white !important;
+        border-top: solid 2px #25283D !important;
+        border-bottom: solid 2px #B40431 !important;
+      `;
+      
+      const ButtonMenu = styled(Button)`
+        color: #BDBDBD !important;
+        border-top: solid 2px #25283D !important;
+        border-bottom: solid 2px #25283D !important;
+      `;
+      
+      
+      const codeArr = [];
+      let active = false;
+      let menuArr = [];
+      
+      if (stores.pathname === '/') {
+        menuArr = stores.header.menuObj.index;
+      } else if (stores.pathname === '/gc') {
+        menuArr = stores.header.menuObj.gc;
+      } else if (stores.pathname === '/uc') {
+        menuArr = stores.header.menuObj.uc;
+      }
+      
+      const reverseMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
+      
+      // console.log(JSON.stringify(stores.header.menuObj));
+      
+      
+      reverseMenuArr.forEach((value, index) => {
+        
+        // console.log(`header value.pathname = ${value.pathname}`);
+        // console.log(`index = ${index}`);
+        // console.log(`value = ${value}`);
+        // console.log(`index = ${index}`);
+        // console.log(`headerMenuReverseArr.length = ${headerMenuReverseArr.length}`);
+        
+        if (value.pathname === stores.pathname || (!active && index + 1 === reverseMenuArr.length)) {
+          
+          codeArr.unshift(
+            <ButtonMenuActive key={index}>
+              {value.name}
+            </ButtonMenuActive>
+          );
+          
+          active = true;
+          
+        } else {
+          
+          codeArr.unshift(
+            <Link prefetch href={value.pathname} key={index}>
+              <ButtonMenu>
+                {value.name}
+              </ButtonMenu>
+            </Link>
+          );
+          
+        }
+        
+      });
+      
+      return (
+        <Container>
+          {codeArr}
         </Container>
       );
       
@@ -414,15 +472,15 @@ class Component extends React.Component {
         
 
         {/* ヘッダー */}
-        <header>
+        <Header>
           
           {/* トップメニュー */}
-          <div className="header-top">
+          <HeaderTop>
           
             {/* ロゴ */}
-            <div className="header-top-logo">
+            <HeaderTopLogo>
               <img src="https://gameusers.org/assets/img/common/gameusers_logo.png" width="138px" height="43" />
-            </div>
+            </HeaderTopLogo>
             
             {/* ベル・通知 */}
             <IconButtonTopBell onClick={stores.header.notificationDialogOpenFunction}>
@@ -432,7 +490,7 @@ class Component extends React.Component {
             </IconButtonTopBell>
             
             {/* 検索フォーム */}
-            <div className="header-top-search">
+            <HeaderTopSearch>
               <TextFieldTopSearch
                 placeholder="ゲーム、コミュニティを検索"
                 InputProps={{
@@ -443,7 +501,7 @@ class Component extends React.Component {
                   ),
                 }}
               />
-            </div>
+            </HeaderTopSearch>
             
             
             
@@ -487,7 +545,7 @@ class Component extends React.Component {
               </MenuItem>
             </MenuTopLoginMenu>
             
-          </div>
+          </HeaderTop>
           
           
           {/* ヒーローイメージ（各ゲームの大きな画像） */}
@@ -495,34 +553,10 @@ class Component extends React.Component {
           
           
           {/* 最下部メニュー */}
-          <div className="header-bottom-menu">
-            {codeMenuArr}
-          </div>
-          
-          {/* <div className="hero-image-data">
-            abc
-          </div>
-          
-          <ul>
-            { items.map((d, idx) => {
-              return <li key={idx}>{idx} : {d}</li>;
-            }) }
-          </ul>
-          
-          <Link prefetch href='/gc'>
-            <ButtonBottomMenu>
-              gc
-            </ButtonBottomMenu>
-          </Link>
-          
-          <Button
-            onClick={stores.header.notificationDialogOpenFunction}
-          >
-          AAA
-          </Button> */}
+          <Menu />
             
           
-          
+          {/* 通知ダイアログ */}
           <Dialog
             fullScreen
             open={stores.header.notificationDialogOpen}
@@ -553,125 +587,13 @@ class Component extends React.Component {
             </List>
           </Dialog>
           
-          
-          
-        
-        </header>
-        
-        
-        
-        <style jsx>{`
-        
-          header {
-            display: flex !important;
-            flex-direction: column !important;
-            background-color: white;
-          }
-          
-          .header-top {
-            display: flex !important;
-            flex-direction: row !important;
-          }
-          
-          .header-top-logo {
-            margin: 2px 0 0 10px;
-            // background-color: green;
-          }
-          
-          .header-top-search {
-            display: flex !important;
-            flex-grow: 1 !important;
-            justify-content: center !important;
-            margin: 8px 0 0 0;
-            // background-color: green;
-          }
-          
-          .header-top-menu {
-            // height: 60px;
-            justify-content: center;
-            margin-left: auto !important;
-          }
-          
-          .header-bottom-menu {
-            display: flex !important;
-            flex-direction: row !important;
-            justify-content: center;
-            height: 46px;
-            background-color: #25283D;
-          }
-          
-        `}</style>
+        </Header>
         
       </div>
     );
   }
   
 };
-
-
-
-
-
-
-/**
- * ヒーローイメージ
- * @param {object} props
- */
-// function HeroImage(props) {
-  
-//   const Container = styled.div`
-//     position: relative !important;
-//     width: 100% !important;
-//     // background-color: pink !important;
-//   `;
-  
-//   const BoxData = styled.div`
-//     position: absolute !important;
-//     min-width: 150px !important;
-//     max-width: 300px !important;
-//     border-radius: 8px !important;
-//     background-color: #000 !important;
-//     background-color: rgba(0, 0, 0, 0.5) !important;
-//     color: #fff !important;
-//     padding: 4px 0 6px 0 !important;
-//     right: 20px !important;
-//     bottom: 20px !important;
-//   `;
-  
-//   const DataTitle = styled.p`
-//     padding: 0 10px !important;
-//     border-bottom: #d51a53 solid 1px !important;
-//     font-size: 14px !important;
-//   `;
-  
-//   const DataInfo = styled.p`
-//     // margin: 0 !important;
-//     padding: 6px 20px 0 !important;
-//     font-size: 12px !important;
-//     line-height: 1.6em !important;
-//   `;
-  
-//   return (
-//     <Container>
-    
-//       <img src="https://gameusers.org/assets/img/bbs_uc/reply/1726/image_1.jpg?1524229992" width="100%" />
-        
-//       <BoxData>
-//         <DataTitle>タイトル</DataTitle>
-//         <DataInfo>ハード | </DataInfo>
-//         <DataInfo>ジャンル | </DataInfo>
-//         <DataInfo>プレイ人数 | </DataInfo>
-//         <DataInfo>発売日 | </DataInfo>
-//         <DataInfo>開発 | </DataInfo>
-//         <div className="link"></div>
-//       </BoxData>
-      
-//     </Container>
-//   );
-  
-// }
-
-
 
 
 

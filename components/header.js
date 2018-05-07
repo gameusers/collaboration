@@ -20,14 +20,12 @@ import { FormControl } from 'material-ui/Form';
 import TextField from 'material-ui/TextField';
 
 import Dialog from 'material-ui/Dialog';
-// import List, { ListItem, ListItemText } from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-// import IconButton from 'material-ui/IconButton';
 import Typography from 'material-ui/Typography';
 import CloseIcon from '@material-ui/icons/Close';
-import Slide from 'material-ui/transitions/Slide'
+// import Slide from 'material-ui/transitions/Slide';
 
 import IconNotifications from '@material-ui/icons/Notifications';
 import IconSearch from '@material-ui/icons/Search';
@@ -35,8 +33,6 @@ import IconPerson from '@material-ui/icons/Person';
 import IconEject from '@material-ui/icons/Eject';
 
 import withRoot from '../lib/material-ui/withRoot';
-
-// import { InputGroup as InputGroupBS, InputGroupAddon as InputGroupAddonBS, InputGroupText as InputGroupTextBS, Input as InputBS } from 'reactstrap';
 
 
 
@@ -153,6 +149,9 @@ class Component extends React.Component {
     // console.log(`header / stores.header.menuArr = ${stores.header.menuArr}`);
     
     
+    // const items = ['Sun', 'Mon', 'Tue', 'Wed'];
+    
+    
     // --------------------------------------------------
     //   メニュー
     // --------------------------------------------------
@@ -200,9 +199,206 @@ class Component extends React.Component {
           </Link>
         );
         
+        // codeMenuArr.unshift(
+        //   <div className="hero-image-data" key={index}>
+        //     abc
+        //   </div>
+        // );
+        
       }
       
     });
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Components
+    //   ループや複雑な分岐が必要なコンポーネントはここに関数で書いてください
+    // --------------------------------------------------
+    
+    /**
+     * ヒーローイメージ
+     */
+    function HeroImage() {
+      
+      const Container = styled.div`
+        position: relative !important;
+        width: 100% !important;
+      `;
+      
+      const BoxData = styled.div`
+        position: absolute !important;
+        min-width: 150px !important;
+        max-width: 300px !important;
+        border-radius: 8px !important;
+        background-color: #000 !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        color: #fff !important;
+        padding: 4px 0 6px 0 !important;
+        right: 20px !important;
+        bottom: 20px !important;
+      `;
+      
+      const HeroImage = styled.img`
+        width: 100% !important;
+      `;
+      
+      const DataTitle = styled.p`
+        padding: 0 10px !important;
+        border-bottom: #d51a53 solid 1px !important;
+        font-size: 14px !important;
+      `;
+      
+      const DataInfo = styled.p`
+        padding: 6px 20px 0 !important;
+        font-size: 12px !important;
+        line-height: 1.6em !important;
+      `;
+      
+      // const DataLink = styled.div`
+      //   padding: 10px 10px 8px !important;
+      // `;
+      
+      const BoxDataLink = styled.div`
+        display: flex !important;
+        flex-direction: row !important;
+        padding: 4px 10px 0 !important;
+      `;
+      
+      const DivDataLinkForButton = styled.div`
+        margin: 0 12px 0 0 !important;
+      `;
+      
+      const DivDataLinkForImage = styled.div`
+        margin: 4px 12px 0 0 !important;
+      `;
+      
+      const ADataLink = styled.a`
+        text-decoration: none !important;
+      `;
+      
+      const ButtonDataLink = styled(Button)`
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 12px !important;
+        min-width: 36px !important;
+        min-height: 20px !important;
+      `;
+      
+      
+      
+      // --------------------------------------------------
+      //   Hero Image
+      // --------------------------------------------------
+      
+      let imgSrc = null;
+      
+      if (stores.header.heroImageArr) {
+        
+        const heroImageRandomNo = stores.header.heroImageArr[Math.floor(Math.random() * stores.header.heroImageArr.length)];
+        imgSrc = `/static/img/game/${stores.header.gameNo}/hero/${heroImageRandomNo}.jpg`;
+        
+      }
+      
+      // console.log(imgSrc);
+      
+      
+      
+      // --------------------------------------------------
+      //   Data Link
+      // --------------------------------------------------
+      
+      let codeDataLinkArr = [];
+      
+      
+      if (stores.header.dataLinkArr) {
+        
+        stores.header.dataLinkArr.forEach((value, index) => {
+          
+          if (value.type === 'Official') {
+            
+            codeDataLinkArr.push(
+              <DivDataLinkForButton key={index}>
+                <ADataLink href={value.url} target="_blank">
+                  <ButtonDataLink
+                    variant="raised"
+                    color="secondary"
+                  >
+                    公式
+                  </ButtonDataLink>
+                </ADataLink>
+              </DivDataLinkForButton>
+            );
+            
+          } else if (value.type === 'Twitter') {
+           
+            codeDataLinkArr.push(
+              <DivDataLinkForImage key={index}>
+                <ADataLink href={value.url} target="_blank">
+                  <img src="/static/img/common/social/twitter@2x.png" width="20" height="20" />
+                </ADataLink>
+              </DivDataLinkForImage>
+            );
+            
+          } else if (value.type === 'Facebook') {
+           
+            codeDataLinkArr.push(
+              <DivDataLinkForImage key={index}>
+                <ADataLink href={value.url} target="_blank">
+                  <img src="/static/img/common/social/facebook@2x.png" width="20" height="20" />
+                </ADataLink>
+              </DivDataLinkForImage>
+            );
+            
+          } else if (value.type === 'YouTube') {
+           
+            codeDataLinkArr.push(
+              <DivDataLinkForImage key={index}>
+                <ADataLink href={value.url} target="_blank">
+                  <img src="/static/img/common/social/youtube@2x.png" width="20" height="20" />
+                </ADataLink>
+              </DivDataLinkForImage>
+            );
+            
+          } else if (value.type === 'Steam') {
+           
+            codeDataLinkArr.push(
+              <DivDataLinkForImage key={index}>
+                <ADataLink href={value.url} target="_blank">
+                  <img src="/static/img/common/social/steam@2x.png" width="20" height="20" />
+                </ADataLink>
+              </DivDataLinkForImage>
+            );
+            
+          }
+          
+        });
+        
+      }
+      
+      
+      return (
+        <Container>
+        
+          <HeroImage src={imgSrc} />
+            
+          <BoxData>
+            <DataTitle>{stores.header.dataTitle}</DataTitle>
+            <DataInfo>ハード | {stores.header.dataHardware}</DataInfo>
+            <DataInfo>ジャンル | {stores.header.dataGenre}</DataInfo>
+            <DataInfo>プレイ人数 | {stores.header.dataPlayersMax}</DataInfo>
+            <DataInfo>発売日 | {stores.header.dataReleaseDate}</DataInfo>
+            <DataInfo>開発 | {stores.header.dataDeveloper}</DataInfo>
+            <BoxDataLink>{codeDataLinkArr}</BoxDataLink>
+          </BoxData>
+          
+        </Container>
+      );
+      
+    }
+    
     
     
     return (
@@ -293,18 +489,33 @@ class Component extends React.Component {
             
           </div>
           
+          
           {/* ヒーローイメージ（各ゲームの大きな画像） */}
-          <div>
-            <img src="https://gameusers.org/assets/img/bbs_uc/reply/1726/image_1.jpg?1524229992" width="100%" />
-          </div>
+          <HeroImage />
+          
           
           {/* 最下部メニュー */}
           <div className="header-bottom-menu">
             {codeMenuArr}
           </div>
           
+          {/* <div className="hero-image-data">
+            abc
+          </div>
           
-          {/* <Button
+          <ul>
+            { items.map((d, idx) => {
+              return <li key={idx}>{idx} : {d}</li>;
+            }) }
+          </ul>
+          
+          <Link prefetch href='/gc'>
+            <ButtonBottomMenu>
+              gc
+            </ButtonBottomMenu>
+          </Link>
+          
+          <Button
             onClick={stores.header.notificationDialogOpenFunction}
           >
           AAA
@@ -396,5 +607,72 @@ class Component extends React.Component {
   }
   
 };
+
+
+
+
+
+
+/**
+ * ヒーローイメージ
+ * @param {object} props
+ */
+// function HeroImage(props) {
+  
+//   const Container = styled.div`
+//     position: relative !important;
+//     width: 100% !important;
+//     // background-color: pink !important;
+//   `;
+  
+//   const BoxData = styled.div`
+//     position: absolute !important;
+//     min-width: 150px !important;
+//     max-width: 300px !important;
+//     border-radius: 8px !important;
+//     background-color: #000 !important;
+//     background-color: rgba(0, 0, 0, 0.5) !important;
+//     color: #fff !important;
+//     padding: 4px 0 6px 0 !important;
+//     right: 20px !important;
+//     bottom: 20px !important;
+//   `;
+  
+//   const DataTitle = styled.p`
+//     padding: 0 10px !important;
+//     border-bottom: #d51a53 solid 1px !important;
+//     font-size: 14px !important;
+//   `;
+  
+//   const DataInfo = styled.p`
+//     // margin: 0 !important;
+//     padding: 6px 20px 0 !important;
+//     font-size: 12px !important;
+//     line-height: 1.6em !important;
+//   `;
+  
+//   return (
+//     <Container>
+    
+//       <img src="https://gameusers.org/assets/img/bbs_uc/reply/1726/image_1.jpg?1524229992" width="100%" />
+        
+//       <BoxData>
+//         <DataTitle>タイトル</DataTitle>
+//         <DataInfo>ハード | </DataInfo>
+//         <DataInfo>ジャンル | </DataInfo>
+//         <DataInfo>プレイ人数 | </DataInfo>
+//         <DataInfo>発売日 | </DataInfo>
+//         <DataInfo>開発 | </DataInfo>
+//         <div className="link"></div>
+//       </BoxData>
+      
+//     </Container>
+//   );
+  
+// }
+
+
+
+
 
 export default withRoot(Component);

@@ -23,21 +23,16 @@ class Store {
   //   通知ダイアログ
   // ---------------------------------------------
   
-  // @observable loginMenuAnchorEl = null;
   @observable notificationDialogOpen = false;
-  // @observable test = 'AAA';
   
   
   @action.bound
   notificationDialogOpenFunction(event) {
-    // console.log(event.currentTarget);
-    // console.log('Open');
     this.notificationDialogOpen = true;
   };
   
   @action.bound
   notificationDialogCloseFunction() {
-    // console.log('Close');
     this.notificationDialogOpen = false;
   };
   
@@ -49,7 +44,6 @@ class Store {
   
   @observable loginMenuAnchorEl = null;
   @observable loginMenuOpen = false;
-  // @observable test = 'AAA';
   
   
   @action.bound
@@ -68,17 +62,47 @@ class Store {
   };
   
   
-  // @observable notificationsOpen = false;
+  // ---------------------------------------------
+  //   ヒーローイメージ
+  // ---------------------------------------------
   
-  // @action.bound
-  // notificationsOpenFunction = () => {
-  //   this.notificationsOpen = false;
-  // };
+  @observable gameNo = 1;
+  @observable heroImageArr = [1];
+  @observable thumbnail = false;
+  @observable dataTitle = 'Dead by Daylight';
+  @observable dataHardware = 'PC, PS4, Xbox One';
+  @observable dataGenre = 'アクション';
+  @observable dataPlayersMax = '1-5人';
+  @observable dataReleaseDate = '2016/6/14';
+  @observable dataDeveloper = 'Behaviour Interactive';
+  @observable dataLinkArr = [
+    {
+      type: 'Official',
+      name: null,
+      url: 'http://www.deadbydaylight.com/'
+    },
+    {
+      type: 'Twitter',
+      name: null,
+      url: 'https://twitter.com/deadByBHVR'
+    },
+    {
+      type: 'Facebook',
+      name: null,
+      url: 'https://www.facebook.com/DeadByDaylight/'
+    },
+    {
+      type: 'YouTube',
+      name: null,
+      url: 'https://www.youtube.com/channel/UCaSgsFdGbwjfdawl3rOXiwQ'
+    },
+    {
+      type: 'Steam',
+      name: null,
+      url: 'https://store.steampowered.com/app/381210/'
+    }
+  ];
   
-  // @action.bound
-  // notificationsCloseFunction = () => {
-  //   this.notificationsOpen = false;
-  // };
   
   
   
@@ -86,7 +110,7 @@ class Store {
   //   ヘッダー下部メニュー
   // ---------------------------------------------
   
-  @observable menuObj = {
+  menuObj = {
     
     index: [
       {

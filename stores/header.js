@@ -19,6 +19,26 @@ let store = null;
 class Store {
   
   
+  
+  // ---------------------------------------------
+  //   マウススクロールでトップメニューを動かす
+  // ---------------------------------------------
+  
+  @observable topMenuOpen = true;
+  
+  
+  @action.bound
+  topMenuOpenFunction() {
+    // console.log('Open');
+    if (this.topMenuOpen) {
+      this.topMenuOpen = false;
+    } else {
+      this.topMenuOpen = true;
+    }
+    
+  };
+  
+  
   // ---------------------------------------------
   //   通知ダイアログ
   // ---------------------------------------------
@@ -27,7 +47,7 @@ class Store {
   
   
   @action.bound
-  notificationDialogOpenFunction(event) {
+  notificationDialogOpenFunction() {
     this.notificationDialogOpen = true;
   };
   

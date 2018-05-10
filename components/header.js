@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import Link from 'next/link';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
+import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
 
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
@@ -50,6 +51,14 @@ const Header = styled.header`
 const HeaderTop = styled.div`
   display: flex !important;
   flex-direction: row !important;
+  background-color: white !important;
+  width: 100% !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  
+  // position: fixed !important;
+  top: 0 !important;
+  z-index: 1200 !important;
 `;
 
 const HeaderTopLogo = styled.div`
@@ -385,6 +394,10 @@ class Component extends React.Component {
         justify-content: center !important;
         height: 46px !important;
         background-color: #25283D !important;
+        position: -webkit-sticky !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 1200 !important;
       `;
       
       const ButtonMenuActive = styled(Button)`
@@ -460,19 +473,15 @@ class Component extends React.Component {
     
     
     return (
-      <div>
+      <Header>
         
-        {/* Head 内部のタグをここで追記する */}
-        <Head>
-          <title>タイトル</title>
-          <meta charSet='utf-8' />
-          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
-          <meta name="robots" content="noindex,nofollow" />
-        </Head>
-        
-
         {/* ヘッダー */}
-        <Header>
+        {/*<VelocityComponent
+          animation={{ translateY: stores.header.topMenuOpen ? 0 : -48 }}
+          duration={300}
+        >*/}
+        
+        {/*<Header>*/}
           
           {/* トップメニュー */}
           <HeaderTop>
@@ -548,13 +557,14 @@ class Component extends React.Component {
           </HeaderTop>
           
           
+          
+          
           {/* ヒーローイメージ（各ゲームの大きな画像） */}
           <HeroImage />
           
-          
           {/* 最下部メニュー */}
-          <Menu />
-            
+          {/* <Menu /> */}
+          
           
           {/* 通知ダイアログ */}
           <Dialog
@@ -587,14 +597,23 @@ class Component extends React.Component {
             </List>
           </Dialog>
           
-        </Header>
+        {/*</Header>*/}
         
-      </div>
+        {/*</VelocityComponent>
+        
+        
+        <Button
+          onClick={stores.header.topMenuOpenFunction}
+        >
+          テスト
+        </Button>*/}
+        
+        
+        
+      </Header>
     );
   }
   
 };
-
-
 
 export default withRoot(Component);

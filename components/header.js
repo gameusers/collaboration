@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
+// import isMobile from 'ismobilejs';
 
 import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
@@ -43,53 +44,69 @@ import withRoot from '../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Header = styled.header`
-  display: flex !important;
-  flex-direction: column !important;
-  background-color: white !important;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
 `;
 
 const HeaderTop = styled.div`
-  display: flex !important;
-  flex-direction: row !important;
-  background-color: white !important;
-  width: 100% !important;
-  position: -webkit-sticky !important;
-  position: sticky !important;
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+  width: 100%;
+  position: -webkit-sticky;
+  position: sticky;
   
-  // position: fixed !important;
-  top: 0 !important;
-  z-index: 1200 !important;
+  // position: fixed;
+  top: 0;
+  z-index: 1200;
 `;
 
 const HeaderTopLogo = styled.div`
-  margin: 2px 0 0 10px !important;
+  margin: 2px 0 0 10px;
+  width: 138px;
+  height: 43px;
+  background-image: url('/static/img/common/logo.png');
+  
+  @media screen and (max-width: 480px) {
+    width: 30px;
+    min-width: 30px;
+    height: 43px;
+    background-image: url('/static/img/common/logo-mobile.png');
+  }
 `;
 
-const HeaderTopSearch = styled.div`
-  display: flex !important;
-  flex-grow: 1 !important;
-  justify-content: center !important;
-  margin: 8px 0 0 0 !important;
-`;
+
 
 
 const IconButtonTopBell = styled(IconButton)`
-  margin: 0 0 0 0 !important;
-  padding: 0 !important;
   top: 5px !important;
   left: 5px !important;
+  // background-color: pink !important;
+  
+  @media screen and (max-width: 480px) {
+    width: 26px !important;
+    left: 0 !important;
+  }
 `;
 
 const BadgeTopBell = styled(Badge)`
-  // margin: 3px 0 0 0 !important;
-  // padding: 0 !important;
-  color: black;
-  // top: 14px !important;
-  // left: 0 !important;
+  color: black !important;
+`;
+
+
+const HeaderTopSearch = styled.div`
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  padding: 8px 0 0 10px;
+  // background-color: red;
+  max-width: 63%;
+  margin-left: auto !important;
 `;
 
 const TextFieldTopSearch = styled(TextField)`
-  width: 70% !important;
+  width: 80% !important;
 `;
 
 const ButtonTopMenu = styled(Button)`
@@ -100,7 +117,9 @@ const ButtonTopMenu = styled(Button)`
 
 const IconButtonTopThumbnail = styled(IconButton)`
   top: 2px !important;
-  right: 14px !important;
+  right: 8px !important;
+  margin-left: auto !important;
+  // background-color: pink !important;
 `;
 
 const AvatarTop = styled(Avatar)`
@@ -170,6 +189,54 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     /**
+     * ロゴ
+     */
+    // function Logo() {
+      
+    //   const Logo = styled.div`
+    //     margin: 2px 0 0 10px;
+    //     width: 138px;
+    //     height: 43px;
+    //     background-image: url('/static/img/common/logo.png');
+        
+    //     @media screen and (max-width: 480px) {
+    //       width: 30px;
+    //       height: 43px;
+    //       background-image: url('/static/img/common/logo-mobile.png');
+    //     }
+    //   `;
+      
+      
+    //   // if (isMobile.phone) {
+    //   //   console.log('Header.js / スマートフォン');
+    //   // } else if (isMobile.tablet) {
+    //   //   console.log('Header.js / タブレット');
+    //   // } else {
+    //   //   console.log('Header.js / PC');
+    //   // }
+      
+      
+    //   // if (isMobile.phone) {
+    //   //   return (
+    //   //     <HeaderTopLogo>
+    //   //       <img src="/static/img/common/logo-mobile.png" width="30" height="43" />
+    //   //     </HeaderTopLogo>
+    //   //   );
+    //   // }
+      
+    //   // <img src="/static/img/common/logo.png" width="138" height="43" />
+      
+      
+      
+      
+    //   return (
+    //     <Logo />
+    //   );
+      
+    // }
+    
+    
+    /**
      * ヒーローイメージ
      */
     function HeroImage() {
@@ -185,7 +252,7 @@ class Component extends React.Component {
       `;
       
       let Image = styled.img`
-        width: 100% !important;
+        width: 100%;
       `;
       
       let BoxData = styled.div`
@@ -197,8 +264,8 @@ class Component extends React.Component {
         background-color: rgba(0, 0, 0, 0.5) !important;
         color: #fff !important;
         padding: 4px 0 6px 0 !important;
-        right: 20px !important;
-        bottom: 20px !important;
+        right: 10px !important;
+        bottom: 10px !important;
       `;
       
       const DataTitle = styled.p`
@@ -256,30 +323,50 @@ class Component extends React.Component {
       } else {
         
         Container = styled.div`
-          display: flex !important;
-          flex-direction: row !important;
+          display: flex;
+          flex-direction: row;
           justify-content: center;
-          align-items: flex-start !important;
-          background: no-repeat center center url('/static/img/common/header-back.jpg') !important;
-          background-size: cover !important;
-          width: 100% !important;
-          padding: 20px 0 !important;
+          align-items: flex-start;
+          background: no-repeat center center url('/static/img/common/header-back.jpg');
+          background-size: cover;
+          width: 100%;
+          // padding: 20px;
+          // background-color: pink;
+          
+          @media screen and (max-width: 480px) {
+            // padding: 10px;
+          }
         `;
         
         Image = styled.img`
-          margin: 0 15px !important;
-          border-radius: 8px !important;
-          box-shadow: 4px 4px 10px #383838 !important;
+          margin: 15px 0 15px;
+          border-radius: 8px;
+          box-shadow: 4px 4px 10px #383838;
+          // background-color: pink;
+          
+          @media screen and (max-width: 480px) {
+            width: 96px;
+          }
+          
+          @media screen and (max-width: 320px) {
+            width: 64px;
+          }
         `;
         
         BoxData = styled.div`
-          min-width: 150px !important;
-          max-width: 300px !important;
-          border-radius: 8px !important;
-          background-color: #000 !important;
-          background-color: rgba(0, 0, 0, 0.5) !important;
-          color: #fff !important;
-          padding: 4px 0 6px 0 !important;
+          min-width: 150px;
+          max-width: 300px;
+          border-radius: 8px;
+          background-color: #000;
+          background-color: rgba(0, 0, 0, 0.5);
+          color: #fff;
+          margin: 15px 0 15px 15px;
+          padding: 4px 0 6px 0;
+          
+          @media screen and (max-width: 480px) {
+            // padding: 15px 0 15px 15px;
+            // width: 96px;
+          }
         `;
         
         imgSrc = `/static/img/game/${stores.header.gameNo}/thumbnail.jpg`;
@@ -386,89 +473,89 @@ class Component extends React.Component {
     /**
      * 下部の紺色メニュー
      */
-    function Menu() {
+    // function Menu() {
       
-      const Container = styled.div`
-        display: flex !important;
-        flex-direction: row !important;
-        justify-content: center !important;
-        height: 46px !important;
-        background-color: #25283D !important;
-        position: -webkit-sticky !important;
-        position: sticky !important;
-        top: 0 !important;
-        z-index: 1200 !important;
-      `;
+    //   const Container = styled.div`
+    //     display: flex !important;
+    //     flex-direction: row !important;
+    //     justify-content: center !important;
+    //     height: 46px !important;
+    //     background-color: #25283D !important;
+    //     position: -webkit-sticky !important;
+    //     position: sticky !important;
+    //     top: 0 !important;
+    //     z-index: 1200 !important;
+    //   `;
       
-      const ButtonMenuActive = styled(Button)`
-        color: white !important;
-        border-top: solid 2px #25283D !important;
-        border-bottom: solid 2px #B40431 !important;
-      `;
+    //   const ButtonMenuActive = styled(Button)`
+    //     color: white !important;
+    //     border-top: solid 2px #25283D !important;
+    //     border-bottom: solid 2px #B40431 !important;
+    //   `;
       
-      const ButtonMenu = styled(Button)`
-        color: #BDBDBD !important;
-        border-top: solid 2px #25283D !important;
-        border-bottom: solid 2px #25283D !important;
-      `;
-      
-      
-      const codeArr = [];
-      let active = false;
-      let menuArr = [];
-      
-      if (stores.pathname === '/') {
-        menuArr = stores.header.menuObj.index;
-      } else if (stores.pathname === '/gc') {
-        menuArr = stores.header.menuObj.gc;
-      } else if (stores.pathname === '/uc') {
-        menuArr = stores.header.menuObj.uc;
-      }
-      
-      const reverseMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
-      
-      // console.log(JSON.stringify(stores.header.menuObj));
+    //   const ButtonMenu = styled(Button)`
+    //     color: #BDBDBD !important;
+    //     border-top: solid 2px #25283D !important;
+    //     border-bottom: solid 2px #25283D !important;
+    //   `;
       
       
-      reverseMenuArr.forEach((value, index) => {
+    //   const codeArr = [];
+    //   let active = false;
+    //   let menuArr = [];
+      
+    //   if (stores.pathname === '/') {
+    //     menuArr = stores.header.menuObj.index;
+    //   } else if (stores.pathname === '/gc') {
+    //     menuArr = stores.header.menuObj.gc;
+    //   } else if (stores.pathname === '/uc') {
+    //     menuArr = stores.header.menuObj.uc;
+    //   }
+      
+    //   const reverseMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
+      
+    //   // console.log(JSON.stringify(stores.header.menuObj));
+      
+      
+    //   reverseMenuArr.forEach((value, index) => {
         
-        // console.log(`header value.pathname = ${value.pathname}`);
-        // console.log(`index = ${index}`);
-        // console.log(`value = ${value}`);
-        // console.log(`index = ${index}`);
-        // console.log(`headerMenuReverseArr.length = ${headerMenuReverseArr.length}`);
+    //     // console.log(`header value.pathname = ${value.pathname}`);
+    //     // console.log(`index = ${index}`);
+    //     // console.log(`value = ${value}`);
+    //     // console.log(`index = ${index}`);
+    //     // console.log(`headerMenuReverseArr.length = ${headerMenuReverseArr.length}`);
         
-        if (value.pathname === stores.pathname || (!active && index + 1 === reverseMenuArr.length)) {
+    //     if (value.pathname === stores.pathname || (!active && index + 1 === reverseMenuArr.length)) {
           
-          codeArr.unshift(
-            <ButtonMenuActive key={index}>
-              {value.name}
-            </ButtonMenuActive>
-          );
+    //       codeArr.unshift(
+    //         <ButtonMenuActive key={index}>
+    //           {value.name}
+    //         </ButtonMenuActive>
+    //       );
           
-          active = true;
+    //       active = true;
           
-        } else {
+    //     } else {
           
-          codeArr.unshift(
-            <Link prefetch href={value.pathname} key={index}>
-              <ButtonMenu>
-                {value.name}
-              </ButtonMenu>
-            </Link>
-          );
+    //       codeArr.unshift(
+    //         <Link prefetch href={value.pathname} key={index}>
+    //           <ButtonMenu>
+    //             {value.name}
+    //           </ButtonMenu>
+    //         </Link>
+    //       );
           
-        }
+    //     }
         
-      });
+    //   });
       
-      return (
-        <Container>
-          {codeArr}
-        </Container>
-      );
+    //   return (
+    //     <Container>
+    //       {codeArr}
+    //     </Container>
+    //   );
       
-    }
+    // }
     
     
     
@@ -487,9 +574,10 @@ class Component extends React.Component {
           <HeaderTop>
           
             {/* ロゴ */}
-            <HeaderTopLogo>
-              <img src="https://gameusers.org/assets/img/common/gameusers_logo.png" width="138px" height="43" />
-            </HeaderTopLogo>
+            <HeaderTopLogo />
+            {/*<HeaderTopLogo>
+              <img src="/static/img/common/logo.png" width="138px" height="43" />
+            </HeaderTopLogo>*/}
             
             {/* ベル・通知 */}
             <IconButtonTopBell onClick={stores.header.notificationDialogOpenFunction}>

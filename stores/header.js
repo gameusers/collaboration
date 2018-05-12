@@ -87,8 +87,8 @@ class Store {
   // ---------------------------------------------
   
   @observable gameNo = 1;
-  // @observable heroImageArr = [1];
-  @observable heroImageArr = null;
+  @observable heroImageArr = [1];
+  // @observable heroImageArr = null;
   @observable thumbnail = false;
   @observable dataTitle = 'Dead by Daylight';
   @observable dataHardware = 'PC, PS4, Xbox One';
@@ -145,6 +145,30 @@ class Store {
       {
         name: 'ユーザー',
         pathname: '/uc'
+      },
+      {
+        name: 'テスト1',
+        pathname: '/test'
+      },
+      {
+        name: 'テスト2',
+        pathname: '/test'
+      },
+      {
+        name: 'テスト3',
+        pathname: '/test'
+      },
+      {
+        name: 'テスト4',
+        pathname: '/test'
+      },
+      {
+        name: 'テスト5',
+        pathname: '/test'
+      },
+      {
+        name: 'テスト6',
+        pathname: '/test'
       }
     ],
     

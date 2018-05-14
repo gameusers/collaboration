@@ -115,17 +115,14 @@ class Component extends React.Component {
       
       const ButtonMenuActive = styled(Button)`
         color: white !important;
-        // border-top: solid 2px #25283D !important;
         padding: 2px 0 0 !important;
         border-bottom: solid 2px #B40431 !important;
       `;
       
       const ButtonMenu = styled(Button)`
         color: #BDBDBD !important;
-        // border-top: solid 2px #25283D !important;
         padding: 2px 0 0 !important;
         border-bottom: solid 2px #25283D !important;
-        // background-color: green !important;
       `;
       
       // const Inner = styled.div`

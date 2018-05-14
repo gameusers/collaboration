@@ -246,56 +246,40 @@ class Component extends React.Component {
       //   Styled Components
       // --------------------------------------------------
       
-      let Container = styled.div`
-        position: relative !important;
-        width: 100% !important;
-      `;
-      
-      let Image = styled.img`
-        width: 100%;
-      `;
-      
-      let BoxData = styled.div`
-        position: absolute !important;
-        min-width: 150px !important;
-        max-width: 300px !important;
-        border-radius: 8px !important;
-        background-color: #000 !important;
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        color: #fff !important;
-        padding: 4px 0 6px 0 !important;
-        right: 10px !important;
-        bottom: 10px !important;
-      `;
+      let Container = null;
+      let Image = null;
+      let BoxData = null;
       
       const DataTitle = styled.p`
-        padding: 0 10px !important;
-        border-bottom: #d51a53 solid 1px !important;
-        font-size: 14px !important;
+        margin: 0 0 2px 0;
+        padding: 0 10px 4px;
+        border-bottom: #d51a53 solid 1px;
+        font-size: 14px;
+        line-height: 1.4em;
       `;
       
       const DataInfo = styled.p`
-        padding: 10px 20px 0 !important;
-        font-size: 12px !important;
-        line-height: 1em !important;
+        padding: 6px 20px 0;
+        font-size: 12px;
+        line-height: 1.4em;
       `;
       
       const BoxDataLink = styled.div`
-        display: flex !important;
-        flex-direction: row !important;
-        padding: 7px 10px 0 !important;
+        display: flex;
+        flex-direction: row;
+        padding: 5px 10px 0;
       `;
       
       const DivDataLinkForButton = styled.div`
-        margin: 0 12px 0 0 !important;
+        margin: 0 12px 0 0;
       `;
       
       const DivDataLinkForImage = styled.div`
-        margin: 4px 12px 0 0 !important;
+        margin: 4px 12px 0 0;
       `;
       
       const ADataLink = styled.a`
-        text-decoration: none !important;
+        text-decoration: none;
       `;
       
       const ButtonDataLink = styled(Button)`
@@ -318,8 +302,47 @@ class Component extends React.Component {
         
         const heroImageRandomNo = stores.header.heroImageArr[Math.floor(Math.random() * stores.header.heroImageArr.length)];
         
-        imgSrc = `/static/img/game/${stores.header.gameNo}/hero/${heroImageRandomNo}.jpg`;
+        // padding-top は画像の高さ ÷ 画像の幅 × 100
+        Container = styled.div`
+          width: 100%;
+          background: no-repeat center center url(/static/img/game/${stores.header.gameNo}/hero/${heroImageRandomNo}.jpg);
+          background-size: cover;
+          position: relative;
+          // height: 0;
+          padding-top: 56.25%;
+          
+          @media screen and (max-width: 480px) {
+            position: static;
+            // height: auto;
+            padding-top: 0;
+          }
+        `;
         
+        BoxData = styled.div`
+          min-width: 150px;
+          max-width: 300px;
+          border-radius: 8px;
+          background-color: #000;
+          background-color: rgba(0, 0, 0, 0.5);
+          color: #fff;
+          padding: 6px 0 6px 0;
+          position: absolute;
+          right: 15px;
+          bottom: 15px;
+          
+          @media screen and (max-width: 480px) {
+            position: static;
+            margin: 10px auto;
+            right: auto;
+            bottom: auto;
+          }
+        `;
+      
+      
+      // --------------------------------------------------
+      //   Hero Image がない場合、サムネイルを表示する
+      // --------------------------------------------------
+      
       } else {
         
         Container = styled.div`
@@ -329,20 +352,15 @@ class Component extends React.Component {
           align-items: flex-start;
           background: no-repeat center center url('/static/img/common/header-back.jpg');
           background-size: cover;
-          width: 100%;
-          // padding: 20px;
-          // background-color: pink;
-          
-          @media screen and (max-width: 480px) {
-            // padding: 10px;
-          }
+          padding: 15px;
+          // width: 100%;
         `;
         
         Image = styled.img`
-          margin: 15px 0 15px;
+          // margin: 15px 0 15px;
+          margin: 0 15px 0 0;
           border-radius: 8px;
           box-shadow: 4px 4px 10px #383838;
-          // background-color: pink;
           
           @media screen and (max-width: 480px) {
             width: 96px;
@@ -360,13 +378,8 @@ class Component extends React.Component {
           background-color: #000;
           background-color: rgba(0, 0, 0, 0.5);
           color: #fff;
-          margin: 15px 0 15px 15px;
+          // margin: 15px 0 15px 15px;
           padding: 4px 0 6px 0;
-          
-          @media screen and (max-width: 480px) {
-            // padding: 15px 0 15px 15px;
-            // width: 96px;
-          }
         `;
         
         imgSrc = `/static/img/game/${stores.header.gameNo}/thumbnail.jpg`;
@@ -451,7 +464,8 @@ class Component extends React.Component {
       return (
         <Container>
           
-          <Image src={imgSrc} />
+          {/*<Image src={imgSrc} />*/}
+          {imgSrc && <Image src={imgSrc} />}
           
           <BoxData>
             <DataTitle>{stores.header.dataTitle}</DataTitle>

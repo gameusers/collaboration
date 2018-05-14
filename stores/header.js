@@ -95,7 +95,7 @@ class Store {
   @observable dataGenre = 'アクション';
   @observable dataPlayersMax = '1-5人';
   @observable dataReleaseDate = '2016/6/14';
-  @observable dataDeveloper = 'Behaviour Interactive';
+  @observable dataDeveloper = 'Behaviour Interactive Behaviour Interactive';
   @observable dataLinkArr = [
     {
       type: 'Official',

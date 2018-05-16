@@ -57,7 +57,6 @@ const HeaderTop = styled.div`
   position: -webkit-sticky;
   position: sticky;
   
-  // position: fixed;
   top: 0;
   z-index: 1200;
 `;
@@ -82,7 +81,6 @@ const HeaderTopLogo = styled.div`
 const IconButtonTopBell = styled(IconButton)`
   top: 5px !important;
   left: 5px !important;
-  // background-color: pink !important;
   
   @media screen and (max-width: 480px) {
     width: 26px !important;
@@ -93,7 +91,6 @@ const IconButtonTopBell = styled(IconButton)`
 const BadgeTopBell = styled(Badge)`
   color: black !important;
 `;
-
 
 const HeaderTopSearch = styled.div`
   display: flex;
@@ -169,71 +166,12 @@ class Component extends React.Component {
     
     const { stores } = this.props;
     
-    // console.log(`header stores.pathname = ${this.props.stores.pathname}`);
-    // console.log(`header / stores.pathname = ${stores.pathname}`);
-    // console.log(`document.location.pathname = ${document.location.pathname}`);
-    
-    // console.log(`header / stores.header.test = ${stores.header.test}`);
-    // console.log(`this.props.stores.header.test = ${this.props.stores.header.test}`);
-    
-    // console.log(`header / stores.header.loginMenuOpenFunction2 = ${stores.header.loginMenuOpenFunction}`);
-    // console.log(`header / stores.header.headerMenuFunction = ${stores.header.headerMenuFunction}`);
-    // console.log(`header / stores.header.menuArr = ${stores.header.menuArr}`);
-    
-    
     
     
     // --------------------------------------------------
     //   Components
     //   ループや複雑な分岐が必要なコンポーネントはここに関数で書いてください
     // --------------------------------------------------
-    
-    /**
-     * ロゴ
-     */
-    // function Logo() {
-      
-    //   const Logo = styled.div`
-    //     margin: 2px 0 0 10px;
-    //     width: 138px;
-    //     height: 43px;
-    //     background-image: url('/static/img/common/logo.png');
-        
-    //     @media screen and (max-width: 480px) {
-    //       width: 30px;
-    //       height: 43px;
-    //       background-image: url('/static/img/common/logo-mobile.png');
-    //     }
-    //   `;
-      
-      
-    //   // if (isMobile.phone) {
-    //   //   console.log('Header.js / スマートフォン');
-    //   // } else if (isMobile.tablet) {
-    //   //   console.log('Header.js / タブレット');
-    //   // } else {
-    //   //   console.log('Header.js / PC');
-    //   // }
-      
-      
-    //   // if (isMobile.phone) {
-    //   //   return (
-    //   //     <HeaderTopLogo>
-    //   //       <img src="/static/img/common/logo-mobile.png" width="30" height="43" />
-    //   //     </HeaderTopLogo>
-    //   //   );
-    //   // }
-      
-    //   // <img src="/static/img/common/logo.png" width="138" height="43" />
-      
-      
-      
-      
-    //   return (
-    //     <Logo />
-    //   );
-      
-    // }
     
     
     /**
@@ -464,7 +402,6 @@ class Component extends React.Component {
       return (
         <Container>
           
-          {/*<Image src={imgSrc} />*/}
           {imgSrc && <Image src={imgSrc} />}
           
           <BoxData>
@@ -483,234 +420,104 @@ class Component extends React.Component {
     }
     
     
-    
-    /**
-     * 下部の紺色メニュー
-     */
-    // function Menu() {
-      
-    //   const Container = styled.div`
-    //     display: flex !important;
-    //     flex-direction: row !important;
-    //     justify-content: center !important;
-    //     height: 46px !important;
-    //     background-color: #25283D !important;
-    //     position: -webkit-sticky !important;
-    //     position: sticky !important;
-    //     top: 0 !important;
-    //     z-index: 1200 !important;
-    //   `;
-      
-    //   const ButtonMenuActive = styled(Button)`
-    //     color: white !important;
-    //     border-top: solid 2px #25283D !important;
-    //     border-bottom: solid 2px #B40431 !important;
-    //   `;
-      
-    //   const ButtonMenu = styled(Button)`
-    //     color: #BDBDBD !important;
-    //     border-top: solid 2px #25283D !important;
-    //     border-bottom: solid 2px #25283D !important;
-    //   `;
-      
-      
-    //   const codeArr = [];
-    //   let active = false;
-    //   let menuArr = [];
-      
-    //   if (stores.pathname === '/') {
-    //     menuArr = stores.header.menuObj.index;
-    //   } else if (stores.pathname === '/gc') {
-    //     menuArr = stores.header.menuObj.gc;
-    //   } else if (stores.pathname === '/uc') {
-    //     menuArr = stores.header.menuObj.uc;
-    //   }
-      
-    //   const reverseMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
-      
-    //   // console.log(JSON.stringify(stores.header.menuObj));
-      
-      
-    //   reverseMenuArr.forEach((value, index) => {
-        
-    //     // console.log(`header value.pathname = ${value.pathname}`);
-    //     // console.log(`index = ${index}`);
-    //     // console.log(`value = ${value}`);
-    //     // console.log(`index = ${index}`);
-    //     // console.log(`headerMenuReverseArr.length = ${headerMenuReverseArr.length}`);
-        
-    //     if (value.pathname === stores.pathname || (!active && index + 1 === reverseMenuArr.length)) {
-          
-    //       codeArr.unshift(
-    //         <ButtonMenuActive key={index}>
-    //           {value.name}
-    //         </ButtonMenuActive>
-    //       );
-          
-    //       active = true;
-          
-    //     } else {
-          
-    //       codeArr.unshift(
-    //         <Link prefetch href={value.pathname} key={index}>
-    //           <ButtonMenu>
-    //             {value.name}
-    //           </ButtonMenu>
-    //         </Link>
-    //       );
-          
-    //     }
-        
-    //   });
-      
-    //   return (
-    //     <Container>
-    //       {codeArr}
-    //     </Container>
-    //   );
-      
-    // }
-    
-    
-    
     return (
       <Header>
+          
+        {/* トップメニュー */}
+        <HeaderTop>
         
-        {/* ヘッダー */}
-        {/*<VelocityComponent
-          animation={{ translateY: stores.header.topMenuOpen ? 0 : -48 }}
-          duration={300}
-        >*/}
-        
-        {/*<Header>*/}
+          {/* ロゴ */}
+          <HeaderTopLogo />
           
-          {/* トップメニュー */}
-          <HeaderTop>
+          {/* ベル・通知 */}
+          <IconButtonTopBell onClick={stores.header.notificationDialogOpenFunction}>
+            <BadgeTopBell badgeContent={4} color="primary">
+              <IconNotifications />
+            </BadgeTopBell>
+          </IconButtonTopBell>
           
-            {/* ロゴ */}
-            <HeaderTopLogo />
-            {/*<HeaderTopLogo>
-              <img src="/static/img/common/logo.png" width="138px" height="43" />
-            </HeaderTopLogo>*/}
-            
-            {/* ベル・通知 */}
-            <IconButtonTopBell onClick={stores.header.notificationDialogOpenFunction}>
-              <BadgeTopBell badgeContent={4} color="primary">
-                <IconNotifications />
-              </BadgeTopBell>
-            </IconButtonTopBell>
-            
-            {/* 検索フォーム */}
-            <HeaderTopSearch>
-              <TextFieldTopSearch
-                placeholder="ゲーム、コミュニティを検索"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconSearch />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </HeaderTopSearch>
-            
-            
-            
-            {/* メニュー */}
-            {/*<ButtonTopMenu>
-              <IconPerson />
-              プレイヤー
-            </ButtonTopMenu>*/}
-            
-            {/*<ButtonTopMenu>
-              <IconExitToApp />
-              ログイン
-            </ButtonTopMenu>*/}
-            
-            <IconButtonTopThumbnail
-              onClick={stores.header.loginMenuOpenFunction}
-            >
-              <AvatarTop
-                alt="ユーザー1"
-                src="https://gameusers.org/assets/img/user/1/thumbnail.jpg"
-              />
-            </IconButtonTopThumbnail>
-            
-            <MenuTopLoginMenu
-              anchorEl={stores.header.loginMenuAnchorEl}
-              open={stores.header.loginMenuOpen}
-              onClose={stores.header.loginMenuCloseFunction}
-            >
-              <MenuItem onClick={stores.header.loginMenuCloseFunction}>
-                <ListItemIconTopLoginMenu>
-                  <IconPerson />
-                </ListItemIconTopLoginMenu>
-                <ListItemTextTopLoginMenu inset primary="プレイヤー" />
-              </MenuItem>
-              
-              <MenuItem onClick={stores.header.loginMenuCloseFunction}>
-                <ListItemIconTopLoginMenu>
-                  <IconEject />
-                </ListItemIconTopLoginMenu>
-                <ListItemTextTopLoginMenu inset primary="ログアウト" />
-              </MenuItem>
-            </MenuTopLoginMenu>
-            
-          </HeaderTop>
+          {/* 検索フォーム */}
+          <HeaderTopSearch>
+            <TextFieldTopSearch
+              placeholder="ゲーム、コミュニティを検索"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconSearch />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </HeaderTopSearch>
           
           
-          
-          
-          {/* ヒーローイメージ（各ゲームの大きな画像） */}
-          <HeroImage />
-          
-          {/* 最下部メニュー */}
-          {/* <Menu /> */}
-          
-          
-          {/* 通知ダイアログ */}
-          <Dialog
-            fullScreen
-            open={stores.header.notificationDialogOpen}
-            onClose={stores.header.notificationDialogCloseFunction}
-            // transition={Transition}
+          {/* メニュー */}
+          <IconButtonTopThumbnail
+            onClick={stores.header.loginMenuOpenFunction}
           >
-            <AppBar>
-              <Toolbar>
-                <IconButton color="inherit" onClick={stores.header.notificationDialogCloseFunction} aria-label="Close">
-                  <CloseIcon />
-                </IconButton>
-                <Typography variant="title" color="inherit">
-                  Notifications
-                </Typography>
-                <Button color="inherit" onClick={stores.header.notificationDialogCloseFunction}>
-                  save
-                </Button>
-              </Toolbar>
-            </AppBar>
-            <List>
-              <ListItem button>
-                <ListItemText primary="Phone ringtone" secondary="Titania" />
-              </ListItem>
-              <Divider />
-              <ListItem button>
-                <ListItemText primary="Default notification ringtone" secondary="Tethys" />
-              </ListItem>
-            </List>
-          </Dialog>
+            <AvatarTop
+              alt="ユーザー1"
+              src="https://gameusers.org/assets/img/user/1/thumbnail.jpg"
+            />
+          </IconButtonTopThumbnail>
           
-        {/*</Header>*/}
+          <MenuTopLoginMenu
+            anchorEl={stores.header.loginMenuAnchorEl}
+            open={stores.header.loginMenuOpen}
+            onClose={stores.header.loginMenuCloseFunction}
+          >
+            <MenuItem onClick={stores.header.loginMenuCloseFunction}>
+              <ListItemIconTopLoginMenu>
+                <IconPerson />
+              </ListItemIconTopLoginMenu>
+              <ListItemTextTopLoginMenu inset primary="プレイヤー" />
+            </MenuItem>
+            
+            <MenuItem onClick={stores.header.loginMenuCloseFunction}>
+              <ListItemIconTopLoginMenu>
+                <IconEject />
+              </ListItemIconTopLoginMenu>
+              <ListItemTextTopLoginMenu inset primary="ログアウト" />
+            </MenuItem>
+          </MenuTopLoginMenu>
+          
+        </HeaderTop>
         
-        {/*</VelocityComponent>
+        
+        {/* ヒーローイメージ（各ゲームの大きな画像） */}
+        <HeroImage />
         
         
-        <Button
-          onClick={stores.header.topMenuOpenFunction}
+        {/* 通知ダイアログ */}
+        <Dialog
+          fullScreen
+          open={stores.header.notificationDialogOpen}
+          onClose={stores.header.notificationDialogCloseFunction}
+          // transition={Transition}
         >
-          テスト
-        </Button>*/}
-        
-        
+          <AppBar>
+            <Toolbar>
+              <IconButton color="inherit" onClick={stores.header.notificationDialogCloseFunction} aria-label="Close">
+                <CloseIcon />
+              </IconButton>
+              <Typography variant="title" color="inherit">
+                Notifications
+              </Typography>
+              <Button color="inherit" onClick={stores.header.notificationDialogCloseFunction}>
+                save
+              </Button>
+            </Toolbar>
+          </AppBar>
+          <List>
+            <ListItem button>
+              <ListItemText primary="Phone ringtone" secondary="Titania" />
+            </ListItem>
+            <Divider />
+            <ListItem button>
+              <ListItemText primary="Default notification ringtone" secondary="Tethys" />
+            </ListItem>
+          </List>
+        </Dialog>
         
       </Header>
     );

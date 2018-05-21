@@ -19,24 +19,23 @@ let store = null;
 class Store {
   
   
-  
   // ---------------------------------------------
   //   マウススクロールでトップメニューを動かす
   // ---------------------------------------------
   
-  @observable topMenuOpen = true;
+  // @observable topMenuOpen = true;
   
   
-  @action.bound
-  topMenuOpenFunction() {
-    // console.log('Open');
-    if (this.topMenuOpen) {
-      this.topMenuOpen = false;
-    } else {
-      this.topMenuOpen = true;
-    }
+  // @action.bound
+  // topMenuOpenFunction() {
+  //   // console.log('Open');
+  //   if (this.topMenuOpen) {
+  //     this.topMenuOpen = false;
+  //   } else {
+  //     this.topMenuOpen = true;
+  //   }
     
-  };
+  // };
   
   
   // ---------------------------------------------
@@ -55,7 +54,6 @@ class Store {
   notificationDialogCloseFunction() {
     this.notificationDialogOpen = false;
   };
-  
   
   
   // ---------------------------------------------
@@ -83,6 +81,26 @@ class Store {
   
   
   // ---------------------------------------------
+  //   データ
+  // ---------------------------------------------
+  
+  @observable dataOpen = false;
+  
+  @action.bound
+  dataOpenFunction() {
+    // console.log('Open');
+    this.dataOpen = true;
+  };
+  
+  @action.bound
+  dataCloseFunction() {
+    // console.log('Close');
+    this.dataOpen = false;
+  };
+  
+  
+  
+  // ---------------------------------------------
   //   ヒーローイメージ
   // ---------------------------------------------
   
@@ -95,7 +113,7 @@ class Store {
   @observable dataGenre = 'アクション';
   @observable dataPlayersMax = '1-5人';
   @observable dataReleaseDate = '2016/6/14';
-  @observable dataDeveloper = 'Behaviour Interactive Behaviour Interactive';
+  @observable dataDeveloper = 'Behaviour Interactive';
   @observable dataLinkArr = [
     {
       type: 'Official',

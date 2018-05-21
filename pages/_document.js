@@ -10,7 +10,9 @@ import flush from 'styled-jsx/server';
 import getPageContext from '../lib/material-ui/getPageContext';
 import injectGlobalStyles from '../lib/styles/global-styles';
 
+
 injectGlobalStyles();
+
 
 const withJssProvider = (App, pageContext, props) => (
   <JssProvider
@@ -21,53 +23,14 @@ const withJssProvider = (App, pageContext, props) => (
   </JssProvider>
 );
 
-export default class MyDocument extends Document {
-  static getInitialProps ({ renderPage }) {
-    const sheet = new ServerStyleSheet(); // for styled-components
-    const pageContext = getPageContext(); // for material-ui
 
-    // create the wrapped page object
-    const page = renderPage(App => props => {
-      const WrappedApp = withJssProvider(App, pageContext, props); // for material-ui
-      sheet.collectStyles(WrappedApp);  // for styled-components
-      return WrappedApp;
-    });
-
-    // return styleTags for styled-components and pageContext and styles for material-ui
-    // return {
-    //   ...page,
-    //   styleTags: sheet.getStyleElement(),
-    //   pageContext,
-    //   styles: (
-    //     <style
-    //       id="jss-server-side"
-    //       dangerouslySetInnerHTML={{ __html: pageContext.sheetsRegistry.toString() }}
-    //     />
-    //   )
-    // };
-    
-    return {
-      ...page,
-      styleTags: sheet.getStyleElement(),
-      pageContext,
-      styles: (
-        <React.Fragment>
-          <style
-            id="jss-server-side"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{ __html: pageContext.sheetsRegistry.toString() }}
-          />
-          {flush() || null}
-        </React.Fragment>
-      ),
-    };
-  }
-
-  render () {
+class MyDocument extends Document {
+  render() {
     return (
       <html>
         <Head>
           <title>My page</title>
+          <meta charSet="utf-8" />
           {this.props.styleTags}
         </Head>
         <body>
@@ -78,3 +41,59 @@ export default class MyDocument extends Document {
     );
   }
 }
+
+MyDocument.getInitialProps = ctx => {
+  // Resolution order
+  //
+  // On the server:
+  // 1. page.getInitialProps
+  // 2. document.getInitialProps
+  // 3. page.render
+  // 4. document.render
+  //
+  // On the server with error:
+  // 2. document.getInitialProps
+  // 3. page.render
+  // 4. document.render
+  //
+  // On the client
+  // 1. page.getInitialProps
+  // 3. page.render
+
+  // Get the context of the page to collected side effects.
+  const sheet = new ServerStyleSheet(); // for styled-components
+  const pageContext = getPageContext(); // for material-ui
+  
+  // const page = ctx.renderPage(Component => props => (
+  //   <JssProvider
+  //     registry={pageContext.sheetsRegistry}
+  //     generateClassName={pageContext.generateClassName}
+  //   >
+  //     <Component pageContext={pageContext} {...props} />
+  //   </JssProvider>
+  // ));
+  
+  const page = ctx.renderPage(App => props => {
+    const WrappedApp = withJssProvider(App, pageContext, props); // for material-ui
+    sheet.collectStyles(WrappedApp);  // for styled-components
+    return WrappedApp;
+  });
+
+  return {
+    ...page,
+    styleTags: sheet.getStyleElement(),
+    pageContext,
+    styles: (
+      <React.Fragment>
+        <style
+          id="jss-server-side"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: pageContext.sheetsRegistry.toString() }}
+        />
+        {flush() || null}
+      </React.Fragment>
+    ),
+  };
+};
+
+export default MyDocument;

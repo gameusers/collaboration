@@ -5,40 +5,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
-import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
-// import isMobile from 'ismobilejs';
 
-import Button from 'material-ui/Button';
-import IconButton from 'material-ui/IconButton';
-import Badge from 'material-ui/Badge';
-import Avatar from 'material-ui/Avatar';
-// import Menu, { MenuItem } from 'material-ui/Menu';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
+import Button from '@material-ui/core/Button';
 
-import Input, { InputLabel, InputAdornment } from 'material-ui/Input';
-import { FormControl } from 'material-ui/Form';
-import TextField from 'material-ui/TextField';
-
-import Dialog from 'material-ui/Dialog';
-import Divider from 'material-ui/Divider';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import CloseIcon from '@material-ui/icons/Close';
-// import Slide from 'material-ui/transitions/Slide';
-
-
-// import IconFavorite from '@material-ui/icons/Favorite';
-// import IconFavorite from '@material-ui/icons/Stars';
-// import IconFavorite from '@material-ui/icons/InsertEmoticon';
 import IconLocalFlorist from '@material-ui/icons/LocalFlorist';
 import IconCopyright from '@material-ui/icons/Copyright';
 import IconNavigation from '@material-ui/icons/Navigation';
-
-import withRoot from '../lib/material-ui/withRoot';
-
 
 
 // --------------------------------------------------
@@ -148,16 +121,12 @@ const Copyright = styled.div`
 
 
 
-
-
-
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
 @inject('stores') @observer
-class Component extends React.Component {
+export default class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -233,5 +202,3 @@ class Component extends React.Component {
   }
   
 };
-
-export default withRoot(Component);

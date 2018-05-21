@@ -4,22 +4,12 @@
 
 import React from 'react';
 import { observer, Provider } from 'mobx-react';
-// import isMobile from 'ismobilejs';
 
-import Layout from '../components/layout';
 import initStoreHeader from '../stores/header';
 
-// import '../swiper.css';
+import Layout from '../components/layout';
 
-
-// --------------------------------------------------
-//   Store
-// --------------------------------------------------
-
-// const stores = {
-//   current: new StoreIndex(),
-//   header: new StoreHeader()
-// };
+import withRoot from '../lib/material-ui/withRoot';
 
 
 // --------------------------------------------------
@@ -28,27 +18,38 @@ import initStoreHeader from '../stores/header';
 // --------------------------------------------------
 
 @observer
-export default class extends React.Component {
+class Component extends React.Component {
   
   static getInitialProps({ pathname, query, asPath, req, res, jsonPageRes, err }) {
+  
+  // static getInitialProps({ pathname, req, res }) {
     
-    // if (isMobile(req.headers['user-agent']).phone) {
-    //     console.log('スマートフォン');
-    //   } else if (isMobile(req.headers['user-agent']).tablet) {
-    //     console.log('タブレット');
-    //   } else {
-    //     console.log('PC');
-    //   }
+    console.log(`getInitialProps / pathname = ${pathname}`);
+    // console.log(`getInitialProps / query = ${query}`);
+    // console.log(`getInitialProps / req = ${JSON.parse(JSON.stringify(req))}`);
+    // console.log(`getInitialProps / req = ${JSON.parse(JSON.stringify(res))}`);
+    // console.log(`getInitialProps / res = ${res}`);
+    // console.log(`getInitialProps / asPath = ${asPath}`);
+    // console.log(`getInitialProps / jsonPageRes = ${jsonPageRes}`);
+    
+    // console.log(`getInitialProps / width = ${windowSize.width}`);
+    
     
     const isServer = !!req;
     return { isServer: isServer, pathname: pathname };
   }
   
   
-  constructor (props) {
+  constructor(props) {
+    
     super(props);
     
     
+    if (typeof window !== 'undefined') {
+      console.log(`getInitialProps / width = ${window.innerWidth}`);
+    }
+    
+
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
@@ -59,6 +60,12 @@ export default class extends React.Component {
     };
     
   }
+  
+  
+  componentDidMount() {
+    console.log(`componentDidMount / width = ${window.innerWidth}`);
+  }
+  
   
   
   render() {
@@ -106,3 +113,7 @@ export default class extends React.Component {
     );
   }
 }
+
+// export default Component;
+
+export default withRoot(Component);

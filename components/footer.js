@@ -40,6 +40,10 @@ const MenuBox = styled.div`
 const StyledIconLocalFlorist = styled(IconLocalFlorist)`
   margin: 0 0 3px !important;
   font-size: 26px !important;
+  
+  @media screen and (max-width: 480px) {
+    margin: 0 0 2px 0 !important;
+  }
 `;
 
 const ButtonGameUsers = styled(Button)`

@@ -6,6 +6,8 @@ import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 
+import Dialog from '@material-ui/core/Dialog';
+
 import Header from './header/header';
 import HeaderMenu from './header/menu';
 import Footer from './footer';
@@ -30,7 +32,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const { stores } = this.props;
+    const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -59,6 +61,15 @@ export default class extends React.Component {
         
         {/* フッター */}
         <Footer />
+        
+        {/* 画像・動画のモーダル */}
+        <Dialog
+          open={stores.common.modalWindowOpen}
+          onClose={stores.common.modalWindowCloseFunction}
+          maxWidth='md'
+        >
+          <img src={stores.common.modalWindowSrc} width="100%" />
+        </Dialog>
         
       </div>
     );

@@ -3,87 +3,74 @@
 // --------------------------------------------------
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { observer, Provider } from 'mobx-react';
-import StoreRoot from '../stores/root';
+
+import initStoreCommon from '../stores/common';
+import initStoreHeader from '../stores/header';
+
 import Layout from '../components/layout';
 
-// import { withStyles } from 'material-ui/styles';
-
+import withRoot from '../lib/material-ui/withRoot';
 
 
 
 // --------------------------------------------------
-//   Store
+//   styled-components でスタイルシートを書いてください
+//   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const stores = {
-  instanceStoreRoot: new StoreRoot()
-};
-
-
-
-const styles = {
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: 'green',
-  },
-};
-
-const stylesObj = theme => ({
-  root: {
-    width: '100%',
-    maxWidth: 360,
-    backgroundColor: 'yellow',
-  },
-});
-
-// const stylesObj = {
-//   root: {
-//     width: '100%',
-//     maxWidth: 360,
-//     backgroundColor: 'pink',
-//   },
-// };
 
 
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://35.203.143.160:8080/test
 // --------------------------------------------------
 
 @observer
-@withStyles(stylesObj)
-export default class extends React.Component {
+class Component extends React.Component {
   
-  static getInitialProps({ pathname, query, asPath, req, res, jsonPageRes, err }) {
+  static getInitialProps({ pathname, req }) {
+    const isServer = !!req;
+    return { isServer: isServer, pathname: pathname };
+  }
+  
+  
+  constructor(props) {
     
-    // const instanceStoreRoot = new StoreRoot();
+    super(props);
     
-    return { test: 'Text From b' };
+
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    this.stores = {
+      common: initStoreCommon(props.isServer, props.pathname),
+      header: initStoreHeader(props.isServer, props.pathname),
+      pathname: props.pathname
+    };
     
   }
   
   
-  // constructor(props) {
-  //   super(props);
-  // }
+  componentDidMount() {
+    if (window.innerWidth > 480) {
+      this.stores.header.dataOpenFunction();
+    }
+  }
   
-
+  
+  
   render() {
-    
-    const { classes } = this.props;
-    
     return (
-      <Provider stores={stores}>
-        
-        test.js
-        
+      <Provider stores={this.stores}>
+        <Layout>
+          test.js
+        </Layout>
       </Provider>
     );
   }
 }
 
-// export default withStyles(styles)(Conponent);
+export default withRoot(Component);

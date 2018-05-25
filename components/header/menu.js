@@ -21,13 +21,12 @@ const Container = styled.nav`
   // padding: 0 0 8px 0;
   
   width: 100%;
-  // height: 46px;
   height: 36px;
   text-align: center;
   background-color: #25283D;
   position: -webkit-sticky;
   position: sticky;
-  top: 0;
+  top: -1px;
   z-index: 1200;
 `;
       

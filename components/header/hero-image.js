@@ -41,12 +41,13 @@ const DataTitleBox = styled.div`
   // background-color: pink;
 `;
 
-const DataTitle = styled.p`
+const DataTitle = styled.h1`
   margin: 6px 0 0 0;
   // padding: 0 10px 4px;
   // border-bottom: #d51a53 solid 1px;
   flex-grow: 2;
   font-size: 14px;
+  font-weight: normal;
   line-height: 1.4em;
 `;
 
@@ -114,10 +115,11 @@ const BoxDataClosed = styled.div`
   bottom: 15px;
 `;
       
-const DataTitleClosed = styled.p`
+const DataTitleClosed = styled.h1`
   margin: 0;
   padding: 4px 4px 4px 10px;
   font-size: 14px;
+  font-weight: normal;
   line-height: 1.4em;
 `;
       

@@ -1,78 +1,76 @@
-import React from 'react';
-import Link from 'next/link';
-import Router from 'next/router';
-import fetch from 'isomorphic-unfetch';
+// --------------------------------------------------
+//   Import
+// --------------------------------------------------
 
-export default class extends React.Component {
+import React from 'react';
+import { observer, Provider } from 'mobx-react';
+
+import initStoreCommon from '../stores/common';
+import initStoreHeader from '../stores/header';
+
+import Layout from '../components/layout';
+
+import withRoot from '../lib/material-ui/withRoot';
+
+
+
+// --------------------------------------------------
+//   styled-components でスタイルシートを書いてください
+//   参考: https://github.com/styled-components/styled-components
+// --------------------------------------------------
+
+
+
+
+// --------------------------------------------------
+//   Class
+//   URL: http://35.203.143.160:8080/test
+// --------------------------------------------------
+
+@observer
+class Component extends React.Component {
   
-  static async getInitialProps({ req }) {
+  static getInitialProps({ pathname, req }) {
+    const isServer = !!req;
+    return { isServer: isServer, pathname: pathname };
+  }
+  
+  
+  constructor(props) {
     
-    // const res = await fetch('https://df44294c8853471b8ddd609c09af06f3.vfs.cloud9.us-west-2.amazonaws.com/api');
-    // console.log(res);
-    // const json = await res.json();
-    // console.log(json);
+    super(props);
     
+
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
     
-    // const url = 'https://df44294c8853471b8ddd609c09af06f3.vfs.cloud9.us-west-2.amazonaws.com/api';
-    // const url = 'https://gameusers.org/';
-    const url = 'http://35.203.143.160:8080/api';
-    
-    // const res = await fetch(url);
-    // const json = await res.json();
-    
-    // console.log(res);
-    // console.log(json);
-    
-    
-    const returnObj = await fetch(url, {
-      
-      method: 'GET',
-      mode: 'cors',
-      credentials: 'include'
-      
-    }).then(function(response) {
-      
-      // console.log(response);
-      return response.json();
-      
-    }).then(function(json) {
-      
-      // console.log(json);
-      return { message: json.message };
-      
-    });
-    
-    
-    return returnObj;
-    // return { message: json.message };
-    // return { message: 'APIからのデータ' };
+    this.stores = {
+      common: initStoreCommon(props.isServer, props.pathname),
+      header: initStoreHeader(props.isServer, props.pathname),
+      pathname: props.pathname
+    };
     
   }
-
+  
+  
+  componentDidMount() {
+    if (window.innerWidth > 480) {
+      this.stores.header.dataOpenFunction();
+    }
+  }
+  
+  
+  
   render() {
     return (
-      <div>
-        <p>Welcome to next.js! 3 / {this.props.message}</p>
-        
-    
-        <Link href="/test">
-          <img src="/static/img/thumbnail.jpg" alt="image" />
-        </Link>
-        
-        <br /><br />
-        
-        Click <span onClick={() => Router.push('/test')}>[Here]</span> to read more
-        
-        <style jsx>{`
-          p {
-            color: green;
-          }
-          div {
-            background: white;
-          }
-        `}</style>
-      </div>
+      <Provider stores={this.stores}>
+        <Layout>
+          b.js
+        </Layout>
+      </Provider>
     );
   }
-  
-};
+}
+
+export default withRoot(Component);

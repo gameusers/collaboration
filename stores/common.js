@@ -23,28 +23,35 @@ class Store {
   //   画像・動画モーダルウィンドウ
   // ---------------------------------------------
   
-  @observable modalWindowSrc = null;
-  @observable modalWindowOpen = false;
- 
+  @observable modalImageSrc = null;
+  @observable modalImageOpen = false;
+  @observable modalVideoChannel = null;
+  @observable modalVideoId = null;
+  @observable modalVideoOpen = false;
+  
   
   @action.bound
-  modalWindowOpenFunction(src) {
-    // console.log(`src = ${src}`);
-    console.dir(src);
-    this.modalWindowSrc = src;
-    this.modalWindowOpen = true;
+  modalImageOpenFunction(src) {
+    this.modalImageSrc = src;
+    this.modalImageOpen = true;
   };
   
   @action.bound
-  modalWindowCloseFunction() {
-    this.modalWindowOpen = false;
+  modalImageCloseFunction() {
+    this.modalImageOpen = false;
   };
   
-  // @action.bound
-  // setModalWindowSrc(src) {
-  //   console.log(`src = ${src}`);
-  //   this.modalWindowSrc = src;
-  // };
+  @action.bound
+  modalVideoOpenFunction(channel, id) {
+    this.modalVideoChannel = channel;
+    this.modalVideoId = id;
+    this.modalVideoOpen = true;
+  };
+  
+  @action.bound
+  modalVideoCloseFunction() {
+    this.modalVideoOpen = false;
+  };
   
 }
 

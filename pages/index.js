@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 import React from 'react';
+import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
@@ -40,25 +41,9 @@ import withRoot from '../lib/material-ui/withRoot';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-// const ContainerLayout = styled(Layout)`
-//   // padding: 10px;
-//   padding: 10px 0 10px 10px !important;
-// `;
-
 const Container = styled.div`
-  // padding: 10px;
   padding: 10px 0 10px 10px;
 `;
-
-// const StyledSwiper = styled(Swiper)`
-//   margin: 0 0 100px 0;
-// `;
-
-// const CardBox = styled.div`
-//   display: flex;
-//   flex-flow: row nowrap;
-// `;
-
 
 const StyledCard = styled(Card)`
   margin: 0 14px 45px 0 !important;
@@ -67,8 +52,13 @@ const StyledCard = styled(Card)`
 `;
 
 const CardMediaBox = styled.div`
-  // margin: 0 auto 0 0;
   background-color: black;
+  position: relative;
+`;
+
+const CardMediaMoviePlayButton = styled.img`
+  position: absolute;
+  top: 0;
 `;
 
 const StyledCardContent = styled(CardContent)`
@@ -145,6 +135,22 @@ const StyledIconChatBubble = styled(IconChatBubble)`
 // `;
 
 
+const ContainerVideo = styled.div`
+  position: relative;
+  // max-width: 100%;
+  height: 0;
+  padding-top: 56.25%;
+`;
+
+const VideoIframe = styled.iframe`
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+`;
+
+
 
 
 // --------------------------------------------------
@@ -212,7 +218,13 @@ class Component extends React.Component {
     
     return (
       <Provider stores={this.stores}>
+      
         <Layout>
+          
+          {/* Head 内部のタグをここで追記する */}
+          <Head>
+            <title>index.js</title>
+          </Head>
         
           <Container>
             
@@ -224,8 +236,8 @@ class Component extends React.Component {
               <StyledCard>
                 
                 {/*<Link prefetch href='/test'>*/}
-                  {/*<CardMediaBox onClick={stores.common.modalWindowOpenFunction}>*/}
-                  <CardMediaBox onClick={() => stores.common.modalWindowOpenFunction('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
+                  {/*<CardMediaBox onClick={stores.common.modalImageOpenFunction}>*/}
+                  <CardMediaBox onClick={() => stores.common.modalImageOpenFunction('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
                     <CardMedia
                       image="/static/img/sample/0r8294vpatkc9nl1.jpg"
                       title="Grand Theft Auto V"
@@ -321,7 +333,7 @@ class Component extends React.Component {
               
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.common.modalWindowOpenFunction('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
+                <CardMediaBox onClick={() => stores.common.modalImageOpenFunction('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
                   <CardMedia
                     image="/static/img/sample/g0dzjmsmuu32drqb.jpg"
                     title="Metal Gear Solid V: The Phantom Pain"
@@ -370,34 +382,65 @@ class Component extends React.Component {
               
               
               <StyledCard>
-                <CardMedia
-                  image="/static/img/sample/0r8294vpatkc9nl1.jpg"
-                  title="Contemplative Reptile"
-                  style={{ width: '100%', height: 0, paddingTop: '56.25%' }}
-                />
                 
-                <CardContent>
-                  <Typography gutterBottom variant="headline" component="h2">
-                    Lizard
-                  </Typography>
-                  <Typography component="p">
-                    Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging
-                    across all continents except Antarctica
-                  </Typography>
-                </CardContent>
+                <CardMediaBox onClick={() => stores.common.modalVideoOpenFunction('youtube', '1yIHLQJNvDw')}>
+                  <CardMedia
+                    image="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
+                    title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
+                    style={{ height: 0, paddingTop: '56.25%' }}
+                  />
+                  <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
+                </CardMediaBox>
+                
+                
+                <Link prefetch href="/test">
+                  <StyledCardContent>
+                    <CardTitle>ゼルダの伝説 ブレス オブ ザ ワイルドについて語ろう！</CardTitle>
+                    <Typography component="p">
+                      Nintendo Switch / Wii U　ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー
+                    </Typography>
+                    <CardInfoBox>
+                      
+                      <CardInfoLeft>
+                        <CardInfoDateTimeBox>
+                          <StyledIconSchedule />
+                          <CardInfoText>6 日前</CardInfoText>
+                        </CardInfoDateTimeBox>
+                      </CardInfoLeft>
+                      
+                      <CardInfoRight>
+                        <CardInfoCommentsTotalBox>
+                          <StyledIconChatBubble />
+                          <CardInfoText>100</CardInfoText>
+                        </CardInfoCommentsTotalBox>
+                      </CardInfoRight>
+                      
+                    </CardInfoBox>
+                  </StyledCardContent>
+                </Link>
+                
+                
                 <CardActions>
-                  <Button size="small" color="primary">
-                    Share
-                  </Button>
-                  <Button size="small" color="primary">
-                    Learn More
-                  </Button>
+                  <Link prefetch href="/a">
+                    <Button size="small" color="primary">
+                      ゼルダの伝説 ブレス オブ ザ ワイルド
+                    </Button>
+                  </Link>
                 </CardActions>
+                
               </StyledCard>
             
             </Swiper>
           
           
+          
+          
+          
+          {/*<iframe width="560" height="315" src="https://www.youtube.com/embed/1yIHLQJNvDw" frameborder="0" allowfullscreen></iframe>
+          
+          <ContainerVideo>
+            <VideoIframe width="560" height="315" src="https://www.youtube.com/embed/1yIHLQJNvDw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
+          </ContainerVideo>*/}
           
           index.js<br />
           index.js<br />

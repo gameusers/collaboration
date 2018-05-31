@@ -45,10 +45,51 @@ const Container = styled.div`
   padding: 10px 0 10px 10px;
 `;
 
+const CardBox = styled.div`
+  position: relative;
+  margin: 10px 0 0 0;
+`;
+
+const CardCategory = styled.h2`
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  
+  color: white;
+  border: solid 2px white;
+  // padding: 0.5em;
+  padding: 5px 10px 2px 10px;
+  border-radius: 0.5em;
+  
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.5);
+  
+  // color: green;
+  font-size: 20px;
+  font-weight: normal;
+  // line-height: 1em;
+  // padding: 0 0 10px 0;
+  
+  pointer-events: none;
+`;
+
+const CategoryTitle = styled.h2`
+  // color: green;
+  font-size: 20px;
+  font-weight: normal;
+  padding: 0 0 10px 0;
+`;
+
+
+
 const StyledCard = styled(Card)`
-  margin: 0 14px 45px 0 !important;
+  // margin: 0 14px 45px 0 !important;
+  margin: 0 14px 4px 0 !important;
+  // margin: 0 14px 16px 0 !important;
   width: 300px !important;
-  cursor: pointer  !important;
+  cursor: pointer !important;
+  // height: 400px !important;
 `;
 
 const CardMediaBox = styled.div`
@@ -110,44 +151,6 @@ const CardInfoCommentsTotalBox = styled.div`
 const StyledIconChatBubble = styled(IconChatBubble)`
   font-size: 20px !important;
   margin: 3px 0 0 0 !important;
-`;
-
-// const StyledCardActions = styled(CardActions)`
-//   padding: 0 16px 6px !important;
-// `;
-
-
-
-
-
-
-
-
-// const StyledCardMedia = styled(CardMedia)`
-//   height: 0;
-//   padding-top: '56.25%';
-// `;
-
-
-// const CardThumbnail = styled(Card)`
-//   display: flex;
-//   width: 500px;
-// `;
-
-
-const ContainerVideo = styled.div`
-  position: relative;
-  // max-width: 100%;
-  height: 0;
-  padding-top: 56.25%;
-`;
-
-const VideoIframe = styled.iframe`
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
 `;
 
 
@@ -212,7 +215,9 @@ class Component extends React.Component {
       freeMode: true,
       pagination: {
         el: '.swiper-pagination',
-        clickable: true,
+        clickable: false,
+        // type: 'progressbar',
+        // progressbarOpposite: true,
       }
     };
     
@@ -229,22 +234,21 @@ class Component extends React.Component {
           <Container>
             
             
-            BBS
+          <CardBox>
+              
+            <CardCategory>BBS</CardCategory>
             
-            <Swiper {...params}>
+            <Swiper {...params} style={{ margin: '0 0 10px 0' }}>
             
               <StyledCard>
                 
-                {/*<Link prefetch href='/test'>*/}
-                  {/*<CardMediaBox onClick={stores.common.modalImageOpenFunction}>*/}
-                  <CardMediaBox onClick={() => stores.common.modalImageOpenFunction('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
-                    <CardMedia
-                      image="/static/img/sample/0r8294vpatkc9nl1.jpg"
-                      title="Grand Theft Auto V"
-                      style={{ height: 0, paddingTop: '56.25%' }}
-                    />
-                  </CardMediaBox>
-                {/*</Link>*/}
+                <CardMediaBox onClick={() => stores.common.modalImageOpenFunction('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
+                  <CardMedia
+                    image="/static/img/sample/0r8294vpatkc9nl1.jpg"
+                    title="Grand Theft Auto V"
+                    style={{ height: 0, paddingTop: '56.25%' }}
+                  />
+                </CardMediaBox>
                 
                 
                 <Link prefetch href="/test">
@@ -431,18 +435,266 @@ class Component extends React.Component {
               </StyledCard>
             
             </Swiper>
+            
+            </CardBox>
+            
+            
+            
+            <CardBox>
+              
+              <CardCategory>募集</CardCategory>
+              
+              <Swiper {...params}>
+                
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.common.modalImageOpenFunction('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg"
+                      title="フォーオナー"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>ギルドメンバーを募集しています</CardTitle>
+                      <Typography component="p">
+                        フォーオナーは、伝説の戦士たちの戦いを描いた、壮大なスケールのアクションゲームです。伝説の偉大な戦士―　勇猛なナイト、残忍なヴァイキング、冷酷な侍の中からヒーローを選び、大軍勢のAIが入り乱れる戦地で戦います。
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>5 分前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>310</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <CardActions>
+                    <Link prefetch href="/a">
+                      <Button size="small" color="primary">
+                        フォーオナー
+                      </Button>
+                    </Link>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/game/650/thumbnail.jpg"
+                      title="HEAVY RAIN"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  <StyledCardContent>
+                    <CardTitle>アイテム交換希望</CardTitle>
+                    <Typography component="p">
+                      愛は、どこまで貫けるのか——。人は、どこまで許されるのか———。小さな街で起きた、奇怪な連続誘拐殺人事件を題材にしたサスペンスアドベンチャーゲーム。4人の主人公の視点によって物語が展開され、わずかな手がかりをもとに犯人を追う。
+                    </Typography>
+                    <CardInfoBox>
+                      
+                      <CardInfoLeft>
+                        <CardInfoDateTimeBox>
+                          <StyledIconSchedule />
+                          <CardInfoText>1 日前</CardInfoText>
+                        </CardInfoDateTimeBox>
+                      </CardInfoLeft>
+                      
+                      <CardInfoRight>
+                        <CardInfoCommentsTotalBox>
+                          <StyledIconChatBubble />
+                          <CardInfoText>9</CardInfoText>
+                        </CardInfoCommentsTotalBox>
+                      </CardInfoRight>
+                      
+                    </CardInfoBox>
+                  </StyledCardContent>
+                  
+                  <CardActions>
+                    <Button size="small" color="primary">
+                      HEAVY RAIN -心の軋むとき-
+                    </Button>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/game/647/thumbnail.jpg"
+                      title="どうぶつの森 ポケットキャンプ"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>一緒に遊びましょう！</CardTitle>
+                      <Typography component="p">
+                        あなたは、キャンプ場の管理人。どうぶつたちの集まるにぎやかなキャンプ場を作ります。イベントも盛りだくさん。
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>3 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>16</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <CardActions>
+                    <Link prefetch href="/a">
+                      <Button size="small" color="primary">
+                        どうぶつの森 ポケットキャンプ
+                      </Button>
+                    </Link>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.common.modalVideoOpenFunction('youtube', 'y-NkzONb2Bw')}>
+                    <CardMedia
+                      image="https://img.youtube.com/vi/y-NkzONb2Bw/mqdefault.jpg"
+                      title="マリオテニス エース"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                    <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>フレンド募集</CardTitle>
+                      <Typography component="p">
+                        Nintendo 公式チャンネル / マリオテニス エース 紹介映像
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>10 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>5</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <CardActions>
+                    <Link prefetch href="/a">
+                      <Button size="small" color="primary">
+                        マリオテニス エース
+                      </Button>
+                    </Link>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/game/639/thumbnail.jpg"
+                      title="アイスクライマー"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>アイスクライマー配信視聴者募集！</CardTitle>
+                      <Typography component="p">
+                        HEAVY RAIN やります！クリアしたけど超モヤモヤするので全エンディングをYouTubeで見ます。謎はすべて解けるのか？見てや！
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>12 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>80</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <CardActions>
+                    <Link prefetch href="/a">
+                      <Button size="small" color="primary">
+                        アイスクライマー
+                      </Button>
+                    </Link>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+              </Swiper>
+              
+            </CardBox>
           
           
-          
-          
-          
-          {/*<iframe width="560" height="315" src="https://www.youtube.com/embed/1yIHLQJNvDw" frameborder="0" allowfullscreen></iframe>
-          
-          <ContainerVideo>
-            <VideoIframe width="560" height="315" src="https://www.youtube.com/embed/1yIHLQJNvDw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen />
-          </ContainerVideo>*/}
-          
-          index.js<br />
+          {/*index.js<br />
           index.js<br />
           index.js<br />
           index.js<br />
@@ -478,8 +730,8 @@ class Component extends React.Component {
           index.js<br />
           
           
-          // 占い　マミ○　サヤカ●
-          // 1日目　言動が怪しかったから占いました
+          占い　マミ○　サヤカ●
+          1日目　言動が怪しかったから占いました*/}
           
           
           

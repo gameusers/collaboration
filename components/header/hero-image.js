@@ -4,14 +4,16 @@
 
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
 import IconKeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
+
+import LinkIcons from '../../components/link-icons';
 
 
 
@@ -75,25 +77,25 @@ const BoxDataLink = styled.div`
   padding: 5px 10px 0;
 `;
 
-const DivDataLinkForButton = styled.div`
-  margin: 0 12px 0 0;
-`;
+// const DivDataLinkForButton = styled.div`
+//   margin: 0 12px 0 0;
+// `;
 
-const DivDataLinkForImage = styled.div`
-  margin: 4px 12px 0 0;
-`;
+// const DivDataLinkForImage = styled.div`
+//   margin: 4px 12px 0 0;
+// `;
 
-const ADataLink = styled.a`
-  text-decoration: none;
-`;
+// const ADataLink = styled.a`
+//   text-decoration: none;
+// `;
 
-const ButtonDataLink = styled(Button)`
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: 12px !important;
-  min-width: 36px !important;
-  min-height: 20px !important;
-`;
+// const ButtonDataLink = styled(Button)`
+//   margin: 0 !important;
+//   padding: 0 !important;
+//   font-size: 12px !important;
+//   min-width: 36px !important;
+//   min-height: 20px !important;
+// `;
 
 
 
@@ -259,73 +261,73 @@ export default class extends React.Component {
     //   Data Link
     // --------------------------------------------------
     
-    let codeDataLinkArr = [];
+    // let codeDataLinkArr = [];
     
     
-    if (stores.header.dataLinkArr) {
+    // if (stores.header.dataLinkArr) {
       
-      stores.header.dataLinkArr.forEach((value, index) => {
+    //   stores.header.dataLinkArr.forEach((value, index) => {
         
-        if (value.type === 'Official') {
+    //     if (value.type === 'Official') {
           
-          codeDataLinkArr.push(
-            <DivDataLinkForButton key={index}>
-              <ADataLink href={value.url} target="_blank">
-                <ButtonDataLink
-                  variant="raised"
-                  color="secondary"
-                >
-                  公式
-                </ButtonDataLink>
-              </ADataLink>
-            </DivDataLinkForButton>
-          );
+    //       codeDataLinkArr.push(
+    //         <DivDataLinkForButton key={index}>
+    //           <ADataLink href={value.url} target="_blank">
+    //             <ButtonDataLink
+    //               variant="raised"
+    //               color="secondary"
+    //             >
+    //               公式
+    //             </ButtonDataLink>
+    //           </ADataLink>
+    //         </DivDataLinkForButton>
+    //       );
           
-        } else if (value.type === 'Twitter') {
+    //     } else if (value.type === 'Twitter') {
           
-          codeDataLinkArr.push(
-            <DivDataLinkForImage key={index}>
-              <ADataLink href={value.url} target="_blank">
-                <img src="/static/img/common/social/twitter@2x.png" width="20" height="20" />
-              </ADataLink>
-            </DivDataLinkForImage>
-          );
+    //       codeDataLinkArr.push(
+    //         <DivDataLinkForImage key={index}>
+    //           <ADataLink href={value.url} target="_blank">
+    //             <img src="/static/img/common/social/twitter@2x.png" width="20" height="20" />
+    //           </ADataLink>
+    //         </DivDataLinkForImage>
+    //       );
           
-        } else if (value.type === 'Facebook') {
+    //     } else if (value.type === 'Facebook') {
           
-          codeDataLinkArr.push(
-            <DivDataLinkForImage key={index}>
-              <ADataLink href={value.url} target="_blank">
-                <img src="/static/img/common/social/facebook@2x.png" width="20" height="20" />
-              </ADataLink>
-            </DivDataLinkForImage>
-          );
+    //       codeDataLinkArr.push(
+    //         <DivDataLinkForImage key={index}>
+    //           <ADataLink href={value.url} target="_blank">
+    //             <img src="/static/img/common/social/facebook@2x.png" width="20" height="20" />
+    //           </ADataLink>
+    //         </DivDataLinkForImage>
+    //       );
           
-        } else if (value.type === 'YouTube') {
+    //     } else if (value.type === 'YouTube') {
           
-          codeDataLinkArr.push(
-            <DivDataLinkForImage key={index}>
-              <ADataLink href={value.url} target="_blank">
-                <img src="/static/img/common/social/youtube@2x.png" width="20" height="20" />
-              </ADataLink>
-            </DivDataLinkForImage>
-          );
+    //       codeDataLinkArr.push(
+    //         <DivDataLinkForImage key={index}>
+    //           <ADataLink href={value.url} target="_blank">
+    //             <img src="/static/img/common/social/youtube@2x.png" width="20" height="20" />
+    //           </ADataLink>
+    //         </DivDataLinkForImage>
+    //       );
           
-        } else if (value.type === 'Steam') {
+    //     } else if (value.type === 'Steam') {
           
-          codeDataLinkArr.push(
-            <DivDataLinkForImage key={index}>
-              <ADataLink href={value.url} target="_blank">
-                <img src="/static/img/common/social/steam@2x.png" width="20" height="20" />
-              </ADataLink>
-            </DivDataLinkForImage>
-          );
+    //       codeDataLinkArr.push(
+    //         <DivDataLinkForImage key={index}>
+    //           <ADataLink href={value.url} target="_blank">
+    //             <img src="/static/img/common/social/steam@2x.png" width="20" height="20" />
+    //           </ADataLink>
+    //         </DivDataLinkForImage>
+    //       );
           
-        }
+    //     }
         
-      });
+    //   });
       
-    }
+    // }
     
     
     
@@ -347,7 +349,8 @@ export default class extends React.Component {
             <DataInfo>プレイ人数 | {stores.header.dataPlayersMax}</DataInfo>
             <DataInfo>発売日 | {stores.header.dataReleaseDate}</DataInfo>
             <DataInfo>開発 | {stores.header.dataDeveloper}</DataInfo>
-            <BoxDataLink>{codeDataLinkArr}</BoxDataLink>
+            <BoxDataLink><LinkIcons linkArr={stores.header.dataLinkArr} /></BoxDataLink>
+            {/*<BoxDataLink>{codeDataLinkArr}</BoxDataLink>*/}
           </BoxData>
         }
         

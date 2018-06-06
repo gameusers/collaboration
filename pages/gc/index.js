@@ -24,16 +24,18 @@ import Chip from '@material-ui/core/Chip';
 
 
 import IconSchedule from '@material-ui/icons/Schedule';
-import IconFolderOpen from '@material-ui/icons/FolderOpen';
+import IconStyle from '@material-ui/icons/Style';
 import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
 import IconAccountCircle from '@material-ui/icons/AccountCircle';
 import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
 import IconBusiness from '@material-ui/icons/Business';
+import IconMonetizationOn from '@material-ui/icons/MonetizationOn';
 
 import initStoreCommon from '../../stores/common';
 import initStoreHeader from '../../stores/header';
 
 import Layout from '../../components/layout';
+import LinkIcons from '../../components/link-icons';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -45,27 +47,72 @@ import withRoot from '../../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Container = styled.div`
-  padding: 10px 0 10px 10px;
+  padding: 10px;
+  
+  @media screen and (max-width: 480px) {
+    // padding: 10px 0 10px 0;
+  }
 `;
 
 const CardBox = styled.div`
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  // background-color: pink;
   // margin: 10px 0 0 0;
 `;
 
 const StyledCard = styled(Card)`
   display: flex;
   flex-flow: row nowrap;
-  margin: 0 14px 10px 0 !important;
-  min-width: 500px !important;
-  max-width: 500px !important;
-  // width: 300px !important;
+  // margin: 0 14px 10px 0 !important;
+  margin: 0 0 10px 0 !important;
+  // min-width: 500px !important;
+  // max-width: 500px !important;
+  min-width: 49% !important;
+  max-width: 49% !important;
   cursor: pointer !important;
+  
+  // @media screen and (max-width: 1020px) {
+  //   min-width: 50% !important;
+  //   max-width: 50% !important;
+  // }
+  
+  @media screen and (max-width: 768px) {
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  // @media screen and (max-width: 480px) {
+  //   min-width: 100% !important;
+  //   max-width: 100% !important;
+  // }
 `;
+
+// const StyledCard2 = styled(Card)`
+//   display: flex;
+//   flex-flow: row nowrap;
+//   margin: 0 14px 10px 0 !important;
+//   min-width: 300px !important;
+//   max-width: 300px !important;
+//   // width: 300px !important;
+//   cursor: pointer !important;
+// `;
+
 
 const CardMediaBox = styled.div`
   background-color: #ecf0f1;
+`;
+
+const StyledCardMedia = styled(CardMedia)`
+  width: 128px !important;
+  height: 128px !important;
+  
+  @media screen and (max-width: 480px) {
+    width: 64px !important;
+    height: 64px !important;
+  }
 `;
 
 const StyledCardContent = styled(CardContent)`
@@ -74,8 +121,9 @@ const StyledCardContent = styled(CardContent)`
 
 const CardTitle = styled.h3`
   font-size: 14px;
+  line-height: 1.6em;
   margin: 0 0 8px 0;
-  padding: 0 0 4px 0;
+  padding: 2px 0 6px 0;
   border-bottom: 1px solid #6E6E6E;
 `;
 
@@ -92,7 +140,7 @@ const CardInfoBox = styled.div`
   margin: 0 12px 0 0;
 `;
 
-const StyledIconFolderOpen = styled(IconFolderOpen)`
+const StyledIconStyle = styled(IconStyle)`
   font-size: 24px !important;
   margin: 1px 0 0 0 !important;
 `;
@@ -122,6 +170,11 @@ const StyledIconBusiness = styled(IconBusiness)`
   margin: 1px 0 0 0 !important;
 `;
 
+const StyledIconMonetizationOn = styled(IconMonetizationOn)`
+  font-size: 24px !important;
+  margin: 1px 0 0 0 !important;
+`;
+
 
 
 
@@ -131,20 +184,21 @@ const CardInfoText = styled.div`
   margin: 0 0 0 4px;
 `;
 
+const BoxLink = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 2px 0 0;
+`;
 
 const CardChipBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 6px 0 0 0;
+  margin: 10px 0 0 0;
 `;
 
-
-
-// const BoxDataLink = styled.div`
-//   display: flex;
-//   flex-flow: row wrap;
-//   padding: 5px 10px 0;
-// `;
+const StyledChip = styled(Chip)`
+  margin: 0 6px 4px 0 !important;
+`;
 
 
 
@@ -219,22 +273,26 @@ class Component extends React.Component {
               <StyledCard>
                 
                 <CardMediaBox>
-                  <CardMedia
+                  <StyledCardMedia
                     image="/static/img/sample/thumbnail-1.jpg"
                     title="Contemplative Reptile"
-                    style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
                   />
                 </CardMediaBox>
                 
                 
-                <Link prefetch href="/test">
-                  <StyledCardContent>
+                <StyledCardContent>
+                
+                  <Link prefetch href="/test">
                     <CardTitle>ダウンタウン熱血行進曲 それゆけ大運動会</CardTitle>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
                     
                     <CardInfoContainer>
                       
                       <CardInfoBox>
-                        <StyledIconFolderOpen />
+                        <StyledIconStyle />
                         <CardInfoText>アクション</CardInfoText>
                       </CardInfoBox>
                       
@@ -259,19 +317,105 @@ class Component extends React.Component {
                       </CardInfoBox>
                       
                       <CardInfoBox>
+                        <StyledIconMonetizationOn />
+                        <CardInfoText>2,400 円</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
                         <StyledIconBusiness />
                         <CardInfoText>Behaviour Interactive</CardInfoText>
                       </CardInfoBox>
                       
                     </CardInfoContainer>
                     
-                    <CardChipBox>
-                      <Chip label="くにおくん" style={{ margin: '0 6px 0 0' }} />
-                      <Chip label="ドッジボール" />
-                    </CardChipBox>
+                  </Link>
+                  
+                  
+                  <BoxLink>
+                    <LinkIcons linkArr={stores.header.dataLinkArr} />
+                  </BoxLink>
+                  
+                  <CardChipBox>
+                    <StyledChip label="くにおくん" />
+                    <StyledChip label="ドッジボール" />
+                  </CardChipBox>
+                  
+                </StyledCardContent>
+                
+              </StyledCard>
+              
+              
+              <StyledCard>
+                
+                <CardMediaBox>
+                  <StyledCardMedia
+                    image="https://gameusers.org/assets/img/game/650/thumbnail.jpg"
+                    title="HEAVY RAIN"
+                  />
+                </CardMediaBox>
+                
+                
+                <StyledCardContent>
+                
+                  <Link prefetch href="/test">
+                    <CardTitle>HEAVY RAIN - 心の軋むとき -</CardTitle>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
                     
-                  </StyledCardContent>
-                </Link>
+                    <CardInfoContainer>
+                      
+                      <CardInfoBox>
+                        <StyledIconStyle />
+                        <CardInfoText>アドベンチャー</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconSchedule />
+                        <CardInfoText>2010/2/18</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconVideogameAsset />
+                        <CardInfoText>PS3, PS4</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconAccountCircle />
+                        <CardInfoText>200 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconSupervisorAccount />
+                        <CardInfoText>1 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconMonetizationOn />
+                        <CardInfoText>5,690 円</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconBusiness />
+                        <CardInfoText>Quantic Dream</CardInfoText>
+                      </CardInfoBox>
+                      
+                    </CardInfoContainer>
+                    
+                  </Link>
+                  
+                  
+                  <BoxLink>
+                    <LinkIcons linkArr={stores.header.dataLinkArr} />
+                  </BoxLink>
+                  
+                  {/*<CardChipBox>
+                    <StyledChip label="くにおくん" />
+                    <StyledChip label="ドッジボール" />
+                  </CardChipBox>*/}
+                  
+                </StyledCardContent>
                 
               </StyledCard>
               

@@ -8,13 +8,28 @@ import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputLabel from '@material-ui/core/InputLabel';
+
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 import Card from '@material-ui/core/Card';
 // import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-// import Button from '@material-ui/core/Button';
-// import Typography from '@material-ui/core/Typography';
-// import Paper from '@material-ui/core/Paper';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
+
+
 
 // import Dialog from '@material-ui/core/Dialog';
 // import DialogTitle from '@material-ui/core/DialogTitle';
@@ -22,7 +37,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 
 import Chip from '@material-ui/core/Chip';
 
-
+import IconSearch from '@material-ui/icons/Search';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconStyle from '@material-ui/icons/Style';
 import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
@@ -33,6 +48,7 @@ import IconMonetizationOn from '@material-ui/icons/MonetizationOn';
 
 import initStoreCommon from '../../stores/common';
 import initStoreHeader from '../../stores/header';
+import initStoreGcIndex from '../../stores/gc/index';
 
 import Layout from '../../components/layout';
 import LinkIcons from '../../components/link-icons';
@@ -53,6 +69,51 @@ const Container = styled.div`
     // padding: 10px 0 10px 0;
   }
 `;
+
+
+
+
+
+const StyledPaper = styled(Paper)`
+  margin: 0 0 20px 0 !important;
+  padding: 16px 16px 0 16px !important;
+`;
+
+
+const SearchBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 8px 0 20px 0;
+`;
+
+const SearchTitle = styled.h2`
+  font-size: 18px;
+  margin: 0 0 16px 0;
+`;
+
+const TextFieldSearch = styled(TextField)`
+  flex-grow: 2 !important;
+  margin: 0 10px 0 0 !important;
+  // width: 80% !important;
+`;
+
+const FormBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-end;
+  margin: 0 0 0 0;
+`;
+
+const StyledFormControl = styled(FormControl)`
+  min-width: 120px !important;
+  margin: 0 10px 16px 0 !important;
+`;
+
+const ButtonDialog = styled(Button)`
+  margin: 0 0 16px 0 !important;
+`;
+
+
 
 const CardBox = styled.div`
   display: flex;
@@ -89,16 +150,6 @@ const StyledCard = styled(Card)`
   //   max-width: 100% !important;
   // }
 `;
-
-// const StyledCard2 = styled(Card)`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   margin: 0 14px 10px 0 !important;
-//   min-width: 300px !important;
-//   max-width: 300px !important;
-//   // width: 300px !important;
-//   cursor: pointer !important;
-// `;
 
 
 const CardMediaBox = styled.div`
@@ -230,6 +281,7 @@ class Component extends React.Component {
     this.stores = {
       common: initStoreCommon(props.isServer, props.pathname),
       header: initStoreHeader(props.isServer, props.pathname),
+      current: initStoreGcIndex(props.isServer, props.pathname),
       pathname: props.pathname
     };
     
@@ -268,6 +320,115 @@ class Component extends React.Component {
           
           <Container>
             
+            {/* 検索フォーム */}
+            <StyledPaper elevation={4}>
+            
+              <SearchTitle>ゲーム検索</SearchTitle>
+            
+              <SearchBox>
+                <TextFieldSearch
+                  placeholder="ゲーム名、メーカー名、タグを検索"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconSearch />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  color="secondary"
+                >
+                  検索
+                </Button>
+              </SearchBox>
+              
+              
+              <FormBox>
+              
+              <StyledFormControl>
+                <InputLabel htmlFor="age-simple">ジャンル</InputLabel>
+                <Select
+                  value="デザイン"
+                  // onChange={this.handleChange}
+                  inputProps={{
+                    name: 'age',
+                    id: 'age-simple',
+                  }}
+                >
+                  <MenuItem value="">
+                    <em></em>
+                  </MenuItem>
+                  <MenuItem value={10}>アクション</MenuItem>
+                  <MenuItem value={20}>スポーツ</MenuItem>
+                  <MenuItem value={30}>シミュレーション</MenuItem>
+                </Select>
+              </StyledFormControl>
+              
+              
+              <StyledFormControl>
+                <InputLabel htmlFor="age-simple">ハードウェア</InputLabel>
+                <Select
+                  value="デザイン"
+                  // onChange={this.handleChange}
+                  inputProps={{
+                    name: 'age',
+                    id: 'age-simple',
+                  }}
+                >
+                  <MenuItem value="">
+                    <em></em>
+                  </MenuItem>
+                  <MenuItem value={10}>PS4</MenuItem>
+                  <MenuItem value={20}>PS3</MenuItem>
+                  <MenuItem value={30}>Xbox One</MenuItem>
+                  <MenuItem value={30}>Nintendo Switch</MenuItem>
+                </Select>
+              </StyledFormControl>
+              
+              
+              <StyledFormControl>
+                <InputLabel htmlFor="age-simple">並び替え</InputLabel>
+                <Select
+                  value="新しい順"
+                  // onChange={this.handleChange}
+                  inputProps={{
+                    name: 'age',
+                    id: 'age-simple',
+                  }}
+                >
+                  <MenuItem value="">
+                    <em></em>
+                  </MenuItem>
+                  <MenuItem value={10}>更新 - 新しい</MenuItem>
+                  <MenuItem value={20}>更新 - 古い</MenuItem>
+                  <MenuItem value={20}>フォロー数 - 多い</MenuItem>
+                  <MenuItem value={20}>フォロー数 - 少ない</MenuItem>
+                  <MenuItem value={20}>発売日 - 新しい</MenuItem>
+                  <MenuItem value={20}>発売日 - 古い</MenuItem>
+                  <MenuItem value={20}>値段 - 高い</MenuItem>
+                  <MenuItem value={20}>値段 - 安い</MenuItem>
+                  <MenuItem value={20}>プレイ人数 - 多い</MenuItem>
+                  <MenuItem value={20}>プレイ人数 - 少ない</MenuItem>
+                </Select>
+              </StyledFormControl>
+              
+              
+              <ButtonDialog
+                variant="contained"
+                color="primary"
+                onClick={stores.current.dialogOpenFunction}
+              >
+                表示情報選択
+              </ButtonDialog>
+              
+              </FormBox>
+              
+            </StyledPaper>
+            
+            
+            
             <CardBox>
               
               <StyledCard>
@@ -292,6 +453,11 @@ class Component extends React.Component {
                     <CardInfoContainer>
                       
                       <CardInfoBox>
+                        <StyledIconAccountCircle />
+                        <CardInfoText>100 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
                         <StyledIconStyle />
                         <CardInfoText>アクション</CardInfoText>
                       </CardInfoBox>
@@ -304,11 +470,6 @@ class Component extends React.Component {
                       <CardInfoBox>
                         <StyledIconVideogameAsset />
                         <CardInfoText>PC, PS4, Xbox One</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconAccountCircle />
-                        <CardInfoText>100 人</CardInfoText>
                       </CardInfoBox>
                       
                       <CardInfoBox>
@@ -367,6 +528,11 @@ class Component extends React.Component {
                     <CardInfoContainer>
                       
                       <CardInfoBox>
+                        <StyledIconAccountCircle />
+                        <CardInfoText>200 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
                         <StyledIconStyle />
                         <CardInfoText>アドベンチャー</CardInfoText>
                       </CardInfoBox>
@@ -379,11 +545,6 @@ class Component extends React.Component {
                       <CardInfoBox>
                         <StyledIconVideogameAsset />
                         <CardInfoText>PS3, PS4</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconAccountCircle />
-                        <CardInfoText>200 人</CardInfoText>
                       </CardInfoBox>
                       
                       <CardInfoBox>
@@ -419,35 +580,172 @@ class Component extends React.Component {
                 
               </StyledCard>
               
+              
+              
+              <StyledCard>
+                
+                <CardMediaBox>
+                  <StyledCardMedia
+                    image="https://gameusers.org/assets/img/game/643/thumbnail.jpg"
+                    title="モンスターハンター：ワールド"
+                  />
+                </CardMediaBox>
+                
+                
+                <StyledCardContent>
+                
+                  <Link prefetch href="/test">
+                    <CardTitle>モンスターハンター：ワールド</CardTitle>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    
+                    <CardInfoContainer>
+                      
+                      <CardInfoBox>
+                        <StyledIconAccountCircle />
+                        <CardInfoText>1000 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconStyle />
+                        <CardInfoText>アクション</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconSchedule />
+                        <CardInfoText>2018/2/14</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconVideogameAsset />
+                        <CardInfoText>PS4, Xbox One</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconSupervisorAccount />
+                        <CardInfoText>1-4 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconMonetizationOn />
+                        <CardInfoText>8,240 円</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconBusiness />
+                        <CardInfoText>カプコン</CardInfoText>
+                      </CardInfoBox>
+                      
+                    </CardInfoContainer>
+                    
+                  </Link>
+                  
+                  
+                  <BoxLink>
+                    <LinkIcons linkArr={stores.header.dataLinkArr} />
+                  </BoxLink>
+                  
+                  <CardChipBox>
+                    <StyledChip label="モンハン" />
+                  </CardChipBox>
+                  
+                </StyledCardContent>
+                
+              </StyledCard>
+              
+              
+              <StyledCard>
+                
+                <CardMediaBox>
+                  <StyledCardMedia
+                    image="https://gameusers.org/assets/img/game/486/thumbnail.jpg"
+                    title="地球防衛軍5"
+                  />
+                </CardMediaBox>
+                
+                
+                <StyledCardContent>
+                
+                  <Link prefetch href="/test">
+                    <CardTitle>地球防衛軍5</CardTitle>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    
+                    <CardInfoContainer>
+                      
+                      <CardInfoBox>
+                        <StyledIconAccountCircle />
+                        <CardInfoText>300 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconStyle />
+                        <CardInfoText>アクション</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconSchedule />
+                        <CardInfoText>2017/5/10</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconVideogameAsset />
+                        <CardInfoText>PC, PS4, Xbox One</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconSupervisorAccount />
+                        <CardInfoText>1-4 人</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconMonetizationOn />
+                        <CardInfoText>7,980 円</CardInfoText>
+                      </CardInfoBox>
+                      
+                      <CardInfoBox>
+                        <StyledIconBusiness />
+                        <CardInfoText>サンドロット</CardInfoText>
+                      </CardInfoBox>
+                      
+                    </CardInfoContainer>
+                    
+                  </Link>
+                  
+                  
+                  <BoxLink>
+                    <LinkIcons linkArr={stores.header.dataLinkArr} />
+                  </BoxLink>
+                  
+                  <CardChipBox>
+                    <StyledChip label="EDF" />
+                  </CardChipBox>
+                  
+                </StyledCardContent>
+                
+              </StyledCard>
+              
+              
             </CardBox>
             
             
-            {/*<Card className={classes.card}>
-        <div className={classes.details}>
-          <CardContent className={classes.content}>
-            <Typography variant="headline">Live From Space</Typography>
-            <Typography variant="subheading" color="textSecondary">
-              Mac Miller
-            </Typography>
-          </CardContent>
-          <div className={classes.controls}>
-            <IconButton aria-label="Previous">
-              {theme.direction === 'rtl' ? <SkipNextIcon /> : <SkipPreviousIcon />}
-            </IconButton>
-            <IconButton aria-label="Play/pause">
-              <PlayArrowIcon className={classes.playIcon} />
-            </IconButton>
-            <IconButton aria-label="Next">
-              {theme.direction === 'rtl' ? <SkipPreviousIcon /> : <SkipNextIcon />}
-            </IconButton>
-          </div>
-        </div>
-        <CardMedia
-          className={classes.cover}
-          image="/static/images/cards/live-from-space.jpg"
-          title="Live from space album cover"
-        />
-      </Card>*/}
+            
+            <Dialog
+              open={stores.current.dialogOpen}
+              onClose={stores.current.dialogCloseFunction}
+            >
+              <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle>
+              <div>
+                AAA
+              </div>
+            </Dialog>
+            
+            
+            
             gc/index.js
             
             

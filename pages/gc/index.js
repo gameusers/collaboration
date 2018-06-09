@@ -16,6 +16,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import Card from '@material-ui/core/Card';
 // import CardActions from '@material-ui/core/CardActions';
@@ -38,10 +40,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Chip from '@material-ui/core/Chip';
 
 import IconSearch from '@material-ui/icons/Search';
-import IconSchedule from '@material-ui/icons/Schedule';
-import IconStyle from '@material-ui/icons/Style';
-import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
 import IconAccountCircle from '@material-ui/icons/AccountCircle';
+import IconStyle from '@material-ui/icons/Style';
+import IconSchedule from '@material-ui/icons/Schedule';
+import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
 import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
 import IconBusiness from '@material-ui/icons/Business';
 import IconMonetizationOn from '@material-ui/icons/MonetizationOn';
@@ -119,7 +121,7 @@ const CardBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  align-items: flex-start;
+  // align-items: flex-start;
   // background-color: pink;
   // margin: 10px 0 0 0;
 `;
@@ -127,10 +129,7 @@ const CardBox = styled.div`
 const StyledCard = styled(Card)`
   display: flex;
   flex-flow: row nowrap;
-  // margin: 0 14px 10px 0 !important;
-  margin: 0 0 10px 0 !important;
-  // min-width: 500px !important;
-  // max-width: 500px !important;
+  margin: 0 0 12px 0 !important;
   min-width: 49% !important;
   max-width: 49% !important;
   cursor: pointer !important;
@@ -307,6 +306,135 @@ class Component extends React.Component {
     
     
     
+    // --------------------------------------------------
+    //   Game Cards
+    // --------------------------------------------------
+    
+    let codeArr = [];
+    
+    if (stores.current.gamesArr) {
+      
+      stores.current.gamesArr.forEach((value, index) => {
+        
+        
+        // --------------------------------------------------
+        //  Tags
+        // --------------------------------------------------
+        
+        let codeTagArr = [];
+        let codeTagChipArr = [];
+        
+        if (stores.current.tagShow && value.tagArr.length > 0) {
+          
+          value.tagArr.forEach((value2, index2) => {
+            codeTagChipArr.push(<StyledChip label={value2} key={index2} />);
+          });
+          
+          codeTagArr.push(
+            <CardChipBox>
+              {codeTagChipArr}
+            </CardChipBox>
+          );
+          
+        }
+        
+        
+        codeArr.push(
+          <StyledCard key={index}>
+            
+            <Link prefetch href={value.link}>
+            <CardMediaBox>
+              <StyledCardMedia
+                image={value.thumbnail}
+                title={value.name}
+              />
+            </CardMediaBox>
+            </Link>
+            
+            
+            <StyledCardContent>
+            
+              <Link prefetch href={value.link}>
+                <CardTitle>{value.name}</CardTitle>
+              </Link>
+              
+              
+              <Link prefetch href={value.link}>
+                
+                <CardInfoContainer>
+                  
+                  {stores.current.followersShow &&
+                    <CardInfoBox>
+                      <StyledIconAccountCircle />
+                      <CardInfoText>{value.followers}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                  {stores.current.categoryShow &&
+                    <CardInfoBox>
+                      <StyledIconStyle />
+                      <CardInfoText>{value.category}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                  {stores.current.releaseDateShow &&
+                    <CardInfoBox>
+                      <StyledIconSchedule />
+                      <CardInfoText>{value.releaseDate}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                  {stores.current.priceShow &&
+                    <CardInfoBox>
+                      <StyledIconMonetizationOn />
+                      <CardInfoText>{value.price}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                  {stores.current.playersShow &&
+                    <CardInfoBox>
+                      <StyledIconSupervisorAccount />
+                      <CardInfoText>{value.players}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                  {stores.current.hardwareShow &&
+                    <CardInfoBox>
+                      <StyledIconVideogameAsset />
+                      <CardInfoText>{value.hardware}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                  {stores.current.developerShow &&
+                    <CardInfoBox>
+                      <StyledIconBusiness />
+                      <CardInfoText>{value.developer}</CardInfoText>
+                    </CardInfoBox>
+                  }
+                  
+                </CardInfoContainer>
+                
+              </Link>
+              
+              {stores.current.linkShow &&
+                <BoxLink>
+                  <LinkIcons linkArr={value.linkArr} />
+                </BoxLink>
+              }
+              
+              {codeTagArr}
+              
+            </StyledCardContent>
+            
+          </StyledCard>
+        );
+        
+      });
+      
+    }
+    
+    
+    
     return (
       <Provider stores={this.stores}>
       
@@ -320,11 +448,12 @@ class Component extends React.Component {
           
           <Container>
             
-            {/* 検索フォーム */}
+            {/* ゲーム検索 */}
             <StyledPaper elevation={4}>
             
               <SearchTitle>ゲーム検索</SearchTitle>
-            
+              
+              {/* ゲーム検索フォーム */}
               <SearchBox>
                 <TextFieldSearch
                   placeholder="ゲーム名、メーカー名、タグを検索"
@@ -345,93 +474,99 @@ class Component extends React.Component {
               </SearchBox>
               
               
+              {/* カテゴリー・ハードウェア・並び替え */}
               <FormBox>
-              
-              <StyledFormControl>
-                <InputLabel htmlFor="age-simple">ジャンル</InputLabel>
-                <Select
-                  value="デザイン"
-                  // onChange={this.handleChange}
-                  inputProps={{
-                    name: 'age',
-                    id: 'age-simple',
-                  }}
+                
+                {/* カテゴリー */}
+                <StyledFormControl>
+                  <InputLabel htmlFor="age-simple">カテゴリー</InputLabel>
+                  <Select
+                    value="デザイン"
+                    // onChange={this.handleChange}
+                    inputProps={{
+                      name: 'age',
+                      id: 'age-simple',
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em></em>
+                    </MenuItem>
+                    <MenuItem value={10}>アクション</MenuItem>
+                    <MenuItem value={20}>スポーツ</MenuItem>
+                    <MenuItem value={30}>シミュレーション</MenuItem>
+                  </Select>
+                </StyledFormControl>
+                
+                
+                {/* ハードウェア */}
+                <StyledFormControl>
+                  <InputLabel htmlFor="age-simple">ハードウェア</InputLabel>
+                  <Select
+                    value="デザイン"
+                    // onChange={this.handleChange}
+                    inputProps={{
+                      name: 'age',
+                      id: 'age-simple',
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em></em>
+                    </MenuItem>
+                    <MenuItem value={10}>PS4</MenuItem>
+                    <MenuItem value={20}>PS3</MenuItem>
+                    <MenuItem value={30}>Xbox One</MenuItem>
+                    <MenuItem value={30}>Nintendo Switch</MenuItem>
+                  </Select>
+                </StyledFormControl>
+                
+                
+                {/* 並び替え */}
+                <StyledFormControl>
+                  <InputLabel htmlFor="age-simple">並び替え</InputLabel>
+                  <Select
+                    value="新しい順"
+                    // onChange={this.handleChange}
+                    inputProps={{
+                      name: 'age',
+                      id: 'age-simple',
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em></em>
+                    </MenuItem>
+                    <MenuItem value={10}>更新 - 新しい</MenuItem>
+                    <MenuItem value={20}>更新 - 古い</MenuItem>
+                    <MenuItem value={20}>フォロー数 - 多い</MenuItem>
+                    <MenuItem value={20}>フォロー数 - 少ない</MenuItem>
+                    <MenuItem value={20}>発売日 - 新しい</MenuItem>
+                    <MenuItem value={20}>発売日 - 古い</MenuItem>
+                    <MenuItem value={20}>値段 - 高い</MenuItem>
+                    <MenuItem value={20}>値段 - 安い</MenuItem>
+                    <MenuItem value={20}>プレイ人数 - 多い</MenuItem>
+                    <MenuItem value={20}>プレイ人数 - 少ない</MenuItem>
+                  </Select>
+                </StyledFormControl>
+                
+                
+                <ButtonDialog
+                  variant="contained"
+                  color="primary"
+                  onClick={stores.current.dialogOpenFunction}
                 >
-                  <MenuItem value="">
-                    <em></em>
-                  </MenuItem>
-                  <MenuItem value={10}>アクション</MenuItem>
-                  <MenuItem value={20}>スポーツ</MenuItem>
-                  <MenuItem value={30}>シミュレーション</MenuItem>
-                </Select>
-              </StyledFormControl>
-              
-              
-              <StyledFormControl>
-                <InputLabel htmlFor="age-simple">ハードウェア</InputLabel>
-                <Select
-                  value="デザイン"
-                  // onChange={this.handleChange}
-                  inputProps={{
-                    name: 'age',
-                    id: 'age-simple',
-                  }}
-                >
-                  <MenuItem value="">
-                    <em></em>
-                  </MenuItem>
-                  <MenuItem value={10}>PS4</MenuItem>
-                  <MenuItem value={20}>PS3</MenuItem>
-                  <MenuItem value={30}>Xbox One</MenuItem>
-                  <MenuItem value={30}>Nintendo Switch</MenuItem>
-                </Select>
-              </StyledFormControl>
-              
-              
-              <StyledFormControl>
-                <InputLabel htmlFor="age-simple">並び替え</InputLabel>
-                <Select
-                  value="新しい順"
-                  // onChange={this.handleChange}
-                  inputProps={{
-                    name: 'age',
-                    id: 'age-simple',
-                  }}
-                >
-                  <MenuItem value="">
-                    <em></em>
-                  </MenuItem>
-                  <MenuItem value={10}>更新 - 新しい</MenuItem>
-                  <MenuItem value={20}>更新 - 古い</MenuItem>
-                  <MenuItem value={20}>フォロー数 - 多い</MenuItem>
-                  <MenuItem value={20}>フォロー数 - 少ない</MenuItem>
-                  <MenuItem value={20}>発売日 - 新しい</MenuItem>
-                  <MenuItem value={20}>発売日 - 古い</MenuItem>
-                  <MenuItem value={20}>値段 - 高い</MenuItem>
-                  <MenuItem value={20}>値段 - 安い</MenuItem>
-                  <MenuItem value={20}>プレイ人数 - 多い</MenuItem>
-                  <MenuItem value={20}>プレイ人数 - 少ない</MenuItem>
-                </Select>
-              </StyledFormControl>
-              
-              
-              <ButtonDialog
-                variant="contained"
-                color="primary"
-                onClick={stores.current.dialogOpenFunction}
-              >
-                表示情報選択
-              </ButtonDialog>
-              
+                  表示情報選択
+                </ButtonDialog>
+                
               </FormBox>
               
             </StyledPaper>
             
             
             
+            {/* ゲーム一覧 - カード */}
             <CardBox>
+              {codeArr}
               
-              <StyledCard>
+              {/*<StyledCard>
                 
                 <CardMediaBox>
                   <StyledCardMedia
@@ -571,10 +706,6 @@ class Component extends React.Component {
                     <LinkIcons linkArr={stores.header.dataLinkArr} />
                   </BoxLink>
                   
-                  {/*<CardChipBox>
-                    <StyledChip label="くにおくん" />
-                    <StyledChip label="ドッジボール" />
-                  </CardChipBox>*/}
                   
                 </StyledCardContent>
                 
@@ -727,21 +858,112 @@ class Component extends React.Component {
                   
                 </StyledCardContent>
                 
-              </StyledCard>
+              </StyledCard>*/}
               
               
             </CardBox>
             
             
             
+            {/* 表示情報選択ダイアログ */}
             <Dialog
               open={stores.current.dialogOpen}
               onClose={stores.current.dialogCloseFunction}
             >
-              <DialogTitle id="simple-dialog-title">Set backup account</DialogTitle>
-              <div>
-                AAA
-              </div>
+              <DialogTitle>表示情報選択</DialogTitle>
+              <DialogContent>
+              
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.followersShow}
+                      onChange={stores.current.followersChangeFunction}
+                    />
+                  }
+                  label="フォロー数"
+                />
+              
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.categoryShow}
+                      onChange={stores.current.categoryChangeFunction}
+                    />
+                  }
+                  label="カテゴリー"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.releaseDateShow}
+                      onChange={stores.current.releaseDateChangeFunction}
+                    />
+                  }
+                  label="発売日"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.priceShow}
+                      onChange={stores.current.priceChangeFunction}
+                    />
+                  }
+                  label="値段"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.playersShow}
+                      onChange={stores.current.playersChangeFunction}
+                    />
+                  }
+                  label="プレイ人数"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.hardwareShow}
+                      onChange={stores.current.hardwareChangeFunction}
+                    />
+                  }
+                  label="ハードウェア"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.developerShow}
+                      onChange={stores.current.developerChangeFunction}
+                    />
+                  }
+                  label="開発"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.linkShow}
+                      onChange={stores.current.linkChangeFunction}
+                    />
+                  }
+                  label="リンク"
+                />
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.tagShow}
+                      onChange={stores.current.tagChangeFunction}
+                    />
+                  }
+                  label="タグ"
+                />
+                
+              </DialogContent>
             </Dialog>
             
             

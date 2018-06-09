@@ -16,16 +16,9 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-// import Paper from '@material-ui/core/Paper';
-
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogTitle from '@material-ui/core/DialogTitle';
-// import DialogContent from '@material-ui/core/DialogContent';
-
 
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
-// import IconGames from '@material-ui/icons/Details';
 
 import initStoreCommon from '../stores/common';
 import initStoreHeader from '../stores/header';
@@ -74,12 +67,12 @@ const CardCategory = styled.h2`
   pointer-events: none;
 `;
 
-const CategoryTitle = styled.h2`
-  // color: green;
-  font-size: 20px;
-  font-weight: normal;
-  padding: 0 0 10px 0;
-`;
+// const CategoryTitle = styled.h2`
+//   // color: green;
+//   font-size: 20px;
+//   font-weight: normal;
+//   padding: 0 0 10px 0;
+// `;
 
 
 
@@ -216,8 +209,6 @@ class Component extends React.Component {
       pagination: {
         el: '.swiper-pagination',
         clickable: false,
-        // type: 'progressbar',
-        // progressbarOpposite: true,
       }
     };
     
@@ -235,7 +226,7 @@ class Component extends React.Component {
             
             
           <CardBox>
-              
+            
             <CardCategory>BBS</CardCategory>
             
             <Swiper {...params} style={{ margin: '0 0 10px 0' }}>

@@ -219,7 +219,7 @@ class Component extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>index.js</title>
+            <title>Game Users</title>
           </Head>
         
           <Container>

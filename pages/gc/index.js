@@ -25,17 +25,10 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
+// import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
-
-
-
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogTitle from '@material-ui/core/DialogTitle';
-// import DialogContent from '@material-ui/core/DialogContent';
 
 import Chip from '@material-ui/core/Chip';
 
@@ -51,6 +44,8 @@ import IconMonetizationOn from '@material-ui/icons/MonetizationOn';
 import initStoreCommon from '../../stores/common';
 import initStoreHeader from '../../stores/header';
 import initStoreGcIndex from '../../stores/gc/index';
+
+import Pagination from 'rc-pagination';
 
 import Layout from '../../components/layout';
 import LinkIcons from '../../components/link-icons';
@@ -252,11 +247,17 @@ const StyledChip = styled(Chip)`
 
 
 
+const PaginationBox = styled.div`
+  margin: 10px 0 10px 0;
+  padding: 0;
+`;
+
+
 
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://35.203.143.160:8080/gc
 // --------------------------------------------------
 
 @observer
@@ -442,18 +443,18 @@ class Component extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>ゲーム</title>
+            <title>ゲームコミュニティ</title>
           </Head>
           
           
           <Container>
             
-            {/* ゲーム検索 */}
+            {/* ゲームコミュニティ検索 */}
             <StyledPaper elevation={4}>
             
-              <SearchTitle>ゲーム検索</SearchTitle>
+              <SearchTitle>ゲームコミュニティ検索</SearchTitle>
               
-              {/* ゲーム検索フォーム */}
+              {/* ゲームコミュニティ検索フォーム */}
               <SearchBox>
                 <TextFieldSearch
                   placeholder="ゲーム名、メーカー名、タグを検索"
@@ -548,6 +549,7 @@ class Component extends React.Component {
                 </StyledFormControl>
                 
                 
+                {/* 表示情報選択 */}
                 <ButtonDialog
                   variant="contained"
                   color="primary"
@@ -565,304 +567,18 @@ class Component extends React.Component {
             {/* ゲーム一覧 - カード */}
             <CardBox>
               {codeArr}
-              
-              {/*<StyledCard>
-                
-                <CardMediaBox>
-                  <StyledCardMedia
-                    image="/static/img/sample/thumbnail-1.jpg"
-                    title="Contemplative Reptile"
-                  />
-                </CardMediaBox>
-                
-                
-                <StyledCardContent>
-                
-                  <Link prefetch href="/test">
-                    <CardTitle>ダウンタウン熱血行進曲 それゆけ大運動会</CardTitle>
-                  </Link>
-                  
-                  
-                  <Link prefetch href="/test">
-                    
-                    <CardInfoContainer>
-                      
-                      <CardInfoBox>
-                        <StyledIconAccountCircle />
-                        <CardInfoText>100 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconStyle />
-                        <CardInfoText>アクション</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSchedule />
-                        <CardInfoText>2016/6/14</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconVideogameAsset />
-                        <CardInfoText>PC, PS4, Xbox One</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSupervisorAccount />
-                        <CardInfoText>1-5 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconMonetizationOn />
-                        <CardInfoText>2,400 円</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconBusiness />
-                        <CardInfoText>Behaviour Interactive</CardInfoText>
-                      </CardInfoBox>
-                      
-                    </CardInfoContainer>
-                    
-                  </Link>
-                  
-                  
-                  <BoxLink>
-                    <LinkIcons linkArr={stores.header.dataLinkArr} />
-                  </BoxLink>
-                  
-                  <CardChipBox>
-                    <StyledChip label="くにおくん" />
-                    <StyledChip label="ドッジボール" />
-                  </CardChipBox>
-                  
-                </StyledCardContent>
-                
-              </StyledCard>
-              
-              
-              <StyledCard>
-                
-                <CardMediaBox>
-                  <StyledCardMedia
-                    image="https://gameusers.org/assets/img/game/650/thumbnail.jpg"
-                    title="HEAVY RAIN"
-                  />
-                </CardMediaBox>
-                
-                
-                <StyledCardContent>
-                
-                  <Link prefetch href="/test">
-                    <CardTitle>HEAVY RAIN - 心の軋むとき -</CardTitle>
-                  </Link>
-                  
-                  
-                  <Link prefetch href="/test">
-                    
-                    <CardInfoContainer>
-                      
-                      <CardInfoBox>
-                        <StyledIconAccountCircle />
-                        <CardInfoText>200 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconStyle />
-                        <CardInfoText>アドベンチャー</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSchedule />
-                        <CardInfoText>2010/2/18</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconVideogameAsset />
-                        <CardInfoText>PS3, PS4</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSupervisorAccount />
-                        <CardInfoText>1 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconMonetizationOn />
-                        <CardInfoText>5,690 円</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconBusiness />
-                        <CardInfoText>Quantic Dream</CardInfoText>
-                      </CardInfoBox>
-                      
-                    </CardInfoContainer>
-                    
-                  </Link>
-                  
-                  
-                  <BoxLink>
-                    <LinkIcons linkArr={stores.header.dataLinkArr} />
-                  </BoxLink>
-                  
-                  
-                </StyledCardContent>
-                
-              </StyledCard>
-              
-              
-              
-              <StyledCard>
-                
-                <CardMediaBox>
-                  <StyledCardMedia
-                    image="https://gameusers.org/assets/img/game/643/thumbnail.jpg"
-                    title="モンスターハンター：ワールド"
-                  />
-                </CardMediaBox>
-                
-                
-                <StyledCardContent>
-                
-                  <Link prefetch href="/test">
-                    <CardTitle>モンスターハンター：ワールド</CardTitle>
-                  </Link>
-                  
-                  
-                  <Link prefetch href="/test">
-                    
-                    <CardInfoContainer>
-                      
-                      <CardInfoBox>
-                        <StyledIconAccountCircle />
-                        <CardInfoText>1000 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconStyle />
-                        <CardInfoText>アクション</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSchedule />
-                        <CardInfoText>2018/2/14</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconVideogameAsset />
-                        <CardInfoText>PS4, Xbox One</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSupervisorAccount />
-                        <CardInfoText>1-4 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconMonetizationOn />
-                        <CardInfoText>8,240 円</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconBusiness />
-                        <CardInfoText>カプコン</CardInfoText>
-                      </CardInfoBox>
-                      
-                    </CardInfoContainer>
-                    
-                  </Link>
-                  
-                  
-                  <BoxLink>
-                    <LinkIcons linkArr={stores.header.dataLinkArr} />
-                  </BoxLink>
-                  
-                  <CardChipBox>
-                    <StyledChip label="モンハン" />
-                  </CardChipBox>
-                  
-                </StyledCardContent>
-                
-              </StyledCard>
-              
-              
-              <StyledCard>
-                
-                <CardMediaBox>
-                  <StyledCardMedia
-                    image="https://gameusers.org/assets/img/game/486/thumbnail.jpg"
-                    title="地球防衛軍5"
-                  />
-                </CardMediaBox>
-                
-                
-                <StyledCardContent>
-                
-                  <Link prefetch href="/test">
-                    <CardTitle>地球防衛軍5</CardTitle>
-                  </Link>
-                  
-                  
-                  <Link prefetch href="/test">
-                    
-                    <CardInfoContainer>
-                      
-                      <CardInfoBox>
-                        <StyledIconAccountCircle />
-                        <CardInfoText>300 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconStyle />
-                        <CardInfoText>アクション</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSchedule />
-                        <CardInfoText>2017/5/10</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconVideogameAsset />
-                        <CardInfoText>PC, PS4, Xbox One</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconSupervisorAccount />
-                        <CardInfoText>1-4 人</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconMonetizationOn />
-                        <CardInfoText>7,980 円</CardInfoText>
-                      </CardInfoBox>
-                      
-                      <CardInfoBox>
-                        <StyledIconBusiness />
-                        <CardInfoText>サンドロット</CardInfoText>
-                      </CardInfoBox>
-                      
-                    </CardInfoContainer>
-                    
-                  </Link>
-                  
-                  
-                  <BoxLink>
-                    <LinkIcons linkArr={stores.header.dataLinkArr} />
-                  </BoxLink>
-                  
-                  <CardChipBox>
-                    <StyledChip label="EDF" />
-                  </CardChipBox>
-                  
-                </StyledCardContent>
-                
-              </StyledCard>*/}
-              
-              
             </CardBox>
             
+            
+            {/* Pagination */}
+            <PaginationBox>
+              <Pagination
+                onChange={stores.current.pageChangeFunction}
+                current={stores.current.paginationCurrent}
+                total={stores.current.paginationTotal}
+                pageSize={stores.current.paginationPageSize}
+              />
+            </PaginationBox>
             
             
             {/* 表示情報選択ダイアログ */}
@@ -965,11 +681,6 @@ class Component extends React.Component {
                 
               </DialogContent>
             </Dialog>
-            
-            
-            
-            gc/index.js
-            
             
           </Container>
           

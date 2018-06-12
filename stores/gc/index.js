@@ -137,6 +137,22 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Pagination
+  // ---------------------------------------------
+  
+  @observable paginationCurrent = 1;
+  @observable paginationTotal = 100;
+  @observable paginationPageSize = 10;
+  
+  
+  @action.bound
+  pageChangeFunction(page) {
+    this.paginationCurrent = page;
+  };
+  
+  
+  
+  // ---------------------------------------------
   //   ゲーム情報
   // ---------------------------------------------
   

@@ -42,6 +42,7 @@ class Store {
   //   表示情報選択項目
   // ---------------------------------------------
   
+  @observable descriptionShow = true;
   @observable membersShow = true;
   @observable updatedDateShow = true;
   @observable createdDateShow = true;
@@ -49,6 +50,15 @@ class Store {
   @observable gameShow = true;
   @observable tagShow = true;
   
+  
+  @action.bound
+  descriptionChangeFunction() {
+    if (this.descriptionShow) {
+      this.descriptionShow = false;
+    } else {
+      this.descriptionShow = true;
+    }
+  };
   
   @action.bound
   membersChangeFunction() {
@@ -123,7 +133,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   ゲーム情報
+  //   ユーザーコミュニティ情報
   // ---------------------------------------------
   
   @observable gamesArr = [

@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+import Pagination from 'rc-pagination';
 
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -14,42 +15,30 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
-
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-
+import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
-// import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
-import Chip from '@material-ui/core/Chip';
-
 import IconSearch from '@material-ui/icons/Search';
 import IconAccountCircle from '@material-ui/icons/AccountCircle';
-import IconAutorenew from '@material-ui/icons/Refresh';
+import IconRefresh from '@material-ui/icons/Refresh';
 import IconSchedule from '@material-ui/icons/Schedule';
-import IconGames from '@material-ui/icons/Games';
+import IconLaunch from '@material-ui/icons/Launch';
 import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
-import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
-import IconBusiness from '@material-ui/icons/Business';
-import IconMonetizationOn from '@material-ui/icons/WebAsset';
 
-import initStoreCommon from '../../stores/common';
-import initStoreHeader from '../../stores/header';
+import initStoreCommon from '../../applications/common/stores/common';
+import initStoreHeader from '../../applications/common/stores/header';
 import initStoreUcIndex from '../../applications/uc/index/stores/store';
 
-import Pagination from 'rc-pagination';
-
-import Layout from '../../components/layout';
-import LinkIcons from '../../components/link-icons';
+import Layout from '../../applications/common/components/layout';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -62,21 +51,17 @@ import withRoot from '../../lib/material-ui/withRoot';
 
 const Container = styled.div`
   padding: 10px;
-  
-  @media screen and (max-width: 480px) {
-    // padding: 10px 0 10px 0;
-  }
 `;
 
 
+// ---------------------------------------------
+//   ゲームコミュニティ検索
+// ---------------------------------------------
 
-
-
-const StyledPaper = styled(Paper)`
+const PaperSearch = styled(Paper)`
   margin: 0 0 20px 0 !important;
   padding: 16px 16px 0 16px !important;
 `;
-
 
 const SearchBox = styled.div`
   display: flex;
@@ -112,14 +97,14 @@ const ButtonDialog = styled(Button)`
 `;
 
 
+// ---------------------------------------------
+//   Card
+// ---------------------------------------------
 
 const CardBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
-  // align-items: flex-start;
-  // background-color: pink;
-  // margin: 10px 0 0 0;
 `;
 
 const StyledCard = styled(Card)`
@@ -127,10 +112,8 @@ const StyledCard = styled(Card)`
   flex-flow: row nowrap;
   margin: 0 0 12px 0 !important;
   min-width: 100% !important;
-  // max-width: 49% !important;
   cursor: pointer !important;
 `;
-
 
 const CardMediaBox = styled.div`
   background-color: #ecf0f1;
@@ -177,7 +160,13 @@ const CardInfoBox = styled.div`
   margin: 0 12px 0 0;
 `;
 
-const StyledIconAutorenew = styled(IconAutorenew)`
+
+const StyledIconAccountCircle = styled(IconAccountCircle)`
+  font-size: 24px !important;
+  margin: 1px 0 0 0 !important;
+`;
+
+const StyledIconRefresh = styled(IconRefresh)`
   font-size: 24px !important;
   margin: 1px 0 0 0 !important;
 `;
@@ -187,12 +176,7 @@ const StyledIconSchedule = styled(IconSchedule)`
   margin: 1px 0 0 0 !important;
 `;
 
-const StyledIconAccountCircle = styled(IconAccountCircle)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
-`;
-
-const StyledIconMonetizationOn = styled(IconMonetizationOn)`
+const StyledIconLaunch = styled(IconLaunch)`
   font-size: 24px !important;
   margin: 1px 0 0 0 !important;
 `;
@@ -202,24 +186,10 @@ const StyledIconVideogameAsset = styled(IconVideogameAsset)`
   margin: 1px 0 0 0 !important;
 `;
 
-const StyledIconGames = styled(IconGames)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
-`;
-
-
-
-
 
 const CardInfoText = styled.div`
   font-size: 12px;
   margin: 0 0 0 4px;
-`;
-
-const BoxLink = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 2px 0 0;
 `;
 
 const CardChipBox = styled.div`
@@ -233,6 +203,9 @@ const StyledChip = styled(Chip)`
 `;
 
 
+// ---------------------------------------------
+//   Pagination
+// ---------------------------------------------
 
 const PaginationBox = styled.div`
   margin: 10px 0 10px 0;
@@ -244,7 +217,7 @@ const PaginationBox = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/gc
+//   URL: http://35.203.143.160:8080/uc
 // --------------------------------------------------
 
 @observer
@@ -346,9 +319,11 @@ class Component extends React.Component {
                 <CardTitle>{value.name}</CardTitle>
               </Link>
               
-              <CardDescriptionBox>
-                {value.description}
-              </CardDescriptionBox>
+              {stores.current.descriptionShow &&
+                <CardDescriptionBox>
+                  {value.description}
+                </CardDescriptionBox>
+              }
               
               <Link prefetch href={value.link}>
                 
@@ -363,7 +338,7 @@ class Component extends React.Component {
                   
                   {stores.current.updatedDateShow &&
                     <CardInfoBox>
-                      <StyledIconAutorenew />
+                      <StyledIconRefresh />
                       <CardInfoText>{value.updatedDate}</CardInfoText>
                     </CardInfoBox>
                   }
@@ -377,7 +352,7 @@ class Component extends React.Component {
                   
                   {stores.current.typeShow &&
                     <CardInfoBox>
-                      <StyledIconMonetizationOn />
+                      <StyledIconLaunch />
                       <CardInfoText>{value.type}</CardInfoText>
                     </CardInfoBox>
                   }
@@ -405,6 +380,9 @@ class Component extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
     
     return (
       <Provider stores={this.stores}>
@@ -420,11 +398,11 @@ class Component extends React.Component {
           <Container>
             
             {/* ユーザーコミュニティ検索 */}
-            <StyledPaper elevation={4}>
+            <PaperSearch elevation={4}>
             
               <SearchTitle>ユーザーコミュニティ検索</SearchTitle>
               
-              {/* ユーザーコミュニティ検索フォーム */}
+              {/* 検索フォーム */}
               <SearchBox>
                 <TextFieldSearch
                   placeholder="コミュニティ名、ゲーム名、タグを検索"
@@ -445,7 +423,7 @@ class Component extends React.Component {
               </SearchBox>
               
               
-              {/* カテゴリー・ハードウェア・並び替え */}
+              {/* 並び替え */}
               <FormBox>
                 
                 {/* 並び替え */}
@@ -483,11 +461,10 @@ class Component extends React.Component {
                 
               </FormBox>
               
-            </StyledPaper>
+            </PaperSearch>
             
             
-            
-            {/* ゲーム一覧 - カード */}
+            {/* ユーザーコミュニティ一覧 - カード */}
             <CardBox>
               {codeArr}
             </CardBox>
@@ -511,7 +488,17 @@ class Component extends React.Component {
             >
               <DialogTitle>表示情報選択</DialogTitle>
               <DialogContent>
-              
+                
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={stores.current.descriptionShow}
+                      onChange={stores.current.descriptionChangeFunction}
+                    />
+                  }
+                  label="説明文"
+                />
+                
                 <FormControlLabel
                   control={
                     <Checkbox

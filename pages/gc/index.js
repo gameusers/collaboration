@@ -7,6 +7,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+import Pagination from 'rc-pagination';
 
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -14,41 +15,33 @@ import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
-
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
-
+import Chip from '@material-ui/core/Chip';
 import Dialog from '@material-ui/core/Dialog';
-// import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-
-import Chip from '@material-ui/core/Chip';
 
 import IconSearch from '@material-ui/icons/Search';
 import IconAccountCircle from '@material-ui/icons/AccountCircle';
 import IconStyle from '@material-ui/icons/Style';
 import IconSchedule from '@material-ui/icons/Schedule';
-import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
-import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
-import IconBusiness from '@material-ui/icons/Business';
 import IconMonetizationOn from '@material-ui/icons/MonetizationOn';
+import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
+import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
+import IconBusiness from '@material-ui/icons/Business';
 
-import initStoreCommon from '../../stores/common';
-import initStoreHeader from '../../stores/header';
-import initStoreGcIndex from '../../stores/gc/index';
+import initStoreCommon from '../../applications/common/stores/common';
+import initStoreHeader from '../../applications/common/stores/header';
+import initStoreGcIndex from '../../applications/gc/index/stores/store';
 
-import Pagination from 'rc-pagination';
-
-import Layout from '../../components/layout';
-import LinkIcons from '../../components/link-icons';
+import Layout from '../../applications/common/components/layout';
+import LinkIcons from '../../applications/common/components/link-icons';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -61,21 +54,17 @@ import withRoot from '../../lib/material-ui/withRoot';
 
 const Container = styled.div`
   padding: 10px;
-  
-  @media screen and (max-width: 480px) {
-    // padding: 10px 0 10px 0;
-  }
 `;
 
 
+// ---------------------------------------------
+//   ゲームコミュニティ検索
+// ---------------------------------------------
 
-
-
-const StyledPaper = styled(Paper)`
+const PaperSearch = styled(Paper)`
   margin: 0 0 20px 0 !important;
   padding: 16px 16px 0 16px !important;
 `;
-
 
 const SearchBox = styled.div`
   display: flex;
@@ -111,6 +100,9 @@ const ButtonDialog = styled(Button)`
 `;
 
 
+// ---------------------------------------------
+//   Card
+// ---------------------------------------------
 
 const CardBox = styled.div`
   display: flex;
@@ -185,6 +177,12 @@ const CardInfoBox = styled.div`
   margin: 0 12px 0 0;
 `;
 
+
+const StyledIconAccountCircle = styled(IconAccountCircle)`
+  font-size: 24px !important;
+  margin: 1px 0 0 0 !important;
+`;
+
 const StyledIconStyle = styled(IconStyle)`
   font-size: 24px !important;
   margin: 1px 0 0 0 !important;
@@ -195,12 +193,7 @@ const StyledIconSchedule = styled(IconSchedule)`
   margin: 1px 0 0 0 !important;
 `;
 
-const StyledIconVideogameAsset = styled(IconVideogameAsset)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
-`;
-
-const StyledIconAccountCircle = styled(IconAccountCircle)`
+const StyledIconMonetizationOn = styled(IconMonetizationOn)`
   font-size: 24px !important;
   margin: 1px 0 0 0 !important;
 `;
@@ -210,18 +203,15 @@ const StyledIconSupervisorAccount = styled(IconSupervisorAccount)`
   margin: 1px 0 0 0 !important;
 `;
 
+const StyledIconVideogameAsset = styled(IconVideogameAsset)`
+  font-size: 24px !important;
+  margin: 1px 0 0 0 !important;
+`;
+
 const StyledIconBusiness = styled(IconBusiness)`
   font-size: 24px !important;
   margin: 1px 0 0 0 !important;
 `;
-
-const StyledIconMonetizationOn = styled(IconMonetizationOn)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
-`;
-
-
-
 
 
 const CardInfoText = styled.div`
@@ -246,6 +236,9 @@ const StyledChip = styled(Chip)`
 `;
 
 
+// ---------------------------------------------
+//   Pagination
+// ---------------------------------------------
 
 const PaginationBox = styled.div`
   margin: 10px 0 10px 0;
@@ -435,6 +428,9 @@ class Component extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
     
     return (
       <Provider stores={this.stores}>
@@ -450,11 +446,11 @@ class Component extends React.Component {
           <Container>
             
             {/* ゲームコミュニティ検索 */}
-            <StyledPaper elevation={4}>
+            <PaperSearch elevation={4}>
             
               <SearchTitle>ゲームコミュニティ検索</SearchTitle>
               
-              {/* ゲームコミュニティ検索フォーム */}
+              {/* 検索フォーム */}
               <SearchBox>
                 <TextFieldSearch
                   placeholder="ゲーム名、メーカー名、タグを検索"
@@ -560,11 +556,11 @@ class Component extends React.Component {
                 
               </FormBox>
               
-            </StyledPaper>
+            </PaperSearch>
             
             
             
-            {/* ゲーム一覧 - カード */}
+            {/* ゲームコミュニティ一覧 - カード */}
             <CardBox>
               {codeArr}
             </CardBox>

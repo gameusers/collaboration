@@ -7,7 +7,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-
 import Swiper from 'react-id-swiper';
 
 import Card from '@material-ui/core/Card';
@@ -20,10 +19,10 @@ import Typography from '@material-ui/core/Typography';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 
-import initStoreCommon from '../stores/common';
-import initStoreHeader from '../stores/header';
+import initStoreCommon from '../applications/common/stores/common';
+import initStoreHeader from '../applications/common/stores/header';
 
-import Layout from '../components/layout';
+import Layout from '../applications/common/components/layout';
 
 import withRoot from '../lib/material-ui/withRoot';
 
@@ -66,15 +65,6 @@ const CardCategory = styled.h2`
   
   pointer-events: none;
 `;
-
-// const CategoryTitle = styled.h2`
-//   // color: green;
-//   font-size: 20px;
-//   font-weight: normal;
-//   padding: 0 0 10px 0;
-// `;
-
-
 
 const StyledCard = styled(Card)`
   // margin: 0 14px 45px 0 !important;
@@ -211,6 +201,11 @@ class Component extends React.Component {
         clickable: false,
       }
     };
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
     
     return (
       <Provider stores={this.stores}>
@@ -733,7 +728,5 @@ class Component extends React.Component {
     );
   }
 }
-
-// export default Component;
 
 export default withRoot(Component);

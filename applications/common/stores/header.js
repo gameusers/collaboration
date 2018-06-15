@@ -218,7 +218,18 @@ class Store {
         name: 'ユーザー★',
         pathname: '/uc'
       }
-    ]
+    ],
+    
+    login: [
+      {
+        name: 'ID & パスワード',
+        pathname: '/login'
+      },
+      {
+        name: 'ソーシャル',
+        pathname: '/login/social'
+      }
+    ],
     
   };
   

@@ -86,6 +86,10 @@ export default class extends React.Component {
       menuArr = stores.header.menuObj.gc;
     } else if (stores.pathname === '/uc') {
       menuArr = stores.header.menuObj.uc;
+    } else if (stores.pathname === '/login') {
+      menuArr = stores.header.menuObj.login;
+    } else if (stores.pathname === '/login/social') {
+      menuArr = stores.header.menuObj.login;
     }
     
     const reverseMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();

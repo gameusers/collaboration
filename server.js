@@ -16,6 +16,8 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
+// const { parse } = require('url');
+
 const api = require('./routes/api');
 
 // console.log(`process.env.PORT = ${process.env.PORT}`);
@@ -36,8 +38,7 @@ mobxReact.useStaticRendering(true);
 //   Server
 // --------------------------------------------------
 
-app.prepare()
-.then(() => {
+app.prepare().then(() => {
   
   const server = express();
 
@@ -86,7 +87,50 @@ app.prepare()
   // --------------------------------------------------
   //   Routing
   // --------------------------------------------------
-
+  
+  server.get('/gc/:param1', (req, res) => {
+    
+    // console.log(`req.url = ${req.url}`);
+    // console.log(`parse(req.url).pathname = ${parse(req.url).pathname}`);
+    
+    const { param1 } = req.params;
+    
+    if (!param1) {
+      return app.render(req, res, '/gc/index', req.query);
+    }
+    
+    return app.render(req, res, '/gc/community', { param1 });
+  });
+  
+  server.get('/gc/:param1/:param2', (req, res) => {
+    const { param1, param2 } = req.params;
+    return app.render(req, res, '/gc/community', { param1, param2 });
+  });
+  
+  server.get('/gc/:param1/:param2/:param3', (req, res) => {
+    const { param1, param2, param3 } = req.params;
+    return app.render(req, res, '/gc/community', { param1, param2, param3 });
+  });
+  
+  
+  // server.get('/gc/:param1/:param2/:param3', (req, res) => {
+  // server.get('/gc/:param1', (req, res) => {
+    
+  //   console.log(`req.url = ${req.url}`);
+  //   console.log(`parse(req.url).pathname = ${parse(req.url).pathname}`);
+    
+  //   const { param1, param2, param3 } = req.params;
+    
+  //   if (!param1) {
+  //     app.render(req, res, '/gc/index', req.query);
+  //   }
+    
+  //   app.render(req, res, '/gc/community', req.query);
+  //   // return app.render(req, res, '/gc/community', { param1, param2, param3 });
+  //   // return app.render(req, res, '/gc/community', { param1: req.params.param1 });
+    
+  // });
+  
   server.get('/a', (req, res) => {
     return app.render(req, res, '/b', req.query);
   });

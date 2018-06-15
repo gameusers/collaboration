@@ -3,12 +3,26 @@
 // --------------------------------------------------
 
 import React from 'react';
+import Head from 'next/head';
+import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
+import styled from 'styled-components';
+// import Swiper from 'react-id-swiper';
 
-import initStoreCommon from '../stores/common';
-import initStoreHeader from '../stores/header';
+// import Card from '@material-ui/core/Card';
+// import CardActions from '@material-ui/core/CardActions';
+// import CardContent from '@material-ui/core/CardContent';
+// import CardMedia from '@material-ui/core/CardMedia';
+// import Button from '@material-ui/core/Button';
+// import Typography from '@material-ui/core/Typography';
 
-import Layout from '../components/layout';
+// import IconSchedule from '@material-ui/icons/Schedule';
+// import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
+
+import initStoreCommon from '../applications/common/stores/common';
+import initStoreHeader from '../applications/common/stores/header';
+
+import Layout from '../applications/common/components/layout';
 
 import withRoot from '../lib/material-ui/withRoot';
 
@@ -22,17 +36,19 @@ import withRoot from '../lib/material-ui/withRoot';
 
 
 
+
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/test
+//   URL: http://35.203.143.160:8080/
 // --------------------------------------------------
 
 @observer
 class Component extends React.Component {
   
-  static getInitialProps({ pathname, req }) {
+  static getInitialProps({ pathname, req, query: { id } }) {
+    console.log(`id = ${id}`);
     const isServer = !!req;
-    return { isServer: isServer, pathname: pathname };
+    return { isServer, pathname };
   }
   
   
@@ -63,10 +79,32 @@ class Component extends React.Component {
   
   
   render() {
+    
+    
+    // --------------------------------------------------
+    //   Props
+    // --------------------------------------------------
+    
+    const stores = this.stores;
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
     return (
       <Provider stores={this.stores}>
+      
         <Layout>
+          
+          {/* Head 内部のタグをここで追記する */}
+          <Head>
+            <title>Game Users</title>
+          </Head>
+        
           test.js
+          
         </Layout>
       </Provider>
     );

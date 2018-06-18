@@ -313,7 +313,7 @@ class Component extends React.Component {
             </Link>
             
             
-            <StyledCardContent>
+            <StyledCardContent key={index}>
             
               <Link prefetch href={value.link}>
                 <CardTitle>{value.name}</CardTitle>

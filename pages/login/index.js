@@ -4,30 +4,17 @@
 
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Select from '@material-ui/core/Select';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Chip from '@material-ui/core/Chip';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-// import TextField from '@material-ui/core/TextField';
 
 import IconId from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
@@ -59,7 +46,7 @@ const Container = styled.div`
 // ---------------------------------------------
 
 const PaperForm = styled(Paper)`
-  margin: 0 0 6px 0 !important;
+  margin: 0 0 8px 0 !important;
   padding: 16px !important;
 `;
 
@@ -72,10 +59,8 @@ const Description = styled.div`
   margin: 0 0 16px 0;
 `;
 
-
 const StyledFormControl = styled(FormControl)`
   margin: 0 0 10px 0 !important;
-  // width: 80% !important;
 `;
 
 const FormBox = styled.form`
@@ -85,7 +70,6 @@ const FormBox = styled.form`
 const InputBox = styled.div`
   display: flex;
   flex-flow: column wrap;
-  // align-items: flex-end;
   width: 300px;
   margin: 0;
   
@@ -102,7 +86,7 @@ const StyledButton = styled(Button)`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://35.203.143.160:8080/login
 // --------------------------------------------------
 
 @observer
@@ -162,7 +146,7 @@ class Component extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>ログイン - Game Users</title>
+            <title>ログイン - ID & パスワード - Game Users</title>
           </Head>
           
           

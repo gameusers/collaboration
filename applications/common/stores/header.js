@@ -231,6 +231,13 @@ class Store {
       }
     ],
     
+    logout: [
+      {
+        name: 'ログアウト',
+        pathname: '/logout'
+      }
+    ],
+    
   };
   
 }

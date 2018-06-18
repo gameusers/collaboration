@@ -264,13 +264,13 @@ class Component extends React.Component {
                 </Link>
                 
                 
-                <CardActions>
-                  <Link prefetch href="/a">
+                <Link prefetch href="/test">
+                  <CardActions>
                     <Button size="small" color="primary">
                       Grand Theft Auto V
                     </Button>
-                  </Link>
-                </CardActions>
+                  </CardActions>
+                </Link>
                 
               </StyledCard>
               
@@ -359,13 +359,13 @@ class Component extends React.Component {
                 </Link>
                 
                 
-                <CardActions>
-                  <Link prefetch href="/a">
+                <Link prefetch href="/test">
+                  <CardActions>
                     <Button size="small" color="primary">
                       Metal Gear Solid V: The Phantom Pain
                     </Button>
-                  </Link>
-                </CardActions>
+                  </CardActions>
+                </Link>
                 
               </StyledCard>
               
@@ -410,13 +410,13 @@ class Component extends React.Component {
                 </Link>
                 
                 
-                <CardActions>
-                  <Link prefetch href="/a">
+                <Link prefetch href="/test">
+                  <CardActions>
                     <Button size="small" color="primary">
                       ゼルダの伝説 ブレス オブ ザ ワイルド
                     </Button>
-                  </Link>
-                </CardActions>
+                  </CardActions>
+                </Link>
                 
               </StyledCard>
             
@@ -470,13 +470,13 @@ class Component extends React.Component {
                   </Link>
                   
                   
-                  <CardActions>
-                    <Link prefetch href="/a">
+                  <Link prefetch href="/test">
+                    <CardActions>
                       <Button size="small" color="primary">
                         フォーオナー
                       </Button>
-                    </Link>
-                  </CardActions>
+                    </CardActions>
+                  </Link>
                   
                 </StyledCard>
                 
@@ -564,13 +564,13 @@ class Component extends React.Component {
                   </Link>
                   
                   
-                  <CardActions>
-                    <Link prefetch href="/a">
+                  <Link prefetch href="/test">
+                    <CardActions>
                       <Button size="small" color="primary">
                         どうぶつの森 ポケットキャンプ
                       </Button>
-                    </Link>
-                  </CardActions>
+                    </CardActions>
+                  </Link>
                   
                 </StyledCard>
                 
@@ -615,13 +615,13 @@ class Component extends React.Component {
                   </Link>
                   
                   
-                  <CardActions>
-                    <Link prefetch href="/a">
+                  <Link prefetch href="/test">
+                    <CardActions>
                       <Button size="small" color="primary">
                         マリオテニス エース
                       </Button>
-                    </Link>
-                  </CardActions>
+                    </CardActions>
+                  </Link>
                   
                 </StyledCard>
                 
@@ -665,62 +665,20 @@ class Component extends React.Component {
                   </Link>
                   
                   
-                  <CardActions>
-                    <Link prefetch href="/a">
+                  <Link prefetch href="/test">
+                    <CardActions>
                       <Button size="small" color="primary">
                         アイスクライマー
                       </Button>
-                    </Link>
-                  </CardActions>
+                    </CardActions>
+                  </Link>
                   
                 </StyledCard>
                 
               </Swiper>
               
             </CardBox>
-          
-          
-          {/*index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          index.js<br />
-          
-          
-          占い　マミ○　サヤカ●
-          1日目　言動が怪しかったから占いました*/}
-          
-          
-          
+            
           </Container>
           
         </Layout>

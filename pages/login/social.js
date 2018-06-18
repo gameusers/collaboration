@@ -4,23 +4,16 @@
 
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-import Swiper from 'react-id-swiper';
 
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-
-import IconSchedule from '@material-ui/icons/Schedule';
-import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
+import Paper from '@material-ui/core/Paper';
 
 import initStoreCommon from '../../applications/common/stores/common';
 import initStoreHeader from '../../applications/common/stores/header';
+import initStoreLoginSocial from '../../applications/login/social/stores/store';
 
 import Layout from '../../applications/common/components/layout';
 
@@ -34,107 +27,46 @@ import withRoot from '../../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Container = styled.div`
-  padding: 10px 0 10px 10px;
+  padding: 10px;
 `;
 
-// const CardBox = styled.div`
-//   position: relative;
-//   margin: 10px 0 0 0;
-// `;
 
-// const CardCategory = styled.h2`
-//   position: absolute;
-//   top: 6px;
-//   left: 6px;
-//   z-index: 2;
+// ---------------------------------------------
+//   フォーム
+// ---------------------------------------------
+
+const PaperForm = styled(Paper)`
+  margin: 0 0 8px 0 !important;
+  padding: 16px !important;
+`;
+
+const Title = styled.h2`
+  font-size: 18px;
+  margin: 0 0 10px 0;
+`;
+
+const Description = styled.div`
+  margin: 0 0 16px 0;
+`;
+
+const ButtonsBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+`;
+
+const ButtonTwitter = styled(Button)`
+  background-color: #55acee !important;
+  margin: 0 10px 0 0 !important;
   
-//   color: white;
-//   border: solid 2px white;
-//   // padding: 0.5em;
-//   padding: 5px 10px 2px 10px;
-//   border-radius: 0.5em;
-  
-//   background-color: #000;
-//   background-color: rgba(0, 0, 0, 0.5);
-  
-//   // color: green;
-//   font-size: 20px;
-//   font-weight: normal;
-//   // line-height: 1em;
-//   // padding: 0 0 10px 0;
-  
-//   pointer-events: none;
-// `;
+  // &:hover {
+  //   background-color: #000000 !important,
+  // }
+`;
 
-// const StyledCard = styled(Card)`
-//   // margin: 0 14px 45px 0 !important;
-//   margin: 0 14px 4px 0 !important;
-//   // margin: 0 14px 16px 0 !important;
-//   width: 300px !important;
-//   cursor: pointer !important;
-//   // height: 400px !important;
-// `;
-
-// const CardMediaBox = styled.div`
-//   background-color: black;
-//   position: relative;
-// `;
-
-// const CardMediaMoviePlayButton = styled.img`
-//   position: absolute;
-//   top: 0;
-// `;
-
-// const StyledCardContent = styled(CardContent)`
-//   padding: 16px 24px 0 24px !important;
-// `;
-
-// const CardTitle = styled.h3`
-//   margin: 0 0 10px 0;
-// `;
-
-// const CardInfoBox = styled.div`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   // justify-content: space-around;
-//   font-size: 12px;
-//   margin: 10px 0 0 0;
-// `;
-
-// const CardInfoLeft = styled.div`
-//   // font-size: 12px;
-//   // margin: 10px 0 0 0;
-// `;
-
-// const CardInfoDateTimeBox = styled.div`
-//   display: flex;
-//   flex-flow: row nowrap;
-// `;
-
-// const StyledIconSchedule = styled(IconSchedule)`
-//   font-size: 20px !important;
-//   margin: 3px 0 0 0 !important;
-// `;
-
-// const CardInfoText = styled.div`
-//   font-size: 12px;
-//   margin: 0 0 0 4px;
-// `;
-
-// const CardInfoRight = styled.div`
-//   // font-size: 12px;
-//   margin: 0 0 0 20px;
-// `;
-
-// const CardInfoCommentsTotalBox = styled.div`
-//   display: flex;
-//   flex-flow: row nowrap;
-// `;
-
-// const StyledIconChatBubble = styled(IconChatBubble)`
-//   font-size: 20px !important;
-//   margin: 3px 0 0 0 !important;
-// `;
+const ButtonGoogle = styled(Button)`
+  background-color: #dd4b39 !important;
+  margin: 0 10px 0 0 !important;
+`;
 
 
 
@@ -165,6 +97,7 @@ class Component extends React.Component {
     this.stores = {
       common: initStoreCommon(props.isServer, props.pathname),
       header: initStoreHeader(props.isServer, props.pathname),
+      current: initStoreLoginSocial(props.isServer, props.pathname),
       pathname: props.pathname
     };
     
@@ -189,18 +122,6 @@ class Component extends React.Component {
     const stores = this.stores;
     
     
-    
-    const params = {
-      slidesPerView: 'auto',
-      spaceBetween: 0,
-      freeMode: true,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: false,
-      }
-    };
-    
-    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -212,11 +133,45 @@ class Component extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>ログイン - Game Users</title>
+            <title>ログイン - ソーシャルアカウント - Game Users</title>
           </Head>
-        
+          
+          
           <Container>
-            login/social
+            
+            {/* ログイン */}
+            <PaperForm elevation={4}>
+            
+              <Title>ログイン - ソーシャルアカウント</Title>
+              
+              <Description>
+                ソーシャルアカウントを利用してログインします。すでに Game Users のアカウントを作成済みで、プレイヤーページのソーシャルアカウント設定で、お使いソーシャルアカウントを登録した場合に、こちらのページからログインができるようになります。
+              </Description>
+              
+              
+              {/* ボタン */}
+              <ButtonsBox>
+              
+                <ButtonTwitter
+                  variant="contained"
+                  color="primary"
+                  // onClick={stores.current.dialogOpenFunction}
+                >
+                  Twitter
+                </ButtonTwitter>
+                
+                <ButtonGoogle
+                  variant="contained"
+                  color="primary"
+                  // onClick={stores.current.dialogOpenFunction}
+                >
+                  Google
+                </ButtonGoogle>
+                
+              </ButtonsBox>
+              
+            </PaperForm>
+            
           </Container>
           
         </Layout>

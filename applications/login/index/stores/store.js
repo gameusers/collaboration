@@ -20,30 +20,11 @@ class Store {
   
   
   // ---------------------------------------------
-  //   表示情報選択ダイアログ / 表示・非表示
-  // ---------------------------------------------
-  
-  // @observable dialogOpen = false;
-  
-  
-  // @action.bound
-  // dialogOpenFunction() {
-  //   this.dialogOpen = true;
-  // };
-  
-  // @action.bound
-  // dialogCloseFunction() {
-  //   this.dialogOpen = false;
-  // };
-  
-  
-  
-  // ---------------------------------------------
   //   ID & Password
   // ---------------------------------------------
   
-  @observable id = null;
-  @observable password = null;
+  @observable id = '';
+  @observable password = '';
   @observable showPassword = false;
 
   

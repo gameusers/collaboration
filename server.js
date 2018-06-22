@@ -88,6 +88,10 @@ app.prepare().then(() => {
   //   Routing
   // --------------------------------------------------
   
+  // ---------------------------------------------
+  //   Game Community
+  // ---------------------------------------------
+  
   server.get('/gc/:param1', (req, res) => {
     
     // console.log(`req.url = ${req.url}`);
@@ -113,23 +117,31 @@ app.prepare().then(() => {
   });
   
   
-  // server.get('/gc/:param1/:param2/:param3', (req, res) => {
-  // server.get('/gc/:param1', (req, res) => {
+  // ---------------------------------------------
+  //   User Community
+  // ---------------------------------------------
+  
+  server.get('/uc/:param1', (req, res) => {
+    const { param1 } = req.params;
     
-  //   console.log(`req.url = ${req.url}`);
-  //   console.log(`parse(req.url).pathname = ${parse(req.url).pathname}`);
+    if (!param1) {
+      return app.render(req, res, '/uc/index', req.query);
+    }
     
-  //   const { param1, param2, param3 } = req.params;
-    
-  //   if (!param1) {
-  //     app.render(req, res, '/gc/index', req.query);
-  //   }
-    
-  //   app.render(req, res, '/gc/community', req.query);
-  //   // return app.render(req, res, '/gc/community', { param1, param2, param3 });
-  //   // return app.render(req, res, '/gc/community', { param1: req.params.param1 });
-    
-  // });
+    return app.render(req, res, '/uc/community', { param1 });
+  });
+  
+  server.get('/uc/:param1/:param2', (req, res) => {
+    const { param1, param2 } = req.params;
+    return app.render(req, res, '/uc/community', { param1, param2 });
+  });
+  
+  server.get('/uc/:param1/:param2/:param3', (req, res) => {
+    const { param1, param2, param3 } = req.params;
+    return app.render(req, res, '/uc/community', { param1, param2, param3 });
+  });
+  
+  
   
   server.get('/a', (req, res) => {
     return app.render(req, res, '/b', req.query);

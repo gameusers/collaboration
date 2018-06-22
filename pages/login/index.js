@@ -221,9 +221,6 @@ class Component extends React.Component {
               
             </PaperForm>
             
-          
-            
-            
           </Container>
           
         </Layout>

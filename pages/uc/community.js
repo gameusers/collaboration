@@ -2,48 +2,51 @@
 //   Import
 // --------------------------------------------------
 
+import { hot } from 'react-hot-loader';
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-import Pagination from 'rc-pagination';
+// import Pagination from 'rc-pagination';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-import AppBar from '@material-ui/core/AppBar';
+// import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
+import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
+// import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
+// import InputLabel from '@material-ui/core/InputLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+// import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Select from '@material-ui/core/Select';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Chip from '@material-ui/core/Chip';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+// import Select from '@material-ui/core/Select';
+// import Card from '@material-ui/core/Card';
+// import CardContent from '@material-ui/core/CardContent';
+// import CardMedia from '@material-ui/core/CardMedia';
+// import Chip from '@material-ui/core/Chip';
+// import Dialog from '@material-ui/core/Dialog';
+// import DialogContent from '@material-ui/core/DialogContent';
+// import DialogTitle from '@material-ui/core/DialogTitle';
 
 import IconList from '@material-ui/icons/List';
 import IconNew from '@material-ui/icons/FiberNew';
 import IconImage from '@material-ui/icons/Image';
 import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
-import IconLaunch from '@material-ui/icons/Launch';
-import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
+import IconSearch from '@material-ui/icons/Search';
 
 import initStoreCommon from '../../applications/common/stores/common';
 import initStoreHeader from '../../applications/common/stores/header';
@@ -71,7 +74,7 @@ const Container = styled.div`
 
 const PaperBbsMenu = styled(Paper)`
   margin: 0 0 16px 0 !important;
-  padding: 8px 16px 16px 16px !important;
+  padding: 16px 16px 0 16px !important;
 `;
 
 const BbsMenuTitleBox = styled.div`
@@ -98,10 +101,10 @@ const IconButtonBbsMenu = styled(IconButton)`
   height: 28px !important;
 `;
 
-const AppBarBbsMenu = styled(AppBar)`
-  margin: 16px 0 0 0 !important;
-  padding: 0 !important;
-`;
+// const AppBarBbsMenu = styled(AppBar)`
+//   margin: 16px 0 0 0 !important;
+//   padding: 0 !important;
+// `;
 
 const PaperBbsMenuTabs = styled(Paper)`
   margin: 16px 0 0 0 !important;
@@ -109,73 +112,122 @@ const PaperBbsMenuTabs = styled(Paper)`
 `;
 
 const BbsMenuTabBox = styled.div`
+  width: 100%;
+  // overflow-x: auto;
   margin: 10px 0 0 0;
   padding: 0;
 `;
+
+const BbsMenuSearchTabBox = styled.div`
+  width: 100%;
+  margin: 16px 0 0 0;
+  padding: 0 10px 16px;
+`;
+
+const BbsThreadListTableWrapper = styled.div`
+  overflow-x: auto;
+`;
+
+const TableCellBbsThreadListName = styled(TableCell)`
+  white-space: nowrap !important;
+  min-width: 280px !important;
+`;
+
+const TableCellBbsThreadList = styled(TableCell)`
+  white-space: nowrap !important;
+`;
+
+const BbsSearchBox = styled.div`
+  // display: flex;
+  // flex-flow: column wrap;
+  margin: 8px 0 10px 0;
+`;
+
+const TextFieldBbsSearch = styled(TextField)`
+  margin: 10px 0 0 0 !important;
+`;
+
+const BbsSearchDateTimeBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 15px 0 0 0;
+`;
+
+const TextFieldBbsSearchDateTime = styled(TextField)`
+  margin: 10px 20px 0 0 !important;
+`;
+
+const BbsSearchCheckBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 15px 0 0 0;
+`;
+
+
 
 
 // ---------------------------------------------
 //   Card
 // ---------------------------------------------
 
-const CardBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-`;
+// const CardBox = styled.div`
+//   display: flex;
+//   flex-flow: row wrap;
+//   justify-content: space-between;
+// `;
 
-const StyledCard = styled(Card)`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0 0 12px 0 !important;
-  min-width: 100% !important;
-  cursor: pointer !important;
-`;
+// const StyledCard = styled(Card)`
+//   display: flex;
+//   flex-flow: row nowrap;
+//   margin: 0 0 12px 0 !important;
+//   min-width: 100% !important;
+//   cursor: pointer !important;
+// `;
 
-const CardMediaBox = styled.div`
-  background-color: #ecf0f1;
-`;
+// const CardMediaBox = styled.div`
+//   background-color: #ecf0f1;
+// `;
 
-const StyledCardMedia = styled(CardMedia)`
-  width: 128px !important;
-  height: 128px !important;
+// const StyledCardMedia = styled(CardMedia)`
+//   width: 128px !important;
+//   height: 128px !important;
   
-  @media screen and (max-width: 480px) {
-    width: 64px !important;
-    height: 64px !important;
-  }
-`;
+//   @media screen and (max-width: 480px) {
+//     width: 64px !important;
+//     height: 64px !important;
+//   }
+// `;
 
-const StyledCardContent = styled(CardContent)`
-  padding: 8px 16px 8px 16px !important;
-`;
+// const StyledCardContent = styled(CardContent)`
+//   padding: 8px 16px 8px 16px !important;
+// `;
 
-const CardTitle = styled.h3`
-  font-size: 14px;
-  line-height: 1.6em;
-  margin: 0 0 8px 0;
-  padding: 2px 0 6px 0;
-  border-bottom: 1px solid #6E6E6E;
-`;
+// const CardTitle = styled.h3`
+//   font-size: 14px;
+//   line-height: 1.6em;
+//   margin: 0 0 8px 0;
+//   padding: 2px 0 6px 0;
+//   border-bottom: 1px solid #6E6E6E;
+// `;
 
-const CardDescriptionBox = styled.div`
-  font-size: 14px;
-  line-height: 1.6em;
-  margin: 0 0 10px 0;
-  padding: 0;
-`;
+// const CardDescriptionBox = styled.div`
+//   font-size: 14px;
+//   line-height: 1.6em;
+//   margin: 0 0 10px 0;
+//   padding: 0;
+// `;
 
-const CardInfoContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-`;
+// const CardInfoContainer = styled.div`
+//   display: flex;
+//   flex-flow: row wrap;
+//   margin: 0;
+// `;
 
-const CardInfoBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0 12px 0 0;
-`;
+// const CardInfoBox = styled.div`
+//   display: flex;
+//   flex-flow: row nowrap;
+//   margin: 0 12px 0 0;
+// `;
 
 
 
@@ -246,7 +298,7 @@ class Component extends React.Component {
     //   スレッド一覧
     // --------------------------------------------------
     
-    let codeArr = [];
+    let codeBbsThreadListArr = [];
     
     if (stores.current.bbsThreadArr) {
       
@@ -261,36 +313,115 @@ class Component extends React.Component {
         
         codeTableDataArr.push(
           <TableRow key={index}>
-            <TableCell component="th" scope="row">
+            <TableCellBbsThreadListName
+              component="th"
+              scope="row"
+            >
               {value.name}
-            </TableCell>
+            </TableCellBbsThreadListName>
             <TableCell>{value.updatedDate}</TableCell>
-            <TableCell numeric>{value.comments}</TableCell>
-            <TableCell numeric>{value.replies}</TableCell>
-            <TableCell numeric>{value.images}</TableCell>
-            <TableCell numeric>{value.videos}</TableCell>
+            <TableCell numeric>{value.comment}</TableCell>
+            <TableCell numeric>{value.reply}</TableCell>
+            <TableCell numeric>{value.image}</TableCell>
+            <TableCell numeric>{value.video}</TableCell>
           </TableRow>
         );
         
       });
       
       
-      codeArr.push(
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>名前</TableCell>
-              <TableCell>最終更新日</TableCell>
-              <TableCell numeric>コメント</TableCell>
-              <TableCell numeric>返信</TableCell>
-              <TableCell numeric>画像</TableCell>
-              <TableCell numeric>動画</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {codeTableDataArr}
-          </TableBody>
-        </Table>
+      codeBbsThreadListArr.push(
+        <div key="bbsThreadList">
+          
+          <BbsThreadListTableWrapper>
+          
+          <Table>
+            
+            <TableHead>
+              <TableRow>
+              
+                <TableCellBbsThreadListName>
+                  名前
+                </TableCellBbsThreadListName>
+                
+                <TableCellBbsThreadList>
+                  <TableSortLabel
+                    active={stores.current.bbsThreadListOrderBy === 'updatedDate'}
+                    direction={stores.current.bbsThreadListOrder}
+                    onClick={() => stores.current.sortBbsThreadList('updatedDate')}
+                  >
+                    最終更新日
+                  </TableSortLabel>
+                </TableCellBbsThreadList>
+                
+                <TableCellBbsThreadList numeric>
+                  <TableSortLabel
+                    active={stores.current.bbsThreadListOrderBy === 'comment'}
+                    direction={stores.current.bbsThreadListOrder}
+                    onClick={() => stores.current.sortBbsThreadList('comment')}
+                  >
+                    コメント
+                  </TableSortLabel>
+                </TableCellBbsThreadList>
+                
+                <TableCellBbsThreadList numeric>
+                  <TableSortLabel
+                    active={stores.current.bbsThreadListOrderBy === 'reply'}
+                    direction={stores.current.bbsThreadListOrder}
+                    onClick={() => stores.current.sortBbsThreadList('reply')}
+                  >
+                    返信
+                  </TableSortLabel>
+                </TableCellBbsThreadList>
+                
+                <TableCellBbsThreadList numeric>
+                  <TableSortLabel
+                    active={stores.current.bbsThreadListOrderBy === 'image'}
+                    direction={stores.current.bbsThreadListOrder}
+                    onClick={() => stores.current.sortBbsThreadList('image')}
+                  >
+                    画像
+                  </TableSortLabel>
+                </TableCellBbsThreadList>
+                
+                <TableCellBbsThreadList numeric>
+                  <TableSortLabel
+                    active={stores.current.bbsThreadListOrderBy === 'video'}
+                    direction={stores.current.bbsThreadListOrder}
+                    onClick={() => stores.current.sortBbsThreadList('video')}
+                  >
+                    動画
+                  </TableSortLabel>
+                </TableCellBbsThreadList>
+                
+              </TableRow>
+            </TableHead>
+            
+            <TableBody>
+              {codeTableDataArr}
+            </TableBody>
+            
+          </Table>
+          
+          </BbsThreadListTableWrapper>
+        
+          <TablePagination
+            component="div"
+            count={stores.current.bbsThreadListCount}
+            rowsPerPage={stores.current.bbsThreadListRowsPerPage}
+            page={stores.current.bbsThreadListPage}
+            labelRowsPerPage=""
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            onChangeRowsPerPage={stores.current.handleChangeBbsThreadListRowsPerPage}
+            onChangePage={stores.current.handleChangeBbsThreadListPage}
+          />
+          
+        </div>
       );
       
     }
@@ -353,7 +484,6 @@ class Component extends React.Component {
               
               
               {/* Tab */}
-              {/*<AppBarBbsMenu position="static" color="default">*/}
               <PaperBbsMenuTabs>
                 <Tabs
                   value={stores.current.openNoBbsMenu}
@@ -365,23 +495,141 @@ class Component extends React.Component {
                   <Tab label="検索" />
                 </Tabs>
               </PaperBbsMenuTabs>
-              {/*</AppBarBbsMenu>*/}
               
+              {/* スレッド一覧 */}
               {stores.current.openNoBbsMenu === 0 &&
                 <BbsMenuTabBox>
-                  {codeArr}
+                  {codeBbsThreadListArr}
                 </BbsMenuTabBox>
               }
+              
+              {/* 検索 */}
               {stores.current.openNoBbsMenu === 1 &&
-                <BbsMenuTabBox>
-                  Item Two
-                </BbsMenuTabBox>
+                <BbsMenuSearchTabBox>
+                  
+                  {/* 検索フォーム */}
+                  <BbsSearchBox>
+                    <TextFieldBbsSearch
+                      placeholder="検索キーワード"
+                      value={stores.current.bbsSearchKeyword}
+                      onChange={stores.current.handleBbsSearchKeyword}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <IconSearch />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    
+                    <BbsSearchDateTimeBox>
+                      <TextFieldBbsSearchDateTime
+                        id="datetime-local-start"
+                        label="開始日時"
+                        type="datetime-local"
+                        value={stores.current.bbsSearchDateTimeStart}
+                        onChange={stores.current.handleBbsSearchDateTimeStart}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                      
+                      <TextFieldBbsSearchDateTime
+                        id="datetime-local-end"
+                        label="終了日時"
+                        type="datetime-local"
+                        value={stores.current.bbsSearchDateTimeEnd}
+                        onChange={stores.current.handleBbsSearchDateTimeEnd}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    </BbsSearchDateTimeBox>
+                    
+                    
+                    <BbsSearchCheckBox>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={stores.current.checkedBbsSearchThread}
+                            onChange={stores.current.handleCheckedBbsSearchThread}
+                          />
+                        }
+                        label="スレッド"
+                      />
+                      
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={stores.current.checkedBbsSearchComment}
+                            onChange={stores.current.handleCheckedBbsSearchComment}
+                          />
+                        }
+                        label="コメント"
+                      />
+                      
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={stores.current.checkedBbsSearchReply}
+                            onChange={stores.current.handleCheckedBbsSearchReply}
+                          />
+                        }
+                        label="返信"
+                      />
+                    
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={stores.current.checkedBbsSearchImage}
+                            onChange={stores.current.handleCheckedBbsSearchImage}
+                            color="primary"
+                          />
+                        }
+                        label="画像あり"
+                      />
+                      
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={stores.current.checkedBbsSearchVideo}
+                            onChange={stores.current.handleCheckedBbsSearchVideo}
+                            color="primary"
+                          />
+                        }
+                        label="動画あり"
+                      />
+                      
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={stores.current.checkedBbsSearchMine}
+                            onChange={stores.current.handleCheckedBbsSearchMine}
+                            color="primary"
+                          />
+                        }
+                        label="自分の書き込み"
+                      />
+                    </BbsSearchCheckBox>
+                    
+                  </BbsSearchBox>
+                  
+                  <Button
+                    variant="contained"
+                    color="primary"
+                  >
+                    検索
+                  </Button>
+                  
+                </BbsMenuSearchTabBox>
               }
               
             </PaperBbsMenu>
             
             
-            
+            active<br />
+            active<br />
+            active<br />
             {/*<textarea>AAA</textarea>
             
             <TextField

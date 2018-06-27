@@ -12,6 +12,9 @@ import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 // import AppBar from '@material-ui/core/AppBar';
@@ -42,6 +45,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 // import DialogContent from '@material-ui/core/DialogContent';
 // import DialogTitle from '@material-ui/core/DialogTitle';
 
+import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconList from '@material-ui/icons/List';
 import IconNew from '@material-ui/icons/FiberNew';
 import IconImage from '@material-ui/icons/Image';
@@ -72,10 +76,17 @@ const Container = styled.div`
 //   BBS Menu
 // ---------------------------------------------
 
-const PaperBbsMenu = styled(Paper)`
-  margin: 0 0 16px 0 !important;
-  padding: 16px 16px 0 16px !important;
+
+const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
+  display: inline !important;
+  margin: 0 0 0 0 !important;
+  padding: 0 !important;
 `;
+
+// const PaperBbsMenu = styled(Paper)`
+//   margin: 0 0 16px 0 !important;
+//   padding: 16px 16px 0 16px !important;
+// `;
 
 const BbsMenuTitleBox = styled.div`
   display: flex;
@@ -101,27 +112,22 @@ const IconButtonBbsMenu = styled(IconButton)`
   height: 28px !important;
 `;
 
-// const AppBarBbsMenu = styled(AppBar)`
-//   margin: 16px 0 0 0 !important;
-//   padding: 0 !important;
-// `;
-
 const PaperBbsMenuTabs = styled(Paper)`
-  margin: 16px 0 0 0 !important;
+  margin: 0 16px 0 !important;
   padding: 0 !important;
 `;
 
-const BbsMenuTabBox = styled.div`
-  width: 100%;
-  // overflow-x: auto;
-  margin: 10px 0 0 0;
-  padding: 0;
+const BbsMenuThreadListTabBox = styled.div`
+  // width: 80%;
+  margin: 0;
+  padding: 10px 16px 0;
+  // background-color: pink;
 `;
 
 const BbsMenuSearchTabBox = styled.div`
   width: 100%;
-  margin: 16px 0 0 0;
-  padding: 0 10px 16px;
+  margin: 0;
+  padding: 22px 24px 16px;
 `;
 
 const BbsThreadListTableWrapper = styled.div`
@@ -138,9 +144,7 @@ const TableCellBbsThreadList = styled(TableCell)`
 `;
 
 const BbsSearchBox = styled.div`
-  // display: flex;
-  // flex-flow: column wrap;
-  margin: 8px 0 10px 0;
+  margin: 0 0 16px 0;
 `;
 
 const TextFieldBbsSearch = styled(TextField)`
@@ -163,71 +167,6 @@ const BbsSearchCheckBox = styled.div`
   margin: 15px 0 0 0;
 `;
 
-
-
-
-// ---------------------------------------------
-//   Card
-// ---------------------------------------------
-
-// const CardBox = styled.div`
-//   display: flex;
-//   flex-flow: row wrap;
-//   justify-content: space-between;
-// `;
-
-// const StyledCard = styled(Card)`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   margin: 0 0 12px 0 !important;
-//   min-width: 100% !important;
-//   cursor: pointer !important;
-// `;
-
-// const CardMediaBox = styled.div`
-//   background-color: #ecf0f1;
-// `;
-
-// const StyledCardMedia = styled(CardMedia)`
-//   width: 128px !important;
-//   height: 128px !important;
-  
-//   @media screen and (max-width: 480px) {
-//     width: 64px !important;
-//     height: 64px !important;
-//   }
-// `;
-
-// const StyledCardContent = styled(CardContent)`
-//   padding: 8px 16px 8px 16px !important;
-// `;
-
-// const CardTitle = styled.h3`
-//   font-size: 14px;
-//   line-height: 1.6em;
-//   margin: 0 0 8px 0;
-//   padding: 2px 0 6px 0;
-//   border-bottom: 1px solid #6E6E6E;
-// `;
-
-// const CardDescriptionBox = styled.div`
-//   font-size: 14px;
-//   line-height: 1.6em;
-//   margin: 0 0 10px 0;
-//   padding: 0;
-// `;
-
-// const CardInfoContainer = styled.div`
-//   display: flex;
-//   flex-flow: row wrap;
-//   margin: 0;
-// `;
-
-// const CardInfoBox = styled.div`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   margin: 0 12px 0 0;
-// `;
 
 
 
@@ -445,186 +384,207 @@ class Component extends React.Component {
           <Container>
             
             {/* BBS Menu */}
-            <PaperBbsMenu elevation={2}>
+            <ExpansionPanel
+              defaultExpanded={true}
+            >
               
               {/* Title */}
-              <BbsMenuTitleBox>
+              <ExpansionPanelSummary expandIcon={<IconExpandMore />}>
                 
-                <Title>BBS</Title>
+                <BbsMenuTitleBox>
+                  
+                  <Title>BBS</Title>
+                  
+                  <BbsMenuButtonsBox>
+                    
+                    <Tooltip id="tooltip-list" title="スレッド一覧">
+                      <IconButtonBbsMenu
+                        onClick={stores.current.handleClickBbsMenuButtonThreadList}
+                      >
+                        <IconList />
+                      </IconButtonBbsMenu>
+                    </Tooltip>
+                    
+                    <Tooltip id="tooltip-new" title="新しいコメント">
+                      <IconButtonBbsMenu
+                        onClick={stores.current.handleClickBbsMenuButtonNew}
+                      >
+                        <IconNew />
+                      </IconButtonBbsMenu>
+                    </Tooltip>
+                    
+                    <Tooltip id="tooltip-image" title="画像付きのコメント">
+                      <IconButtonBbsMenu
+                        onClick={stores.current.handleClickBbsMenuButtonImage}
+                      >
+                        <IconImage />
+                      </IconButtonBbsMenu>
+                    </Tooltip>
+                    
+                    <Tooltip id="tooltip-video" title="動画付きのコメント">
+                      <IconButtonBbsMenu
+                        onClick={stores.current.handleClickBbsMenuButtonVideo}
+                      >
+                        <IconOndemandVideo />
+                      </IconButtonBbsMenu>
+                    </Tooltip>
+                    
+                  </BbsMenuButtonsBox>
+                  
+                </BbsMenuTitleBox>
                 
-                <BbsMenuButtonsBox>
-                  
-                  <Tooltip id="tooltip-list" title="スレッド一覧">
-                    <IconButtonBbsMenu>
-                      <IconList />
-                    </IconButtonBbsMenu>
-                  </Tooltip>
-                  
-                  <Tooltip id="tooltip-new" title="新しいコメント">
-                    <IconButtonBbsMenu>
-                      <IconNew />
-                    </IconButtonBbsMenu>
-                  </Tooltip>
-                  
-                  <Tooltip id="tooltip-image" title="画像付きのコメント">
-                    <IconButtonBbsMenu>
-                      <IconImage />
-                    </IconButtonBbsMenu>
-                  </Tooltip>
-                  
-                  <Tooltip id="tooltip-video" title="動画付きのコメント">
-                    <IconButtonBbsMenu>
-                      <IconOndemandVideo />
-                    </IconButtonBbsMenu>
-                  </Tooltip>
-                  
-                </BbsMenuButtonsBox>
+              </ExpansionPanelSummary>
+              
+              
+              {/* Contents */}
+              <ExpansionPanelDetailsBbsMenu>
                 
-              </BbsMenuTitleBox>
-              
-              
-              {/* Tab */}
-              <PaperBbsMenuTabs>
-                <Tabs
-                  value={stores.current.openNoBbsMenu}
-                  indicatorColor="primary"
-                  textColor="primary"
-                  onChange={stores.current.changeOpenNoBbsMenu}
-                >
-                  <Tab label="スレッド一覧" />
-                  <Tab label="検索" />
-                </Tabs>
-              </PaperBbsMenuTabs>
-              
-              {/* スレッド一覧 */}
-              {stores.current.openNoBbsMenu === 0 &&
-                <BbsMenuTabBox>
-                  {codeBbsThreadListArr}
-                </BbsMenuTabBox>
-              }
-              
-              {/* 検索 */}
-              {stores.current.openNoBbsMenu === 1 &&
-                <BbsMenuSearchTabBox>
-                  
-                  {/* 検索フォーム */}
-                  <BbsSearchBox>
-                    <TextFieldBbsSearch
-                      placeholder="検索キーワード"
-                      value={stores.current.bbsSearchKeyword}
-                      onChange={stores.current.handleBbsSearchKeyword}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <IconSearch />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                    
-                    <BbsSearchDateTimeBox>
-                      <TextFieldBbsSearchDateTime
-                        id="datetime-local-start"
-                        label="開始日時"
-                        type="datetime-local"
-                        value={stores.current.bbsSearchDateTimeStart}
-                        onChange={stores.current.handleBbsSearchDateTimeStart}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                      />
-                      
-                      <TextFieldBbsSearchDateTime
-                        id="datetime-local-end"
-                        label="終了日時"
-                        type="datetime-local"
-                        value={stores.current.bbsSearchDateTimeEnd}
-                        onChange={stores.current.handleBbsSearchDateTimeEnd}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                      />
-                    </BbsSearchDateTimeBox>
-                    
-                    
-                    <BbsSearchCheckBox>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={stores.current.checkedBbsSearchThread}
-                            onChange={stores.current.handleCheckedBbsSearchThread}
-                          />
-                        }
-                        label="スレッド"
-                      />
-                      
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={stores.current.checkedBbsSearchComment}
-                            onChange={stores.current.handleCheckedBbsSearchComment}
-                          />
-                        }
-                        label="コメント"
-                      />
-                      
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={stores.current.checkedBbsSearchReply}
-                            onChange={stores.current.handleCheckedBbsSearchReply}
-                          />
-                        }
-                        label="返信"
-                      />
-                    
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={stores.current.checkedBbsSearchImage}
-                            onChange={stores.current.handleCheckedBbsSearchImage}
-                            color="primary"
-                          />
-                        }
-                        label="画像あり"
-                      />
-                      
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={stores.current.checkedBbsSearchVideo}
-                            onChange={stores.current.handleCheckedBbsSearchVideo}
-                            color="primary"
-                          />
-                        }
-                        label="動画あり"
-                      />
-                      
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={stores.current.checkedBbsSearchMine}
-                            onChange={stores.current.handleCheckedBbsSearchMine}
-                            color="primary"
-                          />
-                        }
-                        label="自分の書き込み"
-                      />
-                    </BbsSearchCheckBox>
-                    
-                  </BbsSearchBox>
-                  
-                  <Button
-                    variant="contained"
-                    color="primary"
+                {/* Tab */}
+                <PaperBbsMenuTabs>
+                  <Tabs
+                    value={stores.current.openBbsMenuTabNo}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    onChange={stores.current.handleChangeOpenBbsMenuTabNo}
                   >
-                    検索
-                  </Button>
-                  
-                </BbsMenuSearchTabBox>
-              }
+                    <Tab label="スレッド一覧" />
+                    <Tab label="検索" />
+                  </Tabs>
+                </PaperBbsMenuTabs>
+                
+                
+                {/* スレッド一覧 */}
+                {stores.current.openBbsMenuTabNo === 0 &&
+                  <BbsMenuThreadListTabBox>
+                    {codeBbsThreadListArr}
+                  </BbsMenuThreadListTabBox>
+                }
+                
+                
+                {/* 検索 */}
+                {stores.current.openBbsMenuTabNo === 1 &&
+                  <BbsMenuSearchTabBox>
+                    
+                    {/* 検索フォーム */}
+                    <BbsSearchBox>
+                      <TextFieldBbsSearch
+                        placeholder="検索キーワード"
+                        value={stores.current.bbsSearchKeyword}
+                        onChange={stores.current.handleBbsSearchKeyword}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <IconSearch />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                      
+                      <BbsSearchDateTimeBox>
+                        <TextFieldBbsSearchDateTime
+                          id="datetime-local-start"
+                          label="開始日時"
+                          type="datetime-local"
+                          value={stores.current.bbsSearchDateTimeStart}
+                          onChange={stores.current.handleBbsSearchDateTimeStart}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                        
+                        <TextFieldBbsSearchDateTime
+                          id="datetime-local-end"
+                          label="終了日時"
+                          type="datetime-local"
+                          value={stores.current.bbsSearchDateTimeEnd}
+                          onChange={stores.current.handleBbsSearchDateTimeEnd}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      </BbsSearchDateTimeBox>
+                      
+                      
+                      <BbsSearchCheckBox>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={stores.current.checkedBbsSearchThread}
+                              onChange={stores.current.handleCheckedBbsSearchThread}
+                            />
+                          }
+                          label="スレッド"
+                        />
+                        
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={stores.current.checkedBbsSearchComment}
+                              onChange={stores.current.handleCheckedBbsSearchComment}
+                            />
+                          }
+                          label="コメント"
+                        />
+                        
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={stores.current.checkedBbsSearchReply}
+                              onChange={stores.current.handleCheckedBbsSearchReply}
+                            />
+                          }
+                          label="返信"
+                        />
+                      
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={stores.current.checkedBbsSearchImage}
+                              onChange={stores.current.handleCheckedBbsSearchImage}
+                              color="primary"
+                            />
+                          }
+                          label="画像あり"
+                        />
+                        
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={stores.current.checkedBbsSearchVideo}
+                              onChange={stores.current.handleCheckedBbsSearchVideo}
+                              color="primary"
+                            />
+                          }
+                          label="動画あり"
+                        />
+                        
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={stores.current.checkedBbsSearchMine}
+                              onChange={stores.current.handleCheckedBbsSearchMine}
+                              color="primary"
+                            />
+                          }
+                          label="自分の書き込み"
+                        />
+                      </BbsSearchCheckBox>
+                      
+                    </BbsSearchBox>
+                    
+                    <Button
+                      variant="contained"
+                      color="primary"
+                    >
+                      検索
+                    </Button>
+                    
+                  </BbsMenuSearchTabBox>
+                }
+                
+              </ExpansionPanelDetailsBbsMenu>
               
-            </PaperBbsMenu>
+            </ExpansionPanel>
             
             
             active<br />

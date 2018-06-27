@@ -23,13 +23,35 @@ class Store {
   //   BBS Menu
   // ---------------------------------------------
   
-  @observable openNoBbsMenu = 0;
+  @observable openBbsMenuTabNo = 0;
   
   
   @action.bound
-  changeOpenNoBbsMenu(event, value) {
-    this.openNoBbsMenu = value;
+  handleChangeOpenBbsMenuTabNo(event, value) {
+    this.openBbsMenuTabNo = value;
   };
+  
+  @action.bound
+  handleClickBbsMenuButtonThreadList(event) {
+    event.stopPropagation();
+    // console.log(`handleClickShortcutBbsThread`);
+  };
+  
+  @action.bound
+  handleClickBbsMenuButtonNew(event) {
+    event.stopPropagation();
+  };
+  
+  @action.bound
+  handleClickBbsMenuButtonImage(event) {
+    event.stopPropagation();
+  };
+  
+  @action.bound
+  handleClickBbsMenuButtonVideo(event) {
+    event.stopPropagation();
+  };
+  
   
   
   

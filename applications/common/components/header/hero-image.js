@@ -53,7 +53,7 @@ const DataTitle = styled.h1`
   line-height: 1.4em;
 `;
 
-const IconButtonKeyboardArrowDown = styled(IconButton)`
+const IconButtonKeyboardArrowUp = styled(IconButton)`
   margin: 2px auto 0 !important;
   padding: 2px 0 0 !important;
   font-size: 12px !important;
@@ -125,9 +125,9 @@ const DataTitleClosed = styled.h1`
   line-height: 1.4em;
 `;
       
-const IconButtonKeyboardArrowUp = styled(IconButton)`
+const IconButtonKeyboardArrowDown = styled(IconButton)`
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 2px 0 0 !important;
   font-size: 12px !important;
   width: 24px !important;
   height: 24px !important;
@@ -340,9 +340,9 @@ export default class extends React.Component {
           <BoxData>
             <DataTitleBox>
               <DataTitle>{stores.header.dataTitle}</DataTitle>
-              <IconButtonKeyboardArrowDown color="secondary" onClick={stores.header.dataCloseFunction}>
-              <IconKeyboardArrowDown />
-            </IconButtonKeyboardArrowDown>
+              <IconButtonKeyboardArrowUp color="secondary" onClick={stores.header.dataCloseFunction}>
+                <IconKeyboardArrowUp />
+              </IconButtonKeyboardArrowUp>
             </DataTitleBox>
             <DataInfo>ハード | {stores.header.dataHardware}</DataInfo>
             <DataInfo>ジャンル | {stores.header.dataGenre}</DataInfo>
@@ -357,9 +357,9 @@ export default class extends React.Component {
         { !stores.header.dataOpen &&
           <BoxDataClosed>
             <DataTitleClosed>{stores.header.dataTitle}</DataTitleClosed>
-            <IconButtonKeyboardArrowUp color="secondary" onClick={stores.header.dataOpenFunction}>
-              <IconKeyboardArrowUp />
-            </IconButtonKeyboardArrowUp>
+            <IconButtonKeyboardArrowDown color="secondary" onClick={stores.header.dataOpenFunction}>
+              <IconKeyboardArrowDown />
+            </IconButtonKeyboardArrowDown>
           </BoxDataClosed>
         }
         

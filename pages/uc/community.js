@@ -32,7 +32,7 @@ import TextField from '@material-ui/core/TextField';
 // import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
 // import InputLabel from '@material-ui/core/InputLabel';
-import FormGroup from '@material-ui/core/FormGroup';
+// import FormGroup from '@material-ui/core/FormGroup';
 // import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -51,6 +51,12 @@ import IconNew from '@material-ui/icons/FiberNew';
 import IconImage from '@material-ui/icons/Image';
 import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
 import IconSearch from '@material-ui/icons/Search';
+import IconAssignment from '@material-ui/icons/Assignment';
+import IconPublic from '@material-ui/icons/Public';
+import IconHealing from '@material-ui/icons/Healing';
+import IconSchedule from '@material-ui/icons/Schedule';
+
+
 
 import initStoreCommon from '../../applications/common/stores/common';
 import initStoreHeader from '../../applications/common/stores/header';
@@ -75,6 +81,13 @@ const Container = styled.div`
 // ---------------------------------------------
 //   BBS Menu
 // ---------------------------------------------
+
+const BbsTitleBox = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0;
+  // background-color: pink;
+`;
 
 
 const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
@@ -166,6 +179,135 @@ const BbsSearchCheckBox = styled.div`
   flex-flow: row wrap;
   margin: 15px 0 0 0;
 `;
+
+
+// ---------------------------------------------
+//   BBS
+// ---------------------------------------------
+
+const BbsTitle = styled.h2`
+  font-size: 18px;
+  margin: 3px 0 0 0;
+`;
+
+const BbsInfoBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  font-size: 12px;
+  margin: 0 0 0 0;
+`;
+
+const StyledIconAssignment = styled(IconAssignment)`
+  font-size: 24px !important;
+  margin: 2px 2px 0 0 !important;
+`;
+
+const BbsInfoAbout = styled.div`
+  font-size: 12px;
+  color: #009933;
+  margin: 0 10px 0 0;
+`;
+
+const BbsButton = styled(Button)`
+  font-size: 12px !important;
+  width: 36px !important;
+  height: 22px !important;
+  min-width: 36px !important;
+  min-height: 22px !important;
+  margin: 3px 0 0 0 !important;
+  padding: 0 0 0 0 !important;
+`;
+
+const StyledIconId = styled(IconPublic)`
+  font-size: 24px !important;
+  margin: 2px 2px 0 10px !important;
+`;
+
+const BbsInfoId = styled.div`
+  font-size: 12px;
+  color: #009933;
+  margin: 0 10px 0 0;
+`;
+
+const ExpansionPanelDetailsBbs = styled(ExpansionPanelDetails)`
+  display: inline !important;
+  margin: 0 !important;
+  padding: 0 !important;
+`;
+
+const BbsContentsContainer = styled.div`
+  margin: 0;
+  padding: 0 24px 24px;
+`;
+
+const ProfileBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  // background-color: pink;
+`;
+
+const ProfileThumbnail = styled.img`
+  border-radius: 6px;
+  width: 48px;
+  margin: 2px 0 0 0;
+`;
+
+const ProfileInfoBox = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 0;
+  padding: 0 0 0 10px;
+`;
+
+const ProfileNameBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+`;
+
+const ProfileName = styled.div`
+  font-size: 14px;
+  color: #337ab7;
+  margin: 0;
+  padding: 0;
+`;
+
+const StyledIconHealing = styled(IconHealing)`
+  font-size: 18px !important;
+  margin: 4px 2px 0 2px !important;
+`;
+
+const ProfileStatus = styled.div`
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+`;
+
+const StyledIconSchedule = styled(IconSchedule)`
+  font-size: 18px !important;
+  margin: 4px 2px 0 2px !important;
+`;
+
+const ProfileCheckbox = styled(Checkbox)`
+  height: auto !important;
+`;
+
+const BbsTextarea = styled.textarea`
+  width: 100%;
+  max-width: 600px;
+  margin: 10px 0 0 0;
+  padding: 0;
+  
+  @media screen and (max-width: 480px) {
+    max-width: auto;
+  }
+`;
+
+
 
 
 
@@ -583,6 +725,80 @@ class Component extends React.Component {
                 }
                 
               </ExpansionPanelDetailsBbsMenu>
+              
+            </ExpansionPanel>
+            
+            
+            
+            
+            <ExpansionPanel
+              defaultExpanded={true}
+            >
+              
+              {/* Title */}
+              <ExpansionPanelSummary expandIcon={<IconExpandMore />}>
+              
+                <BbsTitleBox>
+                  
+                  <BbsTitle>雑談スレッド</BbsTitle>
+                  
+                  <BbsInfoBox>
+                    
+                    <StyledIconAssignment />
+                    <BbsInfoAbout>スレッドについて</BbsInfoAbout>
+                    
+                    <BbsButton variant="outlined">
+                      編集
+                    </BbsButton>
+                    
+                    <StyledIconId />
+                    <BbsInfoId>ks8WPvlQpbg</BbsInfoId>
+                    
+                  </BbsInfoBox>
+                  
+                </BbsTitleBox>
+                
+              </ExpansionPanelSummary>
+              
+              
+              {/* Contents */}
+              <ExpansionPanelDetailsBbs>
+                
+                <BbsContentsContainer>
+                  
+                  <ProfileBox>
+                    <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
+                    
+                    <ProfileInfoBox>
+                    
+                      <ProfileNameBox>
+                        <ProfileName>あづみ</ProfileName>
+                        <StyledIconHealing />
+                        <ProfileStatus>プロハンター</ProfileStatus>
+                        <StyledIconSchedule />
+                        <ProfileStatus>1 時間前</ProfileStatus>
+                      </ProfileNameBox>
+                      
+                      <FormControlLabel
+                        control={
+                          <ProfileCheckbox
+                            // checked={stores.current.developerShow}
+                            // onChange={stores.current.developerChangeFunction}
+                          />
+                        }
+                        label="ななしにする"
+                      />
+                    
+                    </ProfileInfoBox>
+                    
+                  </ProfileBox>
+                  
+                  <BbsTextarea rows="6" />
+                  
+                </BbsContentsContainer>
+                
+                
+              </ExpansionPanelDetailsBbs>
               
             </ExpansionPanel>
             

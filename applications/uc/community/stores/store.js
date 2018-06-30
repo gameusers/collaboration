@@ -178,6 +178,33 @@ class Store {
   };
   
   
+  // ---------------------------------------------
+  //   BBS Form
+  // ---------------------------------------------
+  
+  @observable checkedBbsFormAnonymity = false;
+  @observable showBbsFormImage = false;
+  @observable showBbsFormVideo = false;
+  
+  
+  @action.bound
+  handleCheckedBbsFormAnonymity() {
+    this.checkedBbsFormAnonymity = !this.checkedBbsFormAnonymity;
+  };
+  
+  @action.bound
+  handleClickShowBbsFormImage() {
+    this.showBbsFormImage = !this.showBbsFormImage;
+    this.showBbsFormVideo = false;
+  };
+  
+  @action.bound
+  handleClickShowBbsFormVideo() {
+    this.showBbsFormVideo = !this.showBbsFormVideo;
+    this.showBbsFormImage = false;
+  };
+  
+  
   
   // ---------------------------------------------
   //   スレッドデータ

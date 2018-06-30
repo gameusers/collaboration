@@ -2,12 +2,13 @@
 //   Import
 // --------------------------------------------------
 
-import { hot } from 'react-hot-loader';
+// import { hot } from 'react-hot-loader';
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+import paragraphs from 'lines-to-paragraphs';
 // import Pagination from 'rc-pagination';
 
 import Button from '@material-ui/core/Button';
@@ -31,9 +32,9 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TextField from '@material-ui/core/TextField';
 // import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
-// import InputLabel from '@material-ui/core/InputLabel';
+import InputLabel from '@material-ui/core/InputLabel';
 // import FormGroup from '@material-ui/core/FormGroup';
-// import FormControl from '@material-ui/core/FormControl';
+import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 // import Select from '@material-ui/core/Select';
@@ -55,6 +56,7 @@ import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
+import IconVideocam from '@material-ui/icons/Videocam';
 
 
 
@@ -197,7 +199,13 @@ const BbsInfoBox = styled.div`
   margin: 0 0 0 0;
 `;
 
-const StyledIconAssignment = styled(IconAssignment)`
+const BbsInfoAboutBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 6px 0 0;
+`;
+
+const IconAssignmentBbsInfo = styled(IconAssignment)`
   font-size: 24px !important;
   margin: 2px 2px 0 0 !important;
 `;
@@ -205,10 +213,27 @@ const StyledIconAssignment = styled(IconAssignment)`
 const BbsInfoAbout = styled.div`
   font-size: 12px;
   color: #009933;
-  margin: 0 10px 0 0;
+  margin: 0;
 `;
 
-const BbsButton = styled(Button)`
+const BbsInfoIdBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 8px 0 0;
+`;
+
+const IconPublicBbsInfo = styled(IconPublic)`
+  font-size: 24px !important;
+  margin: 2px 2px 0 0 !important;
+`;
+
+const BbsInfoId = styled.div`
+  font-size: 12px;
+  color: #009933;
+`;
+
+
+const BbsMiniButton = styled(Button)`
   font-size: 12px !important;
   width: 36px !important;
   height: 22px !important;
@@ -218,16 +243,6 @@ const BbsButton = styled(Button)`
   padding: 0 0 0 0 !important;
 `;
 
-const StyledIconId = styled(IconPublic)`
-  font-size: 24px !important;
-  margin: 2px 2px 0 10px !important;
-`;
-
-const BbsInfoId = styled.div`
-  font-size: 12px;
-  color: #009933;
-  margin: 0 10px 0 0;
-`;
 
 const ExpansionPanelDetailsBbs = styled(ExpansionPanelDetails)`
   display: inline !important;
@@ -240,26 +255,45 @@ const BbsContentsContainer = styled.div`
   padding: 0 24px 24px;
 `;
 
+
+
 const ProfileBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  align-items: flex-start;
+  // align-items: flex-start;
   margin: 0;
   padding: 0;
   // background-color: pink;
 `;
 
+const ProfileThumbnailBox = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  // align-items: stretch;
+  margin: 0;
+  // background-color: blue;
+`;
+
 const ProfileThumbnail = styled.img`
   border-radius: 6px;
   width: 48px;
-  margin: 2px 0 0 0;
+  margin: 3px 0 0 0;
 `;
+
+const ProfileLine = styled.div`
+  flex-grow: 2;
+  border-left: 4px solid #84cacb;
+  margin: 10px 0 0 0;
+  padding: 0;
+`;
+
 
 const ProfileInfoBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   margin: 0;
   padding: 0 0 0 10px;
+  // background-color: green;
 `;
 
 const ProfileNameBox = styled.div`
@@ -276,21 +310,35 @@ const ProfileName = styled.div`
   padding: 0;
 `;
 
-const StyledIconHealing = styled(IconHealing)`
+
+const ProfileStatusBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+`;
+
+const IconHealingProfileStatus = styled(IconHealing)`
   font-size: 18px !important;
   margin: 4px 2px 0 2px !important;
 `;
 
 const ProfileStatus = styled.div`
   font-size: 14px;
+`;
+
+const ProfileAccessTimeBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
   margin: 0;
   padding: 0;
 `;
 
-const StyledIconSchedule = styled(IconSchedule)`
+const IconScheduleProfileAccessTime = styled(IconSchedule)`
   font-size: 18px !important;
   margin: 4px 2px 0 2px !important;
 `;
+
 
 const ProfileCheckbox = styled(Checkbox)`
   height: auto !important;
@@ -306,6 +354,63 @@ const BbsTextarea = styled.textarea`
     max-width: auto;
   }
 `;
+
+const BbsFormImageVideoButtonsBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 1px 0 0 0;
+  padding: 0;
+`;
+
+const ButtonBbsFormImage = styled(Button)`
+  margin: 0 8px 0 0 !important;
+`;
+
+const BbsFormImageBox = styled.div`
+  // display: flex;
+  // flex-flow: row nowrap;
+  // font-size: 14px;
+  margin: 10px 0 0 0;
+  padding: 0;
+`;
+
+const BbsFormImageDescription = styled.p`
+  font-size: 14px;
+  // margin: 0 0 0 0;
+  // padding: 0;
+`;
+
+const BbsFormVideoBox = styled.div`
+  margin: 10px 0 0 0;
+  padding: 0;
+`;
+
+const TextFieldBbsFormVideo = styled(TextField)`
+  width: 100%;
+  max-width: 500px;
+  margin: 8px 0 0 0 !important;
+  
+  @media screen and (max-width: 480px) {
+    max-width: auto;
+  }
+`;
+
+const ButtonBbsFormSend = styled(Button)`
+  margin: 18px 0 0 0 !important;
+`;
+
+const BbsCommentsBox = styled.div`
+  margin: 40px 0 0 0;
+  padding: 0;
+`;
+
+const BbsComment = styled.div`
+  font-size: 14px;
+  line-height: 1.6em;
+  margin: 0;
+  padding: 0;
+`;
+
 
 
 
@@ -373,6 +478,20 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const stores = this.stores;
+    
+    
+    // render() {
+    //   var text = "One\n\n\nTwo\nThree";
+    //   return (
+    //   <div>
+    //     {text.split("\n").map((i,key) => {
+    //       return <p style={{ marginBottom: '20px' }}>{i}</p>;
+    //     })}
+    //   </div>
+    //   );
+    // }
+
+    
     
     
     // --------------------------------------------------
@@ -744,15 +863,19 @@ class Component extends React.Component {
                   
                   <BbsInfoBox>
                     
-                    <StyledIconAssignment />
-                    <BbsInfoAbout>スレッドについて</BbsInfoAbout>
+                    <BbsInfoAboutBox>
+                      <IconAssignmentBbsInfo />
+                      <BbsInfoAbout>スレッドについて</BbsInfoAbout>
+                    </BbsInfoAboutBox>
                     
-                    <BbsButton variant="outlined">
+                    <BbsInfoIdBox>
+                      <IconPublicBbsInfo />
+                      <BbsInfoId>ks8WPvlQpbg</BbsInfoId>
+                    </BbsInfoIdBox>
+                    
+                    <BbsMiniButton variant="outlined">
                       編集
-                    </BbsButton>
-                    
-                    <StyledIconId />
-                    <BbsInfoId>ks8WPvlQpbg</BbsInfoId>
+                    </BbsMiniButton>
                     
                   </BbsInfoBox>
                   
@@ -766,24 +889,57 @@ class Component extends React.Component {
                 
                 <BbsContentsContainer>
                   
+                  
+                  {/* BBS Form */}
                   <ProfileBox>
-                    <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
+                    
+                    <ProfileThumbnailBox>
+                      
+                      {stores.current.checkedBbsFormAnonymity ? (
+                        <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none_30.png" />
+                      ) : (
+                        <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
+                      )}
+                    
+                    </ProfileThumbnailBox>
+                    
                     
                     <ProfileInfoBox>
                     
                       <ProfileNameBox>
-                        <ProfileName>あづみ</ProfileName>
-                        <StyledIconHealing />
-                        <ProfileStatus>プロハンター</ProfileStatus>
-                        <StyledIconSchedule />
-                        <ProfileStatus>1 時間前</ProfileStatus>
+                        
+                        {stores.current.checkedBbsFormAnonymity ? (
+                          <React.Fragment>
+                            <ProfileName>ななし</ProfileName>
+                            
+                            <ProfileStatusBox>
+                              <IconHealingProfileStatus />
+                              <ProfileStatus>774</ProfileStatus>
+                            </ProfileStatusBox>
+                          </React.Fragment>
+                        ) : (
+                          <React.Fragment>
+                            <ProfileName>あづみ</ProfileName>
+                            
+                            <ProfileStatusBox>
+                              <IconHealingProfileStatus />
+                              <ProfileStatus>プロハンター</ProfileStatus>
+                            </ProfileStatusBox>
+                            
+                            <ProfileAccessTimeBox>
+                              <IconScheduleProfileAccessTime />
+                              <ProfileStatus>1 時間前</ProfileStatus>
+                            </ProfileAccessTimeBox>
+                          </React.Fragment>
+                        )}
+                        
                       </ProfileNameBox>
                       
                       <FormControlLabel
                         control={
                           <ProfileCheckbox
-                            // checked={stores.current.developerShow}
-                            // onChange={stores.current.developerChangeFunction}
+                            checked={stores.current.checkedBbsFormAnonymity}
+                            onChange={stores.current.handleCheckedBbsFormAnonymity}
                           />
                         }
                         label="ななしにする"
@@ -793,7 +949,125 @@ class Component extends React.Component {
                     
                   </ProfileBox>
                   
+                  
                   <BbsTextarea rows="6" />
+                  
+                  
+                  <BbsFormImageVideoButtonsBox>
+                    <ButtonBbsFormImage
+                      variant="outlined"
+                      size="small"
+                      onClick={stores.current.handleClickShowBbsFormImage}
+                    >
+                      画像アップロード
+                    </ButtonBbsFormImage>
+                    
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      onClick={stores.current.handleClickShowBbsFormVideo}
+                    >
+                      動画投稿
+                    </Button>
+                  </BbsFormImageVideoButtonsBox>
+                  
+                  
+                  {stores.current.showBbsFormImage &&
+                    <BbsFormImageBox>
+                      <BbsFormImageDescription>
+                        アップロードできる画像の種類はJPEG、PNG、GIF、BMPで、ファイルサイズが3MB以内のものです。
+                      </BbsFormImageDescription>
+                      
+                      <input type="file" />
+                    </BbsFormImageBox>
+                  }
+                  
+                  
+                  {stores.current.showBbsFormVideo &&
+                    <BbsFormVideoBox>
+                      <BbsFormImageDescription>
+                        YouTube のURLが登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
+                      </BbsFormImageDescription>
+                      
+                      <BbsFormImageDescription>
+                        YouTube - https://www.youtube.com/watch?v=__
+                      </BbsFormImageDescription>
+                      
+                      <TextFieldBbsFormVideo
+                        id="video-url"
+                        label="Video URL"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <IconVideocam />
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </BbsFormVideoBox>
+                  }
+                  
+                  <ButtonBbsFormSend
+                    variant="contained"
+                    color="primary"
+                  >
+                    コメントする
+                  </ButtonBbsFormSend>
+                  
+                  
+                  
+                  {/* BBS Comments & Replies */}
+                  <BbsCommentsBox>
+                    
+                    <ProfileBox>
+                      
+                      <ProfileThumbnailBox>
+                        <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
+                        <ProfileLine />
+                      </ProfileThumbnailBox>
+                      
+                      
+                      <ProfileInfoBox>
+                      
+                        <ProfileNameBox>
+                          
+                          <ProfileName>あづみ</ProfileName>
+                          
+                          <ProfileStatusBox>
+                            <IconHealingProfileStatus />
+                            <ProfileStatus>プロハンター</ProfileStatus>
+                          </ProfileStatusBox>
+                          
+                          <ProfileAccessTimeBox>
+                            <IconScheduleProfileAccessTime />
+                            <ProfileStatus>1 時間前</ProfileStatus>
+                          </ProfileAccessTimeBox>
+                          
+                        </ProfileNameBox>
+                        
+                        
+                        <BbsComment>
+                        
+                          <p style={{ marginBottom: '20px' }}>BEYOND: Two Souls</p>
+                          
+                          <p>非常に引き込まれるものがありました。</p>
+                          <p>ジョディのスタンド、エイデンはめちゃくちゃ強いですね。</p>
+                          <p>僕が知っているジョジョ4部までに出てきたスタンドで</p>
+                          <p>エイデンに勝てそうなのは</p>
+                          <p>スタープラチナとザ・ワールド、ヴァニラ・アイスのスタンドくらいですね。</p>
+                          <p>半径10メートル以内の人間を窒息死させたり</p>
+                          <p>意のままに操れたりするのはやばすぎます。</p>
+
+                        </BbsComment>
+                        
+                      </ProfileInfoBox>
+                      
+                    </ProfileBox>
+                    
+                  </BbsCommentsBox>
+                  
+                  
+                  
                   
                 </BbsContentsContainer>
                 

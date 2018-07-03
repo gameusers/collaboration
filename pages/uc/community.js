@@ -8,7 +8,6 @@ import Head from 'next/head';
 // import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-import paragraphs from 'lines-to-paragraphs';
 // import Pagination from 'rc-pagination';
 
 import Button from '@material-ui/core/Button';
@@ -18,7 +17,6 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-// import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Table from '@material-ui/core/Table';
@@ -32,19 +30,11 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import TextField from '@material-ui/core/TextField';
 // import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import InputLabel from '@material-ui/core/InputLabel';
+// import InputLabel from '@material-ui/core/InputLabel';
 // import FormGroup from '@material-ui/core/FormGroup';
-import FormControl from '@material-ui/core/FormControl';
+// import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-// import Select from '@material-ui/core/Select';
-// import Card from '@material-ui/core/Card';
-// import CardContent from '@material-ui/core/CardContent';
-// import CardMedia from '@material-ui/core/CardMedia';
-// import Chip from '@material-ui/core/Chip';
-// import Dialog from '@material-ui/core/Dialog';
-// import DialogContent from '@material-ui/core/DialogContent';
-// import DialogTitle from '@material-ui/core/DialogTitle';
 
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconList from '@material-ui/icons/List';
@@ -60,11 +50,12 @@ import IconVideocam from '@material-ui/icons/Videocam';
 
 
 
-import initStoreCommon from '../../applications/common/stores/common';
-import initStoreHeader from '../../applications/common/stores/header';
+import initStoreCommon from '../../applications/common/layout/stores/common';
+import initStoreHeader from '../../applications/common/layout/stores/header';
 import initStoreUcCommunity from '../../applications/uc/community/stores/store';
 
-import Layout from '../../applications/common/components/layout';
+import Layout from '../../applications/common/layout/components/layout';
+import Snackbar from '../../applications/common/layout/components/snackbar';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -81,7 +72,7 @@ const Container = styled.div`
 
 
 // ---------------------------------------------
-//   BBS Menu
+//   BBS Menu (Thread List & Search)
 // ---------------------------------------------
 
 const BbsTitleBox = styled.div`
@@ -186,6 +177,25 @@ const BbsSearchCheckBox = styled.div`
 // ---------------------------------------------
 //   BBS
 // ---------------------------------------------
+
+// const ButtonTest = styled(Button)`
+//   && {
+//     color: red;
+//     &:hover {
+//       color: green;
+//     }
+//   }
+// `;
+
+const ExpansionPanelSummaryBbs = styled(ExpansionPanelSummary)`
+  && {
+    margin: 0 0 0 0;
+    // background-color: pink;
+    // &:expanded {
+    //   background-color: green;
+    // }
+  }
+`;
 
 const BbsTitle = styled.h2`
   font-size: 18px;
@@ -650,7 +660,9 @@ class Component extends React.Component {
             >
               
               {/* Title */}
-              <ExpansionPanelSummary expandIcon={<IconExpandMore />}>
+              <ExpansionPanelSummary
+                expandIcon={<IconExpandMore />}
+              >
                 
                 <BbsMenuTitleBox>
                   
@@ -854,8 +866,21 @@ class Component extends React.Component {
               defaultExpanded={true}
             >
               
+              
+              {/*<Button
+                // disabled
+                classes={{
+                  root: styles.root
+                  // root: {color: 'blue'}, // class name, e.g. `classes-state-root-x`
+                  // disabled: styles.disabled, // class name, e.g. `classes-state-disabled-x`
+                }}
+              >
+                Test
+              </Button>*/}
+              
+              
               {/* Title */}
-              <ExpansionPanelSummary expandIcon={<IconExpandMore />}>
+              <ExpansionPanelSummaryBbs expandIcon={<IconExpandMore />}>
               
                 <BbsTitleBox>
                   
@@ -881,7 +906,7 @@ class Component extends React.Component {
                   
                 </BbsTitleBox>
                 
-              </ExpansionPanelSummary>
+              </ExpansionPanelSummaryBbs>
               
               
               {/* Contents */}
@@ -896,7 +921,7 @@ class Component extends React.Component {
                     <ProfileThumbnailBox>
                       
                       {stores.current.checkedBbsFormAnonymity ? (
-                        <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none_30.png" />
+                        <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none.png" />
                       ) : (
                         <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
                       )}
@@ -910,7 +935,7 @@ class Component extends React.Component {
                         
                         {stores.current.checkedBbsFormAnonymity ? (
                           <React.Fragment>
-                            <ProfileName>ななし</ProfileName>
+                            <ProfileName>ななしさん</ProfileName>
                             
                             <ProfileStatusBox>
                               <IconHealingProfileStatus />
@@ -978,7 +1003,10 @@ class Component extends React.Component {
                         アップロードできる画像の種類はJPEG、PNG、GIF、BMPで、ファイルサイズが3MB以内のものです。
                       </BbsFormImageDescription>
                       
-                      <input type="file" />
+                      <input
+                        type="file"
+                        onChange={stores.current.handleChangeBbsFormAddImage}
+                      />
                     </BbsFormImageBox>
                   }
                   
@@ -1077,22 +1105,15 @@ class Component extends React.Component {
             </ExpansionPanel>
             
             
-            active<br />
-            active<br />
-            active<br />
-            {/*<textarea>AAA</textarea>
-            
-            <TextField
-              // hintText="MultiLine with rows: 2 and rowsMax: 4"
-              value="AAA"
-              multiLine={true}
-              rows={4}
-              rowsMax={4}
-            />*/}
-            
+            <Button onClick={stores.common.handleOpenSnackbar}>Show message A</Button>
             
             
           </Container>
+          
+          
+          {/* Snackbar 通知用 */}
+          <Snackbar />
+          
           
         </Layout>
       </Provider>

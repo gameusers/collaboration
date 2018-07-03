@@ -8,10 +8,10 @@ import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
-import initStoreCommon from '../../applications/common/stores/common';
-import initStoreHeader from '../../applications/common/stores/header';
+import initStoreCommon from '../../applications/common/layout/stores/common';
+import initStoreHeader from '../../applications/common/layout/stores/header';
 
-import Layout from '../../applications/common/components/layout';
+import Layout from '../../applications/common/layout/components/layout';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

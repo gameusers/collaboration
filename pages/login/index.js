@@ -21,11 +21,11 @@ import IconPassword from '@material-ui/icons/Lock';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import initStoreCommon from '../../applications/common/stores/common';
-import initStoreHeader from '../../applications/common/stores/header';
+import initStoreCommon from '../../applications/common/layout/stores/common';
+import initStoreHeader from '../../applications/common/layout/stores/header';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
-import Layout from '../../applications/common/components/layout';
+import Layout from '../../applications/common/layout/components/layout';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

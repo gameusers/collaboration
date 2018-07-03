@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
+// import iziToast from 'izitoast';
 
 
 // --------------------------------------------------
@@ -202,6 +203,39 @@ class Store {
   handleClickShowBbsFormVideo() {
     this.showBbsFormVideo = !this.showBbsFormVideo;
     this.showBbsFormImage = false;
+  };
+  
+  @action.bound
+  handleChangeBbsFormAddImage(event) {
+    // console.log(`file = ${event.target.files[0]}`);
+    
+    const file = event.target.files[0];
+    
+    // return;
+    
+    console.dir(`file = ${file}`);
+    
+    // if (file) {
+    //   iziToast.error({
+    //     title: 'Error',
+    //     message: '最新のブラウザを利用してください。'
+    //   });
+    // }
+    
+    if (!file) {
+      return;
+    }
+    
+    
+    
+    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+      // iziToast.error({
+      //   title: 'Error',
+      //   message: '最新のブラウザを利用してください。'
+      // });
+      return;
+    }
+    
   };
   
   

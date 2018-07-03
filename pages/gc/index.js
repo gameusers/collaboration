@@ -36,12 +36,12 @@ import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
 import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
 import IconBusiness from '@material-ui/icons/Business';
 
-import initStoreCommon from '../../applications/common/stores/common';
-import initStoreHeader from '../../applications/common/stores/header';
+import initStoreCommon from '../../applications/common/layout/stores/common';
+import initStoreHeader from '../../applications/common/layout/stores/header';
 import initStoreGcIndex from '../../applications/gc/index/stores/store';
 
-import Layout from '../../applications/common/components/layout';
-import LinkIcons from '../../applications/common/components/link-icons';
+import Layout from '../../applications/common/layout/components/layout';
+import LinkIcons from '../../applications/common/layout/components/link-icons';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

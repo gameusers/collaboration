@@ -79,6 +79,7 @@ class Store {
       // to start showing new one
       this.openSnackbar = false;
     } else {
+      console.log('handleOpenSnackbar');
       this.processQueue();
     }
     
@@ -88,7 +89,8 @@ class Store {
   processQueue = () => {
     
     if (this.queueSnackbarArr.length > 0) {
-      
+      console.log('processQueue');
+      console.log(`messageSnackbar = ${this.messageSnackbar}`);
       const tempArr = this.queueSnackbarArr.shift();
       this.messageSnackbar = tempArr.message;
       this.keySnackbar = tempArr.key;
@@ -132,6 +134,7 @@ export default function initStoreCommon(isServer) {
   } else {
     
     if (store === null) {
+      console.log('store = null');
       store = new Store();
     }
     

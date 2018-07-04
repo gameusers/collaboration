@@ -1112,7 +1112,14 @@ class Component extends React.Component {
           
           
           {/* Snackbar 通知用 */}
-          <Snackbar />
+          <Snackbar
+            // open={stores.current.variantSnackbar}
+            variant={stores.current.variantSnackbar}
+            message={stores.current.messageSnackbar}
+            // autoHideDuration={1000}
+            // vertical="top"
+            // horizontal="right"
+          />
           
           
         </Layout>

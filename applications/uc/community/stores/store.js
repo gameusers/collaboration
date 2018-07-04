@@ -3,7 +3,8 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
-// import iziToast from 'izitoast';
+// import { Store as storeCommon } from '../../../common/layout/stores/common';
+import initStoreCommon from '../../../common/layout/stores/common';
 
 
 // --------------------------------------------------
@@ -18,6 +19,16 @@ let store = null;
 // --------------------------------------------------
 
 class Store {
+  
+  
+  // ---------------------------------------------
+  //   Snackbar
+  // ---------------------------------------------
+  
+  @observable openSnackbar = false;
+  @observable variantSnackbar = 'warning';
+  @observable messageSnackbar = 'warning message';
+  
   
   
   // ---------------------------------------------
@@ -215,12 +226,15 @@ class Store {
     
     console.dir(`file = ${file}`);
     
-    // if (file) {
-    //   iziToast.error({
-    //     title: 'Error',
-    //     message: '最新のブラウザを利用してください。'
-    //   });
-    // }
+    if (file) {
+      // console.log(storeCommon);
+      // const store = new storeCommon();
+      
+      console.log(initStoreCommon);
+      const store = initStoreCommon();
+      
+      store.handleOpenSnackbar();
+    }
     
     if (!file) {
       return;

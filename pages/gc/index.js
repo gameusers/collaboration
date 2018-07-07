@@ -36,8 +36,7 @@ import IconSupervisorAccount from '@material-ui/icons/SupervisorAccount';
 import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
 import IconBusiness from '@material-ui/icons/Business';
 
-import initStoreCommon from '../../applications/common/layout/stores/common';
-import initStoreHeader from '../../applications/common/layout/stores/header';
+import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreGcIndex from '../../applications/gc/index/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
@@ -62,8 +61,10 @@ const Container = styled.div`
 // ---------------------------------------------
 
 const PaperSearch = styled(Paper)`
-  margin: 0 0 20px 0 !important;
-  padding: 16px 16px 0 16px !important;
+  && {
+    margin: 0 0 20px 0;
+    padding: 16px 16px 0 16px;
+  }
 `;
 
 const SearchBox = styled.div`
@@ -78,9 +79,10 @@ const SearchTitle = styled.h2`
 `;
 
 const TextFieldSearch = styled(TextField)`
-  flex-grow: 2 !important;
-  margin: 0 10px 0 0 !important;
-  // width: 80% !important;
+  && {
+    flex-grow: 2;
+    margin: 0 10px 0 0;
+  }
 `;
 
 const FormBox = styled.div`
@@ -91,12 +93,16 @@ const FormBox = styled.div`
 `;
 
 const StyledFormControl = styled(FormControl)`
-  min-width: 120px !important;
-  margin: 0 10px 16px 0 !important;
+  && {
+    min-width: 120px;
+    margin: 0 10px 16px 0;
+  }
 `;
 
 const ButtonDialog = styled(Button)`
-  margin: 0 0 16px 0 !important;
+  && {
+    margin: 0 0 16px 0;
+  }
 `;
 
 
@@ -114,27 +120,19 @@ const CardBox = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0 0 12px 0 !important;
-  min-width: 49% !important;
-  max-width: 49% !important;
-  cursor: pointer !important;
-  
-  // @media screen and (max-width: 1020px) {
-  //   min-width: 50% !important;
-  //   max-width: 50% !important;
-  // }
-  
-  @media screen and (max-width: 768px) {
-    min-width: 100% !important;
-    max-width: 100% !important;
+  && {
+    display: flex;
+    flex-flow: row nowrap;
+    margin: 0 0 12px 0;
+    min-width: 49%;
+    max-width: 49%;
+    cursor: pointer;
+    
+    @media screen and (max-width: 768px) {
+      min-width: 100%;
+      max-width: 100%;
+    }
   }
-  
-  // @media screen and (max-width: 480px) {
-  //   min-width: 100% !important;
-  //   max-width: 100% !important;
-  // }
 `;
 
 
@@ -143,17 +141,21 @@ const CardMediaBox = styled.div`
 `;
 
 const StyledCardMedia = styled(CardMedia)`
-  width: 128px !important;
-  height: 128px !important;
-  
-  @media screen and (max-width: 480px) {
-    width: 64px !important;
-    height: 64px !important;
+  && {
+    width: 128px;
+    height: 128px;
+    
+    @media screen and (max-width: 480px) {
+      width: 64px;
+      height: 64px;
+    }
   }
 `;
 
 const StyledCardContent = styled(CardContent)`
-  padding: 8px 16px 8px 16px !important;
+  && {
+    padding: 8px 16px 8px 16px;
+  }
 `;
 
 const CardTitle = styled.h3`
@@ -179,38 +181,52 @@ const CardInfoBox = styled.div`
 
 
 const StyledIconAccountCircle = styled(IconAccountCircle)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 const StyledIconStyle = styled(IconStyle)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 const StyledIconSchedule = styled(IconSchedule)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 const StyledIconMonetizationOn = styled(IconMonetizationOn)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 const StyledIconSupervisorAccount = styled(IconSupervisorAccount)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 const StyledIconVideogameAsset = styled(IconVideogameAsset)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 const StyledIconBusiness = styled(IconBusiness)`
-  font-size: 24px !important;
-  margin: 1px 0 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 1px 0 0 0;
+  }
 `;
 
 
@@ -232,7 +248,9 @@ const CardChipBox = styled.div`
 `;
 
 const StyledChip = styled(Chip)`
-  margin: 0 6px 4px 0 !important;
+  && {
+    margin: 0 6px 4px 0;
+  }
 `;
 
 
@@ -266,27 +284,20 @@ class Component extends React.Component {
     
     super(props);
     
-
+    
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
-      current: initStoreGcIndex(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      current: initStoreGcIndex(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
   }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
-  }
-  
   
   
   render() {
@@ -435,7 +446,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.index}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

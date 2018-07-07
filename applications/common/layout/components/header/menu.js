@@ -18,7 +18,7 @@ import Button from '@material-ui/core/Button';
 
 const Container = styled.nav`
   margin: 0 0 8px 0;
-  // padding: 0 0 8px 0;
+  padding: 0;
   
   width: 100%;
   height: 36px;
@@ -31,15 +31,19 @@ const Container = styled.nav`
 `;
       
 const ButtonMenuActive = styled(Button)`
-  color: white !important;
-  padding: 2px 0 0 !important;
-  border-bottom: solid 2px #B40431 !important;
+  && {
+    color: white;
+    padding: 2px 0 0;
+    border-bottom: solid 2px #B40431;
+  }
 `;
       
 const ButtonMenu = styled(Button)`
-  color: #BDBDBD !important;
-  padding: 2px 0 0 !important;
-  border-bottom: solid 2px #25283D !important;
+  && {
+    color: #BDBDBD;
+    padding: 2px 0 0;
+    border-bottom: solid 2px #25283D;
+  }
 `;
       
 const ScrollbarContainer = styled(Scrollbar)`
@@ -69,7 +73,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    const { stores, headerMenuArr } = this.props;
     
     
     // --------------------------------------------------
@@ -78,50 +82,58 @@ export default class extends React.Component {
     
     const codeArr = [];
     let active = false;
-    let menuArr = [];
+    // let menuArr = headerMenuArr;
     
-    if (stores.pathname === '/') {
-      menuArr = stores.header.menuObj.index;
-    } else if (stores.pathname === '/gc') {
-      menuArr = stores.header.menuObj.gc;
-    } else if (stores.pathname === '/uc') {
-      menuArr = stores.header.menuObj.uc;
-    } else if (stores.pathname === '/login') {
-      menuArr = stores.header.menuObj.login;
-    } else if (stores.pathname === '/login/social') {
-      menuArr = stores.header.menuObj.login;
-    } else if (stores.pathname === '/logout') {
-      menuArr = stores.header.menuObj.logout;
-    }
+    // if (stores.pathname === '/') {
+    //   menuArr = stores.header.menuObj.index;
+    // } else if (stores.pathname === '/gc') {
+    //   menuArr = stores.header.menuObj.gc;
+    // } else if (stores.pathname === '/uc') {
+    //   menuArr = stores.header.menuObj.uc;
+    // } else if (stores.pathname === '/login') {
+    //   menuArr = stores.header.menuObj.login;
+    // } else if (stores.pathname === '/login/social') {
+    //   menuArr = stores.header.menuObj.login;
+    // } else if (stores.pathname === '/logout') {
+    //   menuArr = stores.header.menuObj.logout;
+    // }
     
-    const reverseMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
-    // console.log(`stores.pathname = ${stores.pathname}`);
+    // console.log(headerMenuArr);
     
-    reverseMenuArr.forEach((value, index) => {
-      // console.log('AAA');
-      if (value.pathname === stores.pathname || (!active && index + 1 === reverseMenuArr.length)) {
-        
-        codeArr.unshift(
-          <ButtonMenuActive key={index}>
-            {value.name}
-          </ButtonMenuActive>
-        );
-        
-        active = true;
-        
-      } else {
-        
-        codeArr.unshift(
-          <Link prefetch href={value.pathname} key={index}>
-            <ButtonMenu>
-              {value.name}
-            </ButtonMenu>
-          </Link>
-        );
-        
-      }
+    if (headerMenuArr && headerMenuArr.length > 0) {
       
-    });
+      // const reverseHeaderMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
+      const reverseHeaderMenuArr = headerMenuArr.slice().reverse();
+      // const reverseHeaderMenuArr = headerMenuArr;
+      // console.log(`stores.pathname = ${stores.pathname}`);
+      
+      reverseHeaderMenuArr.forEach((value, index) => {
+        
+        if (value.pathname === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
+          
+          codeArr.unshift(
+            <ButtonMenuActive key={index}>
+              {value.name}
+            </ButtonMenuActive>
+          );
+          
+          active = true;
+          
+        } else {
+          
+          codeArr.unshift(
+            <Link prefetch href={value.pathname} key={index}>
+              <ButtonMenu>
+                {value.name}
+              </ButtonMenu>
+            </Link>
+          );
+          
+        }
+        
+      });
+      
+    }
     
     
     // --------------------------------------------------

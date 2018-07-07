@@ -3,15 +3,17 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
-// import { Store as storeCommon } from '../../../common/layout/stores/common';
-import initStoreCommon from '../../../common/layout/stores/common';
+// import { Store as StoreCommon } from '../../../common/layout/stores/common';
+// import initStoreLayout from '../../../common/layout/stores/layout';
+// import { store as storeCommon } from '../../../common/layout/stores/common';
 
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let store = null;
+let storeUcCommunity = null;
+let storeLayout = null;
 
 
 // --------------------------------------------------
@@ -22,12 +24,42 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Header Menu
+  // ---------------------------------------------
+  
+  // @observable headerMenuArr = [
+  //   {
+  //     name: 'トップ',
+  //     pathname: '/uc/community'
+  //   },
+  //   {
+  //     name: 'メンバー',
+  //     pathname: '/uc/community/member'
+  //   }
+  // ]
+  
+  
+  // ---------------------------------------------
   //   Snackbar
   // ---------------------------------------------
   
-  @observable openSnackbar = false;
-  @observable variantSnackbar = 'warning';
-  @observable messageSnackbar = 'warning message';
+  // @observable openSnackbar = false;
+  // @observable variantSnackbar = 'warning';
+  // @observable messageSnackbar = 'warning message';
+  
+  // @action.bound
+  // handleIncrementCount() {
+  //   // console.log(`uc/community/store - initStoreLayout = ${initStoreLayout()}`);
+  //   // console.log(initStoreLayout());
+  //   // const testStore = initStoreLayout();
+  //   // console.log(`uc/community/store - testStore.count = ${testStore.count}`);
+    
+  //   // console.log(`uc/community/store - storeLayout.count = ${storeLayout.count}`);
+  //   // storeLayout.increment();
+  //   // storeLayout.variantSnackbar = 'warning';
+  //   // storeLayout.messageSnackbar = 'warning message';
+  //   storeLayout.handleOpenSnackbar('warning', 'warning message');
+  // };
   
   
   
@@ -227,13 +259,17 @@ class Store {
     console.dir(`file = ${file}`);
     
     if (file) {
-      // console.log(storeCommon);
-      // const store = new storeCommon();
+      // console.log(`uc/community/store - StoreCommon = ${StoreCommon}`);
+      // console.log(`uc/community/store - messageSnackbar = ${StoreCommon.messageSnackbar}`);
+      // const store = new StoreCommon();
       
-      console.log(initStoreCommon);
-      const store = initStoreCommon();
+      // console.log(`uc/community/store - messageSnackbar = ${store.messageSnackbar}`);
+      // const store = initStoreLayout();
       
-      store.handleOpenSnackbar();
+      // console.log(`uc/community/store - storeCommon = ${storeCommon}`);
+      
+      
+      // store.handleOpenSnackbar();
     }
     
     if (!file) {
@@ -312,7 +348,11 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreUcCommunity(isServer) {
+export default function initStoreUcCommunity(isServer, storeLayoutInstance) {
+  
+  if (storeLayout === null && storeLayoutInstance) {
+    storeLayout = storeLayoutInstance;
+  }
   
   if (isServer) {
     
@@ -320,11 +360,11 @@ export default function initStoreUcCommunity(isServer) {
     
   } else {
     
-    if (store === null) {
-      store = new Store();
+    if (storeUcCommunity === null) {
+      storeUcCommunity = new Store();
     }
     
-    return store;
+    return storeUcCommunity;
     
   }
   

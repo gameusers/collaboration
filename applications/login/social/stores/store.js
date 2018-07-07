@@ -9,7 +9,8 @@ import { action, observable } from 'mobx';
 //   Store
 // --------------------------------------------------
 
-let store = null;
+let storeLoginSocial = null;
+let storeLayout = null;
 
 
 // --------------------------------------------------
@@ -123,7 +124,11 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLoginSocial(isServer) {
+export default function initStoreLoginSocial(isServer, storeLayoutInstance) {
+  
+  if (storeLayout === null && storeLayoutInstance) {
+    storeLayout = storeLayoutInstance;
+  }
   
   if (isServer) {
     
@@ -131,11 +136,11 @@ export default function initStoreLoginSocial(isServer) {
     
   } else {
     
-    if (store === null) {
-      store = new Store();
+    if (storeLoginSocial === null) {
+      storeLoginSocial = new Store();
     }
     
-    return store;
+    return storeLoginSocial;
     
   }
   

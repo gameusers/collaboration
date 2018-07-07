@@ -8,8 +8,8 @@ import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
-import initStoreCommon from '../../applications/common/layout/stores/common';
-import initStoreHeader from '../../applications/common/layout/stores/header';
+import initStoreLayout from '../../applications/common/layout/stores/layout';
+import initStoreGcCommunity from '../../applications/gc/community/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
 
@@ -28,7 +28,7 @@ import withRoot from '../../lib/material-ui/withRoot';
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://35.203.143.160:8080/gc/community
 // --------------------------------------------------
 
 @observer
@@ -49,21 +49,15 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      current: initStoreGcCommunity(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
   }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
-  }
-  
   
   
   render() {
@@ -84,14 +78,14 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.gc}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
             <title>Game Users</title>
           </Head>
         
-          uc/community.js
+          gc/community.js
           
         </Layout>
       </Provider>

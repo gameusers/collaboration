@@ -4,23 +4,9 @@
 
 import React from 'react';
 import Head from 'next/head';
-import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
-import styled from 'styled-components';
-// import Swiper from 'react-id-swiper';
 
-// import Card from '@material-ui/core/Card';
-// import CardActions from '@material-ui/core/CardActions';
-// import CardContent from '@material-ui/core/CardContent';
-// import CardMedia from '@material-ui/core/CardMedia';
-// import Button from '@material-ui/core/Button';
-// import Typography from '@material-ui/core/Typography';
-
-// import IconSchedule from '@material-ui/icons/Schedule';
-// import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
-
-import initStoreCommon from '../applications/common/layout/stores/common';
-import initStoreHeader from '../applications/common/layout/stores/header';
+import initStoreLayout from '../applications/common/layout/stores/layout';
 
 import Layout from '../applications/common/layout/components/layout';
 
@@ -39,7 +25,7 @@ import withRoot from '../lib/material-ui/withRoot';
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://35.203.143.160:8080/test
 // --------------------------------------------------
 
 @observer
@@ -61,19 +47,13 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
       pathname: props.pathname
     };
     
-  }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
   }
   
   
@@ -85,7 +65,7 @@ class Component extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
+    // const stores = this.stores;
     
     
     

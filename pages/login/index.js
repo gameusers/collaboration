@@ -21,8 +21,7 @@ import IconPassword from '@material-ui/icons/Lock';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import initStoreCommon from '../../applications/common/layout/stores/common';
-import initStoreHeader from '../../applications/common/layout/stores/header';
+import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
@@ -46,8 +45,10 @@ const Container = styled.div`
 // ---------------------------------------------
 
 const PaperForm = styled(Paper)`
-  margin: 0 0 8px 0 !important;
-  padding: 16px !important;
+  && {
+    margin: 0 0 8px 0;
+    padding: 16px;
+  }
 `;
 
 const Title = styled.h2`
@@ -60,7 +61,9 @@ const Description = styled.div`
 `;
 
 const StyledFormControl = styled(FormControl)`
-  margin: 0 0 10px 0 !important;
+  && {
+    margin: 0 0 10px 0;
+  }
 `;
 
 const FormBox = styled.form`
@@ -79,7 +82,9 @@ const InputBox = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  margin: 10px 0 0 0 !important;
+  && {
+    margin: 10px 0 0 0;
+  }
 `;
 
 
@@ -102,25 +107,19 @@ class Component extends React.Component {
     
     super(props);
     
-
+    
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
-      current: initStoreLoginIndex(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      current: initStoreLoginIndex(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
-  }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
   }
   
   
@@ -142,7 +141,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.login}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

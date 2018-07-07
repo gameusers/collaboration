@@ -9,7 +9,8 @@ import { action, observable } from 'mobx';
 //   Store
 // --------------------------------------------------
 
-let store = null;
+let storeUcIndex = null;
+let storeLayout = null;
 
 
 // --------------------------------------------------
@@ -17,6 +18,50 @@ let store = null;
 // --------------------------------------------------
 
 class Store {
+  
+  
+  // ---------------------------------------------
+  //   Header Menu
+  // ---------------------------------------------
+  
+  @observable headerMenuArr = [
+    {
+      name: 'フィード',
+      pathname: '/'
+    },
+    {
+      name: 'ゲーム',
+      pathname: '/gc'
+    },
+    {
+      name: 'ユーザー',
+      pathname: '/uc'
+    },
+    {
+      name: 'テスト1',
+      pathname: '/test'
+    },
+    {
+      name: 'テスト2',
+      pathname: '/test'
+    },
+    {
+      name: 'テスト3',
+      pathname: '/test'
+    },
+    {
+      name: 'テスト4',
+      pathname: '/test'
+    },
+    {
+      name: 'テスト5',
+      pathname: '/test'
+    },
+    {
+      name: 'テスト6',
+      pathname: '/test'
+    }
+  ]
   
   
   // ---------------------------------------------
@@ -198,7 +243,11 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreUcIndex(isServer) {
+export default function initStoreUcIndex(isServer, storeLayoutInstance) {
+  
+  if (storeLayout === null && storeLayoutInstance) {
+    storeLayout = storeLayoutInstance;
+  }
   
   if (isServer) {
     
@@ -206,11 +255,11 @@ export default function initStoreUcIndex(isServer) {
     
   } else {
     
-    if (store === null) {
-      store = new Store();
+    if (storeUcIndex === null) {
+      storeUcIndex = new Store();
     }
     
-    return store;
+    return storeUcIndex;
     
   }
   

@@ -48,14 +48,10 @@ import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconVideocam from '@material-ui/icons/Videocam';
 
-
-
-import initStoreCommon from '../../applications/common/layout/stores/common';
-import initStoreHeader from '../../applications/common/layout/stores/header';
+import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreUcCommunity from '../../applications/uc/community/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
-import Snackbar from '../../applications/common/layout/components/snackbar';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -84,9 +80,11 @@ const BbsTitleBox = styled.div`
 
 
 const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
-  display: inline !important;
-  margin: 0 0 0 0 !important;
-  padding: 0 !important;
+  && {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 // const PaperBbsMenu = styled(Paper)`
@@ -112,15 +110,19 @@ const BbsMenuButtonsBox = styled.div`
 `;
 
 const IconButtonBbsMenu = styled(IconButton)`
-  margin: 0 4px 0 0 !important;
-  padding: 0 !important;
-  width: 28px !important;
-  height: 28px !important;
+  && {
+    margin: 0 4px 0 0;
+    padding: 0;
+    width: 28px;
+    height: 28px;
+  }
 `;
 
 const PaperBbsMenuTabs = styled(Paper)`
-  margin: 0 16px 0 !important;
-  padding: 0 !important;
+  && {
+    margin: 0 16px 0;
+    padding: 0;
+  }
 `;
 
 const BbsMenuThreadListTabBox = styled.div`
@@ -141,12 +143,16 @@ const BbsThreadListTableWrapper = styled.div`
 `;
 
 const TableCellBbsThreadListName = styled(TableCell)`
-  white-space: nowrap !important;
-  min-width: 280px !important;
+  && {
+    white-space: nowrap;
+    min-width: 280px;
+  }
 `;
 
 const TableCellBbsThreadList = styled(TableCell)`
-  white-space: nowrap !important;
+  && {
+    white-space: nowrap;
+  }
 `;
 
 const BbsSearchBox = styled.div`
@@ -154,7 +160,9 @@ const BbsSearchBox = styled.div`
 `;
 
 const TextFieldBbsSearch = styled(TextField)`
-  margin: 10px 0 0 0 !important;
+  && {
+    margin: 10px 0 0 0;
+  }
 `;
 
 const BbsSearchDateTimeBox = styled.div`
@@ -164,7 +172,9 @@ const BbsSearchDateTimeBox = styled.div`
 `;
 
 const TextFieldBbsSearchDateTime = styled(TextField)`
-  margin: 10px 20px 0 0 !important;
+  && {
+    margin: 10px 20px 0 0;
+  }
 `;
 
 const BbsSearchCheckBox = styled.div`
@@ -216,8 +226,10 @@ const BbsInfoAboutBox = styled.div`
 `;
 
 const IconAssignmentBbsInfo = styled(IconAssignment)`
-  font-size: 24px !important;
-  margin: 2px 2px 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 2px 2px 0 0;
+  }
 `;
 
 const BbsInfoAbout = styled.div`
@@ -233,8 +245,10 @@ const BbsInfoIdBox = styled.div`
 `;
 
 const IconPublicBbsInfo = styled(IconPublic)`
-  font-size: 24px !important;
-  margin: 2px 2px 0 0 !important;
+  && {
+    font-size: 24px;
+    margin: 2px 2px 0 0;
+  }
 `;
 
 const BbsInfoId = styled.div`
@@ -244,20 +258,24 @@ const BbsInfoId = styled.div`
 
 
 const BbsMiniButton = styled(Button)`
-  font-size: 12px !important;
-  width: 36px !important;
-  height: 22px !important;
-  min-width: 36px !important;
-  min-height: 22px !important;
-  margin: 3px 0 0 0 !important;
-  padding: 0 0 0 0 !important;
+  && {
+    font-size: 12px;
+    width: 36px;
+    height: 22px;
+    min-width: 36px;
+    min-height: 22px;
+    margin: 3px 0 0 0;
+    padding: 0;
+  }
 `;
 
 
 const ExpansionPanelDetailsBbs = styled(ExpansionPanelDetails)`
-  display: inline !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  && {
+    display: inline;
+    margin: 0;
+    padding: 0;
+  }
 `;
 
 const BbsContentsContainer = styled.div`
@@ -329,8 +347,10 @@ const ProfileStatusBox = styled.div`
 `;
 
 const IconHealingProfileStatus = styled(IconHealing)`
-  font-size: 18px !important;
-  margin: 4px 2px 0 2px !important;
+  && {
+    font-size: 18px;
+    margin: 4px 2px 0 2px;
+  }
 `;
 
 const ProfileStatus = styled.div`
@@ -345,13 +365,17 @@ const ProfileAccessTimeBox = styled.div`
 `;
 
 const IconScheduleProfileAccessTime = styled(IconSchedule)`
-  font-size: 18px !important;
-  margin: 4px 2px 0 2px !important;
+  && {
+    font-size: 18px;
+    margin: 4px 2px 0 2px;
+  }
 `;
 
 
 const ProfileCheckbox = styled(Checkbox)`
-  height: auto !important;
+  && {
+    height: auto;
+  }
 `;
 
 const BbsTextarea = styled.textarea`
@@ -373,7 +397,9 @@ const BbsFormImageVideoButtonsBox = styled.div`
 `;
 
 const ButtonBbsFormImage = styled(Button)`
-  margin: 0 8px 0 0 !important;
+  && {
+    margin: 0 8px 0 0;
+  }
 `;
 
 const BbsFormImageBox = styled.div`
@@ -396,17 +422,21 @@ const BbsFormVideoBox = styled.div`
 `;
 
 const TextFieldBbsFormVideo = styled(TextField)`
-  width: 100%;
-  max-width: 500px;
-  margin: 8px 0 0 0 !important;
-  
-  @media screen and (max-width: 480px) {
-    max-width: auto;
+  && {
+    width: 100%;
+    max-width: 500px;
+    margin: 8px 0 0 0;
+    
+    @media screen and (max-width: 480px) {
+      max-width: auto;
+    }
   }
 `;
 
 const ButtonBbsFormSend = styled(Button)`
-  margin: 18px 0 0 0 !important;
+  && {
+    margin: 18px 0 0 0;
+  }
 `;
 
 const BbsCommentsBox = styled.div`
@@ -462,20 +492,14 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
-      current: initStoreUcCommunity(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      current: initStoreUcCommunity(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
-  }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
   }
   
   
@@ -644,7 +668,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.uc}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
@@ -1105,21 +1129,36 @@ class Component extends React.Component {
             </ExpansionPanel>
             
             
-            <Button onClick={stores.common.handleOpenSnackbar}>Show message A</Button>
+            
+            <Button
+              onClick={() => stores.layout.handleOpenSnackbar('success', 'success message')}
+            >
+              Success
+            </Button>
+            
+            <Button
+              onClick={() => stores.layout.handleOpenSnackbar('warning', 'warning message')}
+            >
+              Warning
+            </Button>
+            
+            {/*<Button onClick={stores.layout.increment}>Count = {stores.layout.count}</Button>
+            
+            <Button onClick={stores.current.handleIncrementCount}>From Current Store</Button>*/}
             
             
           </Container>
           
           
           {/* Snackbar 通知用 */}
-          <Snackbar
+          {/*<Snackbar
             // open={stores.current.variantSnackbar}
             variant={stores.current.variantSnackbar}
             message={stores.current.messageSnackbar}
             // autoHideDuration={1000}
             // vertical="top"
             // horizontal="right"
-          />
+          />*/}
           
           
         </Layout>

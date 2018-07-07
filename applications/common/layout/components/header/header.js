@@ -5,10 +5,7 @@
 import React from 'react';
 import styled from 'styled-components';
 // import Link from 'next/link';
-// import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
-// import { VelocityComponent, VelocityTransitionGroup } from 'velocity-react';
-// import isMobile from 'ismobilejs';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -79,19 +76,22 @@ const HeaderTopLogo = styled.div`
 
 
 
-
 const IconButtonTopBell = styled(IconButton)`
-  top: 5px !important;
-  left: 5px !important;
-  
-  @media screen and (max-width: 480px) {
-    width: 26px !important;
-    left: 0 !important;
+  && {
+    top: 5px;
+    left: 5px;
+    
+    @media screen and (max-width: 480px) {
+      width: 26px;
+      left: 0;
+    }
   }
 `;
 
 const BadgeTopBell = styled(Badge)`
-  color: black !important;
+  && {
+    color: black;
+  }
 `;
 
 const HeaderTopSearch = styled.div`
@@ -99,49 +99,58 @@ const HeaderTopSearch = styled.div`
   flex-grow: 1;
   justify-content: center;
   padding: 8px 0 0 10px;
-  // background-color: red;
   max-width: 63%;
   margin-left: auto !important;
 `;
 
 const TextFieldTopSearch = styled(TextField)`
-  width: 80% !important;
+  && {
+    width: 80%;
+  }
 `;
 
 const ButtonTopMenu = styled(Button)`
-  margin: 0 10px 0 0 !important;
-  padding: 0 !important;
-  // background-color: pink !important;
+  && {
+    margin: 0 10px 0 0;
+    padding: 0;
+  }
 `;
 
 const IconButtonTopThumbnail = styled(IconButton)`
-  top: 2px !important;
-  right: 8px !important;
-  margin-left: auto !important;
-  // background-color: pink !important;
+  && {
+    top: 2px;
+    right: 8px;
+    margin-left: auto;
+  }
 `;
 
 const AvatarTop = styled(Avatar)`
-  // margin: 5px 10px 0 0 !important;
-  padding: 0 !important;
-  // background-color: pink !important;
+  && {
+    margin:0;
+    padding: 0;
+  }
 `;
 
 const MenuTopLoginMenu = styled(Menu)`
-  position: fixed !important;
-  top: 10p !importantx;
-  right: 10px !important;
-  // background-color: pink !important;
+  && {
+    position: fixed;
+    top: 10p;
+    right: 10px;
+  }
 `;
 
 const ListItemIconTopLoginMenu = styled(ListItemIcon)`
-  margin: 0 8px 0 0 !important;
-  padding: 0 !important;
+  && {
+    margin: 0 8px 0 0;
+    padding: 0;
+  }
 `;
 
 const ListItemTextTopLoginMenu = styled(ListItemText)`
-  margin: 0 8px 0 0 !important;
-  padding: 0 !important;
+  && {
+    margin: 0 8px 0 0;
+    padding: 0;
+  }
 `;
 
 
@@ -183,7 +192,7 @@ export default class extends React.Component {
           <HeaderTopLogo />
           
           {/* ベル・通知 */}
-          <IconButtonTopBell onClick={stores.header.notificationDialogOpenFunction}>
+          <IconButtonTopBell onClick={stores.layout.handleOpenHeaderNotificationDialog}>
             <BadgeTopBell badgeContent={4} color="primary">
               <IconNotifications />
             </BadgeTopBell>
@@ -203,10 +212,9 @@ export default class extends React.Component {
             />
           </HeaderTopSearch>
           
-          
           {/* メニュー */}
           <IconButtonTopThumbnail
-            onClick={stores.header.loginMenuOpenFunction}
+            onClick={stores.layout.handleOpenHeaderLoginMenu}
           >
             <AvatarTop
               alt="ユーザー1"
@@ -215,18 +223,18 @@ export default class extends React.Component {
           </IconButtonTopThumbnail>
           
           <MenuTopLoginMenu
-            anchorEl={stores.header.loginMenuAnchorEl}
-            open={stores.header.loginMenuOpen}
-            onClose={stores.header.loginMenuCloseFunction}
+            anchorEl={stores.layout.AnchorElHeaderLoginMenu}
+            open={stores.layout.openHeaderLoginMenu}
+            onClose={stores.layout.handleCloseHeaderLoginMenu}
           >
-            <MenuItem onClick={stores.header.loginMenuCloseFunction}>
+            <MenuItem onClick={stores.layout.handleCloseHeaderLoginMenu}>
               <ListItemIconTopLoginMenu>
                 <IconPerson />
               </ListItemIconTopLoginMenu>
               <ListItemTextTopLoginMenu inset primary="プレイヤー" />
             </MenuItem>
             
-            <MenuItem onClick={stores.header.loginMenuCloseFunction}>
+            <MenuItem onClick={stores.layout.handleCloseHeaderLoginMenu}>
               <ListItemIconTopLoginMenu>
                 <IconEject />
               </ListItemIconTopLoginMenu>
@@ -237,26 +245,27 @@ export default class extends React.Component {
         </HeaderTop>
         
         
+        
         {/* ヒーローイメージ（各ゲームの大きな画像） */}
         <HeroImage />
+        
         
         
         {/* 通知ダイアログ */}
         <Dialog
           fullScreen
-          open={stores.header.notificationDialogOpen}
-          onClose={stores.header.notificationDialogCloseFunction}
-          // transition={Transition}
+          open={stores.layout.openHeaderNotificationDialog}
+          onClose={stores.layout.handleCloseHeaderNotificationDialog}
         >
           <AppBar>
             <Toolbar>
-              <IconButton color="inherit" onClick={stores.header.notificationDialogCloseFunction} aria-label="Close">
+              <IconButton color="inherit" onClick={stores.layout.handleCloseHeaderNotificationDialog} aria-label="Close">
                 <IconClose />
               </IconButton>
               <Typography variant="title" color="inherit">
                 Notifications
               </Typography>
-              <Button color="inherit" onClick={stores.header.notificationDialogCloseFunction}>
+              <Button color="inherit" onClick={stores.layout.handleCloseHeaderNotificationDialog}>
                 save
               </Button>
             </Toolbar>

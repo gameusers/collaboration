@@ -10,6 +10,7 @@ import Header from './header/header';
 import HeaderMenu from './header/menu';
 import Footer from './footer';
 import ModalImageVideo from './modal-image-video';
+import Snackbar from './snackbar';
 
 
 
@@ -22,6 +23,16 @@ export default class extends React.Component {
   
   constructor(props) {
     super(props);
+  }
+  
+  
+  /**
+   * ウィンドウの横幅が大きい場合、ヘッダーの情報を開く
+   */
+  componentDidMount() {
+    if (window.innerWidth > 480) {
+      this.props.stores.layout.handleOpenHeaderDataBox();
+    }
   }
   
 
@@ -52,8 +63,10 @@ export default class extends React.Component {
         {/* ヘッダー */}
         <Header />
         
-        {/* 最下部メニュー */}
-        <HeaderMenu />
+        {/* ヘッダー下部メニュー */}
+        <HeaderMenu
+          headerMenuArr={this.props.headerMenuArr}
+        />
         
         {/* コンテンツ */}
         {this.props.children}
@@ -63,6 +76,9 @@ export default class extends React.Component {
         
         {/* 画像・動画用のモーダルウィンドウ */}
         <ModalImageVideo />
+        
+        {/* Snackbar 通知用 */}
+        <Snackbar />
         
       </React.Fragment>
     );

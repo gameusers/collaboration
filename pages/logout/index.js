@@ -11,9 +11,8 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
-import initStoreCommon from '../../applications/common/layout/stores/common';
-import initStoreHeader from '../../applications/common/layout/stores/header';
-import initStoreLoginIndex from '../../applications/login/index/stores/store';
+import initStoreLayout from '../../applications/common/layout/stores/layout';
+// import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
 
@@ -36,8 +35,10 @@ const Container = styled.div`
 // ---------------------------------------------
 
 const PaperForm = styled(Paper)`
-  margin: 0 0 8px 0 !important;
-  padding: 16px !important;
+  && {
+    margin: 0 0 8px 0;
+    padding: 16px;
+  }
 `;
 
 const Title = styled.h2`
@@ -50,14 +51,16 @@ const Description = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  margin: 10px 0 0 0 !important;
+  && {
+    margin: 10px 0 0 0;
+  }
 `;
 
 
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/login
+//   URL: http://35.203.143.160:8080/logout
 // --------------------------------------------------
 
 @observer
@@ -78,20 +81,14 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
-      current: initStoreLoginIndex(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      // current: initStoreUcIndex(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
-  }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
   }
   
   
@@ -113,7 +110,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.logout}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

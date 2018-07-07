@@ -7,7 +7,6 @@ import styled from 'styled-components';
 // import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
-// import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
 import IconKeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
@@ -25,28 +24,18 @@ import LinkIcons from '../../components/link-icons';
 let Container = null;
 let Image = null;
 let BoxData = null;
-// let DataTitle = null;
-// let BoxDataClosed = null;
-// let DataTitleClosed = null;
-// let IconButtonDataOpen = null;
-
 
 
 const DataTitleBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  // justify-content: center;
-  // align-items: center;
   margin: 0 0 2px 0;
   padding: 0 6px 4px 10px;
   border-bottom: #d51a53 solid 1px;
-  // background-color: pink;
 `;
 
 const DataTitle = styled.h1`
   margin: 6px 0 0 0;
-  // padding: 0 10px 4px;
-  // border-bottom: #d51a53 solid 1px;
   flex-grow: 2;
   font-size: 14px;
   font-weight: normal;
@@ -54,16 +43,16 @@ const DataTitle = styled.h1`
 `;
 
 const IconButtonKeyboardArrowUp = styled(IconButton)`
-  margin: 2px auto 0 !important;
-  padding: 2px 0 0 !important;
-  font-size: 12px !important;
-  width: 24px !important;
-  height: 24px !important;
-  min-width: 24px !important;
-  min-height: 24px !important;
-  // background-color: blue !important;
+  && {
+    margin: 2px auto 0;
+    padding: 2px 0 0;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
 `;
-
 
 const DataInfo = styled.p`
   padding: 6px 20px 0;
@@ -76,28 +65,6 @@ const BoxDataLink = styled.div`
   flex-direction: row;
   padding: 5px 10px 0;
 `;
-
-// const DivDataLinkForButton = styled.div`
-//   margin: 0 12px 0 0;
-// `;
-
-// const DivDataLinkForImage = styled.div`
-//   margin: 4px 12px 0 0;
-// `;
-
-// const ADataLink = styled.a`
-//   text-decoration: none;
-// `;
-
-// const ButtonDataLink = styled(Button)`
-//   margin: 0 !important;
-//   padding: 0 !important;
-//   font-size: 12px !important;
-//   min-width: 36px !important;
-//   min-height: 20px !important;
-// `;
-
-
 
 
 const BoxDataClosed = styled.div`
@@ -126,16 +93,16 @@ const DataTitleClosed = styled.h1`
 `;
       
 const IconButtonKeyboardArrowDown = styled(IconButton)`
-  margin: 0 !important;
-  padding: 2px 0 0 !important;
-  font-size: 12px !important;
-  width: 24px !important;
-  height: 24px !important;
-  min-width: 24px !important;
-  min-height: 24px !important;
-  // background-color: red !important;
+  && {
+    margin: 0;
+    padding: 2px 0 0;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+  }
 `;
-
 
 
 
@@ -168,16 +135,16 @@ export default class extends React.Component {
     
     let imgSrc = null;
     
-    if (stores.header.heroImageArr) {
+    if (stores.layout.headerHeroImageArr) {
       
-      const heroImageRandomNo = stores.header.heroImageArr[Math.floor(Math.random() * stores.header.heroImageArr.length)];
+      const heroImageRandomNo = stores.layout.headerHeroImageArr[Math.floor(Math.random() * stores.layout.headerHeroImageArr.length)];
       
-      const paddingTop = stores.header.dataOpen ? 0 : 'auto';
+      const paddingTop = stores.layout.openHeaderDataBox ? 0 : 'auto';
       
       // padding-top は画像の高さ ÷ 画像の幅 × 100
       Container = styled.div`
         width: 100%;
-        background: no-repeat center center url(/static/img/game/${stores.header.gameNo}/hero/${heroImageRandomNo}.jpg);
+        background: no-repeat center center url(/static/img/game/${stores.layout.headerGameNo}/hero/${heroImageRandomNo}.jpg);
         background-size: cover;
         position: relative;
         // height: 0;
@@ -252,83 +219,9 @@ export default class extends React.Component {
         padding: 4px 0 6px 0;
       `;
       
-      imgSrc = `/static/img/game/${stores.header.gameNo}/thumbnail.jpg`;
+      imgSrc = `/static/img/game/${stores.layout.headerGameNo}/thumbnail.jpg`;
       
     }
-    
-    
-    // --------------------------------------------------
-    //   Data Link
-    // --------------------------------------------------
-    
-    // let codeDataLinkArr = [];
-    
-    
-    // if (stores.header.dataLinkArr) {
-      
-    //   stores.header.dataLinkArr.forEach((value, index) => {
-        
-    //     if (value.type === 'Official') {
-          
-    //       codeDataLinkArr.push(
-    //         <DivDataLinkForButton key={index}>
-    //           <ADataLink href={value.url} target="_blank">
-    //             <ButtonDataLink
-    //               variant="raised"
-    //               color="secondary"
-    //             >
-    //               公式
-    //             </ButtonDataLink>
-    //           </ADataLink>
-    //         </DivDataLinkForButton>
-    //       );
-          
-    //     } else if (value.type === 'Twitter') {
-          
-    //       codeDataLinkArr.push(
-    //         <DivDataLinkForImage key={index}>
-    //           <ADataLink href={value.url} target="_blank">
-    //             <img src="/static/img/common/social/twitter@2x.png" width="20" height="20" />
-    //           </ADataLink>
-    //         </DivDataLinkForImage>
-    //       );
-          
-    //     } else if (value.type === 'Facebook') {
-          
-    //       codeDataLinkArr.push(
-    //         <DivDataLinkForImage key={index}>
-    //           <ADataLink href={value.url} target="_blank">
-    //             <img src="/static/img/common/social/facebook@2x.png" width="20" height="20" />
-    //           </ADataLink>
-    //         </DivDataLinkForImage>
-    //       );
-          
-    //     } else if (value.type === 'YouTube') {
-          
-    //       codeDataLinkArr.push(
-    //         <DivDataLinkForImage key={index}>
-    //           <ADataLink href={value.url} target="_blank">
-    //             <img src="/static/img/common/social/youtube@2x.png" width="20" height="20" />
-    //           </ADataLink>
-    //         </DivDataLinkForImage>
-    //       );
-          
-    //     } else if (value.type === 'Steam') {
-          
-    //       codeDataLinkArr.push(
-    //         <DivDataLinkForImage key={index}>
-    //           <ADataLink href={value.url} target="_blank">
-    //             <img src="/static/img/common/social/steam@2x.png" width="20" height="20" />
-    //           </ADataLink>
-    //         </DivDataLinkForImage>
-    //       );
-          
-    //     }
-        
-    //   });
-      
-    // }
-    
     
     
     return (
@@ -336,28 +229,27 @@ export default class extends React.Component {
         
         {imgSrc && <Image src={imgSrc} />}
         
-        { stores.header.dataOpen &&
+        { stores.layout.openHeaderDataBox &&
           <BoxData>
             <DataTitleBox>
-              <DataTitle>{stores.header.dataTitle}</DataTitle>
-              <IconButtonKeyboardArrowUp color="secondary" onClick={stores.header.dataCloseFunction}>
+              <DataTitle>{stores.layout.headerDataTitle}</DataTitle>
+              <IconButtonKeyboardArrowUp color="secondary" onClick={stores.layout.handleCloseHeaderDataBox}>
                 <IconKeyboardArrowUp />
               </IconButtonKeyboardArrowUp>
             </DataTitleBox>
-            <DataInfo>ハード | {stores.header.dataHardware}</DataInfo>
-            <DataInfo>ジャンル | {stores.header.dataGenre}</DataInfo>
-            <DataInfo>プレイ人数 | {stores.header.dataPlayersMax}</DataInfo>
-            <DataInfo>発売日 | {stores.header.dataReleaseDate}</DataInfo>
-            <DataInfo>開発 | {stores.header.dataDeveloper}</DataInfo>
-            <BoxDataLink><LinkIcons linkArr={stores.header.dataLinkArr} /></BoxDataLink>
-            {/*<BoxDataLink>{codeDataLinkArr}</BoxDataLink>*/}
+            <DataInfo>ハード | {stores.layout.headerDataHardware}</DataInfo>
+            <DataInfo>ジャンル | {stores.layout.headerDataGenre}</DataInfo>
+            <DataInfo>プレイ人数 | {stores.layout.headerDataPlayersMax}</DataInfo>
+            <DataInfo>発売日 | {stores.layout.headerDataReleaseDate}</DataInfo>
+            <DataInfo>開発 | {stores.layout.headerDataDeveloper}</DataInfo>
+            <BoxDataLink><LinkIcons linkArr={stores.layout.headerDataLinkArr} /></BoxDataLink>
           </BoxData>
         }
         
-        { !stores.header.dataOpen &&
+        { !stores.layout.openHeaderDataBox &&
           <BoxDataClosed>
-            <DataTitleClosed>{stores.header.dataTitle}</DataTitleClosed>
-            <IconButtonKeyboardArrowDown color="secondary" onClick={stores.header.dataOpenFunction}>
+            <DataTitleClosed>{stores.layout.headerDataTitle}</DataTitleClosed>
+            <IconButtonKeyboardArrowDown color="secondary" onClick={stores.layout.handleOpenHeaderDataBox}>
               <IconKeyboardArrowDown />
             </IconButtonKeyboardArrowDown>
           </BoxDataClosed>

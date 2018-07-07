@@ -137,7 +137,8 @@ const SnackbarContentWrapper = (props) => {
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
   
   constructor(props) {
@@ -152,28 +153,28 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, message } = this.props;
+    const { stores } = this.props;
     
     
-    let variant = null;
-    if (this.props.variant) {
-      variant = this.props.variant;
-    }
+    // let variant = null;
+    // if (this.props.variant) {
+    //   variant = this.props.variant;
+    // }
     
-    let vertical = 'bottom';
-    if (this.props.vertical) {
-      vertical = this.props.vertical;
-    }
+    // let vertical = 'bottom';
+    // if (this.props.vertical) {
+    //   vertical = this.props.vertical;
+    // }
     
-    let horizontal = 'left';
-    if (this.props.horizontal) {
-      horizontal = this.props.horizontal;
-    }
+    // let horizontal = 'left';
+    // if (this.props.horizontal) {
+    //   horizontal = this.props.horizontal;
+    // }
     
-    let autoHideDuration = 5000;
-    if (this.props.autoHideDuration) {
-      autoHideDuration = this.props.autoHideDuration;
-    }
+    // let autoHideDuration = 5000;
+    // if (this.props.autoHideDuration) {
+    //   autoHideDuration = this.props.autoHideDuration;
+    // }
     
     
     const colorsObj = {
@@ -202,21 +203,21 @@ export default class extends React.Component {
     
     return (
       <Snackbar
-        key={stores.common.keySnackbar}
+        key={stores.layout.keySnackbar}
         anchorOrigin={{
-          vertical,
-          horizontal,
+          vertical: stores.layout.verticalSnackbar,
+          horizontal: stores.layout.horizontalSnackbar,
         }}
-        open={stores.common.openSnackbar}
-        autoHideDuration={autoHideDuration}
-        onClose={stores.common.handleCloseSnackbar}
-        onExited={stores.common.handleExitedSnackbar}
+        open={stores.layout.openSnackbar}
+        autoHideDuration={stores.layout.autoHideDurationSnackbar}
+        onClose={stores.layout.handleCloseSnackbar}
+        onExited={stores.layout.handleExitedSnackbar}
       >
         <SnackbarContentWrapper
-          onClose={stores.common.handleCloseSnackbar}
-          variant={variant}
-          message={message}
-          style={colorsObj[variant]}
+          onClose={stores.layout.handleCloseSnackbar}
+          variant={stores.layout.variantSnackbar}
+          message={stores.layout.messageSnackbar}
+          style={colorsObj[stores.layout.variantSnackbar]}
         />
       </Snackbar>
     );

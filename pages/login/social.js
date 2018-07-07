@@ -11,8 +11,7 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
-import initStoreCommon from '../../applications/common/layout/stores/common';
-import initStoreHeader from '../../applications/common/layout/stores/header';
+import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreLoginSocial from '../../applications/login/social/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
@@ -36,8 +35,10 @@ const Container = styled.div`
 // ---------------------------------------------
 
 const PaperForm = styled(Paper)`
-  margin: 0 0 8px 0 !important;
-  padding: 16px !important;
+  && {
+    margin: 0 0 8px 0;
+    padding: 16px;
+  }
 `;
 
 const Title = styled.h2`
@@ -55,17 +56,17 @@ const ButtonsBox = styled.div`
 `;
 
 const ButtonTwitter = styled(Button)`
-  background-color: #55acee !important;
-  margin: 0 10px 0 0 !important;
-  
-  // &:hover {
-  //   background-color: #000000 !important,
-  // }
+  && {
+    background-color: #55acee;
+    margin: 0 10px 0 0;
+  }
 `;
 
 const ButtonGoogle = styled(Button)`
-  background-color: #dd4b39 !important;
-  margin: 0 10px 0 0 !important;
+  && {
+    background-color: #dd4b39;
+    margin: 0 10px 0 0;
+  }
 `;
 
 
@@ -73,7 +74,7 @@ const ButtonGoogle = styled(Button)`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://35.203.143.160:8080/login/social
 // --------------------------------------------------
 
 @observer
@@ -89,25 +90,19 @@ class Component extends React.Component {
     
     super(props);
     
-
+    
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
-      current: initStoreLoginSocial(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      current: initStoreLoginSocial(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
-  }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
   }
   
   
@@ -129,7 +124,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.login}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

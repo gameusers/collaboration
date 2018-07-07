@@ -19,8 +19,8 @@ import Typography from '@material-ui/core/Typography';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 
-import initStoreCommon from '../applications/common/layout/stores/common';
-import initStoreHeader from '../applications/common/layout/stores/header';
+import initStoreLayout from '../applications/common/layout/stores/layout';
+import initStoreIndex from '../applications/index/stores/store';
 
 import Layout from '../applications/common/layout/components/layout';
 
@@ -67,12 +67,11 @@ const CardCategory = styled.h2`
 `;
 
 const StyledCard = styled(Card)`
-  // margin: 0 14px 45px 0 !important;
-  margin: 0 14px 4px 0 !important;
-  // margin: 0 14px 16px 0 !important;
-  width: 300px !important;
-  cursor: pointer !important;
-  // height: 400px !important;
+  && {
+    margin: 0 14px 4px 0;
+    width: 300px;
+    cursor: pointer;
+  }
 `;
 
 const CardMediaBox = styled.div`
@@ -86,7 +85,9 @@ const CardMediaMoviePlayButton = styled.img`
 `;
 
 const StyledCardContent = styled(CardContent)`
-  padding: 16px 24px 0 24px !important;
+  && {
+    padding: 16px 24px 0 24px;
+  }
 `;
 
 const CardTitle = styled.h3`
@@ -112,8 +113,10 @@ const CardInfoDateTimeBox = styled.div`
 `;
 
 const StyledIconSchedule = styled(IconSchedule)`
-  font-size: 20px !important;
-  margin: 3px 0 0 0 !important;
+  && {
+    font-size: 20px;
+    margin: 3px 0 0 0;
+  }
 `;
 
 const CardInfoText = styled.div`
@@ -132,8 +135,10 @@ const CardInfoCommentsTotalBox = styled.div`
 `;
 
 const StyledIconChatBubble = styled(IconChatBubble)`
-  font-size: 20px !important;
-  margin: 3px 0 0 0 !important;
+  && {
+    font-size: 20px;
+    margin: 3px 0 0 0;
+  }
 `;
 
 
@@ -164,19 +169,14 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const storeLayoutInstance = initStoreLayout(props.isServer);
+    
     this.stores = {
-      common: initStoreCommon(props.isServer, props.pathname),
-      header: initStoreHeader(props.isServer, props.pathname),
+      layout: storeLayoutInstance,
+      current: initStoreIndex(props.isServer, storeLayoutInstance),
       pathname: props.pathname
     };
     
-  }
-  
-  
-  componentDidMount() {
-    if (window.innerWidth > 480) {
-      this.stores.header.dataOpenFunction();
-    }
   }
   
   
@@ -210,7 +210,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout>
+        <Layout headerMenuArr={stores.layout.headerMenuObj.index}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
@@ -228,7 +228,7 @@ class Component extends React.Component {
             
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.common.handleOpenModalImage('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
+                <CardMediaBox onClick={() => stores.layout.handleOpenModalImage('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
                   <CardMedia
                     image="/static/img/sample/0r8294vpatkc9nl1.jpg"
                     title="Grand Theft Auto V"
@@ -323,7 +323,7 @@ class Component extends React.Component {
               
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.common.handleOpenModalImage('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
+                <CardMediaBox onClick={() => stores.layout.handleOpenModalImage('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
                   <CardMedia
                     image="/static/img/sample/g0dzjmsmuu32drqb.jpg"
                     title="Metal Gear Solid V: The Phantom Pain"
@@ -373,7 +373,7 @@ class Component extends React.Component {
               
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.common.handleOpenModalVideo('youtube', '1yIHLQJNvDw')}>
+                <CardMediaBox onClick={() => stores.layout.handleOpenModalVideo('youtube', '1yIHLQJNvDw')}>
                   <CardMedia
                     image="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
                     title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
@@ -434,7 +434,7 @@ class Component extends React.Component {
                 
                 <StyledCard>
                   
-                  <CardMediaBox onClick={() => stores.common.handleOpenModalImage('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
+                  <CardMediaBox onClick={() => stores.layout.handleOpenModalImage('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
                     <CardMedia
                       image="https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg"
                       title="フォーオナー"
@@ -578,7 +578,7 @@ class Component extends React.Component {
                 
                 <StyledCard>
                   
-                  <CardMediaBox onClick={() => stores.common.handleOpenModalVideo('youtube', 'y-NkzONb2Bw')}>
+                  <CardMediaBox onClick={() => stores.layout.handleOpenModalVideo('youtube', 'y-NkzONb2Bw')}>
                     <CardMedia
                       image="https://img.youtube.com/vi/y-NkzONb2Bw/mqdefault.jpg"
                       title="マリオテニス エース"

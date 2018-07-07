@@ -9,7 +9,8 @@ import { action, observable } from 'mobx';
 //   Store
 // --------------------------------------------------
 
-let store = null;
+let storeGcCommunity = null;
+let storeLayout = null;
 
 
 // --------------------------------------------------
@@ -321,7 +322,11 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreGcIndex(isServer) {
+export default function initStoreGcCommunity(isServer, storeLayoutInstance) {
+  
+  if (storeLayout === null && storeLayoutInstance) {
+    storeLayout = storeLayoutInstance;
+  }
   
   if (isServer) {
     
@@ -329,11 +334,11 @@ export default function initStoreGcIndex(isServer) {
     
   } else {
     
-    if (store === null) {
-      store = new Store();
+    if (storeGcCommunity === null) {
+      storeGcCommunity = new Store();
     }
     
-    return store;
+    return storeGcCommunity;
     
   }
   

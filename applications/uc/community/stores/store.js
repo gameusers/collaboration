@@ -67,12 +67,18 @@ class Store {
   //   BBS Menu
   // ---------------------------------------------
   
-  @observable openBbsMenuTabNo = 0;
+  @observable bbsMenuExpanded = true;
+  @observable bbsMenuOpenedTabNo = 0;
   
   
   @action.bound
-  handleChangeOpenBbsMenuTabNo(event, value) {
-    this.openBbsMenuTabNo = value;
+  handleBbsMenuExpanded() {
+    this.bbsMenuExpanded = !this.bbsMenuExpanded;
+  };
+  
+  @action.bound
+  handleBbsMenuOpenedTabNo(event, value) {
+    this.bbsMenuOpenedTabNo = value;
   };
   
   @action.bound
@@ -222,69 +228,117 @@ class Store {
   };
   
   
+  
+  // ---------------------------------------------
+  //   BBS
+  // ---------------------------------------------
+  
+  @observable bbsExpanded = true;
+  
+  @action.bound
+  handleBbsExpanded() {
+    this.bbsExpanded = !this.bbsExpanded;
+  };
+  
+  
   // ---------------------------------------------
   //   BBS Form
   // ---------------------------------------------
   
-  @observable checkedBbsFormAnonymity = false;
-  @observable showBbsFormImage = false;
-  @observable showBbsFormVideo = false;
+  @observable bbsFormAnonymityChecked = false;
+  @observable bbsFormImageOpen = false;
+  @observable bbsFormVideoOpen = false;
   
   
   @action.bound
-  handleCheckedBbsFormAnonymity() {
-    this.checkedBbsFormAnonymity = !this.checkedBbsFormAnonymity;
+  handleBbsFormAnonymityChecked() {
+    this.bbsFormAnonymityChecked = !this.bbsFormAnonymityChecked;
   };
   
   @action.bound
-  handleClickShowBbsFormImage() {
-    this.showBbsFormImage = !this.showBbsFormImage;
-    this.showBbsFormVideo = false;
+  handleBbsFormImageOpen() {
+    this.bbsFormImageOpen = !this.bbsFormImageOpen;
+    this.bbsFormVideoOpen = false;
   };
   
   @action.bound
-  handleClickShowBbsFormVideo() {
-    this.showBbsFormVideo = !this.showBbsFormVideo;
-    this.showBbsFormImage = false;
+  handleBbsFormVideoOpen() {
+    this.bbsFormVideoOpen = !this.bbsFormVideoOpen;
+    this.bbsFormImageOpen = false;
   };
   
   @action.bound
-  handleChangeBbsFormAddImage(event) {
+  handleBbsFormAddImages(event) {
     // console.log(`file = ${event.target.files[0]}`);
     
+    const imageSizeUpperLimit = 500000;
+    
     const file = event.target.files[0];
+    const fileReader = new FileReader();
     
-    // return;
     
-    console.dir(`file = ${file}`);
-    
-    if (file) {
-      // console.log(`uc/community/store - StoreCommon = ${StoreCommon}`);
-      // console.log(`uc/community/store - messageSnackbar = ${StoreCommon.messageSnackbar}`);
-      // const store = new StoreCommon();
-      
-      // console.log(`uc/community/store - messageSnackbar = ${store.messageSnackbar}`);
-      // const store = initStoreLayout();
-      
-      // console.log(`uc/community/store - storeCommon = ${storeCommon}`);
-      
-      
-      // store.handleOpenSnackbar();
-    }
+    // ---------------------------------------------
+    //   Error
+    // ---------------------------------------------
     
     if (!file) {
       return;
     }
     
-    
-    
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-      // iziToast.error({
-      //   title: 'Error',
-      //   message: '最新のブラウザを利用してください。'
-      // });
+      storeLayout.handleOpenSnackbar('error', '最新のブラウザを利用してください。');
       return;
     }
+    
+    if (!file.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
+      storeLayout.handleOpenSnackbar('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
+      return;
+    }
+    
+    if (file.size > imageSizeUpperLimit) {
+      storeLayout.handleOpenSnackbar('error', '画像のサイズが大きすぎます。');
+      return;
+    }
+    
+    
+    // ---------------------------------------------
+    //   画像のデータ取得
+    // ---------------------------------------------
+    
+    fileReader.onload = () => {
+
+      const img = new Image();
+      img.src = fileReader.result;
+
+      img.onload = () => {
+
+        const { width } = img;
+        const { height } = img;
+
+        let extension = null;
+
+        if (file.type === 'image/gif') {
+          extension = 'gif';
+        } else if (file.type === 'image/jpeg') {
+          extension = 'jpg';
+        } else if (file.type === 'image/png') {
+          extension = 'png';
+        } else {
+          extension = 'svg';
+        }
+        
+        console.log(`width = ${width}`);
+        console.log(`height = ${height}`);
+        console.log(`extension = ${extension}`);
+        console.log(`fileReader.result = ${fileReader.result}`);
+
+        // dispatch(actions.funcShareImage(file, fileReader.result, width, height, extension));
+
+      };
+
+    };
+
+    fileReader.readAsDataURL(file);
     
   };
   

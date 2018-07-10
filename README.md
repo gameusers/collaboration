@@ -2,8 +2,8 @@
 ![Game Users Banner](https://gameusers.org/assets/img/social/ogp_image.jpg)
 
 
-[![node](https://img.shields.io/badge/node-v8.11.2-lightgrey.svg)](https://nodejs.org/ja/)
-[![npm](https://img.shields.io/badge/npm-v5.6.0-blue.svg)](https://www.npmjs.com/)
+[![node](https://img.shields.io/badge/node-v8.11.3-lightgrey.svg)](https://nodejs.org/ja/)
+[![npm](https://img.shields.io/badge/npm-v6.1.0-blue.svg)](https://www.npmjs.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
 

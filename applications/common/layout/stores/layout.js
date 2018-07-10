@@ -230,6 +230,25 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   Panel
+  // ---------------------------------------------
+  
+  // @observable panelExpanded = null;
+  // @observable openModalImage = false;
+  
+  
+  // @action.bound
+  // handleReturnPanelExpanded(category, id) {
+  //   return true;
+  // };
+  
+  // @action.bound
+  // handlePanelExpanded(category, id) {
+  //   this.openModalImage = true;
+  // };
+  
+  
   
   // ---------------------------------------------
   //   画像・動画モーダルウィンドウ
@@ -296,7 +315,7 @@ class Store {
       // to start showing new one
       this.openSnackbar = false;
     } else {
-      console.log('layout/stores/scommon - handleOpenSnackbar');
+      // console.log('layout/stores/scommon - handleOpenSnackbar');
       this.processQueue();
     }
     
@@ -306,8 +325,8 @@ class Store {
   processQueue = () => {
     
     if (this.queueSnackbarArr.length > 0) {
-      console.log('layout/stores/scommon - processQueue');
-      console.log(`layout/stores/scommon - messageSnackbar = ${this.messageSnackbar}`);
+      // console.log('layout/stores/scommon - processQueue');
+      // console.log(`layout/stores/scommon - messageSnackbar = ${this.messageSnackbar}`);
       const tempArr = this.queueSnackbarArr.shift();
       this.variantSnackbar = tempArr.variant;
       this.messageSnackbar = tempArr.message;
@@ -335,12 +354,12 @@ class Store {
   
   
   
-  @observable count = 0;
+  // @observable count = 0;
 
-  @action.bound
-  increment() {
-    ++this.count;
-  }
+  // @action.bound
+  // increment() {
+  //   ++this.count;
+  // }
   
   
   

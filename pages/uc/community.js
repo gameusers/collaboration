@@ -47,6 +47,9 @@ import IconPublic from '@material-ui/icons/Public';
 import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconVideocam from '@material-ui/icons/Videocam';
+import IconClose from '@material-ui/icons/Close';
+
+import cyan from '@material-ui/core/colors/cyan';
 
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreUcCommunity from '../../applications/uc/community/stores/store';
@@ -74,7 +77,10 @@ const Container = styled.div`
 const BbsTitleBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  margin: 0;
+  // margin: 0;
+  // width: 100%;
+  // padding: 0 0 6px 0;
+  // border-bottom: 1px solid #d0d0d0;
   // background-color: pink;
 `;
 
@@ -86,11 +92,6 @@ const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
     padding: 0;
   }
 `;
-
-// const PaperBbsMenu = styled(Paper)`
-//   margin: 0 0 16px 0 !important;
-//   padding: 16px 16px 0 16px !important;
-// `;
 
 const BbsMenuTitleBox = styled.div`
   display: flex;
@@ -406,7 +407,7 @@ const BbsFormImageBox = styled.div`
   // display: flex;
   // flex-flow: row nowrap;
   // font-size: 14px;
-  margin: 10px 0 0 0;
+  margin: 10px 0 10px 0;
   padding: 0;
 `;
 
@@ -417,7 +418,7 @@ const BbsFormImageDescription = styled.p`
 `;
 
 const BbsFormVideoBox = styled.div`
-  margin: 10px 0 0 0;
+  margin: 10px 0 10px 0;
   padding: 0;
 `;
 
@@ -433,11 +434,76 @@ const TextFieldBbsFormVideo = styled(TextField)`
   }
 `;
 
+
+
+const BbsFormImageVideoPreviewContainer = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0;
+  padding: 0;
+`;
+
+const BbsFormImageVideoPreviewBox = styled.div`
+  position: relative;
+  margin: 10px 12px 0 0;
+  padding: 0;
+`;
+
+
+// const BbsFormPreviewImgBox = styled.div`
+//   // position: relative;
+//   // background-color: pink;
+//   // opacity: 0.5;
+//   margin: 0;
+//   padding: 0;
+// `;
+
+const BbsFormPreviewImg = styled.img`
+  // position: relative;
+  // max-width: 192px;
+  max-height: 108px;
+  // margin: 10px 10px 0 0;
+  // padding: 10px 10px 0 0;
+  // background-color: green;
+`;
+
+const BbsFormPreviewDeleteButton = styled(Button)`
+  && {
+    background-color: ${cyan[500]};
+    &:hover {
+      background-color: ${cyan[700]};
+    }
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    // z-index: 1000;
+  }
+`;
+
+const BbsFormPreviewVideoPlayButton = styled.img`
+  // background-color: pink;
+  // opacity: 0.5;
+  // max-height: 108px;
+  // padding: 10px 10px 0 0;
+  pointer-events: none;
+  width: 100%;
+  position: absolute;
+  top: 0;
+`;
+
 const ButtonBbsFormSend = styled(Button)`
   && {
     margin: 18px 0 0 0;
   }
 `;
+
+
+
+
 
 const BbsCommentsBox = styled.div`
   margin: 40px 0 0 0;
@@ -680,12 +746,18 @@ class Component extends React.Component {
             
             {/* BBS Menu */}
             <ExpansionPanel
-              defaultExpanded={true}
+              expanded={stores.current.bbsMenuExpanded}
+              // expanded={() => stores.layout.handleReturnPanelExpanded()}
+              // expanded={stores.layout.panelExpanded}
             >
               
               {/* Title */}
               <ExpansionPanelSummary
-                expandIcon={<IconExpandMore />}
+                expandIcon={
+                  <IconExpandMore
+                    onClick={stores.current.handleBbsMenuExpanded}
+                  />
+                }
               >
                 
                 <BbsMenuTitleBox>
@@ -739,10 +811,10 @@ class Component extends React.Component {
                 {/* Tab */}
                 <PaperBbsMenuTabs>
                   <Tabs
-                    value={stores.current.openBbsMenuTabNo}
+                    value={stores.current.bbsMenuOpenedTabNo}
                     indicatorColor="primary"
                     textColor="primary"
-                    onChange={stores.current.handleChangeOpenBbsMenuTabNo}
+                    onChange={stores.current.handleBbsMenuOpenedTabNo}
                   >
                     <Tab label="スレッド一覧" />
                     <Tab label="検索" />
@@ -751,7 +823,7 @@ class Component extends React.Component {
                 
                 
                 {/* スレッド一覧 */}
-                {stores.current.openBbsMenuTabNo === 0 &&
+                {stores.current.bbsMenuOpenedTabNo === 0 &&
                   <BbsMenuThreadListTabBox>
                     {codeBbsThreadListArr}
                   </BbsMenuThreadListTabBox>
@@ -759,7 +831,7 @@ class Component extends React.Component {
                 
                 
                 {/* 検索 */}
-                {stores.current.openBbsMenuTabNo === 1 &&
+                {stores.current.bbsMenuOpenedTabNo === 1 &&
                   <BbsMenuSearchTabBox>
                     
                     {/* 検索フォーム */}
@@ -885,26 +957,19 @@ class Component extends React.Component {
             
             
             
-            
+            {/* BBS */}
             <ExpansionPanel
-              defaultExpanded={true}
+              expanded={stores.current.bbsExpanded}
             >
               
-              
-              {/*<Button
-                // disabled
-                classes={{
-                  root: styles.root
-                  // root: {color: 'blue'}, // class name, e.g. `classes-state-root-x`
-                  // disabled: styles.disabled, // class name, e.g. `classes-state-disabled-x`
-                }}
-              >
-                Test
-              </Button>*/}
-              
-              
               {/* Title */}
-              <ExpansionPanelSummaryBbs expandIcon={<IconExpandMore />}>
+              <ExpansionPanelSummaryBbs
+                expandIcon={
+                  <IconExpandMore
+                    onClick={stores.current.handleBbsExpanded}
+                  />
+                }
+              >
               
                 <BbsTitleBox>
                   
@@ -944,7 +1009,7 @@ class Component extends React.Component {
                     
                     <ProfileThumbnailBox>
                       
-                      {stores.current.checkedBbsFormAnonymity ? (
+                      {stores.current.bbsFormAnonymityChecked ? (
                         <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none.png" />
                       ) : (
                         <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
@@ -957,7 +1022,7 @@ class Component extends React.Component {
                     
                       <ProfileNameBox>
                         
-                        {stores.current.checkedBbsFormAnonymity ? (
+                        {stores.current.bbsFormAnonymityChecked ? (
                           <React.Fragment>
                             <ProfileName>ななしさん</ProfileName>
                             
@@ -987,8 +1052,8 @@ class Component extends React.Component {
                       <FormControlLabel
                         control={
                           <ProfileCheckbox
-                            checked={stores.current.checkedBbsFormAnonymity}
-                            onChange={stores.current.handleCheckedBbsFormAnonymity}
+                            checked={stores.current.bbsFormAnonymityChecked}
+                            onChange={stores.current.handleBbsFormAnonymityChecked}
                           />
                         }
                         label="ななしにする"
@@ -1006,7 +1071,7 @@ class Component extends React.Component {
                     <ButtonBbsFormImage
                       variant="outlined"
                       size="small"
-                      onClick={stores.current.handleClickShowBbsFormImage}
+                      onClick={stores.current.handleBbsFormImageOpen}
                     >
                       画像アップロード
                     </ButtonBbsFormImage>
@@ -1014,28 +1079,28 @@ class Component extends React.Component {
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={stores.current.handleClickShowBbsFormVideo}
+                      onClick={stores.current.handleBbsFormVideoOpen}
                     >
                       動画投稿
                     </Button>
                   </BbsFormImageVideoButtonsBox>
                   
                   
-                  {stores.current.showBbsFormImage &&
+                  {stores.current.bbsFormImageOpen &&
                     <BbsFormImageBox>
                       <BbsFormImageDescription>
-                        アップロードできる画像の種類はJPEG、PNG、GIF、BMPで、ファイルサイズが3MB以内のものです。
+                        アップロードできる画像の種類は JPEG, PNG, GIF, BMP で、ファイルサイズが5MB以内のものです。
                       </BbsFormImageDescription>
                       
                       <input
                         type="file"
-                        onChange={stores.current.handleChangeBbsFormAddImage}
+                        onChange={stores.current.handleBbsFormAddImages}
                       />
                     </BbsFormImageBox>
                   }
                   
                   
-                  {stores.current.showBbsFormVideo &&
+                  {stores.current.bbsFormVideoOpen &&
                     <BbsFormVideoBox>
                       <BbsFormImageDescription>
                         YouTube のURLが登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
@@ -1058,6 +1123,59 @@ class Component extends React.Component {
                       />
                     </BbsFormVideoBox>
                   }
+                  
+                  
+                  <BbsFormImageVideoPreviewContainer>
+                    
+                    <BbsFormImageVideoPreviewBox>
+                      <BbsFormPreviewImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1199/image_1.jpg"
+                        onClick={() => stores.layout.handleOpenModalImage('https://gameusers.org/assets/img/bbs_uc/comment/1199/image_1.jpg')}
+                      />
+                      
+                      <BbsFormPreviewDeleteButton
+                        variant="fab"
+                        mini
+                        color="primary"
+                      >
+                        <IconClose />
+                      </BbsFormPreviewDeleteButton>
+                    </BbsFormImageVideoPreviewBox>
+                    
+                    <BbsFormImageVideoPreviewBox>
+                      <BbsFormPreviewImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg"
+                        onClick={() => stores.layout.handleOpenModalImage('https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg')}
+                      />
+                      
+                      <BbsFormPreviewDeleteButton
+                        variant="fab"
+                        color="primary"
+                      >
+                        <IconClose />
+                      </BbsFormPreviewDeleteButton>
+                    </BbsFormImageVideoPreviewBox>
+                    
+                    <BbsFormImageVideoPreviewBox>
+                      <BbsFormPreviewImg
+                        src="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
+                        onClick={() => stores.layout.handleOpenModalVideo('youtube', '1yIHLQJNvDw')}
+                      />
+                      
+                      <BbsFormPreviewVideoPlayButton
+                        src="/static/img/common/video-play-button.png"
+                      />
+                      
+                      <BbsFormPreviewDeleteButton
+                        variant="fab"
+                        color="primary"
+                      >
+                        <IconClose />
+                      </BbsFormPreviewDeleteButton>
+                    </BbsFormImageVideoPreviewBox>
+                    
+                  </BbsFormImageVideoPreviewContainer>
+                  
                   
                   <ButtonBbsFormSend
                     variant="contained"
@@ -1148,18 +1266,6 @@ class Component extends React.Component {
             
             
           </Container>
-          
-          
-          {/* Snackbar 通知用 */}
-          {/*<Snackbar
-            // open={stores.current.variantSnackbar}
-            variant={stores.current.variantSnackbar}
-            message={stores.current.messageSnackbar}
-            // autoHideDuration={1000}
-            // vertical="top"
-            // horizontal="right"
-          />*/}
-          
           
         </Layout>
       </Provider>

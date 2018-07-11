@@ -52,9 +52,11 @@ import IconClose from '@material-ui/icons/Close';
 import cyan from '@material-ui/core/colors/cyan';
 
 import initStoreLayout from '../../applications/common/layout/stores/layout';
+import initStoreFormPost from '../../applications/common/form/stores/post';
 import initStoreUcCommunity from '../../applications/uc/community/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
+import FormPost from '../../applications/common/form/components/post';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -67,6 +69,10 @@ import withRoot from '../../lib/material-ui/withRoot';
 
 const Container = styled.div`
   padding: 10px;
+  
+  @media screen and (max-width: 480px) {
+    padding: 10px 0;
+  }
 `;
 
 
@@ -205,6 +211,10 @@ const ExpansionPanelSummaryBbs = styled(ExpansionPanelSummary)`
     // &:expanded {
     //   background-color: green;
     // }
+    
+    @media screen and (max-width: 480px) {
+      padding: 0 16px;
+    }
   }
 `;
 
@@ -273,15 +283,19 @@ const BbsMiniButton = styled(Button)`
 
 const ExpansionPanelDetailsBbs = styled(ExpansionPanelDetails)`
   && {
-    display: inline;
-    margin: 0;
-    padding: 0;
+    // display: inline;
+    // margin: 0;
+    // padding: 0 0 16px 0;
+    
+    @media screen and (max-width: 480px) {
+      padding: 0 16px 24px 16px;
+    }
   }
 `;
 
 const BbsContentsContainer = styled.div`
   margin: 0;
-  padding: 0 24px 24px;
+  // padding: 0 16px;
 `;
 
 
@@ -373,136 +387,6 @@ const IconScheduleProfileAccessTime = styled(IconSchedule)`
 `;
 
 
-const ProfileCheckbox = styled(Checkbox)`
-  && {
-    height: auto;
-  }
-`;
-
-const BbsTextarea = styled.textarea`
-  width: 100%;
-  max-width: 600px;
-  margin: 10px 0 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    max-width: auto;
-  }
-`;
-
-const BbsFormImageVideoButtonsBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 1px 0 0 0;
-  padding: 0;
-`;
-
-const ButtonBbsFormImage = styled(Button)`
-  && {
-    margin: 0 8px 0 0;
-  }
-`;
-
-const BbsFormImageBox = styled.div`
-  // display: flex;
-  // flex-flow: row nowrap;
-  // font-size: 14px;
-  margin: 10px 0 10px 0;
-  padding: 0;
-`;
-
-const BbsFormImageDescription = styled.p`
-  font-size: 14px;
-  // margin: 0 0 0 0;
-  // padding: 0;
-`;
-
-const BbsFormVideoBox = styled.div`
-  margin: 10px 0 10px 0;
-  padding: 0;
-`;
-
-const TextFieldBbsFormVideo = styled(TextField)`
-  && {
-    width: 100%;
-    max-width: 500px;
-    margin: 8px 0 0 0;
-    
-    @media screen and (max-width: 480px) {
-      max-width: auto;
-    }
-  }
-`;
-
-
-
-const BbsFormImageVideoPreviewContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
-
-const BbsFormImageVideoPreviewBox = styled.div`
-  position: relative;
-  margin: 10px 12px 0 0;
-  padding: 0;
-`;
-
-
-// const BbsFormPreviewImgBox = styled.div`
-//   // position: relative;
-//   // background-color: pink;
-//   // opacity: 0.5;
-//   margin: 0;
-//   padding: 0;
-// `;
-
-const BbsFormPreviewImg = styled.img`
-  // position: relative;
-  // max-width: 192px;
-  max-height: 108px;
-  // margin: 10px 10px 0 0;
-  // padding: 10px 10px 0 0;
-  // background-color: green;
-`;
-
-const BbsFormPreviewDeleteButton = styled(Button)`
-  && {
-    background-color: ${cyan[500]};
-    &:hover {
-      background-color: ${cyan[700]};
-    }
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    min-height: 24px;
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    // z-index: 1000;
-  }
-`;
-
-const BbsFormPreviewVideoPlayButton = styled.img`
-  // background-color: pink;
-  // opacity: 0.5;
-  // max-height: 108px;
-  // padding: 10px 10px 0 0;
-  pointer-events: none;
-  width: 100%;
-  position: absolute;
-  top: 0;
-`;
-
-const ButtonBbsFormSend = styled(Button)`
-  && {
-    margin: 18px 0 0 0;
-  }
-`;
-
-
-
 
 
 const BbsCommentsBox = styled.div`
@@ -553,16 +437,21 @@ class Component extends React.Component {
     
     super(props);
     
-
+    
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
     const storeLayoutInstance = initStoreLayout(props.isServer);
     
+    const storeInstanceObj = {
+      layout: storeLayoutInstance
+    };
+    
     this.stores = {
       layout: storeLayoutInstance,
-      current: initStoreUcCommunity(props.isServer, storeLayoutInstance),
+      formPost: initStoreFormPost(props.isServer, storeInstanceObj),
+      current: initStoreUcCommunity(props.isServer, storeInstanceObj),
       pathname: props.pathname
     };
     
@@ -634,75 +523,75 @@ class Component extends React.Component {
         <div key="bbsThreadList">
           
           <BbsThreadListTableWrapper>
-          
-          <Table>
             
-            <TableHead>
-              <TableRow>
+            <Table>
               
-                <TableCellBbsThreadListName>
-                  名前
-                </TableCellBbsThreadListName>
+              <TableHead>
+                <TableRow>
                 
-                <TableCellBbsThreadList>
-                  <TableSortLabel
-                    active={stores.current.bbsThreadListOrderBy === 'updatedDate'}
-                    direction={stores.current.bbsThreadListOrder}
-                    onClick={() => stores.current.sortBbsThreadList('updatedDate')}
-                  >
-                    最終更新日
-                  </TableSortLabel>
-                </TableCellBbsThreadList>
-                
-                <TableCellBbsThreadList numeric>
-                  <TableSortLabel
-                    active={stores.current.bbsThreadListOrderBy === 'comment'}
-                    direction={stores.current.bbsThreadListOrder}
-                    onClick={() => stores.current.sortBbsThreadList('comment')}
-                  >
-                    コメント
-                  </TableSortLabel>
-                </TableCellBbsThreadList>
-                
-                <TableCellBbsThreadList numeric>
-                  <TableSortLabel
-                    active={stores.current.bbsThreadListOrderBy === 'reply'}
-                    direction={stores.current.bbsThreadListOrder}
-                    onClick={() => stores.current.sortBbsThreadList('reply')}
-                  >
-                    返信
-                  </TableSortLabel>
-                </TableCellBbsThreadList>
-                
-                <TableCellBbsThreadList numeric>
-                  <TableSortLabel
-                    active={stores.current.bbsThreadListOrderBy === 'image'}
-                    direction={stores.current.bbsThreadListOrder}
-                    onClick={() => stores.current.sortBbsThreadList('image')}
-                  >
-                    画像
-                  </TableSortLabel>
-                </TableCellBbsThreadList>
-                
-                <TableCellBbsThreadList numeric>
-                  <TableSortLabel
-                    active={stores.current.bbsThreadListOrderBy === 'video'}
-                    direction={stores.current.bbsThreadListOrder}
-                    onClick={() => stores.current.sortBbsThreadList('video')}
-                  >
-                    動画
-                  </TableSortLabel>
-                </TableCellBbsThreadList>
-                
-              </TableRow>
-            </TableHead>
+                  <TableCellBbsThreadListName>
+                    名前
+                  </TableCellBbsThreadListName>
+                  
+                  <TableCellBbsThreadList>
+                    <TableSortLabel
+                      active={stores.current.bbsThreadListOrderBy === 'updatedDate'}
+                      direction={stores.current.bbsThreadListOrder}
+                      onClick={() => stores.current.sortBbsThreadList('updatedDate')}
+                    >
+                      最終更新日
+                    </TableSortLabel>
+                  </TableCellBbsThreadList>
+                  
+                  <TableCellBbsThreadList numeric>
+                    <TableSortLabel
+                      active={stores.current.bbsThreadListOrderBy === 'comment'}
+                      direction={stores.current.bbsThreadListOrder}
+                      onClick={() => stores.current.sortBbsThreadList('comment')}
+                    >
+                      コメント
+                    </TableSortLabel>
+                  </TableCellBbsThreadList>
+                  
+                  <TableCellBbsThreadList numeric>
+                    <TableSortLabel
+                      active={stores.current.bbsThreadListOrderBy === 'reply'}
+                      direction={stores.current.bbsThreadListOrder}
+                      onClick={() => stores.current.sortBbsThreadList('reply')}
+                    >
+                      返信
+                    </TableSortLabel>
+                  </TableCellBbsThreadList>
+                  
+                  <TableCellBbsThreadList numeric>
+                    <TableSortLabel
+                      active={stores.current.bbsThreadListOrderBy === 'image'}
+                      direction={stores.current.bbsThreadListOrder}
+                      onClick={() => stores.current.sortBbsThreadList('image')}
+                    >
+                      画像
+                    </TableSortLabel>
+                  </TableCellBbsThreadList>
+                  
+                  <TableCellBbsThreadList numeric>
+                    <TableSortLabel
+                      active={stores.current.bbsThreadListOrderBy === 'video'}
+                      direction={stores.current.bbsThreadListOrder}
+                      onClick={() => stores.current.sortBbsThreadList('video')}
+                    >
+                      動画
+                    </TableSortLabel>
+                  </TableCellBbsThreadList>
+                  
+                </TableRow>
+              </TableHead>
+              
+              <TableBody>
+                {codeTableDataArr}
+              </TableBody>
+              
+            </Table>
             
-            <TableBody>
-              {codeTableDataArr}
-            </TableBody>
-            
-          </Table>
-          
           </BbsThreadListTableWrapper>
         
           <TablePagination
@@ -1005,184 +894,9 @@ class Component extends React.Component {
                   
                   
                   {/* BBS Form */}
-                  <ProfileBox>
-                    
-                    <ProfileThumbnailBox>
-                      
-                      {stores.current.bbsFormAnonymityChecked ? (
-                        <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none.png" />
-                      ) : (
-                        <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
-                      )}
-                    
-                    </ProfileThumbnailBox>
-                    
-                    
-                    <ProfileInfoBox>
-                    
-                      <ProfileNameBox>
-                        
-                        {stores.current.bbsFormAnonymityChecked ? (
-                          <React.Fragment>
-                            <ProfileName>ななしさん</ProfileName>
-                            
-                            <ProfileStatusBox>
-                              <IconHealingProfileStatus />
-                              <ProfileStatus>774</ProfileStatus>
-                            </ProfileStatusBox>
-                          </React.Fragment>
-                        ) : (
-                          <React.Fragment>
-                            <ProfileName>あづみ</ProfileName>
-                            
-                            <ProfileStatusBox>
-                              <IconHealingProfileStatus />
-                              <ProfileStatus>プロハンター</ProfileStatus>
-                            </ProfileStatusBox>
-                            
-                            <ProfileAccessTimeBox>
-                              <IconScheduleProfileAccessTime />
-                              <ProfileStatus>1 時間前</ProfileStatus>
-                            </ProfileAccessTimeBox>
-                          </React.Fragment>
-                        )}
-                        
-                      </ProfileNameBox>
-                      
-                      <FormControlLabel
-                        control={
-                          <ProfileCheckbox
-                            checked={stores.current.bbsFormAnonymityChecked}
-                            onChange={stores.current.handleBbsFormAnonymityChecked}
-                          />
-                        }
-                        label="ななしにする"
-                      />
-                    
-                    </ProfileInfoBox>
-                    
-                  </ProfileBox>
+                  <FormPost />
                   
                   
-                  <BbsTextarea rows="6" />
-                  
-                  
-                  <BbsFormImageVideoButtonsBox>
-                    <ButtonBbsFormImage
-                      variant="outlined"
-                      size="small"
-                      onClick={stores.current.handleBbsFormImageOpen}
-                    >
-                      画像アップロード
-                    </ButtonBbsFormImage>
-                    
-                    <Button
-                      variant="outlined"
-                      size="small"
-                      onClick={stores.current.handleBbsFormVideoOpen}
-                    >
-                      動画投稿
-                    </Button>
-                  </BbsFormImageVideoButtonsBox>
-                  
-                  
-                  {stores.current.bbsFormImageOpen &&
-                    <BbsFormImageBox>
-                      <BbsFormImageDescription>
-                        アップロードできる画像の種類は JPEG, PNG, GIF, BMP で、ファイルサイズが5MB以内のものです。
-                      </BbsFormImageDescription>
-                      
-                      <input
-                        type="file"
-                        onChange={stores.current.handleBbsFormAddImages}
-                      />
-                    </BbsFormImageBox>
-                  }
-                  
-                  
-                  {stores.current.bbsFormVideoOpen &&
-                    <BbsFormVideoBox>
-                      <BbsFormImageDescription>
-                        YouTube のURLが登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
-                      </BbsFormImageDescription>
-                      
-                      <BbsFormImageDescription>
-                        YouTube - https://www.youtube.com/watch?v=__
-                      </BbsFormImageDescription>
-                      
-                      <TextFieldBbsFormVideo
-                        id="video-url"
-                        label="Video URL"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <IconVideocam />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </BbsFormVideoBox>
-                  }
-                  
-                  
-                  <BbsFormImageVideoPreviewContainer>
-                    
-                    <BbsFormImageVideoPreviewBox>
-                      <BbsFormPreviewImg
-                        src="https://gameusers.org/assets/img/bbs_uc/comment/1199/image_1.jpg"
-                        onClick={() => stores.layout.handleOpenModalImage('https://gameusers.org/assets/img/bbs_uc/comment/1199/image_1.jpg')}
-                      />
-                      
-                      <BbsFormPreviewDeleteButton
-                        variant="fab"
-                        mini
-                        color="primary"
-                      >
-                        <IconClose />
-                      </BbsFormPreviewDeleteButton>
-                    </BbsFormImageVideoPreviewBox>
-                    
-                    <BbsFormImageVideoPreviewBox>
-                      <BbsFormPreviewImg
-                        src="https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg"
-                        onClick={() => stores.layout.handleOpenModalImage('https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg')}
-                      />
-                      
-                      <BbsFormPreviewDeleteButton
-                        variant="fab"
-                        color="primary"
-                      >
-                        <IconClose />
-                      </BbsFormPreviewDeleteButton>
-                    </BbsFormImageVideoPreviewBox>
-                    
-                    <BbsFormImageVideoPreviewBox>
-                      <BbsFormPreviewImg
-                        src="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
-                        onClick={() => stores.layout.handleOpenModalVideo('youtube', '1yIHLQJNvDw')}
-                      />
-                      
-                      <BbsFormPreviewVideoPlayButton
-                        src="/static/img/common/video-play-button.png"
-                      />
-                      
-                      <BbsFormPreviewDeleteButton
-                        variant="fab"
-                        color="primary"
-                      >
-                        <IconClose />
-                      </BbsFormPreviewDeleteButton>
-                    </BbsFormImageVideoPreviewBox>
-                    
-                  </BbsFormImageVideoPreviewContainer>
-                  
-                  
-                  <ButtonBbsFormSend
-                    variant="contained"
-                    color="primary"
-                  >
-                    コメントする
-                  </ButtonBbsFormSend>
                   
                   
                   

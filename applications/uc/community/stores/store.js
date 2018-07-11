@@ -245,102 +245,102 @@ class Store {
   //   BBS Form
   // ---------------------------------------------
   
-  @observable bbsFormAnonymityChecked = false;
-  @observable bbsFormImageOpen = false;
-  @observable bbsFormVideoOpen = false;
+  // @observable bbsFormAnonymityChecked = false;
+  // @observable bbsFormImageOpen = false;
+  // @observable bbsFormVideoOpen = false;
   
   
-  @action.bound
-  handleBbsFormAnonymityChecked() {
-    this.bbsFormAnonymityChecked = !this.bbsFormAnonymityChecked;
-  };
+  // @action.bound
+  // handleBbsFormAnonymityChecked() {
+  //   this.bbsFormAnonymityChecked = !this.bbsFormAnonymityChecked;
+  // };
   
-  @action.bound
-  handleBbsFormImageOpen() {
-    this.bbsFormImageOpen = !this.bbsFormImageOpen;
-    this.bbsFormVideoOpen = false;
-  };
+  // @action.bound
+  // handleBbsFormImageOpen() {
+  //   this.bbsFormImageOpen = !this.bbsFormImageOpen;
+  //   this.bbsFormVideoOpen = false;
+  // };
   
-  @action.bound
-  handleBbsFormVideoOpen() {
-    this.bbsFormVideoOpen = !this.bbsFormVideoOpen;
-    this.bbsFormImageOpen = false;
-  };
+  // @action.bound
+  // handleBbsFormVideoOpen() {
+  //   this.bbsFormVideoOpen = !this.bbsFormVideoOpen;
+  //   this.bbsFormImageOpen = false;
+  // };
   
-  @action.bound
-  handleBbsFormAddImages(event) {
-    // console.log(`file = ${event.target.files[0]}`);
+  // @action.bound
+  // handleBbsFormAddImages(event) {
+  //   // console.log(`file = ${event.target.files[0]}`);
     
-    const imageSizeUpperLimit = 500000;
+  //   const imageSizeUpperLimit = 500000;
     
-    const file = event.target.files[0];
-    const fileReader = new FileReader();
-    
-    
-    // ---------------------------------------------
-    //   Error
-    // ---------------------------------------------
-    
-    if (!file) {
-      return;
-    }
-    
-    if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-      storeLayout.handleOpenSnackbar('error', '最新のブラウザを利用してください。');
-      return;
-    }
-    
-    if (!file.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
-      storeLayout.handleOpenSnackbar('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
-      return;
-    }
-    
-    if (file.size > imageSizeUpperLimit) {
-      storeLayout.handleOpenSnackbar('error', '画像のサイズが大きすぎます。');
-      return;
-    }
+  //   const file = event.target.files[0];
+  //   const fileReader = new FileReader();
     
     
-    // ---------------------------------------------
-    //   画像のデータ取得
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Error
+  //   // ---------------------------------------------
     
-    fileReader.onload = () => {
+  //   if (!file) {
+  //     return;
+  //   }
+    
+  //   if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+  //     storeLayout.handleOpenSnackbar('error', '最新のブラウザを利用してください。');
+  //     return;
+  //   }
+    
+  //   if (!file.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
+  //     storeLayout.handleOpenSnackbar('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
+  //     return;
+  //   }
+    
+  //   if (file.size > imageSizeUpperLimit) {
+  //     storeLayout.handleOpenSnackbar('error', '画像のサイズが大きすぎます。');
+  //     return;
+  //   }
+    
+    
+  //   // ---------------------------------------------
+  //   //   画像のデータ取得
+  //   // ---------------------------------------------
+    
+  //   fileReader.onload = () => {
 
-      const img = new Image();
-      img.src = fileReader.result;
+  //     const img = new Image();
+  //     img.src = fileReader.result;
 
-      img.onload = () => {
+  //     img.onload = () => {
 
-        const { width } = img;
-        const { height } = img;
+  //       const { width } = img;
+  //       const { height } = img;
 
-        let extension = null;
+  //       let extension = null;
 
-        if (file.type === 'image/gif') {
-          extension = 'gif';
-        } else if (file.type === 'image/jpeg') {
-          extension = 'jpg';
-        } else if (file.type === 'image/png') {
-          extension = 'png';
-        } else {
-          extension = 'svg';
-        }
+  //       if (file.type === 'image/gif') {
+  //         extension = 'gif';
+  //       } else if (file.type === 'image/jpeg') {
+  //         extension = 'jpg';
+  //       } else if (file.type === 'image/png') {
+  //         extension = 'png';
+  //       } else {
+  //         extension = 'svg';
+  //       }
         
-        console.log(`width = ${width}`);
-        console.log(`height = ${height}`);
-        console.log(`extension = ${extension}`);
-        console.log(`fileReader.result = ${fileReader.result}`);
+  //       console.log(`width = ${width}`);
+  //       console.log(`height = ${height}`);
+  //       console.log(`extension = ${extension}`);
+  //       console.log(`fileReader.result = ${fileReader.result}`);
 
-        // dispatch(actions.funcShareImage(file, fileReader.result, width, height, extension));
+  //       // dispatch(actions.funcShareImage(file, fileReader.result, width, height, extension));
 
-      };
+  //     };
 
-    };
+  //   };
 
-    fileReader.readAsDataURL(file);
+  //   fileReader.readAsDataURL(file);
     
-  };
+  // };
   
   
   
@@ -402,10 +402,10 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreUcCommunity(isServer, storeLayoutInstance) {
+export default function initStoreUcCommunity(isServer, storeInstanceObj) {
   
-  if (storeLayout === null && storeLayoutInstance) {
-    storeLayout = storeLayoutInstance;
+  if (storeLayout === null && 'layout' in storeInstanceObj) {
+    storeLayout = storeInstanceObj.layout;
   }
   
   if (isServer) {

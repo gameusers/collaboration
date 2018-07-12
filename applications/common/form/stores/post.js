@@ -24,8 +24,26 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Anonymity
+  // ---------------------------------------------
+  
+  @observable anonymityCheckedObj = {};
+  
+  @action.bound
+  handleAnonymityChecked(id) {
+    this.anonymityCheckedObj[id] = !this.anonymityCheckedObj[id];
+    
+    // console.log(`id = ${id}`);
+    // console.log(`this.anonymityCheckedObj[id] = ${this.anonymityCheckedObj[id]}`);
+    // console.dir(`this.anonymityCheckedObj = ${this.anonymityCheckedObj}`);
+  };
+  
+  
+  
+  // ---------------------------------------------
   //   BBS Form
   // ---------------------------------------------
+  
   
   @observable bbsFormAnonymityChecked = false;
   @observable bbsFormImageOpen = false;

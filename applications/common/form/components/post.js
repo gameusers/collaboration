@@ -311,7 +311,32 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    const { stores, id, sendButtonLabel } = this.props;
+    
+    
+    
+    // --------------------------------------------------
+    //   Anonymity Checked
+    // --------------------------------------------------
+    
+    let anonymityChecked = false;
+    
+    if (id in stores.formPost.anonymityCheckedObj) {
+      anonymityChecked = stores.formPost.anonymityCheckedObj[id];
+      // console.log(`anonymityChecked = ${anonymityChecked}`);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Send Button Label
+    // --------------------------------------------------
+    
+    let buttonLabel = '送信する';
+    
+    if (sendButtonLabel) {
+      buttonLabel = sendButtonLabel;
+    }
+    
     
     
     
@@ -322,8 +347,6 @@ export default class extends React.Component {
     const codePreviewArr = [];
     
     if (stores.formPost.previewArr && stores.formPost.previewArr.length > 0) {
-      
-      // console.log(`stores.pathname = ${stores.pathname}`);
       
       stores.formPost.previewArr.forEach((value, index) => {
         
@@ -393,12 +416,12 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        {/* BBS Form */}
+        {/* プロフィール */}
         <ProfileBox>
           
           <ProfileThumbnailBox>
             
-            {stores.formPost.bbsFormAnonymityChecked ? (
+            {anonymityChecked ? (
               <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none.png" />
             ) : (
               <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
@@ -411,38 +434,38 @@ export default class extends React.Component {
           
             <ProfileNameBox>
               
-              {stores.formPost.bbsFormAnonymityChecked ? (
-                <React.Fragment>
-                  <ProfileName>ななしさん</ProfileName>
-                  
-                  <ProfileStatusBox>
-                    <IconHealingProfileStatus />
-                    <ProfileStatus>774</ProfileStatus>
-                  </ProfileStatusBox>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  <ProfileName>あづみ</ProfileName>
-                  
-                  <ProfileStatusBox>
-                    <IconHealingProfileStatus />
-                    <ProfileStatus>プロハンター</ProfileStatus>
-                  </ProfileStatusBox>
-                  
-                  <ProfileAccessTimeBox>
-                    <IconScheduleProfileAccessTime />
-                    <ProfileStatus>1 時間前</ProfileStatus>
-                  </ProfileAccessTimeBox>
-                </React.Fragment>
-              )}
+            {anonymityChecked ? (
+              <React.Fragment>
+                <ProfileName>ななしさん</ProfileName>
+                
+                <ProfileStatusBox>
+                  <IconHealingProfileStatus />
+                  <ProfileStatus>774</ProfileStatus>
+                </ProfileStatusBox>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <ProfileName>あづみ</ProfileName>
+                
+                <ProfileStatusBox>
+                  <IconHealingProfileStatus />
+                  <ProfileStatus>プロハンター</ProfileStatus>
+                </ProfileStatusBox>
+                
+                <ProfileAccessTimeBox>
+                  <IconScheduleProfileAccessTime />
+                  <ProfileStatus>1 時間前</ProfileStatus>
+                </ProfileAccessTimeBox>
+              </React.Fragment>
+            )}
               
             </ProfileNameBox>
             
             <FormControlLabel
               control={
                 <ProfileCheckbox
-                  checked={stores.formPost.bbsFormAnonymityChecked}
-                  onChange={stores.formPost.handleBbsFormAnonymityChecked}
+                  checked={anonymityChecked}
+                  onChange={() => stores.formPost.handleAnonymityChecked(id)}
                 />
               }
               label="ななしにする"
@@ -453,9 +476,11 @@ export default class extends React.Component {
         </ProfileBox>
         
         
+        {/* Textarea */}
         <Textarea rows="6" />
         
         
+        {/* 画像アップロードフォーム＆動画投稿フォームを表示するためのボタン */}
         <ImageVideoButtonsBox>
           <ImageButton
             variant="outlined"
@@ -475,6 +500,7 @@ export default class extends React.Component {
         </ImageVideoButtonsBox>
         
         
+        {/* 画像アップロードフォーム */}
         {stores.formPost.bbsFormImageOpen &&
           <ImageBox>
             <ImageDescription>
@@ -489,6 +515,7 @@ export default class extends React.Component {
         }
         
         
+        {/* 動画投稿フォーム */}
         {stores.formPost.bbsFormVideoOpen &&
           <VideoBox>
           
@@ -500,10 +527,6 @@ export default class extends React.Component {
               <li>https://www.youtube.com/watch?v=__</li>
               <li>https://youtu.be/__?t=600</li>
             </ImageDescriptionUl>
-            
-            {/*<ImageDescription>
-              YouTube - https://www.youtube.com/watch?v=__
-            </ImageDescription>*/}
             
             
             {/* Video URL */}
@@ -533,6 +556,7 @@ export default class extends React.Component {
         }
         
         
+        {/* 画像と動画のプレビュー */}
         {codePreviewArr.length > 0 &&
           <ImageVideoPreviewContainer>
             {codePreviewArr}
@@ -540,11 +564,12 @@ export default class extends React.Component {
         }
         
         
+        {/* 送信ボタン */}
         <SendButton
           variant="contained"
           color="primary"
         >
-          コメントする
+          {buttonLabel}
         </SendButton>
         
       </React.Fragment>

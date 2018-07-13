@@ -139,7 +139,7 @@ export default class extends React.Component {
       
       const heroImageRandomNo = stores.layout.headerHeroImageArr[Math.floor(Math.random() * stores.layout.headerHeroImageArr.length)];
       
-      const paddingTop = stores.layout.openHeaderDataBox ? 0 : 'auto';
+      const paddingTop = stores.layout.headerDataBoxOpen ? 0 : 'auto';
       
       // padding-top は画像の高さ ÷ 画像の幅 × 100
       Container = styled.div`
@@ -229,11 +229,11 @@ export default class extends React.Component {
         
         {imgSrc && <Image src={imgSrc} />}
         
-        { stores.layout.openHeaderDataBox &&
+        { stores.layout.headerDataBoxOpen &&
           <BoxData>
             <DataTitleBox>
               <DataTitle>{stores.layout.headerDataTitle}</DataTitle>
-              <IconButtonKeyboardArrowUp color="secondary" onClick={stores.layout.handleCloseHeaderDataBox}>
+              <IconButtonKeyboardArrowUp color="secondary" onClick={stores.layout.handleHeaderDataBoxClose}>
                 <IconKeyboardArrowUp />
               </IconButtonKeyboardArrowUp>
             </DataTitleBox>
@@ -246,10 +246,10 @@ export default class extends React.Component {
           </BoxData>
         }
         
-        { !stores.layout.openHeaderDataBox &&
+        { !stores.layout.headerDataBoxOpen &&
           <BoxDataClosed>
             <DataTitleClosed>{stores.layout.headerDataTitle}</DataTitleClosed>
-            <IconButtonKeyboardArrowDown color="secondary" onClick={stores.layout.handleOpenHeaderDataBox}>
+            <IconButtonKeyboardArrowDown color="secondary" onClick={stores.layout.handleHeaderDataBoxOpen}>
               <IconKeyboardArrowDown />
             </IconButtonKeyboardArrowDown>
           </BoxDataClosed>

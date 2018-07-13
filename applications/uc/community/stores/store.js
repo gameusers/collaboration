@@ -43,9 +43,9 @@ class Store {
   //   Snackbar
   // ---------------------------------------------
   
-  // @observable openSnackbar = false;
-  // @observable variantSnackbar = 'warning';
-  // @observable messageSnackbar = 'warning message';
+  // @observable snackbarOpen = false;
+  // @observable snackbarVariant = 'warning';
+  // @observable snackbarMessage = 'warning message';
   
   // @action.bound
   // handleIncrementCount() {
@@ -56,9 +56,9 @@ class Store {
     
   //   // console.log(`uc/community/store - storeLayout.count = ${storeLayout.count}`);
   //   // storeLayout.increment();
-  //   // storeLayout.variantSnackbar = 'warning';
-  //   // storeLayout.messageSnackbar = 'warning message';
-  //   storeLayout.handleOpenSnackbar('warning', 'warning message');
+  //   // storeLayout.snackbarVariant = 'warning';
+  //   // storeLayout.snackbarMessage = 'warning message';
+  //   storeLayout.handleSnackbarOpen('warning', 'warning message');
   // };
   
   
@@ -286,17 +286,17 @@ class Store {
   //   }
     
   //   if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-  //     storeLayout.handleOpenSnackbar('error', '最新のブラウザを利用してください。');
+  //     storeLayout.handleSnackbarOpen('error', '最新のブラウザを利用してください。');
   //     return;
   //   }
     
   //   if (!file.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
-  //     storeLayout.handleOpenSnackbar('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
+  //     storeLayout.handleSnackbarOpen('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
   //     return;
   //   }
     
   //   if (file.size > imageSizeUpperLimit) {
-  //     storeLayout.handleOpenSnackbar('error', '画像のサイズが大きすぎます。');
+  //     storeLayout.handleSnackbarOpen('error', '画像のサイズが大きすぎます。');
   //     return;
   //   }
     

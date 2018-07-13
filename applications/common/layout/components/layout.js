@@ -31,7 +31,7 @@ export default class extends React.Component {
    */
   componentDidMount() {
     if (window.innerWidth > 480) {
-      this.props.stores.layout.handleOpenHeaderDataBox();
+      this.props.stores.layout.handleHeaderDataBoxOpen();
     }
   }
   

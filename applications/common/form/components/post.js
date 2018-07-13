@@ -3,50 +3,23 @@
 // --------------------------------------------------
 
 import React from 'react';
-import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Paper from '@material-ui/core/Paper';
-import Tooltip from '@material-ui/core/Tooltip';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import TextField from '@material-ui/core/TextField';
-// import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import FormGroup from '@material-ui/core/FormGroup';
-// import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconList from '@material-ui/icons/List';
-import IconNew from '@material-ui/icons/FiberNew';
-import IconImage from '@material-ui/icons/Image';
-import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
-import IconSearch from '@material-ui/icons/Search';
-import IconAssignment from '@material-ui/icons/Assignment';
-import IconPublic from '@material-ui/icons/Public';
-import IconHealing from '@material-ui/icons/Healing';
-import IconSchedule from '@material-ui/icons/Schedule';
 import IconVideocam from '@material-ui/icons/Videocam';
 import IconClose from '@material-ui/icons/Close';
 
 import cyan from '@material-ui/core/colors/cyan';
+
+import ProfileThumbnail from '../../profile/components/thumbnail';
+import ProfileName from '../../profile/components/name';
 
 
 
@@ -76,18 +49,18 @@ const ProfileThumbnailBox = styled.div`
   // background-color: blue;
 `;
 
-const ProfileThumbnail = styled.img`
-  border-radius: 6px;
-  width: 48px;
-  margin: 3px 0 0 0;
-`;
+// const ProfileThumbnail = styled.img`
+//   border-radius: 6px;
+//   width: 48px;
+//   margin: 3px 0 0 0;
+// `;
 
-const ProfileLine = styled.div`
-  flex-grow: 2;
-  border-left: 4px solid #84cacb;
-  margin: 10px 0 0 0;
-  padding: 0;
-`;
+// const ProfileLine = styled.div`
+//   flex-grow: 2;
+//   border-left: 4px solid #84cacb;
+//   margin: 10px 0 0 0;
+//   padding: 0;
+// `;
 
 
 const ProfileInfoBox = styled.div`
@@ -105,45 +78,6 @@ const ProfileNameBox = styled.div`
   padding: 0;
 `;
 
-const ProfileName = styled.div`
-  font-size: 14px;
-  color: #337ab7;
-  margin: 0;
-  padding: 0;
-`;
-
-
-const ProfileStatusBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
-
-const IconHealingProfileStatus = styled(IconHealing)`
-  && {
-    font-size: 18px;
-    margin: 4px 2px 0 2px;
-  }
-`;
-
-const ProfileStatus = styled.div`
-  font-size: 14px;
-`;
-
-const ProfileAccessTimeBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
-
-const IconScheduleProfileAccessTime = styled(IconSchedule)`
-  && {
-    font-size: 18px;
-    margin: 4px 2px 0 2px;
-  }
-`;
 
 const ProfileCheckbox = styled(Checkbox)`
   && {
@@ -361,12 +295,11 @@ export default class extends React.Component {
             <ImageVideoPreviewBox key={index}>
               <PreviewImg
                 src={value.imageSrc}
-                onClick={() => stores.layout.handleOpenModalImage(value.imageSrc)}
+                onClick={() => stores.layout.handleModalImageOpen(value.imageSrc)}
               />
               
               <PreviewDeleteButton
                 variant="fab"
-                mini
                 color="primary"
                 onClick={() => stores.formPost.handlePreviewDelete(index)}
               >
@@ -385,7 +318,7 @@ export default class extends React.Component {
             <ImageVideoPreviewBox key={index}>
               <PreviewImg
                 src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-                onClick={() => stores.layout.handleOpenModalVideo(value.videoChannel, value.videoId)}
+                onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
               />
               
               <PreviewVideoPlayButtonImg
@@ -395,6 +328,7 @@ export default class extends React.Component {
               <PreviewDeleteButton
                 variant="fab"
                 color="primary"
+                onClick={() => stores.formPost.handlePreviewDelete(index)}
               >
                 <IconClose />
               </PreviewDeleteButton>
@@ -420,13 +354,11 @@ export default class extends React.Component {
         <ProfileBox>
           
           <ProfileThumbnailBox>
-            
             {anonymityChecked ? (
-              <ProfileThumbnail src="https://gameusers.org/assets/img/common/thumbnail_none.png" />
+              <ProfileThumbnail anonymity />
             ) : (
-              <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
+              <ProfileThumbnail />
             )}
-          
           </ProfileThumbnailBox>
           
           
@@ -435,28 +367,9 @@ export default class extends React.Component {
             <ProfileNameBox>
               
             {anonymityChecked ? (
-              <React.Fragment>
-                <ProfileName>ななしさん</ProfileName>
-                
-                <ProfileStatusBox>
-                  <IconHealingProfileStatus />
-                  <ProfileStatus>774</ProfileStatus>
-                </ProfileStatusBox>
-              </React.Fragment>
+              <ProfileName anonymity />
             ) : (
-              <React.Fragment>
-                <ProfileName>あづみ</ProfileName>
-                
-                <ProfileStatusBox>
-                  <IconHealingProfileStatus />
-                  <ProfileStatus>プロハンター</ProfileStatus>
-                </ProfileStatusBox>
-                
-                <ProfileAccessTimeBox>
-                  <IconScheduleProfileAccessTime />
-                  <ProfileStatus>1 時間前</ProfileStatus>
-                </ProfileAccessTimeBox>
-              </React.Fragment>
+              <ProfileName />
             )}
               
             </ProfileNameBox>
@@ -485,7 +398,7 @@ export default class extends React.Component {
           <ImageButton
             variant="outlined"
             size="small"
-            onClick={stores.formPost.handleBbsFormImageOpen}
+            onClick={stores.formPost.handleImageOpen}
           >
             画像アップロード
           </ImageButton>
@@ -493,7 +406,7 @@ export default class extends React.Component {
           <Button
             variant="outlined"
             size="small"
-            onClick={stores.formPost.handleBbsFormVideoOpen}
+            onClick={stores.formPost.handleVideoOpen}
           >
             動画投稿
           </Button>
@@ -501,7 +414,7 @@ export default class extends React.Component {
         
         
         {/* 画像アップロードフォーム */}
-        {stores.formPost.bbsFormImageOpen &&
+        {stores.formPost.imageOpen &&
           <ImageBox>
             <ImageDescription>
               アップロードできる画像の種類は JPEG, PNG, GIF, BMP で、ファイルサイズが5MB以内のものです。
@@ -509,14 +422,14 @@ export default class extends React.Component {
             
             <ImageInputFile
               type="file"
-              onChange={stores.formPost.handleBbsFormAddImages}
+              onChange={stores.formPost.handleAddImages}
             />
           </ImageBox>
         }
         
         
         {/* 動画投稿フォーム */}
-        {stores.formPost.bbsFormVideoOpen &&
+        {stores.formPost.videoOpen &&
           <VideoBox>
           
             <ImageDescription>
@@ -547,6 +460,7 @@ export default class extends React.Component {
                 variant="contained"
                 color="secondary"
                 size="small"
+                onClick={stores.formPost.handleAddVideos}
               >
                 追加
               </Button>

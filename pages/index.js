@@ -228,7 +228,7 @@ class Component extends React.Component {
             
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.layout.handleOpenModalImage('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
+                <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
                   <CardMedia
                     image="/static/img/sample/0r8294vpatkc9nl1.jpg"
                     title="Grand Theft Auto V"
@@ -323,7 +323,7 @@ class Component extends React.Component {
               
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.layout.handleOpenModalImage('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
+                <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
                   <CardMedia
                     image="/static/img/sample/g0dzjmsmuu32drqb.jpg"
                     title="Metal Gear Solid V: The Phantom Pain"
@@ -373,7 +373,7 @@ class Component extends React.Component {
               
               <StyledCard>
                 
-                <CardMediaBox onClick={() => stores.layout.handleOpenModalVideo('youtube', '1yIHLQJNvDw')}>
+                <CardMediaBox onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}>
                   <CardMedia
                     image="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
                     title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
@@ -434,7 +434,7 @@ class Component extends React.Component {
                 
                 <StyledCard>
                   
-                  <CardMediaBox onClick={() => stores.layout.handleOpenModalImage('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
+                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
                     <CardMedia
                       image="https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg"
                       title="フォーオナー"
@@ -578,7 +578,7 @@ class Component extends React.Component {
                 
                 <StyledCard>
                   
-                  <CardMediaBox onClick={() => stores.layout.handleOpenModalVideo('youtube', 'y-NkzONb2Bw')}>
+                  <CardMediaBox onClick={() => stores.layout.handleModalVideoOpen('youtube', 'y-NkzONb2Bw')}>
                     <CardMedia
                       image="https://img.youtube.com/vi/y-NkzONb2Bw/mqdefault.jpg"
                       title="マリオテニス エース"

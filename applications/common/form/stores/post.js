@@ -41,34 +41,34 @@ class Store {
   
   
   // ---------------------------------------------
-  //   BBS Form
+  //   Open Image Video Form
   // ---------------------------------------------
   
-  
-  @observable bbsFormAnonymityChecked = false;
-  @observable bbsFormImageOpen = false;
-  @observable bbsFormVideoOpen = false;
-  
+  @observable imageOpen = false;
   
   @action.bound
-  handleBbsFormAnonymityChecked() {
-    this.bbsFormAnonymityChecked = !this.bbsFormAnonymityChecked;
+  handleImageOpen() {
+    this.imageOpen = !this.imageOpen;
+    this.videoOpen = false;
   };
   
-  @action.bound
-  handleBbsFormImageOpen() {
-    this.bbsFormImageOpen = !this.bbsFormImageOpen;
-    this.bbsFormVideoOpen = false;
-  };
+  
+  @observable videoOpen = false;
   
   @action.bound
-  handleBbsFormVideoOpen() {
-    this.bbsFormVideoOpen = !this.bbsFormVideoOpen;
-    this.bbsFormImageOpen = false;
+  handleVideoOpen() {
+    this.videoOpen = !this.videoOpen;
+    this.imageOpen = false;
   };
   
+  
+  
+  // ---------------------------------------------
+  //   Image Form
+  // ---------------------------------------------
+  
   @action.bound
-  handleBbsFormAddImages(event) {
+  handleAddImages(event) {
     // console.log(`file = ${event.target.files[0]}`);
     
     const imageSizeUpperLimit = 5242880;
@@ -86,17 +86,17 @@ class Store {
     }
     
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-      storeLayout.handleOpenSnackbar('error', '最新のブラウザを利用してください。');
+      storeLayout.handleSnackbarOpen('error', '最新のブラウザを利用してください。');
       return;
     }
     
     if (!file.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
-      storeLayout.handleOpenSnackbar('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
+      storeLayout.handleSnackbarOpen('error', 'アップロードできるのは PNG, GIF, JPEG, SVG の画像ファイルです。');
       return;
     }
     
     if (file.size > imageSizeUpperLimit) {
-      storeLayout.handleOpenSnackbar('error', '画像のサイズが大きすぎます。');
+      storeLayout.handleSnackbarOpen('error', '画像のサイズが大きすぎます。');
       return;
     }
     
@@ -134,12 +134,35 @@ class Store {
 
         // dispatch(actions.funcShareImage(file, fileReader.result, width, height, extension));
         
+        // ---------------------------------------------
+        //   重複のチェック
+        // ---------------------------------------------
         
-        this.previewArr.push({
-          imageSrc: fileReader.result,
-          videoChannel: '',
-          videoId: '',
+        const duplication = this.previewArr.find((value) => {
+          return (value.imageSrc === fileReader.result);
         });
+        
+        
+        // console.log(`duplication = ${duplication}`);
+        
+        // ---------------------------------------------
+        //   重複していない場合は配列に追加する
+        // ---------------------------------------------
+        
+        if (duplication) {
+          
+          storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が登録されています。');
+          return;
+          
+        } else {
+          
+          this.previewArr.push({
+            imageSrc: fileReader.result,
+            videoChannel: '',
+            videoId: '',
+          });
+          
+        }
         
       };
 
@@ -151,9 +174,8 @@ class Store {
   
   
   
-  
   // ---------------------------------------------
-  //   Video
+  //   Video Form
   // ---------------------------------------------
   
   @observable videoUrl = '';
@@ -163,10 +185,75 @@ class Store {
     this.videoUrl = event.target.value;
   };
   
+  @action.bound
+  handleAddVideos() {
+    
+    
+    // ---------------------------------------------
+    //   Video Channel
+    // ---------------------------------------------
+    
+    let videoChannel = 'youtube';
+    
+    if (this.videoUrl.indexOf('youtube.com') !== -1 || this.videoUrl.indexOf('youtu.be') !== -1) {
+      videoChannel = 'youtube';
+    }
+    
+    
+    // ---------------------------------------------
+    //   Video Id
+    // ---------------------------------------------
+    
+    const resultArr = this.videoUrl.match(/[/?=]([-\w]{11})/);
+    
+    if (resultArr) {
+      
+      const videoId = resultArr[1];
+      
+      
+      // ---------------------------------------------
+      //   重複のチェック
+      // ---------------------------------------------
+      
+      const duplication = this.previewArr.find((value) => {
+        return (value.videoId === videoId);
+      });
+      
+      // console.log(`duplication = ${duplication}`);
+      
+      
+      // ---------------------------------------------
+      //   重複していない場合は配列に追加する
+      // ---------------------------------------------
+      
+      if (duplication) {
+        
+        storeLayout.handleSnackbarOpen('error', 'すでに同じ動画が登録されています。');
+        return;
+        
+      } else {
+        
+        this.videoUrl = '';
+        
+        this.previewArr.push({
+          imageSrc: '',
+          videoChannel,
+          videoId,
+        });
+        
+      }
+      
+      // console.log(`videoId = ${videoId}`);
+    }
+    
+    // console.log(`resultArr = ${resultArr}`);
+    
+  };
+  
   
   
   // ---------------------------------------------
-  //   Preview
+  //   Preview Image Video
   // ---------------------------------------------
   
   @action.bound

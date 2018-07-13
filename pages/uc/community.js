@@ -125,13 +125,13 @@ class Component extends React.Component {
             
             
             <Button
-              onClick={() => stores.layout.handleOpenSnackbar('success', 'success message')}
+              onClick={() => stores.layout.handleSnackbarOpen('success', 'success message')}
             >
               Success
             </Button>
             
             <Button
-              onClick={() => stores.layout.handleOpenSnackbar('warning', 'warning message')}
+              onClick={() => stores.layout.handleSnackbarOpen('warning', 'warning message')}
             >
               Warning
             </Button>

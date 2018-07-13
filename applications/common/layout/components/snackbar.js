@@ -203,21 +203,21 @@ export default class extends React.Component {
     
     return (
       <Snackbar
-        key={stores.layout.keySnackbar}
+        key={stores.layout.snackbarKey}
         anchorOrigin={{
-          vertical: stores.layout.verticalSnackbar,
-          horizontal: stores.layout.horizontalSnackbar,
+          vertical: stores.layout.snackbarVertical,
+          horizontal: stores.layout.snackbarHorizontal,
         }}
-        open={stores.layout.openSnackbar}
-        autoHideDuration={stores.layout.autoHideDurationSnackbar}
-        onClose={stores.layout.handleCloseSnackbar}
-        onExited={stores.layout.handleExitedSnackbar}
+        open={stores.layout.snackbarOpen}
+        autoHideDuration={stores.layout.snackbarAutoHideDuration}
+        onClose={stores.layout.handleSnackbarClose}
+        onExited={stores.layout.handleSnackbarExited}
       >
         <SnackbarContentWrapper
-          onClose={stores.layout.handleCloseSnackbar}
-          variant={stores.layout.variantSnackbar}
-          message={stores.layout.messageSnackbar}
-          style={colorsObj[stores.layout.variantSnackbar]}
+          onClose={stores.layout.handleSnackbarClose}
+          variant={stores.layout.snackbarVariant}
+          message={stores.layout.snackbarMessage}
+          style={colorsObj[stores.layout.snackbarVariant]}
         />
       </Snackbar>
     );

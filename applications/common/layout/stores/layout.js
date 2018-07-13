@@ -134,17 +134,17 @@ class Store {
   //   ヘッダー - 通知ダイアログ
   // ---------------------------------------------
   
-  @observable openHeaderNotificationDialog = false;
+  @observable headerNotificationDialogOpen = false;
   
   
   @action.bound
-  handleOpenHeaderNotificationDialog() {
-    this.openHeaderNotificationDialog = true;
+  handleHeaderNotificationDialogOpen() {
+    this.headerNotificationDialogOpen = true;
   };
   
   @action.bound
-  handleCloseHeaderNotificationDialog() {
-    this.openHeaderNotificationDialog = false;
+  handleHeaderNotificationDialogClose() {
+    this.headerNotificationDialogOpen = false;
   };
   
   
@@ -152,20 +152,20 @@ class Store {
   //   ヘッダー - ログインメニュー
   // ---------------------------------------------
   
-  @observable AnchorElHeaderLoginMenu = null;
-  @observable openHeaderLoginMenu = false;
+  @observable headerLoginMenuAnchorEl = null;
+  @observable headerLoginMenuOpen = false;
   
   
   @action.bound
-  handleOpenHeaderLoginMenu(event) {
-    this.AnchorElHeaderLoginMenu = event.currentTarget;
-    this.openHeaderLoginMenu = true;
+  handleHeaderLoginMenuOpen(event) {
+    this.headerLoginMenuAnchorEl = event.currentTarget;
+    this.headerLoginMenuOpen = true;
   };
   
   @action.bound
-  handleCloseHeaderLoginMenu() {
-    this.AnchorElHeaderLoginMenu = null;
-    this.openHeaderLoginMenu = false;
+  handleHeaderLoginMenuClose() {
+    this.headerLoginMenuAnchorEl = null;
+    this.headerLoginMenuOpen = false;
   };
   
   
@@ -173,16 +173,16 @@ class Store {
   //   ヘッダー - データ
   // ---------------------------------------------
   
-  @observable openHeaderDataBox = false;
+  @observable headerDataBoxOpen = false;
   
   @action.bound
-  handleOpenHeaderDataBox() {
-    this.openHeaderDataBox = true;
+  handleHeaderDataBoxOpen() {
+    this.headerDataBoxOpen = true;
   };
   
   @action.bound
-  handleCloseHeaderDataBox() {
-    this.openHeaderDataBox = false;
+  handleHeaderDataBoxClose() {
+    this.headerDataBoxOpen = false;
   };
   
   
@@ -235,7 +235,7 @@ class Store {
   // ---------------------------------------------
   
   // @observable panelExpanded = null;
-  // @observable openModalImage = false;
+  // @observable modalImageOpen = false;
   
   
   // @action.bound
@@ -245,7 +245,7 @@ class Store {
   
   // @action.bound
   // handlePanelExpanded(category, id) {
-  //   this.openModalImage = true;
+  //   this.modalImageOpen = true;
   // };
   
   
@@ -254,35 +254,35 @@ class Store {
   //   画像・動画モーダルウィンドウ
   // ---------------------------------------------
   
-  @observable srcModalImage = null;
-  @observable openModalImage = false;
+  @observable modalImageSrc = null;
+  @observable modalImageOpen = false;
   
   @action.bound
-  handleOpenModalImage(src) {
-    this.srcModalImage = src;
-    this.openModalImage = true;
+  handleModalImageOpen(src) {
+    this.modalImageSrc = src;
+    this.modalImageOpen = true;
   };
   
   @action.bound
-  handleCloseModalImage() {
-    this.openModalImage = false;
+  handleModalImageClose() {
+    this.modalImageOpen = false;
   };
   
   
-  @observable channelModalVideo = null;
-  @observable idModalVideo = null;
-  @observable openModalVideo = false;
+  @observable modalVideoChannel = null;
+  @observable modalVideoId = null;
+  @observable modalVideoOpen = false;
   
   @action.bound
-  handleOpenModalVideo(channel, id) {
-    this.channelModalVideo = channel;
-    this.idModalVideo = id;
-    this.openModalVideo = true;
+  handleModalVideoOpen(channel, id) {
+    this.modalVideoChannel = channel;
+    this.modalVideoId = id;
+    this.modalVideoOpen = true;
   };
   
   @action.bound
-  handleCloseModalVideo() {
-    this.openModalVideo = false;
+  handleModalVideoClose() {
+    this.modalVideoOpen = false;
   };
   
   
@@ -291,77 +291,66 @@ class Store {
   //   Snackbar （通知用のバー）
   // ---------------------------------------------
   
-  @observable openSnackbar = false;
-  @observable verticalSnackbar = 'bottom';
-  @observable horizontalSnackbar = 'left';
-  @observable autoHideDurationSnackbar= 5000;
-  @observable variantSnackbar = '';
-  @observable messageSnackbar = '';
-  @observable keySnackbar = 'keySnackbar';
-  queueSnackbarArr = [];
+  @observable snackbarOpen = false;
+  @observable snackbarVertical = 'bottom';
+  @observable snackbarHorizontal = 'left';
+  @observable snackbarAutoHideDuration= 5000;
+  @observable snackbarVariant = '';
+  @observable snackbarMessage = '';
+  @observable snackbarKey = 'snackbarKey';
+  
+  snackbarQueueArr = [];
   
   
   @action.bound
-  handleOpenSnackbar(variant, message) {
+  handleSnackbarOpen(variant, message) {
     
-    this.queueSnackbarArr.push({
+    this.snackbarQueueArr.push({
       variant,
       message,
       key: new Date().getTime(),
     });
     
-    if (this.openSnackbar) {
+    if (this.snackbarOpen) {
       // immediately begin dismissing current message
       // to start showing new one
-      this.openSnackbar = false;
+      this.snackbarOpen = false;
     } else {
-      // console.log('layout/stores/scommon - handleOpenSnackbar');
+      // console.log('layout/stores/scommon - handleSnackbarOpen');
       this.processQueue();
     }
     
-    // this.openSnackbar = true;
+    // this.snackbarOpen = true;
   };
   
   processQueue = () => {
     
-    if (this.queueSnackbarArr.length > 0) {
+    if (this.snackbarQueueArr.length > 0) {
       // console.log('layout/stores/scommon - processQueue');
-      // console.log(`layout/stores/scommon - messageSnackbar = ${this.messageSnackbar}`);
-      const tempArr = this.queueSnackbarArr.shift();
-      this.variantSnackbar = tempArr.variant;
-      this.messageSnackbar = tempArr.message;
-      this.keySnackbar = tempArr.key;
+      // console.log(`layout/stores/scommon - snackbarMessage = ${this.snackbarMessage}`);
+      const tempArr = this.snackbarQueueArr.shift();
+      this.snackbarVariant = tempArr.variant;
+      this.snackbarMessage = tempArr.message;
+      this.snackbarKey = tempArr.key;
       
-      this.openSnackbar = true;
+      this.snackbarOpen = true;
     }
     
   };
   
   @action.bound
-  handleCloseSnackbar(event, reason) {
+  handleSnackbarClose(event, reason) {
     if (reason === 'clickaway') {
       return;
     }
     
-    this.openSnackbar = false;
+    this.snackbarOpen = false;
   };
   
   @action.bound
-  handleExitedSnackbar() {
+  handleSnackbarExited() {
     this.processQueue();
   };
-  
-  
-  
-  
-  // @observable count = 0;
-
-  // @action.bound
-  // increment() {
-  //   ++this.count;
-  // }
-  
-  
   
 }
 

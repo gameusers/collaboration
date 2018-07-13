@@ -192,7 +192,7 @@ export default class extends React.Component {
           <HeaderTopLogo />
           
           {/* ベル・通知 */}
-          <IconButtonTopBell onClick={stores.layout.handleOpenHeaderNotificationDialog}>
+          <IconButtonTopBell onClick={stores.layout.handleHeaderNotificationDialogOpen}>
             <BadgeTopBell badgeContent={4} color="primary">
               <IconNotifications />
             </BadgeTopBell>
@@ -214,7 +214,7 @@ export default class extends React.Component {
           
           {/* メニュー */}
           <IconButtonTopThumbnail
-            onClick={stores.layout.handleOpenHeaderLoginMenu}
+            onClick={stores.layout.handleHeaderLoginMenuOpen}
           >
             <AvatarTop
               alt="ユーザー1"
@@ -223,18 +223,18 @@ export default class extends React.Component {
           </IconButtonTopThumbnail>
           
           <MenuTopLoginMenu
-            anchorEl={stores.layout.AnchorElHeaderLoginMenu}
-            open={stores.layout.openHeaderLoginMenu}
-            onClose={stores.layout.handleCloseHeaderLoginMenu}
+            anchorEl={stores.layout.headerLoginMenuAnchorEl}
+            open={stores.layout.headerLoginMenuOpen}
+            onClose={stores.layout.handleHeaderLoginMenuClose}
           >
-            <MenuItem onClick={stores.layout.handleCloseHeaderLoginMenu}>
+            <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
               <ListItemIconTopLoginMenu>
                 <IconPerson />
               </ListItemIconTopLoginMenu>
               <ListItemTextTopLoginMenu inset primary="プレイヤー" />
             </MenuItem>
             
-            <MenuItem onClick={stores.layout.handleCloseHeaderLoginMenu}>
+            <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
               <ListItemIconTopLoginMenu>
                 <IconEject />
               </ListItemIconTopLoginMenu>
@@ -254,18 +254,18 @@ export default class extends React.Component {
         {/* 通知ダイアログ */}
         <Dialog
           fullScreen
-          open={stores.layout.openHeaderNotificationDialog}
-          onClose={stores.layout.handleCloseHeaderNotificationDialog}
+          open={stores.layout.headerNotificationDialogOpen}
+          onClose={stores.layout.handleHeaderNotificationDialogClose}
         >
           <AppBar>
             <Toolbar>
-              <IconButton color="inherit" onClick={stores.layout.handleCloseHeaderNotificationDialog} aria-label="Close">
+              <IconButton color="inherit" onClick={stores.layout.handleHeaderNotificationDialogClose} aria-label="Close">
                 <IconClose />
               </IconButton>
               <Typography variant="title" color="inherit">
                 Notifications
               </Typography>
-              <Button color="inherit" onClick={stores.layout.handleCloseHeaderNotificationDialog}>
+              <Button color="inherit" onClick={stores.layout.handleHeaderNotificationDialogClose}>
                 save
               </Button>
             </Toolbar>

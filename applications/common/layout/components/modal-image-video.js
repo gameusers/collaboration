@@ -58,20 +58,20 @@ export class Component extends React.Component {
     return (
       <React.Fragment>
         <Dialog
-          open={stores.layout.openModalImage}
-          onClose={stores.layout.handleCloseModalImage}
+          open={stores.layout.modalImageOpen}
+          onClose={stores.layout.handleModalImageClose}
           maxWidth='md'
           classes={{
             paper: classes.paper
           }}
         >
-          <img src={stores.layout.srcModalImage} width="100%" />
+          <img src={stores.layout.modalImageSrc} width="100%" />
         </Dialog>
         <ModalVideo
-          channel={stores.layout.channelModalVideo}
-          isOpen={stores.layout.openModalVideo}
-          videoId={stores.layout.idModalVideo}
-          onClose={stores.layout.handleCloseModalVideo}
+          channel={stores.layout.modalVideoChannel}
+          isOpen={stores.layout.modalVideoOpen}
+          videoId={stores.layout.modalVideoId}
+          onClose={stores.layout.handleModalVideoClose}
         />
       </React.Fragment>
     );

@@ -49,6 +49,8 @@ import IconClose from '@material-ui/icons/Close';
 import cyan from '@material-ui/core/colors/cyan';
 
 import FormPost from '../../form/components/post';
+import ProfileThumbnail from '../../profile/components/thumbnail';
+import ProfileName from '../../profile/components/name';
 
 
 
@@ -180,11 +182,11 @@ const ProfileThumbnailBox = styled.div`
   // background-color: blue;
 `;
 
-const ProfileThumbnail = styled.img`
-  border-radius: 6px;
-  width: 48px;
-  margin: 3px 0 0 0;
-`;
+// const ProfileThumbnail = styled.img`
+//   border-radius: 6px;
+//   width: 48px;
+//   margin: 3px 0 0 0;
+// `;
 
 const ProfileLine = styled.div`
   flex-grow: 2;
@@ -209,45 +211,45 @@ const ProfileNameBox = styled.div`
   padding: 0;
 `;
 
-const ProfileName = styled.div`
-  font-size: 14px;
-  color: #337ab7;
-  margin: 0;
-  padding: 0;
-`;
+// const ProfileName = styled.div`
+//   font-size: 14px;
+//   color: #337ab7;
+//   margin: 0;
+//   padding: 0;
+// `;
 
 
-const ProfileStatusBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
+// const ProfileStatusBox = styled.div`
+//   display: flex;
+//   flex-flow: row wrap;
+//   margin: 0;
+//   padding: 0;
+// `;
 
-const IconHealingProfileStatus = styled(IconHealing)`
-  && {
-    font-size: 18px;
-    margin: 4px 2px 0 2px;
-  }
-`;
+// const IconHealingProfileStatus = styled(IconHealing)`
+//   && {
+//     font-size: 18px;
+//     margin: 4px 2px 0 2px;
+//   }
+// `;
 
-const ProfileStatus = styled.div`
-  font-size: 14px;
-`;
+// const ProfileStatus = styled.div`
+//   font-size: 14px;
+// `;
 
-const ProfileAccessTimeBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
+// const ProfileAccessTimeBox = styled.div`
+//   display: flex;
+//   flex-flow: row wrap;
+//   margin: 0;
+//   padding: 0;
+// `;
 
-const IconScheduleProfileAccessTime = styled(IconSchedule)`
-  && {
-    font-size: 18px;
-    margin: 4px 2px 0 2px;
-  }
-`;
+// const IconScheduleProfileAccessTime = styled(IconSchedule)`
+//   && {
+//     font-size: 18px;
+//     margin: 4px 2px 0 2px;
+//   }
+// `;
 
 
 
@@ -311,7 +313,7 @@ export default class extends React.Component {
     //         <ImageVideoPreviewBox key={index}>
     //           <PreviewImg
     //             src={value.imageSrc}
-    //             onClick={() => stores.layout.handleOpenModalImage(value.imageSrc)}
+    //             onClick={() => stores.layout.handleModalImageOpen(value.imageSrc)}
     //           />
               
     //           <PreviewDeleteButton
@@ -335,7 +337,7 @@ export default class extends React.Component {
     //         <ImageVideoPreviewBox key={index}>
     //           <PreviewImg
     //             src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-    //             onClick={() => stores.layout.handleOpenModalVideo(value.videoChannel, value.videoId)}
+    //             onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
     //           />
               
     //           <PreviewVideoPlayButtonImg
@@ -422,7 +424,7 @@ export default class extends React.Component {
               <ProfileBox>
                 
                 <ProfileThumbnailBox>
-                  <ProfileThumbnail src="https://gameusers.org/assets/img/user/1/thumbnail.jpg" />
+                  <ProfileThumbnail />
                   <ProfileLine />
                 </ProfileThumbnailBox>
                 
@@ -430,19 +432,7 @@ export default class extends React.Component {
                 <ProfileInfoBox>
                 
                   <ProfileNameBox>
-                    
-                    <ProfileName>あづみ</ProfileName>
-                    
-                    <ProfileStatusBox>
-                      <IconHealingProfileStatus />
-                      <ProfileStatus>プロハンター</ProfileStatus>
-                    </ProfileStatusBox>
-                    
-                    <ProfileAccessTimeBox>
-                      <IconScheduleProfileAccessTime />
-                      <ProfileStatus>1 時間前</ProfileStatus>
-                    </ProfileAccessTimeBox>
-                    
+                    <ProfileName />
                   </ProfileNameBox>
                   
                   

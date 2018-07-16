@@ -23,6 +23,13 @@ const Name = styled.div`
   padding: 0;
 `;
 
+const NameNoColor = styled.div`
+  font-size: 14px;
+  // color: #337ab7;
+  margin: 0;
+  padding: 0;
+`;
+
 
 const StatusBox = styled.div`
   display: flex;
@@ -78,20 +85,28 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, anonymity, anonymityName, anonymityStatus } = this.props;
+    const { stores, anonymity, name, status } = this.props;
     
     
     // --------------------------------------------------
     //   Img Src
     // --------------------------------------------------
     
-    let name = 'あづみ';
-    let status = 'プロハンター';
+    let nameValue = 'あづみ';
+    let statusValue = 'プロハンター';
     let accessTime = '1 時間前';
     
     if (anonymity) {
-      name = anonymityName ? anonymityName : 'ななしさん';
-      status = anonymityStatus ? anonymityStatus : '774';
+      nameValue = 'ななしさん';
+      statusValue = '774';
+    }
+    
+    if (name) {
+      nameValue = name;
+    }
+    
+    if (status) {
+      statusValue = status;
     }
     
     
@@ -101,14 +116,19 @@ export default class extends React.Component {
     
     return (
       <React.Fragment>
-        <Name>{name}</Name>
+        
+        {!anonymity && !name ? (
+          <Name>{nameValue}</Name>
+        ) : (
+          <NameNoColor>{nameValue}</NameNoColor>
+        )}
         
         <StatusBox>
           <StyledIconHealing />
-          <Status>{status}</Status>
+          <Status>{statusValue}</Status>
         </StatusBox>
         
-        {!anonymity &&
+        {!anonymity && !name &&
           <AccessTimeBox>
             <StyledIconSchedule />
             <Status>{accessTime}</Status>

@@ -16,7 +16,13 @@ import styled from 'styled-components';
 const ThumbnailImg = styled.img`
   border-radius: 6px;
   width: 48px;
-  margin: 3px 0 0 0;
+  // margin: 0 0 0 0;
+`;
+
+const ThumbnailSmallImg = styled.img`
+  border-radius: 6px;
+  width: 38px;
+  // margin: 3px 0 0 0;
 `;
 
 
@@ -41,7 +47,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, anonymity } = this.props;
+    const { stores, anonymity, small } = this.props;
     
     
     // --------------------------------------------------
@@ -58,11 +64,24 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Img Size
+    // --------------------------------------------------
+    
+    let code = <ThumbnailImg src={src} />;
+    
+    if (small) {
+      code = <ThumbnailSmallImg src={src} />;
+    }
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <ThumbnailImg src={src} />
+      <React.Fragment>
+        {code}
+      </React.Fragment>
     );
     
   }

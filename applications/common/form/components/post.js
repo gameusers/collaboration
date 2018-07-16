@@ -45,7 +45,7 @@ const ProfileThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   // align-items: stretch;
-  margin: 0;
+  margin: 3px 0 0 0;
   // background-color: blue;
 `;
 

@@ -7,6 +7,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
+// import Swiper from 'react-id-swiper';
+
 import Button from '@material-ui/core/Button';
 // import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -145,6 +147,17 @@ const TitleInfoMiniButton = styled(Button)`
   }
 `;
 
+const TitleDescriptionBox = styled.div`
+  font-size: 14px;
+  line-height: 1.6em;
+  border-left: 4px solid #A4A4A4;
+  margin: 12px 0 10px 3px;
+  padding: 0 0 0 18px;
+  // border-bottom: 1px solid #d0d0d0;
+  // background-color: pink;
+`;
+
+//Okay, just a few more minutes.
 
 
 // ---------------------------------------------
@@ -304,6 +317,91 @@ const CommentReplyVideoPlayButtonImg = styled.img`
 
 
 
+// const CommentReplySwiperImgBox = styled.div`
+//   width: 320px;
+//   height: 180px;
+//   // max-width: 500px;
+//   // max-height: 300px;
+//   // margin: 0 0 14px 0;
+//   // padding: 0 0 0 0;
+//   // background-color: green;
+  
+//   @media screen and (max-width: 480px) {
+//     // max-width: 100%;
+//     // max-height: 200px;
+//   }
+// `;
+
+// const CommentReplySwiperImg = styled.img`
+//   width: 320px;
+//   height: 180px;
+//   // max-width: 500px;
+//   // max-height: 300px;
+//   // margin: 0 0 14px 0;
+//   // padding: 0 0 0 0;
+//   // background-color: green;
+  
+//   @media screen and (max-width: 480px) {
+//     // max-width: 100%;
+//     // max-height: 200px;
+//   }
+// `;
+
+
+
+const CommentReplyPreviewImagesBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0 0 6px 0;
+`;
+
+const CommentReplyPrevieImg = styled.img`
+  // width: 320px;
+  // height: 180px;
+  max-width: 192px;
+  max-height: 108px;
+  margin: 0 4px 4px 0;
+  // padding: 0 0 0 0;
+  // background-color: green;
+  
+  @media screen and (max-width: 480px) {
+    max-width: 128px;
+    max-height: 72px;
+  }
+`;
+
+const CommentReplyPreviewVideoBox = styled.div`
+  position: relative;
+`;
+
+const CommentReplyPreviewVideoImg = styled.img`
+  width: 192px;
+  height: 108px;
+  // margin: 0 0 14px 0;
+  // padding: 0 0 0 0;
+  // background-color: green;
+  
+  @media screen and (max-width: 480px) {
+    width: 128px;
+    height: 72px;
+  }
+`;
+
+const CommentReplyPreviewVideoPlayButtonImg = styled.img`
+  width: 192px;
+  height: 108px;
+  position: absolute;
+  top: 0;
+  
+  @media screen and (max-width: 480px) {
+    width: 128px;
+    height: 72px;
+  }
+`;
+
+
+
+
 
 
 // ---------------------------------------------
@@ -425,77 +523,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Preview
-    // --------------------------------------------------
-    
-    // const codePreviewArr = [];
-    
-    // if (stores.formPost.previewArr && stores.formPost.previewArr.length > 0) {
-      
-    //   stores.formPost.previewArr.forEach((value, index) => {
-        
-        
-    //     // ---------------------------------------------
-    //     //   画像
-    //     // ---------------------------------------------
-        
-    //     if (value.imageSrc) {
-          
-    //       codePreviewArr.push(
-    //         <ImageVideoPreviewBox key={index}>
-    //           <PreviewImg
-    //             src={value.imageSrc}
-    //             onClick={() => stores.layout.handleModalImageOpen(value.imageSrc)}
-    //           />
-              
-    //           <PreviewDeleteButton
-    //             variant="fab"
-    //             mini
-    //             color="primary"
-    //             onClick={() => stores.formPost.handlePreviewDelete(index)}
-    //           >
-    //             <IconClose />
-    //           </PreviewDeleteButton>
-    //         </ImageVideoPreviewBox>
-    //       );
-          
-    //     // ---------------------------------------------
-    //     //   動画
-    //     // ---------------------------------------------
-        
-    //     } else {
-          
-    //       codePreviewArr.push(
-    //         <ImageVideoPreviewBox key={index}>
-    //           <PreviewImg
-    //             src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-    //             onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
-    //           />
-              
-    //           <PreviewCommentReplyVideoPlayButtonImgImg
-    //             src="/static/img/common/video-play-button.png"
-    //           />
-              
-    //           <PreviewDeleteButton
-    //             variant="fab"
-    //             color="primary"
-    //           >
-    //             <IconClose />
-    //           </PreviewDeleteButton>
-    //         </ImageVideoPreviewBox>
-    //       );
-          
-    //     }
-        
-    //   });
-      
-    // }
-    
+    const { stores, id } = this.props;
     
     
     // --------------------------------------------------
@@ -524,7 +552,11 @@ export default class extends React.Component {
               
               <TitleInfoAboutBox>
                 <IconAssignmentBbsInfo />
-                <BbsInfoAbout>スレッドについて</BbsInfoAbout>
+                <BbsInfoAbout
+                  onClick={() => stores.bbsTread.handleTitleDescriptionOpen(id)}
+                >
+                  スレッドについて
+                </BbsInfoAbout>
               </TitleInfoAboutBox>
               
               <TitleInfoIdBox>
@@ -537,6 +569,17 @@ export default class extends React.Component {
               </TitleInfoMiniButton>
               
             </TitleInfoBox>
+            
+            
+            { stores.bbsTread.titleDescriptionOpenObj[id] &&
+              <TitleDescriptionBox>
+                <p>仲良く雑談しませんか？</p>
+                <p>ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。</p>
+                <p>スピードワゴンって最初ただのチンピラみたいな出方してたんだな。</p>
+                <p>金持ちのおっさんのイメージの方が強くなってた。</p>
+                <p>ドラクエの話やめろ！</p>
+              </TitleDescriptionBox>
+            }
             
           </TitleBox>
           
@@ -872,7 +915,7 @@ export default class extends React.Component {
                     
                     <CommentIdBox>
                       <CommentIdIconPublic />
-                      <CommentId>M8-vje-bq9c</CommentId>
+                      <CommentId>1yIHLQJNvDw</CommentId>
                     </CommentIdBox>
                     
                   </CommentMiniButtonBox>
@@ -886,9 +929,136 @@ export default class extends React.Component {
             
             
             
+            {/* Comment4 */}
+            <CommentsRepliesContainer>
+              
+              <CommentContainer>
+                
+                <CommentLeftBox>
+                  <CommentThumbnailBox>
+                    <ProfileThumbnail />
+                  </CommentThumbnailBox>
+                  
+                  {/*<CommentLine />*/}
+                </CommentLeftBox>
+                
+                
+                <CommentRightBox>
+                
+                  <ProfileNameBox>
+                    <ProfileName />
+                  </ProfileNameBox>
+                  
+                  
+                  <CommentBox>
+                    
+                    <CommentReplyPreviewImagesBox>
+                    
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg"
+                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg')}
+                      />
+                      
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg"
+                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg')}
+                      />
+                      
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg"
+                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg')}
+                      />
+                      
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg"
+                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg')}
+                      />
+                      
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg"
+                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg')}
+                      />
+                      
+                      <CommentReplyPreviewVideoBox
+                        onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}
+                      >
+                        <CommentReplyPreviewVideoImg
+                          src="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
+                        />
+                        
+                        <CommentReplyPreviewVideoPlayButtonImg
+                          src="/static/img/common/video-play-button.png"
+                        />
+                      </CommentReplyPreviewVideoBox>
+                    
+                    </CommentReplyPreviewImagesBox>
+                    
+                    
+                    
+                    <p>画像・動画複数表示テスト。</p>
+                    <p>仮想世界の中に生み出されたコンピューターが生み出した仮想世界の中に生み出されたコンピューターが生み出した仮想世界の中に…。といった感じで合わせ鏡のように永遠に増えていく世界の一つに僕らは住んでいるのです。ずっと上まで遡れば現実の世界があるのかもしれませんが、知る術はないでしょうね。大元の世界はどんな世界なんでしょうか。気になります。</p>
+
+                  </CommentBox>
+                  
+                  
+                  <CommentMiniButtonBox>
+                    
+                    <CommentThumbUpMiniButton variant="outlined">
+                      <StyledIconThumbUp />
+                      3
+                    </CommentThumbUpMiniButton>
+                    
+                    <CommentMiniButton variant="outlined">
+                      <StyledIconEdit />
+                      編集
+                    </CommentMiniButton>
+                    
+                    <CommentMiniButton variant="outlined">
+                      <StyledIconReply />
+                      返信
+                    </CommentMiniButton>
+                    
+                    <CommentIdBox>
+                      <CommentIdIconPublic />
+                      <CommentId>Um_cUEd7vl0</CommentId>
+                    </CommentIdBox>
+                    
+                  </CommentMiniButtonBox>
+                  
+                </CommentRightBox>
+                
+              </CommentContainer>
+              
+            </CommentsRepliesContainer>
+            
+            
+            
           </ContentsContainer>
           
         </ContentsExpansionPanelDetails>
+        
+        
+        
+        {/*<Swiper {...swiperSettingObj}>
+                      
+          <div style={{ width: '300px', height: '300px', backgroundColor: 'pink' }}>
+            AAA
+          </div>
+          
+          <div style={{ width: '300px', height: '300px', backgroundColor: 'pink' }}>
+            BBB
+          </div>
+          
+          <div style={{ width: '300px', height: '300px', backgroundColor: 'pink' }}>
+            CCC
+          </div>
+          
+          <div style={{ width: '300px', height: '300px', backgroundColor: 'pink' }}>
+            DDD
+          </div>
+            
+        </Swiper>*/}
+        
         
       </ExpansionPanel>
     );

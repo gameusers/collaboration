@@ -5,6 +5,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import TextareaAutosize from 'react-autosize-textarea';
 
 import Button from '@material-ui/core/Button';
 
@@ -223,6 +224,26 @@ const SendButton = styled(Button)`
 `;
 
 
+const StyledTextareaAutosize = styled(TextareaAutosize)`
+  && {
+    width: 500px;
+    margin: 10px 0 4px 0;
+    padding: 10px;
+    border-radius: 4px;
+    
+    &:focus {
+      outline: 1px #A9F5F2 solid;
+    }
+    
+    @media screen and (max-width: 480px) {
+      width: 100%;
+    }
+  }
+`;
+
+
+
+
 
 // --------------------------------------------------
 //   Class
@@ -390,7 +411,11 @@ export default class extends React.Component {
         
         
         {/* Textarea */}
-        <Textarea rows="6" />
+        {/*<Textarea rows="6" />*/}
+        
+        <StyledTextareaAutosize
+          rows={6}
+        />
         
         
         {/* 画像アップロードフォーム＆動画投稿フォームを表示するためのボタン */}

@@ -38,6 +38,7 @@
     "prop-types": "^15.6.2",
     "rc-pagination": "^1.16.5",
     "react": "^16.4.1",
+    "react-autosize-textarea": "^4.0.0",
     "react-dom": "^16.4.1",
     "react-id-swiper": "^1.6.6",
     "react-jss": "^8.6.1",

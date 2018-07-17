@@ -21,47 +21,29 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Header Menu
+  //   Title
   // ---------------------------------------------
   
-  @observable headerMenuArr = [
-    {
-      name: 'フィード',
-      pathname: '/'
-    },
-    {
-      name: 'ゲーム',
-      pathname: '/gc'
-    },
-    {
-      name: 'ユーザー',
-      pathname: '/uc'
-    },
-    {
-      name: 'テスト1',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト2',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト3',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト4',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト5',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト6',
-      pathname: '/test'
-    }
-  ]
+  @observable titleDescriptionOpenObj = {};
+  
+  
+  @action.bound
+  handleTitleDescriptionOpen(id) {
+    this.titleDescriptionOpenObj[id] = !this.titleDescriptionOpenObj[id];
+  };
+  
+  
+  // @observable anonymityCheckedObj = {};
+  
+  // @action.bound
+  // handleAnonymityChecked(id) {
+  //   this.anonymityCheckedObj[id] = !this.anonymityCheckedObj[id];
+    
+  //   // console.log(`id = ${id}`);
+  //   // console.log(`this.anonymityCheckedObj[id] = ${this.anonymityCheckedObj[id]}`);
+  //   // console.dir(`this.anonymityCheckedObj = ${this.anonymityCheckedObj}`);
+  // };
+  
   
 }
 

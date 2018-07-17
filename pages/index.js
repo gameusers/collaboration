@@ -191,8 +191,11 @@ class Component extends React.Component {
     const stores = this.stores;
     
     
+    // --------------------------------------------------
+    //   Swiper Setting
+    // --------------------------------------------------
     
-    const params = {
+    const swiperSettingObj = {
       slidesPerView: 'auto',
       spaceBetween: 0,
       freeMode: true,
@@ -224,7 +227,7 @@ class Component extends React.Component {
             
             <CardCategory>BBS</CardCategory>
             
-            <Swiper {...params} style={{ margin: '0 0 10px 0' }}>
+            <Swiper {...swiperSettingObj} style={{ margin: '0 0 10px 0' }}>
             
               <StyledCard>
                 
@@ -430,7 +433,7 @@ class Component extends React.Component {
               
               <CardCategory>募集</CardCategory>
               
-              <Swiper {...params}>
+              <Swiper {...swiperSettingObj}>
                 
                 <StyledCard>
                   

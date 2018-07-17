@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreFormPost from '../../applications/common/form/stores/post';
+import initStoreBbsThread from '../../applications/common/bbs/stores/thread';
 import initStoreUcCommunity from '../../applications/uc/community/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
@@ -70,6 +71,7 @@ class Component extends React.Component {
     this.stores = {
       layout: storeLayoutInstance,
       formPost: initStoreFormPost(props.isServer, storeInstanceObj),
+      bbsTread: initStoreBbsThread(props.isServer, storeInstanceObj),
       current: initStoreUcCommunity(props.isServer, storeInstanceObj),
       pathname: props.pathname
     };
@@ -121,7 +123,9 @@ class Component extends React.Component {
             <BbsNavigation />
             
             {/* BBS */}
-            <BbsThread />
+            <BbsThread
+              id="ks8WPvlQpbg"
+            />
             
             
             <Button

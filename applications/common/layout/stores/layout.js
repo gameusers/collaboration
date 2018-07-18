@@ -2,7 +2,7 @@
 //   Import
 // --------------------------------------------------
 
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 
 
 // --------------------------------------------------
@@ -253,6 +253,84 @@ class Store {
   // ---------------------------------------------
   //   画像・動画モーダルウィンドウ
   // ---------------------------------------------
+  
+  @observable lightboxCurrentNo = 0;
+  @observable lightboxSrcArr = [];
+  @observable lightboxOpen = false;
+  
+  @action.bound
+  handleLightboxOpen(currentNo) {
+    this.lightboxCurrentNo = currentNo;
+    this.lightboxOpen = true;
+  };
+  
+  @action.bound
+  handleLightboxClose() {
+    this.lightboxOpen = false;
+  };
+  
+  @action.bound
+  handleLightboxPreviousCurrentNo() {
+    this.lightboxCurrentNo = this.lightboxCurrentNo - 1;
+  };
+  
+  @action.bound
+  handleLightboxNextCurrentNo() {
+    this.lightboxCurrentNo = this.lightboxCurrentNo + 1;
+  };
+  
+  
+  // @action.bound
+  // lightboxCurrentNo(id) {
+  //   return this.lightboxCurrentNoObj[id];
+  // }
+  
+  // @computed get lightboxCurrentNo() {
+  //   return 0;
+  // }
+  
+  // @computed get lightboxOpen() {
+  //   return false;
+  // }
+  
+  // @observable lightboxCurrentNoObj = {};
+  // // @observable modalImageSrcArr = [];
+  // @observable lightboxOpenObj = {};
+  
+  // @action.bound
+  // handleLightboxOpen(id, currentNo) {
+  //   this.lightboxCurrentNoObj[id] = currentNo;
+  //   this.lightboxOpenObj[id] = true;
+  //   console.log(`this.lightboxCurrentNoObj[id] = ${this.lightboxCurrentNoObj[id]}`);
+  //   // this.lightboxCurrentNo = currentNo;
+  //   // this.modalImageSrcArr = srcArr;
+  //   // this.lightboxOpen = true;
+  // };
+  
+  // @action.bound
+  // handleLightboxClose(id) {
+  //   this.lightboxOpenObj[id] = false;
+  // };
+  
+  // @action.bound
+  // lightboxCurrentNo(id) {
+  //   return this.lightboxCurrentNoObj[id];
+  // }
+  
+  // @computed get lightboxCurrentNo() {
+  //   return 0;
+  // }
+  
+  // @computed get lightboxOpen() {
+  //   return false;
+  // }
+  
+  
+  // @computed get lightboxCurrentNo(id) {
+  //   return this.lightboxCurrentNoObj[id];
+  // }
+  
+  
   
   @observable modalImageSrc = null;
   @observable modalImageOpen = false;

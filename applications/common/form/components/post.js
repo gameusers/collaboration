@@ -50,18 +50,6 @@ const ProfileThumbnailBox = styled.div`
   // background-color: blue;
 `;
 
-// const ProfileThumbnail = styled.img`
-//   border-radius: 6px;
-//   width: 48px;
-//   margin: 3px 0 0 0;
-// `;
-
-// const ProfileLine = styled.div`
-//   flex-grow: 2;
-//   border-left: 4px solid #84cacb;
-//   margin: 10px 0 0 0;
-//   padding: 0;
-// `;
 
 
 const ProfileInfoBox = styled.div`
@@ -90,14 +78,34 @@ const ProfileCheckbox = styled(Checkbox)`
 
 
 
-const Textarea = styled.textarea`
-  width: 100%;
-  max-width: 600px;
-  margin: 10px 0 0 0;
-  padding: 0;
+// const Textarea = styled.textarea`
+//   width: 100%;
+//   max-width: 600px;
+//   margin: 10px 0 0 0;
+//   padding: 0;
   
-  @media screen and (max-width: 480px) {
-    max-width: auto;
+//   @media screen and (max-width: 480px) {
+//     max-width: auto;
+//   }
+// `;
+
+const StyledTextareaAutosize = styled(TextareaAutosize)`
+  && {
+    width: 100%;
+    max-width: 600px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px 0 4px 0;
+    padding: 10px;
+    
+    &:focus {
+      outline: 1px #A9F5F2 solid;
+    }
+    
+    @media screen and (max-width: 480px) {
+      resize: none;
+      max-width: auto;
+    }
   }
 `;
 
@@ -224,22 +232,7 @@ const SendButton = styled(Button)`
 `;
 
 
-const StyledTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 500px;
-    margin: 10px 0 4px 0;
-    padding: 10px;
-    border-radius: 4px;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
+
 
 
 
@@ -413,9 +406,11 @@ export default class extends React.Component {
         {/* Textarea */}
         {/*<Textarea rows="6" />*/}
         
+        {/*<div style={{ width: '100%', backgroundColor: 'pink' }}>*/}
         <StyledTextareaAutosize
           rows={6}
         />
+        {/*</div>*/}
         
         
         {/* 画像アップロードフォーム＆動画投稿フォームを表示するためのボタン */}

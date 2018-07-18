@@ -8,45 +8,20 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
 // import Swiper from 'react-id-swiper';
+// import Lightbox from 'react-images';
 
 import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-// import Paper from '@material-ui/core/Paper';
-// import Tooltip from '@material-ui/core/Tooltip';
-// import Tabs from '@material-ui/core/Tabs';
-// import Tab from '@material-ui/core/Tab';
-// import Table from '@material-ui/core/Table';
-// import TableBody from '@material-ui/core/TableBody';
-// import TableCell from '@material-ui/core/TableCell';
-// import TableHead from '@material-ui/core/TableHead';
-// import TablePagination from '@material-ui/core/TablePagination';
-// import TableRow from '@material-ui/core/TableRow';
-// import TableSortLabel from '@material-ui/core/TableSortLabel';
-
-// import TextField from '@material-ui/core/TextField';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import InputAdornment from '@material-ui/core/InputAdornment';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import FormGroup from '@material-ui/core/FormGroup';
-// import FormControl from '@material-ui/core/FormControl';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
+import IconUpdate from '@material-ui/icons/Update';
 import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
-// import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
-// import IconSearch from '@material-ui/icons/Search';
-// import IconHealing from '@material-ui/icons/Healing';
-// import IconSchedule from '@material-ui/icons/Schedule';
-// import IconVideocam from '@material-ui/icons/Videocam';
-// import IconClose from '@material-ui/icons/Close';
 
 import green from '@material-ui/core/colors/green';
 
@@ -157,7 +132,6 @@ const TitleDescriptionBox = styled.div`
   // background-color: pink;
 `;
 
-//Okay, just a few more minutes.
 
 
 // ---------------------------------------------
@@ -211,6 +185,17 @@ const CommentLeftBox = styled.div`
 const CommentThumbnailBox = styled.div`
   // align-items: flex-start;
   margin: 2px 0 0 0;
+`;
+
+const CommentLevelBox = styled.div`
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1em;
+  width: 100%;
+  text-align: center;
+  margin: 6px 0 0 0;
+  padding: 0;
+  // background-color: pink;
 `;
 
 const CommentLine = styled.div`
@@ -404,24 +389,116 @@ const CommentReplyPreviewVideoPlayButtonImg = styled.img`
 
 
 
+// ----------------------------------------
+//   Comment & Reply - Updated Date
+// ----------------------------------------
+
+const UpdatedDateBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 8px 0 4px;
+  padding: 0 0 0 0;
+  border-bottom: 1px dashed #D8D8D8;
+  // border-radius: 10px;
+  // background-color: #FAFAFA;
+`;
+
+const UpdatedDateIconUpdate = styled(IconUpdate)`
+  && {
+    font-size: 22px;
+    margin: 2px 2px 0 0;
+  }
+`;
+
+const UpdatedDate = styled.div`
+  font-size: 12px;
+  // font-weight: bold;
+  // color: #009933;
+`;
+
+
 // ---------------------------------------------
-//   Mini Buttons
+//   Comment & Reply - Bottom Navigation
 // ---------------------------------------------
 
-const CommentMiniButtonBox = styled.div`
+const BottomNavBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 6px 0 0 0;
+  margin: 0 0 0 0;
   padding: 0;
 `;
 
 
-const CommentThumbUpMiniButton = styled(Button)`
+const BottomNavButtonsBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 0 0 0;
+`;
+
+const BottomNavInfoBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0 10px 0 0;
+`;
+
+
+// ----------------------------------------
+//   - Updated Date
+// ----------------------------------------
+
+const BottomNavUpdatedDateBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 1px 6px 0 0;
+`;
+
+const BottomNavIconUpdate = styled(IconUpdate)`
+  && {
+    font-size: 22px;
+    margin: 2px 2px 0 0;
+  }
+`;
+
+const BottomNavUpdatedDate = styled.div`
+  font-size: 12px;
+  // color: #009933;
+`;
+
+
+// ----------------------------------------
+//   - ID
+// ----------------------------------------
+
+const BottomNavIdBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 1px 0 0 0;
+`;
+
+const BottomNavIconPublic = styled(IconPublic)`
+  && {
+    font-size: 20px;
+    margin: 3px 2px 0 0;
+  }
+`;
+
+const BottomNavId = styled.div`
+  font-size: 12px;
+  color: #009933;
+`;
+
+
+// ----------------------------------------
+//   - Buttons
+// ----------------------------------------
+
+const BottomNavThumbUpButton = styled(Button)`
   && {
     background-color: ${green[500]};
     &:hover {
       background-color: ${green[700]};
     }
+    
     color: white;
     font-size: 12px;
     // width: 56px;
@@ -433,7 +510,7 @@ const CommentThumbUpMiniButton = styled(Button)`
   }
 `;
 
-const StyledIconThumbUp = styled(IconThumbUp)`
+const BottomNavIconThumbUp = styled(IconThumbUp)`
   && {
     font-size: 14px;
     margin: 0 4px 0 0;
@@ -441,7 +518,7 @@ const StyledIconThumbUp = styled(IconThumbUp)`
   }
 `;
 
-const CommentMiniButton = styled(Button)`
+const BottomNavButton = styled(Button)`
   && {
     font-size: 12px;
     height: 22px;
@@ -457,7 +534,7 @@ const CommentMiniButton = styled(Button)`
   }
 `;
 
-const StyledIconEdit = styled(IconEdit)`
+const BottomNavIconEdit = styled(IconEdit)`
   && {
     font-size: 16px;
     margin: 0 3px 0 0;
@@ -469,7 +546,7 @@ const StyledIconEdit = styled(IconEdit)`
   }
 `;
 
-const StyledIconReply = styled(IconReply)`
+const BottomNavIconReply = styled(IconReply)`
   && {
     font-size: 16px;
     margin: 0 1px 0 0;
@@ -481,23 +558,6 @@ const StyledIconReply = styled(IconReply)`
   }
 `;
 
-const CommentIdBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 1px 0 0 0;
-`;
-
-const CommentIdIconPublic = styled(IconPublic)`
-  && {
-    font-size: 20px;
-    margin: 3px 2px 0 0;
-  }
-`;
-
-const CommentId = styled.div`
-  font-size: 12px;
-  color: #009933;
-`;
 
 
 
@@ -524,6 +584,23 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, id } = this.props;
+    
+    
+    
+    const LIGHTBOX_IMAGE_SET = [
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+        caption: 'A forest',
+        // As an array
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+        ],
+      }
+    ];
+    
+    // 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
+    //       'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg',
     
     
     // --------------------------------------------------
@@ -612,6 +689,8 @@ export default class extends React.Component {
                     <ProfileThumbnail />
                   </CommentThumbnailBox>
                   
+                  <CommentLevelBox>Lv.999</CommentLevelBox>
+                  
                   <CommentLine />
                 </CommentLeftBox>
                 
@@ -638,29 +717,56 @@ export default class extends React.Component {
                   </CommentBox>
                   
                   
-                  <CommentMiniButtonBox>
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>7 時間前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
                     
-                    <CommentThumbUpMiniButton variant="outlined">
-                      <StyledIconThumbUp />
-                      5000
-                    </CommentThumbUpMiniButton>
+                    {/*<BottomNavInfoBox>
+                      
+                      <BottomNavUpdatedDateBox>
+                        <BottomNavIconUpdate />
+                        <BottomNavUpdatedDate>7 時間前</BottomNavUpdatedDate>
+                      </BottomNavUpdatedDateBox>
+                      
+                      <BottomNavIdBox>
+                        <BottomNavIconPublic />
+                        <BottomNavId>_5pweox1Io8</BottomNavId>
+                      </BottomNavIdBox>
+                      
+                    </BottomNavInfoBox>*/}
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconEdit />
-                      編集
-                    </CommentMiniButton>
+                    <BottomNavButtonsBox>
+                      
+                      <BottomNavThumbUpButton variant="outlined">
+                        <BottomNavIconThumbUp />
+                        5000
+                      </BottomNavThumbUpButton>
+                      
+                      <BottomNavButton variant="outlined">
+                        <BottomNavIconReply />
+                        返信
+                      </BottomNavButton>
+                      
+                      <BottomNavButton variant="outlined">
+                        <BottomNavIconEdit />
+                        編集
+                      </BottomNavButton>
+                      
+                      <BottomNavIdBox>
+                        <BottomNavIconPublic />
+                        <BottomNavId>_5pweox1Io8</BottomNavId>
+                      </BottomNavIdBox>
+                      
+                    </BottomNavButtonsBox>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconReply />
-                      返信
-                    </CommentMiniButton>
                     
-                    <CommentIdBox>
-                      <CommentIdIconPublic />
-                      <CommentId>_5pweox1Io8</CommentId>
-                    </CommentIdBox>
                     
-                  </CommentMiniButtonBox>
+                    
+                  </BottomNavBox>
                   
                 </CommentRightBox>
                 
@@ -701,24 +807,30 @@ export default class extends React.Component {
                   </CommentBox>
                   
                   
-                  <CommentMiniButtonBox>
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>3 時間前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
                     
-                    <CommentThumbUpMiniButton variant="outlined">
-                      <StyledIconThumbUp />
+                    <BottomNavThumbUpButton variant="outlined">
+                      <BottomNavIconThumbUp />
                       123
-                    </CommentThumbUpMiniButton>
+                    </BottomNavThumbUpButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconReply />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconReply />
                       返信
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentIdBox>
-                      <CommentIdIconPublic />
-                      <CommentId>GMi2JFwJ868</CommentId>
-                    </CommentIdBox>
+                    <BottomNavIdBox>
+                      <BottomNavIconPublic />
+                      <BottomNavId>GMi2JFwJ868</BottomNavId>
+                    </BottomNavIdBox>
                     
-                  </CommentMiniButtonBox>
+                  </BottomNavBox>
                   
                 </ReplyRightBox>
                 
@@ -754,24 +866,30 @@ export default class extends React.Component {
                   </CommentBox>
                   
                   
-                  <CommentMiniButtonBox>
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>30 分前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
                     
-                    <CommentThumbUpMiniButton variant="outlined">
-                      <StyledIconThumbUp />
+                    <BottomNavThumbUpButton variant="outlined">
+                      <BottomNavIconThumbUp />
                       0
-                    </CommentThumbUpMiniButton>
+                    </BottomNavThumbUpButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconReply />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconReply />
                       返信
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentIdBox>
-                      <CommentIdIconPublic />
-                      <CommentId>E3PwP4kzFa8</CommentId>
-                    </CommentIdBox>
+                    <BottomNavIdBox>
+                      <BottomNavIconPublic />
+                      <BottomNavId>E3PwP4kzFa8</BottomNavId>
+                    </BottomNavIdBox>
                     
-                  </CommentMiniButtonBox>
+                  </BottomNavBox>
                   
                 </ReplyRightBox>
                 
@@ -789,6 +907,7 @@ export default class extends React.Component {
                 <CommentLeftBox>
                   <CommentThumbnailBox>
                     <ProfileThumbnail />
+                    <CommentLevelBox>Lv.500</CommentLevelBox>
                   </CommentThumbnailBox>
                   
                   {/*<CommentLine />*/}
@@ -822,29 +941,35 @@ export default class extends React.Component {
                   </CommentBox>
                   
                   
-                  <CommentMiniButtonBox>
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>1 日前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
                     
-                    <CommentThumbUpMiniButton variant="outlined">
-                      <StyledIconThumbUp />
+                    <BottomNavThumbUpButton variant="outlined">
+                      <BottomNavIconThumbUp />
                       1
-                    </CommentThumbUpMiniButton>
+                    </BottomNavThumbUpButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconEdit />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconEdit />
                       編集
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconReply />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconReply />
                       返信
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentIdBox>
-                      <CommentIdIconPublic />
-                      <CommentId>M8-vje-bq9c</CommentId>
-                    </CommentIdBox>
+                    <BottomNavIdBox>
+                      <BottomNavIconPublic />
+                      <BottomNavId>M8-vje-bq9c</BottomNavId>
+                    </BottomNavIdBox>
                     
-                  </CommentMiniButtonBox>
+                  </BottomNavBox>
                   
                 </CommentRightBox>
                 
@@ -862,6 +987,7 @@ export default class extends React.Component {
                 <CommentLeftBox>
                   <CommentThumbnailBox>
                     <ProfileThumbnail />
+                    <CommentLevelBox>Lv.30</CommentLevelBox>
                   </CommentThumbnailBox>
                   
                   {/*<CommentLine />*/}
@@ -896,29 +1022,35 @@ export default class extends React.Component {
                   </CommentBox>
                   
                   
-                  <CommentMiniButtonBox>
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>3 日前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
                     
-                    <CommentThumbUpMiniButton variant="outlined">
-                      <StyledIconThumbUp />
+                    <BottomNavThumbUpButton variant="outlined">
+                      <BottomNavIconThumbUp />
                       67
-                    </CommentThumbUpMiniButton>
+                    </BottomNavThumbUpButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconEdit />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconEdit />
                       編集
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconReply />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconReply />
                       返信
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentIdBox>
-                      <CommentIdIconPublic />
-                      <CommentId>1yIHLQJNvDw</CommentId>
-                    </CommentIdBox>
+                    <BottomNavIdBox>
+                      <BottomNavIconPublic />
+                      <BottomNavId>1yIHLQJNvDw</BottomNavId>
+                    </BottomNavIdBox>
                     
-                  </CommentMiniButtonBox>
+                  </BottomNavBox>
                   
                 </CommentRightBox>
                 
@@ -937,6 +1069,7 @@ export default class extends React.Component {
                 <CommentLeftBox>
                   <CommentThumbnailBox>
                     <ProfileThumbnail />
+                    <CommentLevelBox>Lv.1</CommentLevelBox>
                   </CommentThumbnailBox>
                   
                   {/*<CommentLine />*/}
@@ -956,12 +1089,12 @@ export default class extends React.Component {
                     
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg"
-                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg')}
+                        onClick={() => stores.layout.handleLightboxOpen(0)}
                       />
                       
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg"
-                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg')}
+                        onClick={() => stores.layout.handleLightboxOpen(1)}
                       />
                       
                       <CommentReplyPrevieImg
@@ -991,6 +1124,27 @@ export default class extends React.Component {
                         />
                       </CommentReplyPreviewVideoBox>
                     
+                      
+                      {/*<Lightbox
+                        images={[
+                          {
+                            src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+                            caption: 'A forest',
+                            // As an array
+                            srcSet: [
+                              'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+                              'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+                            ],
+                          }
+                        ]}
+                        currentImage={0}
+                        isOpen={stores.layout.lightboxOpen}
+                        // onClickPrev={this.gotoPrevious}
+                        // onClickNext={this.gotoNext}
+                        // onClose={stores.layout.handleLightboxClose}
+                        backdropClosesModal
+                      />*/}
+                    
                     </CommentReplyPreviewImagesBox>
                     
                     
@@ -1001,29 +1155,35 @@ export default class extends React.Component {
                   </CommentBox>
                   
                   
-                  <CommentMiniButtonBox>
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>5 日前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
                     
-                    <CommentThumbUpMiniButton variant="outlined">
-                      <StyledIconThumbUp />
+                    <BottomNavThumbUpButton variant="outlined">
+                      <BottomNavIconThumbUp />
                       3
-                    </CommentThumbUpMiniButton>
+                    </BottomNavThumbUpButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconEdit />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconEdit />
                       編集
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentMiniButton variant="outlined">
-                      <StyledIconReply />
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconReply />
                       返信
-                    </CommentMiniButton>
+                    </BottomNavButton>
                     
-                    <CommentIdBox>
-                      <CommentIdIconPublic />
-                      <CommentId>Um_cUEd7vl0</CommentId>
-                    </CommentIdBox>
+                    <BottomNavIdBox>
+                      <BottomNavIconPublic />
+                      <BottomNavId>Um_cUEd7vl0</BottomNavId>
+                    </BottomNavIdBox>
                     
-                  </CommentMiniButtonBox>
+                  </BottomNavBox>
                   
                 </CommentRightBox>
                 

@@ -9,6 +9,7 @@ import { inject, observer } from 'mobx-react';
 import Header from './header/header';
 import HeaderMenu from './header/menu';
 import Footer from './footer';
+
 import ModalImageVideo from './modal-image-video';
 import Snackbar from './snackbar';
 

@@ -41,24 +41,22 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Open Image Video Form
+  //   Open Image Form & Video Form
   // ---------------------------------------------
   
-  @observable imageOpen = false;
+  @observable imageFormOpenObj = {};
+  @observable videoFormOpenObj = {};
   
   @action.bound
-  handleImageOpen() {
-    this.imageOpen = !this.imageOpen;
-    this.videoOpen = false;
+  handleImageFormOpen(id) {
+    this.imageFormOpenObj[id] = !this.imageFormOpenObj[id];
+    this.videoFormOpenObj[id] = false;
   };
   
-  
-  @observable videoOpen = false;
-  
   @action.bound
-  handleVideoOpen() {
-    this.videoOpen = !this.videoOpen;
-    this.imageOpen = false;
+  handleVideoFormOpen(id) {
+    this.videoFormOpenObj[id] = !this.videoFormOpenObj[id];
+    this.imageFormOpenObj[id] = false;
   };
   
   
@@ -67,9 +65,16 @@ class Store {
   //   Image Form
   // ---------------------------------------------
   
+  imageSrcObj = {};
+  imageWidthObj = {};
+  imageHeightObj = {};
+  imageExtensionObj = {};
+  
+  
   @action.bound
-  handleAddImages(event) {
+  handleSelectImage(event, id) {
     // console.log(`file = ${event.target.files[0]}`);
+    // console.log(`id = ${id}`);
     
     const imageSizeUpperLimit = 5242880;
     
@@ -127,42 +132,15 @@ class Store {
           extension = 'svg';
         }
         
-        console.log(`width = ${width}`);
-        console.log(`height = ${height}`);
-        console.log(`extension = ${extension}`);
-        console.log(`fileReader.result = ${fileReader.result}`);
-
-        // dispatch(actions.funcShareImage(file, fileReader.result, width, height, extension));
+        this.imageSrcObj[id] = fileReader.result;
+        this.imageWidthObj[id] = width;
+        this.imageHeightObj[id] = height;
+        this.imageExtensionObj[id] = extension;
         
-        // ---------------------------------------------
-        //   重複のチェック
-        // ---------------------------------------------
-        
-        const duplication = this.previewArr.find((value) => {
-          return (value.imageSrc === fileReader.result);
-        });
-        
-        
-        // console.log(`duplication = ${duplication}`);
-        
-        // ---------------------------------------------
-        //   重複していない場合は配列に追加する
-        // ---------------------------------------------
-        
-        if (duplication) {
-          
-          storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が登録されています。');
-          return;
-          
-        } else {
-          
-          this.previewArr.push({
-            imageSrc: fileReader.result,
-            videoChannel: '',
-            videoId: '',
-          });
-          
-        }
+        console.log(`imageSrcObj[id] = ${this.imageSrcObj[id]}`);
+        console.log(`imageWidthObj[id] = ${this.imageWidthObj[id]}`);
+        console.log(`imageHeightObj[id] = ${this.imageHeightObj[id]}`);
+        console.log(`imageExtensionObj[id] = ${this.imageExtensionObj[id]}`);
         
       };
 
@@ -173,20 +151,100 @@ class Store {
   };
   
   
+  @action.bound
+  handleAddImage(id) {
+    
+    
+    // ---------------------------------------------
+    //  Preview Arr
+    // ---------------------------------------------
+    
+    let previewArr = [];
+    
+    if (id in this.previewObj) {
+      previewArr = this.previewObj[id];
+    }
+    
+    
+    // ---------------------------------------------
+    //   重複のチェック
+    // ---------------------------------------------
+    
+    const duplication = previewArr.find((value) => {
+      return (value.imageSrc === this.imageSrcObj[id]);
+    });
+    
+    
+    // ---------------------------------------------
+    //   重複していない場合はオブジェクトに追加する
+    // ---------------------------------------------
+    
+    if (duplication) {
+      
+      storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が登録されています。');
+      return;
+      
+    } else {
+      
+      previewArr.push({
+        imageSrc: this.imageSrcObj[id],
+        videoChannel: '',
+        videoId: '',
+      });
+      
+      this.previewObj[id] = previewArr;
+      
+    }
+    
+  };
+  
+  
+  
+  @observable imageCaptionOpenObj = {};
+  
+  @action.bound
+  handleImageCaptionOpen(id) {
+    this.imageCaptionOpenObj[id] = !this.imageCaptionOpenObj[id];
+  };
+  
+  
   
   // ---------------------------------------------
   //   Video Form
   // ---------------------------------------------
   
-  @observable videoUrl = '';
+  @observable videoUrlObj = {};
   
   @action.bound
-  handleVideoUrl(event) {
-    this.videoUrl = event.target.value;
+  handleVideoUrl(event, id) {
+    this.videoUrlObj[id] = event.target.value;
   };
   
+  
   @action.bound
-  handleAddVideos() {
+  handleAddVideo(id) {
+    
+    
+    // ---------------------------------------------
+    //  Preview Arr
+    // ---------------------------------------------
+    
+    let previewArr = [];
+    
+    if (id in this.previewObj) {
+      previewArr = this.previewObj[id];
+    }
+    
+    
+    // ---------------------------------------------
+    //   Video URL
+    // ---------------------------------------------
+    
+    let videoUrl = '';
+    
+    if (id in this.videoUrlObj) {
+      videoUrl = this.videoUrlObj[id];
+    }
     
     
     // ---------------------------------------------
@@ -195,7 +253,7 @@ class Store {
     
     let videoChannel = 'youtube';
     
-    if (this.videoUrl.indexOf('youtube.com') !== -1 || this.videoUrl.indexOf('youtu.be') !== -1) {
+    if (videoUrl.indexOf('youtube.com') !== -1 || videoUrl.indexOf('youtu.be') !== -1) {
       videoChannel = 'youtube';
     }
     
@@ -204,7 +262,7 @@ class Store {
     //   Video Id
     // ---------------------------------------------
     
-    const resultArr = this.videoUrl.match(/[/?=]([-\w]{11})/);
+    const resultArr = videoUrl.match(/[/?=]([-\w]{11})/);
     
     if (resultArr) {
       
@@ -215,7 +273,7 @@ class Store {
       //   重複のチェック
       // ---------------------------------------------
       
-      const duplication = this.previewArr.find((value) => {
+      const duplication = previewArr.find((value) => {
         return (value.videoId === videoId);
       });
       
@@ -223,7 +281,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   重複していない場合は配列に追加する
+      //   重複していない場合はオブジェクトに追加する
       // ---------------------------------------------
       
       if (duplication) {
@@ -233,32 +291,33 @@ class Store {
         
       } else {
         
-        this.videoUrl = '';
-        
-        this.previewArr.push({
+        previewArr.push({
           imageSrc: '',
           videoChannel,
           videoId,
         });
         
+        this.previewObj[id] = previewArr;
+        this.videoUrlObj[id] = '';
+        
       }
       
-      // console.log(`videoId = ${videoId}`);
     }
-    
-    // console.log(`resultArr = ${resultArr}`);
     
   };
   
   
   
   // ---------------------------------------------
-  //   Preview Image Video
+  //   Preview Delete
   // ---------------------------------------------
   
   @action.bound
-  handlePreviewDelete(number) {
-    this.previewArr.splice(number, 1);
+  handlePreviewDelete(id, number) {
+    // console.log(`id = ${id}`);
+    // console.log(`number = ${number}`);
+    // console.log(`this.previewObj[id] = ${this.previewObj[id]}`);
+    this.previewObj[id].splice(number, 1);
   };
   
   
@@ -267,6 +326,7 @@ class Store {
   //   Preview
   // ---------------------------------------------
   
+  @observable previewObj = {};
   @observable previewArr = [];
   
   // @observable previewArr = [

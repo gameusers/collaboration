@@ -19,7 +19,8 @@ import Snackbar from './snackbar';
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
   
   constructor(props) {

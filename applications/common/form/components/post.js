@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
 
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -16,6 +17,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import IconVideocam from '@material-ui/icons/Videocam';
 import IconClose from '@material-ui/icons/Close';
+import IconDescription from '@material-ui/icons/Description';
+import IconHelpOutline from '@material-ui/icons/HelpOutline';
+
 
 import cyan from '@material-ui/core/colors/cyan';
 
@@ -142,11 +146,39 @@ const ImageDescriptionUl = styled.ul`
   // padding: 0;
 `;
 
-const ImageInputFile = styled.input`
+const ImageInputFileBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
   // font-size: 14px;
-  margin: 12px 0 4px 0;
+  margin: 10px 0 6px;
   // padding: 0;
 `;
+
+const ImageInputFile = styled.input`
+  // font-size: 14px;
+  margin: 0;
+  padding: 4px 0 0 0;
+`;
+
+const ImageTextField = styled(TextField)`
+  && {
+    // flex-grow: 2;
+    width: 100%;
+    max-width: 500px;
+    margin: 10px 0 0 0;
+    
+    @media screen and (max-width: 480px) {
+      max-width: auto;
+    }
+  }
+`;
+
+const ImageCaptionDescription = styled.p`
+  font-size: 14px;
+  margin: 10px 0 0 0;
+  // padding: 0;
+`;
+
 
 const VideoBox = styled.div`
   margin: 10px 0 0 0;
@@ -276,6 +308,37 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Open Image Form & Video Form
+    // --------------------------------------------------
+    
+    let imageFormOpen = false;
+    
+    if (id in stores.formPost.imageFormOpenObj) {
+      imageFormOpen = stores.formPost.imageFormOpenObj[id];
+    }
+    
+    let videoFormOpen = false;
+    
+    if (id in stores.formPost.videoFormOpenObj) {
+      videoFormOpen = stores.formPost.videoFormOpenObj[id];
+    }
+    
+    
+    let imageCaptionOpen = '';
+    
+    if (id in stores.formPost.imageCaptionOpenObj) {
+      imageCaptionOpen = stores.formPost.imageCaptionOpenObj[id];
+    }
+    
+    
+    let videoUrl = '';
+    
+    if (id in stores.formPost.videoUrlObj) {
+      videoUrl = stores.formPost.videoUrlObj[id];
+    }
+    
+    
+    // --------------------------------------------------
     //   Send Button Label
     // --------------------------------------------------
     
@@ -294,9 +357,9 @@ export default class extends React.Component {
     
     const codePreviewArr = [];
     
-    if (stores.formPost.previewArr && stores.formPost.previewArr.length > 0) {
+    if (stores.formPost.previewObj[id] && stores.formPost.previewObj[id].length > 0) {
       
-      stores.formPost.previewArr.forEach((value, index) => {
+      stores.formPost.previewObj[id].forEach((value, index) => {
         
         
         // ---------------------------------------------
@@ -315,7 +378,7 @@ export default class extends React.Component {
               <PreviewDeleteButton
                 variant="fab"
                 color="primary"
-                onClick={() => stores.formPost.handlePreviewDelete(index)}
+                onClick={() => stores.formPost.handlePreviewDelete(id, index)}
               >
                 <IconClose />
               </PreviewDeleteButton>
@@ -342,7 +405,7 @@ export default class extends React.Component {
               <PreviewDeleteButton
                 variant="fab"
                 color="primary"
-                onClick={() => stores.formPost.handlePreviewDelete(index)}
+                onClick={() => stores.formPost.handlePreviewDelete(id, index)}
               >
                 <IconClose />
               </PreviewDeleteButton>
@@ -403,14 +466,9 @@ export default class extends React.Component {
         </ProfileBox>
         
         
-        {/* Textarea */}
-        {/*<Textarea rows="6" />*/}
-        
-        {/*<div style={{ width: '100%', backgroundColor: 'pink' }}>*/}
         <StyledTextareaAutosize
           rows={6}
         />
-        {/*</div>*/}
         
         
         {/* 画像アップロードフォーム＆動画投稿フォームを表示するためのボタン */}
@@ -418,7 +476,7 @@ export default class extends React.Component {
           <ImageButton
             variant="outlined"
             size="small"
-            onClick={stores.formPost.handleImageOpen}
+            onClick={() => stores.formPost.handleImageFormOpen(id)}
           >
             画像アップロード
           </ImageButton>
@@ -426,7 +484,7 @@ export default class extends React.Component {
           <Button
             variant="outlined"
             size="small"
-            onClick={stores.formPost.handleVideoOpen}
+            onClick={() => stores.formPost.handleVideoFormOpen(id)}
           >
             動画投稿
           </Button>
@@ -434,22 +492,62 @@ export default class extends React.Component {
         
         
         {/* 画像アップロードフォーム */}
-        {stores.formPost.imageOpen &&
+        {imageFormOpen &&
           <ImageBox>
             <ImageDescription>
               アップロードできる画像の種類は JPEG, PNG, GIF, BMP で、ファイルサイズが5MB以内のものです。
             </ImageDescription>
             
-            <ImageInputFile
-              type="file"
-              onChange={stores.formPost.handleAddImages}
+            <ImageInputFileBox>
+              <ImageInputFile
+                type="file"
+                onChange={(event) => stores.formPost.handleSelectImage(event, id)}
+              />
+              
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={() => stores.formPost.handleAddImage(id)}
+              >
+                追加
+              </Button>
+            </ImageInputFileBox>
+            
+            <ImageTextField
+              placeholder="画像名・簡単な解説を入力"
+              value={stores.formPost.videoUrl}
+              onChange={stores.formPost.handleVideoUrl}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconDescription />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => stores.formPost.handleImageCaptionOpen(id)}
+                    >
+                      <IconHelpOutline />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            
+            {imageCaptionOpen &&
+              <ImageCaptionDescription>
+                アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力しておくと、拡大された画像の下部に入力した文字が表示されるようになります。基本的には未入力で問題ありませんが、アップロードした画像について丁寧に説明したい場合に利用してください。
+              </ImageCaptionDescription>
+            }
+            
           </ImageBox>
         }
         
         
         {/* 動画投稿フォーム */}
-        {stores.formPost.videoOpen &&
+        {videoFormOpen &&
           <VideoBox>
           
             <ImageDescription>
@@ -466,8 +564,8 @@ export default class extends React.Component {
             <VideoTextFieldBox>
               <VideoTextField
                 placeholder=""
-                value={stores.formPost.videoUrl}
-                onChange={stores.formPost.handleVideoUrl}
+                value={videoUrl}
+                onChange={(event) => stores.formPost.handleVideoUrl(event, id)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -480,7 +578,7 @@ export default class extends React.Component {
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={stores.formPost.handleAddVideos}
+                onClick={() => stores.formPost.handleAddVideo(id)}
               >
                 追加
               </Button>

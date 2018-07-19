@@ -1089,27 +1089,27 @@ export default class extends React.Component {
                     
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen(0)}
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 0)}
                       />
                       
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen(1)}
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 1)}
                       />
                       
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg"
-                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg')}
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 2)}
                       />
                       
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg"
-                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg')}
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 3)}
                       />
                       
                       <CommentReplyPrevieImg
                         src="https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg"
-                        onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg')}
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 4)}
                       />
                       
                       <CommentReplyPreviewVideoBox
@@ -1123,27 +1123,6 @@ export default class extends React.Component {
                           src="/static/img/common/video-play-button.png"
                         />
                       </CommentReplyPreviewVideoBox>
-                    
-                      
-                      {/*<Lightbox
-                        images={[
-                          {
-                            src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-                            caption: 'A forest',
-                            // As an array
-                            srcSet: [
-                              'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-                              'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-                            ],
-                          }
-                        ]}
-                        currentImage={0}
-                        isOpen={stores.layout.lightboxOpen}
-                        // onClickPrev={this.gotoPrevious}
-                        // onClickNext={this.gotoNext}
-                        // onClose={stores.layout.handleLightboxClose}
-                        backdropClosesModal
-                      />*/}
                     
                     </CommentReplyPreviewImagesBox>
                     
@@ -1181,6 +1160,107 @@ export default class extends React.Component {
                     <BottomNavIdBox>
                       <BottomNavIconPublic />
                       <BottomNavId>Um_cUEd7vl0</BottomNavId>
+                    </BottomNavIdBox>
+                    
+                  </BottomNavBox>
+                  
+                </CommentRightBox>
+                
+              </CommentContainer>
+              
+            </CommentsRepliesContainer>
+            
+            
+            
+            {/* Comment5 */}
+            <CommentsRepliesContainer>
+              
+              <CommentContainer>
+                
+                <CommentLeftBox>
+                  <CommentThumbnailBox>
+                    <ProfileThumbnail />
+                    <CommentLevelBox>Lv.1</CommentLevelBox>
+                  </CommentThumbnailBox>
+                  
+                  {/*<CommentLine />*/}
+                </CommentLeftBox>
+                
+                
+                <CommentRightBox>
+                
+                  <ProfileNameBox>
+                    <ProfileName />
+                  </ProfileNameBox>
+                  
+                  
+                  <CommentBox>
+                    
+                    <CommentReplyPreviewImagesBox>
+                    
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('GMi2JFwJ868', 0)}
+                      />
+                      
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('GMi2JFwJ868', 1)}
+                      />
+                      
+                      <CommentReplyPrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('GMi2JFwJ868', 2)}
+                      />
+                      
+                      <CommentReplyPreviewVideoBox
+                        onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}
+                      >
+                        <CommentReplyPreviewVideoImg
+                          src="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
+                        />
+                        
+                        <CommentReplyPreviewVideoPlayButtonImg
+                          src="/static/img/common/video-play-button.png"
+                        />
+                      </CommentReplyPreviewVideoBox>
+                    
+                    </CommentReplyPreviewImagesBox>
+                    
+                    
+                    
+                    <p>画像・動画複数表示テスト2。</p>
+                    <p>スマホを充電するケーブルなどが床に転がっているのが気に入らなかったので、ケーブルにマジックテープを巻きつけて磁石を固定し、鉄で出来ているPCケースやテーブルの足にくっつけようと考えました。</p>
+
+                  </CommentBox>
+                  
+                  
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>7 日前</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
+                    
+                    <BottomNavThumbUpButton variant="outlined">
+                      <BottomNavIconThumbUp />
+                      30
+                    </BottomNavThumbUpButton>
+                    
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconEdit />
+                      編集
+                    </BottomNavButton>
+                    
+                    <BottomNavButton variant="outlined">
+                      <BottomNavIconReply />
+                      返信
+                    </BottomNavButton>
+                    
+                    <BottomNavIdBox>
+                      <BottomNavIconPublic />
+                      <BottomNavId>GMi2JFwJ868</BottomNavId>
                     </BottomNavIdBox>
                     
                   </BottomNavBox>

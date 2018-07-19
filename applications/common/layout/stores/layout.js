@@ -257,9 +257,11 @@ class Store {
   @observable lightboxCurrentNo = 0;
   @observable lightboxSrcArr = [];
   @observable lightboxOpen = false;
+  @observable lightboxImagesId = 'init';
   
   @action.bound
-  handleLightboxOpen(currentNo) {
+  handleLightboxOpen(id, currentNo) {
+    this.lightboxImagesId = id;
     this.lightboxCurrentNo = currentNo;
     this.lightboxOpen = true;
   };
@@ -278,6 +280,186 @@ class Store {
   handleLightboxNextCurrentNo() {
     this.lightboxCurrentNo = this.lightboxCurrentNo + 1;
   };
+  
+  
+  
+  
+  @observable lightboxImagesObj = {
+    init: [
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      },
+      {
+        src: '/static/img/common/logo.png',
+        caption: 'Logo',
+        srcSet: [
+          '/static/img/common/logo.png 320w',
+          '/static/img/common/logo.png 640w',
+        ],
+      }
+    ],
+    Um_cUEd7vl0: [
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+        caption: 'Caption 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+        ],
+      },
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
+        caption: 'Caption 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
+        ],
+      },
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
+        caption: 'Caption 3',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 640w',
+        ],
+      },
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg.jpg',
+        caption: 'Caption 4',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 640w',
+        ],
+      },
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg',
+        caption: 'Caption 5',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 640w',
+        ],
+      }
+    ],
+    GMi2JFwJ868: [
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg',
+        caption: 'Caption 1',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 640w',
+        ],
+      },
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg',
+        caption: 'Caption 2',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 640w',
+        ],
+      },
+      {
+        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg',
+        caption: 'Caption 3',
+        srcSet: [
+          'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 320w',
+          'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 640w',
+        ],
+      }
+    ],
+    
+  };
+  
+  
+  
+  // images={[
+  //           {
+  //             src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+  //             caption: 'Caption 1',
+  //             srcSet: [
+  //               'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+  //               'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+  //             ],
+  //           },
+  //           {
+  //             src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
+  //             caption: 'Caption 2',
+  //             srcSet: [
+  //               'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
+  //               'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
+  //             ],
+  //           }
+  //         ]}
+  
+  
   
   
   // @action.bound

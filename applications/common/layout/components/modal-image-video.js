@@ -75,30 +75,14 @@ export class Component extends React.Component {
           onClose={stores.layout.handleModalVideoClose}
         />
         <Lightbox
-          images={[
-            {
-              src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-              caption: 'Caption 1',
-              srcSet: [
-                'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-                'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-              ],
-            },
-            {
-              src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
-              caption: 'Caption 2',
-              srcSet: [
-                'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
-                'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
-              ],
-            }
-          ]}
+          images={stores.layout.lightboxImagesObj[stores.layout.lightboxImagesId]}
           currentImage={stores.layout.lightboxCurrentNo}
           isOpen={stores.layout.lightboxOpen}
           onClickPrev={stores.layout.handleLightboxPreviousCurrentNo}
           onClickNext={stores.layout.handleLightboxNextCurrentNo}
           onClose={stores.layout.handleLightboxClose}
           backdropClosesModal
+          preloadNextImage={false}
         />
       </React.Fragment>
     );

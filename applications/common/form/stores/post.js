@@ -194,17 +194,36 @@ class Store {
       
       this.previewObj[id] = previewArr;
       
+      
+      // Lightbox 用に画像を追加
+      storeLayout.handleLightboxAddImage(id, this.imageSrcObj[id], this.imageCaptionObj[id]);
+      
+      // Caption をリセット
+      this.imageCaptionObj[id] = '';
+      
     }
     
   };
   
   
+  // ----------------------------------------
+  //   - Caption
+  // ----------------------------------------
   
   @observable imageCaptionOpenObj = {};
   
   @action.bound
   handleImageCaptionOpen(id) {
     this.imageCaptionOpenObj[id] = !this.imageCaptionOpenObj[id];
+  };
+  
+  
+  @observable imageCaptionObj = {};
+  
+  @action.bound
+  handleImageCaption(event, id) {
+    // console.log(`event.target.value = ${event.target.value}`);
+    this.imageCaptionObj[id] = event.target.value;
   };
   
   
@@ -313,11 +332,12 @@ class Store {
   // ---------------------------------------------
   
   @action.bound
-  handlePreviewDelete(id, number) {
+  handlePreviewDelete(id, index) {
     // console.log(`id = ${id}`);
-    // console.log(`number = ${number}`);
+    // console.log(`index = ${index}`);
     // console.log(`this.previewObj[id] = ${this.previewObj[id]}`);
-    this.previewObj[id].splice(number, 1);
+    this.previewObj[id].splice(index, 1);
+    storeLayout.handleLightboxDeleteImage(id, index);
   };
   
   

@@ -587,20 +587,18 @@ export default class extends React.Component {
     
     
     
-    const LIGHTBOX_IMAGE_SET = [
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-        caption: 'A forest',
-        // As an array
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-        ],
-      }
-    ];
+    // const LIGHTBOX_IMAGE_SET = [
+    //   {
+    //     src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+    //     caption: 'A forest',
+    //     // As an array
+    //     srcSet: [
+    //       'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+    //       'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+    //     ],
+    //   }
+    // ];
     
-    // 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
-    //       'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg',
     
     
     // --------------------------------------------------
@@ -672,7 +670,7 @@ export default class extends React.Component {
             
             {/* Form Post Comment */}
             <FormPost
-              id="ks8WPvlQpbg"
+              id="ks8WPvlQpbg-comment"
               sendButtonLabel="コメントする"
             />
             

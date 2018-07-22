@@ -251,7 +251,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   画像・動画モーダルウィンドウ
+  //   Lightbox・画像
   // ---------------------------------------------
   
   @observable lightboxCurrentNo = 0;
@@ -439,78 +439,27 @@ class Store {
   };
   
   
+  @action.bound
+  handleLightboxAddImage(id, src, caption) {
+    
+    if (!this.lightboxImagesObj[id]) {
+      this.lightboxImagesObj[id] = [];
+    }
+    
+    const insertObj = {
+      src,
+      caption
+    };
+    
+    this.lightboxImagesObj[id].push(insertObj);
+    
+  };
   
-  // images={[
-  //           {
-  //             src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-  //             caption: 'Caption 1',
-  //             srcSet: [
-  //               'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-  //               'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-  //             ],
-  //           },
-  //           {
-  //             src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
-  //             caption: 'Caption 2',
-  //             srcSet: [
-  //               'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
-  //               'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
-  //             ],
-  //           }
-  //         ]}
+  @action.bound
+  handleLightboxDeleteImage(id, index) {
+    this.lightboxImagesObj[id].splice(index, 1);
+  };
   
-  
-  
-  
-  // @action.bound
-  // lightboxCurrentNo(id) {
-  //   return this.lightboxCurrentNoObj[id];
-  // }
-  
-  // @computed get lightboxCurrentNo() {
-  //   return 0;
-  // }
-  
-  // @computed get lightboxOpen() {
-  //   return false;
-  // }
-  
-  // @observable lightboxCurrentNoObj = {};
-  // // @observable modalImageSrcArr = [];
-  // @observable lightboxOpenObj = {};
-  
-  // @action.bound
-  // handleLightboxOpen(id, currentNo) {
-  //   this.lightboxCurrentNoObj[id] = currentNo;
-  //   this.lightboxOpenObj[id] = true;
-  //   console.log(`this.lightboxCurrentNoObj[id] = ${this.lightboxCurrentNoObj[id]}`);
-  //   // this.lightboxCurrentNo = currentNo;
-  //   // this.modalImageSrcArr = srcArr;
-  //   // this.lightboxOpen = true;
-  // };
-  
-  // @action.bound
-  // handleLightboxClose(id) {
-  //   this.lightboxOpenObj[id] = false;
-  // };
-  
-  // @action.bound
-  // lightboxCurrentNo(id) {
-  //   return this.lightboxCurrentNoObj[id];
-  // }
-  
-  // @computed get lightboxCurrentNo() {
-  //   return 0;
-  // }
-  
-  // @computed get lightboxOpen() {
-  //   return false;
-  // }
-  
-  
-  // @computed get lightboxCurrentNo(id) {
-  //   return this.lightboxCurrentNoObj[id];
-  // }
   
   
   
@@ -528,6 +477,10 @@ class Store {
     this.modalImageOpen = false;
   };
   
+  
+  // ---------------------------------------------
+  //   モーダルウィンドウ・動画
+  // ---------------------------------------------
   
   @observable modalVideoChannel = null;
   @observable modalVideoId = null;

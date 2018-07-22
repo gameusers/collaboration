@@ -324,11 +324,33 @@ export default class extends React.Component {
     }
     
     
+    // ---------------------------------------------
+    //   - Caption
+    // ---------------------------------------------
+    
+    // let imageInputFileValue = '';
+    
+    // if (id in stores.formPost.imageInputFileValueObj) {
+    //   imageCaptionOpen = stores.formPost.imageInputFileValueObj[id];
+    // }
+    
+    
+    // ---------------------------------------------
+    //   - Caption
+    // ---------------------------------------------
+    
     let imageCaptionOpen = '';
     
     if (id in stores.formPost.imageCaptionOpenObj) {
       imageCaptionOpen = stores.formPost.imageCaptionOpenObj[id];
     }
+    
+    let imageCaption = '';
+    
+    if (id in stores.formPost.imageCaptionObj) {
+      imageCaption = stores.formPost.imageCaptionObj[id];
+    }
+    
     
     
     let videoUrl = '';
@@ -372,7 +394,7 @@ export default class extends React.Component {
             <ImageVideoPreviewBox key={index}>
               <PreviewImg
                 src={value.imageSrc}
-                onClick={() => stores.layout.handleModalImageOpen(value.imageSrc)}
+                onClick={() => stores.layout.handleLightboxOpen(id, index)}
               />
               
               <PreviewDeleteButton
@@ -516,8 +538,8 @@ export default class extends React.Component {
             
             <ImageTextField
               placeholder="画像名・簡単な解説を入力"
-              value={stores.formPost.videoUrl}
-              onChange={stores.formPost.handleVideoUrl}
+              value={imageCaption}
+              onChange={(event) => stores.formPost.handleImageCaption(event, id)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -538,7 +560,7 @@ export default class extends React.Component {
             
             {imageCaptionOpen &&
               <ImageCaptionDescription>
-                アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力しておくと、拡大された画像の下部に入力した文字が表示されるようになります。基本的には未入力で問題ありませんが、アップロードした画像について丁寧に説明したい場合に利用してください。
+                アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力して追加すると、拡大された画像の下部に入力した文字が表示されるようになります。<strong>基本的には未入力で問題ありません</strong>が、アップロードした画像について丁寧に説明したい場合などに利用してください。
               </ImageCaptionDescription>
             }
             

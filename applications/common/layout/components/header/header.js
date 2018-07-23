@@ -34,6 +34,7 @@ import IconPerson from '@material-ui/icons/Person';
 import IconEject from '@material-ui/icons/Eject';
 
 import HeroImage from '../header/hero-image';
+import NavFollow from '../header/nav-follow';
 
 
 
@@ -249,6 +250,9 @@ export default class extends React.Component {
         {/* ヒーローイメージ（各ゲームの大きな画像） */}
         <HeroImage />
         
+        
+         {/* ナビゲーション - フォロー＆コミュニティ参加用 */}
+        <NavFollow />
         
         
         {/* 通知ダイアログ */}

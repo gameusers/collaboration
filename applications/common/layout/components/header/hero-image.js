@@ -8,6 +8,8 @@ import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 
 import IconButton from '@material-ui/core/IconButton';
+import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
 
 import IconKeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
@@ -21,9 +23,7 @@ import LinkIcons from '../../components/link-icons';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-let Container = null;
-let Image = null;
-let BoxData = null;
+let DataBox = null;
 
 
 const DataTitleBox = styled.div`
@@ -42,7 +42,7 @@ const DataTitle = styled.h1`
   line-height: 1.4em;
 `;
 
-const IconButtonKeyboardArrowUp = styled(IconButton)`
+const DataKeyboardArrowUpIconButton = styled(IconButton)`
   && {
     margin: 2px auto 0;
     padding: 2px 0 0;
@@ -60,14 +60,18 @@ const DataInfo = styled.p`
   line-height: 1.4em;
 `;
 
-const BoxDataLink = styled.div`
+const DataLink = styled.div`
   display: flex;
   flex-direction: row;
   padding: 5px 10px 0;
 `;
 
 
-const BoxDataClosed = styled.div`
+// --------------------------------------------------
+//   Data Closed
+// --------------------------------------------------
+
+const DataBoxClosed = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -92,7 +96,7 @@ const DataTitleClosed = styled.h1`
   line-height: 1.4em;
 `;
       
-const IconButtonKeyboardArrowDown = styled(IconButton)`
+const DataKeyboardArrowDownIconButton = styled(IconButton)`
   && {
     margin: 0;
     padding: 2px 0 0;
@@ -103,6 +107,46 @@ const IconButtonKeyboardArrowDown = styled(IconButton)`
     min-height: 24px;
   }
 `;
+
+
+// --------------------------------------------------
+//   Thumbnail 表示用
+// --------------------------------------------------
+
+const ContainerThumbnail = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  background: no-repeat center center url('/static/img/common/header-back.jpg');
+  background-size: cover;
+  padding: 15px;
+`;
+
+const ImageThumbnail = styled.img`
+  margin: 0 15px 0 0;
+  border-radius: 8px;
+  box-shadow: 4px 4px 10px #383838;
+  
+  @media screen and (max-width: 480px) {
+    width: 96px;
+  }
+  
+  @media screen and (max-width: 320px) {
+    width: 64px;
+  }
+`;
+
+// const DataBoxThumbnail = styled.div`
+//   min-width: 150px;
+//   max-width: 300px;
+//   border-radius: 8px;
+//   background-color: #000;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   color: #fff;
+//   padding: 4px 0 6px 0;
+// `;
+
 
 
 
@@ -130,10 +174,41 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Hero Image
+    //   Data
     // --------------------------------------------------
     
-    let imgSrc = null;
+    const ComponentDataBoxOpen = () => (
+      <DataBox>
+        <DataTitleBox>
+          <DataTitle>{stores.layout.headerDataTitle}</DataTitle>
+          <DataKeyboardArrowUpIconButton color="secondary" onClick={stores.layout.handleHeaderDataBoxClose}>
+            <IconKeyboardArrowUp />
+          </DataKeyboardArrowUpIconButton>
+        </DataTitleBox>
+        <DataInfo>ハード | {stores.layout.headerDataHardware}</DataInfo>
+        <DataInfo>ジャンル | {stores.layout.headerDataGenre}</DataInfo>
+        <DataInfo>プレイ人数 | {stores.layout.headerDataPlayersMax}</DataInfo>
+        <DataInfo>発売日 | {stores.layout.headerDataReleaseDate}</DataInfo>
+        <DataInfo>開発 | {stores.layout.headerDataDeveloper}</DataInfo>
+        <DataLink><LinkIcons linkArr={stores.layout.headerDataLinkArr} /></DataLink>
+      </DataBox>
+    );
+    
+    const ComponentDataBoxClosed = () => (
+      <DataBoxClosed>
+        <DataTitleClosed>{stores.layout.headerDataTitle}</DataTitleClosed>
+        <DataKeyboardArrowDownIconButton color="secondary" onClick={stores.layout.handleHeaderDataBoxOpen}>
+          <IconKeyboardArrowDown />
+        </DataKeyboardArrowDownIconButton>
+      </DataBoxClosed>
+    );
+    
+    
+    // --------------------------------------------------
+    //   Hero Image あり
+    // --------------------------------------------------
+    
+    let code = '';
     
     if (stores.layout.headerHeroImageArr) {
       
@@ -141,26 +216,22 @@ export default class extends React.Component {
       
       const paddingTop = stores.layout.headerDataBoxOpen ? 0 : 'auto';
       
-      // padding-top は画像の高さ ÷ 画像の幅 × 100
-      Container = styled.div`
+      
+       // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
+      const Container = styled.div`
         width: 100%;
         background: no-repeat center center url(/static/img/game/${stores.layout.headerGameNo}/hero/${heroImageRandomNo}.jpg);
         background-size: cover;
         position: relative;
-        // height: 0;
         padding-top: 56.25%;
         
         @media screen and (max-width: 480px) {
-          // position: static;
-          // height: auto;
           padding-top: ${paddingTop};
         }
       `;
       
-      BoxData = styled.div`
+      DataBox = styled.div`
         width: 280px;
-        // min-width: 150px;
-        // max-width: 300px;
         border-radius: 8px;
         background-color: #000;
         background-color: rgba(0, 0, 0, 0.5);
@@ -179,37 +250,30 @@ export default class extends React.Component {
       `;
       
       
+      code = 
+        <Container>
+          
+          { stores.layout.headerDataBoxOpen ? (
+            <ComponentDataBoxOpen />
+          ) : (
+            <ComponentDataBoxClosed />
+          )}
+          
+        </Container>
+      ;
+      
+      
+      
     // --------------------------------------------------
     //   Hero Image がない場合、サムネイルを表示する
     // --------------------------------------------------
     
     } else {
       
-      Container = styled.div`
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-start;
-        background: no-repeat center center url('/static/img/common/header-back.jpg');
-        background-size: cover;
-        padding: 15px;
-      `;
+      const imgSrc = `/static/img/game/${stores.layout.headerGameNo}/thumbnail.jpg`;
       
-      Image = styled.img`
-        margin: 0 15px 0 0;
-        border-radius: 8px;
-        box-shadow: 4px 4px 10px #383838;
-        
-        @media screen and (max-width: 480px) {
-          width: 96px;
-        }
-        
-        @media screen and (max-width: 320px) {
-          width: 64px;
-        }
-      `;
       
-      BoxData = styled.div`
+      DataBox = styled.div`
         min-width: 150px;
         max-width: 300px;
         border-radius: 8px;
@@ -219,43 +283,20 @@ export default class extends React.Component {
         padding: 4px 0 6px 0;
       `;
       
-      imgSrc = `/static/img/game/${stores.layout.headerGameNo}/thumbnail.jpg`;
+      code = 
+        <ContainerThumbnail>
+          <ImageThumbnail src={imgSrc} />
+          <ComponentDataBoxOpen />
+        </ContainerThumbnail>
+      ;
       
     }
     
     
     return (
-      <Container>
-        
-        {imgSrc && <Image src={imgSrc} />}
-        
-        { stores.layout.headerDataBoxOpen &&
-          <BoxData>
-            <DataTitleBox>
-              <DataTitle>{stores.layout.headerDataTitle}</DataTitle>
-              <IconButtonKeyboardArrowUp color="secondary" onClick={stores.layout.handleHeaderDataBoxClose}>
-                <IconKeyboardArrowUp />
-              </IconButtonKeyboardArrowUp>
-            </DataTitleBox>
-            <DataInfo>ハード | {stores.layout.headerDataHardware}</DataInfo>
-            <DataInfo>ジャンル | {stores.layout.headerDataGenre}</DataInfo>
-            <DataInfo>プレイ人数 | {stores.layout.headerDataPlayersMax}</DataInfo>
-            <DataInfo>発売日 | {stores.layout.headerDataReleaseDate}</DataInfo>
-            <DataInfo>開発 | {stores.layout.headerDataDeveloper}</DataInfo>
-            <BoxDataLink><LinkIcons linkArr={stores.layout.headerDataLinkArr} /></BoxDataLink>
-          </BoxData>
-        }
-        
-        { !stores.layout.headerDataBoxOpen &&
-          <BoxDataClosed>
-            <DataTitleClosed>{stores.layout.headerDataTitle}</DataTitleClosed>
-            <IconButtonKeyboardArrowDown color="secondary" onClick={stores.layout.handleHeaderDataBoxOpen}>
-              <IconKeyboardArrowDown />
-            </IconButtonKeyboardArrowDown>
-          </BoxDataClosed>
-        }
-        
-      </Container>
+      <React.Fragment>
+        {code}
+      </React.Fragment>
     );
     
   }

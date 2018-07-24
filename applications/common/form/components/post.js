@@ -339,7 +339,7 @@ export default class extends React.Component {
     //   - Caption
     // ---------------------------------------------
     
-    let imageCaptionOpen = '';
+    let imageCaptionOpen = false;
     
     if (id in stores.formPost.imageCaptionOpenObj) {
       imageCaptionOpen = stores.formPost.imageCaptionOpenObj[id];

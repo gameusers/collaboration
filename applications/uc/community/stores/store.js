@@ -402,7 +402,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreUcCommunity(isServer, storeInstanceObj) {
+export default function initStoreUserCommunity(isServer, storeInstanceObj) {
   
   if (storeLayout === null && 'layout' in storeInstanceObj) {
     storeLayout = storeInstanceObj.layout;

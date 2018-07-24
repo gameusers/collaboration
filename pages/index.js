@@ -213,7 +213,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout headerMenuArr={stores.layout.headerMenuObj.index}>
+        <Layout headerNavMainArr={stores.layout.headerNavMainObj.index}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

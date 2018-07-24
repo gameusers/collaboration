@@ -34,7 +34,7 @@ import IconPerson from '@material-ui/icons/Person';
 import IconEject from '@material-ui/icons/Eject';
 
 import HeroImage from '../header/hero-image';
-import NavFollow from '../header/nav-follow';
+import NavSub from '../header/nav-sub';
 
 
 
@@ -252,7 +252,7 @@ export default class extends React.Component {
         
         
          {/* ナビゲーション - フォロー＆コミュニティ参加用 */}
-        <NavFollow />
+        <NavSub />
         
         
         {/* 通知ダイアログ */}

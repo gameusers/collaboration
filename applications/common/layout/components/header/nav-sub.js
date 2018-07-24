@@ -8,6 +8,10 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
 
 import IconLabelImportant from '@material-ui/icons/LabelImportant';
 import IconAssignment from '@material-ui/icons/Assignment';
@@ -49,7 +53,7 @@ const CommunityJoinButton = styled(Button)`
 const CommunityIconLabelImportant = styled(IconLabelImportant)`
   && {
     font-size: 20px;
-    // margin: 0 3px 0 0;
+    margin: 0;
     padding: 0 3px 0 0;
   }
 `;
@@ -64,7 +68,7 @@ const CommunityRuleButton = styled(Button)`
     color: white;
     margin: 0 2px 0 0;
     padding: 0 6px 0 2px;
-  }
+  }nav-follow
 `;
 
 const CommunityIconAssignment = styled(IconAssignment)`
@@ -114,7 +118,8 @@ const CommunityMembers = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
   
   constructor(props) {
@@ -129,8 +134,23 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, headerMenuArr } = this.props;
+    const { stores } = this.props;
     
+    const id = stores.layout.historyStateArr[0].id;
+    const members = stores.layout.ucObj[id].members;
+    const rule = stores.layout.ucObj[id].rule;
+    // console.log(`members = ${members}`);
+    
+    
+    // --------------------------------------------------
+    //   Open Image Form & Video Form
+    // --------------------------------------------------
+    
+    let navSubOpen = false;
+    
+    if (id in stores.layout.headerNavSubDialogOpenObj) {
+      navSubOpen = stores.layout.headerNavSubDialogOpenObj[id];
+    }
     
     
     
@@ -146,15 +166,38 @@ export default class extends React.Component {
           参加する
         </CommunityJoinButton>
         
-        <CommunityRuleButton size="small">
+        <CommunityRuleButton
+          size="small"
+          onClick={() => stores.layout.handleHeaderNavSubDialogOpen(id)}
+        >
           <CommunityIconAssignment />
           ルール
         </CommunityRuleButton>
         
         <CommunityMembersBox>
           <CommunityIconPerson />
-          <CommunityMembers>12345</CommunityMembers>
+          <CommunityMembers>{members}</CommunityMembers>
         </CommunityMembersBox>
+        
+        
+        <Dialog
+          open={navSubOpen}
+          onClose={() => stores.layout.handleHeaderNavSubDialogClose(id)}
+        >
+          <DialogTitle>コミュニティについて</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {rule}
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogTitle>参加ルール</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {rule}
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
         
       </Container>
     );

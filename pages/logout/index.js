@@ -110,7 +110,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout headerMenuArr={stores.layout.headerMenuObj.logout}>
+        <Layout headerNavMainArr={stores.layout.headerNavMainObj.logout}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

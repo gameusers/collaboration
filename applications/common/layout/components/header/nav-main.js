@@ -58,7 +58,8 @@ const ScrollbarContainer = styled(Scrollbar)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
   
   constructor(props) {
@@ -73,7 +74,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, headerMenuArr } = this.props;
+    const { stores, headerNavMainArr } = this.props;
     
     
     // --------------------------------------------------
@@ -82,30 +83,11 @@ export default class extends React.Component {
     
     const codeArr = [];
     let active = false;
-    // let menuArr = headerMenuArr;
     
-    // if (stores.pathname === '/') {
-    //   menuArr = stores.header.menuObj.index;
-    // } else if (stores.pathname === '/gc') {
-    //   menuArr = stores.header.menuObj.gc;
-    // } else if (stores.pathname === '/uc') {
-    //   menuArr = stores.header.menuObj.uc;
-    // } else if (stores.pathname === '/login') {
-    //   menuArr = stores.header.menuObj.login;
-    // } else if (stores.pathname === '/login/social') {
-    //   menuArr = stores.header.menuObj.login;
-    // } else if (stores.pathname === '/logout') {
-    //   menuArr = stores.header.menuObj.logout;
-    // }
     
-    // console.log(headerMenuArr);
-    
-    if (headerMenuArr && headerMenuArr.length > 0) {
+    if (headerNavMainArr && headerNavMainArr.length > 0) {
       
-      // const reverseHeaderMenuArr = JSON.parse(JSON.stringify(menuArr)).reverse();
-      const reverseHeaderMenuArr = headerMenuArr.slice().reverse();
-      // const reverseHeaderMenuArr = headerMenuArr;
-      // console.log(`stores.pathname = ${stores.pathname}`);
+      const reverseHeaderMenuArr = headerNavMainArr.slice().reverse();
       
       reverseHeaderMenuArr.forEach((value, index) => {
         

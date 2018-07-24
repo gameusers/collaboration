@@ -191,26 +191,39 @@ export default class extends React.Component {
     
     const { stores } = this.props;
     
+    const {
+      threadListArr,
+      threadListOrderBy,
+      threadListOrder,
+      threadListCount,
+      threadListRowsPerPage,
+      threadListPage,
+      handleThreadListSort,
+      handleThreadListRowsPerPage,
+      handleThreadListPage
+    } = this.props.stores.bbsNavigation;
+    
     
     
     // --------------------------------------------------
     //   スレッド一覧
     // --------------------------------------------------
     
-    let codeBbsThreadListArr = [];
+    let componentThreadListArr = [];
     
-    if (stores.current.bbsThreadArr) {
+    if (threadListArr) {
       
       
       // --------------------------------------------------
       //   テーブルの中身
       // --------------------------------------------------
       
-      let codeTableDataArr = [];
+      let componentTableDataArr = [];
       
-      stores.current.bbsThreadArr.forEach((value, index) => {
+      // threadListArr.forEach((value, index) => {
+      for (const [index, value] of threadListArr.entries()) {
         
-        codeTableDataArr.push(
+        componentTableDataArr.push(
           <TableRow key={index}>
             <TableCellBbsThreadListName
               component="th"
@@ -226,11 +239,12 @@ export default class extends React.Component {
           </TableRow>
         );
         
-      });
+      }
+      // });
       
       
-      codeBbsThreadListArr.push(
-        <div key="bbsThreadList">
+      componentThreadListArr.push(
+        <div key="threadList">
           
           <BbsThreadListTableWrapper>
             
@@ -245,9 +259,9 @@ export default class extends React.Component {
                   
                   <TableCellBbsThreadList>
                     <TableSortLabel
-                      active={stores.current.bbsThreadListOrderBy === 'updatedDate'}
-                      direction={stores.current.bbsThreadListOrder}
-                      onClick={() => stores.current.sortBbsThreadList('updatedDate')}
+                      active={threadListOrderBy === 'updatedDate'}
+                      direction={threadListOrder}
+                      onClick={() => handleThreadListSort('updatedDate')}
                     >
                       最終更新日
                     </TableSortLabel>
@@ -255,9 +269,9 @@ export default class extends React.Component {
                   
                   <TableCellBbsThreadList numeric>
                     <TableSortLabel
-                      active={stores.current.bbsThreadListOrderBy === 'comment'}
-                      direction={stores.current.bbsThreadListOrder}
-                      onClick={() => stores.current.sortBbsThreadList('comment')}
+                      active={threadListOrderBy === 'comment'}
+                      direction={threadListOrder}
+                      onClick={() => handleThreadListSort('comment')}
                     >
                       コメント
                     </TableSortLabel>
@@ -265,9 +279,9 @@ export default class extends React.Component {
                   
                   <TableCellBbsThreadList numeric>
                     <TableSortLabel
-                      active={stores.current.bbsThreadListOrderBy === 'reply'}
-                      direction={stores.current.bbsThreadListOrder}
-                      onClick={() => stores.current.sortBbsThreadList('reply')}
+                      active={threadListOrderBy === 'reply'}
+                      direction={threadListOrder}
+                      onClick={() => handleThreadListSort('reply')}
                     >
                       返信
                     </TableSortLabel>
@@ -275,9 +289,9 @@ export default class extends React.Component {
                   
                   <TableCellBbsThreadList numeric>
                     <TableSortLabel
-                      active={stores.current.bbsThreadListOrderBy === 'image'}
-                      direction={stores.current.bbsThreadListOrder}
-                      onClick={() => stores.current.sortBbsThreadList('image')}
+                      active={threadListOrderBy === 'image'}
+                      direction={threadListOrder}
+                      onClick={() => handleThreadListSort('image')}
                     >
                       画像
                     </TableSortLabel>
@@ -285,9 +299,9 @@ export default class extends React.Component {
                   
                   <TableCellBbsThreadList numeric>
                     <TableSortLabel
-                      active={stores.current.bbsThreadListOrderBy === 'video'}
-                      direction={stores.current.bbsThreadListOrder}
-                      onClick={() => stores.current.sortBbsThreadList('video')}
+                      active={threadListOrderBy === 'video'}
+                      direction={threadListOrder}
+                      onClick={() => handleThreadListSort('video')}
                     >
                       動画
                     </TableSortLabel>
@@ -297,7 +311,7 @@ export default class extends React.Component {
               </TableHead>
               
               <TableBody>
-                {codeTableDataArr}
+                {componentTableDataArr}
               </TableBody>
               
             </Table>
@@ -306,9 +320,9 @@ export default class extends React.Component {
         
           <TablePagination
             component="div"
-            count={stores.current.bbsThreadListCount}
-            rowsPerPage={stores.current.bbsThreadListRowsPerPage}
-            page={stores.current.bbsThreadListPage}
+            count={threadListCount}
+            rowsPerPage={threadListRowsPerPage}
+            page={threadListPage}
             labelRowsPerPage=""
             backIconButtonProps={{
               'aria-label': 'Previous Page',
@@ -316,8 +330,8 @@ export default class extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangeRowsPerPage={stores.current.handleChangeBbsThreadListRowsPerPage}
-            onChangePage={stores.current.handleChangeBbsThreadListPage}
+            onChangeRowsPerPage={handleThreadListRowsPerPage}
+            onChangePage={handleThreadListPage}
           />
           
         </div>
@@ -333,14 +347,14 @@ export default class extends React.Component {
     
     return (
       <ExpansionPanel
-        expanded={stores.current.bbsMenuExpanded}
+        expanded={stores.bbsNavigation.panelExpanded('test')}
       >
         
         {/* Title */}
         <ExpansionPanelSummary
           expandIcon={
             <IconExpandMore
-              onClick={stores.current.handleBbsMenuExpanded}
+              onClick={() => stores.bbsNavigation.handlePanelExpanded('test')}
             />
           }
         >
@@ -410,7 +424,7 @@ export default class extends React.Component {
           {/* スレッド一覧 */}
           {stores.current.bbsMenuOpenedTabNo === 0 &&
             <BbsMenuThreadListTabBox>
-              {codeBbsThreadListArr}
+              {componentThreadListArr}
             </BbsMenuThreadListTabBox>
           }
           

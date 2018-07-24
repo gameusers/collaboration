@@ -78,7 +78,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout headerMenuArr={stores.layout.headerMenuObj.gc}>
+        <Layout headerNavMainArr={stores.layout.headerNavMainObj.gc}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

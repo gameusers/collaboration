@@ -7,7 +7,7 @@ import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 
 import Header from './header/header';
-import HeaderMenu from './header/menu';
+import HeaderNavMain from './header/nav-main';
 import Footer from './footer';
 
 import ModalImageVideo from './modal-image-video';
@@ -65,9 +65,9 @@ export default class extends React.Component {
         {/* ヘッダー */}
         <Header />
         
-        {/* ヘッダー下部メニュー */}
-        <HeaderMenu
-          headerMenuArr={this.props.headerMenuArr}
+        {/* ヘッダー - メインナビゲーション */}
+        <HeaderNavMain
+          headerNavMainArr={this.props.headerNavMainArr}
         />
         
         {/* コンテンツ */}

@@ -189,9 +189,10 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    const { stores, id } = this.props;
     
     const {
+      threadListMap,
       threadListArr,
       threadListOrderBy,
       threadListOrder,
@@ -201,12 +202,18 @@ export default class extends React.Component {
       handleThreadListSort,
       handleThreadListRowsPerPage,
       handleThreadListPage
-    } = this.props.stores.bbsNavigation;
+    } = stores.bbsNavigation;
+    
+    // console.log(`this.props.id = ${this.props.id}`);
+    
+    // const test = threadListMap.get('p0V_RsaT1l8').get('ks8WPvlQpbg').get('a');
+    // const test = threadListMap.get('p0V_RsaT1l8');
+    // console.dir(test);
     
     
     
     // --------------------------------------------------
-    //   スレッド一覧
+    //   コンポーネント作成 - スレッド一覧
     // --------------------------------------------------
     
     let componentThreadListArr = [];
@@ -220,7 +227,6 @@ export default class extends React.Component {
       
       let componentTableDataArr = [];
       
-      // threadListArr.forEach((value, index) => {
       for (const [index, value] of threadListArr.entries()) {
         
         componentTableDataArr.push(
@@ -240,7 +246,6 @@ export default class extends React.Component {
         );
         
       }
-      // });
       
       
       componentThreadListArr.push(
@@ -347,14 +352,14 @@ export default class extends React.Component {
     
     return (
       <ExpansionPanel
-        expanded={stores.bbsNavigation.panelExpanded('test')}
+        expanded={stores.layout.returnPanelExpanded(id)}
       >
         
         {/* Title */}
         <ExpansionPanelSummary
           expandIcon={
             <IconExpandMore
-              onClick={() => stores.bbsNavigation.handlePanelExpanded('test')}
+              onClick={() => stores.layout.handlePanelExpanded(id)}
             />
           }
         >

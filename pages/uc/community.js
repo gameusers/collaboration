@@ -49,8 +49,71 @@ const Container = styled.div`
 class Component extends React.Component {
   
   static getInitialProps({ pathname, req }) {
+    
     const isServer = !!req;
-    return { isServer: isServer, pathname: pathname };
+    
+    
+    // --------------------------------------------------
+    //   テスト用　初期データ
+    // --------------------------------------------------
+    
+    const id = 'p0V_RsaT1l8';
+    
+    
+    const initialData = {
+      
+      id,
+      
+      
+      // ---------------------------------------------
+      //   Panel
+      // ---------------------------------------------
+      
+      panelExpandedObj: {
+        'p0V_RsaT1l8': true, // BBS スレッド
+        'ks8WPvlQpbg': true // BBS
+      },
+      
+      
+      // ---------------------------------------------
+      //   スレッド一覧
+      // ---------------------------------------------
+      
+      threadListArr: [
+        {
+          name: '雑談スレッド',
+          about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+          updatedDate: '2018/5/1',
+          comment: 613,
+          reply: 780,
+          image: 108,
+          video: 50
+        },
+        {
+          name: '配信後に俺が感想を書くスレ',
+          about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+          updatedDate: '2017/3/14',
+          comment: 102,
+          reply: 91,
+          image: 15,
+          video: 20
+        },
+        {
+          name: '配信でプレイして欲しいゲームを書き込みましょう！',
+          about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+          updatedDate: '2017/11/20',
+          comment: 478,
+          reply: 370,
+          image: 60,
+          video: 39
+        }
+      ]
+        
+      
+    };
+    
+    return { isServer, pathname, id, initialData };
+    
   }
   
   
@@ -63,7 +126,7 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
-    const storeLayoutInstance = initStoreLayout(props.isServer);
+    const storeLayoutInstance = initStoreLayout(props.isServer, props.initialData);
     
     const storeInstanceObj = {
       layout: storeLayoutInstance
@@ -90,6 +153,8 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const stores = this.stores;
+    
+    const { id } = this.props;
     
     
     // render() {
@@ -122,7 +187,7 @@ class Component extends React.Component {
           <Container>
             
             {/* BBS Navigation */}
-            <BbsNavigation />
+            <BbsNavigation id={id} />
             
             {/* BBS */}
             <BbsThread

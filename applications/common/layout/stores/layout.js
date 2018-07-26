@@ -32,7 +32,7 @@ class Store {
       param4: '',
       param5: '',
       file: 'uc/community.js',
-      id: '02USPLgRuTw',
+      id: 'p0V_RsaT1l8',
       dateTime: '2017-07-24T20:45:20'
     }
   ]
@@ -273,7 +273,7 @@ class Store {
   // ---------------------------------------------
   
   @observable ucObj = {
-    '02USPLgRuTw': {
+    'p0V_RsaT1l8': {
       name: 'あづみ配信コミュニティ',
       rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
       communityId: 'az1979',
@@ -286,19 +286,21 @@ class Store {
   //   Panel
   // ---------------------------------------------
   
-  // @observable panelExpanded = null;
-  // @observable modalImageOpen = false;
+  @observable panelExpandedObj = {};
+  // @observable panelExpandedId = '';
+  
+  @action.bound
+  handlePanelExpanded(id) {
+    console.log(`layout / handlePanelExpanded`);
+    
+    this.panelExpandedObj[this.historyStateArr[0].id][id] = !this.panelExpandedObj[this.historyStateArr[0].id][id];
+    // this.panelExpandedId = id;
+  };
   
   
-  // @action.bound
-  // handleReturnPanelExpanded(category, id) {
-  //   return true;
-  // };
-  
-  // @action.bound
-  // handlePanelExpanded(category, id) {
-  //   this.modalImageOpen = true;
-  // };
+  returnPanelExpanded(id) {
+    return this.panelExpandedObj[this.historyStateArr[0].id][id];
+  }
   
   
   
@@ -617,6 +619,23 @@ class Store {
     this.processQueue();
   };
   
+  
+  
+  // --------------------------------------------------
+  //   Initialize Data
+  // --------------------------------------------------
+  
+  constructor(initialData) {
+    
+    if (initialData) {
+      // console.log(`◆layout initialData`);
+      // console.dir(initialData);
+      
+      this.panelExpandedObj[initialData.id] = initialData.panelExpandedObj;
+    }
+    
+  }
+  
 }
 
 
@@ -625,20 +644,17 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLayout(isServer) {
+export default function initStoreLayout(isServer, initialData) {
   
   if (isServer) {
-    // console.log('Initialize Store / Sever');
-    return new Store();
+    
+    return new Store(initialData);
     
   } else {
     
     if (storeLayout === null) {
-      // console.log('Initialize Store / Client / store === null');
-      storeLayout = new Store();
+      storeLayout = new Store(initialData);
     }
-    // console.log('Initialize Store / Client');
-    // console.log(store);
     
     return storeLayout;
     

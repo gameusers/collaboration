@@ -2,7 +2,7 @@
 //   Import
 // --------------------------------------------------
 
-import { action, computed, observable } from 'mobx';
+import { action, observable } from 'mobx';
 
 
 // --------------------------------------------------
@@ -18,53 +18,6 @@ let storeLayout = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   BBS Menu
-  // ---------------------------------------------
-  
-  @observable panelExpandedObj = {};
-  @observable panelExpandedId = '';
-  
-  @action.bound
-  handlePanelExpanded(id) {
-    console.log(`handlePanelExpanded`);
-    
-    if (this.panelExpandedId in this.panelExpandedObj) {
-      
-    }
-    
-    this.panelExpandedObj[id] = !this.panelExpandedObj[id];
-    this.panelExpandedId = id;
-  };
-  
-  
-  panelExpanded(id) {
-    
-    if (id in this.panelExpandedObj) {
-      console.log(`this.panelExpandedObj[id] = ${this.panelExpandedObj[id]}`);
-      return this.panelExpandedObj[id];
-    } else {
-      // this.panelExpandedObj[id] = true;
-    }
-    
-    return true;
-    
-  }
-  
-  // @computed get panelExpanded() {
-    
-  //   console.log(`this.panelExpandedId = ${this.panelExpandedId}`);
-    
-  //   if (this.panelExpandedId in this.panelExpandedObj) {
-  //     console.log(`this.panelExpandedObj[this.panelExpandedId] = ${this.panelExpandedObj[this.panelExpandedId]}`);
-  //     return this.panelExpandedObj[this.panelExpandedId];
-  //   }
-    
-  //   return true;
-    
-  // }
   
   
   
@@ -217,10 +170,100 @@ class Store {
   //   スレッド一覧
   // ---------------------------------------------
   
+  @observable threadListObj = {
+    'p0V_RsaT1l8': {
+      'ks8WPvlQpbg': {
+        'a': 'aaa',
+        'b': 'bbb',
+        'c': 'ccc'
+      }
+    }
+  };
+  
+  // 多次元Map
+  // @observable threadListMap = new Map([
+    
+  //   ['p0V_RsaT1l8', new Map([
+  //     ['ks8WPvlQpbg', new Map([
+  //       ['a', 'aaa'],
+  //       ['b', 'bbb'],
+  //       ['c', 'ccc']
+  //     ])]
+  //   ])],
+    
+  // ]);
+  
+  
+  // @observable threadListMap = new Map([
+    
+  //   ['p0V_RsaT1l8', new Map([
+  //     ['ks8WPvlQpbg', new Map([
+  //       ['a', 'aaa'],
+  //       ['b', 'bbb'],
+  //       ['c', 'ccc']
+  //     ])]
+  //   ])],
+    
+  //   // ['p0V_RsaT1l8', this.test],
+    
+  //   // ['p0V_RsaT1l8',
+  //   //     ['ks8WPvlQpbg', [
+  //   //         ['a', 'aaa'],
+  //   //         ['b', 'bbb'],
+  //   //         ['c', 'ccc']
+  //   //       ]
+  //   //     ],
+  //   //     ['1oARcQsjkYR', 
+  //   //       ['a', 'AAA'],
+  //   //       ['b', 'BBB'],
+  //   //       ['c', 'CCC']
+  //   //     ]
+  //   // ],
+    
+  //   // ['p0V_RsaT1l8', new Map(
+  //   //     [
+  //   //       ['a', 'aaa'],
+  //   //       ['b', 'bbb'],
+  //   //       ['c', 'ccc']
+  //   //     ],
+  //   //     [
+  //   //       ['a', 'AAA'],
+  //   //       ['b', 'BBB'],
+  //   //       ['c', 'CCC']
+  //   //     ]
+  //   //   )
+  //   // ],
+    
+  //   // ['p0V_RsaT1l8',
+  //   //   [
+  //   //     ['id', 'ks8WPvlQpbg'],
+  //   //     ['name', '雑談スレッド'],
+  //   //     ['description', 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！'],
+  //   //     ['updatedDate', '2018/5/1'],
+  //   //     ['comment', 613],
+  //   //     ['reply', 780],
+  //   //     ['image', 108],
+  //   //     ['video', 50],
+  //   //   ],
+  //   //   [
+  //   //     ['id', '1oARcQsjkYR'],
+  //   //     ['name', '配信後に俺が感想を書くスレ'],
+  //   //     ['description', 'description2'],
+  //   //     ['updatedDate', '2017/3/14'],
+  //   //     ['comment', 102],
+  //   //     ['reply', 91],
+  //   //     ['image', 15],
+  //   //     ['video', 20],
+  //   //   ]
+  //   // ],
+    
+  // ]);
+  
   @observable threadListArr = [
     {
+      id: 'ks8WPvlQpbg',
       name: '雑談スレッド',
-      about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+      description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
       updatedDate: '2018/5/1',
       comment: 613,
       reply: 780,
@@ -229,7 +272,7 @@ class Store {
     },
     {
       name: '配信後に俺が感想を書くスレ',
-      about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+      description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
       updatedDate: '2017/3/14',
       comment: 102,
       reply: 91,
@@ -238,7 +281,7 @@ class Store {
     },
     {
       name: '配信でプレイして欲しいゲームを書き込みましょう！',
-      about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+      description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
       updatedDate: '2017/11/20',
       comment: 478,
       reply: 370,

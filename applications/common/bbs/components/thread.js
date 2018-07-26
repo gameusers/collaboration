@@ -587,19 +587,6 @@ export default class extends React.Component {
     
     
     
-    // const LIGHTBOX_IMAGE_SET = [
-    //   {
-    //     src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-    //     caption: 'A forest',
-    //     // As an array
-    //     srcSet: [
-    //       'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-    //       'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-    //     ],
-    //   }
-    // ];
-    
-    
     
     // --------------------------------------------------
     //   Return
@@ -607,14 +594,14 @@ export default class extends React.Component {
     
     return (
       <ExpansionPanel
-        expanded={stores.current.bbsExpanded}
+        expanded={stores.layout.returnPanelExpanded(id)}
       >
         
         {/* Title */}
         <TitleExpansionPanelSummary
           expandIcon={
             <IconExpandMore
-              onClick={stores.current.handleBbsExpanded}
+              onClick={() => stores.layout.handlePanelExpanded(id)}
             />
           }
         >

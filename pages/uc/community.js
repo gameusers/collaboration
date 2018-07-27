@@ -79,35 +79,40 @@ class Component extends React.Component {
       //   スレッド一覧
       // ---------------------------------------------
       
-      threadListArr: [
-        {
-          name: '雑談スレッド',
-          about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
-          updatedDate: '2018/5/1',
-          comment: 613,
-          reply: 780,
-          image: 108,
-          video: 50
-        },
-        {
-          name: '配信後に俺が感想を書くスレ',
-          about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
-          updatedDate: '2017/3/14',
-          comment: 102,
-          reply: 91,
-          image: 15,
-          video: 20
-        },
-        {
-          name: '配信でプレイして欲しいゲームを書き込みましょう！',
-          about: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
-          updatedDate: '2017/11/20',
-          comment: 478,
-          reply: 370,
-          image: 60,
-          video: 39
-        }
-      ]
+      threadListObj: {
+        'p0V_RsaT1l8': [
+          {
+            id: 'ks8WPvlQpbg',
+            name: '雑談スレッド',
+            description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
+            updatedDate: '2018/5/1',
+            comment: 613,
+            reply: 780,
+            image: 108,
+            video: 50
+          },
+          {
+            id: 'JYFo1eo6TtT',
+            name: '配信後に俺が感想を書くスレ',
+            description: 'description2',
+            updatedDate: '2017/3/14',
+            comment: 102,
+            reply: 91,
+            image: 15,
+            video: 20
+          },
+          {
+            id: '53w-K9XlenW',
+            name: '配信でプレイして欲しいゲームを書き込みましょう！',
+            description: 'description3',
+            updatedDate: '2017/11/20',
+            comment: 478,
+            reply: 370,
+            image: 60,
+            video: 39
+          }
+        ]
+      }
         
       
     };
@@ -132,10 +137,14 @@ class Component extends React.Component {
       layout: storeLayoutInstance
     };
     
+    
+    const storeArgumentsArr = [props.isServer, storeInstanceObj, props.initialData];
+    
+    
     this.stores = {
       layout: storeLayoutInstance,
       formPost: initStoreFormPost(props.isServer, storeInstanceObj),
-      bbsNavigation: initStoreBbsNavigation(props.isServer, storeInstanceObj),
+      bbsNavigation: initStoreBbsNavigation(...storeArgumentsArr),
       bbsTread: initStoreBbsThread(props.isServer, storeInstanceObj),
       current: initStoreUserCommunity(props.isServer, storeInstanceObj),
       pathname: props.pathname

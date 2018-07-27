@@ -191,24 +191,25 @@ export default class extends React.Component {
     
     const { stores, id } = this.props;
     
-    const {
-      threadListMap,
-      threadListArr,
-      threadListOrderBy,
-      threadListOrder,
-      threadListCount,
-      threadListRowsPerPage,
-      threadListPage,
-      handleThreadListSort,
-      handleThreadListRowsPerPage,
-      handleThreadListPage
-    } = stores.bbsNavigation;
-    
     // console.log(`this.props.id = ${this.props.id}`);
     
     // const test = threadListMap.get('p0V_RsaT1l8').get('ks8WPvlQpbg').get('a');
     // const test = threadListMap.get('p0V_RsaT1l8');
     // console.dir(test);
+    
+    
+    const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
+    const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
+    const threadListCount = stores.bbsNavigation.threadListCountObj[id];
+    const threadListRowsPerPage = stores.bbsNavigation.threadListRowsPerPageObj[id];
+    const threadListPage = stores.bbsNavigation.threadListPageObj[id];
+    const threadListArr = stores.bbsNavigation.threadListObj[id];
+    
+    const {
+      handleThreadListSort,
+      handleThreadListRowsPerPage,
+      handleThreadListPage
+    } = stores.bbsNavigation;
     
     
     
@@ -335,7 +336,7 @@ export default class extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangeRowsPerPage={handleThreadListRowsPerPage}
+            onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event)}
             onChangePage={handleThreadListPage}
           />
           

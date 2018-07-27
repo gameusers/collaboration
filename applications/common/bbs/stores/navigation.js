@@ -32,7 +32,11 @@ class Store {
   };
   
   
+  // ---------------------------------------------
+  //   ID
+  // ---------------------------------------------
   
+  id = storeLayout.historyStateArr[0].id;
   
   
   
@@ -41,42 +45,52 @@ class Store {
   //   スレッド一覧
   // ---------------------------------------------
   
-  @observable threadListOrderBy = 'updatedDate';
-  @observable threadListOrder = 'desc';
-  @observable threadListCount = 30;
-  @observable threadListRowsPerPage = 5;
-  @observable threadListPage = 1;
+  @observable threadListOrderByObj = {};
+  @observable threadListOrderObj = {};
+  @observable threadListCountObj = {};
+  @observable threadListRowsPerPageObj = {};
+  @observable threadListPageObj = {};
+  @observable threadListObj = {};
   
   
-  // constructor (model) {
-  //   this.model = model
-  //   this.name = model.name
-  //   this.email = model.email
-  // }
-  
+  insertThreadList(initialData) {
+    this.threadListOrderByObj[initialData.id] = 'updatedDate';
+    this.threadListOrderObj[initialData.id] = 'desc';
+    this.threadListCountObj[initialData.id] = 30;
+    this.threadListRowsPerPageObj[initialData.id] = 5;
+    this.threadListPageObj[initialData.id] = 0;
+    
+    this.threadListObj = initialData.threadListObj;
+  };
   
   @action.bound
   handleThreadListSort(orderBy) {
     
-    if (this.threadListOrderBy !== orderBy || this.threadListOrder === 'asc') {
-      this.threadListOrder = 'desc';
+    if (this.threadListOrderByObj[this.id] !== orderBy || this.threadListOrderObj[this.id] === 'asc') {
+      this.threadListOrderObj[this.id] = 'desc';
     } else {
-      this.threadListOrder = 'asc';
+      this.threadListOrderObj[this.id] = 'asc';
     }
     
-    this.threadListOrderBy = orderBy;
+    this.threadListOrderByObj[this.id] = orderBy;
     
   };
   
   @action.bound
   handleThreadListRowsPerPage(event) {
-    this.threadListRowsPerPage = event.target.value;
+    this.threadListRowsPerPageObj[this.id] = event.target.value;
   };
   
   @action.bound
   handleThreadListPage(event, value) {
-    this.threadListPage = value;
+    // console.dir(id);
+    // console.log(`value = ${value}`);
+    // console.log(`test = ${test}`);
+    this.threadListPageObj[this.id] = value;
   };
+  
+  
+  
   
   
   
@@ -166,129 +180,17 @@ class Store {
   
   
   
-  // ---------------------------------------------
-  //   スレッド一覧
-  // ---------------------------------------------
+  // --------------------------------------------------
+  //   Initialize Data
+  // --------------------------------------------------
   
-  @observable threadListObj = {
-    'p0V_RsaT1l8': {
-      'ks8WPvlQpbg': {
-        'a': 'aaa',
-        'b': 'bbb',
-        'c': 'ccc'
-      }
+  constructor(initialData) {
+    
+    if (initialData) {
+      this.insertThreadList(initialData);
     }
-  };
-  
-  // 多次元Map
-  // @observable threadListMap = new Map([
     
-  //   ['p0V_RsaT1l8', new Map([
-  //     ['ks8WPvlQpbg', new Map([
-  //       ['a', 'aaa'],
-  //       ['b', 'bbb'],
-  //       ['c', 'ccc']
-  //     ])]
-  //   ])],
-    
-  // ]);
-  
-  
-  // @observable threadListMap = new Map([
-    
-  //   ['p0V_RsaT1l8', new Map([
-  //     ['ks8WPvlQpbg', new Map([
-  //       ['a', 'aaa'],
-  //       ['b', 'bbb'],
-  //       ['c', 'ccc']
-  //     ])]
-  //   ])],
-    
-  //   // ['p0V_RsaT1l8', this.test],
-    
-  //   // ['p0V_RsaT1l8',
-  //   //     ['ks8WPvlQpbg', [
-  //   //         ['a', 'aaa'],
-  //   //         ['b', 'bbb'],
-  //   //         ['c', 'ccc']
-  //   //       ]
-  //   //     ],
-  //   //     ['1oARcQsjkYR', 
-  //   //       ['a', 'AAA'],
-  //   //       ['b', 'BBB'],
-  //   //       ['c', 'CCC']
-  //   //     ]
-  //   // ],
-    
-  //   // ['p0V_RsaT1l8', new Map(
-  //   //     [
-  //   //       ['a', 'aaa'],
-  //   //       ['b', 'bbb'],
-  //   //       ['c', 'ccc']
-  //   //     ],
-  //   //     [
-  //   //       ['a', 'AAA'],
-  //   //       ['b', 'BBB'],
-  //   //       ['c', 'CCC']
-  //   //     ]
-  //   //   )
-  //   // ],
-    
-  //   // ['p0V_RsaT1l8',
-  //   //   [
-  //   //     ['id', 'ks8WPvlQpbg'],
-  //   //     ['name', '雑談スレッド'],
-  //   //     ['description', 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！'],
-  //   //     ['updatedDate', '2018/5/1'],
-  //   //     ['comment', 613],
-  //   //     ['reply', 780],
-  //   //     ['image', 108],
-  //   //     ['video', 50],
-  //   //   ],
-  //   //   [
-  //   //     ['id', '1oARcQsjkYR'],
-  //   //     ['name', '配信後に俺が感想を書くスレ'],
-  //   //     ['description', 'description2'],
-  //   //     ['updatedDate', '2017/3/14'],
-  //   //     ['comment', 102],
-  //   //     ['reply', 91],
-  //   //     ['image', 15],
-  //   //     ['video', 20],
-  //   //   ]
-  //   // ],
-    
-  // ]);
-  
-  @observable threadListArr = [
-    {
-      id: 'ks8WPvlQpbg',
-      name: '雑談スレッド',
-      description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
-      updatedDate: '2018/5/1',
-      comment: 613,
-      reply: 780,
-      image: 108,
-      video: 50
-    },
-    {
-      name: '配信後に俺が感想を書くスレ',
-      description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
-      updatedDate: '2017/3/14',
-      comment: 102,
-      reply: 91,
-      image: 15,
-      video: 20
-    },
-    {
-      name: '配信でプレイして欲しいゲームを書き込みましょう！',
-      description: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！',
-      updatedDate: '2017/11/20',
-      comment: 478,
-      reply: 370,
-      image: 60,
-      video: 39
-    },
-  ];
+  }
   
 }
 
@@ -298,7 +200,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreBbsNavigation(isServer, storeInstanceObj) {
+export default function initStoreBbsNavigation(isServer, storeInstanceObj, initialData) {
   
   if (storeLayout === null && 'layout' in storeInstanceObj) {
     storeLayout = storeInstanceObj.layout;
@@ -306,12 +208,12 @@ export default function initStoreBbsNavigation(isServer, storeInstanceObj) {
   
   if (isServer) {
     
-    return new Store();
+    return new Store(initialData);
     
   } else {
     
     if (storeIndex === null) {
-      storeIndex = new Store();
+      storeIndex = new Store(initialData);
     }
     
     return storeIndex;

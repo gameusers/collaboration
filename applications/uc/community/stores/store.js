@@ -67,40 +67,21 @@ class Store {
   //   BBS Menu
   // ---------------------------------------------
   
-  @observable bbsMenuExpanded = true;
-  @observable bbsMenuOpenedTabNo = 0;
+  // @observable bbsMenuExpanded = true;
+  // @observable bbsMenuOpenedTabNo = 0;
   
   
-  @action.bound
-  handleBbsMenuExpanded() {
-    this.bbsMenuExpanded = !this.bbsMenuExpanded;
-  };
+  // @action.bound
+  // handleBbsMenuExpanded() {
+  //   this.bbsMenuExpanded = !this.bbsMenuExpanded;
+  // };
   
-  @action.bound
-  handleBbsMenuOpenedTabNo(event, value) {
-    this.bbsMenuOpenedTabNo = value;
-  };
+  // @action.bound
+  // handleBbsMenuOpenedTabNo(event, value) {
+  //   this.bbsMenuOpenedTabNo = value;
+  // };
   
-  @action.bound
-  handleClickBbsMenuButtonThreadList(event) {
-    event.stopPropagation();
-    // console.log(`handleClickShortcutBbsThread`);
-  };
   
-  @action.bound
-  handleClickBbsMenuButtonNew(event) {
-    event.stopPropagation();
-  };
-  
-  @action.bound
-  handleClickBbsMenuButtonImage(event) {
-    event.stopPropagation();
-  };
-  
-  @action.bound
-  handleClickBbsMenuButtonVideo(event) {
-    event.stopPropagation();
-  };
   
   
   

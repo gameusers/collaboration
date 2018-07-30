@@ -39,12 +39,6 @@ import IconNew from '@material-ui/icons/FiberNew';
 import IconImage from '@material-ui/icons/Image';
 import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
 import IconSearch from '@material-ui/icons/Search';
-import IconAssignment from '@material-ui/icons/Assignment';
-import IconPublic from '@material-ui/icons/Public';
-import IconHealing from '@material-ui/icons/Healing';
-import IconSchedule from '@material-ui/icons/Schedule';
-import IconVideocam from '@material-ui/icons/Videocam';
-import IconClose from '@material-ui/icons/Close';
 
 import cyan from '@material-ui/core/colors/cyan';
 
@@ -191,12 +185,8 @@ export default class extends React.Component {
     
     const { stores, id } = this.props;
     
-    // console.log(`this.props.id = ${this.props.id}`);
     
-    // const test = threadListMap.get('p0V_RsaT1l8').get('ks8WPvlQpbg').get('a');
-    // const test = threadListMap.get('p0V_RsaT1l8');
-    // console.dir(test);
-    
+    const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
     
     const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
     const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
@@ -205,10 +195,38 @@ export default class extends React.Component {
     const threadListPage = stores.bbsNavigation.threadListPageObj[id];
     const threadListArr = stores.bbsNavigation.threadListObj[id];
     
+    const searchKeyword = stores.bbsNavigation.searchKeywordObj[id];
+    const searchDateTimeStart = stores.bbsNavigation.searchDateTimeStartObj[id];
+    const searchDateTimeEnd = stores.bbsNavigation.searchDateTimeEndObj[id];
+    const searchThreadChecked = stores.bbsNavigation.searchThreadCheckedObj[id];
+    const searchCommentChecked = stores.bbsNavigation.searchCommentCheckedObj[id];
+    const searchReplyChecked = stores.bbsNavigation.searchReplyCheckedObj[id];
+    const searchImageChecked = stores.bbsNavigation.searchImageCheckedObj[id];
+    const searchVideoChecked = stores.bbsNavigation.searchVideoCheckedObj[id];
+    const searchMineChecked = stores.bbsNavigation.searchMineCheckedObj[id];
+    
+    
     const {
+      handleMenuButtonThreadList,
+      handleMenuButtonNew,
+      handleMenuButtonImage,
+      handleMenuButtonVideo,
+      
+      handleOpenedTabNo,
+      
       handleThreadListSort,
       handleThreadListRowsPerPage,
-      handleThreadListPage
+      handleThreadListPage,
+      
+      handleSearchKeyword,
+      handleSearchDateTimeStart,
+      handleSearchDateTimeEnd,
+      handleSearchThreadChecked,
+      handleSearchCommentChecked,
+      handleSearchReplyChecked,
+      handleSearchImageChecked,
+      handleSearchVideoChecked,
+      handleSearchMineChecked
     } = stores.bbsNavigation;
     
     
@@ -373,7 +391,7 @@ export default class extends React.Component {
               
               <Tooltip id="tooltip-list" title="スレッド一覧">
                 <IconButtonBbsMenu
-                  onClick={stores.current.handleClickBbsMenuButtonThreadList}
+                  onClick={handleMenuButtonThreadList}
                 >
                   <IconList />
                 </IconButtonBbsMenu>
@@ -381,7 +399,7 @@ export default class extends React.Component {
               
               <Tooltip id="tooltip-new" title="新しいコメント">
                 <IconButtonBbsMenu
-                  onClick={stores.current.handleClickBbsMenuButtonNew}
+                  onClick={handleMenuButtonNew}
                 >
                   <IconNew />
                 </IconButtonBbsMenu>
@@ -389,7 +407,7 @@ export default class extends React.Component {
               
               <Tooltip id="tooltip-image" title="画像付きのコメント">
                 <IconButtonBbsMenu
-                  onClick={stores.current.handleClickBbsMenuButtonImage}
+                  onClick={handleMenuButtonImage}
                 >
                   <IconImage />
                 </IconButtonBbsMenu>
@@ -397,7 +415,7 @@ export default class extends React.Component {
               
               <Tooltip id="tooltip-video" title="動画付きのコメント">
                 <IconButtonBbsMenu
-                  onClick={stores.current.handleClickBbsMenuButtonVideo}
+                  onClick={handleMenuButtonVideo}
                 >
                   <IconOndemandVideo />
                 </IconButtonBbsMenu>
@@ -416,10 +434,10 @@ export default class extends React.Component {
           {/* Tab */}
           <PaperBbsMenuTabs>
             <Tabs
-              value={stores.current.bbsMenuOpenedTabNo}
+              value={openedTabNo}
               indicatorColor="primary"
               textColor="primary"
-              onChange={stores.current.handleBbsMenuOpenedTabNo}
+              onChange={handleOpenedTabNo}
             >
               <Tab label="スレッド一覧" />
               <Tab label="検索" />
@@ -428,7 +446,7 @@ export default class extends React.Component {
           
           
           {/* スレッド一覧 */}
-          {stores.current.bbsMenuOpenedTabNo === 0 &&
+          {openedTabNo === 0 &&
             <BbsMenuThreadListTabBox>
               {componentThreadListArr}
             </BbsMenuThreadListTabBox>
@@ -436,15 +454,15 @@ export default class extends React.Component {
           
           
           {/* 検索 */}
-          {stores.current.bbsMenuOpenedTabNo === 1 &&
+          {openedTabNo === 1 &&
             <BbsMenuSearchTabBox>
               
               {/* 検索フォーム */}
               <BbsSearchBox>
                 <TextFieldBbsSearch
                   placeholder="検索キーワード"
-                  value={stores.current.bbsSearchKeyword}
-                  onChange={stores.current.handleBbsSearchKeyword}
+                  value={searchKeyword}
+                  onChange={handleSearchKeyword}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -459,8 +477,8 @@ export default class extends React.Component {
                     id="datetime-local-start"
                     label="開始日時"
                     type="datetime-local"
-                    value={stores.current.bbsSearchDateTimeStart}
-                    onChange={stores.current.handleBbsSearchDateTimeStart}
+                    value={searchDateTimeStart}
+                    onChange={handleSearchDateTimeStart}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -470,8 +488,8 @@ export default class extends React.Component {
                     id="datetime-local-end"
                     label="終了日時"
                     type="datetime-local"
-                    value={stores.current.bbsSearchDateTimeEnd}
-                    onChange={stores.current.handleBbsSearchDateTimeEnd}
+                    value={searchDateTimeEnd}
+                    onChange={handleSearchDateTimeEnd}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -483,8 +501,8 @@ export default class extends React.Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={stores.current.checkedBbsSearchThread}
-                        onChange={stores.current.handleCheckedBbsSearchThread}
+                        checked={searchThreadChecked}
+                        onChange={handleSearchThreadChecked}
                       />
                     }
                     label="スレッド"
@@ -493,8 +511,8 @@ export default class extends React.Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={stores.current.checkedBbsSearchComment}
-                        onChange={stores.current.handleCheckedBbsSearchComment}
+                        checked={searchCommentChecked}
+                        onChange={handleSearchCommentChecked}
                       />
                     }
                     label="コメント"
@@ -503,8 +521,8 @@ export default class extends React.Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={stores.current.checkedBbsSearchReply}
-                        onChange={stores.current.handleCheckedBbsSearchReply}
+                        checked={searchReplyChecked}
+                        onChange={handleSearchReplyChecked}
                       />
                     }
                     label="返信"
@@ -513,8 +531,8 @@ export default class extends React.Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={stores.current.checkedBbsSearchImage}
-                        onChange={stores.current.handleCheckedBbsSearchImage}
+                        checked={searchImageChecked}
+                        onChange={handleSearchImageChecked}
                         color="primary"
                       />
                     }
@@ -524,8 +542,8 @@ export default class extends React.Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={stores.current.checkedBbsSearchVideo}
-                        onChange={stores.current.handleCheckedBbsSearchVideo}
+                        checked={searchVideoChecked}
+                        onChange={handleSearchVideoChecked}
                         color="primary"
                       />
                     }
@@ -535,8 +553,8 @@ export default class extends React.Component {
                   <FormControlLabel
                     control={
                       <Checkbox
-                        checked={stores.current.checkedBbsSearchMine}
-                        onChange={stores.current.handleCheckedBbsSearchMine}
+                        checked={searchMineChecked}
+                        onChange={handleSearchMineChecked}
                         color="primary"
                       />
                     }

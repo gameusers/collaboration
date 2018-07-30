@@ -66,7 +66,7 @@ class Component extends React.Component {
       
       
       // ---------------------------------------------
-      //   Panel
+      //   Layout - Panel
       // ---------------------------------------------
       
       panelExpandedObj: {
@@ -76,7 +76,16 @@ class Component extends React.Component {
       
       
       // ---------------------------------------------
-      //   スレッド一覧
+      //   BBS Navigation - Tab
+      // ---------------------------------------------
+      
+      openedTabNoObj: {
+        'p0V_RsaT1l8': 0
+      },
+      
+      
+      // ---------------------------------------------
+      //   BBS Navigation  - スレッド一覧
       // ---------------------------------------------
       
       threadListObj: {

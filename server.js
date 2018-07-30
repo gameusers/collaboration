@@ -131,15 +131,22 @@ app.prepare().then(() => {
     return app.render(req, res, '/uc/community', { param1 });
   });
   
-  server.get('/uc/:param1/:param2', (req, res) => {
-    const { param1, param2 } = req.params;
-    return app.render(req, res, '/uc/community', { param1, param2 });
+  server.get('/uc/:param1/member', (req, res) => {
+    const { param1 } = req.params;
+    return app.render(req, res, '/uc/community/member', { param1 });
   });
   
-  server.get('/uc/:param1/:param2/:param3', (req, res) => {
-    const { param1, param2, param3 } = req.params;
-    return app.render(req, res, '/uc/community', { param1, param2, param3 });
-  });
+  
+  
+  // server.get('/uc/:param1/:param2', (req, res) => {
+  //   const { param1, param2 } = req.params;
+  //   return app.render(req, res, '/uc/community', { param1, param2 });
+  // });
+  
+  // server.get('/uc/:param1/:param2/:param3', (req, res) => {
+  //   const { param1, param2, param3 } = req.params;
+  //   return app.render(req, res, '/uc/community', { param1, param2, param3 });
+  // });
   
   
   

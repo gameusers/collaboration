@@ -24,8 +24,8 @@ class Store {
   //   ID
   // ---------------------------------------------
   
-  id = storeLayout.historyStateArr[0].id;
-  
+  // id = storeLayout.historyStateArr[0].id;
+  // id = storeLayout.currentContentsId;
   
   
   // ---------------------------------------------
@@ -60,13 +60,22 @@ class Store {
   
   @observable openedTabNoObj = {};
   
+  
   @action.bound
-  handleOpenedTabNo(event, value) {
-    this.openedTabNoObj[this.id] = value;
+  handleOpenedTabNo(event, value, id) {
+    // console.log(`event = ${event}`);
+    // console.dir(event);
+    // console.log(`value = ${value}`);
+    
+    // console.log(`value = ${event.target.value}`);
+    // console.log(`id = ${id}`);
+    this.openedTabNoObj[id] = value;
   };
   
-  insertOpenedTabNo(initialData) {
-    this.openedTabNoObj = Object.assign({}, initialData.openedTabNoObj, this.openedTabNoObj);
+  
+  insertOpenedTabNo(dataObj) {
+    this.openedTabNoObj = Object.assign({}, dataObj, this.openedTabNoObj);
+    // console.dir(this.openedTabNoObj);
   };
   
   
@@ -82,52 +91,54 @@ class Store {
   @observable threadListPageObj = {};
   @observable threadListObj = {};
   
+  
   @action.bound
-  handleThreadListSort(orderBy) {
+  handleThreadListSort(id, orderBy) {
     
-    if (this.threadListOrderByObj[this.id] !== orderBy || this.threadListOrderObj[this.id] === 'asc') {
-      this.threadListOrderObj[this.id] = 'desc';
+    if (this.threadListOrderByObj[id] !== orderBy || this.threadListOrderObj[id] === 'asc') {
+      this.threadListOrderObj[id] = 'desc';
     } else {
-      this.threadListOrderObj[this.id] = 'asc';
+      this.threadListOrderObj[id] = 'asc';
     }
     
-    this.threadListOrderByObj[this.id] = orderBy;
+    this.threadListOrderByObj[id] = orderBy;
     
   };
   
   @action.bound
-  handleThreadListRowsPerPage(event) {
-    this.threadListRowsPerPageObj[this.id] = event.target.value;
+  handleThreadListRowsPerPage(event, id) {
+    this.threadListRowsPerPageObj[id] = event.target.value;
   };
   
   @action.bound
-  handleThreadListPage(event, value) {
-    this.threadListPageObj[this.id] = value;
+  handleThreadListPage(event, value, id) {
+    this.threadListPageObj[id] = value;
   };
   
-  insertThreadList(initialData) {
+  
+  insertThreadList(id, dataObj) {
     
-    if (initialData.id in this.threadListOrderByObj === false) {
-      this.threadListOrderByObj[initialData.id] = 'updatedDate';
+    if (id in this.threadListOrderByObj === false) {
+      this.threadListOrderByObj[id] = 'updatedDate';
     }
     
-    if (initialData.id in this.threadListOrderObj === false) {
-      this.threadListOrderObj[initialData.id] = 'desc';
+    if (id in this.threadListOrderObj === false) {
+      this.threadListOrderObj[id] = 'desc';
     }
     
-    if (initialData.id in this.threadListCountObj === false) {
-      this.threadListCountObj[initialData.id] = 30;
+    if (id in this.threadListCountObj === false) {
+      this.threadListCountObj[id] = 30;
     }
     
-    if (initialData.id in this.threadListRowsPerPageObj === false) {
-      this.threadListRowsPerPageObj[initialData.id] = 5;
+    if (id in this.threadListRowsPerPageObj === false) {
+      this.threadListRowsPerPageObj[id] = 5;
     }
     
-    if (initialData.id in this.threadListPageObj === false) {
-      this.threadListPageObj[initialData.id] = 0;
+    if (id in this.threadListPageObj === false) {
+      this.threadListPageObj[id] = 0;
     }
     
-    this.threadListObj = Object.assign({}, initialData.threadListObj, this.threadListObj);
+    this.threadListObj = Object.assign({}, dataObj, this.threadListObj);
     
   };
   
@@ -147,87 +158,89 @@ class Store {
   @observable searchVideoCheckedObj = {};
   @observable searchMineCheckedObj = {};
   
+  
   @action.bound
-  handleSearchKeyword(event) {
-    this.searchKeywordObj[this.id] = event.target.value;
+  handleSearchKeyword(event, id) {
+    this.searchKeywordObj[id] = event.target.value;
   };
   
   @action.bound
-  handleSearchDateTimeStart(event) {
-    this.searchDateTimeStartObj[this.id] = event.target.value;
+  handleSearchDateTimeStart(event, id) {
+    this.searchDateTimeStartObj[id] = event.target.value;
   };
   
   @action.bound
-  handleSearchDateTimeEnd(event) {
-    this.searchDateTimeEndObj[this.id] = event.target.value;
+  handleSearchDateTimeEnd(event, id) {
+    this.searchDateTimeEndObj[id] = event.target.value;
   };
   
   @action.bound
-  handleSearchThreadChecked(event) {
-    this.searchThreadCheckedObj[this.id] = !this.searchThreadCheckedObj[this.id];
+  handleSearchThreadChecked(id) {
+    this.searchThreadCheckedObj[id] = !this.searchThreadCheckedObj[id];
   };
   
   @action.bound
-  handleSearchCommentChecked() {
-    this.searchCommentCheckedObj[this.id] = !this.searchCommentCheckedObj[this.id];
+  handleSearchCommentChecked(id) {
+    this.searchCommentCheckedObj[id] = !this.searchCommentCheckedObj[id];
   };
   
   @action.bound
-  handleSearchReplyChecked() {
-    this.searchReplyCheckedObj[this.id] = !this.searchReplyCheckedObj[this.id];
+  handleSearchReplyChecked(id) {
+    this.searchReplyCheckedObj[id] = !this.searchReplyCheckedObj[id];
   };
   
   @action.bound
-  handleSearchImageChecked() {
-    this.searchImageCheckedObj[this.id] = !this.searchImageCheckedObj[this.id];
+  handleSearchImageChecked(id) {
+    this.searchImageCheckedObj[id] = !this.searchImageCheckedObj[id];
   };
   
   @action.bound
-  handleSearchVideoChecked() {
-    this.searchVideoCheckedObj[this.id] = !this.searchVideoCheckedObj[this.id];
+  handleSearchVideoChecked(id) {
+    this.searchVideoCheckedObj[id] = !this.searchVideoCheckedObj[id];
   };
   
   @action.bound
-  handleSearchMineChecked() {
-    this.searchMineCheckedObj[this.id] = !this.searchMineCheckedObj[this.id];
+  handleSearchMineChecked(id) {
+    this.searchMineCheckedObj[id] = !this.searchMineCheckedObj[id];
   };
   
-  insertSearch(initialData) {
+  
+  insertSearch(id) {
     
-    if (initialData.id in this.searchKeywordObj === false) {
-      this.searchKeywordObj[initialData.id] = '';
+    if (id in this.searchKeywordObj === false) {
+      this.searchKeywordObj[id] = '';
     }
     
-    if (initialData.id in this.searchDateTimeStartObj === false) {
-      this.searchDateTimeStartObj[initialData.id] = '';
+    if (id in this.searchDateTimeStartObj === false) {
+      this.searchDateTimeStartObj[id] = '';
     }
     
-    if (initialData.id in this.searchDateTimeEndObj === false) {
-      this.searchDateTimeEndObj[initialData.id] = '';
+    if (id in this.searchDateTimeEndObj === false) {
+      this.searchDateTimeEndObj[id] = '';
     }
     
-    if (initialData.id in this.searchThreadCheckedObj === false) {
-      this.searchThreadCheckedObj[initialData.id] = true;
+    if (id in this.searchThreadCheckedObj === false) {
+      this.searchThreadCheckedObj[id] = true;
     }
     
-    if (initialData.id in this.searchCommentCheckedObj === false) {
-      this.searchCommentCheckedObj[initialData.id] = true;
+    if (id in this.searchCommentCheckedObj === false) {
+      this.searchCommentCheckedObj[id] = true;
     }
     
-    if (initialData.id in this.searchReplyCheckedObj === false) {
-      this.searchReplyCheckedObj[initialData.id] = true;
+    if (id in this.searchReplyCheckedObj === false) {
+      this.searchReplyCheckedObj[id] = true;
     }
     
-    if (initialData.id in this.searchImageCheckedObj === false) {
-      this.searchImageCheckedObj[initialData.id] = false;
+    if (id in this.searchImageCheckedObj === false) {
+      this.searchImageCheckedObj[id] = false;
     }
     
-    if (initialData.id in this.searchVideoCheckedObj === false) {
-      this.searchVideoCheckedObj[initialData.id] = false;
+    if (id in this.searchVideoCheckedObj === false) {
+      this.searchVideoCheckedObj[id] = false;
     }
     
-    if (initialData.id in this.searchMineCheckedObj === false) {
-      this.searchMineCheckedObj[initialData.id] = false;
+    if (id in this.searchMineCheckedObj === false) {
+      this.searchMineCheckedObj[id] = false;
     }
     
   };
@@ -238,17 +251,17 @@ class Store {
   //   Initialize Data
   // --------------------------------------------------
   
-  constructor(initialData) {
+  // constructor(initialData) {
     
-    if (initialData) {
+  //   if (initialData) {
      
-      this.insertOpenedTabNo(initialData);
-      this.insertThreadList(initialData);
-      this.insertSearch(initialData);
+  //     this.insertOpenedTabNo(initialData);
+  //     this.insertThreadList(initialData);
+  //     this.insertSearch(initialData);
       
-    }
+  //   }
     
-  }
+  // }
   
 }
 
@@ -258,7 +271,11 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreBbsNavigation(isServer, storeInstanceObj, initialData) {
+export default function initStoreBbsNavigation(argumentsObj) {
+  
+  const isServer = argumentsObj.isServer;
+  const storeInstanceObj = argumentsObj.storeInstanceObj;
+  
   
   if (storeLayout === null && 'layout' in storeInstanceObj) {
     storeLayout = storeInstanceObj.layout;
@@ -266,12 +283,12 @@ export default function initStoreBbsNavigation(isServer, storeInstanceObj, initi
   
   if (isServer) {
     
-    return new Store(initialData);
+    return new Store();
     
   } else {
     
     if (storeIndex === null) {
-      storeIndex = new Store(initialData);
+      storeIndex = new Store();
     }
     
     return storeIndex;

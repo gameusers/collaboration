@@ -136,9 +136,9 @@ export default class extends React.Component {
     
     const { stores } = this.props;
     
-    const id = stores.layout.historyStateArr[0].id;
-    const members = stores.layout.ucObj[id].members;
-    const rule = stores.layout.ucObj[id].rule;
+    const id = stores.layout.currentContentsId;
+    const members = stores.userCommunity.dataObj[id].members;
+    const rule = stores.userCommunity.dataObj[id].rule;
     // console.log(`members = ${members}`);
     
     

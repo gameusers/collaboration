@@ -594,7 +594,8 @@ export default class extends React.Component {
     
     return (
       <ExpansionPanel
-        expanded={stores.layout.returnPanelExpanded(id)}
+        // expanded={stores.layout.returnPanelExpanded(id)}
+        expanded={true}
       >
         
         {/* Title */}

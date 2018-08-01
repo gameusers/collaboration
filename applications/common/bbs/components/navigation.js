@@ -187,6 +187,7 @@ export default class extends React.Component {
     
     
     const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
+    // console.log(`openedTabNo = ${openedTabNo}`);
     
     const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
     const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
@@ -285,7 +286,7 @@ export default class extends React.Component {
                     <TableSortLabel
                       active={threadListOrderBy === 'updatedDate'}
                       direction={threadListOrder}
-                      onClick={() => handleThreadListSort('updatedDate')}
+                      onClick={() => handleThreadListSort(id, 'updatedDate')}
                     >
                       最終更新日
                     </TableSortLabel>
@@ -295,7 +296,7 @@ export default class extends React.Component {
                     <TableSortLabel
                       active={threadListOrderBy === 'comment'}
                       direction={threadListOrder}
-                      onClick={() => handleThreadListSort('comment')}
+                      onClick={() => handleThreadListSort(id, 'comment')}
                     >
                       コメント
                     </TableSortLabel>
@@ -305,7 +306,7 @@ export default class extends React.Component {
                     <TableSortLabel
                       active={threadListOrderBy === 'reply'}
                       direction={threadListOrder}
-                      onClick={() => handleThreadListSort('reply')}
+                      onClick={() => handleThreadListSort(id, 'reply')}
                     >
                       返信
                     </TableSortLabel>
@@ -315,7 +316,7 @@ export default class extends React.Component {
                     <TableSortLabel
                       active={threadListOrderBy === 'image'}
                       direction={threadListOrder}
-                      onClick={() => handleThreadListSort('image')}
+                      onClick={() => handleThreadListSort(id, 'image')}
                     >
                       画像
                     </TableSortLabel>
@@ -325,7 +326,7 @@ export default class extends React.Component {
                     <TableSortLabel
                       active={threadListOrderBy === 'video'}
                       direction={threadListOrder}
-                      onClick={() => handleThreadListSort('video')}
+                      onClick={() => handleThreadListSort(id, 'video')}
                     >
                       動画
                     </TableSortLabel>
@@ -354,8 +355,8 @@ export default class extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event)}
-            onChangePage={handleThreadListPage}
+            onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event, id)}
+            onChangePage={(event, value) => handleThreadListPage(event, value, id)}
           />
           
         </div>
@@ -372,6 +373,7 @@ export default class extends React.Component {
     return (
       <ExpansionPanel
         expanded={stores.layout.returnPanelExpanded(id)}
+        // expanded={true}
       >
         
         {/* Title */}
@@ -437,7 +439,10 @@ export default class extends React.Component {
               value={openedTabNo}
               indicatorColor="primary"
               textColor="primary"
-              onChange={handleOpenedTabNo}
+              // onChange={handleOpenedTabNo}
+              // onChange={() => handleOpenedTabNo(id)}
+              // onChange={(event) => handleOpenedTabNo(event, id)}
+              onChange={(event, value) => handleOpenedTabNo(event, value, id)}
             >
               <Tab label="スレッド一覧" />
               <Tab label="検索" />
@@ -462,7 +467,7 @@ export default class extends React.Component {
                 <TextFieldBbsSearch
                   placeholder="検索キーワード"
                   value={searchKeyword}
-                  onChange={handleSearchKeyword}
+                  onChange={(event) => handleSearchKeyword(event, id)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -478,7 +483,7 @@ export default class extends React.Component {
                     label="開始日時"
                     type="datetime-local"
                     value={searchDateTimeStart}
-                    onChange={handleSearchDateTimeStart}
+                    onChange={(event) => handleSearchDateTimeStart(event, id)}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -489,7 +494,7 @@ export default class extends React.Component {
                     label="終了日時"
                     type="datetime-local"
                     value={searchDateTimeEnd}
-                    onChange={handleSearchDateTimeEnd}
+                    onChange={(event) => handleSearchDateTimeEnd(event, id)}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -502,7 +507,7 @@ export default class extends React.Component {
                     control={
                       <Checkbox
                         checked={searchThreadChecked}
-                        onChange={handleSearchThreadChecked}
+                        onChange={() => handleSearchThreadChecked(id)}
                       />
                     }
                     label="スレッド"
@@ -512,7 +517,7 @@ export default class extends React.Component {
                     control={
                       <Checkbox
                         checked={searchCommentChecked}
-                        onChange={handleSearchCommentChecked}
+                        onChange={() => handleSearchCommentChecked(id)}
                       />
                     }
                     label="コメント"
@@ -522,7 +527,7 @@ export default class extends React.Component {
                     control={
                       <Checkbox
                         checked={searchReplyChecked}
-                        onChange={handleSearchReplyChecked}
+                        onChange={() => handleSearchReplyChecked(id)}
                       />
                     }
                     label="返信"
@@ -532,7 +537,7 @@ export default class extends React.Component {
                     control={
                       <Checkbox
                         checked={searchImageChecked}
-                        onChange={handleSearchImageChecked}
+                        onChange={() => handleSearchImageChecked(id)}
                         color="primary"
                       />
                     }
@@ -543,7 +548,7 @@ export default class extends React.Component {
                     control={
                       <Checkbox
                         checked={searchVideoChecked}
-                        onChange={handleSearchVideoChecked}
+                        onChange={() => handleSearchVideoChecked(id)}
                         color="primary"
                       />
                     }
@@ -554,7 +559,7 @@ export default class extends React.Component {
                     control={
                       <Checkbox
                         checked={searchMineChecked}
-                        onChange={handleSearchMineChecked}
+                        onChange={() => handleSearchMineChecked(id)}
                         color="primary"
                       />
                     }

@@ -4,7 +4,7 @@
 
 import React from 'react';
 import styled from 'styled-components';
-// import Link from 'next/link';
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
 import Button from '@material-ui/core/Button';
@@ -66,6 +66,7 @@ const HeaderTopLogo = styled.div`
   width: 138px;
   height: 43px;
   background-image: url('/static/img/common/logo.png');
+  cursor: pointer;
   
   @media screen and (max-width: 480px) {
     width: 30px;
@@ -161,7 +162,8 @@ const ListItemTextTopLoginMenu = styled(ListItemText)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
   
   constructor(props) {
@@ -178,6 +180,24 @@ export default class extends React.Component {
     
     const { stores } = this.props;
     
+    // const historyStateArr = stores.layout.historyStateArr[0];
+    
+    
+    
+    // --------------------------------------------------
+    //   ナビゲーション - フォロー＆コミュニティ参加用を表示するかどうか
+    // --------------------------------------------------
+    
+    let showNavSub = false;
+    //　一時しのぎに表示しないコード
+    if ('userCommunity' in stores) {
+      showNavSub = true;
+    }
+    
+    // if (historyStateArr && historyStateArr.param1 === 'uc' && historyStateArr.param2) {
+    //   showNavSub = true;
+    // }
+    
     
     // --------------------------------------------------
     //   Return
@@ -190,7 +210,9 @@ export default class extends React.Component {
         <HeaderTop>
         
           {/* ロゴ */}
-          <HeaderTopLogo />
+          <Link prefetch href="/">
+            <HeaderTopLogo />
+          </Link>
           
           {/* ベル・通知 */}
           <IconButtonTopBell onClick={stores.layout.handleHeaderNotificationDialogOpen}>
@@ -251,8 +273,10 @@ export default class extends React.Component {
         <HeroImage />
         
         
-         {/* ナビゲーション - フォロー＆コミュニティ参加用 */}
-        <NavSub />
+        {/* ナビゲーション - フォロー＆コミュニティ参加用 */}
+        {showNavSub &&
+          <NavSub />
+        }
         
         
         {/* 通知ダイアログ */}

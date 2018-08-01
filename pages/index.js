@@ -155,8 +155,52 @@ class Component extends React.Component {
   // static getInitialProps({ pathname, query, asPath, req, res, jsonPageRes, err }) {
   
   static getInitialProps({ pathname, req }) {
+    
     const isServer = !!req;
-    return { isServer: isServer, pathname: pathname };
+    
+    
+    // --------------------------------------------------
+    //   テスト用　初期データ
+    // --------------------------------------------------
+    
+    const id = 'p0V_RsaT1l8';
+    
+    
+    const initialData = {
+      
+      id,
+      
+      
+      // ---------------------------------------------
+      //   Layout - アクセス履歴
+      // ---------------------------------------------
+      
+      historyStateObj: {
+        path: '/',
+        param1: '/',
+        param2: '',
+        param3: '',
+        param4: '',
+        param5: '',
+        file: 'index.js',
+        id: 'index',
+        dateTime: '2017-07-31T14:36:00'
+      },
+      
+      
+      // ---------------------------------------------
+      //   Layout - Panel
+      // ---------------------------------------------
+      
+      // panelExpandedObj: {
+      //   'p0V_RsaT1l8': true, // BBS スレッド
+      //   'ks8WPvlQpbg': true // BBS
+      // },
+      
+    };
+    
+    return { isServer, pathname, id, initialData };
+    
   }
   
   
@@ -169,7 +213,7 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
-    const storeLayoutInstance = initStoreLayout(props.isServer);
+    const storeLayoutInstance = initStoreLayout(props.isServer, props.initialData);
     
     this.stores = {
       layout: storeLayoutInstance,

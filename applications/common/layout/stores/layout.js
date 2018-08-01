@@ -20,15 +20,25 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Current Contents Id
+  // ---------------------------------------------
+  
+  @observable currentContentsId = '';
+  
+  
+  
+  // ---------------------------------------------
   //   アクセスしたページ
   // ---------------------------------------------
+  
+  // historyStateArr = [];
   
   historyStateArr = [
     {
       path: 'uc/az1979',
       param1: 'uc',
       param2: 'az1979',
-      param3: '',
+      param3: 'test',
       param4: '',
       param5: '',
       file: 'uc/community.js',
@@ -36,6 +46,20 @@ class Store {
       dateTime: '2017-07-24T20:45:20'
     }
   ]
+  
+  insertHistoryState(obj) {
+    
+    // console.dir(obj);
+    
+    this.historyStateArr.unshift(obj);
+    
+    // 履歴を保存する数を指定する
+    this.historyStateArr.splice(30, 1);
+    
+    console.log(`insertHistoryState`);
+    console.dir(this.historyStateArr);
+    
+  };
   
   
   
@@ -272,41 +296,23 @@ class Store {
   //   User Community
   // ---------------------------------------------
   
-  @observable ucObj = {
-    'p0V_RsaT1l8': {
-      name: 'あづみ配信コミュニティ',
-      rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
-      communityId: 'az1979',
-      members: 12345
-    },
-    '3YhijrrHx4e': {
-      name: 'あづみ配信コミュニティ',
-      rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
-      communityId: 'az1979',
-      members: 12345
-    },
-  };
+  // @observable ucObj = {
+  //   'p0V_RsaT1l8': {
+  //     name: 'あづみ配信コミュニティ',
+  //     rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
+  //     communityId: 'az1979',
+  //     members: 12345
+  //   },
+  //   '3YhijrrHx4e': {
+  //     name: 'あづみ配信コミュニティ',
+  //     rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
+  //     communityId: 'az1979',
+  //     members: 12345
+  //   },
+  // };
   
   
-  // ---------------------------------------------
-  //   Panel
-  // ---------------------------------------------
   
-  @observable panelExpandedObj = {};
-  // @observable panelExpandedId = '';
-  
-  @action.bound
-  handlePanelExpanded(id) {
-    console.log(`layout / handlePanelExpanded`);
-    
-    this.panelExpandedObj[this.historyStateArr[0].id][id] = !this.panelExpandedObj[this.historyStateArr[0].id][id];
-    // this.panelExpandedId = id;
-  };
-  
-  
-  returnPanelExpanded(id) {
-    return this.panelExpandedObj[this.historyStateArr[0].id][id];
-  }
   
   
   
@@ -627,20 +633,39 @@ class Store {
   
   
   
-  // --------------------------------------------------
-  //   Initialize Data
-  // --------------------------------------------------
   
-  constructor(initialData) {
+  // ---------------------------------------------
+  //   Panel
+  // ---------------------------------------------
+  
+  @observable panelExpandedObj = {};
+  
+  // @observable panelExpandedObj = {
+  //   'p0V_RsaT1l8': {
+  //     'p0V_RsaT1l8': true, // BBS スレッド
+  //     'ks8WPvlQpbg': true // BBS
+  //   }
+  // };
+  
+  @action.bound
+  handlePanelExpanded(id) {
+    // console.log(`handlePanelExpanded`);
+    // console.dir(this.panelExpandedObj);
     
-    if (initialData) {
-      // console.log(`◆layout initialData`);
-      // console.dir(initialData);
-      
-      this.panelExpandedObj[initialData.id] = initialData.panelExpandedObj;
-    }
+    // console.log(`id = ${id}`);
+    // console.log(`this.historyStateArr[0].id = ${this.historyStateArr[0].id}`);
     
+    this.panelExpandedObj[id] = !this.panelExpandedObj[id];
+  };
+  
+  returnPanelExpanded(id) {
+    // console.dir(this.panelExpandedObj);
+    return this.panelExpandedObj[id];
   }
+  
+  insertPanelExpanded(dataObj) {
+    this.panelExpandedObj = Object.assign({}, dataObj, this.panelExpandedObj);
+  };
   
 }
 
@@ -650,17 +675,25 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLayout(isServer, initialData) {
+export default function initStoreLayout(argumentsObj) {
+  
+  const isServer = argumentsObj.isServer;
+  
   
   if (isServer) {
-    
-    return new Store(initialData);
+    // console.log(`@ initStoreLayout / isServer`);
+    return new Store();
     
   } else {
     
+    // console.log(`@ initStoreLayout / isClient`);
+    
     if (storeLayout === null) {
-      storeLayout = new Store(initialData);
+      // console.log(`initStoreLayout / initialDataObj 挿入`);
+      storeLayout = new Store();
     }
+    
+    // console.log(`@ initStoreLayout / return前`);
     
     return storeLayout;
     

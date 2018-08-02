@@ -375,7 +375,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreFormPost(isServer, storeInstanceObj) {
+// export default function initStoreFormPost(isServer, storeInstanceObj) {
+export default function initStoreFormPost(argumentsObj) {
+  
+  const isServer = argumentsObj.isServer;
+  const storeInstanceObj = argumentsObj.storeInstanceObj;
+  
   
   if (storeLayout === null && 'layout' in storeInstanceObj) {
     storeLayout = storeInstanceObj.layout;

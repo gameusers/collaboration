@@ -51,8 +51,8 @@ class Component extends React.Component {
   static getInitialProps({ pathname, req }) {
     
     const isServer = !!req;
-    console.log(`uc/community - getInitialProps`);
-    console.log(`pathname = ${pathname}`);
+    // console.log(`uc/community - getInitialProps`);
+    // console.log(`pathname = ${pathname}`);
     
     // --------------------------------------------------
     //   テスト用　初期データ
@@ -61,27 +61,117 @@ class Component extends React.Component {
     const currentContentsId = 'p0V_RsaT1l8';
     
     const dataObj = {
+      layoutPanelExpandedObj: {},
+      playerObj: {},
       userCommunityId: 'p0V_RsaT1l8',
       userCommunityDataObj: {},
       bbsNavigationId: 'XcczkfiRN9f',
+      bbsNavigationOpenedTabNoObj: {},
+      bbsNavigationThreadListObj: {},
+      bbsObj: {},
+      bbsThreadObj: {},
+      bbsCommentObj: {},
+      bbsReplyObj: {},
       currentContentsId,
-      panelExpandedObj: {},
-      openedTabNoObj: {},
-      threadListObj: {}
     };
+    
+    
+    
+    // ---------------------------------------------
+    //   Player - Data
+    // ---------------------------------------------
+    
+    dataObj.playerObj = {
+      'a8b0gX6lMIz': {
+        name: 'あづみ',
+        status: 'プロハンター',
+        playerId: 'az1979',
+        playerPage: '/pl/az1979',
+        level: 999
+      }
+    };
+    
+    
+    // ---------------------------------------------
+    //  BBS - Data
+    // ---------------------------------------------
+    
+    // dataObj.bbsArr[dataObj.userCommunityId] = [
+    //   'ks8WPvlQpbg',
+    //   'JYFo1eo6TtT',
+    //   '53w-K9XlenW'
+    // ];
+    
+    // dataObj.bbsArr[dataObj.userCommunityId] = [
+    //   {
+    //     id: 'ks8WPvlQpbg',
+    //     name: '雑談スレッド',
+    //     description: 'みんなで雑談を行いましょう！',
+    //     updatedDate: '2018/5/1',
+    //     commentArr: [
+    //       '_5pweox1Io8',
+    //       'M8-vje-bq9c',
+    //       '1yIHLQJNvDw',
+    //       'Um_cUEd7vl0',
+    //       'GMi2JFwJ868'
+    //     ]
+    //   },
+    // ];
+    
+    dataObj.bbsArr[dataObj.userCommunityId] = [
+      {
+        id: 'ks8WPvlQpbg',
+        name: '雑談スレッド',
+        description: '仲良く雑談しませんか？\nゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。',
+        page: 1,
+        commentTotal: 5,
+        commentArr: [
+          {
+            id: '_5pweox1Io8',
+            userId: 'a8b0gX6lMIz',
+            name: '',
+            status: '',
+            comment: '非常に引き込まれるものがありました。\nジョディのスタンド、エイデンはめちゃくちゃ強いですね。\n僕が知っているジョジョ4部までに出てきたスタンドで\nエイデンに勝てそうなのは\nスタープラチナとザ・ワールド、ヴァニラ・アイスのスタンドくらいですね。\n半径10メートル以内の人間を窒息死させたり\n意のままに操れたりするのはやばすぎます。',
+            updatedDate: '7 時間前',
+            good: 5000,
+            page: 1,
+            replyTotal: 2,
+            replyArr: [
+              {
+                id: 'GMi2JFwJ868',
+                userId: '',
+                name: 'ななしさん',
+                status: '774',
+                reply: 'ワールドカップ 日本×ベルギー戦\n\nいろいろありましたが、良くやったと思います。\n個のクオリティでは負けている部分も多かったですが\n素晴らしいゴールもあり、一時は勝てると信じていたのですが…。\nあの試合は最後のカウンターの対応を問題視するよりも\n2点を守れなかったことについて考えるべきだと思います。\n采配次第では勝てただけに本当に残念です。',
+                updatedDate: '3 時間前',
+                good: 123,
+              },
+              {
+                id: 'E3PwP4kzFa8',
+                userId: '',
+                name: 'テストネーム',
+                status: 'テストステータス',
+                reply: '短いテキスト',
+                updatedDate: '30 分前',
+                good: 0,
+              }
+            ]
+          }
+        ]
+      },
+    ];
+    
     
     
     // ---------------------------------------------
     //   User Community - Data
     // ---------------------------------------------
     
-    dataObj.userCommunityDataObj = {
-      'p0V_RsaT1l8': {
-        name: 'あづみ配信コミュニティ',
-        rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
-        communityId: 'az1979',
-        members: 12345
-      }
+    dataObj.userCommunityDataObj[dataObj.userCommunityId] = {
+      name: 'あづみ配信コミュニティ',
+      rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
+      communityId: 'az1979',
+      members: 12345
     };
     
     
@@ -89,9 +179,9 @@ class Component extends React.Component {
     //   Layout - Panel
     // ---------------------------------------------
     
-    dataObj.panelExpandedObj[dataObj.bbsNavigationId] = true;
+    dataObj.layoutPanelExpandedObj[dataObj.bbsNavigationId] = true;
     
-    // dataObj.panelExpandedObj[currentContentsId] = {
+    // dataObj.layoutPanelExpandedObj[currentContentsId] = {
     //   'p0V_RsaT1l8': true, // BBS Navigation
     //   'ks8WPvlQpbg': true // BBS
     // };
@@ -101,14 +191,14 @@ class Component extends React.Component {
     //   BBS Navigation - Tab
     // ---------------------------------------------
     
-    dataObj.openedTabNoObj[dataObj.bbsNavigationId] = 0;
+    dataObj.bbsNavigationOpenedTabNoObj[dataObj.bbsNavigationId] = 0;
     
     
     // ---------------------------------------------
     //   BBS Navigation  - スレッド一覧
     // ---------------------------------------------
     
-    dataObj.threadListObj[dataObj.bbsNavigationId] = [
+    dataObj.bbsNavigationThreadListObj[dataObj.bbsNavigationId] = [
       {
         id: 'ks8WPvlQpbg',
         name: '雑談スレッド',
@@ -150,8 +240,8 @@ class Component extends React.Component {
   constructor(props) {
     
     super(props);
-    console.log(`uc/community - constructor`);
-    console.log(`props.pathname = ${props.pathname}`);
+    // console.log(`uc/community - constructor`);
+    // console.log(`props.pathname = ${props.pathname}`);
     
     
     // --------------------------------------------------
@@ -162,9 +252,9 @@ class Component extends React.Component {
       userCommunityId,
       userCommunityDataObj,
       bbsNavigationId,
-      panelExpandedObj,
-      openedTabNoObj,
-      threadListObj
+      layoutPanelExpandedObj,
+      bbsNavigationOpenedTabNoObj,
+      bbsNavigationThreadListObj
     } = props.dataObj;
     
     const argumentsObj = {
@@ -172,24 +262,18 @@ class Component extends React.Component {
       pathname: props.pathname,
     };
     
-    
     const storeLayoutInstance = initStoreLayout(argumentsObj);
-    
-    const storeInstanceObj = {
-      layout: storeLayoutInstance
-    };
     
     argumentsObj.storeInstanceObj = {
       layout: storeLayoutInstance
     };
     
-    
     this.stores = {
       layout: storeLayoutInstance,
       userCommunity: initStoreUserCommunity(argumentsObj),
-      formPost: initStoreFormPost(props.isServer, storeInstanceObj),
+      formPost: initStoreFormPost(argumentsObj),
       bbsNavigation: initStoreBbsNavigation(argumentsObj),
-      bbsTread: initStoreBbsThread(props.isServer, storeInstanceObj),
+      bbs: initStoreBbsThread(argumentsObj),
       pathname: props.pathname
     };
     
@@ -199,10 +283,10 @@ class Component extends React.Component {
     //   Insert Data
     // --------------------------------------------------
     
-    this.stores.layout.insertPanelExpanded(panelExpandedObj);
+    this.stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
     this.stores.userCommunity.insertData(userCommunityDataObj);
-    this.stores.bbsNavigation.insertOpenedTabNo(openedTabNoObj);
-    this.stores.bbsNavigation.insertThreadList(bbsNavigationId, threadListObj);
+    this.stores.bbsNavigation.insertOpenedTabNo(bbsNavigationOpenedTabNoObj);
+    this.stores.bbsNavigation.insertThreadList(bbsNavigationId, bbsNavigationThreadListObj);
     this.stores.bbsNavigation.insertSearch(bbsNavigationId);
     
     this.stores.layout.currentContentsId = props.dataObj.currentContentsId;

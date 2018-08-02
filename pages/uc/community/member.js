@@ -51,82 +51,96 @@ class Component extends React.Component {
   static getInitialProps({ pathname, req }) {
     
     const isServer = !!req;
-    
+    // console.log(`uc/community - getInitialProps`);
+    // console.log(`pathname = ${pathname}`);
     
     // --------------------------------------------------
     //   テスト用　初期データ
     // --------------------------------------------------
     
-    const id = '3YhijrrHx4e';
+    const currentContentsId = '3YhijrrHx4e';
     
-    
-    const initialData = {
-      
-      id,
-      
-      
-      // ---------------------------------------------
-      //   Layout - Panel
-      // ---------------------------------------------
-      
-      panelExpandedObj: {
-        '3YhijrrHx4e': true, // BBS スレッド
-        'pWlN22vre_c': true // BBS
-      },
-      
-      
-      // ---------------------------------------------
-      //   BBS Navigation - Tab
-      // ---------------------------------------------
-      
-      openedTabNoObj: {
-        '3YhijrrHx4e': 0
-      },
-      
-      
-      // ---------------------------------------------
-      //   BBS Navigation  - スレッド一覧
-      // ---------------------------------------------
-      
-      threadListObj: {
-        '3YhijrrHx4e': [
-          {
-            id: 'pWlN22vre_c',
-            name: 'Member 1',
-            description: 'description1',
-            updatedDate: '2018/5/1',
-            comment: 613,
-            reply: 780,
-            image: 108,
-            video: 50
-          },
-          {
-            id: '_DdoPKFV4dN',
-            name: 'Member 2',
-            description: 'description2',
-            updatedDate: '2017/3/14',
-            comment: 102,
-            reply: 91,
-            image: 15,
-            video: 20
-          },
-          {
-            id: 'wgiGrCToBTs',
-            name: 'Member 3！',
-            description: 'description3',
-            updatedDate: '2017/11/20',
-            comment: 478,
-            reply: 370,
-            image: 60,
-            video: 39
-          }
-        ]
-      }
-        
-      
+    const dataObj = {
+      layoutPanelExpandedObj: {},
+      userCommunityId: '3YhijrrHx4e',
+      userCommunityDataObj: {},
+      bbsNavigationId: 'Fb9X6VWoBQN',
+      bbsNavigationOpenedTabNoObj: {},
+      bbsNavigationThreadListObj: {},
+      currentContentsId,
     };
     
-    return { isServer, pathname, id, initialData };
+    
+    // ---------------------------------------------
+    //   User Community - Data
+    // ---------------------------------------------
+    
+    dataObj.userCommunityDataObj[dataObj.userCommunityId] = {
+      name: 'あづみ配信コミュニティ',
+      rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
+      communityId: 'az1979',
+      members: 12345
+    };
+    
+    
+    // ---------------------------------------------
+    //   Layout - Panel
+    // ---------------------------------------------
+    
+    dataObj.layoutPanelExpandedObj[dataObj.bbsNavigationId] = true;
+    
+    // dataObj.layoutPanelExpandedObj[currentContentsId] = {
+    //   'p0V_RsaT1l8': true, // BBS Navigation
+    //   'ks8WPvlQpbg': true // BBS
+    // };
+    
+    
+    // ---------------------------------------------
+    //   BBS Navigation - Tab
+    // ---------------------------------------------
+    
+    dataObj.bbsNavigationOpenedTabNoObj[dataObj.bbsNavigationId] = 0;
+    
+    
+    // ---------------------------------------------
+    //   BBS Navigation  - スレッド一覧
+    // ---------------------------------------------
+    
+    dataObj.bbsNavigationThreadListObj[dataObj.bbsNavigationId] = [
+      {
+        id: 'pWlN22vre_c',
+        name: 'Member 1',
+        description: 'description1',
+        updatedDate: '2018/5/1',
+        comment: 613,
+        reply: 780,
+        image: 108,
+        video: 50
+      },
+      {
+        id: '_DdoPKFV4dN',
+        name: 'Member 2',
+        description: 'description2',
+        updatedDate: '2017/3/14',
+        comment: 102,
+        reply: 91,
+        image: 15,
+        video: 20
+      },
+      {
+        id: 'wgiGrCToBTs',
+        name: 'Member 3！',
+        description: 'description3',
+        updatedDate: '2017/11/20',
+        comment: 478,
+        reply: 370,
+        image: 60,
+        video: 39
+      }
+    ];
+    
+    
+    return { isServer, pathname, dataObj };
     
   }
   
@@ -134,30 +148,56 @@ class Component extends React.Component {
   constructor(props) {
     
     super(props);
+    // console.log(`uc/community - constructor`);
+    // console.log(`props.pathname = ${props.pathname}`);
     
     
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
-    const storeLayoutInstance = initStoreLayout(props.isServer, props.initialData);
+    const {
+      userCommunityId,
+      userCommunityDataObj,
+      bbsNavigationId,
+      layoutPanelExpandedObj,
+      bbsNavigationOpenedTabNoObj,
+      bbsNavigationThreadListObj
+    } = props.dataObj;
     
-    const storeInstanceObj = {
+    const argumentsObj = {
+      isServer: props.isServer,
+      pathname: props.pathname,
+    };
+    
+    const storeLayoutInstance = initStoreLayout(argumentsObj);
+    
+    argumentsObj.storeInstanceObj = {
       layout: storeLayoutInstance
     };
     
-    
-    const storeArgumentsArr = [props.isServer, storeInstanceObj, props.initialData];
-    
-    
     this.stores = {
       layout: storeLayoutInstance,
-      formPost: initStoreFormPost(props.isServer, storeInstanceObj),
-      bbsNavigation: initStoreBbsNavigation(...storeArgumentsArr),
-      bbsTread: initStoreBbsThread(props.isServer, storeInstanceObj),
-      current: initStoreUserCommunity(props.isServer, storeInstanceObj),
+      userCommunity: initStoreUserCommunity(argumentsObj),
+      formPost: initStoreFormPost(argumentsObj),
+      bbsNavigation: initStoreBbsNavigation(argumentsObj),
+      bbs: initStoreBbsThread(argumentsObj),
       pathname: props.pathname
     };
+    
+    
+    
+    // --------------------------------------------------
+    //   Insert Data
+    // --------------------------------------------------
+    
+    this.stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
+    this.stores.userCommunity.insertData(userCommunityDataObj);
+    this.stores.bbsNavigation.insertOpenedTabNo(bbsNavigationOpenedTabNoObj);
+    this.stores.bbsNavigation.insertThreadList(bbsNavigationId, bbsNavigationThreadListObj);
+    this.stores.bbsNavigation.insertSearch(bbsNavigationId);
+    
+    this.stores.layout.currentContentsId = props.dataObj.currentContentsId;
     
   }
   
@@ -172,7 +212,7 @@ class Component extends React.Component {
     
     const stores = this.stores;
     
-    const { id } = this.props;
+    const { bbsNavigationId } = this.props.dataObj;
     
     
     // render() {
@@ -198,16 +238,32 @@ class Component extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>メンバー</title>
+            <title>ユーザーコミュニティ</title>
           </Head>
           
           
           <Container>
             
             {/* BBS Navigation */}
-            <BbsNavigation id={id} />
+            <BbsNavigation id={bbsNavigationId} />
             
-            <p>AAA</p>
+            {/* BBS */}
+            <BbsThread
+              id="ks8WPvlQpbg"
+            />
+            
+            
+            <Button
+              onClick={() => stores.layout.handleSnackbarOpen('success', 'success message')}
+            >
+              Success
+            </Button>
+            
+            <Button
+              onClick={() => stores.layout.handleSnackbarOpen('warning', 'warning message')}
+            >
+              Warning
+            </Button>
             
           </Container>
           

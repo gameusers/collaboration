@@ -616,7 +616,7 @@ export default class extends React.Component {
               <TitleInfoAboutBox>
                 <IconAssignmentBbsInfo />
                 <BbsInfoAbout
-                  onClick={() => stores.bbsTread.handleTitleDescriptionOpen(id)}
+                  onClick={() => stores.bbs.handleTitleDescriptionOpen(id)}
                 >
                   スレッドについて
                 </BbsInfoAbout>
@@ -634,7 +634,7 @@ export default class extends React.Component {
             </TitleInfoBox>
             
             
-            { stores.bbsTread.titleDescriptionOpenObj[id] &&
+            { stores.bbs.titleDescriptionOpenObj[id] &&
               <TitleDescriptionBox>
                 <p>仲良く雑談しませんか？</p>
                 <p>ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。</p>

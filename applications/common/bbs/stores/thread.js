@@ -91,7 +91,13 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreBbsThread(isServer, storeInstanceObj) {
+
+// export default function initStoreBbsThread(isServer, storeInstanceObj) {
+export default function initStoreBbsThread(argumentsObj) {
+  
+  const isServer = argumentsObj.isServer;
+  const storeInstanceObj = argumentsObj.storeInstanceObj;
+  
   
   if (storeLayout === null && 'layout' in storeInstanceObj) {
     storeLayout = storeInstanceObj.layout;

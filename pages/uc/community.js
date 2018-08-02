@@ -69,9 +69,9 @@ class Component extends React.Component {
       bbsNavigationOpenedTabNoObj: {},
       bbsNavigationThreadListObj: {},
       bbsObj: {},
-      bbsThreadObj: {},
-      bbsCommentObj: {},
-      bbsReplyObj: {},
+      // bbsThreadObj: {},
+      // bbsCommentObj: {},
+      // bbsReplyObj: {},
       currentContentsId,
     };
     
@@ -118,7 +118,7 @@ class Component extends React.Component {
     //   },
     // ];
     
-    dataObj.bbsArr[dataObj.userCommunityId] = [
+    dataObj.bbsObj[dataObj.userCommunityId] = [
       {
         id: 'ks8WPvlQpbg',
         name: '雑談スレッド',

@@ -13,12 +13,12 @@ import Button from '@material-ui/core/Button';
 import initStoreLayout from '../../../applications/common/layout/stores/layout';
 import initStoreFormPost from '../../../applications/common/form/stores/post';
 import initStoreBbsNavigation from '../../../applications/common/bbs/stores/navigation';
-import initStoreBbsThread from '../../../applications/common/bbs/stores/thread';
+import initStoreBbs from '../../../applications/common/bbs/stores/bbs';
 import initStoreUserCommunity from '../../../applications/uc/community/stores/store';
 
 import Layout from '../../../applications/common/layout/components/layout';
 import BbsNavigation from '../../../applications/common/bbs/components/navigation';
-import BbsThread from '../../../applications/common/bbs/components/thread';
+import Bbs from '../../../applications/common/bbs/components/bbs';
 
 import withRoot from '../../../lib/material-ui/withRoot';
 
@@ -181,7 +181,7 @@ class Component extends React.Component {
       userCommunity: initStoreUserCommunity(argumentsObj),
       formPost: initStoreFormPost(argumentsObj),
       bbsNavigation: initStoreBbsNavigation(argumentsObj),
-      bbs: initStoreBbsThread(argumentsObj),
+      bbs: initStoreBbs(argumentsObj),
       pathname: props.pathname
     };
     
@@ -248,9 +248,6 @@ class Component extends React.Component {
             <BbsNavigation id={bbsNavigationId} />
             
             {/* BBS */}
-            <BbsThread
-              id="ks8WPvlQpbg"
-            />
             
             
             <Button

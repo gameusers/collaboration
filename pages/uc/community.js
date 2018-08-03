@@ -13,12 +13,12 @@ import Button from '@material-ui/core/Button';
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreFormPost from '../../applications/common/form/stores/post';
 import initStoreBbsNavigation from '../../applications/common/bbs/stores/navigation';
-import initStoreBbsThread from '../../applications/common/bbs/stores/thread';
+import initStoreBbs from '../../applications/common/bbs/stores/bbs';
 import initStoreUserCommunity from '../../applications/uc/community/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
 import BbsNavigation from '../../applications/common/bbs/components/navigation';
-import BbsThread from '../../applications/common/bbs/components/thread';
+import Bbs from '../../applications/common/bbs/components/bbs';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -122,7 +122,7 @@ class Component extends React.Component {
       {
         id: 'ks8WPvlQpbg',
         name: '雑談スレッド',
-        description: '仲良く雑談しませんか？\nゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。',
+        description: '仲良く雑談しませんか？\nゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。\n\nルイン＆アドオンを使わず、選別もしない\n僕のトラッパーがついにランク4の赤帯になりました。\n\n\nDead by Daylight',
         page: 1,
         commentTotal: 5,
         commentArr: [
@@ -254,7 +254,8 @@ class Component extends React.Component {
       bbsNavigationId,
       layoutPanelExpandedObj,
       bbsNavigationOpenedTabNoObj,
-      bbsNavigationThreadListObj
+      bbsNavigationThreadListObj,
+      bbsObj
     } = props.dataObj;
     
     const argumentsObj = {
@@ -273,7 +274,7 @@ class Component extends React.Component {
       userCommunity: initStoreUserCommunity(argumentsObj),
       formPost: initStoreFormPost(argumentsObj),
       bbsNavigation: initStoreBbsNavigation(argumentsObj),
-      bbs: initStoreBbsThread(argumentsObj),
+      bbs: initStoreBbs(argumentsObj),
       pathname: props.pathname
     };
     
@@ -288,6 +289,7 @@ class Component extends React.Component {
     this.stores.bbsNavigation.insertOpenedTabNo(bbsNavigationOpenedTabNoObj);
     this.stores.bbsNavigation.insertThreadList(bbsNavigationId, bbsNavigationThreadListObj);
     this.stores.bbsNavigation.insertSearch(bbsNavigationId);
+    this.stores.bbs.insertData(bbsObj);
     
     this.stores.layout.currentContentsId = props.dataObj.currentContentsId;
     
@@ -304,7 +306,7 @@ class Component extends React.Component {
     
     const stores = this.stores;
     
-    const { bbsNavigationId } = this.props.dataObj;
+    const { userCommunityId, bbsNavigationId } = this.props.dataObj;
     
     
     // render() {
@@ -340,9 +342,7 @@ class Component extends React.Component {
             <BbsNavigation id={bbsNavigationId} />
             
             {/* BBS */}
-            <BbsThread
-              id="ks8WPvlQpbg"
-            />
+            <Bbs id={userCommunityId} />
             
             
             <Button

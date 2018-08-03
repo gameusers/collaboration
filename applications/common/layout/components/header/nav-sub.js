@@ -104,7 +104,6 @@ const CommunityIconPerson = styled(IconPerson)`
 const CommunityMembers = styled.div`
   font-size: 14px;
   color: #BDBDBD;
-  padding: 0;
   // border-right: solid 2px #25283D;
 `;
 

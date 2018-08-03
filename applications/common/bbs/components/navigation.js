@@ -85,6 +85,7 @@ const Title = styled.h2`
 const BbsMenuButtonsBox = styled.div`
   margin: 0 0 0 14px;
   padding: 0;
+  // background-color: pink;
 `;
 
 const IconButtonBbsMenu = styled(IconButton)`

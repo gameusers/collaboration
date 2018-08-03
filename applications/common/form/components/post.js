@@ -95,7 +95,7 @@ const ProfileCheckbox = styled(Checkbox)`
 
 const StyledTextareaAutosize = styled(TextareaAutosize)`
   && {
-    width: 100%;
+    width: 600px;
     max-width: 600px;
     border-radius: 4px;
     box-sizing: border-box;
@@ -107,6 +107,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     }
     
     @media screen and (max-width: 480px) {
+      width: 100%;
       resize: none;
       max-width: auto;
     }
@@ -142,6 +143,7 @@ const ImageDescription = styled.p`
 
 const ImageDescriptionUl = styled.ul`
   font-size: 14px;
+  line-height: 1.6em;
   margin: 10px 16px;
   // padding: 0;
 `;

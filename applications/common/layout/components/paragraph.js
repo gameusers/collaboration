@@ -65,7 +65,7 @@ export default class extends React.Component {
       textArr = text.split('\n').reverse();
     }
     
-    console.dir(textArr);
+    // console.dir(textArr);
     
     
     
@@ -97,7 +97,7 @@ export default class extends React.Component {
         
       }
       
-      console.log(index, value);
+      // console.log(index, value);
     }
     
     componentsArr = componentsArr.reverse();

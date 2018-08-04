@@ -80,19 +80,6 @@ const ProfileCheckbox = styled(Checkbox)`
 
 
 
-
-
-// const Textarea = styled.textarea`
-//   width: 100%;
-//   max-width: 600px;
-//   margin: 10px 0 0 0;
-//   padding: 0;
-  
-//   @media screen and (max-width: 480px) {
-//     max-width: auto;
-//   }
-// `;
-
 const StyledTextareaAutosize = styled(TextareaAutosize)`
   && {
     width: 600px;
@@ -267,11 +254,6 @@ const SendButton = styled(Button)`
 
 
 
-
-
-
-
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -295,6 +277,17 @@ export default class extends React.Component {
     
     const { stores, id, sendButtonLabel } = this.props;
     
+    const {
+      anonymityCheckedObj,
+      imageFormOpenObj,
+      videoFormOpenObj,
+      imageCaptionOpenObj,
+      imageCaptionObj,
+      videoUrlObj
+    } = this.props.stores.formPost;
+    
+    const previewObj = stores.formPost.previewObj[id];
+    
     
     
     // --------------------------------------------------
@@ -303,9 +296,8 @@ export default class extends React.Component {
     
     let anonymityChecked = false;
     
-    if (id in stores.formPost.anonymityCheckedObj) {
-      anonymityChecked = stores.formPost.anonymityCheckedObj[id];
-      // console.log(`anonymityChecked = ${anonymityChecked}`);
+    if (id in anonymityCheckedObj) {
+      anonymityChecked = anonymityCheckedObj[id];
     }
     
     
@@ -315,26 +307,15 @@ export default class extends React.Component {
     
     let imageFormOpen = false;
     
-    if (id in stores.formPost.imageFormOpenObj) {
-      imageFormOpen = stores.formPost.imageFormOpenObj[id];
+    if (id in imageFormOpenObj) {
+      imageFormOpen = imageFormOpenObj[id];
     }
     
     let videoFormOpen = false;
     
-    if (id in stores.formPost.videoFormOpenObj) {
-      videoFormOpen = stores.formPost.videoFormOpenObj[id];
+    if (id in videoFormOpenObj) {
+      videoFormOpen = videoFormOpenObj[id];
     }
-    
-    
-    // ---------------------------------------------
-    //   - Caption
-    // ---------------------------------------------
-    
-    // let imageInputFileValue = '';
-    
-    // if (id in stores.formPost.imageInputFileValueObj) {
-    //   imageCaptionOpen = stores.formPost.imageInputFileValueObj[id];
-    // }
     
     
     // ---------------------------------------------
@@ -343,22 +324,20 @@ export default class extends React.Component {
     
     let imageCaptionOpen = false;
     
-    if (id in stores.formPost.imageCaptionOpenObj) {
-      imageCaptionOpen = stores.formPost.imageCaptionOpenObj[id];
+    if (id in imageCaptionOpenObj) {
+      imageCaptionOpen = imageCaptionOpenObj[id];
     }
     
     let imageCaption = '';
     
-    if (id in stores.formPost.imageCaptionObj) {
-      imageCaption = stores.formPost.imageCaptionObj[id];
+    if (id in imageCaptionObj) {
+      imageCaption = imageCaptionObj[id];
     }
-    
-    
     
     let videoUrl = '';
     
-    if (id in stores.formPost.videoUrlObj) {
-      videoUrl = stores.formPost.videoUrlObj[id];
+    if (id in videoUrlObj) {
+      videoUrl = videoUrlObj[id];
     }
     
     
@@ -381,9 +360,9 @@ export default class extends React.Component {
     
     const codePreviewArr = [];
     
-    if (stores.formPost.previewObj[id] && stores.formPost.previewObj[id].length > 0) {
+    if (previewObj && previewObj.length > 0) {
       
-      stores.formPost.previewObj[id].forEach((value, index) => {
+      previewObj.forEach((value, index) => {
         
         
         // ---------------------------------------------
@@ -408,7 +387,8 @@ export default class extends React.Component {
               </PreviewDeleteButton>
             </ImageVideoPreviewBox>
           );
-          
+        
+        
         // ---------------------------------------------
         //   動画
         // ---------------------------------------------
@@ -490,6 +470,7 @@ export default class extends React.Component {
         </ProfileBox>
         
         
+        {/* Textarea */}
         <StyledTextareaAutosize
           rows={6}
         />
@@ -575,7 +556,7 @@ export default class extends React.Component {
           <VideoBox>
           
             <ImageDescription>
-              YouTube の URL が登録できます。動画が視聴できるページの URL をブラウザからコピーして貼り付けてください。
+              YouTube の URL が登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
             </ImageDescription>
             
             <ImageDescriptionUl>

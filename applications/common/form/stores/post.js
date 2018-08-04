@@ -3,9 +3,6 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
-// import { Store as StoreCommon } from '../../../common/layout/stores/common';
-// import initStoreLayout from '../../../common/layout/stores/layout';
-// import { store as storeCommon } from '../../../common/layout/stores/common';
 
 
 // --------------------------------------------------
@@ -137,6 +134,7 @@ class Store {
         this.imageHeightObj[id] = height;
         this.imageExtensionObj[id] = extension;
         
+        console.log(`id = ${id}`);
         console.log(`imageSrcObj[id] = ${this.imageSrcObj[id]}`);
         console.log(`imageWidthObj[id] = ${this.imageWidthObj[id]}`);
         console.log(`imageHeightObj[id] = ${this.imageHeightObj[id]}`);
@@ -176,10 +174,18 @@ class Store {
     
     
     // ---------------------------------------------
-    //   重複していない場合はオブジェクトに追加する
+    //   画像が選択されていて、重複していない場合はオブジェクトに追加する
     // ---------------------------------------------
     
-    if (duplication) {
+    // console.dir(this.imageSrcObj);
+    // console.log(id in this.imageSrcObj);
+    
+    if (id in this.imageSrcObj === false) {
+      
+      storeLayout.handleSnackbarOpen('error', '画像を選択してください。');
+      return;
+      
+    } else if (duplication) {
       
       storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が登録されています。');
       return;
@@ -283,6 +289,7 @@ class Store {
     
     const resultArr = videoUrl.match(/[/?=]([-\w]{11})/);
     
+    
     if (resultArr) {
       
       const videoId = resultArr[1];
@@ -320,6 +327,11 @@ class Store {
         this.videoUrlObj[id] = '';
         
       }
+      
+    } else {
+      
+      storeLayout.handleSnackbarOpen('error', '動画のURLを入力してください。');
+      return;
       
     }
     

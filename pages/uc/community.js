@@ -10,6 +10,7 @@ import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 
+import initStoreData from '../../applications/common/layout/stores/data';
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreFormPost from '../../applications/common/form/stores/post';
 import initStoreBbsNavigation from '../../applications/common/bbs/stores/navigation';
@@ -61,8 +62,9 @@ class Component extends React.Component {
     const currentContentsId = 'p0V_RsaT1l8';
     
     const dataObj = {
+      dataLoginUserObj: {},
       layoutPanelExpandedObj: {},
-      playerObj: {},
+      userObj: {},
       userCommunityId: 'p0V_RsaT1l8',
       userCommunityDataObj: {},
       bbsNavigationId: 'XcczkfiRN9f',
@@ -78,10 +80,20 @@ class Component extends React.Component {
     
     
     // ---------------------------------------------
-    //   Player - Data
+    //   Login User - Data
     // ---------------------------------------------
     
-    dataObj.playerObj = {
+    dataObj.dataLoginUserObj = {
+      id: 'a8b0gX6lMIz',
+      accessDate: '2018-08-04T19:30:00'
+    };
+    
+    
+    // ---------------------------------------------
+    //   User - Data
+    // ---------------------------------------------
+    
+    dataObj.userObj = {
       'a8b0gX6lMIz': {
         name: 'あづみ',
         status: 'プロハンター',
@@ -95,28 +107,6 @@ class Component extends React.Component {
     // ---------------------------------------------
     //  BBS - Data
     // ---------------------------------------------
-    
-    // dataObj.bbsArr[dataObj.userCommunityId] = [
-    //   'ks8WPvlQpbg',
-    //   'JYFo1eo6TtT',
-    //   '53w-K9XlenW'
-    // ];
-    
-    // dataObj.bbsArr[dataObj.userCommunityId] = [
-    //   {
-    //     id: 'ks8WPvlQpbg',
-    //     name: '雑談スレッド',
-    //     description: 'みんなで雑談を行いましょう！',
-    //     updatedDate: '2018/5/1',
-    //     commentArr: [
-    //       '_5pweox1Io8',
-    //       'M8-vje-bq9c',
-    //       '1yIHLQJNvDw',
-    //       'Um_cUEd7vl0',
-    //       'GMi2JFwJ868'
-    //     ]
-    //   },
-    // ];
     
     dataObj.bbsObj[dataObj.userCommunityId] = [
       {
@@ -181,11 +171,6 @@ class Component extends React.Component {
     
     dataObj.layoutPanelExpandedObj[dataObj.bbsNavigationId] = true;
     
-    // dataObj.layoutPanelExpandedObj[currentContentsId] = {
-    //   'p0V_RsaT1l8': true, // BBS Navigation
-    //   'ks8WPvlQpbg': true // BBS
-    // };
-    
     
     // ---------------------------------------------
     //   BBS Navigation - Tab
@@ -249,10 +234,11 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const {
-      userCommunityId,
+      dataLoginUserObj,
+      layoutPanelExpandedObj,
+      // userCommunityId,
       userCommunityDataObj,
       bbsNavigationId,
-      layoutPanelExpandedObj,
       bbsNavigationOpenedTabNoObj,
       bbsNavigationThreadListObj,
       bbsObj
@@ -270,6 +256,7 @@ class Component extends React.Component {
     };
     
     this.stores = {
+      data: initStoreData(argumentsObj),
       layout: storeLayoutInstance,
       userCommunity: initStoreUserCommunity(argumentsObj),
       formPost: initStoreFormPost(argumentsObj),
@@ -284,6 +271,7 @@ class Component extends React.Component {
     //   Insert Data
     // --------------------------------------------------
     
+    this.stores.data.updateLoginUserObj(dataLoginUserObj);
     this.stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
     this.stores.userCommunity.insertData(userCommunityDataObj);
     this.stores.bbsNavigation.insertOpenedTabNo(bbsNavigationOpenedTabNoObj);

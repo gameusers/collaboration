@@ -5,10 +5,13 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import moment from 'moment';
 
 import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 
+
+moment.locale('ja');
 
 
 // --------------------------------------------------
@@ -85,29 +88,55 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, anonymity, name, status } = this.props;
+    const { stores, id, anonymity, name, status } = this.props;
+    
+    const userObj = stores.data.userObj;
+    
+    // const {
+    //   userObj
+    // } = this.props.stores.data;
     
     
     // --------------------------------------------------
-    //   Img Src
+    //   Name & Status & Access Time
     // --------------------------------------------------
     
-    let nameValue = 'あづみ';
-    let statusValue = 'プロハンター';
-    let accessTime = '1 時間前';
+    let loginUser = false;
+    let nameValue = '';
+    let statusValue = '';
+    let accessTime = '';
     
     if (anonymity) {
+      
       nameValue = 'ななしさん';
       statusValue = '774';
-    }
     
-    if (name) {
+    } else if (name && status) {
+      
       nameValue = name;
+      statusValue = status;
+    
+    } else if (id && id in userObj) {
+      
+      loginUser = true;
+      nameValue = userObj[id].name;
+      statusValue = userObj[id].status;
+      
+      const datetimeNow = moment().utcOffset(0);
+      const datetimeAccess = moment(userObj[id].accessDate).utcOffset(0);
+      
+      accessTime = datetimeAccess.from(datetimeNow);
+      
+      // console.log(`datetimeNow = ${datetimeNow}`);
+      // console.log(`datetimeAccess = ${datetimeAccess}`);
+      
+    } else {
+      
+      nameValue = '削除済みユーザー';
+      statusValue = 'deleted';
+      
     }
     
-    if (status) {
-      statusValue = status;
-    }
     
     
     // --------------------------------------------------
@@ -117,7 +146,7 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        {!anonymity && !name ? (
+        {loginUser ? (
           <Name>{nameValue}</Name>
         ) : (
           <NameNoColor>{nameValue}</NameNoColor>
@@ -128,7 +157,7 @@ export default class extends React.Component {
           <Status>{statusValue}</Status>
         </StatusBox>
         
-        {!anonymity && !name &&
+        {accessTime &&
           <AccessTimeBox>
             <StyledIconSchedule />
             <Status>{accessTime}</Status>

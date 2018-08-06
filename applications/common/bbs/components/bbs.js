@@ -803,7 +803,7 @@ export default class extends React.Component {
                 
                 <CommentLeftBox>
                   <CommentThumbnailBox>
-                    <ProfileThumbnail />
+                    <ProfileThumbnail id="a8b0gX6lMIz" />
                   </CommentThumbnailBox>
                   
                   <CommentLevelBox>Lv.999</CommentLevelBox>
@@ -898,7 +898,7 @@ export default class extends React.Component {
                   <ReplyLine />
                   
                   <ReplyThumbnailBox>
-                    <ProfileThumbnail anonymity small />
+                    <ProfileThumbnail id="a8b0gX6lMIz" anonymity small />
                   </ReplyThumbnailBox>
                 </ReplyLeftBox>
                 
@@ -961,7 +961,7 @@ export default class extends React.Component {
                   <ReplyLine />
                   
                   <ReplyThumbnailBox>
-                    <ProfileThumbnail anonymity small />
+                    <ProfileThumbnail id="a8b0gX6lMIz" anonymity small />
                   </ReplyThumbnailBox>
                 </ReplyLeftBox>
                 
@@ -1023,7 +1023,7 @@ export default class extends React.Component {
                 
                 <CommentLeftBox>
                   <CommentThumbnailBox>
-                    <ProfileThumbnail />
+                    <ProfileThumbnail id="a8b0gX6lMIz" />
                     <CommentLevelBox>Lv.500</CommentLevelBox>
                   </CommentThumbnailBox>
                   
@@ -1103,7 +1103,7 @@ export default class extends React.Component {
                 
                 <CommentLeftBox>
                   <CommentThumbnailBox>
-                    <ProfileThumbnail />
+                    <ProfileThumbnail id="a8b0gX6lMIz" />
                     <CommentLevelBox>Lv.30</CommentLevelBox>
                   </CommentThumbnailBox>
                   
@@ -1185,7 +1185,7 @@ export default class extends React.Component {
                 
                 <CommentLeftBox>
                   <CommentThumbnailBox>
-                    <ProfileThumbnail />
+                    <ProfileThumbnail id="a8b0gX6lMIz" />
                     <CommentLevelBox>Lv.1</CommentLevelBox>
                   </CommentThumbnailBox>
                   
@@ -1296,7 +1296,7 @@ export default class extends React.Component {
                 
                 <CommentLeftBox>
                   <CommentThumbnailBox>
-                    <ProfileThumbnail />
+                    <ProfileThumbnail id="a8b0gX6lMIz" />
                     <CommentLevelBox>Lv.1</CommentLevelBox>
                   </CommentThumbnailBox>
                   

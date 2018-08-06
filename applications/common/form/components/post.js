@@ -288,6 +288,9 @@ export default class extends React.Component {
     
     const previewObj = stores.formPost.previewObj[id];
     
+    const loginUserId = stores.data.loginUserObj.id;
+    console.log(`loginUserId = ${loginUserId}`);
+    
     
     
     // --------------------------------------------------
@@ -438,7 +441,7 @@ export default class extends React.Component {
             {anonymityChecked ? (
               <ProfileThumbnail anonymity />
             ) : (
-              <ProfileThumbnail />
+              <ProfileThumbnail id={loginUserId} />
             )}
           </ProfileThumbnailBox>
           
@@ -447,11 +450,11 @@ export default class extends React.Component {
           
             <ProfileNameBox>
               
-            {anonymityChecked ? (
-              <ProfileName anonymity />
-            ) : (
-              <ProfileName />
-            )}
+              {anonymityChecked ? (
+                <ProfileName anonymity />
+              ) : (
+                <ProfileName id={loginUserId} />
+              )}
               
             </ProfileNameBox>
             

@@ -21,16 +21,42 @@ class Store {
   
   
   // ---------------------------------------------
-  //   BBS 検索
+  //   Login Users
   // ---------------------------------------------
   
   @observable loginUserObj = {};
-  
   
   updateLoginUserObj(dataObj) {
     this.loginUserObj = dataObj;
     // console.dir(this.dataObj);
   };
+  
+  
+  // ---------------------------------------------
+  //   User Data
+  // ---------------------------------------------
+  
+  @observable userObj = {};
+  
+  insertUserObj(dataObj) {
+    this.userObj = Object.assign({}, dataObj, this.userObj);
+    // console.log(`User Community insertData`);
+    // console.dir(this.dataObj);
+  };
+  
+  
+  // ---------------------------------------------
+  //   User Community
+  // ---------------------------------------------
+  
+  @observable userCommunityObj = {};
+  
+  insertUserCommunityObj(dataObj) {
+    this.userCommunityObj = Object.assign({}, dataObj, this.userCommunityObj);
+    // console.log(`User Community insertData`);
+    // console.dir(this.dataObj);
+  };
+  
   
 }
 

@@ -47,27 +47,35 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, anonymity, small } = this.props;
+    const { stores, id, anonymity, small } = this.props;
     
     
     // --------------------------------------------------
     //   Img Src
     // --------------------------------------------------
     
-    const userNo = 1;
+    let src = 'https://gameusers.org/assets/img/common/thumbnail_none.png';
+    let srcset = '';
     
-    let src = `https://gameusers.org/assets/img/user/${userNo}/thumbnail.jpg`;
+    // if (anonymity) {
+    //   src = `https://gameusers.org/assets/img/common/thumbnail_none.png`;
+    // }
     
-    if (anonymity) {
-      src = `https://gameusers.org/assets/img/common/thumbnail_none.png`;
+    if (id) {
+      src = `/static/img/user/${id}/thumbnail/128x128.jpg`;
+      srcset = `/static/img/user/${id}/thumbnail/256x256.jpg 320w, /static/img/user/${id}/thumbnail/512x512.jpg 640w`;
     }
+    
+    
+    
+    
     
     
     // --------------------------------------------------
     //   Img Size
     // --------------------------------------------------
     
-    let code = <ThumbnailImg src={src} />;
+    let code = <ThumbnailImg src={src} srcset={srcset} />;
     
     if (small) {
       code = <ThumbnailSmallImg src={src} />;

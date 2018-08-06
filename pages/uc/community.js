@@ -63,17 +63,14 @@ class Component extends React.Component {
     
     const dataObj = {
       dataLoginUserObj: {},
+      dataUserObj: {},
+      dataUserCommunityObj: {},
       layoutPanelExpandedObj: {},
-      userObj: {},
       userCommunityId: 'p0V_RsaT1l8',
-      userCommunityDataObj: {},
       bbsNavigationId: 'XcczkfiRN9f',
       bbsNavigationOpenedTabNoObj: {},
       bbsNavigationThreadListObj: {},
       bbsObj: {},
-      // bbsThreadObj: {},
-      // bbsCommentObj: {},
-      // bbsReplyObj: {},
       currentContentsId,
     };
     
@@ -93,14 +90,27 @@ class Component extends React.Component {
     //   User - Data
     // ---------------------------------------------
     
-    dataObj.userObj = {
+    dataObj.dataUserObj = {
       'a8b0gX6lMIz': {
         name: 'あづみ',
         status: 'プロハンター',
         playerId: 'az1979',
         playerPage: '/pl/az1979',
-        level: 999
+        level: 999,
+        accessDate: '2018-08-06T08:50:00Z'
       }
+    };
+    
+    
+    // ---------------------------------------------
+    //   User Community - Data
+    // ---------------------------------------------
+    
+    dataObj.dataUserCommunityObj[dataObj.userCommunityId] = {
+      name: 'あづみ配信コミュニティ',
+      rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
+      communityId: 'az1979',
+      members: 12345
     };
     
     
@@ -151,18 +161,6 @@ class Component extends React.Component {
       },
     ];
     
-    
-    
-    // ---------------------------------------------
-    //   User Community - Data
-    // ---------------------------------------------
-    
-    dataObj.userCommunityDataObj[dataObj.userCommunityId] = {
-      name: 'あづみ配信コミュニティ',
-      rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
-      communityId: 'az1979',
-      members: 12345
-    };
     
     
     // ---------------------------------------------
@@ -228,6 +226,8 @@ class Component extends React.Component {
     // console.log(`uc/community - constructor`);
     // console.log(`props.pathname = ${props.pathname}`);
     
+    // console.log(Date());
+    
     
     // --------------------------------------------------
     //   Store
@@ -235,9 +235,10 @@ class Component extends React.Component {
     
     const {
       dataLoginUserObj,
+      dataUserObj,
+      dataUserCommunityObj,
       layoutPanelExpandedObj,
       // userCommunityId,
-      userCommunityDataObj,
       bbsNavigationId,
       bbsNavigationOpenedTabNoObj,
       bbsNavigationThreadListObj,
@@ -272,8 +273,10 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     this.stores.data.updateLoginUserObj(dataLoginUserObj);
+    this.stores.data.insertUserObj(dataUserObj);
+    this.stores.data.insertUserCommunityObj(dataUserCommunityObj);
     this.stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
-    this.stores.userCommunity.insertData(userCommunityDataObj);
+    this.stores.userCommunity.insertData(dataUserCommunityObj);
     this.stores.bbsNavigation.insertOpenedTabNo(bbsNavigationOpenedTabNoObj);
     this.stores.bbsNavigation.insertThreadList(bbsNavigationId, bbsNavigationThreadListObj);
     this.stores.bbsNavigation.insertSearch(bbsNavigationId);
@@ -297,16 +300,29 @@ class Component extends React.Component {
     const { userCommunityId, bbsNavigationId } = this.props.dataObj;
     
     
-    // render() {
-    //   var text = "One\n\n\nTwo\nThree";
-    //   return (
-    //   <div>
-    //     {text.split("\n").map((i,key) => {
-    //       return <p style={{ marginBottom: '20px' }}>{i}</p>;
-    //     })}
-    //   </div>
-    //   );
+    // alert('うちも来た！');
+    
+    // for (var box = 1; box <= 3; box++) {
+    //   alert(box);
+    //   // more statements
     // }
+    
+    // var number = 10;
+    
+    // class Test {
+      
+    //   var number = 10;
+      
+    //   if (isNaN(number)) {
+    //     alert('数字です');
+    //   } else {
+    //     alert('数字じゃないです');
+    //   }
+    
+    // }
+    
+    // import { Test } from 'test';
+    
     
     
     // --------------------------------------------------

@@ -145,6 +145,44 @@ class Store {
   
   
   // ---------------------------------------------
+  //   スレッド作成
+  // ---------------------------------------------
+  
+  @observable createThreadNameObj = {};
+  @observable createThreadRuleObj = {};
+  
+  @action.bound
+  handleCreateThreadNameObj(event, id) {
+    this.createThreadNameObj[id] = event.target.value;
+  };
+  
+  @action.bound
+  handleCreateThreadRuleObj(event, id) {
+    this.createThreadRuleObj[id] = event.target.value;
+  };
+  
+  @action.bound
+  handleCreateThread(id) {
+    console.log(`handleCreateThread`);
+    console.log(`createThreadNameObj[id] = ${this.createThreadNameObj[id]}`);
+    console.log(`createThreadRuleObj[id] = ${this.createThreadRuleObj[id]}`);
+  };
+  
+  insertCreateThread(id) {
+    
+    if (id in this.createThreadNameObj === false) {
+      this.createThreadNameObj[id] = '';
+    }
+    
+    if (id in this.createThreadRuleObj === false) {
+      this.createThreadRuleObj[id] = '';
+    }
+    
+  }
+  
+  
+  
+  // ---------------------------------------------
   //   BBS 検索
   // ---------------------------------------------
   

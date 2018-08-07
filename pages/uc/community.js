@@ -110,7 +110,8 @@ class Component extends React.Component {
       name: 'あづみ配信コミュニティ',
       rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
       communityId: 'az1979',
-      members: 12345
+      members: 12345,
+      administratorId: 'a8b0gX6lMIz'
     };
     
     
@@ -123,6 +124,7 @@ class Component extends React.Component {
         id: 'ks8WPvlQpbg',
         name: '雑談スレッド',
         description: '仲良く雑談しませんか？\nゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。\n\nルイン＆アドオンを使わず、選別もしない\n僕のトラッパーがついにランク4の赤帯になりました。\n\n\nDead by Daylight',
+        creatorId: 'yMBo8ViUidf',
         page: 1,
         commentTotal: 5,
         commentArr: [
@@ -279,6 +281,7 @@ class Component extends React.Component {
     this.stores.userCommunity.insertData(dataUserCommunityObj);
     this.stores.bbsNavigation.insertOpenedTabNo(bbsNavigationOpenedTabNoObj);
     this.stores.bbsNavigation.insertThreadList(bbsNavigationId, bbsNavigationThreadListObj);
+    this.stores.bbsNavigation.insertCreateThread(bbsNavigationId);
     this.stores.bbsNavigation.insertSearch(bbsNavigationId);
     this.stores.bbs.insertData(bbsObj);
     
@@ -346,7 +349,7 @@ class Component extends React.Component {
             <BbsNavigation id={bbsNavigationId} />
             
             {/* BBS */}
-            <Bbs id={userCommunityId} />
+            <Bbs userCommunityId={userCommunityId} />
             
             
             <Button

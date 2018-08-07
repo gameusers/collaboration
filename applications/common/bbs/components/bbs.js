@@ -27,8 +27,8 @@ import green from '@material-ui/core/colors/green';
 
 import Paragraph from '../../layout/components/paragraph';
 import FormPost from '../../form/components/post';
-import ProfileThumbnail from '../../profile/components/thumbnail';
-import ProfileName from '../../profile/components/name';
+import ProfileThumbnail from '../../user/components/thumbnail';
+import ProfileName from '../../user/components/name';
 
 
 
@@ -574,6 +574,7 @@ const BottomNavIconReply = styled(IconReply)`
 export default class extends React.Component {
   
   constructor(props) {
+    
     super(props);
     
     
@@ -581,19 +582,13 @@ export default class extends React.Component {
     //   Layout - Panel
     // ---------------------------------------------
     
+    const id = props.gameCommunityId ? props.gameCommunityId : props.userCommunityId;
     const layoutPanelExpandedObj = {};
-    const dataObj = props.stores.bbs.dataObj[props.id];
-    
-    // console.log(`props.id = ${props.id}`);
+    const dataObj = props.stores.bbs.dataObj[id];
     
     for (const [key, value] of Object.entries(dataObj)) {
-      // console.log(`key = ${key}`);
-      // console.dir(value);
       layoutPanelExpandedObj[value.id] = true;
     }
-    
-    // console.log(`layoutPanelExpandedObj = `);
-    // console.dir(layoutPanelExpandedObj);
     
     props.stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
     
@@ -607,13 +602,33 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, id } = this.props;
+    const { stores, gameCommunityId, userCommunityId } = this.props;
+    
+    
+    const loginUserId = this.props.stores.data.loginUserObj.id;
+    
+    let id = '';
+    let administrator = false;
+    
+    if (gameCommunityId) {
+      
+      id = gameCommunityId;
+      
+    } else if (userCommunityId) {
+      
+      id = userCommunityId;
+      
+      if (stores.data.userCommunityObj[userCommunityId].administratorId === loginUserId) {
+        administrator = true;
+      }
+      
+    }
     
     const dataObj = this.props.stores.bbs.dataObj[id];
     
-    // const {
-    //   insertData
-    // } = this.props.stores.bbs;
+    
+    console.log(`loginUserId = ${loginUserId}`);
+    console.log(`administrator = ${administrator}`);
     
     
     
@@ -626,11 +641,16 @@ export default class extends React.Component {
     
     for (const [key, value] of Object.entries(dataObj)) {
       
+      // const { id, creatorId } = value;
+      // const 
+      
+      const editable = administrator || loginUserId === value.creatorId ? true : false;
+      
+      
       componentsBbsArr.push(
         
         <ExpansionPanel
           expanded={stores.layout.returnPanelExpanded(value.id)}
-          // expanded={true}
           key={key}
         >
           
@@ -663,10 +683,12 @@ export default class extends React.Component {
                   <BbsInfoId>ks8WPvlQpbg</BbsInfoId>
                 </TitleInfoIdBox>
                 
-                <BottomNavButton variant="outlined">
-                  <BottomNavIconEdit />
-                  編集
-                </BottomNavButton>
+                { editable &&
+                  <BottomNavButton variant="outlined">
+                    <BottomNavIconEdit />
+                    編集
+                  </BottomNavButton>
+                }
                 
               </TitleInfoBox>
               
@@ -674,11 +696,6 @@ export default class extends React.Component {
               { stores.bbs.titleDescriptionOpenObj[value.id] &&
                 <TitleDescriptionBox>
                   <Paragraph text={value.description} />
-                  {/*<p>仲良く雑談しませんか？</p>
-                  <p>ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。</p>
-                  <p>スピードワゴンって最初ただのチンピラみたいな出方してたんだな。</p>
-                  <p>金持ちのおっさんのイメージの方が強くなってた。</p>
-                  <p>ドラクエの話やめろ！</p>*/}
                 </TitleDescriptionBox>
               }
               
@@ -711,8 +728,6 @@ export default class extends React.Component {
     }
     
     
-    // stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
-    
     
     
     // --------------------------------------------------
@@ -723,6 +738,10 @@ export default class extends React.Component {
       <React.Fragment>
       
         {componentsBbsArr}
+        
+        
+        
+        
       
       <ExpansionPanel
         // expanded={stores.layout.returnPanelExpanded(id)}

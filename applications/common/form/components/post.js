@@ -15,6 +15,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+import IconPermIdentity from '@material-ui/icons/PermIdentity';
 import IconVideocam from '@material-ui/icons/Videocam';
 import IconClose from '@material-ui/icons/Close';
 import IconDescription from '@material-ui/icons/Description';
@@ -23,8 +24,8 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 import cyan from '@material-ui/core/colors/cyan';
 
-import ProfileThumbnail from '../../profile/components/thumbnail';
-import ProfileName from '../../profile/components/name';
+import UserThumbnail from '../../user/components/thumbnail';
+import UserName from '../../user/components/name';
 
 
 
@@ -37,7 +38,7 @@ import ProfileName from '../../profile/components/name';
 //   BBS
 // ---------------------------------------------
 
-const ProfileBox = styled.div`
+const UserBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
   // align-items: flex-start;
@@ -46,7 +47,7 @@ const ProfileBox = styled.div`
   // background-color: pink;
 `;
 
-const ProfileThumbnailBox = styled.div`
+const UserThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   // align-items: stretch;
@@ -56,7 +57,7 @@ const ProfileThumbnailBox = styled.div`
 
 
 
-const ProfileInfoBox = styled.div`
+const UserInfoBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   margin: 0;
@@ -64,7 +65,7 @@ const ProfileInfoBox = styled.div`
   // background-color: green;
 `;
 
-const ProfileNameBox = styled.div`
+const UserNameBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   margin: 0;
@@ -72,12 +73,23 @@ const ProfileNameBox = styled.div`
 `;
 
 
-const ProfileCheckbox = styled(Checkbox)`
+const UserCheckbox = styled(Checkbox)`
   && {
     height: auto;
   }
 `;
 
+
+const NameTextField = styled(TextField)`
+  && {
+    width: 300px;
+    margin: 0 0 4px 0;
+    
+    @media screen and (max-width: 480px) {
+      width: 100%;
+    }
+  }
+`;
 
 
 const StyledTextareaAutosize = styled(TextareaAutosize)`
@@ -289,7 +301,7 @@ export default class extends React.Component {
     const previewObj = stores.formPost.previewObj[id];
     
     const loginUserId = stores.data.loginUserObj.id;
-    console.log(`loginUserId = ${loginUserId}`);
+    // console.log(`loginUserId = ${loginUserId}`);
     
     
     
@@ -434,43 +446,63 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        {/* プロフィール */}
-        <ProfileBox>
-          
-          <ProfileThumbnailBox>
-            {anonymityChecked ? (
-              <ProfileThumbnail anonymity />
-            ) : (
-              <ProfileThumbnail id={loginUserId} />
-            )}
-          </ProfileThumbnailBox>
-          
-          
-          <ProfileInfoBox>
-          
-            <ProfileNameBox>
-              
-              {anonymityChecked ? (
-                <ProfileName anonymity />
-              ) : (
-                <ProfileName id={loginUserId} />
-              )}
-              
-            </ProfileNameBox>
+        {/* User */}
+        
+        {loginUserId ? (
+          <UserBox>
             
-            <FormControlLabel
-              control={
-                <ProfileCheckbox
-                  checked={anonymityChecked}
-                  onChange={() => stores.formPost.handleAnonymityChecked(id)}
-                />
-              }
-              label="ななしにする"
-            />
-          
-          </ProfileInfoBox>
-          
-        </ProfileBox>
+            <UserThumbnailBox>
+              {anonymityChecked ? (
+                <UserThumbnail anonymity />
+              ) : (
+                <UserThumbnail id={loginUserId} />
+              )}
+            </UserThumbnailBox>
+            
+            
+            <UserInfoBox>
+            
+              <UserNameBox>
+                
+                {anonymityChecked ? (
+                  <UserName anonymity />
+                ) : (
+                  <UserName id={loginUserId} />
+                )}
+                
+              </UserNameBox>
+              
+              <FormControlLabel
+                control={
+                  <UserCheckbox
+                    checked={anonymityChecked}
+                    onChange={() => stores.formPost.handleAnonymityChecked(id)}
+                  />
+                }
+                label="ななしにする"
+              />
+            
+            </UserInfoBox>
+            
+          </UserBox>
+        ) : (
+          <NameTextField
+            id="name"
+            label="ハンドルネーム（未入力でもOK！）"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            placeholder=""
+            // helperText="未入力でもOK！"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconPermIdentity />
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
         
         
         {/* Textarea */}

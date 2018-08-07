@@ -6,6 +6,7 @@ import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import TextareaAutosize from 'react-autosize-textarea';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,6 +39,7 @@ import IconList from '@material-ui/icons/List';
 import IconNew from '@material-ui/icons/FiberNew';
 import IconImage from '@material-ui/icons/Image';
 import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
+import IconEventNote from '@material-ui/icons/EventNote';
 import IconSearch from '@material-ui/icons/Search';
 
 import cyan from '@material-ui/core/colors/cyan';
@@ -164,6 +166,55 @@ const BbsSearchCheckBox = styled.div`
 
 
 
+const CreateThreadTabBox = styled.div`
+  width: 100%;
+  margin: 0;
+  padding: 22px 24px 20px 24px;
+  // background-color: pink;
+`;
+
+const ThreadNameTextField = styled(TextField)`
+  && {
+    width: 300px;
+    margin: 0 0 4px 0;
+    
+    @media screen and (max-width: 480px) {
+      width: 88%;
+      // min-width: 100%;
+    }
+  }
+`;
+
+const StyledTextareaAutosize = styled(TextareaAutosize)`
+  && {
+    width: 600px;
+    max-width: 600px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px 0 10px 0;
+    padding: 8px 12px;
+    line-height: 1.6em;
+    
+    &:focus {
+      outline: 1px #A9F5F2 solid;
+    }
+    
+    @media screen and (max-width: 480px) {
+      width: 88%;
+      max-width: auto;
+      resize: none;
+    }
+  }
+`;
+
+const CreateThreadButtonBox = styled.div`
+  margin: 0 0 0 0;
+`;
+
+
+
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -197,6 +248,9 @@ export default class extends React.Component {
     const threadListPage = stores.bbsNavigation.threadListPageObj[id];
     const threadListArr = stores.bbsNavigation.threadListObj[id];
     
+    const createThreadName = stores.bbsNavigation.createThreadNameObj[id];
+    const createThreadRule = stores.bbsNavigation.createThreadRuleObj[id];
+    
     const searchKeyword = stores.bbsNavigation.searchKeywordObj[id];
     const searchDateTimeStart = stores.bbsNavigation.searchDateTimeStartObj[id];
     const searchDateTimeEnd = stores.bbsNavigation.searchDateTimeEndObj[id];
@@ -219,6 +273,10 @@ export default class extends React.Component {
       handleThreadListSort,
       handleThreadListRowsPerPage,
       handleThreadListPage,
+      
+      handleCreateThreadNameObj,
+      handleCreateThreadRuleObj,
+      handleCreateThread,
       
       handleSearchKeyword,
       handleSearchDateTimeStart,
@@ -440,12 +498,10 @@ export default class extends React.Component {
               value={openedTabNo}
               indicatorColor="primary"
               textColor="primary"
-              // onChange={handleOpenedTabNo}
-              // onChange={() => handleOpenedTabNo(id)}
-              // onChange={(event) => handleOpenedTabNo(event, id)}
               onChange={(event, value) => handleOpenedTabNo(event, value, id)}
             >
               <Tab label="スレッド一覧" />
+              <Tab label="スレッド作成" />
               <Tab label="検索" />
             </Tabs>
           </PaperBbsMenuTabs>
@@ -459,8 +515,51 @@ export default class extends React.Component {
           }
           
           
-          {/* 検索 */}
+          {/* スレッド作成 */}
           {openedTabNo === 1 &&
+            <CreateThreadTabBox>
+              
+              {/* Input Thread Name */}
+              <ThreadNameTextField
+                placeholder="スレッド名"
+                value={createThreadName}
+                onChange={(event) => handleCreateThreadNameObj(event, id)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IconEventNote />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              
+              
+              {/* Textarea */}
+              <StyledTextareaAutosize
+                rows={5}
+                placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください"
+                value={createThreadRule}
+                onChange={(event) => handleCreateThreadRuleObj(event, id)}
+              />
+              
+              
+              {/* Send Button */}
+              <CreateThreadButtonBox>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleCreateThread(id)}
+                >
+                  スレッドを作成する
+                </Button>
+              </CreateThreadButtonBox>
+              
+            </CreateThreadTabBox>
+          }
+          
+          
+          {/* 検索 */}
+          {openedTabNo === 2 &&
             <BbsMenuSearchTabBox>
               
               {/* 検索フォーム */}

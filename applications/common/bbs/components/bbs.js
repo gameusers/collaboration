@@ -3,18 +3,18 @@
 // --------------------------------------------------
 
 import React from 'react';
-// import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
-
-// import Swiper from 'react-id-swiper';
-// import Lightbox from 'react-images';
+import TextareaAutosize from 'react-autosize-textarea';
 
 import Button from '@material-ui/core/Button';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
+import IconEventNote from '@material-ui/icons/EventNote';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
@@ -132,6 +132,46 @@ const TitleDescriptionBox = styled.div`
   padding: 0 0 0 18px;
   // border-bottom: 1px solid #d0d0d0;
   // background-color: pink;
+`;
+
+
+
+const CreateThreadNameTextField = styled(TextField)`
+  && {
+    width: 300px;
+    margin: 10px 0 4px 0;
+    
+    @media screen and (max-width: 480px) {
+      width: 88%;
+      // min-width: 100%;
+    }
+  }
+`;
+
+const CreateThreadTextareaAutosize = styled(TextareaAutosize)`
+  && {
+    width: 600px;
+    max-width: 600px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px 0 10px 0;
+    padding: 8px 12px;
+    line-height: 1.6em;
+    
+    &:focus {
+      outline: 1px #A9F5F2 solid;
+    }
+    
+    @media screen and (max-width: 480px) {
+      width: 88%;
+      max-width: auto;
+      resize: none;
+    }
+  }
+`;
+
+const CreateThreadButtonBox = styled.div`
+  margin: 0 0 0 0;
 `;
 
 
@@ -578,19 +618,85 @@ export default class extends React.Component {
     super(props);
     
     
+    
     // ---------------------------------------------
-    //   Layout - Panel
+    //   Set Property
     // ---------------------------------------------
     
-    const id = props.gameCommunityId ? props.gameCommunityId : props.userCommunityId;
+    // Login User ID
+    this.loginUserId = props.stores.data.loginUserObj.id;
+    
+    // 管理者権限があるかどうか
+    this.administrator = false;
+    
+    // スレッド編集
+    this.updateThreadNameObj = props.stores.bbs.updateThreadNameObj;
+    this.updateThreadDescriptionObj = props.stores.bbs.updateThreadDescriptionObj;
+    
+    
+    // ----------------------------------------
+    //   Game Community
+    // ----------------------------------------
+    
+    if (props.gameCommunityId) {
+      
+      // ID
+      this.id = props.gameCommunityId;
+      
+      
+    // ----------------------------------------
+    //   User Community
+    // ----------------------------------------
+    
+    } else if (props.userCommunityId) {
+      
+      // ID
+      this.id = props.userCommunityId;
+      
+      
+      if (props.stores.data.userCommunityObj[props.userCommunityId].administratorId === this.loginUserId) {
+        this.administrator = true;
+      }
+      
+    }
+    
+    
+    // BBS用データ
+    this.dataObj = props.stores.bbs.dataObj[this.id];
+    // console.log(`this.dataObj = ${this.dataObj}`);
+    // console.dir(this.dataObj);
+    
+    
+    
+    // ---------------------------------------------
+    //   Initialize Store
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   - Layout Panel
+    // ----------------------------------------
+    
     const layoutPanelExpandedObj = {};
-    const dataObj = props.stores.bbs.dataObj[id];
     
-    for (const [key, value] of Object.entries(dataObj)) {
+    for (const value of Object.values(this.dataObj)) {
       layoutPanelExpandedObj[value.id] = true;
     }
     
     props.stores.layout.insertPanelExpanded(layoutPanelExpandedObj);
+    
+    
+    // ----------------------------------------
+    //   - Update Thread
+    // ----------------------------------------
+    
+    // props.stores.bbs.initializeUpdateThread(this.dataObj);
+    
+    
+    // ----------------------------------------
+    //   - BBS
+    // ----------------------------------------
+    
+    props.stores.bbs.initializeBbs(this.dataObj);
     
   }
   
@@ -602,33 +708,39 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, gameCommunityId, userCommunityId } = this.props;
+    const { stores } = this.props;
     
     
-    const loginUserId = this.props.stores.data.loginUserObj.id;
     
-    let id = '';
-    let administrator = false;
+    // const {
+    //   returnPanelExpanded,
+    //   handlePanelExpanded
+    // } = stores.layout;
     
-    if (gameCommunityId) {
+    // const returnPanelExpanded = stores.layout.returnPanelExpanded;
+    
+    const {
       
-      id = gameCommunityId;
+      handleThreadDescriptionOpenObj,
       
-    } else if (userCommunityId) {
+      // returnThreadEditFormOpen,
+      threadEditFormOpenObj,
+      handleThreadEditFormOpenObj,
       
-      id = userCommunityId;
-      
-      if (stores.data.userCommunityObj[userCommunityId].administratorId === loginUserId) {
-        administrator = true;
-      }
-      
-    }
+      // returnUpdateThreadName,
+      // returnUpdateThreadDescription,
+      // updateThreadNameObj,
+      // updateThreadDescriptionObj,
+      handleUpdateThreadNameObj,
+      handleUpdateThreadDescriptionObj,
+      handleUpdateThread
+    } = stores.bbs;
     
-    const dataObj = this.props.stores.bbs.dataObj[id];
     
     
-    console.log(`loginUserId = ${loginUserId}`);
-    console.log(`administrator = ${administrator}`);
+    
+    // console.log(`loginUserId = ${loginUserId}`);
+    // console.log(`administrator = ${administrator}`);
     
     
     
@@ -639,12 +751,18 @@ export default class extends React.Component {
     
     const componentsBbsArr = [];
     
-    for (const [key, value] of Object.entries(dataObj)) {
+    for (const [key, value] of Object.entries(this.dataObj)) {
       
-      // const { id, creatorId } = value;
-      // const 
       
-      const editable = administrator || loginUserId === value.creatorId ? true : false;
+      // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
+      const editable = this.administrator || this.loginUserId === value.creatorId ? true : false;
+      
+      
+      const updateThreadName = this.updateThreadNameObj[value.id];
+      const updateThreadDescription = this.updateThreadDescriptionObj[value.id];
+      
+      // const updateThreadName = stores.bbs.updateThreadNameObj[value.id];
+      // const updateThreadDescription = stores.bbs.updateThreadDescriptionObj[value.id];
       
       
       componentsBbsArr.push(
@@ -672,7 +790,7 @@ export default class extends React.Component {
                 <TitleInfoAboutBox>
                   <IconAssignmentBbsInfo />
                   <BbsInfoAbout
-                    onClick={() => stores.bbs.handleTitleDescriptionOpen(value.id)}
+                    onClick={() => handleThreadDescriptionOpenObj(value.id)}
                   >
                     スレッドについて
                   </BbsInfoAbout>
@@ -684,7 +802,10 @@ export default class extends React.Component {
                 </TitleInfoIdBox>
                 
                 { editable &&
-                  <BottomNavButton variant="outlined">
+                  <BottomNavButton
+                    variant="outlined"
+                    onClick={() => handleThreadEditFormOpenObj(value.id)}
+                  >
                     <BottomNavIconEdit />
                     編集
                   </BottomNavButton>
@@ -693,10 +814,56 @@ export default class extends React.Component {
               </TitleInfoBox>
               
               
-              { stores.bbs.titleDescriptionOpenObj[value.id] &&
+              {/* Thread Description */}
+              { stores.bbs.threadDescriptionOpenObj[value.id] &&
                 <TitleDescriptionBox>
                   <Paragraph text={value.description} />
                 </TitleDescriptionBox>
+              }
+              
+              
+              {/* Thread Edit Form - Thread Name */}
+              { threadEditFormOpenObj[value.id] &&
+                <React.Fragment>
+                  
+                  {/* Thread Name */}
+                  <CreateThreadNameTextField
+                    placeholder="スレッド名"
+                    value={updateThreadName}
+                    // value={returnUpdateThreadName(value.id)}
+                    onChange={(event) => handleUpdateThreadNameObj(event, value.id)}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconEventNote />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  
+                  
+                  {/* Thread Description */}
+                  <CreateThreadTextareaAutosize
+                    rows={5}
+                    placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください"
+                    value={updateThreadDescription}
+                    // value={returnUpdateThreadDescription(value.id)}
+                    onChange={(event) => handleUpdateThreadDescriptionObj(event, value.id)}
+                  />
+                  
+                  
+                  {/* Send Button */}
+                  <CreateThreadButtonBox>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleUpdateThread(value.id)}
+                    >
+                      編集する
+                    </Button>
+                  </CreateThreadButtonBox>
+                  
+                </React.Fragment>
               }
               
             </TitleBox>
@@ -744,7 +911,7 @@ export default class extends React.Component {
         
       
       <ExpansionPanel
-        // expanded={stores.layout.returnPanelExpanded(id)}
+        // expanded={stores.layout.returnPanelExpanded(this.id)}
         expanded={true}
       >
         
@@ -752,7 +919,7 @@ export default class extends React.Component {
         <TitleExpansionPanelSummary
           expandIcon={
             <IconExpandMore
-              onClick={() => stores.layout.handlePanelExpanded(id)}
+              onClick={() => stores.layout.handlePanelExpanded(this.id)}
             />
           }
         >
@@ -766,7 +933,7 @@ export default class extends React.Component {
               <TitleInfoAboutBox>
                 <IconAssignmentBbsInfo />
                 <BbsInfoAbout
-                  onClick={() => stores.bbs.handleTitleDescriptionOpen(id)}
+                  onClick={() => handleThreadDescriptionOpenObj(this.id)}
                 >
                   スレッドについて
                 </BbsInfoAbout>
@@ -784,7 +951,7 @@ export default class extends React.Component {
             </TitleInfoBox>
             
             
-            { stores.bbs.titleDescriptionOpenObj[id] &&
+            { stores.bbs.threadDescriptionOpenObj[this.id] &&
               <TitleDescriptionBox>
                 <p>仲良く雑談しませんか？</p>
                 <p>ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。</p>
@@ -793,6 +960,9 @@ export default class extends React.Component {
                 <p>ドラクエの話やめろ！</p>
               </TitleDescriptionBox>
             }
+            
+            
+            
             
           </TitleBox>
           

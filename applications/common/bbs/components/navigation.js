@@ -3,7 +3,6 @@
 // --------------------------------------------------
 
 import React from 'react';
-import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
@@ -26,11 +25,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import TextField from '@material-ui/core/TextField';
-// import MenuItem from '@material-ui/core/MenuItem';
 import InputAdornment from '@material-ui/core/InputAdornment';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import FormGroup from '@material-ui/core/FormGroup';
-// import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -42,10 +37,6 @@ import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
 import IconEventNote from '@material-ui/icons/EventNote';
 import IconSearch from '@material-ui/icons/Search';
 
-import cyan from '@material-ui/core/colors/cyan';
-
-import FormPost from '../../form/components/post';
-
 
 
 // --------------------------------------------------
@@ -53,15 +44,15 @@ import FormPost from '../../form/components/post';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const BbsTitleBox = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  // margin: 0;
-  // width: 100%;
-  // padding: 0 0 6px 0;
-  // border-bottom: 1px solid #d0d0d0;
-  // background-color: pink;
-`;
+// const BbsTitleBox = styled.div`
+//   display: flex;
+//   flex-flow: column nowrap;
+//   // margin: 0;
+//   // width: 100%;
+//   // padding: 0 0 6px 0;
+//   // border-bottom: 1px solid #d0d0d0;
+//   // background-color: pink;
+// `;
 
 
 const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
@@ -72,7 +63,12 @@ const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
   }
 `;
 
-const BbsMenuTitleBox = styled.div`
+
+// --------------------------------------------------
+//   Title
+// --------------------------------------------------
+
+const TitleBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
   margin: 0;
@@ -84,13 +80,13 @@ const Title = styled.h2`
   margin: 3px 0 0 0;
 `;
 
-const BbsMenuButtonsBox = styled.div`
+const ButtonsBox = styled.div`
   margin: 0 0 0 14px;
   padding: 0;
   // background-color: pink;
 `;
 
-const IconButtonBbsMenu = styled(IconButton)`
+const StyledIconButton = styled(IconButton)`
   && {
     margin: 0 4px 0 0;
     padding: 0;
@@ -99,72 +95,50 @@ const IconButtonBbsMenu = styled(IconButton)`
   }
 `;
 
-const PaperBbsMenuTabs = styled(Paper)`
+
+// --------------------------------------------------
+//   Tab
+// --------------------------------------------------
+
+const TabsPaper = styled(Paper)`
   && {
     margin: 0 16px 0;
     padding: 0;
   }
 `;
 
-const BbsMenuThreadListTabBox = styled.div`
-  // width: 80%;
+
+// --------------------------------------------------
+//   Thread List
+// --------------------------------------------------
+
+const ThreadListTabBox = styled.div`
   margin: 0;
   padding: 10px 16px 0;
-  // background-color: pink;
 `;
 
-const BbsMenuSearchTabBox = styled.div`
-  width: 100%;
-  margin: 0;
-  padding: 22px 24px 16px;
-`;
-
-const BbsThreadListTableWrapper = styled.div`
+const ThreadListTableWrapper = styled.div`
   overflow-x: auto;
 `;
 
-const TableCellBbsThreadListName = styled(TableCell)`
+const ThreadListNameTableCell = styled(TableCell)`
   && {
     white-space: nowrap;
     min-width: 280px;
+    cursor: pointer;
   }
 `;
 
-const TableCellBbsThreadList = styled(TableCell)`
+const ThreadListTableCell = styled(TableCell)`
   && {
     white-space: nowrap;
   }
 `;
 
-const BbsSearchBox = styled.div`
-  margin: 0 0 16px 0;
-`;
 
-const TextFieldBbsSearch = styled(TextField)`
-  && {
-    margin: 10px 0 0 0;
-  }
-`;
-
-const BbsSearchDateTimeBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 15px 0 0 0;
-`;
-
-const TextFieldBbsSearchDateTime = styled(TextField)`
-  && {
-    margin: 10px 20px 0 0;
-  }
-`;
-
-const BbsSearchCheckBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 15px 0 0 0;
-`;
-
-
+// --------------------------------------------------
+//   Create Thread
+// --------------------------------------------------
 
 const CreateThreadTabBox = styled.div`
   width: 100%;
@@ -173,7 +147,7 @@ const CreateThreadTabBox = styled.div`
   // background-color: pink;
 `;
 
-const ThreadNameTextField = styled(TextField)`
+const CreateThreadNameTextField = styled(TextField)`
   && {
     width: 300px;
     margin: 0 0 4px 0;
@@ -185,7 +159,7 @@ const ThreadNameTextField = styled(TextField)`
   }
 `;
 
-const StyledTextareaAutosize = styled(TextareaAutosize)`
+const CreateThreadTextareaAutosize = styled(TextareaAutosize)`
   && {
     width: 600px;
     max-width: 600px;
@@ -212,6 +186,43 @@ const CreateThreadButtonBox = styled.div`
 `;
 
 
+// --------------------------------------------------
+//   Search
+// --------------------------------------------------
+
+const SearchTabBox = styled.div`
+  width: 100%;
+  margin: 0;
+  padding: 22px 24px 16px;
+`;
+
+const SearchBox = styled.div`
+  margin: 0 0 16px 0;
+`;
+
+const SearchTextField = styled(TextField)`
+  && {
+    margin: 10px 0 0 0;
+  }
+`;
+
+const SearchDateTimeBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 15px 0 0 0;
+`;
+
+const SearchDateTimeTextField = styled(TextField)`
+  && {
+    margin: 10px 20px 0 0;
+  }
+`;
+
+const SearchCheckBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 15px 0 0 0;
+`;
 
 
 
@@ -239,7 +250,6 @@ export default class extends React.Component {
     
     
     const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
-    // console.log(`openedTabNo = ${openedTabNo}`);
     
     const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
     const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
@@ -270,6 +280,7 @@ export default class extends React.Component {
       
       handleOpenedTabNo,
       
+      handleReadThread,
       handleThreadListSort,
       handleThreadListRowsPerPage,
       handleThreadListPage,
@@ -310,12 +321,13 @@ export default class extends React.Component {
         
         componentTableDataArr.push(
           <TableRow key={index}>
-            <TableCellBbsThreadListName
+            <ThreadListNameTableCell
               component="th"
               scope="row"
+              onClick={() => handleReadThread(value.id)}
             >
               {value.name}
-            </TableCellBbsThreadListName>
+            </ThreadListNameTableCell>
             <TableCell>{value.updatedDate}</TableCell>
             <TableCell numeric>{value.comment}</TableCell>
             <TableCell numeric>{value.reply}</TableCell>
@@ -330,18 +342,18 @@ export default class extends React.Component {
       componentThreadListArr.push(
         <div key="threadList">
           
-          <BbsThreadListTableWrapper>
+          <ThreadListTableWrapper>
             
             <Table>
               
               <TableHead>
                 <TableRow>
                 
-                  <TableCellBbsThreadListName>
+                  <ThreadListTableCell>
                     名前
-                  </TableCellBbsThreadListName>
+                  </ThreadListTableCell>
                   
-                  <TableCellBbsThreadList>
+                  <ThreadListTableCell>
                     <TableSortLabel
                       active={threadListOrderBy === 'updatedDate'}
                       direction={threadListOrder}
@@ -349,9 +361,9 @@ export default class extends React.Component {
                     >
                       最終更新日
                     </TableSortLabel>
-                  </TableCellBbsThreadList>
+                  </ThreadListTableCell>
                   
-                  <TableCellBbsThreadList numeric>
+                  <ThreadListTableCell numeric>
                     <TableSortLabel
                       active={threadListOrderBy === 'comment'}
                       direction={threadListOrder}
@@ -359,9 +371,9 @@ export default class extends React.Component {
                     >
                       コメント
                     </TableSortLabel>
-                  </TableCellBbsThreadList>
+                  </ThreadListTableCell>
                   
-                  <TableCellBbsThreadList numeric>
+                  <ThreadListTableCell numeric>
                     <TableSortLabel
                       active={threadListOrderBy === 'reply'}
                       direction={threadListOrder}
@@ -369,9 +381,9 @@ export default class extends React.Component {
                     >
                       返信
                     </TableSortLabel>
-                  </TableCellBbsThreadList>
+                  </ThreadListTableCell>
                   
-                  <TableCellBbsThreadList numeric>
+                  <ThreadListTableCell numeric>
                     <TableSortLabel
                       active={threadListOrderBy === 'image'}
                       direction={threadListOrder}
@@ -379,9 +391,9 @@ export default class extends React.Component {
                     >
                       画像
                     </TableSortLabel>
-                  </TableCellBbsThreadList>
+                  </ThreadListTableCell>
                   
-                  <TableCellBbsThreadList numeric>
+                  <ThreadListTableCell numeric>
                     <TableSortLabel
                       active={threadListOrderBy === 'video'}
                       direction={threadListOrder}
@@ -389,7 +401,7 @@ export default class extends React.Component {
                     >
                       動画
                     </TableSortLabel>
-                  </TableCellBbsThreadList>
+                  </ThreadListTableCell>
                   
                 </TableRow>
               </TableHead>
@@ -400,7 +412,7 @@ export default class extends React.Component {
               
             </Table>
             
-          </BbsThreadListTableWrapper>
+          </ThreadListTableWrapper>
         
           <TablePagination
             component="div"
@@ -432,7 +444,6 @@ export default class extends React.Component {
     return (
       <ExpansionPanel
         expanded={stores.layout.returnPanelExpanded(id)}
-        // expanded={true}
       >
         
         {/* Title */}
@@ -444,47 +455,47 @@ export default class extends React.Component {
           }
         >
           
-          <BbsMenuTitleBox>
+          <TitleBox>
             
             <Title>BBS</Title>
             
-            <BbsMenuButtonsBox>
+            <ButtonsBox>
               
               <Tooltip id="tooltip-list" title="スレッド一覧">
-                <IconButtonBbsMenu
+                <StyledIconButton
                   onClick={handleMenuButtonThreadList}
                 >
                   <IconList />
-                </IconButtonBbsMenu>
+                </StyledIconButton>
               </Tooltip>
               
               <Tooltip id="tooltip-new" title="新しいコメント">
-                <IconButtonBbsMenu
+                <StyledIconButton
                   onClick={handleMenuButtonNew}
                 >
                   <IconNew />
-                </IconButtonBbsMenu>
+                </StyledIconButton>
               </Tooltip>
               
               <Tooltip id="tooltip-image" title="画像付きのコメント">
-                <IconButtonBbsMenu
+                <StyledIconButton
                   onClick={handleMenuButtonImage}
                 >
                   <IconImage />
-                </IconButtonBbsMenu>
+                </StyledIconButton>
               </Tooltip>
               
               <Tooltip id="tooltip-video" title="動画付きのコメント">
-                <IconButtonBbsMenu
+                <StyledIconButton
                   onClick={handleMenuButtonVideo}
                 >
                   <IconOndemandVideo />
-                </IconButtonBbsMenu>
+                </StyledIconButton>
               </Tooltip>
               
-            </BbsMenuButtonsBox>
+            </ButtonsBox>
             
-          </BbsMenuTitleBox>
+          </TitleBox>
           
         </ExpansionPanelSummary>
         
@@ -493,7 +504,7 @@ export default class extends React.Component {
         <ExpansionPanelDetailsBbsMenu>
           
           {/* Tab */}
-          <PaperBbsMenuTabs>
+          <TabsPaper>
             <Tabs
               value={openedTabNo}
               indicatorColor="primary"
@@ -504,14 +515,14 @@ export default class extends React.Component {
               <Tab label="スレッド作成" />
               <Tab label="検索" />
             </Tabs>
-          </PaperBbsMenuTabs>
+          </TabsPaper>
           
           
           {/* スレッド一覧 */}
           {openedTabNo === 0 &&
-            <BbsMenuThreadListTabBox>
+            <ThreadListTabBox>
               {componentThreadListArr}
-            </BbsMenuThreadListTabBox>
+            </ThreadListTabBox>
           }
           
           
@@ -520,7 +531,7 @@ export default class extends React.Component {
             <CreateThreadTabBox>
               
               {/* Input Thread Name */}
-              <ThreadNameTextField
+              <CreateThreadNameTextField
                 placeholder="スレッド名"
                 value={createThreadName}
                 onChange={(event) => handleCreateThreadNameObj(event, id)}
@@ -535,7 +546,7 @@ export default class extends React.Component {
               
               
               {/* Textarea */}
-              <StyledTextareaAutosize
+              <CreateThreadTextareaAutosize
                 rows={5}
                 placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください"
                 value={createThreadRule}
@@ -560,11 +571,11 @@ export default class extends React.Component {
           
           {/* 検索 */}
           {openedTabNo === 2 &&
-            <BbsMenuSearchTabBox>
+            <SearchTabBox>
               
               {/* 検索フォーム */}
-              <BbsSearchBox>
-                <TextFieldBbsSearch
+              <SearchBox>
+                <SearchTextField
                   placeholder="検索キーワード"
                   value={searchKeyword}
                   onChange={(event) => handleSearchKeyword(event, id)}
@@ -577,8 +588,8 @@ export default class extends React.Component {
                   }}
                 />
                 
-                <BbsSearchDateTimeBox>
-                  <TextFieldBbsSearchDateTime
+                <SearchDateTimeBox>
+                  <SearchDateTimeTextField
                     id="datetime-local-start"
                     label="開始日時"
                     type="datetime-local"
@@ -589,7 +600,7 @@ export default class extends React.Component {
                     }}
                   />
                   
-                  <TextFieldBbsSearchDateTime
+                  <SearchDateTimeTextField
                     id="datetime-local-end"
                     label="終了日時"
                     type="datetime-local"
@@ -599,10 +610,10 @@ export default class extends React.Component {
                       shrink: true,
                     }}
                   />
-                </BbsSearchDateTimeBox>
+                </SearchDateTimeBox>
                 
                 
-                <BbsSearchCheckBox>
+                <SearchCheckBox>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -665,9 +676,9 @@ export default class extends React.Component {
                     }
                     label="自分の書き込み"
                   />
-                </BbsSearchCheckBox>
+                </SearchCheckBox>
                 
-              </BbsSearchBox>
+              </SearchBox>
               
               <Button
                 variant="contained"
@@ -676,7 +687,7 @@ export default class extends React.Component {
                 検索
               </Button>
               
-            </BbsMenuSearchTabBox>
+            </SearchTabBox>
           }
           
         </ExpansionPanelDetailsBbsMenu>

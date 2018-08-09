@@ -63,25 +63,18 @@ class Store {
   
   @action.bound
   handleOpenedTabNo(event, value, id) {
-    // console.log(`event = ${event}`);
-    // console.dir(event);
-    // console.log(`value = ${value}`);
-    
-    // console.log(`value = ${event.target.value}`);
-    // console.log(`id = ${id}`);
     this.openedTabNoObj[id] = value;
   };
   
   
   insertOpenedTabNo(dataObj) {
     this.openedTabNoObj = Object.assign({}, dataObj, this.openedTabNoObj);
-    // console.dir(this.openedTabNoObj);
   };
   
   
   
   // ---------------------------------------------
-  //   スレッド一覧
+  //   Thread List
   // ---------------------------------------------
   
   @observable threadListOrderByObj = {};
@@ -91,6 +84,12 @@ class Store {
   @observable threadListPageObj = {};
   @observable threadListObj = {};
   
+  
+  @action.bound
+  handleReadThread(id) {
+    console.log(`handleReadThread`);
+    console.log(`id = ${id}`);
+  };
   
   @action.bound
   handleThreadListSort(id, orderBy) {
@@ -145,7 +144,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   スレッド作成
+  //   Create Thread
   // ---------------------------------------------
   
   @observable createThreadNameObj = {};
@@ -183,7 +182,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   BBS 検索
+  //   Search
   // ---------------------------------------------
   
   @observable searchKeywordObj = {};
@@ -282,24 +281,6 @@ class Store {
     }
     
   };
-  
-  
-  
-  // --------------------------------------------------
-  //   Initialize Data
-  // --------------------------------------------------
-  
-  // constructor(initialData) {
-    
-  //   if (initialData) {
-     
-  //     this.insertOpenedTabNo(initialData);
-  //     this.insertThreadList(initialData);
-  //     this.insertSearch(initialData);
-      
-  //   }
-    
-  // }
   
 }
 

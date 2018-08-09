@@ -34,7 +34,7 @@
     "mobx-react": "^5.2.3",
     "moment": "^2.22.2",
     "mongo-express": "^0.47.0",
-    "mongoose": "^5.2.6",
+    "mongoose": "^5.2.7",
     "next": "^6.1.1",
     "prop-types": "^15.6.2",
     "rc-pagination": "^1.16.5",
@@ -47,7 +47,7 @@
     "react-modal-video": "^1.2.1",
     "react-smooth-scrollbar": "^8.0.6",
     "smooth-scrollbar": "^8.3.0",
-    "styled-components": "^3.4.1",
+    "styled-components": "^3.4.2",
     "velocity-react": "^1.4.1"
   },
   "devDependencies": {

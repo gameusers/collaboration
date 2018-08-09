@@ -285,6 +285,7 @@ class Component extends React.Component {
     this.stores.bbsNavigation.insertSearch(bbsNavigationId);
     this.stores.bbs.insertData(bbsObj);
     
+    
     this.stores.layout.currentContentsId = props.dataObj.currentContentsId;
     
   }

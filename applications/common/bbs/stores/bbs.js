@@ -24,25 +24,136 @@ class Store {
   //   Title
   // ---------------------------------------------
   
-  @observable titleDescriptionOpenObj = {};
+  @observable threadDescriptionOpenObj = {};
   
   
   @action.bound
-  handleTitleDescriptionOpen(id) {
-    this.titleDescriptionOpenObj[id] = !this.titleDescriptionOpenObj[id];
+  handleThreadDescriptionOpenObj(id) {
+    this.threadDescriptionOpenObj[id] = !this.threadDescriptionOpenObj[id];
   };
   
   
-  // @observable anonymityCheckedObj = {};
+  
+  // ---------------------------------------------
+  //   Thread Edit Form
+  // ---------------------------------------------
+  
+  @observable threadEditFormOpenObj = {};
+  
+  
+  // ----------------------------------------
+  //   - Return
+  // ----------------------------------------
   
   // @action.bound
-  // handleAnonymityChecked(id) {
-  //   this.anonymityCheckedObj[id] = !this.anonymityCheckedObj[id];
-    
-  //   // console.log(`id = ${id}`);
-  //   // console.log(`this.anonymityCheckedObj[id] = ${this.anonymityCheckedObj[id]}`);
-  //   // console.dir(`this.anonymityCheckedObj = ${this.anonymityCheckedObj}`);
+  // returnThreadEditFormOpen(id) {
+  //   const returnValue = id ? this.threadEditFormOpenObj[id] : false;
+  //   return returnValue;
   // };
+  
+  
+  // ----------------------------------------
+  //   - Handle
+  // ----------------------------------------
+  
+  @action.bound
+  handleThreadEditFormOpenObj(id) {
+    console.log(`handleThreadEditFormOpenObj`);
+    console.log(`this.threadEditFormOpenObj[id] = ${this.threadEditFormOpenObj[id]}`);
+    this.threadEditFormOpenObj[id] = !this.threadEditFormOpenObj[id];
+  };
+  
+  
+  // // ----------------------------------------
+  // //   - Initialize
+  // // ----------------------------------------
+  
+  // @action.bound
+  // initializeBbs(dataArr) {
+    
+  //   console.log(`initializeThreadEditFormOpen`);
+    
+  //   for (const value of dataArr.values()) {
+      
+  //     if (value.id in this.threadEditFormOpenObj === false) {
+  //       this.threadEditFormOpenObj[value.id] = false;
+  //     }
+      
+  //     // console.log(index, value);
+  //   }
+    
+  // }
+  
+  
+  
+  // ---------------------------------------------
+  //   Update Thread
+  // ---------------------------------------------
+  
+  @observable updateThreadNameObj = {};
+  @observable updateThreadDescriptionObj = {};
+  
+  
+  // ----------------------------------------
+  //   - Return
+  // ----------------------------------------
+  
+  // @action.bound
+  // returnUpdateThreadName(id) {
+  //   const returnValue = id ? this.updateThreadNameObj[id] : '';
+  //   return returnValue;
+  // };
+  
+  // @action.bound
+  // returnUpdateThreadDescription(id) {
+  //   const returnValue = id ? this.updateThreadDescriptionObj[id] : '';
+  //   return returnValue;
+  // };
+  
+  
+  // ----------------------------------------
+  //   - Handle
+  // ----------------------------------------
+  
+  @action.bound
+  handleUpdateThreadNameObj(event, id) {
+    this.updateThreadNameObj[id] = event.target.value;
+    // console.log(`id = ${id}`);
+    // console.log(`this.updateThreadNameObj[id] = ${this.updateThreadNameObj[id]}`);
+  };
+  
+  @action.bound
+  handleUpdateThreadDescriptionObj(event, id) {
+    this.updateThreadDescriptionObj[id] = event.target.value;
+  };
+  
+  @action.bound
+  handleUpdateThread(id) {
+    console.log(`handleUpdateThread`);
+    console.log(`updateThreadNameObj[id] = ${this.updateThreadNameObj[id]}`);
+    console.log(`updateThreadDescriptionObj[id] = ${this.updateThreadDescriptionObj[id]}`);
+  };
+  
+  
+  // ----------------------------------------
+  //   - Initialize
+  // ----------------------------------------
+  
+  // @action.bound
+  // initializeUpdateThread(dataArr) {
+    
+  //   // console.log(`initializeUpdateThread`);
+    
+  //   for (const value of dataArr.values()) {
+      
+  //     // console.log(`value.name = ${value.name}`);
+  //     // console.log(`value.description = ${value.description}`);
+      
+  //     this.updateThreadNameObj[value.id] = value.name;
+  //     this.updateThreadDescriptionObj[value.id] = value.description;
+  //   }
+    
+  // }
   
   
   
@@ -60,6 +171,46 @@ class Store {
   
   
   
+  
+  
+  // ----------------------------------------
+  //   Initialize BBS
+  // ----------------------------------------
+  
+  @action.bound
+  initializeBbs(dataArr) {
+    
+    console.log(`initializeBbs`);
+    
+    for (const value of dataArr.values()) {
+      
+      if (value.id in this.threadEditFormOpenObj === false) {
+        
+        
+        // Thread Description Open
+        if (value.id in this.threadDescriptionOpenObj === false) {
+          this.threadDescriptionOpenObj[value.id] = false;
+        }
+        
+        // Thread Edit Form Open
+        if (value.id in this.threadEditFormOpenObj === false) {
+          this.threadEditFormOpenObj[value.id] = false;
+        }
+        // this.threadEditFormOpenObj[value.id] = false;
+        
+        // Update Thread
+        this.updateThreadNameObj[value.id] = value.name;
+        this.updateThreadDescriptionObj[value.id] = value.description;
+        
+      }
+      
+      // console.log(index, value);
+    }
+    
+  }
+  
+  
+  
 }
 
 
@@ -68,8 +219,6 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-
-// export default function initStoreBbsThread(isServer, storeInstanceObj) {
 export default function initStoreBbs(argumentsObj) {
   
   const isServer = argumentsObj.isServer;

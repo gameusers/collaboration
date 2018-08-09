@@ -591,7 +591,7 @@ export default class extends React.Component {
           <VideoBox>
           
             <ImageDescription>
-              YouTube の URL が登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
+              YouTubeのURLが登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
             </ImageDescription>
             
             <ImageDescriptionUl>

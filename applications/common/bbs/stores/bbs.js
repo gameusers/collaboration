@@ -34,22 +34,13 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
   //   Thread Edit Form
   // ---------------------------------------------
   
   @observable threadEditFormOpenObj = {};
-  
-  
-  // ----------------------------------------
-  //   - Return
-  // ----------------------------------------
-  
-  // @action.bound
-  // returnThreadEditFormOpen(id) {
-  //   const returnValue = id ? this.threadEditFormOpenObj[id] : false;
-  //   return returnValue;
-  // };
   
   
   // ----------------------------------------
@@ -64,25 +55,6 @@ class Store {
   };
   
   
-  // // ----------------------------------------
-  // //   - Initialize
-  // // ----------------------------------------
-  
-  // @action.bound
-  // initializeBbs(dataArr) {
-    
-  //   console.log(`initializeThreadEditFormOpen`);
-    
-  //   for (const value of dataArr.values()) {
-      
-  //     if (value.id in this.threadEditFormOpenObj === false) {
-  //       this.threadEditFormOpenObj[value.id] = false;
-  //     }
-      
-  //     // console.log(index, value);
-  //   }
-    
-  // }
   
   
   
@@ -95,31 +67,12 @@ class Store {
   
   
   // ----------------------------------------
-  //   - Return
-  // ----------------------------------------
-  
-  // @action.bound
-  // returnUpdateThreadName(id) {
-  //   const returnValue = id ? this.updateThreadNameObj[id] : '';
-  //   return returnValue;
-  // };
-  
-  // @action.bound
-  // returnUpdateThreadDescription(id) {
-  //   const returnValue = id ? this.updateThreadDescriptionObj[id] : '';
-  //   return returnValue;
-  // };
-  
-  
-  // ----------------------------------------
   //   - Handle
   // ----------------------------------------
   
   @action.bound
   handleUpdateThreadNameObj(event, id) {
     this.updateThreadNameObj[id] = event.target.value;
-    // console.log(`id = ${id}`);
-    // console.log(`this.updateThreadNameObj[id] = ${this.updateThreadNameObj[id]}`);
   };
   
   @action.bound
@@ -135,25 +88,54 @@ class Store {
   };
   
   
+  
+  
+  
+  // ---------------------------------------------
+  //   Good
+  // ---------------------------------------------
+  
+  // @observable goodObj = {};
+  
+  
   // ----------------------------------------
-  //   - Initialize
+  //   - Handle
   // ----------------------------------------
   
-  // @action.bound
-  // initializeUpdateThread(dataArr) {
+  @action.bound
+  handleCommentGood(communityId, threadId, commentId) {
     
-  //   // console.log(`initializeUpdateThread`);
+    // console.log(`this.dataObj[communityId] = ${this.dataObj[communityId]}`);
     
-  //   for (const value of dataArr.values()) {
+    const threadIndex = this.dataObj[communityId].findIndex((value) => {
+      return value.id === threadId;
+    });
+    
+    // console.log(`threadIndex = ${threadIndex}`);
+    
+    if (threadIndex !== 'undefined') {
       
-  //     // console.log(`value.name = ${value.name}`);
-  //     // console.log(`value.description = ${value.description}`);
+      const commentArr = this.dataObj[communityId][threadIndex].commentArr;
       
-  //     this.updateThreadNameObj[value.id] = value.name;
-  //     this.updateThreadDescriptionObj[value.id] = value.description;
-  //   }
+      const commentIndex = commentArr.findIndex((value) => {
+        return value.id === commentId;
+      });
+      
+      // console.log(`commentIndex = ${commentIndex}`);
+      
+      
+      if (commentIndex !== 'undefined') {
+        this.dataObj[communityId][threadIndex].commentArr[commentIndex].good += 1; 
+      }
+      
+    }
     
-  // }
+    // console.log(`communityId = ${communityId}`);
+    // console.log(`threadId = ${threadId}`);
+    // console.log(`commentId = ${commentId}`);
+    // this.goodObj[id] = this.goodObj[id] + 1;
+  };
+  
   
   
   
@@ -180,7 +162,7 @@ class Store {
   @action.bound
   initializeBbs(dataArr) {
     
-    console.log(`initializeBbs`);
+    // console.log(`initializeBbs`);
     
     for (const value of dataArr.values()) {
       
@@ -208,8 +190,6 @@ class Store {
     }
     
   }
-  
-  
   
 }
 

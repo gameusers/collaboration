@@ -134,7 +134,7 @@ class Component extends React.Component {
             name: '',
             status: '',
             comment: '非常に引き込まれるものがありました。\nジョディのスタンド、エイデンはめちゃくちゃ強いですね。\n僕が知っているジョジョ4部までに出てきたスタンドで\nエイデンに勝てそうなのは\nスタープラチナとザ・ワールド、ヴァニラ・アイスのスタンドくらいですね。\n半径10メートル以内の人間を窒息死させたり\n意のままに操れたりするのはやばすぎます。',
-            updatedDate: '7 時間前',
+            updatedDate: '2018-08-11T06:50:00Z',
             good: 5000,
             page: 1,
             replyTotal: 2,
@@ -302,30 +302,6 @@ class Component extends React.Component {
     const stores = this.stores;
     
     const { userCommunityId, bbsNavigationId } = this.props.dataObj;
-    
-    
-    // alert('うちも来た！');
-    
-    // for (var box = 1; box <= 3; box++) {
-    //   alert(box);
-    //   // more statements
-    // }
-    
-    // var number = 10;
-    
-    // class Test {
-      
-    //   var number = 10;
-      
-    //   if (isNaN(number)) {
-    //     alert('数字です');
-    //   } else {
-    //     alert('数字じゃないです');
-    //   }
-    
-    // }
-    
-    // import { Test } from 'test';
     
     
     

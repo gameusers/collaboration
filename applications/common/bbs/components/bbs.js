@@ -29,6 +29,7 @@ import Paragraph from '../../layout/components/paragraph';
 import FormPost from '../../form/components/post';
 import ProfileThumbnail from '../../user/components/thumbnail';
 import ProfileName from '../../user/components/name';
+import CommentReply from '../../bbs/components/comment-reply';
 
 
 
@@ -641,7 +642,7 @@ export default class extends React.Component {
     if (props.gameCommunityId) {
       
       // ID
-      this.id = props.gameCommunityId;
+      this.communityId = props.gameCommunityId;
       
       
     // ----------------------------------------
@@ -651,7 +652,7 @@ export default class extends React.Component {
     } else if (props.userCommunityId) {
       
       // ID
-      this.id = props.userCommunityId;
+      this.communityId = props.userCommunityId;
       
       
       if (props.stores.data.userCommunityObj[props.userCommunityId].administratorId === this.loginUserId) {
@@ -662,7 +663,7 @@ export default class extends React.Component {
     
     
     // BBS用データ
-    this.dataObj = props.stores.bbs.dataObj[this.id];
+    this.dataObj = props.stores.bbs.dataObj[this.communityId];
     // console.log(`this.dataObj = ${this.dataObj}`);
     // console.dir(this.dataObj);
     
@@ -711,29 +712,17 @@ export default class extends React.Component {
     const { stores } = this.props;
     
     
-    
-    // const {
-    //   returnPanelExpanded,
-    //   handlePanelExpanded
-    // } = stores.layout;
-    
-    // const returnPanelExpanded = stores.layout.returnPanelExpanded;
-    
     const {
       
       handleThreadDescriptionOpenObj,
       
-      // returnThreadEditFormOpen,
       threadEditFormOpenObj,
       handleThreadEditFormOpenObj,
       
-      // returnUpdateThreadName,
-      // returnUpdateThreadDescription,
-      // updateThreadNameObj,
-      // updateThreadDescriptionObj,
       handleUpdateThreadNameObj,
       handleUpdateThreadDescriptionObj,
       handleUpdateThread
+      
     } = stores.bbs;
     
     
@@ -743,11 +732,9 @@ export default class extends React.Component {
     // console.log(`administrator = ${administrator}`);
     
     
-    
     // --------------------------------------------------
     //   Component - Thread
     // --------------------------------------------------
-    
     
     const componentsBbsArr = [];
     
@@ -760,9 +747,6 @@ export default class extends React.Component {
       
       const updateThreadName = this.updateThreadNameObj[value.id];
       const updateThreadDescription = this.updateThreadDescriptionObj[value.id];
-      
-      // const updateThreadName = stores.bbs.updateThreadNameObj[value.id];
-      // const updateThreadDescription = stores.bbs.updateThreadDescriptionObj[value.id];
       
       
       componentsBbsArr.push(
@@ -883,8 +867,15 @@ export default class extends React.Component {
                 sendButtonLabel="コメントする"
               />
               
+              
+              <CommentReply
+                communityId={this.communityId}
+                threadId={value.id}
+                commentArr={value.commentArr}
+              />
+              
             </ContentsContainer>
-          
+            
           </ContentsExpansionPanelDetails>
           
         </ExpansionPanel>
@@ -893,6 +884,11 @@ export default class extends React.Component {
       
       // console.log(key, value);
     }
+    
+    
+    
+    
+    
     
     
     
@@ -911,7 +907,7 @@ export default class extends React.Component {
         
       
       <ExpansionPanel
-        // expanded={stores.layout.returnPanelExpanded(this.id)}
+        // expanded={stores.layout.returnPanelExpanded(this.communityId)}
         expanded={true}
       >
         
@@ -919,7 +915,7 @@ export default class extends React.Component {
         <TitleExpansionPanelSummary
           expandIcon={
             <IconExpandMore
-              onClick={() => stores.layout.handlePanelExpanded(this.id)}
+              onClick={() => stores.layout.handlePanelExpanded(this.communityId)}
             />
           }
         >
@@ -933,7 +929,7 @@ export default class extends React.Component {
               <TitleInfoAboutBox>
                 <IconAssignmentBbsInfo />
                 <BbsInfoAbout
-                  onClick={() => handleThreadDescriptionOpenObj(this.id)}
+                  onClick={() => handleThreadDescriptionOpenObj(this.communityId)}
                 >
                   スレッドについて
                 </BbsInfoAbout>
@@ -951,7 +947,7 @@ export default class extends React.Component {
             </TitleInfoBox>
             
             
-            { stores.bbs.threadDescriptionOpenObj[this.id] &&
+            { stores.bbs.threadDescriptionOpenObj[this.communityId] &&
               <TitleDescriptionBox>
                 <p>仲良く雑談しませんか？</p>
                 <p>ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。</p>

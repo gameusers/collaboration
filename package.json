@@ -31,7 +31,7 @@
     "isomorphic-unfetch": "^2.1.1",
     "jss": "^9.8.7",
     "mobx": "^5.0.3",
-    "mobx-react": "^5.2.3",
+    "mobx-react": "^5.2.5",
     "moment": "^2.22.2",
     "mongo-express": "^0.47.0",
     "mongoose": "^5.2.7",

@@ -42,29 +42,6 @@ moment.locale('ja');
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Contents
-// ---------------------------------------------
-
-const ContentsExpansionPanelDetails = styled(ExpansionPanelDetails)`
-  && {
-    // display: inline;
-    // margin: 0;
-    // padding: 0 0 16px 0;
-    
-    @media screen and (max-width: 480px) {
-      padding: 0 16px 24px 16px;
-    }
-  }
-`;
-
-const ContentsContainer = styled.div`
-  margin: 0;
-  // padding: 0 16px;
-`;
-
-
-
-// ---------------------------------------------
 //   Comments & Replies
 // ---------------------------------------------
 
@@ -131,6 +108,11 @@ const CommentBox = styled.div`
   font-size: 14px;
   line-height: 1.6em;
   margin: 0;
+  padding: 0;
+`;
+
+const ReplyFormBox = styled.div`
+  margin: 14px 0 0 0;
   padding: 0;
 `;
 
@@ -465,6 +447,13 @@ export default class extends React.Component {
     // Comment Good
     this.handleCommentGood = props.stores.bbs.handleCommentGood;
     
+    // Reply Form Open
+    this.replyFormOpenObj = props.stores.bbs.replyFormOpenObj;
+    this.handleReplyFormOpenObj = props.stores.bbs.handleReplyFormOpenObj;
+    
+    // Comment Edit Form Open
+    this.commentEditFormOpenObj = props.stores.bbs.commentEditFormOpenObj;
+    this.handleCommentEditFormOpenObj = props.stores.bbs.handleCommentEditFormOpenObj;
     
   }
   
@@ -503,8 +492,8 @@ export default class extends React.Component {
     
     for (const [index, value] of commentArr.entries()) {
       
-      console.log(`value.userId = ${value.userId}`);
-      console.log(`value.updatedDate = ${value.updatedDate}`);
+      // console.log(`value.userId = ${value.userId}`);
+      // console.log(`value.updatedDate = ${value.updatedDate}`);
       
       
       // User Level
@@ -516,79 +505,149 @@ export default class extends React.Component {
       const datetimeFrom = datetimeUpdated.from(datetimeNow);
       
       
+      // Reply Form Open
+      let replyFormOpen = false;
+      
+      if (value.id in this.replyFormOpenObj) {
+        replyFormOpen = this.replyFormOpenObj[value.id];
+      }
+      
+      // Comment Edit Form Open
+      let commentEditFormOpen = false;
+      
+      if (value.id in this.commentEditFormOpenObj) {
+        commentEditFormOpen = this.commentEditFormOpenObj[value.id];
+      }
+      
+      
+      
+      
       componentsCommentArr.push(
+        
         <CommentsRepliesContainer key={index}>
           
-          {/* Comment */}
-          <CommentContainer>
-            
-            <CommentLeftBox>
-              <CommentThumbnailBox>
-                <UserThumbnail id={value.userId} />
-              </CommentThumbnailBox>
+          { commentEditFormOpen === false ? (
+          
+            <React.Fragment>
+          
+              {/* Comment */}
+              <CommentContainer>
+                
+                <CommentLeftBox>
+                  <CommentThumbnailBox>
+                    <UserThumbnail id={value.userId} />
+                  </CommentThumbnailBox>
+                  
+                  { userLevel &&
+                    <CommentLevelBox>Lv.{userLevel}</CommentLevelBox>
+                  }
+                  
+                  <CommentLine />
+                </CommentLeftBox>
+                
+                
+                <CommentRightBox>
+                
+                  <UserNameBox>
+                    <UserName id={value.userId} />
+                  </UserNameBox>
+                  
+                  
+                  <CommentBox>
+                    <Paragraph text={value.comment} />
+                  </CommentBox>
+                  
+                  
+                  <UpdatedDateBox>
+                    <UpdatedDateIconUpdate />
+                    <UpdatedDate>{datetimeFrom}</UpdatedDate>
+                  </UpdatedDateBox>
+                  
+                  
+                  <BottomNavBox>
+                    
+                    <BottomNavButtonsBox>
+                      
+                      <BottomNavThumbUpButton
+                        variant="outlined"
+                        onClick={() => this.handleCommentGood(this.communityId, this.threadId, value.id)}
+                      >
+                        <BottomNavIconThumbUp />
+                        {value.good}
+                      </BottomNavThumbUpButton>
+                      
+                      <BottomNavButton
+                        variant="outlined"
+                        onClick={() => this.handleReplyFormOpenObj(value.id)}
+                      >
+                        <BottomNavIconReply />
+                        返信
+                      </BottomNavButton>
+                      
+                      <BottomNavButton
+                        variant="outlined"
+                        onClick={() => this.handleCommentEditFormOpenObj(value.id)}
+                      >
+                        <BottomNavIconEdit />
+                        編集
+                      </BottomNavButton>
+                      
+                      <BottomNavIdBox>
+                        <BottomNavIconPublic />
+                        <BottomNavId>{value.id}</BottomNavId>
+                      </BottomNavIdBox>
+                      
+                    </BottomNavButtonsBox>
+                    
+                  </BottomNavBox>
+                  
+                </CommentRightBox>
+                
+              </CommentContainer>
               
-              { userLevel &&
-                <CommentLevelBox>Lv.{userLevel}</CommentLevelBox>
+              
+              { replyFormOpen &&
+                
+                <ReplyFormBox>
+                  
+                  <FormPost
+                    id={`${value.id}-reply`}
+                    name=""
+                    text=""
+                    sendButtonLabel1="返信する"
+                    sendButtonLabel2="閉じる"
+                    sendButtonHandle2={() => this.handleReplyFormOpenObj(value.id)}
+                  />
+                  
+                </ReplyFormBox>
+                
               }
               
-              <CommentLine />
-            </CommentLeftBox>
+            </React.Fragment>
+          
+          ) : (
             
+            <FormPost
+              id={`${value.id}-edit`}
+              name={value.name}
+              text={value.comment}
+              sendButtonLabel1="編集する"
+              sendButtonLabel2="閉じる"
+              sendButtonHandle2={() => this.handleCommentEditFormOpenObj(value.id)}
+            />
             
-            <CommentRightBox>
-            
-              <UserNameBox>
-                <UserName id={value.userId} />
-              </UserNameBox>
-              
-              
-              <CommentBox>
-                <Paragraph text={value.comment} />
-              </CommentBox>
-              
-              
-              <UpdatedDateBox>
-                <UpdatedDateIconUpdate />
-                <UpdatedDate>{datetimeFrom}</UpdatedDate>
-              </UpdatedDateBox>
-              
-              
-              <BottomNavBox>
-                
-                <BottomNavButtonsBox>
-                  
-                  <BottomNavThumbUpButton
-                    variant="outlined"
-                    onClick={() => this.handleCommentGood(this.communityId, this.threadId, value.id)}
-                  >
-                    <BottomNavIconThumbUp />
-                    {value.good}
-                  </BottomNavThumbUpButton>
-                  
-                  <BottomNavButton variant="outlined">
-                    <BottomNavIconReply />
-                    返信
-                  </BottomNavButton>
-                  
-                  <BottomNavButton variant="outlined">
-                    <BottomNavIconEdit />
-                    編集
-                  </BottomNavButton>
-                  
-                  <BottomNavIdBox>
-                    <BottomNavIconPublic />
-                    <BottomNavId>{value.id}</BottomNavId>
-                  </BottomNavIdBox>
-                  
-                </BottomNavButtonsBox>
-                
-              </BottomNavBox>
-              
-            </CommentRightBox>
-            
-          </CommentContainer>
+          )}
           
         </CommentsRepliesContainer>
+        
+        
+          
+        
+        
+        
+        
+        
+        
         
       );
       // console.log(index, value);

@@ -139,6 +139,46 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   Reply Form
+  // ---------------------------------------------
+  
+  @observable replyFormOpenObj = {};
+  
+  
+  // ----------------------------------------
+  //   - Handle
+  // ----------------------------------------
+  
+  @action.bound
+  handleReplyFormOpenObj(id) {
+    console.log(`id = ${id}`);
+    console.log(`handleReplyFormOpenObj`);
+    this.replyFormOpenObj[id] = !this.replyFormOpenObj[id];
+  };
+  
+  
+  // ---------------------------------------------
+  //   Reply Form
+  // ---------------------------------------------
+  
+  @observable commentEditFormOpenObj = {};
+  
+  
+  // ----------------------------------------
+  //   - Handle
+  // ----------------------------------------
+  
+  @action.bound
+  handleCommentEditFormOpenObj(id) {
+    console.log(`id = ${id}`);
+    console.log(`handleCommentEditFormOpenObj`);
+    this.commentEditFormOpenObj[id] = !this.commentEditFormOpenObj[id];
+  };
+  
+  
+  
+  
   
   // ---------------------------------------------
   //   BBS データ

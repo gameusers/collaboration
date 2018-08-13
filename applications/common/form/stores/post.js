@@ -29,11 +29,35 @@ class Store {
   @action.bound
   handleAnonymityChecked(id) {
     this.anonymityCheckedObj[id] = !this.anonymityCheckedObj[id];
-    
-    // console.log(`id = ${id}`);
-    // console.log(`this.anonymityCheckedObj[id] = ${this.anonymityCheckedObj[id]}`);
-    // console.dir(`this.anonymityCheckedObj = ${this.anonymityCheckedObj}`);
   };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Name
+  // ---------------------------------------------
+  
+  @observable nameObj = {};
+  
+  @action.bound
+  handleNameObj(event, id) {
+    this.nameObj[id] = event.target.value;
+  };
+  
+  
+  // ---------------------------------------------
+  //   Textarea
+  // ---------------------------------------------
+  
+  @observable textObj = {};
+  
+  @action.bound
+  handleTextObj(event, id) {
+    this.textObj[id] = event.target.value;
+  };
+  
+  
   
   
   
@@ -378,6 +402,35 @@ class Store {
   //     videoId: '1yIHLQJNvDw'
   //   },
   // ];
+  
+  
+  
+  // ----------------------------------------
+  //   Initialize Form Post
+  // ----------------------------------------
+  
+  @action.bound
+  initializeFormPost(argumentsObj) {
+    
+    const id = argumentsObj.id ? argumentsObj.id : '';
+    const name = argumentsObj.name ? argumentsObj.name : '';
+    const text = argumentsObj.text ? argumentsObj.text : '';
+    
+    // Name
+    if (id in this.nameObj === false) {
+      this.nameObj[id] = name;
+    }
+    
+    // Text
+    if (id in this.textObj === false) {
+      this.textObj[id] = text;
+    }
+    
+    console.log(`initializeFormPost`);
+    console.log(`id = ${id}`);
+    
+  }
+  
   
 }
 

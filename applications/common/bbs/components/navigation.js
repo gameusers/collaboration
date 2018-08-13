@@ -16,6 +16,7 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -140,12 +141,28 @@ const ThreadListTableCell = styled(TableCell)`
 //   Create Thread
 // --------------------------------------------------
 
-const CreateThreadTabBox = styled.div`
-  width: 100%;
-  margin: 0;
-  padding: 22px 24px 20px 24px;
+// const CreateThreadTabBox = styled.div`
+//   && {
+//     width: 100%;
+//     // padding: 22px 14px 20px 14px;
+//   }
+
+//   // width: 100%;
+//   // margin: 0;
+//   // padding: 22px 14px 20px 14px;
+//   // margin: 0 14px 0 0;
+//   // background-color: pink;
+// `;
+
+const CreateThreadTabTypography = styled(Typography)`
+  // width: 100%;
+  // margin: 0;
+  padding: 22px 16px 16px 16px;
+  // margin: 0 14px 0 0;
   // background-color: pink;
 `;
+
+
 
 const CreateThreadNameTextField = styled(TextField)`
   && {
@@ -153,7 +170,7 @@ const CreateThreadNameTextField = styled(TextField)`
     margin: 0 0 4px 0;
     
     @media screen and (max-width: 480px) {
-      width: 88%;
+      width: 100%;
       // min-width: 100%;
     }
   }
@@ -174,7 +191,7 @@ const CreateThreadTextareaAutosize = styled(TextareaAutosize)`
     }
     
     @media screen and (max-width: 480px) {
-      width: 88%;
+      width: 100%;
       max-width: auto;
       resize: none;
     }
@@ -190,10 +207,14 @@ const CreateThreadButtonBox = styled.div`
 //   Search
 // --------------------------------------------------
 
-const SearchTabBox = styled.div`
-  width: 100%;
-  margin: 0;
-  padding: 22px 24px 16px;
+// const SearchTabBox = styled.div`
+//   width: 100%;
+//   margin: 0;
+//   padding: 22px 24px 16px;
+// `;
+
+const SearchTabTypography = styled(Typography)`
+  padding: 16px;
 `;
 
 const SearchBox = styled.div`
@@ -528,7 +549,7 @@ export default class extends React.Component {
           
           {/* スレッド作成 */}
           {openedTabNo === 1 &&
-            <CreateThreadTabBox>
+            <CreateThreadTabTypography component="div">
               
               {/* Input Thread Name */}
               <CreateThreadNameTextField
@@ -565,13 +586,13 @@ export default class extends React.Component {
                 </Button>
               </CreateThreadButtonBox>
               
-            </CreateThreadTabBox>
+            </CreateThreadTabTypography>
           }
           
           
           {/* 検索 */}
           {openedTabNo === 2 &&
-            <SearchTabBox>
+            <SearchTabTypography>
               
               {/* 検索フォーム */}
               <SearchBox>
@@ -687,7 +708,7 @@ export default class extends React.Component {
                 検索
               </Button>
               
-            </SearchTabBox>
+            </SearchTabTypography>
           }
           
         </ExpansionPanelDetailsBbsMenu>

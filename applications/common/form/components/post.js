@@ -98,8 +98,9 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     max-width: 600px;
     border-radius: 4px;
     box-sizing: border-box;
-    margin: 10px 0 4px 0;
-    padding: 10px;
+    margin: 10px 0 10px 0;
+    padding: 8px 12px;
+    line-height: 1.6em;
     
     &:focus {
       outline: 1px #A9F5F2 solid;
@@ -107,8 +108,8 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     
     @media screen and (max-width: 480px) {
       width: 100%;
-      resize: none;
       max-width: auto;
+      resize: none;
     }
   }
 `;
@@ -260,7 +261,7 @@ const PreviewVideoPlayButtonImg = styled.img`
 
 const SendButton = styled(Button)`
   && {
-    margin: 18px 0 0 0;
+    margin: 18px 10px 0 0;
   }
 `;
 
@@ -275,7 +276,33 @@ const SendButton = styled(Button)`
 export default class extends React.Component {
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // ---------------------------------------------
+    //   Props
+    // ---------------------------------------------
+    
+    // ID
+    this.id = props.id;
+    
+    // Arguments
+    this.argumentsObj = {
+      
+      id: props.id,
+      name: props.name,
+      text: props.text,
+      
+    };
+    
+    
+    // ---------------------------------------------
+    //   Initialize Store
+    // ---------------------------------------------
+    
+    props.stores.formPost.initializeFormPost(this.argumentsObj);
+    
   }
   
   
@@ -287,10 +314,14 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, id, sendButtonLabel } = this.props;
+    const { stores, id, sendButtonLabel1, sendButtonLabel2, sendButtonHandle2 } = this.props;
     
     const {
       anonymityCheckedObj,
+      nameObj,
+      handleNameObj,
+      textObj,
+      handleTextObj,
       imageFormOpenObj,
       videoFormOpenObj,
       imageCaptionOpenObj,
@@ -303,6 +334,10 @@ export default class extends React.Component {
     const loginUserId = stores.data.loginUserObj.id;
     // console.log(`loginUserId = ${loginUserId}`);
     
+    // console.log(`sendButtonHandle2 = ${sendButtonHandle2}`);
+    
+    
+    
     
     
     // --------------------------------------------------
@@ -313,6 +348,28 @@ export default class extends React.Component {
     
     if (id in anonymityCheckedObj) {
       anonymityChecked = anonymityCheckedObj[id];
+    }
+    
+    
+    // --------------------------------------------------
+    //   Name
+    // --------------------------------------------------
+    
+    let name = '';
+    
+    if (id in nameObj) {
+      name = nameObj[id];
+    }
+    
+    
+    // --------------------------------------------------
+    //   Text
+    // --------------------------------------------------
+    
+    let text = '';
+    
+    if (id in textObj) {
+      text = textObj[id];
     }
     
     
@@ -360,10 +417,16 @@ export default class extends React.Component {
     //   Send Button Label
     // --------------------------------------------------
     
-    let buttonLabel = '送信する';
+    let buttonLabel1 = '送信する';
     
-    if (sendButtonLabel) {
-      buttonLabel = sendButtonLabel;
+    if (sendButtonLabel1) {
+      buttonLabel1 = sendButtonLabel1;
+    }
+    
+    let buttonLabel2 = '送信する';
+    
+    if (sendButtonLabel2) {
+      buttonLabel2 = sendButtonLabel2;
     }
     
     
@@ -445,9 +508,8 @@ export default class extends React.Component {
     
     return (
       <React.Fragment>
-        
+      
         {/* User */}
-        
         {loginUserId ? (
           <UserBox>
             
@@ -489,11 +551,12 @@ export default class extends React.Component {
           <NameTextField
             id="name"
             label="ハンドルネーム（未入力でもOK！）"
+            value={name}
+            onChange={(event) => handleNameObj(event, id)}
             InputLabelProps={{
               shrink: true,
             }}
             placeholder=""
-            // helperText="未入力でもOK！"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -507,7 +570,9 @@ export default class extends React.Component {
         
         {/* Textarea */}
         <StyledTextareaAutosize
-          rows={6}
+          rows={5}
+          value={text}
+          onChange={(event) => handleTextObj(event, id)}
         />
         
         
@@ -636,13 +701,25 @@ export default class extends React.Component {
         }
         
         
-        {/* 送信ボタン */}
+        {/* 送信ボタン1 */}
         <SendButton
           variant="contained"
           color="primary"
         >
-          {buttonLabel}
+          {buttonLabel1}
         </SendButton>
+        
+        
+        {/* 送信ボタン2 */}
+        { (sendButtonLabel2 && sendButtonHandle2) && 
+        <SendButton
+          variant="contained"
+          color="secondary"
+          onClick={() => sendButtonHandle2()}
+        >
+          {buttonLabel2}
+        </SendButton>
+        }
         
       </React.Fragment>
     );

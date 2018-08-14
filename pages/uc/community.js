@@ -135,6 +135,58 @@ class Component extends React.Component {
             status: '',
             comment: '非常に引き込まれるものがありました。\nジョディのスタンド、エイデンはめちゃくちゃ強いですね。\n僕が知っているジョジョ4部までに出てきたスタンドで\nエイデンに勝てそうなのは\nスタープラチナとザ・ワールド、ヴァニラ・アイスのスタンドくらいですね。\n半径10メートル以内の人間を窒息死させたり\n意のままに操れたりするのはやばすぎます。',
             updatedDate: '2018-08-11T06:50:00Z',
+            lightboxArr: [
+              {
+                src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+                caption: 'Caption 1',
+                srcSet: [
+                  'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+                  'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+                ],
+              },
+              {
+                src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
+                caption: 'Caption 2',
+                srcSet: [
+                  'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
+                  'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
+                ],
+              },
+              {
+                src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
+                caption: '',
+                srcSet: [
+                  'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 320w',
+                  'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 640w',
+                ],
+              },
+            ],
+            imageVideoArr: [
+              {
+                id: 'FK_8mRwTa18',
+                imageSrc: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+                imageWidth: 640,
+                imageHeight: 360,
+                videoChannel: '',
+                videoId: '',
+              },
+              {
+                id: 'Ztz0PgAXUgG',
+                imageSrc: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
+                imageWidth: 187,
+                imageHeight: 293,
+                videoChannel: '',
+                videoId: '',
+              },
+              {
+                id: '9R0YsovoSSp',
+                imageSrc: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
+                imageWidth: 879,
+                imageHeight: 682,
+                videoChannel: '',
+                videoId: '',
+              }
+            ],
             good: 5000,
             page: 1,
             replyTotal: 2,

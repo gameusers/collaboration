@@ -612,8 +612,6 @@ export default class extends React.Component {
                   
                   <FormPost
                     id={`${value.id}-reply`}
-                    name=""
-                    text=""
                     sendButtonLabel1="返信する"
                     sendButtonLabel2="閉じる"
                     sendButtonHandle2={() => this.handleReplyFormOpenObj(value.id)}
@@ -631,6 +629,8 @@ export default class extends React.Component {
               id={`${value.id}-edit`}
               name={value.name}
               text={value.comment}
+              lightboxArr={value.lightboxArr}
+              imageVideoArr={value.imageVideoArr}
               sendButtonLabel1="編集する"
               sendButtonLabel2="閉じる"
               sendButtonHandle2={() => this.handleCommentEditFormOpenObj(value.id)}

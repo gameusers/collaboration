@@ -6,6 +6,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
+import Lightbox from 'react-images';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -35,13 +36,12 @@ import UserName from '../../user/components/name';
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   BBS
+//   User
 // ---------------------------------------------
 
 const UserBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  // align-items: flex-start;
   margin: 0;
   padding: 0;
   // background-color: pink;
@@ -50,12 +50,9 @@ const UserBox = styled.div`
 const UserThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  // align-items: stretch;
   margin: 3px 0 0 0;
   // background-color: blue;
 `;
-
-
 
 const UserInfoBox = styled.div`
   display: flex;
@@ -72,13 +69,16 @@ const UserNameBox = styled.div`
   padding: 0;
 `;
 
-
 const UserCheckbox = styled(Checkbox)`
   && {
     height: auto;
   }
 `;
 
+
+// ---------------------------------------------
+//   Input Name
+// ---------------------------------------------
 
 const NameTextField = styled(TextField)`
   && {
@@ -91,6 +91,10 @@ const NameTextField = styled(TextField)`
   }
 `;
 
+
+// ---------------------------------------------
+//   Textarea
+// ---------------------------------------------
 
 const StyledTextareaAutosize = styled(TextareaAutosize)`
   && {
@@ -113,6 +117,16 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     }
   }
 `;
+
+
+
+// ---------------------------------------------
+//   Image Video Form
+// ---------------------------------------------
+
+// ----------------------------------------
+//   - Image
+// ----------------------------------------
 
 const ImageVideoButtonsBox = styled.div`
   display: flex;
@@ -182,6 +196,10 @@ const ImageCaptionDescription = styled.p`
 `;
 
 
+// ----------------------------------------
+//   - Video
+// ----------------------------------------
+
 const VideoBox = styled.div`
   margin: 10px 0 0 0;
   padding: 0;
@@ -209,15 +227,18 @@ const VideoTextField = styled(TextField)`
 
 
 
+// ---------------------------------------------
+//   Image Video Preview
+// ---------------------------------------------
 
-const ImageVideoPreviewContainer = styled.div`
+const PreviewContainer = styled.div`
   display: flex;
   flex-flow: row wrap;
   margin: 10px 0 0 0;
   padding: 0;
 `;
 
-const ImageVideoPreviewBox = styled.div`
+const PreviewBox = styled.div`
   position: relative;
   margin: 10px 12px 0 0;
   padding: 0;
@@ -293,8 +314,11 @@ export default class extends React.Component {
       id: props.id,
       name: props.name,
       text: props.text,
+      lightboxArr: props.lightboxArr,
+      imageVideoArr: props.imageVideoArr,
       
     };
+    
     
     
     // ---------------------------------------------
@@ -450,7 +474,7 @@ export default class extends React.Component {
         if (value.imageSrc) {
           
           codePreviewArr.push(
-            <ImageVideoPreviewBox key={index}>
+            <PreviewBox key={index}>
               <PreviewImg
                 src={value.imageSrc}
                 onClick={() => stores.layout.handleLightboxOpen(id, index)}
@@ -463,7 +487,7 @@ export default class extends React.Component {
               >
                 <IconClose />
               </PreviewDeleteButton>
-            </ImageVideoPreviewBox>
+            </PreviewBox>
           );
         
         
@@ -474,7 +498,7 @@ export default class extends React.Component {
         } else {
           
           codePreviewArr.push(
-            <ImageVideoPreviewBox key={index}>
+            <PreviewBox key={index}>
               <PreviewImg
                 src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
                 onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
@@ -491,7 +515,7 @@ export default class extends React.Component {
               >
                 <IconClose />
               </PreviewDeleteButton>
-            </ImageVideoPreviewBox>
+            </PreviewBox>
           );
           
         }
@@ -695,9 +719,24 @@ export default class extends React.Component {
         
         {/* 画像と動画のプレビュー */}
         {codePreviewArr.length > 0 &&
-          <ImageVideoPreviewContainer>
-            {codePreviewArr}
-          </ImageVideoPreviewContainer>
+          <React.Fragment>
+        
+            <PreviewContainer>
+              {codePreviewArr}
+            </PreviewContainer>
+            
+            <Lightbox
+              // images={stores.layout.lightboxImagesObj[stores.layout.lightboxImagesId]}
+              // currentImage={stores.layout.lightboxCurrentNo}
+              // isOpen={stores.layout.lightboxOpen}
+              // onClickPrev={stores.layout.handleLightboxPreviousCurrentNo}
+              // onClickNext={stores.layout.handleLightboxNextCurrentNo}
+              // onClose={stores.layout.handleLightboxClose}
+              backdropClosesModal
+              preloadNextImage={false}
+            />
+          
+          </React.Fragment>
         }
         
         

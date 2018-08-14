@@ -383,7 +383,7 @@ class Store {
   // ---------------------------------------------
   
   @observable previewObj = {};
-  @observable previewArr = [];
+  // @observable previewArr = [];
   
   // @observable previewArr = [
   //   {
@@ -415,6 +415,7 @@ class Store {
     const id = argumentsObj.id ? argumentsObj.id : '';
     const name = argumentsObj.name ? argumentsObj.name : '';
     const text = argumentsObj.text ? argumentsObj.text : '';
+    const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr : [];
     
     // Name
     if (id in this.nameObj === false) {
@@ -424,6 +425,11 @@ class Store {
     // Text
     if (id in this.textObj === false) {
       this.textObj[id] = text;
+    }
+    
+    // Image & Video Preview
+    if (id in this.previewObj === false) {
+      this.previewObj[id] = imageVideoArr;
     }
     
     console.log(`initializeFormPost`);

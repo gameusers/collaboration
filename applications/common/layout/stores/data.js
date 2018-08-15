@@ -9,7 +9,7 @@ import { action, observable } from 'mobx';
 //   Store
 // --------------------------------------------------
 
-let storeIndex = null;
+let storeData = null;
 let storeLayout = null;
 
 
@@ -82,11 +82,11 @@ export default function initStoreData(argumentsObj) {
     
   } else {
     
-    if (storeIndex === null) {
-      storeIndex = new Store();
+    if (storeData === null) {
+      storeData = new Store();
     }
     
-    return storeIndex;
+    return storeData;
     
   }
   

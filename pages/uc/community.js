@@ -137,6 +137,7 @@ class Component extends React.Component {
             updatedDate: '2018-08-11T06:50:00Z',
             lightboxArr: [
               {
+                id: 'FK_8mRwTa18',
                 src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
                 caption: 'Caption 1',
                 srcSet: [
@@ -145,6 +146,7 @@ class Component extends React.Component {
                 ],
               },
               {
+                id: 'Ztz0PgAXUgG',
                 src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
                 caption: 'Caption 2',
                 srcSet: [
@@ -153,6 +155,7 @@ class Component extends React.Component {
                 ],
               },
               {
+                id: '9R0YsovoSSp',
                 src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
                 caption: '',
                 srcSet: [

@@ -865,7 +865,7 @@ export default class extends React.Component {
               {/* Form Post Comment */}
               <FormPost
                 id={`${value.id}-comment`}
-                sendButtonLabel="コメントする"
+                buttonLabel1="コメントする"
               />
               
               
@@ -976,7 +976,7 @@ export default class extends React.Component {
             {/* Form Post Comment */}
             <FormPost
               id="ks8WPvlQpbg-comment2"
-              sendButtonLabel="コメントする"
+              buttonLabel="コメントする"
             />
             
             

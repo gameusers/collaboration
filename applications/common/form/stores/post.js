@@ -32,8 +32,6 @@ class Store {
   };
   
   
-  
-  
   // ---------------------------------------------
   //   Name
   // ---------------------------------------------
@@ -41,7 +39,7 @@ class Store {
   @observable nameObj = {};
   
   @action.bound
-  handleNameObj(event, id) {
+  handleName(event, id) {
     this.nameObj[id] = event.target.value;
   };
   
@@ -53,7 +51,7 @@ class Store {
   @observable textObj = {};
   
   @action.bound
-  handleTextObj(event, id) {
+  handleText(event, id) {
     this.textObj[id] = event.target.value;
   };
   
@@ -79,6 +77,8 @@ class Store {
     this.videoFormOpenObj[id] = !this.videoFormOpenObj[id];
     this.imageFormOpenObj[id] = false;
   };
+  
+  
   
   
   
@@ -181,10 +181,10 @@ class Store {
     //  Preview Arr
     // ---------------------------------------------
     
-    let previewArr = [];
+    let imageVideoArr = [];
     
-    if (id in this.previewObj) {
-      previewArr = this.previewObj[id];
+    if (id in this.imageVideoObj) {
+      imageVideoArr = this.imageVideoObj[id];
     }
     
     
@@ -192,7 +192,7 @@ class Store {
     //   重複のチェック
     // ---------------------------------------------
     
-    const duplication = previewArr.find((value) => {
+    const duplication = imageVideoArr.find((value) => {
       return (value.imageSrc === this.imageSrcObj[id]);
     });
     
@@ -216,13 +216,13 @@ class Store {
       
     } else {
       
-      previewArr.push({
+      imageVideoArr.push({
         imageSrc: this.imageSrcObj[id],
         videoChannel: '',
         videoId: '',
       });
       
-      this.previewObj[id] = previewArr;
+      this.imageVideoObj[id] = imageVideoArr;
       
       
       // Lightbox 用に画像を追加
@@ -258,6 +258,8 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
   //   Video Form
   // ---------------------------------------------
@@ -275,13 +277,13 @@ class Store {
     
     
     // ---------------------------------------------
-    //  Preview Arr
+    //  Image & Video Arr
     // ---------------------------------------------
     
-    let previewArr = [];
+    let imageVideoArr = [];
     
-    if (id in this.previewObj) {
-      previewArr = this.previewObj[id];
+    if (id in this.imageVideoObj) {
+      imageVideoArr = this.imageVideoObj[id];
     }
     
     
@@ -323,7 +325,7 @@ class Store {
       //   重複のチェック
       // ---------------------------------------------
       
-      const duplication = previewArr.find((value) => {
+      const duplication = imageVideoArr.find((value) => {
         return (value.videoId === videoId);
       });
       
@@ -341,13 +343,13 @@ class Store {
         
       } else {
         
-        previewArr.push({
+        imageVideoArr.push({
           imageSrc: '',
           videoChannel,
           videoId,
         });
         
-        this.previewObj[id] = previewArr;
+        this.imageVideoObj[id] = imageVideoArr;
         this.videoUrlObj[id] = '';
         
       }
@@ -363,45 +365,80 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
-  //   Preview Delete
+  //   Image & Video
+  // ---------------------------------------------
+  
+  @observable imageVideoObj = {};
+  
+  
+  // ---------------------------------------------
+  //   - Handle
   // ---------------------------------------------
   
   @action.bound
-  handlePreviewDelete(id, index) {
+  handleImageVideoDelete(id, index) {
     // console.log(`id = ${id}`);
     // console.log(`index = ${index}`);
-    // console.log(`this.previewObj[id] = ${this.previewObj[id]}`);
-    this.previewObj[id].splice(index, 1);
-    storeLayout.handleLightboxDeleteImage(id, index);
+    // console.log(`this.imageVideoObj[id] = ${this.imageVideoObj[id]}`);
+    
+    const deleteId = this.imageVideoObj[id][index].id;
+    
+    const deleteIndex = this.lightboxObj[id].findIndex((value) => {
+      return value.id === deleteId;
+    });
+    
+    // console.log(`deleteId = ${deleteId}`);
+    // console.log(`deleteIndex = ${deleteIndex}`);
+    
+    
+    this.imageVideoObj[id].splice(index, 1);
+    
+    if (deleteIndex !== -1) {
+      this.lightboxObj[id].splice(deleteIndex, 1);
+    }
+    
+  };
+  
+
+  
+  
+  
+  // ---------------------------------------------
+  //   Lightbox
+  // ---------------------------------------------
+  
+  @observable lightboxObj = {};
+  @observable lightboxCurrentNoObj = {};
+  @observable lightboxOpenObj = {};
+  
+  @action.bound
+  handleLightboxOpen(id, currentNo) {
+    // console.log(`handleLightboxOpen`);
+    // console.log(`id = ${id}`);
+    // console.log(`currentNo = ${currentNo}`);
+    this.lightboxCurrentNoObj[id] = currentNo;
+    this.lightboxOpenObj[id] = true;
+  };
+  
+  @action.bound
+  handleLightboxClose(id) {
+    this.lightboxOpenObj[id] = false;
+  };
+  
+  @action.bound
+  handleLightboxPrevious(id) {
+    this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] - 1;
+  };
+  
+  @action.bound
+  handleLightboxNext(id) {
+    this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] + 1;
   };
   
   
-  
-  // ---------------------------------------------
-  //   Preview
-  // ---------------------------------------------
-  
-  @observable previewObj = {};
-  // @observable previewArr = [];
-  
-  // @observable previewArr = [
-  //   {
-  //     imageSrc: 'https://gameusers.org/assets/img/bbs_uc/comment/1199/image_1.jpg',
-  //     videoChannel: '',
-  //     videoId: ''
-  //   },
-  //   {
-  //     imageSrc: 'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg',
-  //     videoChannel: '',
-  //     videoId: ''
-  //   },
-  //   {
-  //     imageSrc: '',
-  //     videoChannel: 'youtube',
-  //     videoId: '1yIHLQJNvDw'
-  //   },
-  // ];
   
   
   
@@ -416,6 +453,14 @@ class Store {
     const name = argumentsObj.name ? argumentsObj.name : '';
     const text = argumentsObj.text ? argumentsObj.text : '';
     const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr : [];
+    const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
+    
+    
+    
+    // Anonymity
+    if (id in this.anonymityCheckedObj === false) {
+      this.anonymityCheckedObj[id] = false;
+    }
     
     // Name
     if (id in this.nameObj === false) {
@@ -427,13 +472,61 @@ class Store {
       this.textObj[id] = text;
     }
     
-    // Image & Video Preview
-    if (id in this.previewObj === false) {
-      this.previewObj[id] = imageVideoArr;
+    
+    
+    // Image Form Open
+    if (id in this.imageFormOpenObj === false) {
+      this.imageFormOpenObj[id] = false;
     }
     
-    console.log(`initializeFormPost`);
-    console.log(`id = ${id}`);
+    // Video Form Open
+    if (id in this.videoFormOpenObj === false) {
+      this.videoFormOpenObj[id] = false;
+    }
+    
+    
+    
+    // Image Caption Open
+    if (id in this.imageCaptionOpenObj === false) {
+      this.imageCaptionOpenObj[id] = false;
+    }
+    
+    // Image Caption
+    if (id in this.imageCaptionObj === false) {
+      this.imageCaptionObj[id] = '';
+    }
+    
+    // Video URL
+    if (id in this.videoUrlObj === false) {
+      this.videoUrlObj[id] = '';
+    }
+    
+    
+    
+    // Image & Video Thumbnail
+    if (id in this.imageVideoObj === false) {
+      this.imageVideoObj[id] = imageVideoArr;
+    }
+    
+    
+    
+    // Lightbox
+    if (id in this.lightboxObj === false) {
+      this.lightboxObj[id] = lightboxArr;
+    }
+    
+    if (id in this.lightboxCurrentNoObj === false) {
+      this.lightboxCurrentNoObj[id] = 0;
+    }
+    
+    if (id in this.lightboxOpenObj === false) {
+      this.lightboxOpenObj[id] = false;
+    }
+    
+    
+    
+    // console.log(`initializeFormPost`);
+    // console.log(`id = ${id}`);
     
   }
   
@@ -446,7 +539,6 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-// export default function initStoreFormPost(isServer, storeInstanceObj) {
 export default function initStoreFormPost(argumentsObj) {
   
   const isServer = argumentsObj.isServer;

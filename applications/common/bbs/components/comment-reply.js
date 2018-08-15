@@ -612,9 +612,9 @@ export default class extends React.Component {
                   
                   <FormPost
                     id={`${value.id}-reply`}
-                    sendButtonLabel1="返信する"
-                    sendButtonLabel2="閉じる"
-                    sendButtonHandle2={() => this.handleReplyFormOpenObj(value.id)}
+                    buttonLabel1="返信する"
+                    buttonLabel2="閉じる"
+                    buttonHandle2={() => this.handleReplyFormOpenObj(value.id)}
                   />
                   
                 </ReplyFormBox>
@@ -629,11 +629,11 @@ export default class extends React.Component {
               id={`${value.id}-edit`}
               name={value.name}
               text={value.comment}
-              lightboxArr={value.lightboxArr}
               imageVideoArr={value.imageVideoArr}
-              sendButtonLabel1="編集する"
-              sendButtonLabel2="閉じる"
-              sendButtonHandle2={() => this.handleCommentEditFormOpenObj(value.id)}
+              lightboxArr={value.lightboxArr}
+              buttonLabel1="編集する"
+              buttonLabel2="閉じる"
+              buttonHandle2={() => this.handleCommentEditFormOpenObj(value.id)}
             />
             
           )}

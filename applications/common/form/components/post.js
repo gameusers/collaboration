@@ -306,7 +306,7 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     // ID
-    this.id = props.id;
+    // this.id = props.id;
     
     // Arguments
     this.argumentsObj = {
@@ -318,7 +318,6 @@ export default class extends React.Component {
       imageVideoArr: props.imageVideoArr,
       
     };
-    
     
     
     // ---------------------------------------------
@@ -338,134 +337,98 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, id, sendButtonLabel1, sendButtonLabel2, sendButtonHandle2 } = this.props;
+    const { stores, id, buttonLabel1, buttonHandle1, buttonLabel2, buttonHandle2 } = this.props;
+    
+    
+    // ---------------------------------------------
+    //   Handle
+    // ---------------------------------------------
     
     const {
-      anonymityCheckedObj,
-      nameObj,
-      handleNameObj,
-      textObj,
-      handleTextObj,
-      imageFormOpenObj,
-      videoFormOpenObj,
-      imageCaptionOpenObj,
-      imageCaptionObj,
-      videoUrlObj
+      
+      handleAnonymityChecked,
+      handleName,
+      handleText,
+      handleImageFormOpen,
+      handleVideoFormOpen,
+      handleSelectImage,
+      handleAddImage,
+      handleImageCaptionOpen,
+      handleImageCaption,
+      handleVideoUrl,
+      handleAddVideo,
+      handleImageVideoDelete,
+      handleLightboxOpen,
+      handleLightboxClose,
+      handleLightboxPrevious,
+      handleLightboxNext
+      
     } = this.props.stores.formPost;
     
-    const previewObj = stores.formPost.previewObj[id];
+    
+    // ---------------------------------------------
+    //   Login User ID
+    // ---------------------------------------------
     
     const loginUserId = stores.data.loginUserObj.id;
-    // console.log(`loginUserId = ${loginUserId}`);
-    
-    // console.log(`sendButtonHandle2 = ${sendButtonHandle2}`);
-    
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Anonymity Checked
-    // --------------------------------------------------
-    
-    let anonymityChecked = false;
-    
-    if (id in anonymityCheckedObj) {
-      anonymityChecked = anonymityCheckedObj[id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   Name
-    // --------------------------------------------------
-    
-    let name = '';
-    
-    if (id in nameObj) {
-      name = nameObj[id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   Text
-    // --------------------------------------------------
-    
-    let text = '';
-    
-    if (id in textObj) {
-      text = textObj[id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   Open Image Form & Video Form
-    // --------------------------------------------------
-    
-    let imageFormOpen = false;
-    
-    if (id in imageFormOpenObj) {
-      imageFormOpen = imageFormOpenObj[id];
-    }
-    
-    let videoFormOpen = false;
-    
-    if (id in videoFormOpenObj) {
-      videoFormOpen = videoFormOpenObj[id];
-    }
     
     
     // ---------------------------------------------
-    //   - Caption
+    //   Form
     // ---------------------------------------------
     
-    let imageCaptionOpen = false;
+    const anonymityChecked = stores.formPost.anonymityCheckedObj[id];
+    const name = stores.formPost.nameObj[id];
+    const text = stores.formPost.textObj[id];
+    const imageFormOpen = stores.formPost.imageFormOpenObj[id];
+    const videoFormOpen = stores.formPost.videoFormOpenObj[id];
+    const imageCaptionOpen = stores.formPost.imageCaptionOpenObj[id];
+    const imageCaption = stores.formPost.imageCaptionObj[id];
+    const videoUrl = stores.formPost.videoUrlObj[id];
     
-    if (id in imageCaptionOpenObj) {
-      imageCaptionOpen = imageCaptionOpenObj[id];
-    }
     
-    let imageCaption = '';
+    // ---------------------------------------------
+    //   Image & Video
+    // ---------------------------------------------
     
-    if (id in imageCaptionObj) {
-      imageCaption = imageCaptionObj[id];
-    }
+    const imageVideoArr = stores.formPost.imageVideoObj[id];
     
-    let videoUrl = '';
     
-    if (id in videoUrlObj) {
-      videoUrl = videoUrlObj[id];
-    }
+    // ---------------------------------------------
+    //   Lightbox
+    // ---------------------------------------------
+    
+    const lightboxArr = stores.formPost.lightboxObj[id];
+    const lightboxCurrentNo = stores.formPost.lightboxCurrentNoObj[id];
+    const lightboxOpen = stores.formPost.lightboxOpenObj[id];
+    // const handleLightboxOpen = stores.formPost.handleLightboxOpen;
+    // const handleLightboxClose = stores.formPost.handleLightboxClose;
+    // const handleLightboxPrevious = stores.formPost.handleLightboxPrevious;
+    // const handleLightboxNext = stores.formPost.handleLightboxNext;
     
     
     // --------------------------------------------------
     //   Send Button Label
     // --------------------------------------------------
     
-    let buttonLabel1 = '送信する';
-    
-    if (sendButtonLabel1) {
-      buttonLabel1 = sendButtonLabel1;
-    }
-    
-    let buttonLabel2 = '送信する';
-    
-    if (sendButtonLabel2) {
-      buttonLabel2 = sendButtonLabel2;
-    }
+    const sendButtonLabel1 = buttonLabel1 ? buttonLabel1 : '送信する';
+    const sendButtonLabel2 = buttonLabel2 ? buttonLabel2 : '送信する';
     
     
     
     
     // --------------------------------------------------
-    //   Preview
+    //   Component - Image & Video Thumbnail
     // --------------------------------------------------
     
-    const codePreviewArr = [];
+    const componentImageVideoArr = [];
     
-    if (previewObj && previewObj.length > 0) {
+    if (imageVideoArr && imageVideoArr.length > 0) {
       
-      previewObj.forEach((value, index) => {
+      for (const [index, value] of imageVideoArr.entries()) {
         
+        // console.log(`index = ${index}`);
+        // console.dir(value);
         
         // ---------------------------------------------
         //   画像
@@ -473,17 +436,17 @@ export default class extends React.Component {
         
         if (value.imageSrc) {
           
-          codePreviewArr.push(
+          componentImageVideoArr.push(
             <PreviewBox key={index}>
               <PreviewImg
                 src={value.imageSrc}
-                onClick={() => stores.layout.handleLightboxOpen(id, index)}
+                onClick={() => handleLightboxOpen(id, index)}
               />
               
               <PreviewDeleteButton
                 variant="fab"
                 color="primary"
-                onClick={() => stores.formPost.handlePreviewDelete(id, index)}
+                onClick={() => handleImageVideoDelete(id, index)}
               >
                 <IconClose />
               </PreviewDeleteButton>
@@ -497,7 +460,7 @@ export default class extends React.Component {
         
         } else {
           
-          codePreviewArr.push(
+          componentImageVideoArr.push(
             <PreviewBox key={index}>
               <PreviewImg
                 src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
@@ -511,7 +474,7 @@ export default class extends React.Component {
               <PreviewDeleteButton
                 variant="fab"
                 color="primary"
-                onClick={() => stores.formPost.handlePreviewDelete(id, index)}
+                onClick={() => handleImageVideoDelete(id, index)}
               >
                 <IconClose />
               </PreviewDeleteButton>
@@ -520,7 +483,7 @@ export default class extends React.Component {
           
         }
         
-      });
+      };
       
     }
     
@@ -562,7 +525,7 @@ export default class extends React.Component {
                 control={
                   <UserCheckbox
                     checked={anonymityChecked}
-                    onChange={() => stores.formPost.handleAnonymityChecked(id)}
+                    onChange={() => handleAnonymityChecked(id)}
                   />
                 }
                 label="ななしにする"
@@ -576,7 +539,7 @@ export default class extends React.Component {
             id="name"
             label="ハンドルネーム（未入力でもOK！）"
             value={name}
-            onChange={(event) => handleNameObj(event, id)}
+            onChange={(event) => handleName(event, id)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -596,7 +559,7 @@ export default class extends React.Component {
         <StyledTextareaAutosize
           rows={5}
           value={text}
-          onChange={(event) => handleTextObj(event, id)}
+          onChange={(event) => handleText(event, id)}
         />
         
         
@@ -605,7 +568,7 @@ export default class extends React.Component {
           <ImageButton
             variant="outlined"
             size="small"
-            onClick={() => stores.formPost.handleImageFormOpen(id)}
+            onClick={() => handleImageFormOpen(id)}
           >
             画像アップロード
           </ImageButton>
@@ -613,7 +576,7 @@ export default class extends React.Component {
           <Button
             variant="outlined"
             size="small"
-            onClick={() => stores.formPost.handleVideoFormOpen(id)}
+            onClick={() => handleVideoFormOpen(id)}
           >
             動画投稿
           </Button>
@@ -630,14 +593,14 @@ export default class extends React.Component {
             <ImageInputFileBox>
               <ImageInputFile
                 type="file"
-                onChange={(event) => stores.formPost.handleSelectImage(event, id)}
+                onChange={(event) => handleSelectImage(event, id)}
               />
               
               <Button
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={() => stores.formPost.handleAddImage(id)}
+                onClick={() => handleAddImage(id)}
               >
                 追加
               </Button>
@@ -646,7 +609,7 @@ export default class extends React.Component {
             <ImageTextField
               placeholder="画像名・簡単な解説を入力"
               value={imageCaption}
-              onChange={(event) => stores.formPost.handleImageCaption(event, id)}
+              onChange={(event) => handleImageCaption(event, id)}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -656,7 +619,7 @@ export default class extends React.Component {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={() => stores.formPost.handleImageCaptionOpen(id)}
+                      onClick={() => handleImageCaptionOpen(id)}
                     >
                       <IconHelpOutline />
                     </IconButton>
@@ -694,7 +657,7 @@ export default class extends React.Component {
               <VideoTextField
                 placeholder=""
                 value={videoUrl}
-                onChange={(event) => stores.formPost.handleVideoUrl(event, id)}
+                onChange={(event) => handleVideoUrl(event, id)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -707,7 +670,7 @@ export default class extends React.Component {
                 variant="contained"
                 color="secondary"
                 size="small"
-                onClick={() => stores.formPost.handleAddVideo(id)}
+                onClick={() => handleAddVideo(id)}
               >
                 追加
               </Button>
@@ -718,20 +681,20 @@ export default class extends React.Component {
         
         
         {/* 画像と動画のプレビュー */}
-        {codePreviewArr.length > 0 &&
+        {componentImageVideoArr.length > 0 &&
           <React.Fragment>
         
             <PreviewContainer>
-              {codePreviewArr}
+              {componentImageVideoArr}
             </PreviewContainer>
             
             <Lightbox
-              // images={stores.layout.lightboxImagesObj[stores.layout.lightboxImagesId]}
-              // currentImage={stores.layout.lightboxCurrentNo}
-              // isOpen={stores.layout.lightboxOpen}
-              // onClickPrev={stores.layout.handleLightboxPreviousCurrentNo}
-              // onClickNext={stores.layout.handleLightboxNextCurrentNo}
-              // onClose={stores.layout.handleLightboxClose}
+              images={lightboxArr}
+              currentImage={lightboxCurrentNo}
+              isOpen={lightboxOpen}
+              onClickPrev={() => handleLightboxPrevious(id)}
+              onClickNext={() => handleLightboxNext(id)}
+              onClose={() => handleLightboxClose(id)}
               backdropClosesModal
               preloadNextImage={false}
             />
@@ -745,18 +708,18 @@ export default class extends React.Component {
           variant="contained"
           color="primary"
         >
-          {buttonLabel1}
+          {sendButtonLabel1}
         </SendButton>
         
         
         {/* 送信ボタン2 */}
-        { (sendButtonLabel2 && sendButtonHandle2) && 
+        { (buttonLabel2 && buttonHandle2) && 
         <SendButton
           variant="contained"
           color="secondary"
-          onClick={() => sendButtonHandle2()}
+          onClick={() => buttonHandle2()}
         >
-          {buttonLabel2}
+          {sendButtonLabel2}
         </SendButton>
         }
         

@@ -549,6 +549,9 @@ class Store {
   };
   
   
+  
+  
+  
   // ---------------------------------------------
   //   モーダルウィンドウ・動画
   // ---------------------------------------------
@@ -568,6 +571,8 @@ class Store {
   handleModalVideoClose() {
     this.modalVideoOpen = false;
   };
+  
+  
   
   
   
@@ -635,6 +640,7 @@ class Store {
   handleSnackbarExited() {
     this.processQueue();
   };
+  
   
   
   

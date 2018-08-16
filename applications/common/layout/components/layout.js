@@ -10,7 +10,7 @@ import Header from './header/header';
 import HeaderNavMain from './header/nav-main';
 import Footer from './footer';
 
-import ModalImageVideo from './modal-image-video';
+// import ModalImageVideo from './modal-image-video';
 import Snackbar from './snackbar';
 
 
@@ -993,7 +993,7 @@ export default class extends React.Component {
         <Footer />
         
         {/* 画像・動画用のモーダルウィンドウ */}
-        <ModalImageVideo />
+        {/*<ModalImageVideo />*/}
         
         {/* Snackbar 通知用 */}
         <Snackbar />

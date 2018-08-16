@@ -7,6 +7,7 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
 import Lightbox from 'react-images';
+import ModalVideo from 'react-modal-video';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -305,26 +306,30 @@ export default class extends React.Component {
     //   Props
     // ---------------------------------------------
     
-    // ID
-    // this.id = props.id;
-    
     // Arguments
-    this.argumentsObj = {
-      
-      id: props.id,
-      name: props.name,
-      text: props.text,
-      lightboxArr: props.lightboxArr,
-      imageVideoArr: props.imageVideoArr,
-      
-    };
+    
     
     
     // ---------------------------------------------
     //   Initialize Store
     // ---------------------------------------------
     
-    props.stores.formPost.initializeFormPost(this.argumentsObj);
+    const argumentsLightboxObj = {
+      id: props.id,
+      lightboxArr: props.lightboxArr,
+    };
+    
+    props.stores.layout.initializeLightbox(argumentsLightboxObj);
+    
+    
+    const argumentsFormPostObj = {
+      id: props.id,
+      name: props.name,
+      text: props.text,
+      imageVideoArr: props.imageVideoArr,
+    };
+    
+    props.stores.formPost.initializeFormPost(argumentsFormPostObj);
     
   }
   
@@ -338,32 +343,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, id, buttonLabel1, buttonHandle1, buttonLabel2, buttonHandle2 } = this.props;
-    
-    
-    // ---------------------------------------------
-    //   Handle
-    // ---------------------------------------------
-    
-    const {
-      
-      handleAnonymityChecked,
-      handleName,
-      handleText,
-      handleImageFormOpen,
-      handleVideoFormOpen,
-      handleSelectImage,
-      handleAddImage,
-      handleImageCaptionOpen,
-      handleImageCaption,
-      handleVideoUrl,
-      handleAddVideo,
-      handleImageVideoDelete,
-      handleLightboxOpen,
-      handleLightboxClose,
-      handleLightboxPrevious,
-      handleLightboxNext
-      
-    } = this.props.stores.formPost;
     
     
     // ---------------------------------------------
@@ -386,6 +365,23 @@ export default class extends React.Component {
     const imageCaption = stores.formPost.imageCaptionObj[id];
     const videoUrl = stores.formPost.videoUrlObj[id];
     
+    const {
+      
+      handleAnonymityChecked,
+      handleName,
+      handleText,
+      handleImageFormOpen,
+      handleVideoFormOpen,
+      handleSelectImage,
+      handleAddImage,
+      handleImageCaptionOpen,
+      handleImageCaption,
+      handleVideoUrl,
+      handleAddVideo,
+      handleImageVideoDelete
+      
+    } = this.props.stores.formPost;
+    
     
     // ---------------------------------------------
     //   Image & Video
@@ -398,13 +394,32 @@ export default class extends React.Component {
     //   Lightbox
     // ---------------------------------------------
     
-    const lightboxArr = stores.formPost.lightboxObj[id];
-    const lightboxCurrentNo = stores.formPost.lightboxCurrentNoObj[id];
-    const lightboxOpen = stores.formPost.lightboxOpenObj[id];
-    // const handleLightboxOpen = stores.formPost.handleLightboxOpen;
-    // const handleLightboxClose = stores.formPost.handleLightboxClose;
-    // const handleLightboxPrevious = stores.formPost.handleLightboxPrevious;
-    // const handleLightboxNext = stores.formPost.handleLightboxNext;
+    const lightboxArr = stores.layout.lightboxObj[id];
+    const lightboxCurrentNo = stores.layout.lightboxCurrentNoObj[id];
+    const lightboxOpen = stores.layout.lightboxOpenObj[id];
+    
+    const {
+      
+      handleLightboxOpen,
+      handleLightboxClose,
+      handleLightboxPrevious,
+      handleLightboxNext,
+      
+    } = this.props.stores.layout;
+    
+    
+    // ---------------------------------------------
+    //   Modal Video
+    // ---------------------------------------------
+    
+    const {
+      
+      modalVideoChannel,
+      modalVideoOpen,
+      modalVideoId,
+      handleModalVideoClose,
+      
+    } = this.props.stores.layout;
     
     
     // --------------------------------------------------
@@ -697,6 +712,13 @@ export default class extends React.Component {
               onClose={() => handleLightboxClose(id)}
               backdropClosesModal
               preloadNextImage={false}
+            />
+            
+            <ModalVideo
+              channel={modalVideoChannel}
+              isOpen={modalVideoOpen}
+              videoId={modalVideoId}
+              onClose={handleModalVideoClose}
             />
           
           </React.Fragment>

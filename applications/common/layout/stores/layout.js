@@ -322,238 +322,297 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Lightbox・画像
+  //   Lightbox - 画像表示
   // ---------------------------------------------
   
-  @observable lightboxCurrentNo = 0;
-  @observable lightboxSrcArr = [];
-  @observable lightboxOpen = false;
-  @observable lightboxImagesId = 'init';
+  @observable lightboxObj = {};
+  @observable lightboxCurrentNoObj = {};
+  @observable lightboxOpenObj = {};
   
   @action.bound
   handleLightboxOpen(id, currentNo) {
-    this.lightboxImagesId = id;
-    this.lightboxCurrentNo = currentNo;
-    this.lightboxOpen = true;
+    this.lightboxCurrentNoObj[id] = currentNo;
+    this.lightboxOpenObj[id] = true;
   };
   
   @action.bound
-  handleLightboxClose() {
-    this.lightboxOpen = false;
+  handleLightboxClose(id) {
+    this.lightboxOpenObj[id] = false;
   };
   
   @action.bound
-  handleLightboxPreviousCurrentNo() {
-    this.lightboxCurrentNo = this.lightboxCurrentNo - 1;
+  handleLightboxPrevious(id) {
+    this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] - 1;
   };
   
   @action.bound
-  handleLightboxNextCurrentNo() {
-    this.lightboxCurrentNo = this.lightboxCurrentNo + 1;
+  handleLightboxNext(id) {
+    this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] + 1;
   };
   
-  
-  
-  
-  @observable lightboxImagesObj = {
-    init: [
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      },
-      {
-        src: '/static/img/common/logo.png',
-        caption: 'Logo',
-        srcSet: [
-          '/static/img/common/logo.png 320w',
-          '/static/img/common/logo.png 640w',
-        ],
-      }
-    ],
-    Um_cUEd7vl0: [
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-        caption: 'Caption 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-        ],
-      },
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
-        caption: 'Caption 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
-        ],
-      },
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
-        caption: 'Caption 3',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 640w',
-        ],
-      },
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg.jpg',
-        caption: 'Caption 4',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 640w',
-        ],
-      },
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg',
-        caption: 'Caption 5',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 640w',
-        ],
-      }
-    ],
-    GMi2JFwJ868: [
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg',
-        caption: 'Caption 1',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 640w',
-        ],
-      },
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg',
-        caption: 'Caption 2',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 640w',
-        ],
-      },
-      {
-        src: 'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg',
-        caption: 'Caption 3',
-        srcSet: [
-          'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 320w',
-          'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 640w',
-        ],
-      }
-    ],
+  @action.bound
+  handleLightboxAddImage(id, imageId, src, caption) {
     
-  };
-  
-  
-  @action.bound
-  handleLightboxAddImage(id, src, caption) {
-    
-    if (!this.lightboxImagesObj[id]) {
-      this.lightboxImagesObj[id] = [];
+    if (!this.lightboxObj[id]) {
+      this.lightboxObj[id] = [];
     }
     
     const insertObj = {
+      id: imageId,
       src,
       caption
     };
     
-    this.lightboxImagesObj[id].push(insertObj);
+    this.lightboxObj[id].push(insertObj);
     
   };
   
   @action.bound
   handleLightboxDeleteImage(id, index) {
-    this.lightboxImagesObj[id].splice(index, 1);
+    this.lightboxObj[id].splice(index, 1);
   };
   
   
-  
-  
-  @observable modalImageSrc = null;
-  @observable modalImageOpen = false;
+  // ----------------------------------------
+  //   - Initialize Lightbox
+  // ----------------------------------------
   
   @action.bound
-  handleModalImageOpen(src) {
-    this.modalImageSrc = src;
-    this.modalImageOpen = true;
-  };
+  initializeLightbox(argumentsObj) {
+    
+    const id = argumentsObj.id ? argumentsObj.id : '';
+    const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
+    
+    
+    if (id in this.lightboxObj === false) {
+      this.lightboxObj[id] = lightboxArr;
+    }
+    
+    if (id in this.lightboxCurrentNoObj === false) {
+      this.lightboxCurrentNoObj[id] = 0;
+    }
+    
+    if (id in this.lightboxOpenObj === false) {
+      this.lightboxOpenObj[id] = false;
+    }
+    
+    // console.log(`initializeLightbox`);
+    // console.log(`id = ${id}`);
+    
+  }
   
-  @action.bound
-  handleModalImageClose() {
-    this.modalImageOpen = false;
-  };
+  
+  
+  // @observable lightboxCurrentNo = 0;
+  // @observable lightboxSrcArr = [];
+  // @observable lightboxOpen = false;
+  // @observable lightboxImagesId = 'init';
+  
+  // @action.bound
+  // handleLightboxOpen(id, currentNo) {
+  //   this.lightboxImagesId = id;
+  //   this.lightboxCurrentNo = currentNo;
+  //   this.lightboxOpen = true;
+  // };
+  
+  // @action.bound
+  // handleLightboxClose() {
+  //   this.lightboxOpen = false;
+  // };
+  
+  // @action.bound
+  // handleLightboxPreviousCurrentNo() {
+  //   this.lightboxCurrentNo = this.lightboxCurrentNo - 1;
+  // };
+  
+  // @action.bound
+  // handleLightboxNextCurrentNo() {
+  //   this.lightboxCurrentNo = this.lightboxCurrentNo + 1;
+  // };
+  
+  
+  
+  
+  // @observable lightboxImagesObj = {
+  //   init: [
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: '/static/img/common/logo.png',
+  //       caption: 'Logo',
+  //       srcSet: [
+  //         '/static/img/common/logo.png 320w',
+  //         '/static/img/common/logo.png 640w',
+  //       ],
+  //     }
+  //   ],
+  //   Um_cUEd7vl0: [
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+  //       caption: 'Caption 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
+  //       caption: 'Caption 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
+  //       caption: 'Caption 3',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg.jpg',
+  //       caption: 'Caption 4',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg',
+  //       caption: 'Caption 5',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 640w',
+  //       ],
+  //     }
+  //   ],
+  //   GMi2JFwJ868: [
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg',
+  //       caption: 'Caption 1',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg',
+  //       caption: 'Caption 2',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 640w',
+  //       ],
+  //     },
+  //     {
+  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg',
+  //       caption: 'Caption 3',
+  //       srcSet: [
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 320w',
+  //         'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 640w',
+  //       ],
+  //     }
+  //   ],
+    
+  // };
+  
+  
+  
+  
+  
+  
+  
+  // @observable modalImageSrc = null;
+  // @observable modalImageOpen = false;
+  
+  // @action.bound
+  // handleModalImageOpen(src) {
+  //   this.modalImageSrc = src;
+  //   this.modalImageOpen = true;
+  // };
+  
+  // @action.bound
+  // handleModalImageClose() {
+  //   this.modalImageOpen = false;
+  // };
   
   
   
   
   
   // ---------------------------------------------
-  //   モーダルウィンドウ・動画
+  //   モーダルウィンドウ - 動画表示
   // ---------------------------------------------
   
   @observable modalVideoChannel = null;
@@ -677,6 +736,22 @@ class Store {
   insertPanelExpanded(dataObj) {
     this.panelExpandedObj = Object.assign({}, dataObj, this.panelExpandedObj);
   };
+  
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   ID生成
+  // ---------------------------------------------
+  
+  // 参考：https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+  createUuidV4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    );
+  }
+  
   
 }
 

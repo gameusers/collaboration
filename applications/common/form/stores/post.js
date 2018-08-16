@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
+import shortid from 'shortid';
 
 
 // --------------------------------------------------
@@ -201,9 +202,6 @@ class Store {
     //   画像が選択されていて、重複していない場合はオブジェクトに追加する
     // ---------------------------------------------
     
-    // console.dir(this.imageSrcObj);
-    // console.log(id in this.imageSrcObj);
-    
     if (id in this.imageSrcObj === false) {
       
       storeLayout.handleSnackbarOpen('error', '画像を選択してください。');
@@ -216,7 +214,10 @@ class Store {
       
     } else {
       
+      const imageId = shortid.generate();
+      
       imageVideoArr.push({
+        id: imageId,
         imageSrc: this.imageSrcObj[id],
         videoChannel: '',
         videoId: '',
@@ -224,9 +225,8 @@ class Store {
       
       this.imageVideoObj[id] = imageVideoArr;
       
-      
       // Lightbox 用に画像を追加
-      storeLayout.handleLightboxAddImage(id, this.imageSrcObj[id], this.imageCaptionObj[id]);
+      storeLayout.handleLightboxAddImage(id, imageId, this.imageSrcObj[id], this.imageCaptionObj[id]);
       
       // Caption をリセット
       this.imageCaptionObj[id] = '';
@@ -380,24 +380,25 @@ class Store {
   
   @action.bound
   handleImageVideoDelete(id, index) {
-    // console.log(`id = ${id}`);
-    // console.log(`index = ${index}`);
-    // console.log(`this.imageVideoObj[id] = ${this.imageVideoObj[id]}`);
+    console.log(`handleImageVideoDelete`);
+    console.log(`id = ${id}`);
+    console.log(`index = ${index}`);
+    // console.dir(this.imageVideoObj[id][index].imageSrc);
     
     const deleteId = this.imageVideoObj[id][index].id;
     
-    const deleteIndex = this.lightboxObj[id].findIndex((value) => {
+    const deleteIndex = storeLayout.lightboxObj[id].findIndex((value) => {
       return value.id === deleteId;
     });
     
-    // console.log(`deleteId = ${deleteId}`);
-    // console.log(`deleteIndex = ${deleteIndex}`);
+    console.log(`deleteId = ${deleteId}`);
+    console.log(`deleteIndex = ${deleteIndex}`);
     
     
     this.imageVideoObj[id].splice(index, 1);
     
     if (deleteIndex !== -1) {
-      this.lightboxObj[id].splice(deleteIndex, 1);
+      storeLayout.lightboxObj[id].splice(deleteIndex, 1);
     }
     
   };
@@ -453,7 +454,7 @@ class Store {
     const name = argumentsObj.name ? argumentsObj.name : '';
     const text = argumentsObj.text ? argumentsObj.text : '';
     const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr : [];
-    const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
+    // const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
     
     
     
@@ -511,17 +512,17 @@ class Store {
     
     
     // Lightbox
-    if (id in this.lightboxObj === false) {
-      this.lightboxObj[id] = lightboxArr;
-    }
+    // if (id in this.lightboxObj === false) {
+    //   this.lightboxObj[id] = lightboxArr;
+    // }
     
-    if (id in this.lightboxCurrentNoObj === false) {
-      this.lightboxCurrentNoObj[id] = 0;
-    }
+    // if (id in this.lightboxCurrentNoObj === false) {
+    //   this.lightboxCurrentNoObj[id] = 0;
+    // }
     
-    if (id in this.lightboxOpenObj === false) {
-      this.lightboxOpenObj[id] = false;
-    }
+    // if (id in this.lightboxOpenObj === false) {
+    //   this.lightboxOpenObj[id] = false;
+    // }
     
     
     

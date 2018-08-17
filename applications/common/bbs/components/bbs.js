@@ -620,50 +620,17 @@ export default class extends React.Component {
     super(props);
     
     
+    // ---------------------------------------------
+    //   Community ID
+    // ---------------------------------------------
+    
+    this.communityId = props.gameCommunityId ? props.gameCommunityId : props.userCommunityId;
+    
     
     // ---------------------------------------------
-    //   Set Property
+    //   BBS Data
     // ---------------------------------------------
     
-    // Login User ID
-    this.loginUserId = props.stores.data.loginUserObj.id;
-    
-    // 管理者権限があるかどうか
-    this.administrator = false;
-    
-    // スレッド編集
-    this.updateThreadNameObj = props.stores.bbs.updateThreadNameObj;
-    this.updateThreadDescriptionObj = props.stores.bbs.updateThreadDescriptionObj;
-    
-    
-    // ----------------------------------------
-    //   Game Community
-    // ----------------------------------------
-    
-    if (props.gameCommunityId) {
-      
-      // ID
-      this.communityId = props.gameCommunityId;
-      
-      
-    // ----------------------------------------
-    //   User Community
-    // ----------------------------------------
-    
-    } else if (props.userCommunityId) {
-      
-      // ID
-      this.communityId = props.userCommunityId;
-      
-      
-      if (props.stores.data.userCommunityObj[props.userCommunityId].administratorId === this.loginUserId) {
-        this.administrator = true;
-      }
-      
-    }
-    
-    
-    // BBS用データ
     this.dataObj = props.stores.bbs.dataObj[this.communityId];
     // console.log(`this.dataObj = ${this.dataObj}`);
     // console.dir(this.dataObj);
@@ -688,13 +655,6 @@ export default class extends React.Component {
     
     
     // ----------------------------------------
-    //   - Update Thread
-    // ----------------------------------------
-    
-    // props.stores.bbs.initializeUpdateThread(this.dataObj);
-    
-    
-    // ----------------------------------------
     //   - BBS
     // ----------------------------------------
     
@@ -710,21 +670,64 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    const { stores, gameCommunityId, userCommunityId } = this.props;
     
     
     const {
       
       handleThreadDescriptionOpenObj,
       
-      threadEditFormOpenObj,
-      handleThreadEditFormOpenObj,
+      handleThreadUpdateFormOpen,
       
-      handleUpdateThreadNameObj,
-      handleUpdateThreadDescriptionObj,
-      handleUpdateThread
+      handleThreadUpdateFormName,
+      handleThreadUpdateFormDescription,
+      handleThreadUpdate
       
     } = stores.bbs;
+    
+    
+    // ---------------------------------------------
+    //   Login User ID
+    // ---------------------------------------------
+    
+    const loginUserId = stores.data.loginUserObj.id;
+    
+    
+    // ---------------------------------------------
+    //   Thread Edit Form
+    // ---------------------------------------------
+    
+    const {
+      
+      threadUpdateFormOpenObj,
+      threadUpdateFormNameObj,
+      threadUpdateFormDescriptionObj,
+      
+      handleCommentInsert
+      
+    } = stores.bbs;
+    
+    // const threadUpdateFormNameObj = stores.bbs.threadUpdateFormNameObj;
+    // const threadUpdateFormDescriptionObj = stores.bbs.threadUpdateFormDescriptionObj;
+    
+    
+    // ---------------------------------------------
+    //   Community ID
+    // ---------------------------------------------
+    
+    // const communityId = gameCommunityId ? gameCommunityId : userCommunityId;
+    const communityId = this.communityId;
+    
+    
+    // ---------------------------------------------
+    //   管理者権限
+    // ---------------------------------------------
+    
+    let administrator = false;
+    
+    if (userCommunityId && stores.data.userCommunityObj[userCommunityId].administratorId === loginUserId) {
+      administrator = true;
+    }
     
     
     
@@ -743,11 +746,11 @@ export default class extends React.Component {
       
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      const editable = this.administrator || this.loginUserId === value.creatorId ? true : false;
+      const editable = administrator || loginUserId === value.creatorId ? true : false;
       
       
-      const updateThreadName = this.updateThreadNameObj[value.id];
-      const updateThreadDescription = this.updateThreadDescriptionObj[value.id];
+      const threadUpdateFormName = threadUpdateFormNameObj[value.id];
+      const threadUpdateFormDescription = threadUpdateFormDescriptionObj[value.id];
       
       
       componentsBbsArr.push(
@@ -765,7 +768,7 @@ export default class extends React.Component {
               />
             }
           >
-          
+            
             <TitleBox>
               
               <TitleH2>{value.name}</TitleH2>
@@ -789,7 +792,7 @@ export default class extends React.Component {
                 { editable &&
                   <BottomNavButton
                     variant="outlined"
-                    onClick={() => handleThreadEditFormOpenObj(value.id)}
+                    onClick={() => handleThreadUpdateFormOpen(value.id)}
                   >
                     <BottomNavIconEdit />
                     編集
@@ -799,7 +802,7 @@ export default class extends React.Component {
               </TitleInfoBox>
               
               
-              {/* Thread Description */}
+              {/* スレッドについてを表示 */}
               { stores.bbs.threadDescriptionOpenObj[value.id] &&
                 <TitleDescriptionBox>
                   <Paragraph text={value.description} />
@@ -807,16 +810,15 @@ export default class extends React.Component {
               }
               
               
-              {/* Thread Edit Form - Thread Name */}
-              { threadEditFormOpenObj[value.id] &&
+              {/* Thread Edit Form */}
+              { threadUpdateFormOpenObj[value.id] &&
                 <React.Fragment>
                   
                   {/* Thread Name */}
                   <CreateThreadNameTextField
                     placeholder="スレッド名"
-                    value={updateThreadName}
-                    // value={returnUpdateThreadName(value.id)}
-                    onChange={(event) => handleUpdateThreadNameObj(event, value.id)}
+                    value={threadUpdateFormName}
+                    onChange={(event) => handleThreadUpdateFormName(event, value.id)}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
@@ -831,9 +833,8 @@ export default class extends React.Component {
                   <CreateThreadTextareaAutosize
                     rows={5}
                     placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください"
-                    value={updateThreadDescription}
-                    // value={returnUpdateThreadDescription(value.id)}
-                    onChange={(event) => handleUpdateThreadDescriptionObj(event, value.id)}
+                    value={threadUpdateFormDescription}
+                    onChange={(event) => handleThreadUpdateFormDescription(event, value.id)}
                   />
                   
                   
@@ -842,7 +843,7 @@ export default class extends React.Component {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleUpdateThread(value.id)}
+                      onClick={() => handleThreadUpdate(value.id)}
                     >
                       編集する
                     </Button>
@@ -864,13 +865,14 @@ export default class extends React.Component {
               
               {/* Form Post Comment */}
               <FormPost
-                id={`${value.id}-comment`}
+                id={`${value.id}-comment-insert`}
                 buttonLabel1="コメントする"
+                buttonHandle1={() => handleCommentInsert(`${value.id}-comment-insert`)}
               />
               
               
               <CommentReply
-                communityId={this.communityId}
+                communityId={communityId}
                 threadId={value.id}
                 commentArr={value.commentArr}
               />
@@ -883,12 +885,7 @@ export default class extends React.Component {
         
       );
       
-      // console.log(key, value);
     }
-    
-    
-    
-    
     
     
     
@@ -908,7 +905,7 @@ export default class extends React.Component {
         
       
       <ExpansionPanel
-        // expanded={stores.layout.returnPanelExpanded(this.communityId)}
+        // expanded={stores.layout.returnPanelExpanded(communityId)}
         expanded={true}
       >
         
@@ -916,7 +913,7 @@ export default class extends React.Component {
         <TitleExpansionPanelSummary
           expandIcon={
             <IconExpandMore
-              onClick={() => stores.layout.handlePanelExpanded(this.communityId)}
+              onClick={() => stores.layout.handlePanelExpanded(communityId)}
             />
           }
         >
@@ -930,7 +927,7 @@ export default class extends React.Component {
               <TitleInfoAboutBox>
                 <IconAssignmentBbsInfo />
                 <BbsInfoAbout
-                  onClick={() => handleThreadDescriptionOpenObj(this.communityId)}
+                  onClick={() => handleThreadDescriptionOpenObj(communityId)}
                 >
                   スレッドについて
                 </BbsInfoAbout>
@@ -948,7 +945,7 @@ export default class extends React.Component {
             </TitleInfoBox>
             
             
-            { stores.bbs.threadDescriptionOpenObj[this.communityId] &&
+            { stores.bbs.threadDescriptionOpenObj[communityId] &&
               <TitleDescriptionBox>
                 <p>仲良く雑談しませんか？</p>
                 <p>ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。</p>

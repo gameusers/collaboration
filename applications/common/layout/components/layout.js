@@ -5,6 +5,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
+import ModalVideo from 'react-modal-video';
 
 import Header from './header/header';
 import HeaderNavMain from './header/nav-main';
@@ -45,7 +46,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const { stores } = this.props;
+    const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -994,6 +995,14 @@ export default class extends React.Component {
         
         {/* 画像・動画用のモーダルウィンドウ */}
         {/*<ModalImageVideo />*/}
+        
+        {/* 動画用のモーダルウィンドウ */}
+        <ModalVideo
+          channel={stores.layout.modalVideoChannel}
+          isOpen={stores.layout.modalVideoOpen}
+          videoId={stores.layout.modalVideoId}
+          onClose={stores.layout.handleModalVideoClose}
+        />
         
         {/* Snackbar 通知用 */}
         <Snackbar />

@@ -360,7 +360,8 @@ class Store {
     const insertObj = {
       id: imageId,
       src,
-      caption
+      caption,
+      srcSet: []
     };
     
     this.lightboxObj[id].push(insertObj);
@@ -615,14 +616,61 @@ class Store {
   //   モーダルウィンドウ - 動画表示
   // ---------------------------------------------
   
+  // @observable modalVideoChannelObj = {};
+  // @observable modalVideoIdObj = {};
+  // @observable modalVideoOpenObj = {};
+  
+  // @action.bound
+  // handleModalVideoOpen(id, videoChannel, videoId) {
+    
+  //   console.log(`id = ${id}`);
+  //   console.log(`videoChannel = ${videoChannel}`);
+  //   console.log(`videoId = ${videoId}`);
+    
+  //   // this.modalVideoChannelObj[id] = videoChannel;
+  //   // this.modalVideoIdObj[id] = videoId;
+  //   this.modalVideoOpenObj[`${id}-${videoChannel}-${videoId}`] = true;
+  // };
+  
+  // @action.bound
+  // handleModalVideoClose(id, videoChannel, videoId) {
+  //   this.modalVideoOpenObj[`${id}-${videoChannel}-${videoId}`] = false;
+  // };
+  
+  
+  // ----------------------------------------
+  //   - Initialize
+  // ----------------------------------------
+  
+  // @action.bound
+  // initializeModalVideo(id) {
+    
+  //   // if (id in this.modalVideoChannelObj === false) {
+  //   //   this.modalVideoChannelObj[id] = '';
+  //   // }
+    
+  //   // if (id in this.modalVideoIdObj === false) {
+  //   //   this.modalVideoIdObj[id] = '';
+  //   // }
+    
+  //   // if (id in this.modalVideoOpenObj === false) {
+  //   //   this.modalVideoOpenObj[id] = false;
+  //   // }
+    
+  //   // console.log(`initializeLightbox`);
+  //   // console.log(`id = ${id}`);
+    
+  // }
+  
+  
   @observable modalVideoChannel = null;
   @observable modalVideoId = null;
   @observable modalVideoOpen = false;
   
   @action.bound
-  handleModalVideoOpen(channel, id) {
-    this.modalVideoChannel = channel;
-    this.modalVideoId = id;
+  handleModalVideoOpen(videoChannel, videoId) {
+    this.modalVideoChannel = videoChannel;
+    this.modalVideoId = videoId;
     this.modalVideoOpen = true;
   };
   

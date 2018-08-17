@@ -290,6 +290,57 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const argumentsObj = {
+      isServer: props.isServer,
+      pathname: props.pathname
+    };
+    
+    const storeLayout = initStoreLayout(argumentsObj);
+    
+    argumentsObj.storeInstanceObj = {
+      layout: storeLayout
+    };
+    
+    const storeData = initStoreData(argumentsObj);
+    const storeformPost = initStoreFormPost(argumentsObj);
+    const storeUserCommunity = initStoreUserCommunity(argumentsObj);
+    const storeBbsNavigation = initStoreBbsNavigation(argumentsObj);
+    
+    argumentsObj.storeInstanceObj = {
+      layout: storeLayout,
+      formPost: storeformPost
+    };
+    
+    const storeBbs = initStoreBbs(argumentsObj);
+    
+    this.stores = {
+      data: storeData,
+      layout: storeLayout,
+      formPost: storeformPost,
+      userCommunity: storeUserCommunity,
+      bbsNavigation: storeBbsNavigation,
+      bbs: storeBbs,
+      pathname: props.pathname
+    };
+    
+    
+    
+    // this.stores = {
+    //   data: initStoreData(argumentsObj),
+    //   layout: storeLayout,
+    //   userCommunity: initStoreUserCommunity(argumentsObj),
+    //   formPost: initStoreFormPost(argumentsObj),
+    //   bbsNavigation: initStoreBbsNavigation(argumentsObj),
+    //   bbs: initStoreBbs(argumentsObj),
+    //   pathname: props.pathname
+    // };
+    
+    
+    
+    // --------------------------------------------------
+    //   Insert Data
+    // --------------------------------------------------
+    
     const {
       dataLoginUserObj,
       dataUserObj,
@@ -301,33 +352,6 @@ class Component extends React.Component {
       bbsNavigationThreadListObj,
       bbsObj
     } = props.dataObj;
-    
-    const argumentsObj = {
-      isServer: props.isServer,
-      pathname: props.pathname,
-    };
-    
-    const storeLayoutInstance = initStoreLayout(argumentsObj);
-    
-    argumentsObj.storeInstanceObj = {
-      layout: storeLayoutInstance
-    };
-    
-    this.stores = {
-      data: initStoreData(argumentsObj),
-      layout: storeLayoutInstance,
-      userCommunity: initStoreUserCommunity(argumentsObj),
-      formPost: initStoreFormPost(argumentsObj),
-      bbsNavigation: initStoreBbsNavigation(argumentsObj),
-      bbs: initStoreBbs(argumentsObj),
-      pathname: props.pathname
-    };
-    
-    
-    
-    // --------------------------------------------------
-    //   Insert Data
-    // --------------------------------------------------
     
     this.stores.data.updateLoginUserObj(dataLoginUserObj);
     this.stores.data.insertUserObj(dataUserObj);

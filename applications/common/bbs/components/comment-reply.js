@@ -438,22 +438,22 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     // ID
-    this.communityId = props.communityId;
-    this.threadId = props.threadId;
+    // communityId = props.communityId;
+    // threadId = props.threadId;
     
     // User Data
-    this.userObj = props.stores.data.userObj;
+    // userObj = props.stores.data.userObj;
     
     // Comment Good
-    this.handleCommentGood = props.stores.bbs.handleCommentGood;
+    // handleCommentGood = props.stores.bbs.handleCommentGood;
     
     // Reply Form Open
-    this.replyFormOpenObj = props.stores.bbs.replyFormOpenObj;
-    this.handleReplyFormOpenObj = props.stores.bbs.handleReplyFormOpenObj;
+    // replyInsertFormOpenObj = props.stores.bbs.replyInsertFormOpenObj;
+    // handleReplyInsertFormOpen = props.stores.bbs.handleReplyInsertFormOpen;
     
-    // Comment Edit Form Open
-    this.commentEditFormOpenObj = props.stores.bbs.commentEditFormOpenObj;
-    this.handleCommentEditFormOpenObj = props.stores.bbs.handleCommentEditFormOpenObj;
+    // 
+    // this.commentUpdateFormOpenObj = props.stores.bbs.commentUpdateFormOpenObj;
+    // handleCommentUpdateFormOpen = props.stores.bbs.handleCommentUpdateFormOpen;
     
   }
   
@@ -465,21 +465,52 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, commentArr } = this.props;
+    const { stores, communityId, threadId, commentArr } = this.props;
     
     
-    // const {
+    
+    // --------------------------------------------------
+    //   User Data
+    // --------------------------------------------------
+    
+    const { userObj } = stores.data;
+    
+    
+    // --------------------------------------------------
+    //   Comment Good
+    // --------------------------------------------------
+    
+    const {
       
-    //   userObj
+      handleCommentGood
       
-    // } = stores.data;
+    } = stores.bbs;
     
     
+    // --------------------------------------------------
+    //   Reply Insert Form
+    // --------------------------------------------------
+    
+    const {
+      
+      replyInsertFormOpenObj,
+      handleReplyInsertFormOpen,
+      handleReplyInsert
+      
+    } = stores.bbs;
     
     
-    // console.log(`loginUserId = ${loginUserId}`);
-    // console.log(`administrator = ${administrator}`);
+    // --------------------------------------------------
+    //   Comment Update Form
+    // --------------------------------------------------
     
+    const {
+      
+      commentUpdateFormOpenObj,
+      handleCommentUpdateFormOpen,
+      handleCommentUpdate
+      
+    } = stores.bbs;
     
     
     
@@ -492,12 +523,10 @@ export default class extends React.Component {
     
     for (const [index, value] of commentArr.entries()) {
       
-      // console.log(`value.userId = ${value.userId}`);
-      // console.log(`value.updatedDate = ${value.updatedDate}`);
-      
       
       // User Level
-      const userLevel = value.userId in this.userObj ? this.userObj[value.userId].level : '';
+      const userLevel = value.userId in userObj ? userObj[value.userId].level : '';
+      
       
       // Datetime
       const datetimeNow = moment().utcOffset(0);
@@ -505,20 +534,20 @@ export default class extends React.Component {
       const datetimeFrom = datetimeUpdated.from(datetimeNow);
       
       
-      // Reply Form Open
-      let replyFormOpen = false;
+      // Reply Insert Form Open
+      let replyInsertFormOpen = false;
       
-      if (value.id in this.replyFormOpenObj) {
-        replyFormOpen = this.replyFormOpenObj[value.id];
+      if (`${value.id}-reply-insert` in replyInsertFormOpenObj) {
+        replyInsertFormOpen = replyInsertFormOpenObj[`${value.id}-reply-insert`];
       }
       
-      // Comment Edit Form Open
-      let commentEditFormOpen = false;
       
-      if (value.id in this.commentEditFormOpenObj) {
-        commentEditFormOpen = this.commentEditFormOpenObj[value.id];
+      // Comment Update Form Open
+      let commentUpdateFormOpen = false;
+      
+      if (`${value.id}-comment-update` in commentUpdateFormOpenObj) {
+        commentUpdateFormOpen = commentUpdateFormOpenObj[`${value.id}-comment-update`];
       }
-      
       
       
       
@@ -526,7 +555,7 @@ export default class extends React.Component {
         
         <CommentsRepliesContainer key={index}>
           
-          { commentEditFormOpen === false ? (
+          { commentUpdateFormOpen === false ? (
           
             <React.Fragment>
           
@@ -570,7 +599,7 @@ export default class extends React.Component {
                       
                       <BottomNavThumbUpButton
                         variant="outlined"
-                        onClick={() => this.handleCommentGood(this.communityId, this.threadId, value.id)}
+                        onClick={() => handleCommentGood(communityId, threadId, value.id)}
                       >
                         <BottomNavIconThumbUp />
                         {value.good}
@@ -578,7 +607,7 @@ export default class extends React.Component {
                       
                       <BottomNavButton
                         variant="outlined"
-                        onClick={() => this.handleReplyFormOpenObj(value.id)}
+                        onClick={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
                       >
                         <BottomNavIconReply />
                         返信
@@ -586,7 +615,7 @@ export default class extends React.Component {
                       
                       <BottomNavButton
                         variant="outlined"
-                        onClick={() => this.handleCommentEditFormOpenObj(value.id)}
+                        onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
                       >
                         <BottomNavIconEdit />
                         編集
@@ -606,15 +635,16 @@ export default class extends React.Component {
               </CommentContainer>
               
               
-              { replyFormOpen &&
+              { replyInsertFormOpen &&
                 
                 <ReplyFormBox>
                   
                   <FormPost
-                    id={`${value.id}-reply`}
+                    id={`${value.id}-reply-insert`}
                     buttonLabel1="返信する"
+                    buttonHandle1={() => handleReplyInsert(`${value.id}-reply-insert`)}
                     buttonLabel2="閉じる"
-                    buttonHandle2={() => this.handleReplyFormOpenObj(value.id)}
+                    buttonHandle2={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
                   />
                   
                 </ReplyFormBox>
@@ -626,14 +656,15 @@ export default class extends React.Component {
           ) : (
             
             <FormPost
-              id={`${value.id}-edit`}
+              id={`${value.id}-comment-update`}
               name={value.name}
               text={value.comment}
               imageVideoArr={value.imageVideoArr}
               lightboxArr={value.lightboxArr}
               buttonLabel1="編集する"
+              buttonHandle1={() => handleCommentUpdate(`${value.id}-comment-update`)}
               buttonLabel2="閉じる"
-              buttonHandle2={() => this.handleCommentEditFormOpenObj(value.id)}
+              buttonHandle2={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
             />
             
           )}

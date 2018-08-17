@@ -322,6 +322,9 @@ export default class extends React.Component {
     props.stores.layout.initializeLightbox(argumentsLightboxObj);
     
     
+    // props.stores.layout.initializeModalVideo(props.id);
+    
+    
     const argumentsFormPostObj = {
       id: props.id,
       name: props.name,
@@ -345,11 +348,13 @@ export default class extends React.Component {
     const { stores, id, buttonLabel1, buttonHandle1, buttonLabel2, buttonHandle2 } = this.props;
     
     
+    
     // ---------------------------------------------
     //   Login User ID
     // ---------------------------------------------
     
     const loginUserId = stores.data.loginUserObj.id;
+    
     
     
     // ---------------------------------------------
@@ -383,11 +388,13 @@ export default class extends React.Component {
     } = this.props.stores.formPost;
     
     
+    
     // ---------------------------------------------
     //   Image & Video
     // ---------------------------------------------
     
     const imageVideoArr = stores.formPost.imageVideoObj[id];
+    
     
     
     // ---------------------------------------------
@@ -408,18 +415,25 @@ export default class extends React.Component {
     } = this.props.stores.layout;
     
     
+    
     // ---------------------------------------------
     //   Modal Video
     // ---------------------------------------------
     
+    // const modalVideoChannel = stores.layout.modalVideoChannelObj[id];
+    // const modalVideoOpen = stores.layout.modalVideoIdObj[id];
+    // const modalVideoId = stores.layout.modalVideoOpenObj[id];
+    
+    // console.log(`modalVideoChannel = ${modalVideoChannel}`);
+    // console.log(`modalVideoOpen = ${modalVideoOpen}`);
+    // console.log(`modalVideoId = ${modalVideoId}`);
+    
     const {
       
-      modalVideoChannel,
-      modalVideoOpen,
-      modalVideoId,
-      handleModalVideoClose,
+      handleModalVideoOpen,
       
     } = this.props.stores.layout;
+    
     
     
     // --------------------------------------------------
@@ -475,11 +489,13 @@ export default class extends React.Component {
         
         } else {
           
+          // const modalVideoOpen = stores.layout.modalVideoIdObj[`${id}-${value.videoChannel}-${value.videoId}`];
+          
           componentImageVideoArr.push(
             <PreviewBox key={index}>
               <PreviewImg
                 src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-                onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
+                onClick={() => handleModalVideoOpen(value.videoChannel, value.videoId)}
               />
               
               <PreviewVideoPlayButtonImg
@@ -493,6 +509,15 @@ export default class extends React.Component {
               >
                 <IconClose />
               </PreviewDeleteButton>
+              
+              
+              {/*<ModalVideo
+                channel={value.videoChannel}
+                isOpen={modalVideoOpen}
+                videoId={value.videoId}
+                onClose={() => handleModalVideoClose(id, value.videoChannel, value.videoId)}
+              />*/}
+              
             </PreviewBox>
           );
           
@@ -714,12 +739,12 @@ export default class extends React.Component {
               preloadNextImage={false}
             />
             
-            <ModalVideo
+            {/*<ModalVideo
               channel={modalVideoChannel}
               isOpen={modalVideoOpen}
               videoId={modalVideoId}
               onClose={handleModalVideoClose}
-            />
+            />*/}
           
           </React.Fragment>
         }
@@ -729,6 +754,7 @@ export default class extends React.Component {
         <SendButton
           variant="contained"
           color="primary"
+          onClick={() => buttonHandle1()}
         >
           {sendButtonLabel1}
         </SendButton>

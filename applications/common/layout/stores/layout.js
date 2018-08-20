@@ -331,6 +331,10 @@ class Store {
   
   @action.bound
   handleLightboxOpen(id, currentNo) {
+    
+    console.log(`id = ${id}`);
+    console.log(`currentNo = ${currentNo}`);
+    
     this.lightboxCurrentNoObj[id] = currentNo;
     this.lightboxOpenObj[id] = true;
   };

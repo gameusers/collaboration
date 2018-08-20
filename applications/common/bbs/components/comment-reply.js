@@ -6,18 +6,9 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import moment from 'moment';
-import TextareaAutosize from 'react-autosize-textarea';
+
 
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-
-import IconEventNote from '@material-ui/icons/EventNote';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
 import IconThumbUp from '@material-ui/icons/ThumbUp';
@@ -30,6 +21,7 @@ import Paragraph from '../../layout/components/paragraph';
 import FormPost from '../../form/components/post';
 import UserThumbnail from '../../user/components/thumbnail';
 import UserName from '../../user/components/name';
+import ImageVideo from './image-video';
 
 
 moment.locale('ja');
@@ -190,13 +182,13 @@ const CommentReplyVideoPlayButtonImg = styled.img`
 `;
 
 
-const CommentReplyPreviewImagesBox = styled.div`
+const PreviewBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   margin: 0 0 6px 0;
 `;
 
-const CommentReplyPrevieImg = styled.img`
+const PrevieImg = styled.img`
   // width: 320px;
   // height: 180px;
   max-width: 192px;
@@ -211,11 +203,11 @@ const CommentReplyPrevieImg = styled.img`
   }
 `;
 
-const CommentReplyPreviewVideoBox = styled.div`
+const PreviewVideoBox = styled.div`
   position: relative;
 `;
 
-const CommentReplyPreviewVideoImg = styled.img`
+const PreviewVideoImg = styled.img`
   width: 192px;
   height: 108px;
   // margin: 0 0 14px 0;
@@ -228,7 +220,7 @@ const CommentReplyPreviewVideoImg = styled.img`
   }
 `;
 
-const CommentReplyPreviewVideoPlayButtonImg = styled.img`
+const PreviewVideoPlayButtonImg = styled.img`
   width: 192px;
   height: 108px;
   position: absolute;
@@ -514,6 +506,25 @@ export default class extends React.Component {
     
     
     
+    // --------------------------------------------------
+    //   Component - Preview Image & Video
+    // --------------------------------------------------
+    
+    // const ComponentPreview = ({imageVideoArr}) => (
+    //   <PreviewBox>
+        
+    //     {imageVideoArr.map((value) => {
+    //       return <PrevieImg
+    //         src={value.imageSrc}
+    //         onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 0)}
+    //       />;
+    //     })}
+        
+    //   </PreviewBox>
+    // );
+    
+    
+    
     
     // --------------------------------------------------
     //   Component - Comment
@@ -583,6 +594,56 @@ export default class extends React.Component {
                   
                   
                   <CommentBox>
+                    
+                    <ImageVideo
+                      id={value.id}
+                      lightboxArr={value.lightboxArr}
+                      imageVideoArr={value.imageVideoArr}
+                    />
+                    
+                    
+                    {/*<PreviewBox>
+                      
+                      <PrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 0)}
+                      />
+                      
+                      <PrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 1)}
+                      />
+                      
+                      <PrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 2)}
+                      />
+                      
+                      <PrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 3)}
+                      />
+                      
+                      <PrevieImg
+                        src="https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg"
+                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 4)}
+                      />
+                      
+                      <PreviewVideoBox
+                        onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}
+                      >
+                        <PreviewVideoImg
+                          src="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
+                        />
+                        
+                        <PreviewVideoPlayButtonImg
+                          src="/static/img/common/video-play-button.png"
+                        />
+                      </PreviewVideoBox>
+                    
+                    </PreviewBox>*/}
+                    
+                    
                     <Paragraph text={value.comment} />
                   </CommentBox>
                   
@@ -683,6 +744,10 @@ export default class extends React.Component {
       );
       // console.log(index, value);
     }
+    
+    
+    
+    
     
     
     

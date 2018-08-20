@@ -810,7 +810,7 @@ export default class extends React.Component {
               }
               
               
-              {/* Thread Edit Form */}
+              {/* Thread Update Form */}
               { threadUpdateFormOpenObj[value.id] &&
                 <React.Fragment>
                   
@@ -843,7 +843,7 @@ export default class extends React.Component {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleThreadUpdate(value.id)}
+                      onClick={() => handleThreadUpdate(communityId, value.id)}
                     >
                       編集する
                     </Button>
@@ -867,7 +867,7 @@ export default class extends React.Component {
               <FormPost
                 id={`${value.id}-comment-insert`}
                 buttonLabel1="コメントする"
-                buttonHandle1={() => handleCommentInsert(`${value.id}-comment-insert`)}
+                buttonHandle1={() => handleCommentInsert(communityId, value.id, `${value.id}-comment-insert`)}
               />
               
               

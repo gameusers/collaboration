@@ -188,7 +188,15 @@ class Component extends React.Component {
                 imageHeight: 682,
                 videoChannel: '',
                 videoId: '',
-              }
+              },
+              {
+                id: 'Rp82fJaEhQH',
+                imageSrc: '',
+                imageWidth: 0,
+                imageHeight: 0,
+                videoChannel: 'youtube',
+                videoId: 'QbMye8-chLM',
+              },
             ],
             good: 5000,
             page: 1,
@@ -308,6 +316,7 @@ class Component extends React.Component {
     
     argumentsObj.storeInstanceObj = {
       layout: storeLayout,
+      data: storeData,
       formPost: storeformPost
     };
     

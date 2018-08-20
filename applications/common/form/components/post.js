@@ -7,7 +7,7 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
 import Lightbox from 'react-images';
-import ModalVideo from 'react-modal-video';
+// import ModalVideo from 'react-modal-video';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';

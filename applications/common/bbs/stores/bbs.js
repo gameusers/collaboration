@@ -188,8 +188,18 @@ class Store {
   //   - Handle
   // ----------------------------------------
   
+  /**
+   * コメント投稿フォームでコメントを投稿する
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleCommentInsert(communityId, threadId, id) {
+    
+    
+    // ---------------------------------------------
+    //  Console 出力
+    // ---------------------------------------------
+    
     console.log(`\n\n`);
     console.log(`--- handleCommentInsert ---`);
     console.log(`communityId = ${communityId}`);
@@ -198,6 +208,7 @@ class Store {
     console.log(`storeFormPost.nameObj[id] = ${storeFormPost.nameObj[id]}`);
     console.log(`storeFormPost.textObj[id] = ${storeFormPost.textObj[id]}`);
     console.log(`storeFormPost.imageSrcObj[id] = ${storeFormPost.imageSrcObj[id]}`);
+    console.dir(storeFormPost.imageVideoObj[id]);
     console.log(`\n\n`);
     
     
@@ -205,7 +216,7 @@ class Store {
       return value.id === threadId;
     });
     
-    console.log(`threadIndex = ${threadIndex}`);
+    // console.log(`threadIndex = ${threadIndex}`);
     
     if (threadIndex !== 'undefined') {
       

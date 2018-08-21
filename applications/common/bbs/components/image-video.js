@@ -7,27 +7,6 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import moment from 'moment';
 import Lightbox from 'react-images';
-// import TextareaAutosize from 'react-autosize-textarea';
-
-import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-
-import IconPublic from '@material-ui/icons/Public';
-import IconUpdate from '@material-ui/icons/Update';
-import IconThumbUp from '@material-ui/icons/ThumbUp';
-import IconEdit from '@material-ui/icons/Edit';
-import IconReply from '@material-ui/icons/Reply';
-
-import green from '@material-ui/core/colors/green';
-
-import Paragraph from '../../layout/components/paragraph';
-import FormPost from '../../form/components/post';
-import UserThumbnail from '../../user/components/thumbnail';
-import UserName from '../../user/components/name';
 
 
 moment.locale('ja');
@@ -162,7 +141,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Comment
+    //   Component - Preview Image & Video
     // --------------------------------------------------
     
     const componentsPreviewArr = [];
@@ -212,16 +191,18 @@ export default class extends React.Component {
       <PreviewBox>
         {componentsPreviewArr}
         
-        <Lightbox
-          images={lightboxArr}
-          currentImage={lightboxCurrentNo}
-          isOpen={lightboxOpen}
-          onClickPrev={() => handleLightboxPrevious(id)}
-          onClickNext={() => handleLightboxNext(id)}
-          onClose={() => handleLightboxClose(id)}
-          backdropClosesModal
-          preloadNextImage={false}
-        />
+        { (lightboxArr && lightboxArr.length > 0) &&
+          <Lightbox
+            images={lightboxArr}
+            currentImage={lightboxCurrentNo}
+            isOpen={lightboxOpen}
+            onClickPrev={() => handleLightboxPrevious(id)}
+            onClickNext={() => handleLightboxNext(id)}
+            onClose={() => handleLightboxClose(id)}
+            backdropClosesModal
+            preloadNextImage={false}
+          />
+        }
       </PreviewBox>
     );
     

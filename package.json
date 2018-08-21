@@ -37,7 +37,7 @@
     "mongoose": "^5.2.9",
     "next": "^6.1.1",
     "prop-types": "^15.6.2",
-    "rc-pagination": "^1.16.5",
+    "rc-pagination": "^1.17.0",
     "react": "^16.4.2",
     "react-autosize-textarea": "^4.0.0",
     "react-dom": "^16.4.2",

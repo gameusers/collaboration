@@ -87,21 +87,52 @@ class Store {
   //   Image Form
   // ---------------------------------------------
   
+  /**
+   * 投稿された画像のソースを入れるオブジェクト
+   * @type {Object}
+   */
   imageSrcObj = {};
+  
+  /**
+   * 投稿された画像の幅を入れるオブジェクト
+   * @type {Object}
+   */
   imageWidthObj = {};
+  
+  /**
+   * 投稿された画像の高さを入れるオブジェクト
+   * @type {Object}
+   */
   imageHeightObj = {};
+  
+  /**
+   * 投稿された画像の拡張子を入れるオブジェクト
+   * @type {Object}
+   */
   imageExtensionObj = {};
   
   
+  /**
+   * 投稿フォームで画像を選択したときに呼び出される
+   * @param {Object} event - イベント
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleSelectImage(event, id) {
-    // console.log(`file = ${event.target.files[0]}`);
-    // console.log(`id = ${id}`);
     
+    console.log(`\n\n`);
+    console.log(`--- handleSelectImage ---`);
+    console.log(`event = ${event} / type = ${typeof event}`);
+    console.log(`id = ${id}`);
+    console.log(`file = ${event.target.files[0]}`);
+    // console.log(`\n\n`);
+    
+    
+    // アップロードする画像の最大サイズ、5MBまで
     const imageSizeUpperLimit = 5242880;
     
+    // アップロードされたファイル
     const file = event.target.files[0];
-    const fileReader = new FileReader();
     
     
     // ---------------------------------------------
@@ -132,6 +163,8 @@ class Store {
     //   画像のデータ取得
     // ---------------------------------------------
     
+    const fileReader = new FileReader();
+    
     fileReader.onload = () => {
 
       const img = new Image();
@@ -159,7 +192,6 @@ class Store {
         this.imageHeightObj[id] = height;
         this.imageExtensionObj[id] = extension;
         
-        console.log(`id = ${id}`);
         console.log(`imageSrcObj[id] = ${this.imageSrcObj[id]}`);
         console.log(`imageWidthObj[id] = ${this.imageWidthObj[id]}`);
         console.log(`imageHeightObj[id] = ${this.imageHeightObj[id]}`);
@@ -174,12 +206,27 @@ class Store {
   };
   
   
+  /**
+   * 投稿フォームで選択した画像を追加する
+   * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleAddImage(id) {
     
     
     // ---------------------------------------------
-    //  Preview Arr
+    //  Console 出力
+    // ---------------------------------------------
+    
+    console.log(`\n\n`);
+    console.log(`--- handleAddImage ---`);
+    console.log(`id = ${id}`);
+    console.log(`\n\n`);
+    
+    
+    // ---------------------------------------------
+    //  Preview 用の配列、すでに配列が存在する場合はそちらを使う
     // ---------------------------------------------
     
     let imageVideoArr = [];
@@ -190,7 +237,7 @@ class Store {
     
     
     // ---------------------------------------------
-    //   重複のチェック
+    //   すでに追加されている画像かチェックする
     // ---------------------------------------------
     
     const duplication = imageVideoArr.find((value) => {
@@ -225,10 +272,11 @@ class Store {
       
       this.imageVideoObj[id] = imageVideoArr;
       
+      
       // Lightbox 用に画像を追加
       storeLayout.handleLightboxAddImage(id, imageId, this.imageSrcObj[id], this.imageCaptionObj[id]);
       
-      // Caption をリセット
+      // Caption 入力フォームをリセット
       this.imageCaptionObj[id] = '';
       
     }
@@ -368,7 +416,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Image & Video
+  //   Preview用 Image & Video
   // ---------------------------------------------
   
   @observable imageVideoObj = {};

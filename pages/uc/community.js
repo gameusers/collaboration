@@ -167,6 +167,37 @@ class Component extends React.Component {
             imageVideoArr: [
               {
                 id: 'FK_8mRwTa18',
+                type: 'image',
+                '320w': {
+                  src: '/static/img/bbs/FK_8mRwTa18/320x213.jpg',
+                  width: 320,
+                  height: 213,
+                  type: 'JPEG'
+                },
+                '480w': {
+                  src: '/static/img/bbs/FK_8mRwTa18/480x320.jpg',
+                  width: 480,
+                  height: 320,
+                  type: 'JPEG'
+                },
+                '640w': {
+                  src: '/static/img/bbs/FK_8mRwTa18/640x426.jpg',
+                  width: 640,
+                  height: 426,
+                  type: 'JPEG'
+                },
+                '800w': {
+                  src: '/static/img/bbs/FK_8mRwTa18/800x533.jpg',
+                  width: 800,
+                  height: 533,
+                  type: 'JPEG'
+                },
+                source: {
+                  src: '/static/img/bbs/FK_8mRwTa18/1920x1279.jpg',
+                  width: 1920,
+                  height: 1279,
+                  type: 'JPEG'
+                },
                 imageSrc: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
                 imageWidth: 640,
                 imageHeight: 360,

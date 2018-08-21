@@ -507,26 +507,6 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Preview Image & Video
-    // --------------------------------------------------
-    
-    // const ComponentPreview = ({imageVideoArr}) => (
-    //   <PreviewBox>
-        
-    //     {imageVideoArr.map((value) => {
-    //       return <PrevieImg
-    //         src={value.imageSrc}
-    //         onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 0)}
-    //       />;
-    //     })}
-        
-    //   </PreviewBox>
-    // );
-    
-    
-    
-    
-    // --------------------------------------------------
     //   Component - Comment
     // --------------------------------------------------
     
@@ -573,6 +553,7 @@ export default class extends React.Component {
               {/* Comment */}
               <CommentContainer>
                 
+                {/* コメントの左側　サムネイル */}
                 <CommentLeftBox>
                   <CommentThumbnailBox>
                     <UserThumbnail id={value.userId} />
@@ -586,6 +567,7 @@ export default class extends React.Component {
                 </CommentLeftBox>
                 
                 
+                {/* コメントの右側　画像・動画・コメント */}
                 <CommentRightBox>
                 
                   <UserNameBox>
@@ -594,66 +576,24 @@ export default class extends React.Component {
                   
                   
                   <CommentBox>
-                    
                     <ImageVideo
                       id={value.id}
                       lightboxArr={value.lightboxArr}
                       imageVideoArr={value.imageVideoArr}
                     />
                     
-                    
-                    {/*<PreviewBox>
-                      
-                      <PrevieImg
-                        src="https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 0)}
-                      />
-                      
-                      <PrevieImg
-                        src="https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 1)}
-                      />
-                      
-                      <PrevieImg
-                        src="https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 2)}
-                      />
-                      
-                      <PrevieImg
-                        src="https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 3)}
-                      />
-                      
-                      <PrevieImg
-                        src="https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg"
-                        onClick={() => stores.layout.handleLightboxOpen('Um_cUEd7vl0', 4)}
-                      />
-                      
-                      <PreviewVideoBox
-                        onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}
-                      >
-                        <PreviewVideoImg
-                          src="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
-                        />
-                        
-                        <PreviewVideoPlayButtonImg
-                          src="/static/img/common/video-play-button.png"
-                        />
-                      </PreviewVideoBox>
-                    
-                    </PreviewBox>*/}
-                    
-                    
                     <Paragraph text={value.comment} />
                   </CommentBox>
                   
                   
+                  {/* 更新日 */}
                   <UpdatedDateBox>
                     <UpdatedDateIconUpdate />
                     <UpdatedDate>{datetimeFrom}</UpdatedDate>
                   </UpdatedDateBox>
                   
                   
+                  {/* Goodボタン・返信ボタン・編集ボタン・ID */}
                   <BottomNavBox>
                     
                     <BottomNavButtonsBox>
@@ -696,6 +636,7 @@ export default class extends React.Component {
               </CommentContainer>
               
               
+              {/* 返信フォームを表示する */}
               { replyInsertFormOpen &&
                 
                 <ReplyFormBox>
@@ -732,24 +673,9 @@ export default class extends React.Component {
           
         </CommentsRepliesContainer>
         
-        
-          
-        
-        
-        
-        
-        
-        
-        
       );
-      // console.log(index, value);
+      
     }
-    
-    
-    
-    
-    
-    
     
     
     // --------------------------------------------------

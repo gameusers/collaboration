@@ -676,9 +676,7 @@ export default class extends React.Component {
     const {
       
       handleThreadDescriptionOpenObj,
-      
       handleThreadUpdateFormOpen,
-      
       handleThreadUpdateFormName,
       handleThreadUpdateFormDescription,
       handleThreadUpdate

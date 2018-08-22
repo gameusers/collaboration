@@ -135,99 +135,73 @@ class Component extends React.Component {
             status: '',
             comment: '非常に引き込まれるものがありました。\nジョディのスタンド、エイデンはめちゃくちゃ強いですね。\n僕が知っているジョジョ4部までに出てきたスタンドで\nエイデンに勝てそうなのは\nスタープラチナとザ・ワールド、ヴァニラ・アイスのスタンドくらいですね。\n半径10メートル以内の人間を窒息死させたり\n意のままに操れたりするのはやばすぎます。',
             updatedDate: '2018-08-11T06:50:00Z',
-            lightboxArr: [
-              {
-                id: 'FK_8mRwTa18',
-                src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-                caption: 'Caption 1',
-                srcSet: [
-                  'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-                  'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-                ],
-              },
-              {
-                id: 'Ztz0PgAXUgG',
-                src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
-                caption: 'Caption 2',
-                srcSet: [
-                  'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
-                  'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
-                ],
-              },
-              {
-                id: '9R0YsovoSSp',
-                src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
-                caption: '',
-                srcSet: [
-                  'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 320w',
-                  'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 640w',
-                ],
-              },
-            ],
             imageVideoArr: [
               {
                 id: 'FK_8mRwTa18',
                 type: 'image',
-                '320w': {
-                  src: '/static/img/bbs/FK_8mRwTa18/320x213.jpg',
-                  width: 320,
-                  height: 213,
-                  type: 'JPEG'
-                },
-                '480w': {
-                  src: '/static/img/bbs/FK_8mRwTa18/480x320.jpg',
-                  width: 480,
-                  height: 320,
-                  type: 'JPEG'
-                },
-                '640w': {
-                  src: '/static/img/bbs/FK_8mRwTa18/640x426.jpg',
-                  width: 640,
-                  height: 426,
-                  type: 'JPEG'
-                },
-                '800w': {
-                  src: '/static/img/bbs/FK_8mRwTa18/800x533.jpg',
-                  width: 800,
-                  height: 533,
-                  type: 'JPEG'
-                },
-                source: {
-                  src: '/static/img/bbs/FK_8mRwTa18/1920x1279.jpg',
-                  width: 1920,
-                  height: 1279,
-                  type: 'JPEG'
-                },
-                imageSrc: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-                imageWidth: 640,
-                imageHeight: 360,
-                videoChannel: '',
-                videoId: '',
+                imageSetArr: [
+                  {
+                    w: '320w',
+                    src: '/static/img/bbs/FK_8mRwTa18/320x213.jpg',
+                    width: 320,
+                    height: 213,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '480w',
+                    src: '/static/img/bbs/FK_8mRwTa18/480x320.jpg',
+                    width: 480,
+                    height: 320,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '640w',
+                    src: '/static/img/bbs/FK_8mRwTa18/640x426.jpg',
+                    width: 640,
+                    height: 426,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '800w',
+                    src: '/static/img/bbs/FK_8mRwTa18/800x533.jpg',
+                    width: 800,
+                    height: 533,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: 'source',
+                    src: '/static/img/bbs/FK_8mRwTa18/1920x1279.jpg',
+                    width: 1920,
+                    height: 1279,
+                    type: 'JPEG'
+                  },
+                ],
+                caption: 'Caption 1',
               },
-              {
-                id: 'Ztz0PgAXUgG',
-                imageSrc: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
-                imageWidth: 187,
-                imageHeight: 293,
-                videoChannel: '',
-                videoId: '',
-              },
-              {
-                id: '9R0YsovoSSp',
-                imageSrc: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
-                imageWidth: 879,
-                imageHeight: 682,
-                videoChannel: '',
-                videoId: '',
-              },
-              {
-                id: 'Rp82fJaEhQH',
-                imageSrc: '',
-                imageWidth: 0,
-                imageHeight: 0,
-                videoChannel: 'youtube',
-                videoId: 'QbMye8-chLM',
-              },
+              // {
+              //   id: 'Ztz0PgAXUgG',
+              //   imageSrc: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
+              //   imageWidth: 187,
+              //   imageHeight: 293,
+              //   videoChannel: '',
+              //   videoId: '',
+              // },
+              // {
+              //   id: '9R0YsovoSSp',
+              //   imageSrc: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
+              //   imageWidth: 879,
+              //   imageHeight: 682,
+              //   videoChannel: '',
+              //   videoId: '',
+              // },
+              // {
+              //   id: 'Rp82fJaEhQH',
+              //   imageSrc: '',
+              //   imageWidth: 0,
+              //   imageHeight: 0,
+              //   videoChannel: 'youtube',
+              //   videoId: 'QbMye8-chLM',
+              // },
             ],
             good: 5000,
             page: 1,
@@ -252,6 +226,209 @@ class Component extends React.Component {
                 good: 0,
               }
             ]
+          },
+          {
+            id: 'HHKEi364js2',
+            userId: 'a8b0gX6lMIz',
+            name: '',
+            status: '',
+            comment: '縦長画像のテスト',
+            updatedDate: '2018-08-20T09:30:00Z',
+            imageVideoArr: [
+              {
+                id: '9R0YsovoSSp',
+                type: 'image',
+                imageSetArr: [
+                  {
+                    w: '320w',
+                    src: '/static/img/bbs/9R0YsovoSSp/213x320.jpg',
+                    width: 213,
+                    height: 320,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '480w',
+                    src: '/static/img/bbs/9R0YsovoSSp/320x480.jpg',
+                    width: 320,
+                    height: 480,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '640w',
+                    src: '/static/img/bbs/9R0YsovoSSp/427x640.jpg',
+                    width: 427,
+                    height: 640,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '800w',
+                    src: '/static/img/bbs/9R0YsovoSSp/533x800.jpg',
+                    width: 533,
+                    height: 800,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: 'source',
+                    src: '/static/img/bbs/9R0YsovoSSp/1920x1280.jpg',
+                    width: 1280,
+                    height: 1920,
+                    type: 'JPEG'
+                  },
+                ],
+                caption: '猫',
+              },
+            ],
+            good: 300,
+            page: 1,
+            replyTotal: 0,
+            replyArr: []
+          },
+          {
+            id: 'lk309TyrhAj',
+            userId: '',
+            name: 'パノラマ',
+            status: '画像',
+            comment: '超横長画像のテスト',
+            updatedDate: '2018-08-21T12:20:00Z',
+            imageVideoArr: [
+              {
+                id: 'wQ40f5McTrq',
+                type: 'image',
+                imageSetArr: [
+                  {
+                    w: '320w',
+                    src: '/static/img/bbs/wQ40f5McTrq/320x120.jpg',
+                    width: 320,
+                    height: 120,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '480w',
+                    src: '/static/img/bbs/wQ40f5McTrq/480x180.jpg',
+                    width: 480,
+                    height: 180,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '640w',
+                    src: '/static/img/bbs/wQ40f5McTrq/640x240.jpg',
+                    width: 640,
+                    height: 240,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '800w',
+                    src: '/static/img/bbs/wQ40f5McTrq/800x300.jpg',
+                    width: 800,
+                    height: 300,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: 'source',
+                    src: '/static/img/bbs/wQ40f5McTrq/1920x721.jpg',
+                    width: 1920,
+                    height: 721,
+                    type: 'JPEG'
+                  },
+                ],
+                caption: 'パノラマ画像',
+              },
+            ],
+            good: 150,
+            page: 1,
+            replyTotal: 0,
+            replyArr: []
+          },
+          {
+            id: 'kCbNKcTW99D',
+            userId: '',
+            name: '正方形',
+            status: '画像',
+            comment: '正方形画像のテスト',
+            updatedDate: '2018-08-21T22:10:00Z',
+            imageVideoArr: [
+              {
+                id: 'UKXKoSLsPuF',
+                type: 'image',
+                imageSetArr: [
+                  {
+                    w: '320w',
+                    src: '/static/img/bbs/UKXKoSLsPuF/320x320.jpg',
+                    width: 320,
+                    height: 320,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '480w',
+                    src: '/static/img/bbs/UKXKoSLsPuF/480x480.jpg',
+                    width: 480,
+                    height: 480,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '640w',
+                    src: '/static/img/bbs/UKXKoSLsPuF/640x2640.jpg',
+                    width: 640,
+                    height: 640,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: '800w',
+                    src: '/static/img/bbs/UKXKoSLsPuF/800x800.jpg',
+                    width: 800,
+                    height: 800,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: 'source',
+                    src: '/static/img/bbs/UKXKoSLsPuF/1920x1920.jpg',
+                    width: 1920,
+                    height: 1920,
+                    type: 'JPEG'
+                  },
+                ],
+                caption: '正方形画像',
+              },
+            ],
+            good: 100,
+            page: 1,
+            replyTotal: 0,
+            replyArr: []
+          },
+          {
+            id: 'NrcTaFXUy0W',
+            userId: '',
+            name: '小さい',
+            status: '横長画像',
+            comment: '小さい横長画像のテスト',
+            updatedDate: '2018-08-22T00:40:00Z',
+            imageVideoArr: [
+              {
+                id: 'oujAha0x5yH',
+                type: 'image',
+                imageSetArr: [
+                  {
+                    w: '320w',
+                    src: '/static/img/bbs/oujAha0x5yH/128x85.jpg',
+                    width: 128,
+                    height: 85,
+                    type: 'JPEG'
+                  },
+                  {
+                    w: 'source',
+                    src: '/static/img/bbs/oujAha0x5yH/128x85.jpg',
+                    width: 128,
+                    height: 85,
+                    type: 'JPEG'
+                  },
+                ],
+                caption: '小さい横長画像',
+              },
+            ],
+            good: 150,
+            page: 1,
+            replyTotal: 0,
+            replyArr: []
           }
         ]
       },

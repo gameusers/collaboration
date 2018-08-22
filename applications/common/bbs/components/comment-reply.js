@@ -60,7 +60,7 @@ const CommentLeftBox = styled.div`
 
 const CommentThumbnailBox = styled.div`
   // align-items: flex-start;
-  margin: 2px 0 0 0;
+  margin: 3px 0 0 0;
 `;
 
 const CommentLevelBox = styled.div`
@@ -279,8 +279,7 @@ const BottomNavBox = styled.div`
 
 const BottomNavButtonsBox = styled.div`
   display: flex;
-  flex-flow: row nowrap;
-  margin: 0 0 0 0;
+  flex-flow: row wrap;
 `;
 
 const BottomNavInfoBox = styled.div`
@@ -571,7 +570,11 @@ export default class extends React.Component {
                 <CommentRightBox>
                 
                   <UserNameBox>
-                    <UserName id={value.userId} />
+                    <UserName
+                      id={value.userId}
+                      name={value.name}
+                      status={value.status}
+                    />
                   </UserNameBox>
                   
                   

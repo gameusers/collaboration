@@ -24,7 +24,41 @@ const PreviewBox = styled.div`
   margin: 0 0 6px 0;
 `;
 
-const PrevieImg = styled.img`
+// const PreviewImg = styled.img`
+//   // width: 100%;
+//   // height: 250px;
+//   // object-fit: contain;
+  
+//   max-width: 480px;
+//   max-height: 320px;
+  
+//   // max-width: 192px;
+//   // max-height: 108px;
+  
+//   margin: 2px 4px 4px 0;
+  
+//   @media screen and (max-width: 480px) {
+//     // width: 260px;
+//     // width: 100%;
+//     // height: auto;
+//     max-width: 256px;
+//     max-height: 144px;
+//     // max-width: 144px;
+//     // max-height: 256px;
+    
+    
+//     // max-width: 128px;
+//     // max-height: 72px;
+    
+    
+    
+//     // max-width: 260px;
+//     // max-height: auto;
+//     // max-height: 320px;
+//   }
+// `;
+
+const PreviewMultipleImg = styled.img`
   // width: 320px;
   // height: 180px;
   max-width: 192px;
@@ -38,6 +72,7 @@ const PrevieImg = styled.img`
     max-height: 72px;
   }
 `;
+
 
 const PreviewVideoBox = styled.div`
   position: relative;
@@ -96,12 +131,18 @@ export default class extends React.Component {
     //   Initialize Store
     // ---------------------------------------------
     
-    const argumentsLightboxObj = {
-      id: props.id,
-      lightboxArr: props.lightboxArr,
-    };
+    // const argumentsLightboxObj = {
+    //   id: props.id,
+    //   lightboxArr: props.lightboxArr,
+    // };
     
-    props.stores.layout.initializeLightbox(argumentsLightboxObj);
+    // props.stores.layout.initializeLightbox(argumentsLightboxObj);
+    
+    
+    
+    props.stores.layout.initializeLightbox(props.id, props.imageVideoArr);
+    
+    // props.stores.layout.initializeLightbox2(props.id, props.imageVideoArr);
     
     
     // console.log(`props.id = ${props.id}`);
@@ -144,19 +185,134 @@ export default class extends React.Component {
     //   Component - Preview Image & Video
     // --------------------------------------------------
     
+    const imageVideoArrLength = imageVideoArr.length;
     const componentsPreviewArr = [];
     
     for (const [index, value] of imageVideoArr.entries()) {
       
-      if (value.imageSrc) {
+      if (value.type === 'image') {
         
-        componentsPreviewArr.push(
-          <PrevieImg
-            key={index}
-            src={value.imageSrc}
-            onClick={() => handleLightboxOpen(id, index)}
-          />
-        );
+        // const aspectRatio = value.imageSetArr[0].width / value.imageSetArr[0].height;
+        
+        let aspectRatio = 1;
+        let width = 0;
+        let height = 0;
+        let basic480w = 260;
+        let basic320w = 230;
+        
+        let PreviewImg = '';
+        
+        
+        // 横長画像の場合
+        if (value.imageSetArr[0].width >= value.imageSetArr[0].height) {
+          
+          aspectRatio = value.imageSetArr[0].height / value.imageSetArr[0].width;
+          width = value.imageSetArr[1].width;
+          height = value.imageSetArr[1].height;
+          
+          
+          // ソース画像の情報を取得する
+          const sourceArr = value.imageSetArr.find((value2) => {
+            return value2.w === 'source';
+          });
+          
+          // ソース画像が既定値より小さい場合は、その画像の幅を width に設定する
+          if (sourceArr.width < basic480w) {
+            basic480w = sourceArr.width;
+          }
+          
+          if (sourceArr.width < basic320w) {
+            basic320w = sourceArr.width;
+          }
+          
+          // console.log(`sourceArr =`);
+          // console.dir(sourceArr);
+          // console.log(`basic480w = ${basic480w}`);
+          
+          
+          PreviewImg = styled.img`
+            width: ${width};
+            height: ${height};
+            max-width: 480px;
+            max-height: 480px;
+            
+            margin: 2px 4px 4px 0;
+            
+            @media screen and (max-width: 480px) {
+              width: ${basic480w}px;
+              height: ${Math.round(basic480w * aspectRatio)}px;
+            }
+            
+            @media screen and (max-width: 320px) {
+              width: ${basic320w}px;
+              height: ${Math.round(basic320w * aspectRatio)}px;
+            }
+          `;
+          
+        // 縦長画像の場合
+        } else {
+          
+          aspectRatio = value.imageSetArr[0].width / value.imageSetArr[0].height;
+          width = value.imageSetArr[1].width;
+          height = value.imageSetArr[1].height;
+          
+          
+          // ソース画像の情報を取得する
+          const sourceArr = value.imageSetArr.find((value2) => {
+            return value2.w === 'source';
+          });
+          
+          // ソース画像が既定値より小さい場合は、その画像の高さを height に設定する
+          if (sourceArr.height < basic480w) {
+            basic480w = sourceArr.height;
+          }
+          
+          
+          PreviewImg = styled.img`
+            width: ${width};
+            height: ${height};
+            max-width: 480px;
+            max-height: 480px;
+            
+            margin: 2px 4px 4px 0;
+            
+            @media screen and (max-width: 480px) {
+              width: ${Math.round(basic480w * aspectRatio)}px;
+              height: ${basic480w}px;
+            }
+          `;
+          
+        }
+        
+        // console.log(`aspectRatio = ${aspectRatio}`);
+        
+        
+        
+        
+        
+        if (imageVideoArrLength === 1) {
+          
+          componentsPreviewArr.push(
+            <PreviewImg
+              key={index}
+              src={value.imageSetArr[1].src}
+              // width={value.imageSetArr[1].width}
+              // height={value.imageSetArr[1].height}
+              onClick={() => handleLightboxOpen(id, index)}
+            />
+          );
+          
+        } else {
+          
+          componentsPreviewArr.push(
+            <PreviewMultipleImg
+              key={index}
+              src={value.imageSetArr[0].src}
+              onClick={() => handleLightboxOpen(id, index)}
+            />
+          );
+          
+        }
         
       } else if (value.videoChannel && value.videoId) {
         

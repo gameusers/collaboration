@@ -382,16 +382,92 @@ class Store {
   //   - Initialize Lightbox
   // ----------------------------------------
   
+  // @action.bound
+  // initializeLightbox(argumentsObj) {
+    
+  //   const id = argumentsObj.id ? argumentsObj.id : '';
+  //   const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
+    
+    
+  //   if (id in this.lightboxObj === false) {
+  //     this.lightboxObj[id] = lightboxArr;
+  //   }
+    
+  //   if (id in this.lightboxCurrentNoObj === false) {
+  //     this.lightboxCurrentNoObj[id] = 0;
+  //   }
+    
+  //   if (id in this.lightboxOpenObj === false) {
+  //     this.lightboxOpenObj[id] = false;
+  //   }
+    
+  //   // console.log(`initializeLightbox`);
+  //   // console.log(`id = ${id}`);
+    
+  // }
+  
+  
   @action.bound
-  initializeLightbox(argumentsObj) {
+  initializeLightbox(id, imageVideoArr = []) {
     
-    const id = argumentsObj.id ? argumentsObj.id : '';
-    const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
+    // console.dir(imageVideoArr);
     
+    const lightboxArr = [];
     
-    if (id in this.lightboxObj === false) {
-      this.lightboxObj[id] = lightboxArr;
+    for (const value of imageVideoArr.values()) {
+      
+      if (value.type === 'image') {
+        
+        let src = '';
+        const srcSetArr = [];
+        
+        for (const value2 of value.imageSetArr.values()) {
+          
+          if (value2.w !== 'source') {
+            srcSetArr.push(`${value2.src} ${value2.w}`);
+          } else {
+            src = value2.src;
+          }
+          
+          // console.log(index2, value2);
+        }
+        
+        
+        lightboxArr.push({
+          
+          id: value.id,
+          src,
+          caption: value.caption,
+          srcSet: srcSetArr
+          
+        });
+        
+      }
+      
+      
+      
+      
+      // console.log(index, value);
     }
+    
+    console.dir(lightboxArr);
+    
+    
+    // {
+    //   id: 'FK_8mRwTa18',
+    //   src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
+    //   caption: 'Caption 1',
+    //   srcSet: [
+    //     'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
+    //     'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
+    //   ],
+    // },
+    
+    
+    // if (id in this.lightboxObj === false) {
+    //   this.lightboxObj[id] = lightboxArr;
+    // }
+    this.lightboxObj[id] = lightboxArr;
     
     if (id in this.lightboxCurrentNoObj === false) {
       this.lightboxCurrentNoObj[id] = 0;

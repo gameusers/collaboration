@@ -120,11 +120,11 @@ class Store {
   @action.bound
   handleSelectImage(event, id) {
     
-    console.log(`\n\n`);
-    console.log(`--- handleSelectImage ---`);
-    console.log(`event = ${event} / type = ${typeof event}`);
-    console.log(`id = ${id}`);
-    console.log(`file = ${event.target.files[0]}`);
+    // console.log(`\n\n`);
+    // console.log(`--- handleSelectImage ---`);
+    // console.log(`event = ${event} / type = ${typeof event}`);
+    // console.log(`id = ${id}`);
+    // console.log(`file = ${event.target.files[0]}`);
     // console.log(`\n\n`);
     
     
@@ -192,10 +192,10 @@ class Store {
         this.imageHeightObj[id] = height;
         this.imageExtensionObj[id] = extension;
         
-        console.log(`imageSrcObj[id] = ${this.imageSrcObj[id]}`);
-        console.log(`imageWidthObj[id] = ${this.imageWidthObj[id]}`);
-        console.log(`imageHeightObj[id] = ${this.imageHeightObj[id]}`);
-        console.log(`imageExtensionObj[id] = ${this.imageExtensionObj[id]}`);
+        // console.log(`imageSrcObj[id] = ${this.imageSrcObj[id]}`);
+        // console.log(`imageWidthObj[id] = ${this.imageWidthObj[id]}`);
+        // console.log(`imageHeightObj[id] = ${this.imageHeightObj[id]}`);
+        // console.log(`imageExtensionObj[id] = ${this.imageExtensionObj[id]}`);
         
       };
 
@@ -219,10 +219,12 @@ class Store {
     //  Console 出力
     // ---------------------------------------------
     
-    console.log(`\n\n`);
-    console.log(`--- handleAddImage ---`);
-    console.log(`id = ${id}`);
-    console.log(`\n\n`);
+    // console.log(`\n\n`);
+    // console.log(`--- handleAddImage ---`);
+    // console.log(`id = ${id}`);
+    // console.log(`this.imageVideoObj =`);
+    // console.dir(this.imageVideoObj);
+    // console.log(`\n\n`);
     
     
     // ---------------------------------------------
@@ -237,12 +239,45 @@ class Store {
     
     
     // ---------------------------------------------
-    //   すでに追加されている画像かチェックする
+    //   すでに同じ画像が追加されていないかチェックする
     // ---------------------------------------------
     
-    const duplication = imageVideoArr.find((value) => {
-      return (value.imageSrc === this.imageSrcObj[id]);
-    });
+    let duplication = false;
+    
+    if (imageVideoArr.length > 0) {
+      
+      duplication = imageVideoArr[0].imageSetArr.find((value) => {
+        return (value.src === this.imageSrcObj[id]);
+      });
+      
+    }
+    
+    
+    
+    
+    // imageVideoArr: [
+    //   {
+    //     id: 'bQcCGQwpv60',
+    //     type: 'image',
+    //     imageSetArr: [
+    //       {
+    //         w: '320w',
+    //         src: '/static/img/bbs/bQcCGQwpv60/96x144.jpg',
+    //         width: 96,
+    //         height: 144,
+    //         type: 'JPEG'
+    //       },
+    //       {
+    //         w: 'source',
+    //         src: '/static/img/bbs/bQcCGQwpv60/96x144.jpg',
+    //         width: 96,
+    //         height: 144,
+    //         type: 'JPEG'
+    //       },
+    //     ],
+    //     caption: '小さい正方形画像',
+    //   },
+    // ],
     
     
     // ---------------------------------------------
@@ -256,7 +291,7 @@ class Store {
       
     } else if (duplication) {
       
-      storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が登録されています。');
+      storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が追加されています。');
       return;
       
     } else {
@@ -265,13 +300,29 @@ class Store {
       
       imageVideoArr.push({
         id: imageId,
-        imageSrc: this.imageSrcObj[id],
-        videoChannel: '',
-        videoId: '',
+        type: 'image',
+        imageSetArr: [
+          {
+            w: '320w',
+            src: this.imageSrcObj[id],
+            width: this.imageWidthObj[id],
+            height: this.imageHeightObj[id],
+            type: 'JPEG'
+          },
+          {
+            w: 'source',
+            src: this.imageSrcObj[id],
+            width: this.imageWidthObj[id],
+            height: this.imageHeightObj[id],
+            type: 'JPEG'
+          },
+        ],
+        caption: this.imageCaptionObj[id]
       });
       
-      this.imageVideoObj[id] = imageVideoArr;
       
+      // Preview 用のオブジェクトに追加する
+      this.imageVideoObj[id] = imageVideoArr;
       
       // Lightbox 用に画像を追加
       storeLayout.handleLightboxAddImage(id, imageId, this.imageSrcObj[id], this.imageCaptionObj[id]);
@@ -300,7 +351,6 @@ class Store {
   
   @action.bound
   handleImageCaption(event, id) {
-    // console.log(`event.target.value = ${event.target.value}`);
     this.imageCaptionObj[id] = event.target.value;
   };
   
@@ -428,30 +478,37 @@ class Store {
   
   @action.bound
   handleImageVideoDelete(id, index) {
-    console.log(`handleImageVideoDelete`);
+    
+    console.log(`\n\n`);
+    console.log(`--- handleImageVideoDelete ---`);
     console.log(`id = ${id}`);
     console.log(`index = ${index}`);
-    // console.dir(this.imageVideoObj[id][index].imageSrc);
+    
     
     const deleteId = this.imageVideoObj[id][index].id;
     
-    const deleteIndex = storeLayout.lightboxObj[id].findIndex((value) => {
-      return value.id === deleteId;
-    });
+    // const deleteIndex = storeLayout.lightboxObj[id].findIndex((value) => {
+    //   return value.id === deleteId;
+    // });
     
     console.log(`deleteId = ${deleteId}`);
-    console.log(`deleteIndex = ${deleteIndex}`);
+    // console.log(`deleteIndex = ${deleteIndex}`);
+    console.log(`this.imageVideoObj =`);
+    console.dir(this.imageVideoObj);
+    console.log(`this.imageVideoObj[id] =`);
+    console.dir(this.imageVideoObj[id]);
+    console.log(`\n\n`);
     
     
-    this.imageVideoObj[id].splice(index, 1);
+    // this.imageVideoObj[id].splice(index, 1);
     
-    if (deleteIndex !== -1) {
-      storeLayout.lightboxObj[id].splice(deleteIndex, 1);
-    }
+    // if (deleteIndex !== -1) {
+    //   storeLayout.lightboxObj[id].splice(deleteIndex, 1);
+    // }
     
   };
   
-
+  
   
   
   
@@ -502,8 +559,6 @@ class Store {
     const name = argumentsObj.name ? argumentsObj.name : '';
     const text = argumentsObj.text ? argumentsObj.text : '';
     const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr : [];
-    // const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
-    
     
     
     // Anonymity
@@ -552,25 +607,10 @@ class Store {
     
     
     
-    // Image & Video Thumbnail
+    // Preview Image & Video
     if (id in this.imageVideoObj === false) {
       this.imageVideoObj[id] = imageVideoArr;
     }
-    
-    
-    
-    // Lightbox
-    // if (id in this.lightboxObj === false) {
-    //   this.lightboxObj[id] = lightboxArr;
-    // }
-    
-    // if (id in this.lightboxCurrentNoObj === false) {
-    //   this.lightboxCurrentNoObj[id] = 0;
-    // }
-    
-    // if (id in this.lightboxOpenObj === false) {
-    //   this.lightboxOpenObj[id] = false;
-    // }
     
     
     

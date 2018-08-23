@@ -30,7 +30,7 @@
     "express": "^4.16.3",
     "isomorphic-unfetch": "^2.1.1",
     "jss": "^9.8.7",
-    "mobx": "^5.0.3",
+    "mobx": "^5.0.4",
     "mobx-react": "^5.2.5",
     "moment": "^2.22.2",
     "mongo-express": "^0.47.0",
@@ -48,7 +48,7 @@
     "react-smooth-scrollbar": "^8.0.6",
     "shortid": "^2.2.13",
     "smooth-scrollbar": "^8.3.1",
-    "styled-components": "^3.4.2",
+    "styled-components": "^3.4.4",
     "velocity-react": "^1.4.1"
   },
   "devDependencies": {

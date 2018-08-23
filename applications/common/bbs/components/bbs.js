@@ -632,8 +632,7 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     this.dataObj = props.stores.bbs.dataObj[this.communityId];
-    // console.log(`this.dataObj = ${this.dataObj}`);
-    // console.dir(this.dataObj);
+    
     
     
     
@@ -741,6 +740,9 @@ export default class extends React.Component {
     const componentsBbsArr = [];
     
     for (const [key, value] of Object.entries(this.dataObj)) {
+      
+      // console.log(`value.commentArr`);
+      // console.dir(value.commentArr);
       
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する

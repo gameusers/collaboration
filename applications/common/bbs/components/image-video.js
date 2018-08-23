@@ -131,18 +131,7 @@ export default class extends React.Component {
     //   Initialize Store
     // ---------------------------------------------
     
-    // const argumentsLightboxObj = {
-    //   id: props.id,
-    //   lightboxArr: props.lightboxArr,
-    // };
-    
-    // props.stores.layout.initializeLightbox(argumentsLightboxObj);
-    
-    
-    
     props.stores.layout.initializeLightbox(props.id, props.imageVideoArr);
-    
-    // props.stores.layout.initializeLightbox2(props.id, props.imageVideoArr);
     
     
     // console.log(`props.id = ${props.id}`);
@@ -171,6 +160,10 @@ export default class extends React.Component {
     const lightboxCurrentNo = stores.layout.lightboxCurrentNoObj[id];
     const lightboxOpen = stores.layout.lightboxOpenObj[id];
     
+    // console.log(`lightboxArr = `);
+    // console.dir(lightboxArr);
+    
+    
     const {
       
       handleLightboxOpen,
@@ -187,6 +180,11 @@ export default class extends React.Component {
     
     const imageVideoArrLength = imageVideoArr.length;
     const componentsPreviewArr = [];
+    
+    
+    // console.log(`imageVideoArr = `);
+    // console.dir(imageVideoArr);
+    
     
     for (const [index, value] of imageVideoArr.entries()) {
       

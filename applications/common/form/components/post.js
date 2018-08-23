@@ -314,15 +314,7 @@ export default class extends React.Component {
     //   Initialize Store
     // ---------------------------------------------
     
-    const argumentsLightboxObj = {
-      id: props.id,
-      lightboxArr: props.lightboxArr,
-    };
-    
-    props.stores.layout.initializeLightbox(argumentsLightboxObj);
-    
-    
-    // props.stores.layout.initializeModalVideo(props.id);
+    props.stores.layout.initializeLightbox(props.id, props.imageVideoArr);
     
     
     const argumentsFormPostObj = {
@@ -405,6 +397,10 @@ export default class extends React.Component {
     const lightboxCurrentNo = stores.layout.lightboxCurrentNoObj[id];
     const lightboxOpen = stores.layout.lightboxOpenObj[id];
     
+    
+    // console.log(`lightboxArr = `);
+    // console.dir(lightboxArr);
+    
     const {
       
       handleLightboxOpen,
@@ -457,18 +453,19 @@ export default class extends React.Component {
       for (const [index, value] of imageVideoArr.entries()) {
         
         // console.log(`index = ${index}`);
+        // console.log(`componentImageVideoArr`);
         // console.dir(value);
         
         // ---------------------------------------------
         //   画像
         // ---------------------------------------------
         
-        if (value.imageSrc) {
+        if (value.type === 'image') {
           
           componentImageVideoArr.push(
             <PreviewBox key={index}>
               <PreviewImg
-                src={value.imageSrc}
+                src={value.imageSetArr[0].src}
                 onClick={() => handleLightboxOpen(id, index)}
               />
               
@@ -489,8 +486,6 @@ export default class extends React.Component {
         
         } else {
           
-          // const modalVideoOpen = stores.layout.modalVideoIdObj[`${id}-${value.videoChannel}-${value.videoId}`];
-          
           componentImageVideoArr.push(
             <PreviewBox key={index}>
               <PreviewImg
@@ -509,14 +504,6 @@ export default class extends React.Component {
               >
                 <IconClose />
               </PreviewDeleteButton>
-              
-              
-              {/*<ModalVideo
-                channel={value.videoChannel}
-                isOpen={modalVideoOpen}
-                videoId={value.videoId}
-                onClose={() => handleModalVideoClose(id, value.videoChannel, value.videoId)}
-              />*/}
               
             </PreviewBox>
           );

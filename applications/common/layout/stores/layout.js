@@ -297,28 +297,6 @@ class Store {
   
   
   
-  // ---------------------------------------------
-  //   User Community
-  // ---------------------------------------------
-  
-  // @observable ucObj = {
-  //   'p0V_RsaT1l8': {
-  //     name: 'あづみ配信コミュニティ',
-  //     rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
-  //     communityId: 'az1979',
-  //     members: 12345
-  //   },
-  //   '3YhijrrHx4e': {
-  //     name: 'あづみ配信コミュニティ',
-  //     rule: 'ピアキャスト、YouTube Gamingで、ゲームの配信を中心に雑談なども行っています。気軽にコミュニティに参加してや！配信開始時にメールで連絡するので、コミュニティ参加者は自分のプレイヤーページで、メールアドレスを登録してくれるとありがたい。',
-  //     communityId: 'az1979',
-  //     members: 12345
-  //   },
-  // };
-  
-  
-  
-  
   
   
   // ---------------------------------------------
@@ -410,7 +388,9 @@ class Store {
   @action.bound
   initializeLightbox(id, imageVideoArr = []) {
     
+    // console.log(`initializeLightbox`);
     // console.dir(imageVideoArr);
+    
     
     const lightboxArr = [];
     
@@ -444,13 +424,13 @@ class Store {
         
       }
       
-      
-      
-      
       // console.log(index, value);
     }
     
-    console.dir(lightboxArr);
+    // console.dir(lightboxArr);
+    
+    
+    // We must respect the will of the individual.
     
     
     // {
@@ -484,263 +464,6 @@ class Store {
   
   
   
-  // @observable lightboxCurrentNo = 0;
-  // @observable lightboxSrcArr = [];
-  // @observable lightboxOpen = false;
-  // @observable lightboxImagesId = 'init';
-  
-  // @action.bound
-  // handleLightboxOpen(id, currentNo) {
-  //   this.lightboxImagesId = id;
-  //   this.lightboxCurrentNo = currentNo;
-  //   this.lightboxOpen = true;
-  // };
-  
-  // @action.bound
-  // handleLightboxClose() {
-  //   this.lightboxOpen = false;
-  // };
-  
-  // @action.bound
-  // handleLightboxPreviousCurrentNo() {
-  //   this.lightboxCurrentNo = this.lightboxCurrentNo - 1;
-  // };
-  
-  // @action.bound
-  // handleLightboxNextCurrentNo() {
-  //   this.lightboxCurrentNo = this.lightboxCurrentNo + 1;
-  // };
-  
-  
-  
-  
-  // @observable lightboxImagesObj = {
-  //   init: [
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: '/static/img/common/logo.png',
-  //       caption: 'Logo',
-  //       srcSet: [
-  //         '/static/img/common/logo.png 320w',
-  //         '/static/img/common/logo.png 640w',
-  //       ],
-  //     }
-  //   ],
-  //   Um_cUEd7vl0: [
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-  //       caption: 'Caption 1 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg',
-  //       caption: 'Caption 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1209/image_1.jpg 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg',
-  //       caption: 'Caption 3',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/reply/1775/image_1.jpg 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg.jpg',
-  //       caption: 'Caption 4',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1168/image_1.jpg 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg',
-  //       caption: 'Caption 5',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1167/image_1.jpg 640w',
-  //       ],
-  //     }
-  //   ],
-  //   GMi2JFwJ868: [
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg',
-  //       caption: 'Caption 1',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1070/image_1.jpg 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg',
-  //       caption: 'Caption 2',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/reply/1592/image_1.jpg 640w',
-  //       ],
-  //     },
-  //     {
-  //       src: 'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg',
-  //       caption: 'Caption 3',
-  //       srcSet: [
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 320w',
-  //         'https://gameusers.org/assets/img/bbs_uc/comment/1065/image_1.jpg 640w',
-  //       ],
-  //     }
-  //   ],
-    
-  // };
-  
-  
-  
-  
-  
-  
-  
-  // @observable modalImageSrc = null;
-  // @observable modalImageOpen = false;
-  
-  // @action.bound
-  // handleModalImageOpen(src) {
-  //   this.modalImageSrc = src;
-  //   this.modalImageOpen = true;
-  // };
-  
-  // @action.bound
-  // handleModalImageClose() {
-  //   this.modalImageOpen = false;
-  // };
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   モーダルウィンドウ - 動画表示
-  // ---------------------------------------------
-  
-  // @observable modalVideoChannelObj = {};
-  // @observable modalVideoIdObj = {};
-  // @observable modalVideoOpenObj = {};
-  
-  // @action.bound
-  // handleModalVideoOpen(id, videoChannel, videoId) {
-    
-  //   console.log(`id = ${id}`);
-  //   console.log(`videoChannel = ${videoChannel}`);
-  //   console.log(`videoId = ${videoId}`);
-    
-  //   // this.modalVideoChannelObj[id] = videoChannel;
-  //   // this.modalVideoIdObj[id] = videoId;
-  //   this.modalVideoOpenObj[`${id}-${videoChannel}-${videoId}`] = true;
-  // };
-  
-  // @action.bound
-  // handleModalVideoClose(id, videoChannel, videoId) {
-  //   this.modalVideoOpenObj[`${id}-${videoChannel}-${videoId}`] = false;
-  // };
-  
-  
-  // ----------------------------------------
-  //   - Initialize
-  // ----------------------------------------
-  
-  // @action.bound
-  // initializeModalVideo(id) {
-    
-  //   // if (id in this.modalVideoChannelObj === false) {
-  //   //   this.modalVideoChannelObj[id] = '';
-  //   // }
-    
-  //   // if (id in this.modalVideoIdObj === false) {
-  //   //   this.modalVideoIdObj[id] = '';
-  //   // }
-    
-  //   // if (id in this.modalVideoOpenObj === false) {
-  //   //   this.modalVideoOpenObj[id] = false;
-  //   // }
-    
-  //   // console.log(`initializeLightbox`);
-  //   // console.log(`id = ${id}`);
-    
-  // }
   
   
   @observable modalVideoChannel = null;

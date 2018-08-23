@@ -505,6 +505,10 @@ export default class extends React.Component {
     
     
     
+    // console.log(`commentArr`);
+    // console.dir(commentArr);
+    
+    
     // --------------------------------------------------
     //   Component - Comment
     // --------------------------------------------------
@@ -539,6 +543,9 @@ export default class extends React.Component {
         commentUpdateFormOpen = commentUpdateFormOpenObj[`${value.id}-comment-update`];
       }
       
+      console.log(`value.imageVideoArr`);
+      console.dir(value.imageVideoArr);
+      console.log(`value.imageVideoArr[0].id = ${value.imageVideoArr[0].id}`);
       
       
       componentsCommentArr.push(
@@ -581,9 +588,16 @@ export default class extends React.Component {
                   <CommentBox>
                     <ImageVideo
                       id={value.id}
-                      lightboxArr={value.lightboxArr}
                       imageVideoArr={value.imageVideoArr}
                     />
+                    
+                    
+                    
+                    
+                    <p>Comment ID = {value.id}</p>
+                    <p>value.imageVideoArr[0].id = {value.imageVideoArr[0].id}</p>
+                    
+                    
                     
                     <Paragraph text={value.comment} />
                   </CommentBox>

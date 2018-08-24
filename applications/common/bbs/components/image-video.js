@@ -24,48 +24,12 @@ const PreviewBox = styled.div`
   margin: 0 0 6px 0;
 `;
 
-// const PreviewImg = styled.img`
-//   // width: 100%;
-//   // height: 250px;
-//   // object-fit: contain;
-  
-//   max-width: 480px;
-//   max-height: 320px;
-  
-//   // max-width: 192px;
-//   // max-height: 108px;
-  
-//   margin: 2px 4px 4px 0;
-  
-//   @media screen and (max-width: 480px) {
-//     // width: 260px;
-//     // width: 100%;
-//     // height: auto;
-//     max-width: 256px;
-//     max-height: 144px;
-//     // max-width: 144px;
-//     // max-height: 256px;
-    
-    
-//     // max-width: 128px;
-//     // max-height: 72px;
-    
-    
-    
-//     // max-width: 260px;
-//     // max-height: auto;
-//     // max-height: 320px;
-//   }
-// `;
+
 
 const PreviewMultipleImg = styled.img`
-  // width: 320px;
-  // height: 180px;
   max-width: 192px;
   max-height: 108px;
   margin: 0 4px 4px 0;
-  // padding: 0 0 0 0;
-  // background-color: green;
   
   @media screen and (max-width: 480px) {
     max-width: 128px;
@@ -74,16 +38,47 @@ const PreviewMultipleImg = styled.img`
 `;
 
 
+
 const PreviewVideoBox = styled.div`
   position: relative;
 `;
 
 const PreviewVideoImg = styled.img`
+  width: 320px;
+  height: 180px;
+  
+  @media screen and (max-width: 480px) {
+    width: 256px;
+    height: 144px;
+  }
+  
+  @media screen and (max-width: 320px) {
+    width: 224px;
+    height: 126px;
+  }
+`;
+
+const PreviewVideoPlayButtonImg = styled.img`
+  width: 320px;
+  height: 180px;
+  position: absolute;
+  top: 0;
+  
+  @media screen and (max-width: 480px) {
+    width: 256px;
+    height: 144px;
+  }
+  
+  @media screen and (max-width: 320px) {
+    width: 224px;
+    height: 126px;
+  }
+`;
+
+const PreviewVideoMultipleImg = styled.img`
   width: 192px;
   height: 108px;
-  // margin: 0 0 14px 0;
-  // padding: 0 0 0 0;
-  // background-color: green;
+  margin: 0 4px 4px 0;
   
   @media screen and (max-width: 480px) {
     width: 128px;
@@ -91,7 +86,7 @@ const PreviewVideoImg = styled.img`
   }
 `;
 
-const PreviewVideoPlayButtonImg = styled.img`
+const PreviewVideoMultiplePlayButtonImg = styled.img`
   width: 192px;
   height: 108px;
   position: absolute;
@@ -102,8 +97,6 @@ const PreviewVideoPlayButtonImg = styled.img`
     height: 72px;
   }
 `;
-
-
 
 
 
@@ -120,11 +113,6 @@ export default class extends React.Component {
     
     super(props);
     
-    
-    
-    // ---------------------------------------------
-    //   Set Property
-    // ---------------------------------------------
     
     
     // ---------------------------------------------
@@ -174,13 +162,14 @@ export default class extends React.Component {
     } = this.props.stores.layout;
     
     
+    
     // --------------------------------------------------
     //   Component - Preview Image & Video
     // --------------------------------------------------
     
     const imageVideoArrLength = imageVideoArr.length;
     const componentsPreviewArr = [];
-    
+    let imageIndex = 0;
     
     // console.log(`imageVideoArr = `);
     // console.dir(imageVideoArr);
@@ -188,9 +177,12 @@ export default class extends React.Component {
     
     for (const [index, value] of imageVideoArr.entries()) {
       
+      
+      // --------------------------------------------------
+      //   画像の場合
+      // --------------------------------------------------
+      
       if (value.type === 'image') {
-        
-        // const aspectRatio = value.imageSetArr[0].width / value.imageSetArr[0].height;
         
         let aspectRatio = 1;
         let width = 0;
@@ -200,8 +192,15 @@ export default class extends React.Component {
         
         let PreviewImg = '';
         
+        // Lightboxで開く画像Noを設定する
+        const lightBoxOpenNo = imageIndex;
+        // console.log(`lightBoxOpenNo = ${lightBoxOpenNo}`);
         
-        // 横長画像の場合
+        
+        // --------------------------------------------------
+        //   横長画像
+        // --------------------------------------------------
+        
         if (value.imageSetArr[0].width >= value.imageSetArr[0].height) {
           
           aspectRatio = value.imageSetArr[0].height / value.imageSetArr[0].width;
@@ -228,9 +227,13 @@ export default class extends React.Component {
           // console.log(`basic480w = ${basic480w}`);
           
           
+          // console.log(`width = ${width}`);
+          // console.log(`height = ${height}`);
+          
+          
           PreviewImg = styled.img`
-            width: ${width};
-            height: ${height};
+            width: ${width}px;
+            height: ${height}px;
             max-width: 480px;
             max-height: 480px;
             
@@ -247,7 +250,11 @@ export default class extends React.Component {
             }
           `;
           
-        // 縦長画像の場合
+          
+        // --------------------------------------------------
+        //   縦長画像
+        // --------------------------------------------------
+        
         } else {
           
           aspectRatio = value.imageSetArr[0].width / value.imageSetArr[0].height;
@@ -267,8 +274,8 @@ export default class extends React.Component {
           
           
           PreviewImg = styled.img`
-            width: ${width};
-            height: ${height};
+            width: ${width}px;
+            height: ${height}px;
             max-width: 480px;
             max-height: 480px;
             
@@ -282,11 +289,10 @@ export default class extends React.Component {
           
         }
         
-        // console.log(`aspectRatio = ${aspectRatio}`);
         
-        
-        
-        
+        // --------------------------------------------------
+        //   画像がひとつの場合
+        // --------------------------------------------------
         
         if (imageVideoArrLength === 1) {
           
@@ -296,42 +302,87 @@ export default class extends React.Component {
               src={value.imageSetArr[1].src}
               // width={value.imageSetArr[1].width}
               // height={value.imageSetArr[1].height}
-              onClick={() => handleLightboxOpen(id, index)}
+              onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
             />
           );
           
+        
+        // --------------------------------------------------
+        //   複数画像の場合
+        // --------------------------------------------------
+        
         } else {
           
           componentsPreviewArr.push(
             <PreviewMultipleImg
               key={index}
               src={value.imageSetArr[0].src}
-              onClick={() => handleLightboxOpen(id, index)}
+              onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
             />
           );
           
         }
         
-      } else if (value.videoChannel && value.videoId) {
         
-        componentsPreviewArr.push(
-          <PreviewVideoBox
-            key={index}
-            onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
-          >
-            <PreviewVideoImg
-              src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-            />
-            
-            <PreviewVideoPlayButtonImg
-              src="/static/img/common/video-play-button.png"
-            />
-          </PreviewVideoBox>
-        );
+        imageIndex += 1;
+        
+        
+      // --------------------------------------------------
+      //   動画の場合
+      // --------------------------------------------------  
+      
+      } else if (value.type === 'video') {
+        
+        
+        // --------------------------------------------------
+        //   動画がひとつの場合
+        // --------------------------------------------------
+        
+        if (imageVideoArrLength === 1) {
+          
+          componentsPreviewArr.push(
+            <PreviewVideoBox
+              key={index}
+              onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
+            >
+              <PreviewVideoImg
+                src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
+              />
+              
+              <PreviewVideoPlayButtonImg
+                src="/static/img/common/video-play-button.png"
+              />
+            </PreviewVideoBox>
+          );
+          
+        
+        // --------------------------------------------------
+        //   複数動画の場合
+        // --------------------------------------------------
+        
+        } else {
+          
+          componentsPreviewArr.push(
+            <PreviewVideoBox
+              key={index}
+              onClick={() => stores.layout.handleModalVideoOpen(value.videoChannel, value.videoId)}
+            >
+              <PreviewVideoMultipleImg
+                src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
+              />
+              
+              <PreviewVideoMultiplePlayButtonImg
+                src="/static/img/common/video-play-button.png"
+              />
+            </PreviewVideoBox>
+          );
+          
+        }
         
       }
       
       // console.log(index, value);
+      // console.log(`index = ${index}`);
       
     }
     

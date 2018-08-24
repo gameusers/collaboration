@@ -22,6 +22,39 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Form
+  // ---------------------------------------------
+  
+  @action.bound
+  handleFormOnSubmit(event, id) {
+    
+    console.log(`\n\n`);
+    console.log(`--- handleFormOnSubmit ---`);
+    console.log(`id = ${id}`);
+    console.log(`\n\n`);
+    ;
+    // console.log(e);
+    event.preventDefault();
+    event.target.reset();
+    
+    this.anonymityCheckedObj[id] = false;
+    this.nameObj[id] = '';
+    this.textObj[id] = '';
+    this.imageFormOpenObj[id] = false;
+    this.videoFormOpenObj[id] = false;
+    this.imageSrcObj[id] = '';
+    this.imageWidthObj[id] = '';
+    this.imageHeightObj[id] = '';
+    this.imageExtensionObj[id] = '';
+    this.imageCaptionOpenObj[id] = false;
+    this.imageCaptionObj[id] = '';
+    this.videoUrlObj[id] = '';
+    this.imageVideoObj[id] = [];
+    
+  };
+  
+  
+  // ---------------------------------------------
   //   Anonymity
   // ---------------------------------------------
   
@@ -242,42 +275,33 @@ class Store {
     //   すでに同じ画像が追加されていないかチェックする
     // ---------------------------------------------
     
+    console.log(`imageVideoArr`);
+    console.dir(imageVideoArr);
+    
     let duplication = false;
     
     if (imageVideoArr.length > 0) {
       
-      duplication = imageVideoArr[0].imageSetArr.find((value) => {
-        return (value.src === this.imageSrcObj[id]);
-      });
+      for (const value of imageVideoArr.values()) {
+        
+        if (value.type === 'image') {
+          
+          console.log(`value.type = ${value.type}`);
+          
+          duplication = value.imageSetArr.find((value) => {
+            return (value.src === this.imageSrcObj[id]);
+          });
+          
+          if (duplication) {
+            break;
+          }
+          
+        }
+        
+      }
       
     }
     
-    
-    
-    
-    // imageVideoArr: [
-    //   {
-    //     id: 'bQcCGQwpv60',
-    //     type: 'image',
-    //     imageSetArr: [
-    //       {
-    //         w: '320w',
-    //         src: '/static/img/bbs/bQcCGQwpv60/96x144.jpg',
-    //         width: 96,
-    //         height: 144,
-    //         type: 'JPEG'
-    //       },
-    //       {
-    //         w: 'source',
-    //         src: '/static/img/bbs/bQcCGQwpv60/96x144.jpg',
-    //         width: 96,
-    //         height: 144,
-    //         type: 'JPEG'
-    //       },
-    //     ],
-    //     caption: '小さい正方形画像',
-    //   },
-    // ],
     
     
     // ---------------------------------------------
@@ -297,38 +321,129 @@ class Store {
     } else {
       
       const imageId = shortid.generate();
+      const width = this.imageWidthObj[id];
+      const height = this.imageHeightObj[id];
       
-      imageVideoArr.push({
-        id: imageId,
-        type: 'image',
-        imageSetArr: [
-          {
+      const imageSetArr = [];
+      
+      
+      let aspectRatio = 1;
+      
+      if (width >= height) {
+        
+        aspectRatio = height / width;
+        // console.log(`aspectRatio = ${aspectRatio}`);
+        
+        if (width <= 320) {
+          
+          imageSetArr.push({
             w: '320w',
             src: this.imageSrcObj[id],
             width: this.imageWidthObj[id],
             height: this.imageHeightObj[id],
             type: 'JPEG'
-          },
-          {
-            w: 'source',
+          });
+          
+        } else if (width > 320) {
+          
+          imageSetArr.push({
+            w: '320w',
+            src: this.imageSrcObj[id],
+            width: 320,
+            height: Math.round(320 * aspectRatio),
+            type: 'JPEG'
+          });
+          
+        }
+        
+        if (width > 480) {
+          
+          imageSetArr.push({
+            w: '480w',
+            src: this.imageSrcObj[id],
+            width: 480,
+            height: Math.round(480 * aspectRatio),
+            type: 'JPEG'
+          });
+          
+        }
+        
+      } else {
+        
+        if (height <= 320) {
+          
+          imageSetArr.push({
+            w: '320w',
             src: this.imageSrcObj[id],
             width: this.imageWidthObj[id],
             height: this.imageHeightObj[id],
             type: 'JPEG'
-          },
-        ],
+          });
+          
+        } else if (height > 320) {
+          
+          imageSetArr.push({
+            w: '320w',
+            src: this.imageSrcObj[id],
+            width: Math.round(320 * aspectRatio),
+            height: 320,
+            type: 'JPEG'
+          });
+          
+        }
+        
+        if (height > 480) {
+          imageSetArr.push({
+            w: '480w',
+            src: this.imageSrcObj[id],
+            width: Math.round(480 * aspectRatio),
+            height: 480,
+            type: 'JPEG'
+          });
+        }
+        
+      }
+      
+      imageSetArr.push({
+        w: 'source',
+        src: this.imageSrcObj[id],
+        width: this.imageWidthObj[id],
+        height: this.imageHeightObj[id],
+        type: 'JPEG'
+      });
+      
+      
+      // console.dir(imageSetArr);
+      
+      
+      // ---------------------------------------------
+      //   imageVideoArr に追加する
+      // ---------------------------------------------
+      
+      imageVideoArr.push({
+        id: imageId,
+        type: 'image',
+        imageSetArr,
         caption: this.imageCaptionObj[id]
       });
+      
       
       
       // Preview 用のオブジェクトに追加する
       this.imageVideoObj[id] = imageVideoArr;
       
-      // Lightbox 用に画像を追加
-      storeLayout.handleLightboxAddImage(id, imageId, this.imageSrcObj[id], this.imageCaptionObj[id]);
-      
       // Caption 入力フォームをリセット
       this.imageCaptionObj[id] = '';
+      
+      
+      
+      // ---------------------------------------------
+      //   Initialize
+      // ---------------------------------------------
+      
+      // Lightbox
+      storeLayout.initializeLightbox(id, imageVideoArr);
+      
       
     }
     
@@ -370,6 +485,11 @@ class Store {
   };
   
   
+  /**
+   * 投稿フォームで入力した動画を追加する
+   * 追加すると動画のサムネイルがフォーム内に表示される（プレビューできる）
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleAddVideo(id) {
     
@@ -442,7 +562,7 @@ class Store {
       } else {
         
         imageVideoArr.push({
-          imageSrc: '',
+          type: 'video',
           videoChannel,
           videoId,
         });
@@ -516,33 +636,33 @@ class Store {
   //   Lightbox
   // ---------------------------------------------
   
-  @observable lightboxObj = {};
-  @observable lightboxCurrentNoObj = {};
-  @observable lightboxOpenObj = {};
+  // @observable lightboxObj = {};
+  // @observable lightboxCurrentNoObj = {};
+  // @observable lightboxOpenObj = {};
   
-  @action.bound
-  handleLightboxOpen(id, currentNo) {
-    // console.log(`handleLightboxOpen`);
-    // console.log(`id = ${id}`);
-    // console.log(`currentNo = ${currentNo}`);
-    this.lightboxCurrentNoObj[id] = currentNo;
-    this.lightboxOpenObj[id] = true;
-  };
+  // @action.bound
+  // handleLightboxOpen(id, currentNo) {
+  //   // console.log(`handleLightboxOpen`);
+  //   // console.log(`id = ${id}`);
+  //   // console.log(`currentNo = ${currentNo}`);
+  //   this.lightboxCurrentNoObj[id] = currentNo;
+  //   this.lightboxOpenObj[id] = true;
+  // };
   
-  @action.bound
-  handleLightboxClose(id) {
-    this.lightboxOpenObj[id] = false;
-  };
+  // @action.bound
+  // handleLightboxClose(id) {
+  //   this.lightboxOpenObj[id] = false;
+  // };
   
-  @action.bound
-  handleLightboxPrevious(id) {
-    this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] - 1;
-  };
+  // @action.bound
+  // handleLightboxPrevious(id) {
+  //   this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] - 1;
+  // };
   
-  @action.bound
-  handleLightboxNext(id) {
-    this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] + 1;
-  };
+  // @action.bound
+  // handleLightboxNext(id) {
+  //   this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] + 1;
+  // };
   
   
   

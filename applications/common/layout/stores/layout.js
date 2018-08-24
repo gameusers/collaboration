@@ -310,8 +310,20 @@ class Store {
   @action.bound
   handleLightboxOpen(id, currentNo) {
     
+    
+    // ---------------------------------------------
+    //  Console 出力
+    // ---------------------------------------------
+    
+    console.log(`\n\n`);
+    console.log(`--- handleLightboxOpen ---`);
     console.log(`id = ${id}`);
     console.log(`currentNo = ${currentNo}`);
+    console.dir(this.lightboxObj[id]);
+    console.dir(this.lightboxObj);
+    
+    console.log(`\n\n`);
+    
     
     this.lightboxCurrentNoObj[id] = currentNo;
     this.lightboxOpenObj[id] = true;
@@ -388,8 +400,16 @@ class Store {
   @action.bound
   initializeLightbox(id, imageVideoArr = []) {
     
-    // console.log(`initializeLightbox`);
+    
+    // ---------------------------------------------
+    //  Console 出力
+    // ---------------------------------------------
+    
+    // console.log(`\n\n`);
+    // console.log(`--- initializeLightbox ---`);
+    // console.log(`id = ${id}`);
     // console.dir(imageVideoArr);
+    // console.log(`\n\n`);
     
     
     const lightboxArr = [];
@@ -427,22 +447,6 @@ class Store {
       // console.log(index, value);
     }
     
-    // console.dir(lightboxArr);
-    
-    
-    // We must respect the will of the individual.
-    
-    
-    // {
-    //   id: 'FK_8mRwTa18',
-    //   src: 'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg',
-    //   caption: 'Caption 1',
-    //   srcSet: [
-    //     'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 320w',
-    //     'https://gameusers.org/assets/img/bbs_uc/reply/1089/image_1.jpg 640w',
-    //   ],
-    // },
-    
     
     // if (id in this.lightboxObj === false) {
     //   this.lightboxObj[id] = lightboxArr;
@@ -456,9 +460,6 @@ class Store {
     if (id in this.lightboxOpenObj === false) {
       this.lightboxOpenObj[id] = false;
     }
-    
-    // console.log(`initializeLightbox`);
-    // console.log(`id = ${id}`);
     
   }
   

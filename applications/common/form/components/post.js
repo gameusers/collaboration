@@ -364,6 +364,7 @@ export default class extends React.Component {
     
     const {
       
+      handleFormOnSubmit,
       handleAnonymityChecked,
       handleName,
       handleText,
@@ -521,7 +522,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <form onSubmit={(event) => handleFormOnSubmit(event, id)}>
       
         {/* User */}
         {loginUserId ? (
@@ -742,6 +743,7 @@ export default class extends React.Component {
           variant="contained"
           color="primary"
           onClick={() => buttonHandle1()}
+          type="submit"
         >
           {sendButtonLabel1}
         </SendButton>
@@ -758,7 +760,7 @@ export default class extends React.Component {
         </SendButton>
         }
         
-      </React.Fragment>
+      </form>
     );
     
   }

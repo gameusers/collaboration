@@ -289,6 +289,18 @@ const SendButton = styled(Button)`
 
 
 
+// ---------------------------------------------
+//   Common
+// ---------------------------------------------
+
+const FontRed = styled.span`
+  color: #FE2E2E;
+`;
+
+
+
+
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -615,7 +627,7 @@ export default class extends React.Component {
         {imageFormOpen &&
           <ImageBox>
             <ImageDescription>
-              アップロードできる画像の種類は JPEG, PNG, GIF, BMP で、ファイルサイズが5MB以内のものです。
+              アップロードできる画像の種類は JPEG, PNG, GIF, BMP で、ファイルサイズが5MB以内のものです。<FontRed>画像を選択したら追加ボタンを押してください。</FontRed>
             </ImageDescription>
             
             <ImageInputFileBox>
@@ -671,7 +683,7 @@ export default class extends React.Component {
           <VideoBox>
           
             <ImageDescription>
-              YouTubeのURLが登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。
+              YouTubeのURLが登録できます。動画が視聴できるページのURLをブラウザからコピーして貼り付けてください。<FontRed>URLを入力したら追加ボタンを押してください。</FontRed>
             </ImageDescription>
             
             <ImageDescriptionUl>

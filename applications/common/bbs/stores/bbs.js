@@ -204,7 +204,8 @@ class Store {
     console.log(`id = ${id}`);
     console.log(`storeFormPost.nameObj[id] = ${storeFormPost.nameObj[id]}`);
     console.log(`storeFormPost.textObj[id] = ${storeFormPost.textObj[id]}`);
-    // console.log(`storeFormPost.imageSrcObj[id] = ${storeFormPost.imageSrcObj[id]}`);
+    console.dir(storeFormPost.textObj);
+    console.log(`storeFormPost.imageSrcObj[id] = ${storeFormPost.imageSrcObj[id]}`);
     console.log(`storeFormPost.imageVideoObj = `);
     console.dir(storeFormPost.imageVideoObj);
     console.log(`\n\n`);
@@ -420,28 +421,59 @@ class Store {
 
 export default function initStoreBbs(argumentsObj) {
   
+  
+  console.log(`\n\n`);
+  console.log(`--- initStoreBbs ---`);
+  
+  
+  
   const isServer = argumentsObj.isServer;
   const storeInstanceObj = argumentsObj.storeInstanceObj;
   
   
-  if (storeLayout === null && 'layout' in storeInstanceObj) {
+  console.log(`isServer = ${isServer}`);
+  console.log(`storeLayout = ${storeLayout}`);
+  console.log(`storeInstanceObj = `);
+  console.dir(storeInstanceObj);
+  
+  
+  if ('layout' in storeInstanceObj) {
+    console.log(`@@@ storeLayout = storeInstanceObj.layout`);
     storeLayout = storeInstanceObj.layout;
   }
   
-  if (storeData === null && 'data' in storeInstanceObj) {
+  if ('data' in storeInstanceObj) {
     storeData = storeInstanceObj.data;
   }
   
-  if (storeFormPost === null && 'formPost' in storeInstanceObj) {
+  if ('formPost' in storeInstanceObj) {
     storeFormPost = storeInstanceObj.formPost;
   }
   
   
+  // if (storeLayout === null && 'layout' in storeInstanceObj) {
+  //   console.log(`@@@ storeLayout = storeInstanceObj.layout`);
+  //   storeLayout = storeInstanceObj.layout;
+  // }
+  
+  // if (storeData === null && 'data' in storeInstanceObj) {
+  //   storeData = storeInstanceObj.data;
+  // }
+  
+  // if (storeFormPost === null && 'formPost' in storeInstanceObj) {
+  //   storeFormPost = storeInstanceObj.formPost;
+  // }
+  
+  
   if (isServer) {
+    
+    console.log(`Server`);
     
     return new Store();
     
   } else {
+    
+    console.log(`Client`);
     
     if (storeIndex === null) {
       storeIndex = new Store();
@@ -450,5 +482,9 @@ export default function initStoreBbs(argumentsObj) {
     return storeIndex;
     
   }
+  
+  
+  console.log(`\n\n`);
+  
   
 }

@@ -102,6 +102,47 @@ const PreviewVideoMultiplePlayButtonImg = styled.img`
 
 
 // --------------------------------------------------
+//   関数
+// --------------------------------------------------
+
+/**
+ * image タグに使う srcset の情報を配列から生成する
+ * @param {array} imageSetArr - 画像情報が入った配列
+ */
+const convertSrcSet = (imageSetArr) => {
+  
+  let srcsetArr = [];
+    
+  for (const value of imageSetArr.values()) {
+    
+    if (value.w === '320w' || value.w === '480w') {
+      srcsetArr.push(`${value.src} ${value.w}`);
+    }
+    
+    // console.log(index, value);
+  }
+  
+  const srcset = srcsetArr.join(', ');
+  
+  
+  // ---------------------------------------------
+  //  Console 出力
+  // ---------------------------------------------
+  
+  // console.log(`\n\n`);
+  // console.log(`--- convertSrcSet ---`);
+  // console.log(`\n\n`);
+  // console.log(`srcset = ${srcset}`);
+  
+  
+  return srcset;
+    
+};
+  
+
+
+
+// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -114,16 +155,11 @@ export default class extends React.Component {
     super(props);
     
     
-    
     // ---------------------------------------------
     //   Initialize Store
     // ---------------------------------------------
     
     props.stores.layout.initializeLightbox(props.id, props.imageVideoArr);
-    
-    
-    // console.log(`props.id = ${props.id}`);
-    // console.dir(props.lightboxArr);
     
     
   }
@@ -147,10 +183,6 @@ export default class extends React.Component {
     const lightboxArr = stores.layout.lightboxObj[id];
     const lightboxCurrentNo = stores.layout.lightboxCurrentNoObj[id];
     const lightboxOpen = stores.layout.lightboxOpenObj[id];
-    
-    // console.log(`lightboxArr = `);
-    // console.dir(lightboxArr);
-    
     
     const {
       
@@ -195,6 +227,9 @@ export default class extends React.Component {
         // Lightboxで開く画像Noを設定する
         const lightBoxOpenNo = imageIndex;
         // console.log(`lightBoxOpenNo = ${lightBoxOpenNo}`);
+        
+        const srcset = convertSrcSet(value.imageSetArr);
+        
         
         
         // --------------------------------------------------
@@ -300,8 +335,7 @@ export default class extends React.Component {
             <PreviewImg
               key={index}
               src={value.imageSetArr[1].src}
-              // width={value.imageSetArr[1].width}
-              // height={value.imageSetArr[1].height}
+              srcSet={srcset}
               onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
             />
           );
@@ -317,6 +351,7 @@ export default class extends React.Component {
             <PreviewMultipleImg
               key={index}
               src={value.imageSetArr[0].src}
+              srcSet={srcset}
               onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
             />
           );

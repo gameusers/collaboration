@@ -25,15 +25,20 @@ class Store {
   //   Form
   // ---------------------------------------------
   
+  /**
+   * フォームが送信されたときに呼び出される
+   * フォームをリセット
+   * @param {Object} event - イベント
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleFormOnSubmit(event, id) {
     
-    console.log(`\n\n`);
-    console.log(`--- handleFormOnSubmit ---`);
-    console.log(`id = ${id}`);
-    console.log(`\n\n`);
-    ;
-    // console.log(e);
+    // console.log(`\n\n`);
+    // console.log(`--- handleFormOnSubmit ---`);
+    // console.log(`id = ${id}`);
+    // console.log(`\n\n`);
+    
     event.preventDefault();
     event.target.reset();
     
@@ -54,39 +59,78 @@ class Store {
   };
   
   
+  
   // ---------------------------------------------
   //   Anonymity
   // ---------------------------------------------
   
+  /**
+   * ななしにするチェックボックスのチェック情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable anonymityCheckedObj = {};
   
+  
+  /**
+   * ななしにするチェックボックスがチェックされたときに呼び出される
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleAnonymityChecked(id) {
     this.anonymityCheckedObj[id] = !this.anonymityCheckedObj[id];
   };
   
   
+  
   // ---------------------------------------------
   //   Name
   // ---------------------------------------------
   
+  /**
+   * 名前入力フォームに入力された文字列を保存するオブジェクト
+   * ログインしていないときに表示される
+   * @type {Object}
+   */
   @observable nameObj = {};
   
+  
+  /**
+   * 名前入力フォームに文字列を入力したときに呼び出される
+   * @param {Object} event - イベント
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleName(event, id) {
     this.nameObj[id] = event.target.value;
   };
   
   
+  
   // ---------------------------------------------
   //   Textarea
   // ---------------------------------------------
   
+  /**
+   * テキスト入力フォームに入力した文字列を保存するオブジェクト
+   * @type {Object}
+   */
   @observable textObj = {};
   
+  
+  /**
+   * テキスト入力フォームに文字列を入力したときに呼び出される
+   * @param {Object} event - イベント
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleText(event, id) {
     this.textObj[id] = event.target.value;
+    
+    // console.log(`\n\n`);
+    // console.log(`--- handleText ---`);
+    // console.log(`id = ${id}`);
+    // console.log(`event.target.value = ${event.target.value}`);
+    // console.log(`this.textObj[id] = ${this.textObj[id]}`);
   };
   
   
@@ -121,25 +165,25 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 投稿された画像のソースを入れるオブジェクト
+   * 投稿された画像のソースを保存するオブジェクト
    * @type {Object}
    */
   imageSrcObj = {};
   
   /**
-   * 投稿された画像の幅を入れるオブジェクト
+   * 投稿された画像の幅を保存するオブジェクト
    * @type {Object}
    */
   imageWidthObj = {};
   
   /**
-   * 投稿された画像の高さを入れるオブジェクト
+   * 投稿された画像の高さを保存するオブジェクト
    * @type {Object}
    */
   imageHeightObj = {};
   
   /**
-   * 投稿された画像の拡張子を入れるオブジェクト
+   * 投稿された画像の拡張子を保存するオブジェクト
    * @type {Object}
    */
   imageExtensionObj = {};
@@ -275,8 +319,8 @@ class Store {
     //   すでに同じ画像が追加されていないかチェックする
     // ---------------------------------------------
     
-    console.log(`imageVideoArr`);
-    console.dir(imageVideoArr);
+    // console.log(`imageVideoArr`);
+    // console.dir(imageVideoArr);
     
     let duplication = false;
     
@@ -302,13 +346,13 @@ class Store {
       
     }
     
-    
+    // console.log(`this.imageSrcObj[id] = ${this.imageSrcObj[id]}`);
     
     // ---------------------------------------------
     //   画像が選択されていて、重複していない場合はオブジェクトに追加する
     // ---------------------------------------------
     
-    if (id in this.imageSrcObj === false) {
+    if (this.imageSrcObj[id] === '' || id in this.imageSrcObj === false) {
       
       storeLayout.handleSnackbarOpen('error', '画像を選択してください。');
       return;

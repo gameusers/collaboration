@@ -299,6 +299,7 @@ class Store {
   
   
   
+  
   // ---------------------------------------------
   //   Lightbox - 画像表示
   // ---------------------------------------------
@@ -372,31 +373,6 @@ class Store {
   //   - Initialize Lightbox
   // ----------------------------------------
   
-  // @action.bound
-  // initializeLightbox(argumentsObj) {
-    
-  //   const id = argumentsObj.id ? argumentsObj.id : '';
-  //   const lightboxArr = argumentsObj.lightboxArr ? argumentsObj.lightboxArr : [];
-    
-    
-  //   if (id in this.lightboxObj === false) {
-  //     this.lightboxObj[id] = lightboxArr;
-  //   }
-    
-  //   if (id in this.lightboxCurrentNoObj === false) {
-  //     this.lightboxCurrentNoObj[id] = 0;
-  //   }
-    
-  //   if (id in this.lightboxOpenObj === false) {
-  //     this.lightboxOpenObj[id] = false;
-  //   }
-    
-  //   // console.log(`initializeLightbox`);
-  //   // console.log(`id = ${id}`);
-    
-  // }
-  
-  
   @action.bound
   initializeLightbox(id, imageVideoArr = []) {
     
@@ -466,6 +442,11 @@ class Store {
   
   
   
+  
+  // ---------------------------------------------
+  //   Modal - 動画表示
+  //   https://github.com/appleple/react-modal-video
+  // ---------------------------------------------
   
   @observable modalVideoChannel = null;
   @observable modalVideoId = null;

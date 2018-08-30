@@ -141,15 +141,32 @@ class Store {
   //   Open Image Form & Video Form
   // ---------------------------------------------
   
+  /**
+   * 画像アップロードフォームを表示するかどうかの情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable imageFormOpenObj = {};
+  
+  /**
+   * 動画投稿フォームを表示するかどうかの情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable videoFormOpenObj = {};
   
+  /**
+   * 画像アップロードフォームを表示するときに呼び出される
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleImageFormOpen(id) {
     this.imageFormOpenObj[id] = !this.imageFormOpenObj[id];
     this.videoFormOpenObj[id] = false;
   };
   
+  /**
+   * 動画投稿フォームを表示するときに呼び出される
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleVideoFormOpen(id) {
     this.videoFormOpenObj[id] = !this.videoFormOpenObj[id];
@@ -251,7 +268,7 @@ class Store {
 
         const { width } = img;
         const { height } = img;
-
+        
         let extension = null;
 
         if (file.type === 'image/gif') {
@@ -498,16 +515,33 @@ class Store {
   //   - Caption
   // ----------------------------------------
   
+  /**
+   * 画像のキャプション入力フォームを表示するかどうかの情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable imageCaptionOpenObj = {};
   
+  /**
+   * 画像のキャプション入力フォームを表示するときに呼び出される
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleImageCaptionOpen(id) {
     this.imageCaptionOpenObj[id] = !this.imageCaptionOpenObj[id];
   };
   
   
+  /**
+   * 画像のキャプション情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable imageCaptionObj = {};
   
+  /**
+   * 画像のキャプション入力フォームに入力したときに呼び出される
+   * @param {Object} event - イベント
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleImageCaption(event, id) {
     this.imageCaptionObj[id] = event.target.value;
@@ -521,8 +555,17 @@ class Store {
   //   Video Form
   // ---------------------------------------------
   
+  /**
+   * 動画投稿フォームのURL情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable videoUrlObj = {};
   
+  /**
+   * 動画投稿フォームに文字列を入力すると呼び出される
+   * @param {Object} event - イベント
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleVideoUrl(event, id) {
     this.videoUrlObj[id] = event.target.value;
@@ -530,8 +573,7 @@ class Store {
   
   
   /**
-   * 投稿フォームで入力した動画を追加する
-   * 追加すると動画のサムネイルがフォーム内に表示される（プレビューできる）
+   * 動画投稿フォームで追加ボタンを押したときに呼び出される
    * @param {string} id - 例）ayucwHGa7Ug-comment-insert
    */
   @action.bound
@@ -633,6 +675,10 @@ class Store {
   //   Preview用 Image & Video
   // ---------------------------------------------
   
+  /**
+   * 画像・動画のプレビュー用情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable imageVideoObj = {};
   
   
@@ -640,35 +686,51 @@ class Store {
   //   - Handle
   // ---------------------------------------------
   
+  /**
+   * 画像・動画のプレビュー画像を削除するときに呼び出される
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   * @param {number} index - 削除するプレビュー画像のNo
+   */
   @action.bound
   handleImageVideoDelete(id, index) {
     
-    console.log(`\n\n`);
-    console.log(`--- handleImageVideoDelete ---`);
-    console.log(`id = ${id}`);
-    console.log(`index = ${index}`);
+    // console.log(`\n\n`);
+    // console.log(`--- handleImageVideoDelete ---`);
+    // console.log(`id = ${id}`);
+    // console.log(`index = ${index}`);
     
     
-    const deleteId = this.imageVideoObj[id][index].id;
+    // const deleteId = this.imageVideoObj[id][index].id;
     
     // const deleteIndex = storeLayout.lightboxObj[id].findIndex((value) => {
     //   return value.id === deleteId;
     // });
     
-    console.log(`deleteId = ${deleteId}`);
-    // console.log(`deleteIndex = ${deleteIndex}`);
-    console.log(`this.imageVideoObj =`);
-    console.dir(this.imageVideoObj);
-    console.log(`this.imageVideoObj[id] =`);
-    console.dir(this.imageVideoObj[id]);
-    console.log(`\n\n`);
+    // Equality is guaranteed by the Constitution.
+    
+    // console.log(`deleteId = ${deleteId}`);
+    // // console.log(`deleteIndex = ${deleteIndex}`);
+    // console.log(`this.imageVideoObj =`);
+    // console.dir(this.imageVideoObj);
+    // console.log(`this.imageVideoObj[id] =`);
+    // console.dir(this.imageVideoObj[id]);
+    // console.log(`\n\n`);
     
     
-    // this.imageVideoObj[id].splice(index, 1);
+    this.imageVideoObj[id].splice(index, 1);
     
     // if (deleteIndex !== -1) {
     //   storeLayout.lightboxObj[id].splice(deleteIndex, 1);
     // }
+    
+    
+    // ---------------------------------------------
+    //   Initialize
+    // ---------------------------------------------
+    
+    // Lightbox
+    storeLayout.initializeLightbox(id, this.imageVideoObj[id]);
+    
     
   };
   
@@ -716,13 +778,22 @@ class Store {
   //   Initialize Form Post
   // ----------------------------------------
   
+  /**
+   * フォームを初期化するときに呼び出す
+   * @param {Object} argumentsObj - id, name, text , imageVideoArr
+   */
   @action.bound
   initializeFormPost(argumentsObj) {
     
     const id = argumentsObj.id ? argumentsObj.id : '';
     const name = argumentsObj.name ? argumentsObj.name : '';
     const text = argumentsObj.text ? argumentsObj.text : '';
-    const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr : [];
+    // const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr : [];
+    const imageVideoArr = argumentsObj.imageVideoArr ? argumentsObj.imageVideoArr.concat() : [];
+    
+    
+    // const copyImageVideoArr = storeFormPost.imageVideoObj[id].concat();
+    
     
     
     // Anonymity

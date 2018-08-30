@@ -679,9 +679,9 @@ export default class extends React.Component {
               name={value.name}
               text={value.comment}
               imageVideoArr={value.imageVideoArr}
-              lightboxArr={value.lightboxArr}
+              // lightboxArr={value.lightboxArr}
               buttonLabel1="編集する"
-              buttonHandle1={() => handleCommentUpdate(`${value.id}-comment-update`)}
+              buttonHandle1={() => handleCommentUpdate(communityId, threadId, value.id, `${value.id}-comment-update`)}
               buttonLabel2="閉じる"
               buttonHandle2={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
             />

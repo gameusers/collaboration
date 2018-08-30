@@ -328,6 +328,10 @@ class Store {
   //   Comment Update Form
   // ---------------------------------------------
   
+  /**
+   * コメント編集フォームを表示するかどうかの情報を保存するオブジェクト
+   * @type {Object}
+   */
   @observable commentUpdateFormOpenObj = {};
   
   
@@ -335,6 +339,10 @@ class Store {
   //   - Handle
   // ----------------------------------------
   
+  /**
+   * コメント編集フォームを表示するときに呼び出される
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
   handleCommentUpdateFormOpen(id) {
     
@@ -346,14 +354,135 @@ class Store {
     this.commentUpdateFormOpenObj[id] = !this.commentUpdateFormOpenObj[id];
   };
   
+  /**
+   * コメントを編集する
+   * @param {string} id - 例）ayucwHGa7Ug-comment-insert
+   */
   @action.bound
-  handleCommentUpdate(id) {
+  handleCommentUpdate(communityId, threadId, commentId, formPostId) {
+    
+    
+    // ---------------------------------------------
+    //  Console 出力
+    // ---------------------------------------------
+    
     console.log(`\n\n`);
     console.log(`--- handleCommentUpdate ---`);
-    console.log(`id = ${id}`);
-    console.log(`storeFormPost.nameObj[id] = ${storeFormPost.nameObj[id]}`);
-    console.log(`storeFormPost.textObj[id] = ${storeFormPost.textObj[id]}`);
+    console.log(`communityId = ${communityId}`);
+    console.log(`threadId = ${threadId}`);
+    console.log(`commentId = ${commentId}`);
+    console.log(`formPostId = ${formPostId}`);
+    console.log(`storeFormPost.nameObj[formPostId] = ${storeFormPost.nameObj[formPostId]}`);
+    console.log(`storeFormPost.textObj[formPostId] = ${storeFormPost.textObj[formPostId]}`);
+    console.log(`storeFormPost.imageSrcObj[formPostId] = ${storeFormPost.imageSrcObj[formPostId]}`);
+    console.log(`storeFormPost.imageVideoObj = `);
+    console.dir(storeFormPost.imageVideoObj);
     console.log(`\n\n`);
+    
+    
+    
+    // ---------------------------------------------
+    //   Property
+    // ---------------------------------------------
+    
+    const name = storeFormPost.nameObj[formPostId];
+    const text = storeFormPost.textObj[formPostId];
+    const imageVideoArr = storeFormPost.imageVideoObj[formPostId].concat()
+    
+    
+    // ---------------------------------------------
+    //   コメントがない場合は投稿しない
+    // ---------------------------------------------
+    
+    if (!text) {
+      storeLayout.handleSnackbarOpen('error', 'コメントを入力してください。');
+      return;
+    }
+    
+    
+    // // 参照渡しにしないためにコピーを行う
+    // const copyImageVideoArr = storeFormPost.imageVideoObj[id].concat();
+    
+    
+    // ---------------------------------------------
+    //   スレッドが存在するかチェックする
+    // ---------------------------------------------
+    
+    const threadIndex = this.dataObj[communityId].findIndex((value) => {
+      return value.id === threadId;
+    });
+    
+    console.log(`threadIndex = ${threadIndex}`);
+    
+    
+    // ---------------------------------------------
+    //   スレッドが存在する場合は処理
+    // ---------------------------------------------
+    
+    if (threadIndex !== 'undefined') {
+      
+      
+      // ---------------------------------------------
+      //   コメントオブジェクト作成
+      // ---------------------------------------------
+      
+      const generatedId = shortid.generate();
+      const loginUserId = storeData.loginUserObj.id;
+      
+      let name = storeFormPost.nameObj[formPostId];
+      const status = '';
+      
+      if (loginUserId) {
+        name = '';
+      }
+      
+      
+      const commentObj = {
+        
+        id: generatedId,
+        userId: loginUserId,
+        name,
+        status,
+        comment: text,
+        updatedDate: moment().utcOffset(0).format(),
+        imageVideoArr: imageVideoArr,
+        good: 0,
+        page: 1,
+        replyTotal: 0,
+        replyArr: []
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   コメントオブジェクト挿入
+      // ---------------------------------------------
+      
+      // this.dataObj[communityId][threadIndex].commentArr.unshift(commentObj);
+      
+      
+      // // ---------------------------------------------
+      // //   Initialize
+      // // ---------------------------------------------
+      
+      // // BBS
+      // this.initializeBbs(this.dataObj[communityId]);
+      
+      // // Lightbox
+      // storeLayout.initializeLightbox(generatedId, copyImageVideoArr);
+      
+      
+      
+      
+      
+      
+    }
+    
+    
+    // フォームを閉じる
+    this.handleCommentUpdateFormOpen(formPostId);
+    
+      
   };
   
   

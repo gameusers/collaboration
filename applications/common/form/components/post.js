@@ -460,6 +460,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const componentImageVideoArr = [];
+    let imageIndex = 0;
     
     if (imageVideoArr && imageVideoArr.length > 0) {
       
@@ -475,11 +476,15 @@ export default class extends React.Component {
         
         if (value.type === 'image') {
           
+          // Lightboxで開く画像Noを設定する
+          const lightBoxOpenNo = imageIndex;
+          
+          
           componentImageVideoArr.push(
             <PreviewBox key={index}>
               <PreviewImg
                 src={value.imageSetArr[0].src}
-                onClick={() => handleLightboxOpen(id, index)}
+                onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
               />
               
               <PreviewDeleteButton
@@ -491,6 +496,8 @@ export default class extends React.Component {
               </PreviewDeleteButton>
             </PreviewBox>
           );
+          
+          imageIndex += 1;
         
         
         // ---------------------------------------------

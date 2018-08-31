@@ -7,6 +7,7 @@ import Head from 'next/head';
 // import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+import shortid from 'shortid';
 
 import Button from '@material-ui/core/Button';
 
@@ -772,6 +773,9 @@ class Component extends React.Component {
             
             {/* BBS */}
             <Bbs userCommunityId={userCommunityId} />
+            
+            
+            <p>{shortid.generate()}</p>
             
             
             <Button

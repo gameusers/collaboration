@@ -58,7 +58,7 @@ https://gameusers.org/dev/blog/live/
 <br><br>
 
 ## データベース
-MongoDB を使っています。<br /><br />
+MongoDB Ver.4 を使っています。<br /><br />
 db/mongodb ここの場所のデータを利用していますが、GitHub 上にデータをちゃんと移せているか不明です。正常に動作しない場合は、mongodb 内を空にしてください。<br /><br />
 スタートさせるときは以下のコマンドを利用してください。
 

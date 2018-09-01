@@ -33,6 +33,7 @@ const Container = styled.nav`
 const ButtonMenuActive = styled(Button)`
   && {
     color: white;
+    margin: 0 10px 0 0;
     padding: 2px 0 0;
     border-bottom: solid 2px #B40431;
   }
@@ -41,6 +42,7 @@ const ButtonMenuActive = styled(Button)`
 const ButtonMenu = styled(Button)`
   && {
     color: #BDBDBD;
+    margin: 0 10px 0 0;
     padding: 2px 0 0;
     border-bottom: solid 2px #25283D;
   }

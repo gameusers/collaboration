@@ -11,7 +11,6 @@ import Header from './header/header';
 import HeaderNavMain from './header/nav-main';
 import Footer from './footer';
 
-// import ModalImageVideo from './modal-image-video';
 import Snackbar from './snackbar';
 
 
@@ -992,9 +991,6 @@ export default class extends React.Component {
         
         {/* フッター */}
         <Footer />
-        
-        {/* 画像・動画用のモーダルウィンドウ */}
-        {/*<ModalImageVideo />*/}
         
         {/* 動画用のモーダルウィンドウ */}
         <ModalVideo

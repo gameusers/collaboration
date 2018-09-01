@@ -10,7 +10,7 @@ import { action, observable } from 'mobx';
 // --------------------------------------------------
 
 let storeData = null;
-let storeLayout = null;
+// let storeLayout = null;
 
 
 // --------------------------------------------------
@@ -69,12 +69,12 @@ class Store {
 export default function initStoreData(argumentsObj) {
   
   const isServer = argumentsObj.isServer;
-  const storeInstanceObj = argumentsObj.storeInstanceObj;
+  // const storeInstanceObj = argumentsObj.storeInstanceObj;
   
   
-  if (storeLayout === null && 'layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
-  }
+  // if (storeLayout === null && 'layout' in storeInstanceObj) {
+  //   storeLayout = storeInstanceObj.layout;
+  // }
   
   if (isServer) {
     

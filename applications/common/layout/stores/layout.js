@@ -543,12 +543,6 @@ class Store {
   
   @observable panelExpandedObj = {};
   
-  // @observable panelExpandedObj = {
-  //   'p0V_RsaT1l8': {
-  //     'p0V_RsaT1l8': true, // BBS スレッド
-  //     'ks8WPvlQpbg': true // BBS
-  //   }
-  // };
   
   @action.bound
   handlePanelExpanded(id) {
@@ -558,7 +552,12 @@ class Store {
     // console.log(`id = ${id}`);
     // console.log(`this.historyStateArr[0].id = ${this.historyStateArr[0].id}`);
     
-    this.panelExpandedObj[id] = !this.panelExpandedObj[id];
+    if (id in this.panelExpandedObj) {
+      this.panelExpandedObj[id] = !this.panelExpandedObj[id];
+    } else {
+      this.panelExpandedObj[id] = false;
+    }
+    
   };
   
   returnPanelExpanded(id) {

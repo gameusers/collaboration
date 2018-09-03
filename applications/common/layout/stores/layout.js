@@ -537,6 +537,7 @@ class Store {
   
   
   
+  
   // ---------------------------------------------
   //   Panel
   // ---------------------------------------------
@@ -572,17 +573,48 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   Terms of Service（利用規約）
+  // ---------------------------------------------
+  
+  /**
+   * 利用規約のダイアログを表示するかどうか
+   * 表示する true / 表示しない false
+   * @type {boolean}
+   */
+  @observable termsOfServiceDialogOpen = false;
+  
+  
+  /**
+   * 利用規約のダイアログを表示する
+   */
+  @action.bound
+  handleTermsOfServiceDialogOpen() {
+    this.termsOfServiceDialogOpen = true;
+  };
+  
+  /**
+   * 利用規約のダイアログを非表示にする
+   */
+  @action.bound
+  handleTermsOfServiceDialogClose() {
+    this.termsOfServiceDialogOpen = false;
+  };
+  
+  
+  
+  
   
   // ---------------------------------------------
   //   ID生成
   // ---------------------------------------------
   
   // 参考：https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-  createUuidV4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
-  }
+  // createUuidV4() {
+  //   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+  //     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  //   );
+  // }
   
   
 }

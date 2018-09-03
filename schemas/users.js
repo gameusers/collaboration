@@ -1,9 +1,11 @@
 // --------------------------------------------------
-//   Import
+//   Require
 // --------------------------------------------------
 
-import mongoose from 'mongoose';
-import shortid from 'shortid';
+const mongoose = require('mongoose');
+const shortid = require('shortid');
+// import mongoose from 'mongoose';
+// import shortid from 'shortid';
 
 
 // --------------------------------------------------

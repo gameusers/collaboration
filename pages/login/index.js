@@ -10,11 +10,11 @@ import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 import IconId from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
@@ -26,7 +26,8 @@ import initStoreData from '../../applications/common/layout/stores/data';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
-import Panel from '../../applications/common/layout/components/panel/panel';
+import Panel from '../../applications/common/layout/components/panel';
+import TermsOfService from '../../applications/common/layout/components/terms-of-service';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -77,6 +78,41 @@ const InputBox = styled.div`
     width: 100%;
   }
 `;
+
+
+const Rank4FormHelperText = styled(FormHelperText)`
+  && {
+    color: green;
+  }
+`;
+
+const Rank3FormHelperText = styled(FormHelperText)`
+  && {
+    color: #04B45F;
+  }
+`;
+
+const Rank2FormHelperText = styled(FormHelperText)`
+  && {
+    color: green;
+  }
+`;
+
+
+const Rank1FormHelperText = styled(FormHelperText)`
+  && {
+    color: red;
+  }
+`;
+const Rank0FormHelperText = styled(FormHelperText)`
+  && {
+    color: red;
+  }
+`;
+
+
+
+
 
 const StyledButton = styled(Button)`
   && {
@@ -176,31 +212,70 @@ class Component extends React.Component {
     const {
       
       loginId,
+      loginIdError,
       handleLoginId,
+      
       loginPassword,
+      loginPasswordError,
       handleLoginPassword,
       loginPasswordShow,
       handleLoginPasswordShow,
       handleLoginPasswordMouseDown,
+      
       handleLoginSubmit,
       
+      
+      
       createAccountId,
+      createAccountIdError,
       handleCreateAccountId,
+      
       createAccountPassword,
+      createAccountPasswordScore,
+      createAccountPasswordError,
       handleCreateAccountPassword,
       createAccountPasswordShow,
       handleCreateAccountPasswordShow,
       handleCreateAccountPasswordMouseDown,
+      
       createAccountPasswordConfirmation,
+      createAccountPasswordConfirmationError,
       handleCreateAccountPasswordConfirmation,
       createAccountPasswordConfirmationShow,
       handleCreateAccountPasswordConfirmationShow,
       handleCreateAccountPasswordConfirmationMouseDown,
+      
       handleCreateAccountSubmit
       
     } = stores.loginIndex;
     
     
+    
+    // --------------------------------------------------
+    //   Layout
+    // --------------------------------------------------
+    
+    const {
+      
+      handleTermsOfServiceDialogOpen
+      
+    } = stores.layout;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   パスワードの強度
+    // --------------------------------------------------
+    
+    const passwordColorArr = ['red', 'red', 'darkorange', 'green', 'green'];
+    const passwordTextArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
+    
+    const PasswordFormHelperText = styled(FormHelperText)`
+      && {
+        color: ${passwordColorArr[createAccountPasswordScore]};
+      }
+    `;
     
     
     
@@ -234,15 +309,16 @@ class Component extends React.Component {
                   </Description>
                   
                   
-                  {/* ログインフォーム */}
+                  {/* フォーム */}
                   <form>
                     
                     <InputBox>
-                    
-                      <StyledFormControl>
+                      
+                      <StyledFormControl error={loginIdError}>
                         <InputLabel htmlFor="loginId">ID</InputLabel>
                         <Input
                           id="loginId"
+                          type="text"
                           value={loginId}
                           onChange={handleLoginId}
                           startAdornment={
@@ -253,7 +329,7 @@ class Component extends React.Component {
                         />
                       </StyledFormControl>
                       
-                      <StyledFormControl>
+                      <StyledFormControl error={loginPasswordError}>
                         <InputLabel htmlFor="loginPassword">パスワード</InputLabel>
                         <Input
                           id="loginPassword"
@@ -311,16 +387,16 @@ class Component extends React.Component {
                   
                   <Description>
                     利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。
-※ IDは3文字以上、32文字以内。パスワードは6文字以上、32文字以内。
+※ IDは3文字以上、32文字以内。パスワードは8文字以上、32文字以内。
                   </Description>
                   
                   
-                  {/* ログインフォーム */}
+                  {/* フォーム */}
                   <form>
                     
                     <InputBox>
                       
-                      <StyledFormControl>
+                      <StyledFormControl error={createAccountIdError}>
                         <InputLabel htmlFor="createAccountId">ID</InputLabel>
                         <Input
                           id="createAccountId"
@@ -335,7 +411,7 @@ class Component extends React.Component {
                       </StyledFormControl>
                       
                       
-                      <StyledFormControl>
+                      <StyledFormControl error={createAccountPasswordError}>
                         <InputLabel htmlFor="createAccountPassword">パスワード</InputLabel>
                         <Input
                           id="createAccountPassword"
@@ -359,10 +435,11 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
+                        <PasswordFormHelperText>パスワード強度：{passwordTextArr[createAccountPasswordScore]}</PasswordFormHelperText>
                       </StyledFormControl>
                       
                       
-                      <StyledFormControl>
+                      <StyledFormControl error={createAccountPasswordConfirmationError}>
                         <InputLabel htmlFor="createAccountPasswordConfirmation">パスワード確認</InputLabel>
                         <Input
                           id="createAccountPasswordConfirmation"
@@ -391,6 +468,10 @@ class Component extends React.Component {
                     </InputBox>
                     
                     
+                    <p onClick={handleTermsOfServiceDialogOpen}>利用規約</p>
+                    
+                    
+                    
                     {/* 送信ボタン */}
                     <StyledButton
                       variant="contained"
@@ -405,6 +486,8 @@ class Component extends React.Component {
                 </React.Fragment>
               }
             />
+            
+            <TermsOfService />
             
           </Container>
           

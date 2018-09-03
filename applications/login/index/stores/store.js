@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
+import zxcvbn from 'zxcvbn';
 
 
 // --------------------------------------------------
@@ -32,12 +33,31 @@ class Store {
   @observable loginId = '';
   
   /**
+   * ログインID　エラー（バリデーション用）
+   * @type {string}
+   */
+  @observable loginIdError = false;
+  
+  
+  /**
    * ログインID入力フォームに文字列を入力したときに呼び出される
    * @param {Object} event - イベント
    */
   @action.bound
   handleLoginId(event) {
-    this.loginId = event.target.value;
+    
+    if (event.target.value.match(/^[\w\-]{3,32}$/)) {
+      
+      this.loginId = event.target.value;
+      this.loginIdError = false;
+      
+    } else if (event.target.value.length <= 32) {
+      
+      this.loginId = event.target.value;
+      this.loginIdError = true;
+      
+    }
+    
   };
   
   
@@ -49,12 +69,31 @@ class Store {
   @observable loginPassword = '';
   
   /**
+   * ログインパスワード　エラー（バリデーション用）
+   * @type {string}
+   */
+  @observable loginPasswordError = false;
+  
+  
+  /**
    * ログインパスワード入力フォームに文字列を入力したときに呼び出される
    * @param {Object} event - イベント
    */
   @action.bound
   handleLoginPassword(event) {
-    this.loginPassword = event.target.value;
+    
+    if (event.target.value.match(/^[\w\-]{8,32}$/)) {
+      
+      this.loginPassword = event.target.value;
+      this.loginPasswordError = false;
+      
+    } else if (event.target.value.length <= 32) {
+      
+      this.loginPassword = event.target.value;
+      this.loginPasswordError = true;
+      
+    }
+    
   };
   
   
@@ -106,6 +145,21 @@ class Store {
     console.log(`\n\n`);
     
     
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (!this.loginId || this.loginIdError) {
+      storeLayout.handleSnackbarOpen('error', 'IDの入力内容に問題があります。');
+      return;
+    }
+    
+    if (!this.loginPassword || this.loginPasswordError) {
+      storeLayout.handleSnackbarOpen('error', 'パスワードの入力内容に問題があります。');
+      return;
+    }
+    
+    
   };
   
   
@@ -122,12 +176,30 @@ class Store {
   @observable createAccountId = '';
   
   /**
+   * アカウント作成 ID　エラー（バリデーション用）
+   * @type {string}
+   */
+  @observable createAccountIdError = false;
+  
+  /**
    * アカウント作成 ID入力フォームに文字列を入力したときに呼び出される
    * @param {Object} event - イベント
    */
   @action.bound
   handleCreateAccountId(event) {
-    this.createAccountId = event.target.value;
+    
+    if (event.target.value.match(/^[\w\-]{3,32}$/)) {
+      
+      this.createAccountId = event.target.value;
+      this.createAccountIdError = false;
+      
+    } else if (event.target.value.length <= 32) {
+      
+      this.createAccountId = event.target.value;
+      this.createAccountIdError = true;
+      
+    }
+    
   };
   
   
@@ -139,12 +211,42 @@ class Store {
   @observable createAccountPassword = '';
   
   /**
+   * アカウント作成パスワード強度
+   * @type {number}
+   */
+  @observable createAccountPasswordScore = 0;
+  
+  /**
+   * アカウント作成パスワード　エラー（バリデーション用）
+   * @type {string}
+   */
+  @observable createAccountPasswordError = false;
+  
+  /**
    * アカウント作成パスワード入力フォームに文字列を入力したときに呼び出される
    * @param {Object} event - イベント
    */
   @action.bound
   handleCreateAccountPassword(event) {
-    this.createAccountPassword = event.target.value;
+    
+    const score = zxcvbn(event.target.value).score;
+    
+    // console.log(`zxcvbn = ${zxcvbn(event.target.value).score}`);
+    
+    if (event.target.value.match(/^[\w\-]{8,32}$/) && score >= 2) {
+      
+      this.createAccountPassword = event.target.value;
+      this.createAccountPasswordScore = score;
+      this.createAccountPasswordError = false;
+      
+    } else if (event.target.value.length <= 32) {
+      
+      this.createAccountPassword = event.target.value;
+      this.createAccountPasswordScore = score;
+      this.createAccountPasswordError = true;
+      
+    }
+    
   };
   
   
@@ -185,12 +287,30 @@ class Store {
   @observable createAccountPasswordConfirmation = '';
   
   /**
+   * アカウント作成パスワード確認　エラー（バリデーション用）
+   * @type {string}
+   */
+  @observable createAccountPasswordConfirmationError = false;
+  
+  /**
    * アカウント作成パスワード確認入力フォームに文字列を入力したときに呼び出される
    * @param {Object} event - イベント
    */
   @action.bound
   handleCreateAccountPasswordConfirmation(event) {
-    this.createAccountPasswordConfirmation = event.target.value;
+    
+    if (event.target.value.match(/^[\w\-]{6,32}$/) && this.createAccountPassword === event.target.value) {
+      
+      this.createAccountPasswordConfirmation = event.target.value;
+      this.createAccountPasswordConfirmationError = false;
+      
+    } else if (event.target.value.length <= 32) {
+      
+      this.createAccountPasswordConfirmation = event.target.value;
+      this.createAccountPasswordConfirmationError = true;
+      
+    }
+    
   };
   
   
@@ -225,7 +345,7 @@ class Store {
   
   
   /**
-   * ログインフォームで送信ボタンを押すと呼び出される
+   * アカウント作成フォームで送信ボタンを押すと呼び出される
    */
   @action.bound
   handleCreateAccountSubmit() {
@@ -240,6 +360,27 @@ class Store {
     console.log(`this.createAccountId = ${this.createAccountId}`);
     console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
     console.log(`\n\n`);
+    
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (!this.createAccountId || this.createAccountIdError) {
+      storeLayout.handleSnackbarOpen('error', 'IDの入力内容に問題があります。');
+      return;
+    }
+    
+    if (!this.createAccountPassword || this.createAccountPasswordError) {
+      storeLayout.handleSnackbarOpen('error', 'パスワードの入力内容に問題があります。');
+      return;
+    }
+    
+    if (!this.createAccountPasswordConfirmation || this.createAccountPasswordErrorConfirmationError) {
+      storeLayout.handleSnackbarOpen('error', 'パスワード確認の入力内容に問題があります。');
+      return;
+    }
     
     
   };

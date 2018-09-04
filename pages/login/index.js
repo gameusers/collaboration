@@ -15,9 +15,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import IconId from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
+import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
@@ -64,9 +67,21 @@ const StyledFormControl = styled(FormControl)`
   }
 `;
 
-const FormBox = styled.form`
-  margin: 0;
+const PasswordFormControl = styled(FormControl)`
+  && {
+    margin: 0;
+  }
 `;
+
+// const PasswordScore = styled.div`
+//   font-size: 14px;
+//   margin: 4px 0 10px 0;
+// `;
+
+
+// const FormBox = styled.form`
+//   margin: 0;
+// `;
 
 const InputBox = styled.div`
   display: flex;
@@ -79,39 +94,11 @@ const InputBox = styled.div`
   }
 `;
 
-
-const Rank4FormHelperText = styled(FormHelperText)`
-  && {
-    color: green;
-  }
+const TermsOfServiceBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 0;
 `;
-
-const Rank3FormHelperText = styled(FormHelperText)`
-  && {
-    color: #04B45F;
-  }
-`;
-
-const Rank2FormHelperText = styled(FormHelperText)`
-  && {
-    color: green;
-  }
-`;
-
-
-const Rank1FormHelperText = styled(FormHelperText)`
-  && {
-    color: red;
-  }
-`;
-const Rank0FormHelperText = styled(FormHelperText)`
-  && {
-    color: red;
-  }
-`;
-
-
-
 
 
 const StyledButton = styled(Button)`
@@ -225,7 +212,6 @@ class Component extends React.Component {
       handleLoginSubmit,
       
       
-      
       createAccountId,
       createAccountIdError,
       handleCreateAccountId,
@@ -245,6 +231,9 @@ class Component extends React.Component {
       handleCreateAccountPasswordConfirmationShow,
       handleCreateAccountPasswordConfirmationMouseDown,
       
+      createAccountTermsOfService,
+      handleCreateAccountTermsOfService,
+      
       handleCreateAccountSubmit
       
     } = stores.loginIndex;
@@ -263,18 +252,17 @@ class Component extends React.Component {
     
     
     
-    
     // --------------------------------------------------
     //   パスワードの強度
     // --------------------------------------------------
     
-    const passwordColorArr = ['red', 'red', 'darkorange', 'green', 'green'];
+    const passwordColorArr = ['red', 'red', 'tomato', 'green', 'green'];
     const passwordTextArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
     
-    const PasswordFormHelperText = styled(FormHelperText)`
-      && {
-        color: ${passwordColorArr[createAccountPasswordScore]};
-      }
+    const PasswordScore = styled.div`
+      font-size: 14px;
+      margin: 4px 0 10px 0;
+      color: ${passwordColorArr[createAccountPasswordScore]};
     `;
     
     
@@ -411,7 +399,7 @@ class Component extends React.Component {
                       </StyledFormControl>
                       
                       
-                      <StyledFormControl error={createAccountPasswordError}>
+                      <PasswordFormControl error={createAccountPasswordError} style={{margin: 0}}>
                         <InputLabel htmlFor="createAccountPassword">パスワード</InputLabel>
                         <Input
                           id="createAccountPassword"
@@ -435,8 +423,11 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
-                        <PasswordFormHelperText>パスワード強度：{passwordTextArr[createAccountPasswordScore]}</PasswordFormHelperText>
-                      </StyledFormControl>
+                      </PasswordFormControl>
+                      
+                      <PasswordScore>
+                        パスワード強度：{passwordTextArr[createAccountPasswordScore]}
+                      </PasswordScore>
                       
                       
                       <StyledFormControl error={createAccountPasswordConfirmationError}>
@@ -448,7 +439,7 @@ class Component extends React.Component {
                           onChange={handleCreateAccountPasswordConfirmation}
                           startAdornment={
                             <InputAdornment position="start">
-                              <IconPassword />
+                              <IconPasswordOutlined />
                             </InputAdornment>
                           }
                           endAdornment={
@@ -468,7 +459,27 @@ class Component extends React.Component {
                     </InputBox>
                     
                     
-                    <p onClick={handleTermsOfServiceDialogOpen}>利用規約</p>
+                    
+                    <TermsOfServiceBox>
+                      
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={createAccountTermsOfService}
+                            onChange={handleCreateAccountTermsOfService}
+                          />
+                        }
+                        label="利用規約に同意します"
+                      />
+                      
+                      <Button
+                        color="primary"
+                        onClick={handleTermsOfServiceDialogOpen}
+                      >
+                        利用規約を表示
+                      </Button>
+                      
+                    </TermsOfServiceBox>
                     
                     
                     

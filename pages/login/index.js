@@ -67,26 +67,25 @@ const StyledFormControl = styled(FormControl)`
   }
 `;
 
+const StyledFormHelperText = styled(FormHelperText)`
+  && {
+    line-height: 1.4em;
+    margin: 6px 0 6px 0;
+  }
+`;
+
+
+
 const PasswordFormControl = styled(FormControl)`
   && {
     margin: 0;
   }
 `;
 
-// const PasswordScore = styled.div`
-//   font-size: 14px;
-//   margin: 4px 0 10px 0;
-// `;
-
-
-// const FormBox = styled.form`
-//   margin: 0;
-// `;
-
 const InputBox = styled.div`
   display: flex;
   flex-flow: column wrap;
-  width: 300px;
+  width: 360px;
   margin: 0;
   
   @media screen and (max-width: 480px) {
@@ -199,11 +198,15 @@ class Component extends React.Component {
     const {
       
       loginId,
+      loginIdNumberOfCharacters,
       loginIdError,
+      loginIdErrorMessage,
       handleLoginId,
       
       loginPassword,
+      loginPasswordNumberOfCharacters,
       loginPasswordError,
+      loginPasswordErrorMessage,
       handleLoginPassword,
       loginPasswordShow,
       handleLoginPasswordShow,
@@ -213,19 +216,25 @@ class Component extends React.Component {
       
       
       createAccountId,
+      createAccountIdNumberOfCharacters,
       createAccountIdError,
+      createAccountIdErrorMessage,
       handleCreateAccountId,
       
       createAccountPassword,
-      createAccountPasswordScore,
+      createAccountPasswordNumberOfCharacters,
+      createAccountPasswordStrengthScore,
       createAccountPasswordError,
+      createAccountPasswordErrorMessage,
       handleCreateAccountPassword,
       createAccountPasswordShow,
       handleCreateAccountPasswordShow,
       handleCreateAccountPasswordMouseDown,
       
       createAccountPasswordConfirmation,
+      createAccountPasswordConfirmationNumberOfCharacters,
       createAccountPasswordConfirmationError,
+      createAccountPasswordConfirmationErrorMessage,
       handleCreateAccountPasswordConfirmation,
       createAccountPasswordConfirmationShow,
       handleCreateAccountPasswordConfirmationShow,
@@ -253,16 +262,104 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
+    //   文字数
+    // --------------------------------------------------
+    
+    let loginIdNoC = '';
+    
+    if (loginIdNumberOfCharacters > 0) {
+      loginIdNoC = `（${loginIdNumberOfCharacters}文字）`;
+    }
+    
+    
+    let loginPasswordNoC = '';
+    
+    if (loginPasswordNumberOfCharacters > 0) {
+      loginPasswordNoC = `（${loginPasswordNumberOfCharacters}文字）`;
+    }
+    
+    
+    let createAccountIdNoC = '';
+    
+    if (createAccountIdNumberOfCharacters > 0) {
+      createAccountIdNoC = `（${createAccountIdNumberOfCharacters}文字）`;
+    }
+    
+    
+    let createAccountPasswordNoC = '';
+    
+    if (createAccountPasswordNumberOfCharacters > 0) {
+      createAccountPasswordNoC = `（${createAccountPasswordNumberOfCharacters}文字）`;
+    }
+    
+    
+    let createAccountPasswordConfirmationNoC = '';
+    
+    if (createAccountPasswordConfirmationNumberOfCharacters > 0) {
+      createAccountPasswordConfirmationNoC = `（${createAccountPasswordConfirmationNumberOfCharacters}文字）`;
+    }
+    
+    
+    
+    // --------------------------------------------------
+    //   エラーメッセージ
+    // --------------------------------------------------
+    
+    let loginIdEM = '';
+    
+    if (loginIdErrorMessage) {
+      loginIdEM = <StyledFormHelperText>{loginIdErrorMessage}</StyledFormHelperText>;
+    }
+    
+    
+    let loginPasswordEM = '';
+    
+    if (loginPasswordErrorMessage) {
+      loginPasswordEM = <StyledFormHelperText>{loginPasswordErrorMessage}</StyledFormHelperText>;
+    }
+    
+    
+    let createAccountIdEM = '';
+    
+    if (createAccountIdErrorMessage) {
+      createAccountIdEM = <StyledFormHelperText>{createAccountIdErrorMessage}</StyledFormHelperText>;
+    }
+    
+    
+    let createAccountPasswordEM = '';
+    
+    if (createAccountPasswordErrorMessage) {
+      createAccountPasswordEM = <StyledFormHelperText>{createAccountPasswordErrorMessage}</StyledFormHelperText>;
+    }
+    
+    
+    let createAccountPasswordConfirmationEM = '';
+    
+    if (createAccountPasswordConfirmationErrorMessage) {
+      createAccountPasswordConfirmationEM = <StyledFormHelperText>{createAccountPasswordConfirmationErrorMessage}</StyledFormHelperText>;
+    }
+    
+    
+    
+    // --------------------------------------------------
     //   パスワードの強度
     // --------------------------------------------------
     
     const passwordColorArr = ['red', 'red', 'tomato', 'green', 'green'];
-    const passwordTextArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
+    const passwordStrengthArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
+    
+    let passwordColor = passwordColorArr[createAccountPasswordStrengthScore];
+    let passwordStrength = passwordStrengthArr[createAccountPasswordStrengthScore];
+    
+    if (createAccountPassword === '') {
+      passwordColor = '#848484';
+      passwordStrength = ' -';
+    }
     
     const PasswordScore = styled.div`
       font-size: 14px;
       margin: 4px 0 10px 0;
-      color: ${passwordColorArr[createAccountPasswordScore]};
+      color: ${passwordColor};
     `;
     
     
@@ -303,7 +400,7 @@ class Component extends React.Component {
                     <InputBox>
                       
                       <StyledFormControl error={loginIdError}>
-                        <InputLabel htmlFor="loginId">ID</InputLabel>
+                        <InputLabel htmlFor="loginId">ID{loginIdNoC}</InputLabel>
                         <Input
                           id="loginId"
                           type="text"
@@ -315,10 +412,11 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
+                        {loginIdEM}
                       </StyledFormControl>
                       
                       <StyledFormControl error={loginPasswordError}>
-                        <InputLabel htmlFor="loginPassword">パスワード</InputLabel>
+                        <InputLabel htmlFor="loginPassword">パスワード{loginPasswordNoC}</InputLabel>
                         <Input
                           id="loginPassword"
                           type={loginPasswordShow ? 'text' : 'password'}
@@ -341,6 +439,7 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
+                        {loginPasswordEM}
                       </StyledFormControl>
                     
                     </InputBox>
@@ -385,7 +484,7 @@ class Component extends React.Component {
                     <InputBox>
                       
                       <StyledFormControl error={createAccountIdError}>
-                        <InputLabel htmlFor="createAccountId">ID</InputLabel>
+                        <InputLabel htmlFor="createAccountId">ID{createAccountIdNoC}</InputLabel>
                         <Input
                           id="createAccountId"
                           value={createAccountId}
@@ -396,11 +495,12 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
+                        {createAccountIdEM}
                       </StyledFormControl>
                       
                       
                       <PasswordFormControl error={createAccountPasswordError} style={{margin: 0}}>
-                        <InputLabel htmlFor="createAccountPassword">パスワード</InputLabel>
+                        <InputLabel htmlFor="createAccountPassword">パスワード{createAccountPasswordNoC}</InputLabel>
                         <Input
                           id="createAccountPassword"
                           type={createAccountPasswordShow ? 'text' : 'password'}
@@ -423,15 +523,16 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
+                        {createAccountPasswordEM}
                       </PasswordFormControl>
                       
                       <PasswordScore>
-                        パスワード強度：{passwordTextArr[createAccountPasswordScore]}
+                        パスワード強度：{passwordStrength}
                       </PasswordScore>
                       
                       
                       <StyledFormControl error={createAccountPasswordConfirmationError}>
-                        <InputLabel htmlFor="createAccountPasswordConfirmation">パスワード確認</InputLabel>
+                        <InputLabel htmlFor="createAccountPasswordConfirmation">パスワード確認{createAccountPasswordConfirmationNoC}</InputLabel>
                         <Input
                           id="createAccountPasswordConfirmation"
                           type={createAccountPasswordConfirmationShow ? 'text' : 'password'}
@@ -454,6 +555,7 @@ class Component extends React.Component {
                             </InputAdornment>
                           }
                         />
+                        {createAccountPasswordConfirmationEM}
                       </StyledFormControl>
                     
                     </InputBox>

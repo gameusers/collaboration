@@ -3,7 +3,9 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
-import zxcvbn from 'zxcvbn';
+// import zxcvbn from 'zxcvbn';
+
+import {validationId, validationPassword, validationPasswordConfirmation } from '../../../../applications/common/validations/common';
 
 
 // --------------------------------------------------
@@ -47,6 +49,12 @@ class Store {
   @observable loginId = '';
   
   /**
+   * ログインID　文字数
+   * @type {number}
+   */
+  @observable loginIdNumberOfCharacters = 0;
+  
+  /**
    * ログインID　エラー（バリデーション用）
    * @type {string}
    */
@@ -56,7 +64,7 @@ class Store {
    * ログインID　エラーメッセージ
    * @type {string}
    */
-  @observable loginIdErrorMessage = 'IDを入力してください。';
+  @observable loginIdErrorMessage = '';
   
   
   /**
@@ -66,40 +74,12 @@ class Store {
   @action.bound
   handleLoginId(event) {
     
-    // const minLength = 3;
-    // const maxLength = 32;
+    const resultObj = validationId(event.target.value);
     
-    const value = event.target.value;
-    const length = event.target.value.length;
-    
-    
-    if (length <= this.idMaxLength) {
-      
-      this.loginId = value;
-      
-      if (length === 0) {
-        
-        this.loginIdError = true;
-        this.loginIdErrorMessage = 'IDを入力してください。';
-        
-      } else if (length < this.idMinLength) {
-        
-        this.loginIdError = true;
-        this.loginIdErrorMessage = `IDは${this.idMinLength}文字以上、${this.idMaxLength}文字以内です。`;
-        
-      } else if (value.match(/^[\w\-]+$/) === null) {
-        
-        this.loginIdError = true;
-        this.loginIdErrorMessage = 'IDに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。';
-        
-      } else {
-        
-        this.loginIdError = false;
-        this.loginIdErrorMessage = '';
-        
-      }
-      
-    }
+    this.loginId = resultObj.value;
+    this.loginIdNumberOfCharacters = resultObj.numberOfCharacters;
+    this.loginIdError = resultObj.error;
+    this.loginIdErrorMessage = resultObj.errorMessageArr[0];
     
   };
   
@@ -112,6 +92,12 @@ class Store {
   @observable loginPassword = '';
   
   /**
+   * ログインパスワード　文字数
+   * @type {number}
+   */
+  @observable loginPasswordNumberOfCharacters = 0;
+  
+  /**
    * ログインパスワード　エラー（バリデーション用）
    * @type {string}
    */
@@ -121,7 +107,7 @@ class Store {
    * ログインパスワード　エラーメッセージ
    * @type {string}
    */
-  @observable loginPasswordErrorMessage = 'パスワードを入力してください。';
+  @observable loginPasswordErrorMessage = '';
   
   
   /**
@@ -131,40 +117,12 @@ class Store {
   @action.bound
   handleLoginPassword(event) {
     
-    // const minLength = 8;
-    // const maxLength = 32;
+    const resultObj = validationPassword(event.target.value);
     
-    const value = event.target.value;
-    const length = event.target.value.length;
-    
-    
-    if (length <= this.passwordMaxLength) {
-      
-      this.loginPassword = value;
-      
-      if (length === 0) {
-        
-        this.loginPasswordError = true;
-        this.loginPasswordErrorMessage = 'パスワードを入力してください。';
-        
-      } else if (length < this.passwordMinLength) {
-        
-        this.loginPasswordError = true;
-        this.loginPasswordErrorMessage = `パスワードは${this.passwordMinLength}文字以上、${this.passwordMaxLength}文字以内です。`;
-        
-      } else if (value.match(/^[\w\-]+$/) === null) {
-        
-        this.loginPasswordError = true;
-        this.loginPasswordErrorMessage = 'パスワードに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。';
-        
-      } else {
-        
-        this.loginPasswordError = false;
-        this.loginPasswordErrorMessage = '';
-        
-      }
-      
-    }
+    this.loginPassword = resultObj.value;
+    this.loginPasswordNumberOfCharacters = resultObj.numberOfCharacters;
+    this.loginPasswordError = resultObj.error;
+    this.loginPasswordErrorMessage = resultObj.errorMessageArr[0];
     
   };
   
@@ -221,18 +179,17 @@ class Store {
     //  Error
     // ---------------------------------------------
     
-    if (this.loginIdErrorMessage) {
+    if (
+      this.loginId === '' ||
+      this.loginPassword === '' ||
+      this.loginIdError ||
+      this.loginPasswordError
+    ) {
       
-      storeLayout.handleSnackbarOpen('error', this.loginIdErrorMessage);
-      return;
-      
-    } else if (this.loginPasswordErrorMessage) {
-      
-      storeLayout.handleSnackbarOpen('error', this.loginPasswordErrorMessage);
+      storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
       return;
       
     }
-    
     
   };
   
@@ -250,6 +207,12 @@ class Store {
   @observable createAccountId = '';
   
   /**
+   * アカウント作成 ID　文字数
+   * @type {number}
+   */
+  @observable createAccountIdNumberOfCharacters = 0;
+  
+  /**
    * アカウント作成 ID　エラー（バリデーション用）
    * @type {string}
    */
@@ -259,7 +222,7 @@ class Store {
    * アカウント作成 ID　エラーメッセージ
    * @type {string}
    */
-  @observable createAccountIdErrorMessage = 'IDを入力してください。';
+  @observable createAccountIdErrorMessage = '';
   
   /**
    * アカウント作成 ID入力フォームに文字列を入力したときに呼び出される
@@ -268,35 +231,29 @@ class Store {
   @action.bound
   handleCreateAccountId(event) {
     
-    const value = event.target.value;
-    const length = event.target.value.length;
+    
+    // ---------------------------------------------
+    //   ID
+    // ---------------------------------------------
+    
+    const resultIdObj = validationId(event.target.value);
+    
+    this.createAccountId = resultIdObj.value;
+    this.createAccountIdNumberOfCharacters = resultIdObj.numberOfCharacters;
+    this.createAccountIdError = resultIdObj.error;
+    this.createAccountIdErrorMessage = resultIdObj.errorMessageArr[0];
     
     
-    if (length <= this.idMaxLength) {
+    // ---------------------------------------------
+    //   Password
+    // ---------------------------------------------
+    
+    if (this.createAccountPassword !== '') {
       
-      this.createAccountId = value;
+      const resultPasswordObj = validationPassword(this.createAccountPassword, resultIdObj.value);
       
-      if (length === 0) {
-        
-        this.createAccountIdError = true;
-        this.createAccountIdErrorMessage = 'IDを入力してください。';
-        
-      } else if (length < this.idMinLength) {
-        
-        this.createAccountIdError = true;
-        this.createAccountIdErrorMessage = `IDは${this.idMinLength}文字以上、${this.idMaxLength}文字以内です。`;
-        
-      } else if (value.match(/^[\w\-]+$/) === null) {
-        
-        this.createAccountIdError = true;
-        this.createAccountIdErrorMessage = 'IDに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。';
-        
-      } else {
-        
-        this.createAccountIdError = false;
-        this.createAccountIdErrorMessage = '';
-        
-      }
+      this.createAccountPasswordError = resultPasswordObj.error;
+      this.createAccountPasswordErrorMessage = resultPasswordObj.errorMessageArr[0];
       
     }
     
@@ -311,10 +268,16 @@ class Store {
   @observable createAccountPassword = '';
   
   /**
+   * アカウント作成パスワード　文字数
+   * @type {number}
+   */
+  @observable createAccountPasswordNumberOfCharacters = 0;
+  
+  /**
    * アカウント作成パスワード強度
    * @type {number}
    */
-  @observable createAccountPasswordScore = 0;
+  @observable createAccountPasswordStrengthScore = 0;
   
   /**
    * アカウント作成パスワード　エラー（バリデーション用）
@@ -326,7 +289,7 @@ class Store {
    * アカウント作成パスワード　エラーメッセージ
    * @type {string}
    */
-  @observable createAccountPasswordErrorMessage = 'パスワードを入力してください。';
+  @observable createAccountPasswordErrorMessage = '';
   
   /**
    * アカウント作成パスワード入力フォームに文字列を入力したときに呼び出される
@@ -335,51 +298,30 @@ class Store {
   @action.bound
   handleCreateAccountPassword(event) {
     
-    // console.log(`zxcvbn = ${zxcvbn(event.target.value).score}`);
-    // const minLength = 8;
-    // const maxLength = 32;
     
-    const value = event.target.value;
-    const length = event.target.value.length;
-    const score = zxcvbn(event.target.value).score;
+    // ---------------------------------------------
+    //   Password
+    // ---------------------------------------------
+    
+    const resultPasswordObj = validationPassword(event.target.value, this.createAccountId);
+    
+    this.createAccountPassword = resultPasswordObj.value;
+    this.createAccountPasswordNumberOfCharacters = resultPasswordObj.numberOfCharacters;
+    this.createAccountPasswordStrengthScore = resultPasswordObj.strengthScore;
+    this.createAccountPasswordError = resultPasswordObj.error;
+    this.createAccountPasswordErrorMessage = resultPasswordObj.errorMessageArr[0];
     
     
-    if (length <= this.passwordMaxLength) {
+    // ---------------------------------------------
+    //   Password Confirmation
+    // ---------------------------------------------
+    
+    if (this.createAccountPasswordConfirmation !== '') {
       
-      this.createAccountPassword = value;
-      this.createAccountPasswordScore = score;
+      const resultConfirmationObj = validationPasswordConfirmation(this.createAccountPasswordConfirmation, resultPasswordObj.value);
       
-      if (length === 0) {
-        
-        this.createAccountPasswordError = true;
-        this.createAccountPasswordErrorMessage = 'パスワードを入力してください。';
-        
-      } else if (length < this.passwordMinLength) {
-        
-        this.createAccountPasswordError = true;
-        this.createAccountPasswordErrorMessage = `パスワードは${this.passwordMinLength}文字以上、${this.passwordMaxLength}文字以内です。`;
-        
-      } else if (value.match(/^[\w\-]+$/) === null) {
-        
-        this.createAccountPasswordError = true;
-        this.createAccountPasswordErrorMessage = 'パスワードに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。';
-        
-      } else if (value === this.createAccountId) {
-        
-        this.createAccountPasswordError = true;
-        this.createAccountPasswordErrorMessage = 'IDとパスワードを同じ文字列にすることはできません。';
-        
-      } else if (score < 2) {
-        
-        this.createAccountPasswordError = true;
-        this.createAccountPasswordErrorMessage = 'パスワードの強度が足りません。';
-        
-      } else {
-        
-        this.createAccountPasswordError = false;
-        this.createAccountPasswordErrorMessage = '';
-        
-      }
+      this.createAccountPasswordConfirmationError = resultConfirmationObj.error;
+      this.createAccountPasswordConfirmationErrorMessage = resultConfirmationObj.errorMessageArr[0];
       
     }
     
@@ -423,6 +365,12 @@ class Store {
   @observable createAccountPasswordConfirmation = '';
   
   /**
+   * アカウント作成パスワード確認　文字数
+   * @type {number}
+   */
+  @observable createAccountPasswordConfirmationNumberOfCharacters = 0;
+  
+  /**
    * アカウント作成パスワード確認　エラー（バリデーション用）
    * @type {string}
    */
@@ -432,7 +380,7 @@ class Store {
    * アカウント作成パスワード確認　エラーメッセージ
    * @type {string}
    */
-  @observable createAccountPasswordConfirmationErrorMessage = 'パスワード確認を入力してください。';
+  @observable createAccountPasswordConfirmationErrorMessage = '';
   
   /**
    * アカウント作成パスワード確認入力フォームに文字列を入力したときに呼び出される
@@ -441,35 +389,12 @@ class Store {
   @action.bound
   handleCreateAccountPasswordConfirmation(event) {
     
-    // const minLength = 8;
-    // const maxLength = 32;
+    const resultObj = validationPasswordConfirmation(event.target.value, this.createAccountPassword);
     
-    const value = event.target.value;
-    const length = event.target.value.length;
-    
-    
-    if (length <= this.passwordMaxLength) {
-      
-      this.createAccountPasswordConfirmation = value;
-      
-      if (length === 0) {
-        
-        this.createAccountPasswordConfirmationError = true;
-        this.createAccountPasswordConfirmationErrorMessage = 'パスワード確認を入力してください。';
-        
-      } else if (value !== this.createAccountPassword) {
-        
-        this.createAccountPasswordConfirmationError = true;
-        this.createAccountPasswordConfirmationErrorMessage = 'パスワードとパスワード確認の文字列が違っています。';
-        
-      } else {
-        
-        this.createAccountPasswordConfirmationError = false;
-        this.createAccountPasswordConfirmationErrorMessage = '';
-        
-      }
-      
-    }
+    this.createAccountPasswordConfirmation = resultObj.value;
+    this.createAccountPasswordConfirmationNumberOfCharacters = resultObj.numberOfCharacters;
+    this.createAccountPasswordConfirmationError = resultObj.error;
+    this.createAccountPasswordConfirmationErrorMessage = resultObj.errorMessageArr[0];
     
   };
   
@@ -532,7 +457,6 @@ class Store {
       this.createAccountTermsOfServiceErrorMessage = '利用規約に同意してください。';
     }
     
-    // this.createAccountTermsOfService = !this.createAccountTermsOfService;
   };
   
   
@@ -560,19 +484,16 @@ class Store {
     //  Error
     // ---------------------------------------------
     
-    if (this.createAccountIdErrorMessage) {
+    if (
+      this.createAccountId === '' ||
+      this.createAccountPassword === '' ||
+      this.createAccountPasswordConfirmation === '' ||
+      this.createAccountIdError ||
+      this.createAccountPasswordError || 
+      this.createAccountPasswordConfirmationError
+    ) {
       
-      storeLayout.handleSnackbarOpen('error', this.createAccountIdErrorMessage);
-      return;
-      
-    } else if (this.createAccountPasswordErrorMessage) {
-      
-      storeLayout.handleSnackbarOpen('error', this.createAccountPasswordErrorMessage);
-      return;
-      
-    } else if (this.createAccountPasswordConfirmationErrorMessage) {
-      
-      storeLayout.handleSnackbarOpen('error', this.createAccountPasswordConfirmationErrorMessage);
+      storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
       return;
       
     } else if (this.createAccountTermsOfServiceErrorMessage) {
@@ -583,9 +504,6 @@ class Store {
     }
     
   };
-  
-  
-  
   
 }
 

@@ -21,7 +21,7 @@ module.exports = db => {
   const router = express.Router();
 
 
-  router.get('/', (req, res) => {
+  router.post('/', (req, res) => {
     
     ModelUsers.find({}, (err, obj) => {
       

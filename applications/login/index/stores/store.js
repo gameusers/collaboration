@@ -503,6 +503,31 @@ class Store {
       
     }
     
+    
+    const apiPath = 'http://35.203.143.160:8080/api';
+    
+    fetch(apiPath, {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((jsonObj) => {
+        console.dir(jsonObj);
+        console.log(`jsonObj.message = ${jsonObj.message}`);
+        // returnObj[themeNameId] = jsonObj;
+        // count += 1;
+
+        // if (count >= slicedList.count()) {
+        //   resolve(returnObj);
+        // }
+      });
+    
+    
   };
   
 }

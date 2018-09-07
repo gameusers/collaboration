@@ -5,6 +5,7 @@
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
+import getConfig from 'next/config'
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
@@ -155,6 +156,13 @@ class Component extends React.Component {
       pathname: props.pathname
     };
     
+    
+    
+    console.log(`process.env.ENVIRONMENT = ${process.env.ENVIRONMENT}`);
+    
+    const { publicRuntimeConfig } = getConfig();
+    console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
+    
   }
   
   
@@ -167,7 +175,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const stores = this.stores;
-    
+    // console.log(`process.env.ENVIRONMENT2 = ${process.env.ENVIRONMENT}`);
     
     
     // --------------------------------------------------

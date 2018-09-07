@@ -19,6 +19,8 @@ const mongoose = require('mongoose');
 // const { parse } = require('url');
 
 const api = require('./routes/api');
+const routerUc = require('./routes/uc');
+// const routerUcCommunity = require('./applications/uc/community/routes/router');
 
 // console.log(`process.env.PORT = ${process.env.PORT}`);
 // console.log(`port = ${port}`);
@@ -81,8 +83,13 @@ app.prepare().then(() => {
   
   server.use('/api', api(db));
   
-
-
+  
+  // console.log(`dev = ${dev}`);
+  
+  // const queryObj = {
+  //   environment: process.env.ENVIRONMENT
+  // };
+  
 
   // --------------------------------------------------
   //   Routing
@@ -121,20 +128,29 @@ app.prepare().then(() => {
   //   User Community
   // ---------------------------------------------
   
-  server.get('/uc/:param1', (req, res) => {
-    const { param1 } = req.params;
-    
-    if (!param1) {
-      return app.render(req, res, '/uc/index', req.query);
-    }
-    
-    return app.render(req, res, '/uc/community', { param1 });
-  });
+  server.use('/uc', routerUc);
   
-  server.get('/uc/:param1/member', (req, res) => {
-    const { param1 } = req.params;
-    return app.render(req, res, '/uc/community/member', { param1 });
-  });
+  
+  // server.get('/uc/:param1', (req, res) => {
+    
+  //   const { param1 } = req.params;
+    
+  //   if (!param1) {
+  //     return app.render(req, res, '/uc/index', req.query);
+  //   }
+    
+  //   const queryObj = {
+  //     param1
+  //   };
+    
+  //   return app.render(req, res, '/uc/community', queryObj);
+    
+  // });
+  
+  // server.get('/uc/:param1/member', (req, res) => {
+  //   const { param1 } = req.params;
+  //   return app.render(req, res, '/uc/community/member', { param1 });
+  // });
   
   
   

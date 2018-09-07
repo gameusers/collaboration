@@ -50,11 +50,13 @@ const Container = styled.div`
 @observer
 class Component extends React.Component {
   
-  static getInitialProps({ pathname, req }) {
+  static getInitialProps({ pathname, req, query }) {
     
     const isServer = !!req;
     // console.log(`uc/community - getInitialProps`);
     // console.log(`pathname = ${pathname}`);
+    console.dir(query);
+    
     
     // --------------------------------------------------
     //   テスト用　初期データ

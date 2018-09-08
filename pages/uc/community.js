@@ -55,6 +55,7 @@ class Component extends React.Component {
     const isServer = !!req;
     // console.log(`uc/community - getInitialProps`);
     // console.log(`pathname = ${pathname}`);
+    console.log(`query =`);
     console.dir(query);
     
     

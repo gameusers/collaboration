@@ -469,7 +469,7 @@ class Store {
     
     
     // ---------------------------------------------
-    //  Console 出力
+    //   Console 出力
     // ---------------------------------------------
     
     console.log(`\n\n`);
@@ -481,7 +481,7 @@ class Store {
     
     
     // ---------------------------------------------
-    //  Error
+    //   Error
     // ---------------------------------------------
     
     if (
@@ -504,12 +504,38 @@ class Store {
     }
     
     
+    
+    // ---------------------------------------------
+    //   FormData
+    // ---------------------------------------------
+    
+    const formData = new FormData();
+    
+    formData.append('loginId', this.createAccountId);
+    formData.append('loginPassword', this.createAccountPassword);
+    
+    console.log(`this.createAccountId = ${this.createAccountId}`);
+    console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
+    
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
     const apiPath = 'http://35.203.143.160:8080/api';
     
     fetch(apiPath, {
       method: 'POST',
       credentials: 'same-origin',
       mode: 'same-origin',
+      headers: {
+        // 'Content-Type': 'application/json; charset=utf-8',
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+        // 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+      },
+      body: formData
     })
       .then((response) => {
         if (response.ok) {

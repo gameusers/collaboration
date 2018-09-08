@@ -5,6 +5,8 @@
 require('dotenv').config();
 
 const express = require('express');
+// const multer  = require('multer');
+// const upload = multer({ dest: 'static/' });
 const bodyParser = require('body-parser');
 const next = require('next');
 
@@ -16,14 +18,7 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
-// const { parse } = require('url');
-
-const api = require('./routes/api');
-const routerUc = require('./routes/uc');
-// const routerUcCommunity = require('./applications/uc/community/routes/router');
-
-// console.log(`process.env.PORT = ${process.env.PORT}`);
-// console.log(`port = ${port}`);
+const api = require('./applications/common/routes/api');
 
 
 
@@ -81,19 +76,37 @@ app.prepare().then(() => {
   //   next();
   // });
   
-  server.use('/api', api(db));
   
   
-  // console.log(`dev = ${dev}`);
+//   ------WebKitFormBoundaryP3P5Vh3OWtMe045z
+// ↵Content-Disposition: form-data; name"
+// :
+// ""loginId"
+// ↵
+// ↵BM4TePAPnxH
+// ↵------WebKitFormBoundaryP3P5Vh3OWtMe045z
+// ↵Content-Disposition: form-data; name="loginPassword"
+// ↵
+// ↵BM4TePAPnxHc
+// ↵------WebKitFormBoundaryP3P5Vh3OWtMe045z--
+// ↵
   
-  // const queryObj = {
-  //   environment: process.env.ENVIRONMENT
-  // };
+  // server.post('/api', upload.none(), (req, res) => {
+  //   console.log(`req.body.loginId = ${req.body.loginId}`);
+  //   res.json({ 'error': false, 'message': 'Success', 'loginId': req.body });
+  //   // const { param1 } = req.params;
+  //   // app.render(req, res, '/uc/community/member', { param1 });
+  // });
+  
   
 
   // --------------------------------------------------
   //   Routing
   // --------------------------------------------------
+  
+  // API
+  server.use('/api', api(db));
+  
   
   // ---------------------------------------------
   //   Game Community
@@ -107,20 +120,20 @@ app.prepare().then(() => {
     const { param1 } = req.params;
     
     if (!param1) {
-      return app.render(req, res, '/gc/index', req.query);
+      app.render(req, res, '/gc/index', req.query);
     }
     
-    return app.render(req, res, '/gc/community', { param1 });
+    app.render(req, res, '/gc/community', { param1 });
   });
   
   server.get('/gc/:param1/:param2', (req, res) => {
     const { param1, param2 } = req.params;
-    return app.render(req, res, '/gc/community', { param1, param2 });
+    app.render(req, res, '/gc/community', { param1, param2 });
   });
   
   server.get('/gc/:param1/:param2/:param3', (req, res) => {
     const { param1, param2, param3 } = req.params;
-    return app.render(req, res, '/gc/community', { param1, param2, param3 });
+    app.render(req, res, '/gc/community', { param1, param2, param3 });
   });
   
   
@@ -128,29 +141,26 @@ app.prepare().then(() => {
   //   User Community
   // ---------------------------------------------
   
-  server.use('/uc', routerUc);
+  server.get('/uc/:param1*', (req, res) => {
+    
+    const { param1 } = req.params;
+    
+    if (!param1) {
+      app.render(req, res, '/uc/index', req.query);
+    }
+    
+    const queryObj = {
+      param1
+    };
+    
+    app.render(req, res, '/uc/community', queryObj);
+    
+  });
   
-  
-  // server.get('/uc/:param1', (req, res) => {
-    
-  //   const { param1 } = req.params;
-    
-  //   if (!param1) {
-  //     return app.render(req, res, '/uc/index', req.query);
-  //   }
-    
-  //   const queryObj = {
-  //     param1
-  //   };
-    
-  //   return app.render(req, res, '/uc/community', queryObj);
-    
-  // });
-  
-  // server.get('/uc/:param1/member', (req, res) => {
-  //   const { param1 } = req.params;
-  //   return app.render(req, res, '/uc/community/member', { param1 });
-  // });
+  server.get('/uc/:param1/member', (req, res) => {
+    const { param1 } = req.params;
+    app.render(req, res, '/uc/community/member', { param1 });
+  });
   
   
   

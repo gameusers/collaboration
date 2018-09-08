@@ -9,6 +9,8 @@ import getConfig from 'next/config'
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
+import moment from 'moment';
+
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
@@ -158,10 +160,17 @@ class Component extends React.Component {
     
     
     
-    console.log(`process.env.ENVIRONMENT = ${process.env.ENVIRONMENT}`);
+    // console.log(`process.env.ENVIRONMENT = ${process.env.ENVIRONMENT}`);
     
-    const { publicRuntimeConfig } = getConfig();
-    console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
+    // const { publicRuntimeConfig } = getConfig();
+    // console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
+    
+    
+    // const datetimeNow = moment().utcOffset(0);
+    // console.log(`datetimeNow = ${datetimeNow}`);
+    // console.log(`ISO 8601 string = ${moment().toISOString()}`);
+    // const datetimeUpdated = moment(value.updatedDate).utcOffset(0);
+    // const datetimeFrom = datetimeUpdated.from(datetimeNow);
     
   }
   

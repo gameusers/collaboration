@@ -5,8 +5,6 @@
 require('dotenv').config();
 
 const express = require('express');
-// const multer  = require('multer');
-// const upload = multer({ dest: 'static/' });
 const bodyParser = require('body-parser');
 const next = require('next');
 

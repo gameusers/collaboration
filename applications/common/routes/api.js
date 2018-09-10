@@ -5,6 +5,7 @@
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
+const shortid = require('shortid');
 
 
 // ---------------------------------------------
@@ -25,8 +26,84 @@ module.exports = db => {
   
   router.post('/', upload.none(), (req, res) => {
     
-    console.log(`req.body.loginId = ${req.body.loginId}`);
-    res.json({ 'error': false, 'message': 'Success', 'loginId': req.body.loginId });
+    // console.log(`req.body.loginId = ${req.body.loginId}`);
+    // res.json({ 'error': false, 'message': 'Success', 'loginId': req.body.loginId });
+    // err = ValidationError: level: Cast to Number failed for value "test" at path "level"
+    
+    
+    // --------------------------------------------------
+    //   Data
+    // --------------------------------------------------
+    
+    const playerId = shortid.generate();
+    
+    const ModelUsersInstance = new ModelUsers({
+      loginId: req.body.loginId,
+      loginPassword: req.body.loginPassword,
+      email: '',
+      name: '',
+      status: '',
+      playerId,
+      // level: 'AAA'
+    });
+    
+    
+    // --------------------------------------------------
+    //   DB Insert
+    // --------------------------------------------------
+    
+    ModelUsersInstance.save((err) => {
+      console.log(`err = ${err}`);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if (err) {
+        
+        // res.header('Content-Type', 'application/json; charset=utf-8');
+        // console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`);
+        
+        let message = err.message;
+        
+        if (process.env.NODE_ENV === 'production') {
+          message = 'Error';
+        }
+        
+        res.status(400).json({
+          errorsArr: [
+            {
+              code: 0,
+              message
+            },
+          ]
+        });
+        
+        return;
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Success
+      // ---------------------------------------------
+      
+      res.status(201).json({
+        playerId
+      });
+      
+    });
+    
+  });
+  
+  
+  return router;
+  
+};
+
+
+    
     
     // ModelUsers.find({}, (err, obj) => {
       
@@ -55,12 +132,7 @@ module.exports = db => {
       
     // });
     
-  });
-  
-  
-  return router;
-  
-};
+
 
 // const router = express.Router();
 

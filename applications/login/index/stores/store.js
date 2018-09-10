@@ -538,19 +538,27 @@ class Store {
       body: formData
     })
       .then((response) => {
-        if (response.ok) {
-          return response.json();
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+        　　throw new Error(jsonObj.errorsArr[0].message);
+        　});
         }
+        
+        return response.json();
       })
       .then((jsonObj) => {
+        
+        console.log(`then`);
         console.dir(jsonObj);
-        console.log(`jsonObj.message = ${jsonObj.message}`);
-        // returnObj[themeNameId] = jsonObj;
-        // count += 1;
-
-        // if (count >= slicedList.count()) {
-        //   resolve(returnObj);
-        // }
+        // console.log(`jsonObj.errorMessage = ${jsonObj.errorMessage}`);
+        
+      })
+      .catch((error) => {
+        
+        console.log(`catch: ${error}`);
+        // console.dir(jsonObj);
+        // console.log(`jsonObj.errorMessage = ${jsonObj.errorMessage}`);
+        
       });
     
     

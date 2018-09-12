@@ -191,6 +191,59 @@ class Store {
       
     }
     
+    
+    // ---------------------------------------------
+    //   FormData
+    // ---------------------------------------------
+    
+    const formData = new FormData();
+    
+    formData.append('loginId', this.loginId);
+    formData.append('loginPassword', this.loginPassword);
+    
+    // console.log(`this.createAccountId = ${this.createAccountId}`);
+    // console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
+    
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    const apiUrl = 'http://35.203.143.160:8080/login';
+    
+    fetch(apiUrl, {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+        　　throw new Error(jsonObj.errorsArr[0].message);
+        　});
+        }
+        
+        return response.json();
+      })
+      .then((jsonObj) => {
+        
+        console.log(`then`);
+        console.dir(jsonObj);
+        
+        this.handleFormReset();
+        
+      })
+      .catch((error) => {
+        
+        console.log(`catch: ${error}`);
+        
+      });
+    
   };
   
   
@@ -514,8 +567,8 @@ class Store {
     formData.append('loginId', this.createAccountId);
     formData.append('loginPassword', this.createAccountPassword);
     
-    console.log(`this.createAccountId = ${this.createAccountId}`);
-    console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
+    // console.log(`this.createAccountId = ${this.createAccountId}`);
+    // console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
     
     
     
@@ -523,17 +576,12 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const apiPath = 'http://35.203.143.160:8080/api';
-    
-    fetch(apiPath, {
+    fetch(storeData.apiUrl, {
       method: 'POST',
       credentials: 'same-origin',
       mode: 'same-origin',
       headers: {
-        // 'Content-Type': 'application/json; charset=utf-8',
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept': 'application/json',
-        // 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        'Accept': 'application/json'
       },
       body: formData
     })
@@ -550,19 +598,69 @@ class Store {
         
         console.log(`then`);
         console.dir(jsonObj);
-        // console.log(`jsonObj.errorMessage = ${jsonObj.errorMessage}`);
+        
+        this.handleFormReset();
+        
+        // this.createAccountId = '';
+        // this.createAccountIdNumberOfCharacters = 0;
+        // this.createAccountPassword = '';
+        // this.createAccountPasswordNumberOfCharacters = 0;
+        // this.createAccountPasswordConfirmation = '';
+        // this.createAccountPasswordConfirmationNumberOfCharacters = 0;
+        // this.createAccountTermsOfService = false;
         
       })
       .catch((error) => {
         
         console.log(`catch: ${error}`);
-        // console.dir(jsonObj);
-        // console.log(`jsonObj.errorMessage = ${jsonObj.errorMessage}`);
         
       });
     
     
   };
+  
+  
+  
+  /**
+   * フォームをリセットする
+   */
+  handleFormReset() {
+    
+    
+    // ---------------------------------------------
+    //   Login
+    // ---------------------------------------------
+    
+    this.loginId = '';
+    this.loginIdNumberOfCharacters = 0;
+    this.loginIdError = false;
+    this.loginIdErrorMessage = '';
+    this.loginPassword = '';
+    this.loginPasswordNumberOfCharacters = 0;
+    this.loginPasswordError = false;
+    this.loginPasswordErrorMessage = '';
+    
+    
+    // ---------------------------------------------
+    //   Create Account
+    // ---------------------------------------------
+    
+    this.createAccountId = '';
+    this.createAccountIdNumberOfCharacters = 0;
+    this.createAccountIdError = false;
+    this.createAccountIdErrorMessage = '';
+    this.createAccountPassword = '';
+    this.createAccountPasswordNumberOfCharacters = 0;
+    this.createAccountPasswordError = false;
+    this.createAccountPasswordErrorMessage = '';
+    this.createAccountPasswordConfirmation = '';
+    this.createAccountPasswordConfirmationNumberOfCharacters = 0;
+    this.createAccountPasswordConfirmationError = false;
+    this.createAccountPasswordConfirmationErrorMessage = '';
+    this.createAccountTermsOfService = false;
+    
+  }
+  
   
 }
 

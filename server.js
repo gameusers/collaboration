@@ -6,6 +6,14 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
+
+const multer  = require('multer');
+const upload = multer({ dest: 'static/' });
+
+const flash = require("connect-flash");
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
 const next = require('next');
 
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -17,6 +25,9 @@ const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
 const api = require('./applications/common/routes/api');
+
+
+const ModelUsers = require('./applications/common/schemas/users');
 
 
 
@@ -36,19 +47,33 @@ mobxReact.useStaticRendering(true);
 app.prepare().then(() => {
   
   const server = express();
-
-
+  
+  
   // --------------------------------------------------
   //   Middleware Settings
   // --------------------------------------------------
-
+  
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({
     extended: true
   }));
-
-
-
+  
+  server.use(flash());
+  
+  server.use(session({
+    secret: '0U-X7lOMwp-kqFgakKj8w87nt8y6kA4i',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: null
+    }
+  }));
+  
+  server.use(passport.initialize());
+  server.use(passport.session());
+  
+  
+  
   // --------------------------------------------------
   //   Database API
   //   参考: http://thecodebarbarian.com/building-a-nextjs-app-with-mongodb.html
@@ -61,7 +86,7 @@ app.prepare().then(() => {
   db.once('open', () => {
     console.log('MongoDB connected!');
   });
-
+  
   // server.use((req, res, next) => {
   //   req.db = db;
   //   next();
@@ -75,26 +100,61 @@ app.prepare().then(() => {
   // });
   
   
+  server.post('/login',
+    upload.none(),
+    passport.authenticate('local', {
+      successRedirect: '/',
+      failureRedirect: '/login/social',
+      failureFlash: true
+    })
+  );
   
-//   ------WebKitFormBoundaryP3P5Vh3OWtMe045z
-// ↵Content-Disposition: form-data; name"
-// :
-// ""loginId"
-// ↵
-// ↵BM4TePAPnxH
-// ↵------WebKitFormBoundaryP3P5Vh3OWtMe045z
-// ↵Content-Disposition: form-data; name="loginPassword"
-// ↵
-// ↵BM4TePAPnxHc
-// ↵------WebKitFormBoundaryP3P5Vh3OWtMe045z--
-// ↵
+  passport.use(new LocalStrategy({
+      usernameField: 'loginId',
+      passwordField: 'loginPassword'
+    },
+    function(username, password, done) {
+      
+      console.log(`LocalStrategy`);
+      console.log(`username = ${username}`);
+      console.log(`password = ${password}`);
+      
+      ModelUsers.findOne({ loginId: username }, function(err, userObj) {
+        console.log(`ModelUsers.findOne / user = ${userObj}`);
+        
+        if (err) {
+          return done(err);
+        }
+        
+        if (!userObj) {
+          return done(null, false, { message: 'Incorrect username.' });
+        }
+        
+        if (userObj.loginPassword !== password) {
+          return done(null, false, { message: 'Incorrect password.' });
+        }
+        
+        return done(null, userObj);
+        
+      });
+    }
+  ));
   
-  // server.post('/api', upload.none(), (req, res) => {
-  //   console.log(`req.body.loginId = ${req.body.loginId}`);
-  //   res.json({ 'error': false, 'message': 'Success', 'loginId': req.body });
-  //   // const { param1 } = req.params;
-  //   // app.render(req, res, '/uc/community/member', { param1 });
-  // });
+  passport.serializeUser(function(user, done) {
+    console.log(`passport.serializeUser`);
+    console.dir(user);
+    console.log(`user._id = ${user._id}`);
+    done(null, user._id);
+  });
+  
+  passport.deserializeUser(function(id, done) {
+    console.log(`passport.deserializeUser / id = ${id}`);
+    ModelUsers.findOne({_id: id}, function(err, user) {
+      // console.dir(user);
+      done(err, user);
+    });
+  });
+  
   
   
 
@@ -140,6 +200,9 @@ app.prepare().then(() => {
   // ---------------------------------------------
   
   server.get('/uc/:param1*', (req, res) => {
+    
+    console.dir(req.session);
+    // console.log(`req.session.passport.user = ${req.session.passport.user}`);
     
     const { param1 } = req.params;
     

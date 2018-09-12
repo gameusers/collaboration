@@ -9,7 +9,7 @@ import getConfig from 'next/config'
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
-import moment from 'moment';
+// import moment from 'moment';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -28,7 +28,7 @@ import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreData from '../../applications/common/layout/stores/data';
+import initStoreData from '../../applications/common/stores/data';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
@@ -134,9 +134,15 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
+    const { publicRuntimeConfig } = getConfig();
+    // console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
+    // console.log(`publicRuntimeConfig.apiUrl = ${publicRuntimeConfig.apiUrl}`);
+    
     const argumentsObj = {
       isServer: props.isServer,
-      pathname: props.pathname
+      pathname: props.pathname,
+      environment: publicRuntimeConfig.environment,
+      apiUrl: publicRuntimeConfig.apiUrl
     };
     
     const storeLayoutInstance = initStoreLayout(argumentsObj);

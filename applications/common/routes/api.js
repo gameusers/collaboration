@@ -35,9 +35,11 @@ module.exports = db => {
     //   Data
     // --------------------------------------------------
     
+    const _id = shortid.generate();
     const playerId = shortid.generate();
     
     const ModelUsersInstance = new ModelUsers({
+      _id,
       loginId: req.body.loginId,
       loginPassword: req.body.loginPassword,
       email: '',
@@ -90,6 +92,7 @@ module.exports = db => {
       // ---------------------------------------------
       
       res.status(201).json({
+        loginId: req.body.loginId,
         playerId
       });
       

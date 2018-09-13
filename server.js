@@ -65,7 +65,7 @@ app.prepare().then(() => {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: null
+      maxAge: 60 * 60 * 12 * 1000
     }
   }));
   
@@ -100,56 +100,166 @@ app.prepare().then(() => {
   // });
   
   
+  
+  
+  
+  // --------------------------------------------------
+  //   Passport：ログイン - Username & Password
+  //   参考：http://www.passportjs.org/docs/username-password/
+  // --------------------------------------------------
+  
+  // server.post('/login',
+  //   upload.none(),
+  //   passport.authenticate('local', {
+  //     successRedirect: '/',
+  //     failureRedirect: '/login/social',
+  //     failureFlash: true
+  //   })
+  // );
+  
+  // server.post('/login',upload.none(), function(req, res, next) {
+  //   passport.authenticate('local', function(err, user, info) {
+      
+  //     console.log(`post login / req.user =`);
+  //     console.log(`err =`);
+  //     console.dir(err);
+  //     console.log(`user =`);
+  //     console.dir(user);
+  //     console.log(`req.flash() =`);
+  //     console.dir(req.flash());
+  //     // console.log(`req.user.playerId = ${req.user.playerId}`);
+      
+  //     if (err) {
+  //       return next(err);
+  //     }
+      
+  //     if (!user) {
+  //       return res.redirect('/login');
+  //     }
+      
+  //     req.logIn(user, function(err) {
+  //       console.log(`req.logIn =`);
+  //       console.log(`err =`);
+  //       console.dir(err);
+  //       if (err) { return next(err); }
+  //       // return res.redirect('/users/' + user.username);
+  //     });
+      
+  //   })(req, res, next);
+  // });
+  
+  // server.post('/login',
+  //   upload.none(),
+  //   passport.authenticate('local'), function(req, res, next) {
+  //     successRedirect: '/',
+  //     failureRedirect: '/login/social',
+  //     failureFlash: true
+  //   })
+  // );
+  
+  
   server.post('/login',
     upload.none(),
-    passport.authenticate('local', {
-      successRedirect: '/',
-      failureRedirect: '/login/social',
-      failureFlash: true
-    })
+    passport.authenticate('local'),
+    (req, res) => {
+      
+      console.log(`post login / req.user =`);
+      console.dir(req.user);
+      console.dir(req.flash());
+      console.log(`req.user.playerId = ${req.user.playerId}`);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if (!req.user) {
+        
+        let message = 'Error';
+        
+        res.status(400).json({
+          errorsArr: [
+            {
+              code: 0,
+              message
+            },
+          ]
+        });
+        
+        return;
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Success
+      // ---------------------------------------------
+      
+      res.status(200).json({
+        playerId: req.user.playerId
+      });
+      
+    }
   );
   
   passport.use(new LocalStrategy({
       usernameField: 'loginId',
       passwordField: 'loginPassword'
     },
-    function(username, password, done) {
+    (username, password, done) => {
       
       console.log(`LocalStrategy`);
-      console.log(`username = ${username}`);
-      console.log(`password = ${password}`);
+      // console.log(`username = ${username}`);
+      // console.log(`password = ${password}`);
       
-      ModelUsers.findOne({ loginId: username }, function(err, userObj) {
-        console.log(`ModelUsers.findOne / user = ${userObj}`);
+      ModelUsers.findOne({ loginId: username }, (err, user) => {
+        // console.log(`ModelUsers.findOne / user = ${user}`);
+        console.log(`err = ${err}`);
+        console.log(`user = ${user}`);
         
         if (err) {
           return done(err);
         }
         
-        if (!userObj) {
+        if (!user) {
           return done(null, false, { message: 'Incorrect username.' });
         }
         
-        if (userObj.loginPassword !== password) {
+        if (user.loginPassword !== password) {
           return done(null, false, { message: 'Incorrect password.' });
         }
         
-        return done(null, userObj);
+        return done(null, user);
         
       });
     }
   ));
   
-  passport.serializeUser(function(user, done) {
+  
+  // --------------------------------------------------
+  //   シリアライズ
+  //   認証時、DB/users コレクションの _id をセッションに保存する
+  //   _id は req.session.passport.user に入っている
+  // --------------------------------------------------
+  
+  passport.serializeUser((user, done) => {
     console.log(`passport.serializeUser`);
-    console.dir(user);
+    // console.dir(user);
     console.log(`user._id = ${user._id}`);
     done(null, user._id);
   });
   
-  passport.deserializeUser(function(id, done) {
+  
+  // --------------------------------------------------
+  //   デシリアライズ
+  //   セッション変数を受け取って中身を検証する
+  //   DB/users コレクションを _id で検索し、ユーザーデータを取得して返す
+  //   返ってきたユーザーデータは各 router の req.user から参照できる
+  // --------------------------------------------------
+  
+  passport.deserializeUser((id, done) => {
     console.log(`passport.deserializeUser / id = ${id}`);
-    ModelUsers.findOne({_id: id}, function(err, user) {
+    ModelUsers.findOne({_id: id}, (err, user) => {
       // console.dir(user);
       done(err, user);
     });
@@ -201,7 +311,10 @@ app.prepare().then(() => {
   
   server.get('/uc/:param1*', (req, res) => {
     
+    console.log(`req.session =`);
     console.dir(req.session);
+    console.log(`req.user =`);
+    console.dir(req.user);
     // console.log(`req.session.passport.user = ${req.session.passport.user}`);
     
     const { param1 } = req.params;

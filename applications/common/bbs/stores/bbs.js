@@ -551,8 +551,8 @@ class Store {
 export default function initStoreBbs(argumentsObj) {
   
   
-  console.log(`\n\n`);
-  console.log(`--- initStoreBbs ---`);
+  // console.log(`\n\n`);
+  // console.log(`--- initStoreBbs ---`);
   
   
   
@@ -560,14 +560,14 @@ export default function initStoreBbs(argumentsObj) {
   const storeInstanceObj = argumentsObj.storeInstanceObj;
   
   
-  console.log(`isServer = ${isServer}`);
-  console.log(`storeLayout = ${storeLayout}`);
-  console.log(`storeInstanceObj = `);
-  console.dir(storeInstanceObj);
+  // console.log(`isServer = ${isServer}`);
+  // console.log(`storeLayout = ${storeLayout}`);
+  // console.log(`storeInstanceObj = `);
+  // console.dir(storeInstanceObj);
   
   
   if ('layout' in storeInstanceObj) {
-    console.log(`@@@ storeLayout = storeInstanceObj.layout`);
+    // console.log(`@@@ storeLayout = storeInstanceObj.layout`);
     storeLayout = storeInstanceObj.layout;
   }
   
@@ -596,13 +596,13 @@ export default function initStoreBbs(argumentsObj) {
   
   if (isServer) {
     
-    console.log(`Server`);
+    // console.log(`Server`);
     
     return new Store();
     
   } else {
     
-    console.log(`Client`);
+    // console.log(`Client`);
     
     if (storeIndex === null) {
       storeIndex = new Store();
@@ -613,7 +613,7 @@ export default function initStoreBbs(argumentsObj) {
   }
   
   
-  console.log(`\n\n`);
+  // console.log(`\n\n`);
   
   
 }

@@ -87,120 +87,114 @@ app.prepare().then(() => {
     console.log('MongoDB connected!');
   });
   
-  // server.use((req, res, next) => {
-  //   req.db = db;
-  //   next();
-  // });
-  
-  // CORSを許可する
-  // server.use((req, res, next) => {
-  //   res.header('Access-Control-Allow-Origin', '*');
-  //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  //   next();
-  // });
-  
-  
-  
   
   
   // --------------------------------------------------
-  //   Passport：ログイン - Username & Password
-  //   参考：http://www.passportjs.org/docs/username-password/
+  //   ログイン Passport：Local（ID & Password）
+  //   
+  //   参考：
+  //  　 http://www.passportjs.org/docs/username-password/
+  //   
+  //   参考 カスタムコールバック：
+  //     http://www.passportjs.org/docs/authenticate/
+  //     http://knimon-software.github.io/www.passportjs.org/guide/authenticate/
   // --------------------------------------------------
   
-  // server.post('/login',
-  //   upload.none(),
-  //   passport.authenticate('local', {
-  //     successRedirect: '/',
-  //     failureRedirect: '/login/social',
-  //     failureFlash: true
-  //   })
-  // );
-  
-  // server.post('/login',upload.none(), function(req, res, next) {
-  //   passport.authenticate('local', function(err, user, info) {
+  server.post('/login',upload.none(), function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
       
-  //     console.log(`post login / req.user =`);
-  //     console.log(`err =`);
-  //     console.dir(err);
-  //     console.log(`user =`);
-  //     console.dir(user);
-  //     console.log(`req.flash() =`);
-  //     console.dir(req.flash());
-  //     // console.log(`req.user.playerId = ${req.user.playerId}`);
+      console.log(`\n\n--- server.post('/login' ---`);
+      console.log(`\nerr =`);
+      console.dir(err);
+      console.log(`\nuser =`);
+      console.dir(user);
+      console.log(`\ninfo =`);
+      console.dir(info);
+      // console.log(`\nreq.flash() =`);
+      // console.dir(req.flash());
+      // console.log(`req.flash('message') = ${req.flash('message')}`);
+      // console.dir(req.logIn);
       
-  //     if (err) {
-  //       return next(err);
-  //     }
       
-  //     if (!user) {
-  //       return res.redirect('/login');
-  //     }
+      // ---------------------------------------------
+      //   Error Object
+      // ---------------------------------------------
       
-  //     req.logIn(user, function(err) {
-  //       console.log(`req.logIn =`);
-  //       console.log(`err =`);
-  //       console.dir(err);
-  //       if (err) { return next(err); }
-  //       // return res.redirect('/users/' + user.username);
-  //     });
-      
-  //   })(req, res, next);
-  // });
-  
-  // server.post('/login',
-  //   upload.none(),
-  //   passport.authenticate('local'), function(req, res, next) {
-  //     successRedirect: '/',
-  //     failureRedirect: '/login/social',
-  //     failureFlash: true
-  //   })
-  // );
-  
-  
-  server.post('/login',
-    upload.none(),
-    passport.authenticate('local'),
-    (req, res) => {
-      
-      console.log(`post login / req.user =`);
-      console.dir(req.user);
-      console.dir(req.flash());
-      console.log(`req.user.playerId = ${req.user.playerId}`);
+      const errorObj = {
+        errorsArr: [
+          {
+            code: 0,
+            message: 'Error'
+          },
+        ]
+      };
       
       
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
       
-      if (!req.user) {
+      if (err) {
+        console.log(`\nエラー発生`);
+        return res.status(400).json(errorObj);
+        // return next(err);
+      }
+      
+      if (!user) {
+        console.log(`\n認証失敗 / ユーザーがない`);
         
-        let message = 'Error';
+        if (info.message) {
+          errorObj.errorsArr[0].message = info.message;
+        }
         
-        res.status(400).json({
-          errorsArr: [
-            {
-              code: 0,
-              message
-            },
-          ]
-        });
-        
-        return;
-        
+        return res.status(401).json(errorObj);
       }
       
       
       // ---------------------------------------------
-      //   Success
+      //   req.logIn - この記述はカスタムコールバックに必要らしい
       // ---------------------------------------------
       
-      res.status(200).json({
-        playerId: req.user.playerId
+      req.logIn(user, function(err) {
+        
+        console.log(`\nreq.logIn`);
+        console.log(`\nerr =`);
+        console.dir(err);
+        // console.log(`err.name = ${err.name}`);
+        // console.log(`err.status = ${err.status}`);
+        
+        
+        // ---------------------------------------------
+        //   Error
+        // ---------------------------------------------
+        
+        if (err) {
+          console.log(`\nエラー`);
+          return res.status(400).json(errorObj);
+          // return next(err);
+        }
+        
+        
+        // ---------------------------------------------
+        //   Success
+        // ---------------------------------------------
+        
+        return res.status(200).json({
+          playerId: req.user.playerId
+        });
+        
       });
       
-    }
-  );
+      
+      console.log(`--- server.post('/login' End ---\n\n`);
+      
+    })(req, res, next);
+  });
+  
+  
+  // --------------------------------------------------
+  //   Passport Local：ID & Password 認証
+  // --------------------------------------------------
   
   passport.use(new LocalStrategy({
       usernameField: 'loginId',
@@ -243,9 +237,9 @@ app.prepare().then(() => {
   // --------------------------------------------------
   
   passport.serializeUser((user, done) => {
-    console.log(`passport.serializeUser`);
+    // console.log(`passport.serializeUser`);
     // console.dir(user);
-    console.log(`user._id = ${user._id}`);
+    // console.log(`user._id = ${user._id}`);
     done(null, user._id);
   });
   
@@ -258,7 +252,7 @@ app.prepare().then(() => {
   // --------------------------------------------------
   
   passport.deserializeUser((id, done) => {
-    console.log(`passport.deserializeUser / id = ${id}`);
+    // console.log(`passport.deserializeUser / id = ${id}`);
     ModelUsers.findOne({_id: id}, (err, user) => {
       // console.dir(user);
       done(err, user);

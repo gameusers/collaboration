@@ -7,12 +7,8 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const multer  = require('multer');
-const upload = multer({ dest: 'static/' });
-
 const flash = require("connect-flash");
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const next = require('next');
 
@@ -24,10 +20,8 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
-const api = require('./applications/common/routes/api');
+const routerApi = require('./applications/common/routes/v1/');
 
-
-const ModelUsers = require('./applications/common/schemas/users');
 
 
 
@@ -88,186 +82,13 @@ app.prepare().then(() => {
   });
   
   
-  
-  // --------------------------------------------------
-  //   ログイン Passport：Local（ID & Password）
-  //   
-  //   参考：
-  //  　 http://www.passportjs.org/docs/username-password/
-  //   
-  //   参考 カスタムコールバック：
-  //     http://www.passportjs.org/docs/authenticate/
-  //     http://knimon-software.github.io/www.passportjs.org/guide/authenticate/
-  // --------------------------------------------------
-  
-  server.post('/login',upload.none(), function(req, res, next) {
-    passport.authenticate('local', function(err, user, info) {
-      
-      console.log(`\n\n--- server.post('/login' ---`);
-      console.log(`\nerr =`);
-      console.dir(err);
-      console.log(`\nuser =`);
-      console.dir(user);
-      console.log(`\ninfo =`);
-      console.dir(info);
-      // console.log(`\nreq.flash() =`);
-      // console.dir(req.flash());
-      // console.log(`req.flash('message') = ${req.flash('message')}`);
-      // console.dir(req.logIn);
-      
-      
-      // ---------------------------------------------
-      //   Error Object
-      // ---------------------------------------------
-      
-      const errorObj = {
-        errorsArr: [
-          {
-            code: 0,
-            message: 'Error'
-          },
-        ]
-      };
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if (err) {
-        console.log(`\nエラー発生`);
-        return res.status(400).json(errorObj);
-        // return next(err);
-      }
-      
-      if (!user) {
-        console.log(`\n認証失敗 / ユーザーがない`);
-        
-        if (info.message) {
-          errorObj.errorsArr[0].message = info.message;
-        }
-        
-        return res.status(401).json(errorObj);
-      }
-      
-      
-      // ---------------------------------------------
-      //   req.logIn - この記述はカスタムコールバックに必要らしい
-      // ---------------------------------------------
-      
-      req.logIn(user, function(err) {
-        
-        console.log(`\nreq.logIn`);
-        console.log(`\nerr =`);
-        console.dir(err);
-        // console.log(`err.name = ${err.name}`);
-        // console.log(`err.status = ${err.status}`);
-        
-        
-        // ---------------------------------------------
-        //   Error
-        // ---------------------------------------------
-        
-        if (err) {
-          console.log(`\nエラー`);
-          return res.status(400).json(errorObj);
-          // return next(err);
-        }
-        
-        
-        // ---------------------------------------------
-        //   Success
-        // ---------------------------------------------
-        
-        return res.status(200).json({
-          playerId: req.user.playerId
-        });
-        
-      });
-      
-      
-      console.log(`--- server.post('/login' End ---\n\n`);
-      
-    })(req, res, next);
-  });
-  
-  
-  // --------------------------------------------------
-  //   Passport Local：ID & Password 認証
-  // --------------------------------------------------
-  
-  passport.use(new LocalStrategy({
-      usernameField: 'loginId',
-      passwordField: 'loginPassword'
-    },
-    (username, password, done) => {
-      
-      console.log(`LocalStrategy`);
-      // console.log(`username = ${username}`);
-      // console.log(`password = ${password}`);
-      
-      ModelUsers.findOne({ loginId: username }, (err, user) => {
-        // console.log(`ModelUsers.findOne / user = ${user}`);
-        console.log(`err = ${err}`);
-        console.log(`user = ${user}`);
-        
-        if (err) {
-          return done(err);
-        }
-        
-        if (!user) {
-          return done(null, false, { message: 'Incorrect username.' });
-        }
-        
-        if (user.loginPassword !== password) {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-        
-        return done(null, user);
-        
-      });
-    }
-  ));
-  
-  
-  // --------------------------------------------------
-  //   シリアライズ
-  //   認証時、DB/users コレクションの _id をセッションに保存する
-  //   _id は req.session.passport.user に入っている
-  // --------------------------------------------------
-  
-  passport.serializeUser((user, done) => {
-    // console.log(`passport.serializeUser`);
-    // console.dir(user);
-    // console.log(`user._id = ${user._id}`);
-    done(null, user._id);
-  });
-  
-  
-  // --------------------------------------------------
-  //   デシリアライズ
-  //   セッション変数を受け取って中身を検証する
-  //   DB/users コレクションを _id で検索し、ユーザーデータを取得して返す
-  //   返ってきたユーザーデータは各 router の req.user から参照できる
-  // --------------------------------------------------
-  
-  passport.deserializeUser((id, done) => {
-    // console.log(`passport.deserializeUser / id = ${id}`);
-    ModelUsers.findOne({_id: id}, (err, user) => {
-      // console.dir(user);
-      done(err, user);
-    });
-  });
-  
-  
-  
 
   // --------------------------------------------------
   //   Routing
   // --------------------------------------------------
   
   // API
-  server.use('/api', api(db));
+  server.use('/api/v1/', routerApi);
   
   
   // ---------------------------------------------

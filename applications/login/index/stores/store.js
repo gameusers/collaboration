@@ -210,7 +210,7 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const apiUrl = 'http://35.203.143.160:8080/login';
+    const apiUrl = `${storeData.apiUrl}/v1/login`;
     
     fetch(apiUrl, {
       method: 'POST',

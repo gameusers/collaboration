@@ -3,9 +3,9 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
-// import zxcvbn from 'zxcvbn';
+import fetch from 'isomorphic-unfetch';
 
-import {validationId, validationPassword, validationPasswordConfirmation } from '../../../../applications/common/validations/common';
+import {validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../../applications/common/validations/login';
 
 
 // --------------------------------------------------
@@ -157,11 +157,44 @@ class Store {
   
   
   
+  
   /**
    * ログインフォームで送信ボタンを押すと呼び出される
    */
   @action.bound
-  handleLoginSubmit() {
+  handleLoginReCAPTCHA(recaptchaRef) {
+    
+    
+    // ---------------------------------------------
+    //  Console 出力
+    // ---------------------------------------------
+    
+    console.log(`\n\n`);
+    console.log(`--- handleLoginReCAPTCHA ---`);
+    // console.log(`this.loginId = ${this.loginId}`);
+    // console.log(`this.loginPassword = ${this.loginPassword}`);
+    // console.dir(recaptchaRef.current.execute());
+    console.log(`\n\n`);
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    recaptchaRef.current.execute();
+  //   recaptchaRef.current.execute().then((recaptchaToken) => {
+  // 　　console.log(`recaptchaToken = ${recaptchaToken}`);
+  // 　});
+    
+  };
+  
+  
+  
+  /**
+   * ログインフォームで送信ボタンを押すと呼び出される
+   */
+  @action.bound
+  handleLoginSubmit(value) {
     
     
     // ---------------------------------------------
@@ -170,8 +203,10 @@ class Store {
     
     console.log(`\n\n`);
     console.log(`--- handleLoginSubmit ---`);
-    console.log(`this.loginId = ${this.loginId}`);
-    console.log(`this.loginPassword = ${this.loginPassword}`);
+    // console.log(`this.loginId = ${this.loginId}`);
+    // console.log(`this.loginPassword = ${this.loginPassword}`);
+    // console.dir(recaptchaRef.current.execute());
+    console.log(`value = ${value}`);
     console.log(`\n\n`);
     
     
@@ -179,72 +214,102 @@ class Store {
     //  Error
     // ---------------------------------------------
     
-    if (
-      this.loginId === '' ||
-      this.loginPassword === '' ||
-      this.loginIdError ||
-      this.loginPasswordError
-    ) {
-      
-      storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
-      return;
-      
-    }
+    // recaptchaRef.current.execute();
     
-    
-    // ---------------------------------------------
-    //   FormData
-    // ---------------------------------------------
-    
-    const formData = new FormData();
-    
-    formData.append('loginId', this.loginId);
-    formData.append('loginPassword', this.loginPassword);
-    
-    // console.log(`this.createAccountId = ${this.createAccountId}`);
-    // console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
-    
-    
-    
-    // ---------------------------------------------
-    //   Fetch
-    // ---------------------------------------------
-    
-    const apiUrl = `${storeData.apiUrl}/v1/login`;
-    
-    fetch(apiUrl, {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      headers: {
-        'Accept': 'application/json'
-      },
-      body: formData
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
-        　});
-        }
-        
-        return response.json();
-      })
-      .then((jsonObj) => {
-        
-        console.log(`then`);
-        console.dir(jsonObj);
-        
-        this.handleFormReset();
-        
-      })
-      .catch((error) => {
-        
-        console.log(`catch: ${error}`);
-        
-      });
     
   };
+  
+  
+  
+  /**
+   * ログインフォームで送信ボタンを押すと呼び出される
+   */
+  // @action.bound
+  // handleLoginSubmit2(recaptchaRef) {
+    
+    
+  //   // ---------------------------------------------
+  //   //  Console 出力
+  //   // ---------------------------------------------
+    
+  //   console.log(`\n\n`);
+  //   console.log(`--- handleLoginSubmit ---`);
+  //   console.log(`this.loginId = ${this.loginId}`);
+  //   console.log(`this.loginPassword = ${this.loginPassword}`);
+  //   console.dir(recaptchaRef.current.execute());
+  //   console.log(`\n\n`);
+    
+    
+  //   // ---------------------------------------------
+  //   //  Error
+  //   // ---------------------------------------------
+    
+  //   if (
+  //     this.loginId === '' ||
+  //     this.loginPassword === '' ||
+  //     this.loginIdError ||
+  //     this.loginPasswordError
+  //   ) {
+      
+  //     storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
+  //     return;
+      
+  //   }
+    
+    
+  //   // ---------------------------------------------
+  //   //   FormData
+  //   // ---------------------------------------------
+    
+  //   const formData = new FormData();
+    
+  //   formData.append('loginId', this.loginId);
+  //   formData.append('loginPassword', this.loginPassword);
+    
+  //   // console.log(`this.createAccountId = ${this.createAccountId}`);
+  //   // console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
+    
+    
+    
+  //   // ---------------------------------------------
+  //   //   Fetch
+  //   // ---------------------------------------------
+    
+  //   const apiUrl = `${storeData.apiUrl}/v1/login`;
+    
+  //   fetch(apiUrl, {
+  //     method: 'POST',
+  //     credentials: 'same-origin',
+  //     mode: 'same-origin',
+  //     headers: {
+  //       'Accept': 'application/json'
+  //     },
+  //     body: formData
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         return response.json().then((jsonObj) => {
+  //       　　throw new Error(jsonObj.errorsArr[0].message);
+  //       　});
+  //       }
+        
+  //       return response.json();
+  //     })
+  //     .then((jsonObj) => {
+        
+  //       console.log(`then`);
+  //       console.dir(jsonObj);
+        
+  //       this.handleFormReset();
+        
+  //     })
+  //     .catch((error) => {
+        
+  //       console.log(`catch: ${error}`);
+        
+  //     });
+    
+  // };
   
   
   
@@ -483,6 +548,53 @@ class Store {
   
   
   /**
+   * アカウント作成 E-Mail
+   * @type {string}
+   */
+  @observable createAccountEmail = '';
+  
+  /**
+   * アカウント作成 E-Mail　文字数
+   * @type {number}
+   */
+  @observable createAccountEmailNumberOfCharacters = 0;
+  
+  /**
+   * アカウント作成 E-Mail　エラー（バリデーション用）
+   * @type {string}
+   */
+  @observable createAccountEmailError = false;
+  
+  /**
+   * アカウント作成 E-Mail　エラーメッセージ
+   * @type {string}
+   */
+  @observable createAccountEmailErrorMessage = '';
+  
+  /**
+   * アカウント作成 E-Mail入力フォームに文字列を入力したときに呼び出される
+   * @param {Object} event - イベント
+   */
+  @action.bound
+  handleCreateAccountEmail(event) {
+    
+    
+    // ---------------------------------------------
+    //   ID
+    // ---------------------------------------------
+    
+    const resultIdObj = validationEmail(event.target.value);
+    
+    this.createAccountEmail = resultIdObj.value;
+    this.createAccountEmailNumberOfCharacters = resultIdObj.numberOfCharacters;
+    this.createAccountEmailError = resultIdObj.error;
+    this.createAccountEmailErrorMessage = resultIdObj.errorMessageArr[0];
+    
+  };
+  
+  
+  
+  /**
    * アカウント作成フォーム　利用規約に同意するチェック情報
    * 同意する true / 同意しない false
    * @type {boolean}
@@ -490,7 +602,7 @@ class Store {
   @observable createAccountTermsOfService = false;
   
   /**
-   * アカウント作成パスワード確認　エラーメッセージ
+   * アカウント作成フォーム　利用規約　エラーメッセージ
    * @type {string}
    */
   @observable createAccountTermsOfServiceErrorMessage = '利用規約に同意してください。';
@@ -529,6 +641,7 @@ class Store {
     console.log(`--- handleCreateAccountSubmit ---`);
     console.log(`this.createAccountId = ${this.createAccountId}`);
     console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
+    console.log(`this.createAccountEmail = ${this.createAccountEmail}`);
     console.log(`\n\n`);
     
     
@@ -543,7 +656,8 @@ class Store {
       this.createAccountPasswordConfirmation === '' ||
       this.createAccountIdError ||
       this.createAccountPasswordError || 
-      this.createAccountPasswordConfirmationError
+      this.createAccountPasswordConfirmationError ||
+      this.createAccountEmailError
     ) {
       
       storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
@@ -564,11 +678,9 @@ class Store {
     
     const formData = new FormData();
     
-    formData.append('loginId', this.createAccountId);
-    formData.append('loginPassword', this.createAccountPassword);
-    
-    // console.log(`this.createAccountId = ${this.createAccountId}`);
-    // console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
+    formData.append('createAccountId', this.createAccountId);
+    formData.append('createAccountPassword', this.createAccountPassword);
+    formData.append('createAccountEmail', this.createAccountEmail);
     
     
     
@@ -657,6 +769,10 @@ class Store {
     this.createAccountPasswordConfirmationNumberOfCharacters = 0;
     this.createAccountPasswordConfirmationError = false;
     this.createAccountPasswordConfirmationErrorMessage = '';
+    this.createAccountEmail = '';
+    this.createAccountEmailNumberOfCharacters = 0;
+    this.createAccountEmailError = false;
+    this.createAccountEmailErrorMessage = '';
     this.createAccountTermsOfService = false;
     
   }

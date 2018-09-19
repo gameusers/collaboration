@@ -8,6 +8,7 @@ import Head from 'next/head';
 import getConfig from 'next/config'
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+import ReCAPTCHA from "react-google-recaptcha";
 
 // import moment from 'moment';
 
@@ -26,6 +27,7 @@ import IconPassword from '@material-ui/icons/Lock';
 import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconMailOutline from '@material-ui/icons/MailOutline';
 
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreData from '../../applications/common/stores/data';
@@ -108,6 +110,11 @@ const StyledButton = styled(Button)`
     margin: 10px 0 0 0;
   }
 `;
+
+const ReCAPTCHAContainer = styled.div`
+  margin: 10px 0 10px 0;
+`;
+
 
 
 
@@ -220,6 +227,8 @@ class Component extends React.Component {
     
     const {
       
+      handleLoginReCAPTCHA,
+      
       loginId,
       loginIdNumberOfCharacters,
       loginIdError,
@@ -262,6 +271,12 @@ class Component extends React.Component {
       createAccountPasswordConfirmationShow,
       handleCreateAccountPasswordConfirmationShow,
       handleCreateAccountPasswordConfirmationMouseDown,
+      
+      createAccountEmail,
+      createAccountEmailNumberOfCharacters,
+      createAccountEmailError,
+      createAccountEmailErrorMessage,
+      handleCreateAccountEmail,
       
       createAccountTermsOfService,
       handleCreateAccountTermsOfService,
@@ -322,6 +337,12 @@ class Component extends React.Component {
       createAccountPasswordConfirmationNoC = `（${createAccountPasswordConfirmationNumberOfCharacters}文字）`;
     }
     
+    let createAccountEmailNoC = '';
+    
+    if (createAccountEmailNumberOfCharacters > 0) {
+      createAccountEmailNoC = `（${createAccountEmailNumberOfCharacters}文字）`;
+    }
+    
     
     
     // --------------------------------------------------
@@ -362,6 +383,12 @@ class Component extends React.Component {
       createAccountPasswordConfirmationEM = <StyledFormHelperText>{createAccountPasswordConfirmationErrorMessage}</StyledFormHelperText>;
     }
     
+    let createAccountEmailEM = '';
+    
+    if (createAccountEmailErrorMessage) {
+      createAccountEmailEM = <StyledFormHelperText>{createAccountEmailErrorMessage}</StyledFormHelperText>;
+    }
+    
     
     
     // --------------------------------------------------
@@ -384,6 +411,10 @@ class Component extends React.Component {
       margin: 4px 0 10px 0;
       color: ${passwordColor};
     `;
+    
+    
+    
+    const recaptchaRef = React.createRef();
     
     
     
@@ -413,7 +444,7 @@ class Component extends React.Component {
                 <React.Fragment>
                   
                   <Description>
-                    ID とパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
+                    IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
                   </Description>
                   
                   
@@ -468,11 +499,31 @@ class Component extends React.Component {
                     </InputBox>
                     
                     
+                    
+                    {/* reCAPTCHA */}
+                    <ReCAPTCHAContainer>
+                      {/*<ReCAPTCHA
+                        sitekey="6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud"
+                        // onChange={onChange}
+                      />*/}
+                      <ReCAPTCHA
+                        ref={recaptchaRef}
+                        size="invisible"
+                        badge="inline"
+                        sitekey="6LcQBHEUAAAAAGmDgpg4ikKzhrVuh3lNbVTYr8gS"
+                        onChange={handleLoginSubmit}
+                      />
+                    </ReCAPTCHAContainer>
+                    
+                    
+                    
                     {/* 送信ボタン */}
                     <StyledButton
                       variant="contained"
                       color="primary"
-                      onClick={handleLoginSubmit}
+                      // type="submit"
+                      // onClick={() => handleLoginReCAPTCHA(recaptchaRef)}
+                      onClick={() => recaptchaRef.current.execute()}
                     >
                       ログイン
                     </StyledButton>
@@ -498,6 +549,14 @@ class Component extends React.Component {
                   <Description>
                     利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。
 ※ IDは3文字以上、32文字以内。パスワードは8文字以上、32文字以内。
+                  </Description>
+                  
+                  <Description>
+                    E-Mailの入力は任意ですが、登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
+                  </Description>
+                  
+                  <Description>
+                    ID、パスワード、E-Mailはアカウント作成後に追加・変更することが可能です。
                   </Description>
                   
                   
@@ -579,6 +638,22 @@ class Component extends React.Component {
                           }
                         />
                         {createAccountPasswordConfirmationEM}
+                      </StyledFormControl>
+                      
+                      
+                      <StyledFormControl error={createAccountEmailError}>
+                        <InputLabel htmlFor="createAccountEmail">E-Mail（任意）{createAccountEmailNoC}</InputLabel>
+                        <Input
+                          id="createAccountEmail"
+                          value={createAccountEmail}
+                          onChange={handleCreateAccountEmail}
+                          startAdornment={
+                            <InputAdornment position="start">
+                              <IconMailOutline />
+                            </InputAdornment>
+                          }
+                        />
+                        {createAccountEmailEM}
                       </StyledFormControl>
                     
                     </InputBox>

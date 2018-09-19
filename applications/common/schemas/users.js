@@ -23,6 +23,7 @@ const schema = mongoose.Schema({
   playerId: { type: String, required: true, unique: true },
   // playerPagePath: String,
   level: { type: Number, default: 1, required: true },
+  role: { type: String, default: 'User', required: true },
   // imagePath: String,
   // twitterProfileId: String
 });

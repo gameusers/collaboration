@@ -8,6 +8,7 @@ const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const shortid = require('shortid');
+// const Recaptcha = require('express-recaptcha').Recaptcha;
 const chalk = require('chalk');
 
 
@@ -23,6 +24,7 @@ const ModelUsers = require('../../schemas/users');
 // --------------------------------------------------
 
 const router = express.Router();
+// const recaptcha = new Recaptcha('6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud', '6LfH2nAUAAAAACfsSs_s2WvccDhE1gR6qDjhMuha');
 
 
 
@@ -41,6 +43,62 @@ const router = express.Router();
 
 router.post('/',upload.none(), function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
+    
+    
+    // Put your secret key here.
+    const secretKey = '6LcQBHEUAAAAAKmJ3yzxRrNXumSKoglWlREBKYRG';
+    
+    // req.connection.remoteAddress will provide IP address of connected user.
+    const verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
+    
+    // Hitting GET request to the URL, Google will respond with success or error scenario.
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    // const apiUrl = `${storeData.apiUrl}/v1/login`;
+    
+    fetch(verificationUrl, {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: {
+        'Accept': 'application/json'
+      },
+      // body: formData
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+        　　throw new Error(jsonObj.errorsArr[0].message);
+        　});
+        }
+        
+        return response.json();
+      })
+      .then((jsonObj) => {
+        
+        console.log(`then`);
+        console.dir(jsonObj);
+        
+        this.handleFormReset();
+        
+      })
+      .catch((error) => {
+        
+        console.log(`catch: ${error}`);
+        
+      });
+    
+    
+    // if (req.recaptcha.error) {
+    //   console.log(`recaptcha error`);
+    // } else {
+    //   console.log(`recaptcha success`);
+    // }
+    
     
     // console.log(`\n\nrouter.post - /api/v1/login`.bgRed);
     // consola.start(`--- /api/v1/login ---`);
@@ -236,8 +294,8 @@ router.post('/createAccount', upload.none(), (req, res) => {
   
   const ModelUsersInstance = new ModelUsers({
     _id,
-    loginId: req.body.loginId,
-    loginPassword: req.body.loginPassword,
+    loginId: req.body.createAccountId,
+    loginPassword: req.body.createAccountPassword,
     email: '',
     name: '',
     status: '',

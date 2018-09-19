@@ -20,6 +20,8 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
+const Recaptcha = require('express-recaptcha').Recaptcha;
+
 const routerApi = require('./applications/common/routes/v1/');
 
 
@@ -31,6 +33,9 @@ const routerApi = require('./applications/common/routes/v1/');
 // --------------------------------------------------
 
 mobxReact.useStaticRendering(true);
+
+
+const recaptcha = new Recaptcha('6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud', '6LfH2nAUAAAAACfsSs_s2WvccDhE1gR6qDjhMuha');
 
 
 
@@ -91,6 +96,18 @@ app.prepare().then(() => {
   server.use('/api/v1/', routerApi);
   
   
+  
+  // ---------------------------------------------
+  //   Login
+  // ---------------------------------------------
+  
+  server.get('/login', recaptcha.middleware.render, (req, res) => {
+    // const { param1, param2 } = req.params;
+    app.render(req, res, '/login', { captcha:res.recaptcha });
+  });
+  
+  
+  
   // ---------------------------------------------
   //   Game Community
   // ---------------------------------------------
@@ -118,6 +135,7 @@ app.prepare().then(() => {
     const { param1, param2, param3 } = req.params;
     app.render(req, res, '/gc/community', { param1, param2, param3 });
   });
+  
   
   
   // ---------------------------------------------

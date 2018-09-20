@@ -45,45 +45,32 @@ router.post('/',upload.none(), function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     
     
-    // Put your secret key here.
-    const secretKey = '6LcQBHEUAAAAAKmJ3yzxRrNXumSKoglWlREBKYRG';
-    
-    // req.connection.remoteAddress will provide IP address of connected user.
-    const verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'] + "&remoteip=" + req.connection.remoteAddress;
-    
-    // Hitting GET request to the URL, Google will respond with success or error scenario.
-    
-    
     // ---------------------------------------------
     //   Fetch
     // ---------------------------------------------
     
-    // const apiUrl = `${storeData.apiUrl}/v1/login`;
+    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
     
     fetch(verificationUrl, {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'same-origin',
+      method: 'GET',
+      mode: 'cors',
+      credentials: 'omit',
       headers: {
         'Accept': 'application/json'
-      },
-      // body: formData
+      }
     })
       .then((response) => {
-        if (!response.ok) {
-          return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
-        　});
+        if (response.ok) {
+          return response.json();
         }
-        
-        return response.json();
+        throw new Error('Network response was not ok.');
       })
       .then((jsonObj) => {
         
         console.log(`then`);
         console.dir(jsonObj);
         
-        this.handleFormReset();
+        // this.handleFormReset();
         
       })
       .catch((error) => {
@@ -92,6 +79,13 @@ router.post('/',upload.none(), function(req, res, next) {
         
       });
     
+    
+    console.log(chalk`
+      process.env.RECAPTCHA_SITE_KEY: {red ${process.env.RECAPTCHA_SITE_KEY}}
+      process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
+      req.body['g-recaptcha-response']: {rgb(255,131,0) ${req.body['g-recaptcha-response']}}
+      verificationUrl: {green ${verificationUrl}}
+    `);
     
     // if (req.recaptcha.error) {
     //   console.log(`recaptcha error`);

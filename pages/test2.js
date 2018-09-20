@@ -3,14 +3,7 @@
 // --------------------------------------------------
 
 import React from 'react';
-import Head from 'next/head';
-import { observer, Provider } from 'mobx-react';
-
-import initStoreLayout from '../applications/common/layout/stores/layout';
-
-import Layout from '../applications/common/layout/components/layout';
-
-import withRoot from '../lib/material-ui/withRoot';
+// import withRoot from '../lib/material-ui/withRoot';
 
 
 
@@ -28,7 +21,6 @@ import withRoot from '../lib/material-ui/withRoot';
 //   URL: http://35.203.143.160:8080/test
 // --------------------------------------------------
 
-@observer
 class Component extends React.Component {
   
   static getInitialProps({ pathname, req, query: { id } }) {
@@ -39,21 +31,7 @@ class Component extends React.Component {
   
   
   constructor(props) {
-    
     super(props);
-    
-
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
-    const storeLayoutInstance = initStoreLayout(props.isServer);
-    
-    this.stores = {
-      layout: storeLayoutInstance,
-      pathname: props.pathname
-    };
-    
   }
   
   
@@ -74,21 +52,9 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider stores={this.stores}>
-      
-        <Layout>
-          
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>Game Users</title>
-          </Head>
-        
-          test.js
-          
-        </Layout>
-      </Provider>
+      <div>test</div>
     );
   }
 }
 
-export default withRoot(Component);
+export default Component;

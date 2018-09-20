@@ -112,7 +112,7 @@ const StyledButton = styled(Button)`
 `;
 
 const ReCAPTCHAContainer = styled.div`
-  margin: 10px 0 10px 0;
+  margin: 30px 0 0 0;
 `;
 
 
@@ -138,10 +138,18 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   Store
+    //   publicRuntimeConfig
     // --------------------------------------------------
     
     const { publicRuntimeConfig } = getConfig();
+    this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
+    
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    
     // console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
     // console.log(`publicRuntimeConfig.apiUrl = ${publicRuntimeConfig.apiUrl}`);
     
@@ -176,7 +184,8 @@ class Component extends React.Component {
     // console.log(`process.env.ENVIRONMENT = ${process.env.ENVIRONMENT}`);
     
     // const { publicRuntimeConfig } = getConfig();
-    // console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
+    console.log(`publicRuntimeConfig.recaptchaSiteKey = ${publicRuntimeConfig.recaptchaSiteKey}`);
+    console.dir(publicRuntimeConfig);
     
     
     // const datetimeNow = moment().utcOffset(0);
@@ -227,8 +236,6 @@ class Component extends React.Component {
     
     const {
       
-      handleLoginReCAPTCHA,
-      
       loginId,
       loginIdNumberOfCharacters,
       loginIdError,
@@ -243,6 +250,8 @@ class Component extends React.Component {
       loginPasswordShow,
       handleLoginPasswordShow,
       handleLoginPasswordMouseDown,
+      
+      handleLoginRecaptchaResponse,
       
       handleLoginSubmit,
       
@@ -500,33 +509,30 @@ class Component extends React.Component {
                     
                     
                     
-                    {/* reCAPTCHA */}
-                    <ReCAPTCHAContainer>
-                      {/*<ReCAPTCHA
-                        sitekey="6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud"
-                        // onChange={onChange}
-                      />*/}
-                      <ReCAPTCHA
-                        ref={recaptchaRef}
-                        size="invisible"
-                        badge="inline"
-                        sitekey="6LcQBHEUAAAAAGmDgpg4ikKzhrVuh3lNbVTYr8gS"
-                        onChange={handleLoginSubmit}
-                      />
-                    </ReCAPTCHAContainer>
-                    
-                    
-                    
                     {/* 送信ボタン */}
                     <StyledButton
                       variant="contained"
                       color="primary"
                       // type="submit"
                       // onClick={() => handleLoginReCAPTCHA(recaptchaRef)}
-                      onClick={() => recaptchaRef.current.execute()}
+                      onClick={() => handleLoginSubmit(recaptchaRef)}
                     >
                       ログイン
                     </StyledButton>
+                    
+                    
+                    
+                    {/* reCAPTCHA */}
+                    <ReCAPTCHAContainer>
+                      <ReCAPTCHA
+                        ref={recaptchaRef}
+                        size="invisible"
+                        badge="inline"
+                        sitekey={this.recaptchaSiteKey}
+                        onChange={handleLoginRecaptchaResponse}
+                      />
+                    </ReCAPTCHAContainer>
+                    
                     
                   </form>
                   

@@ -20,7 +20,7 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
-const Recaptcha = require('express-recaptcha').Recaptcha;
+// const Recaptcha = require('express-recaptcha').Recaptcha;
 
 const routerApi = require('./applications/common/routes/v1/');
 
@@ -35,7 +35,7 @@ const routerApi = require('./applications/common/routes/v1/');
 mobxReact.useStaticRendering(true);
 
 
-const recaptcha = new Recaptcha('6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud', '6LfH2nAUAAAAACfsSs_s2WvccDhE1gR6qDjhMuha');
+// const recaptcha = new Recaptcha('6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud', '6LfH2nAUAAAAACfsSs_s2WvccDhE1gR6qDjhMuha');
 
 
 
@@ -60,7 +60,7 @@ app.prepare().then(() => {
   server.use(flash());
   
   server.use(session({
-    secret: '0U-X7lOMwp-kqFgakKj8w87nt8y6kA4i',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -101,10 +101,10 @@ app.prepare().then(() => {
   //   Login
   // ---------------------------------------------
   
-  server.get('/login', recaptcha.middleware.render, (req, res) => {
-    // const { param1, param2 } = req.params;
-    app.render(req, res, '/login', { captcha:res.recaptcha });
-  });
+  // server.get('/login', recaptcha.middleware.render, (req, res) => {
+  //   // const { param1, param2 } = req.params;
+  //   app.render(req, res, '/login', { captcha:res.recaptcha });
+  // });
   
   
   

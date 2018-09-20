@@ -1,6 +1,7 @@
 module.exports = {
   publicRuntimeConfig: {
     environment: process.env.NODE_ENV,
-    apiUrl: process.env.APIURL
+    recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
+    apiUrl: process.env.API_URL
   }
 };

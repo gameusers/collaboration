@@ -158,64 +158,40 @@ class Store {
   
   
   
-  /**
-   * ログインフォームで送信ボタンを押すと呼び出される
-   */
-  @action.bound
-  handleLoginReCAPTCHA(recaptchaRef) {
-    
-    
-    // ---------------------------------------------
-    //  Console 出力
-    // ---------------------------------------------
-    
-    console.log(`\n\n`);
-    console.log(`--- handleLoginReCAPTCHA ---`);
-    // console.log(`this.loginId = ${this.loginId}`);
-    // console.log(`this.loginPassword = ${this.loginPassword}`);
-    // console.dir(recaptchaRef.current.execute());
-    console.log(`\n\n`);
-    
-    
-    // ---------------------------------------------
-    //  Error
-    // ---------------------------------------------
-    
-    recaptchaRef.current.execute();
-  //   recaptchaRef.current.execute().then((recaptchaToken) => {
-  // 　　console.log(`recaptchaToken = ${recaptchaToken}`);
-  // 　});
-    
-  };
   
-  
+  loginRecaptchaResponse = null;
   
   /**
    * ログインフォームで送信ボタンを押すと呼び出される
    */
   @action.bound
-  handleLoginSubmit(value) {
+  handleLoginRecaptchaResponse(recaptchaResponse) {
     
     
     // ---------------------------------------------
-    //  Console 出力
+    //   Console 出力
     // ---------------------------------------------
     
     console.log(`\n\n`);
-    console.log(`--- handleLoginSubmit ---`);
-    // console.log(`this.loginId = ${this.loginId}`);
-    // console.log(`this.loginPassword = ${this.loginPassword}`);
-    // console.dir(recaptchaRef.current.execute());
-    console.log(`value = ${value}`);
+    console.log(`--- handleLoginRecaptchaResponse ---`);
+    console.log(`recaptchaResponse = ${recaptchaResponse}`);
     console.log(`\n\n`);
     
     
     // ---------------------------------------------
-    //  Error
+    //   Set ReCAPTCHA Response
     // ---------------------------------------------
     
-    // recaptchaRef.current.execute();
+    this.loginRecaptchaResponse = recaptchaResponse;
     
+    
+    // ---------------------------------------------
+    //   Login
+    // ---------------------------------------------
+    
+    if (recaptchaResponse) {
+      this.handleLoginSubmit();
+    }
     
   };
   
@@ -225,7 +201,7 @@ class Store {
    * ログインフォームで送信ボタンを押すと呼び出される
    */
   // @action.bound
-  // handleLoginSubmit2(recaptchaRef) {
+  // handleLoginSubmit(value) {
     
     
   //   // ---------------------------------------------
@@ -234,9 +210,10 @@ class Store {
     
   //   console.log(`\n\n`);
   //   console.log(`--- handleLoginSubmit ---`);
-  //   console.log(`this.loginId = ${this.loginId}`);
-  //   console.log(`this.loginPassword = ${this.loginPassword}`);
-  //   console.dir(recaptchaRef.current.execute());
+  //   // console.log(`this.loginId = ${this.loginId}`);
+  //   // console.log(`this.loginPassword = ${this.loginPassword}`);
+  //   // console.dir(recaptchaRef.current.execute());
+  //   console.log(`value = ${value}`);
   //   console.log(`\n\n`);
     
     
@@ -244,72 +221,107 @@ class Store {
   //   //  Error
   //   // ---------------------------------------------
     
-  //   if (
-  //     this.loginId === '' ||
-  //     this.loginPassword === '' ||
-  //     this.loginIdError ||
-  //     this.loginPasswordError
-  //   ) {
-      
-  //     storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
-  //     return;
-      
-  //   }
+  //   // recaptchaRef.current.execute();
     
-    
-  //   // ---------------------------------------------
-  //   //   FormData
-  //   // ---------------------------------------------
-    
-  //   const formData = new FormData();
-    
-  //   formData.append('loginId', this.loginId);
-  //   formData.append('loginPassword', this.loginPassword);
-    
-  //   // console.log(`this.createAccountId = ${this.createAccountId}`);
-  //   // console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
-    
-    
-    
-  //   // ---------------------------------------------
-  //   //   Fetch
-  //   // ---------------------------------------------
-    
-  //   const apiUrl = `${storeData.apiUrl}/v1/login`;
-    
-  //   fetch(apiUrl, {
-  //     method: 'POST',
-  //     credentials: 'same-origin',
-  //     mode: 'same-origin',
-  //     headers: {
-  //       'Accept': 'application/json'
-  //     },
-  //     body: formData
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         return response.json().then((jsonObj) => {
-  //       　　throw new Error(jsonObj.errorsArr[0].message);
-  //       　});
-  //       }
-        
-  //       return response.json();
-  //     })
-  //     .then((jsonObj) => {
-        
-  //       console.log(`then`);
-  //       console.dir(jsonObj);
-        
-  //       this.handleFormReset();
-        
-  //     })
-  //     .catch((error) => {
-        
-  //       console.log(`catch: ${error}`);
-        
-  //     });
     
   // };
+  
+  
+  
+  
+  
+  /**
+   * ログインフォームで送信ボタンを押すと呼び出される
+   */
+  @action.bound
+  handleLoginSubmit(recaptchaRef = null) {
+    
+    
+    // ---------------------------------------------
+    //   Console 出力
+    // ---------------------------------------------
+    
+    console.log(`\n\n`);
+    console.log(`--- handleLoginSubmit ---`);
+    console.log(`this.loginId = ${this.loginId}`);
+    console.log(`this.loginPassword = ${this.loginPassword}`);
+    console.log(`this.loginRecaptchaResponse = ${this.loginRecaptchaResponse}`);
+    console.log(`\n\n`);
+    
+    
+    // ---------------------------------------------
+    //   Error
+    // ---------------------------------------------
+    
+    if (this.loginRecaptchaResponse === null) {
+      
+      console.log(`recaptchaRef.current.execute()`);
+      recaptchaRef.current.execute();
+      return;
+      
+    } else if (
+      this.loginId === '' ||
+      this.loginPassword === '' ||
+      this.loginIdError ||
+      this.loginPasswordError
+    ) {
+      
+      storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
+      return;
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   FormData
+    // ---------------------------------------------
+    
+    const formData = new FormData();
+    
+    formData.append('loginId', this.loginId);
+    formData.append('loginPassword', this.loginPassword);
+    formData.append('g-recaptcha-response', this.loginRecaptchaResponse);
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    const apiUrl = `${storeData.apiUrl}/v1/login`;
+    
+    fetch(apiUrl, {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+        　　throw new Error(jsonObj.errorsArr[0].message);
+        　});
+        }
+        
+        return response.json();
+      })
+      .then((jsonObj) => {
+        
+        console.log(`then`);
+        console.dir(jsonObj);
+        
+        this.handleFormReset();
+        
+      })
+      .catch((error) => {
+        
+        console.log(`catch: ${error}`);
+        
+      });
+    
+  };
   
   
   
@@ -690,8 +702,8 @@ class Store {
     
     fetch(storeData.apiUrl, {
       method: 'POST',
-      credentials: 'same-origin',
       mode: 'same-origin',
+      credentials: 'same-origin',
       headers: {
         'Accept': 'application/json'
       },

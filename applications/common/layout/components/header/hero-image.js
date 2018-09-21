@@ -222,6 +222,7 @@ export default class extends React.Component {
         width: 100%;
         background: no-repeat center center url(/static/img/game/${stores.layout.headerGameNo}/hero/${heroImageRandomNo}.jpg);
         background-size: cover;
+        background-color: #25283D;
         position: relative;
         padding-top: 56.25%;
         

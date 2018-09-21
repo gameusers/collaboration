@@ -7,9 +7,12 @@ const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const fetch = require('isomorphic-unfetch');
+const Tokens = require('csrf');
+const tokens = new Tokens();
 const shortid = require('shortid');
-// const Recaptcha = require('express-recaptcha').Recaptcha;
 const chalk = require('chalk');
+
 
 
 // ---------------------------------------------
@@ -19,12 +22,12 @@ const chalk = require('chalk');
 const ModelUsers = require('../../schemas/users');
 
 
+
 // --------------------------------------------------
 //   Router
 // --------------------------------------------------
 
 const router = express.Router();
-// const recaptcha = new Recaptcha('6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud', '6LfH2nAUAAAAACfsSs_s2WvccDhE1gR6qDjhMuha');
 
 
 
@@ -45,8 +48,60 @@ router.post('/',upload.none(), function(req, res, next) {
   passport.authenticate('local', function(err, user, info) {
     
     
+    
+    try {
+      
+    } catch (e) {
+      
+    } finally {
+      
+    }
+    
+    
+    
     // ---------------------------------------------
-    //   Fetch
+    //   CSRF
+    //   参考：https://garafu.blogspot.com/2017/04/nodejs-express-csrfprotection.html
+    // ---------------------------------------------
+    
+    const secret = req.session._csrf;
+    const token = req.cookies._csrf;
+    
+    console.log(chalk`
+      secret: {red ${secret}}
+      token: {green ${token}}
+      tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
+    `);
+    // console.log(`secret = ${secret}`);
+    // console.log(`token = ${token}`);
+    // console.log(`tokens.verify(secret, token) = ${tokens.verify(secret, token)}`);
+    
+    
+    // 秘密文字 と トークン の組み合わせが正しいか検証
+    if (tokens.verify(secret, token) === false) {
+      console.log(`Invalid Token`);
+      throw new Error("Invalid Token");
+    }
+    
+    
+    const newSecret = tokens.secretSync();
+    const newToken = tokens.create(newSecret);
+    
+    console.log(chalk`
+      newSecret: {green ${newSecret}}
+      newToken: {green ${newToken}}
+    `);
+    
+    req.session._csrf = newSecret;
+    res.cookie('_csrf', newToken);
+    
+    // delete req.session._csrf;
+    // res.clearCookie("_csrf");
+    
+    
+    
+    // ---------------------------------------------
+    //   reCAPTCHA
     // ---------------------------------------------
     
     const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
@@ -60,10 +115,13 @@ router.post('/',upload.none(), function(req, res, next) {
       }
     })
       .then((response) => {
+        
         if (response.ok) {
           return response.json();
         }
+        
         throw new Error('Network response was not ok.');
+        
       })
       .then((jsonObj) => {
         
@@ -278,11 +336,18 @@ router.post('/createAccount', upload.none(), (req, res) => {
   // res.json({ 'error': false, 'message': 'Success', 'loginId': req.body.loginId });
   // err = ValidationError: level: Cast to Number failed for value "test" at path "level"
   
+  console.log(chalk`
+    req.body.createAccountId: {red ${req.body.createAccountId}}
+    req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
+  `);
+  
+  
   
   // --------------------------------------------------
   //   Data
   // --------------------------------------------------
   
+  // catch: Error: E11000 duplicate key error collection: gameusers.users index: _id_ dup key: { : "BenvfQDSk" }
   const _id = shortid.generate();
   const playerId = shortid.generate();
   

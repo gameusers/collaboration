@@ -29,6 +29,7 @@ import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 
+import initStoreIndex from '../../applications/common/stores/index';
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreData from '../../applications/common/stores/data';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
@@ -149,10 +150,6 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
-    
-    // console.log(`publicRuntimeConfig.environment = ${publicRuntimeConfig.environment}`);
-    // console.log(`publicRuntimeConfig.apiUrl = ${publicRuntimeConfig.apiUrl}`);
-    
     const argumentsObj = {
       isServer: props.isServer,
       pathname: props.pathname,
@@ -160,32 +157,8 @@ class Component extends React.Component {
       apiUrl: publicRuntimeConfig.apiUrl
     };
     
-    const storeLayoutInstance = initStoreLayout(argumentsObj);
-    const storeDataInstance = initStoreData(argumentsObj);
-    
-    
-    argumentsObj.storeInstanceObj = {
-      layout: storeLayoutInstance,
-      data: storeDataInstance,
-    };
-    
-    const storeLoginIndexInstance = initStoreLoginIndex(argumentsObj);
-    
-    
-    this.stores = {
-      layout: storeLayoutInstance,
-      data: storeDataInstance,
-      loginIndex: storeLoginIndexInstance,
-      pathname: props.pathname
-    };
-    
-    
-    
-    // console.log(`process.env.ENVIRONMENT = ${process.env.ENVIRONMENT}`);
-    
-    // const { publicRuntimeConfig } = getConfig();
-    console.log(`publicRuntimeConfig.recaptchaSiteKey = ${publicRuntimeConfig.recaptchaSiteKey}`);
-    console.dir(publicRuntimeConfig);
+    this.stores = initStoreIndex(argumentsObj);
+    this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
     
     
     // const datetimeNow = moment().utcOffset(0);
@@ -206,11 +179,11 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const stores = this.stores;
-    // console.log(`process.env.ENVIRONMENT2 = ${process.env.ENVIRONMENT}`);
+    
     
     
     // --------------------------------------------------
-    //   Header
+    //   Header Navigation
     // --------------------------------------------------
     
     const headerNavMainArr = [
@@ -221,11 +194,7 @@ class Component extends React.Component {
       {
         name: 'ソーシャルログイン',
         pathname: '/login/social'
-      },
-      // {
-      //   name: 'アカウント作成',
-      //   pathname: '/login/account'
-      // },
+      }
     ];
     
     

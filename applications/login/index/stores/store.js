@@ -700,7 +700,9 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    fetch(storeData.apiUrl, {
+    const apiUrl = `${storeData.apiUrl}/v1/login/createAccount`;
+    
+    fetch(apiUrl, {
       method: 'POST',
       mode: 'same-origin',
       credentials: 'same-origin',
@@ -798,10 +800,10 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLoginIndex(argumentsObj) {
+export default function initStoreLoginIndex(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
-  const storeInstanceObj = argumentsObj.storeInstanceObj;
+  // const storeInstanceObj = argumentsObj.storeInstanceObj;
   
   
   if ('layout' in storeInstanceObj) {

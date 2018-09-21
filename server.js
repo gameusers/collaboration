@@ -6,10 +6,13 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
 
 const flash = require("connect-flash");
 const passport = require('passport');
 const session = require('express-session');
+const Tokens = require('csrf');
+const tokens = new Tokens();
 const next = require('next');
 
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -57,6 +60,8 @@ app.prepare().then(() => {
     extended: true
   }));
   
+  server.use(cookieParser());
+  
   server.use(flash());
   
   server.use(session({
@@ -101,10 +106,20 @@ app.prepare().then(() => {
   //   Login
   // ---------------------------------------------
   
-  // server.get('/login', recaptcha.middleware.render, (req, res) => {
-  //   // const { param1, param2 } = req.params;
-  //   app.render(req, res, '/login', { captcha:res.recaptcha });
-  // });
+  server.get('/login', (req, res) => {
+    
+    const secret = tokens.secretSync();
+    const token = tokens.create(secret);
+    
+    console.log(`secret = ${secret}`);
+    console.log(`token = ${token}`);
+    
+    req.session._csrf = secret;
+    res.cookie('_csrf', token);
+    
+    app.render(req, res, '/login', { captcha:res.recaptcha });
+    
+  });
   
   
   

@@ -12,7 +12,7 @@ const shortid = require('shortid');
 
 const schema = mongoose.Schema({
   // _id: { type: String, default: shortid.generate() },
-  _id: { type: String, required: true, unique: true },
+  _id: { type: String, required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   accessDate: { type: Date, default: Date.now, required: true },

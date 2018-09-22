@@ -158,11 +158,16 @@ class Store {
   
   
   
-  
+  /**
+   * ログイン用 reCAPTCHA のトークン
+   * @type {string}
+   */
   loginRecaptchaResponse = null;
   
   /**
-   * ログインフォームで送信ボタンを押すと呼び出される
+   * ログイン用 reCAPTCHA のトークンをセットする
+   * ReCAPTCHA コンポーネントの onChange で呼び出される
+   * @param {string} recaptchaResponse - トークンが入っている
    */
   @action.bound
   handleLoginRecaptchaResponse(recaptchaResponse) {
@@ -179,18 +184,18 @@ class Store {
     
     
     // ---------------------------------------------
-    //   Set ReCAPTCHA Response
-    // ---------------------------------------------
-    
-    this.loginRecaptchaResponse = recaptchaResponse;
-    
-    
-    // ---------------------------------------------
-    //   Login
+    //   Set ReCAPTCHA Response & Login
     // ---------------------------------------------
     
     if (recaptchaResponse) {
+      
+      this.loginRecaptchaResponse = recaptchaResponse;
       this.handleLoginSubmit();
+      
+    } else {
+      
+      this.loginRecaptchaResponse = '';
+      
     }
     
   };
@@ -199,39 +204,7 @@ class Store {
   
   /**
    * ログインフォームで送信ボタンを押すと呼び出される
-   */
-  // @action.bound
-  // handleLoginSubmit(value) {
-    
-    
-  //   // ---------------------------------------------
-  //   //  Console 出力
-  //   // ---------------------------------------------
-    
-  //   console.log(`\n\n`);
-  //   console.log(`--- handleLoginSubmit ---`);
-  //   // console.log(`this.loginId = ${this.loginId}`);
-  //   // console.log(`this.loginPassword = ${this.loginPassword}`);
-  //   // console.dir(recaptchaRef.current.execute());
-  //   console.log(`value = ${value}`);
-  //   console.log(`\n\n`);
-    
-    
-  //   // ---------------------------------------------
-  //   //  Error
-  //   // ---------------------------------------------
-    
-  //   // recaptchaRef.current.execute();
-    
-    
-  // };
-  
-  
-  
-  
-  
-  /**
-   * ログインフォームで送信ボタンを押すと呼び出される
+   * @param {Object} recaptchaRef - ReCAPTCHA コンポーネントの ref
    */
   @action.bound
   handleLoginSubmit(recaptchaRef = null) {
@@ -246,6 +219,7 @@ class Store {
     console.log(`this.loginId = ${this.loginId}`);
     console.log(`this.loginPassword = ${this.loginPassword}`);
     console.log(`this.loginRecaptchaResponse = ${this.loginRecaptchaResponse}`);
+    console.dir(recaptchaRef);
     console.log(`\n\n`);
     
     
@@ -253,7 +227,7 @@ class Store {
     //   Error
     // ---------------------------------------------
     
-    if (this.loginRecaptchaResponse === null) {
+    if (!this.loginRecaptchaResponse) {
       
       console.log(`recaptchaRef.current.execute()`);
       recaptchaRef.current.execute();

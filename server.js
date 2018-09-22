@@ -6,13 +6,13 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 
 const flash = require("connect-flash");
 const passport = require('passport');
 const session = require('express-session');
-const Tokens = require('csrf');
-const tokens = new Tokens();
+// const Tokens = require('csrf');
+// const tokens = new Tokens();
 const next = require('next');
 
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -24,6 +24,8 @@ const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
 // const Recaptcha = require('express-recaptcha').Recaptcha;
+
+const { createCsrfToken } = require('./applications/common/modules/csrf');
 
 const routerApi = require('./applications/common/routes/v1/');
 
@@ -107,18 +109,8 @@ app.prepare().then(() => {
   // ---------------------------------------------
   
   server.get('/login', (req, res) => {
-    
-    const secret = tokens.secretSync();
-    const token = tokens.create(secret);
-    
-    console.log(`secret = ${secret}`);
-    console.log(`token = ${token}`);
-    
-    req.session._csrf = secret;
-    res.cookie('_csrf', token);
-    
-    app.render(req, res, '/login', { captcha:res.recaptcha });
-    
+    createCsrfToken(req, res);
+    app.render(req, res, '/login', {});
   });
   
   

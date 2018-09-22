@@ -8,10 +8,15 @@ const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const fetch = require('isomorphic-unfetch');
-const Tokens = require('csrf');
-const tokens = new Tokens();
+// const Tokens = require('csrf');
+// const tokens = new Tokens();
 const shortid = require('shortid');
 const chalk = require('chalk');
+
+const { verifyCsrfToken } = require('../../modules/csrf');
+const { verifyRecaptcha } = require('../../modules/recaptcha');
+
+// import zxcvbn from 'zxcvbn';
 
 
 
@@ -45,17 +50,28 @@ const router = express.Router();
 // --------------------------------------------------
 
 router.post('/',upload.none(), function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
-    
+  passport.authenticate('local', async function(err, user, info) {
     
     
     try {
       
+      verifyCsrfToken(req, res);
+      await verifyRecaptcha(req, res);
+      console.log(`verifyRecaptchaの後`);
+      
     } catch (e) {
+      
+      console.log(chalk`
+        e.message: {red ${e.message}}
+      `);
       
     } finally {
       
     }
+    
+    
+    
+    
     
     
     
@@ -64,36 +80,38 @@ router.post('/',upload.none(), function(req, res, next) {
     //   参考：https://garafu.blogspot.com/2017/04/nodejs-express-csrfprotection.html
     // ---------------------------------------------
     
-    const secret = req.session._csrf;
-    const token = req.cookies._csrf;
-    
-    console.log(chalk`
-      secret: {red ${secret}}
-      token: {green ${token}}
-      tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
-    `);
-    // console.log(`secret = ${secret}`);
-    // console.log(`token = ${token}`);
-    // console.log(`tokens.verify(secret, token) = ${tokens.verify(secret, token)}`);
     
     
-    // 秘密文字 と トークン の組み合わせが正しいか検証
-    if (tokens.verify(secret, token) === false) {
-      console.log(`Invalid Token`);
-      throw new Error("Invalid Token");
-    }
+    // const secret = req.session._csrf;
+    // const token = req.cookies._csrf;
+    
+    // console.log(chalk`
+    //   secret: {red ${secret}}
+    //   token: {green ${token}}
+    //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
+    // `);
+    // // console.log(`secret = ${secret}`);
+    // // console.log(`token = ${token}`);
+    // // console.log(`tokens.verify(secret, token) = ${tokens.verify(secret, token)}`);
     
     
-    const newSecret = tokens.secretSync();
-    const newToken = tokens.create(newSecret);
+    // // 秘密文字 と トークン の組み合わせが正しいか検証
+    // if (tokens.verify(secret, token) === false) {
+    //   console.log(`Invalid Token`);
+    //   throw new Error("Invalid Token");
+    // }
     
-    console.log(chalk`
-      newSecret: {green ${newSecret}}
-      newToken: {green ${newToken}}
-    `);
     
-    req.session._csrf = newSecret;
-    res.cookie('_csrf', newToken);
+    // const newSecret = tokens.secretSync();
+    // const newToken = tokens.create(newSecret);
+    
+    // console.log(chalk`
+    //   newSecret: {green ${newSecret}}
+    //   newToken: {green ${newToken}}
+    // `);
+    
+    // req.session._csrf = newSecret;
+    // res.cookie('_csrf', newToken);
     
     // delete req.session._csrf;
     // res.clearCookie("_csrf");
@@ -104,46 +122,46 @@ router.post('/',upload.none(), function(req, res, next) {
     //   reCAPTCHA
     // ---------------------------------------------
     
-    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
+    // const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
     
-    fetch(verificationUrl, {
-      method: 'GET',
-      mode: 'cors',
-      credentials: 'omit',
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-      .then((response) => {
+    // fetch(verificationUrl, {
+    //   method: 'GET',
+    //   mode: 'cors',
+    //   credentials: 'omit',
+    //   headers: {
+    //     'Accept': 'application/json'
+    //   }
+    // })
+    //   .then((response) => {
         
-        if (response.ok) {
-          return response.json();
-        }
+    //     if (response.ok) {
+    //       return response.json();
+    //     }
         
-        throw new Error('Network response was not ok.');
+    //     throw new Error('Network response was not ok.');
         
-      })
-      .then((jsonObj) => {
+    //   })
+    //   .then((jsonObj) => {
         
-        console.log(`then`);
-        console.dir(jsonObj);
+    //     console.log(`then`);
+    //     console.dir(jsonObj);
         
-        // this.handleFormReset();
+    //     // this.handleFormReset();
         
-      })
-      .catch((error) => {
+    //   })
+    //   .catch((error) => {
         
-        console.log(`catch: ${error}`);
+    //     console.log(`catch: ${error}`);
         
-      });
+    //   });
     
     
-    console.log(chalk`
-      process.env.RECAPTCHA_SITE_KEY: {red ${process.env.RECAPTCHA_SITE_KEY}}
-      process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
-      req.body['g-recaptcha-response']: {rgb(255,131,0) ${req.body['g-recaptcha-response']}}
-      verificationUrl: {green ${verificationUrl}}
-    `);
+    // console.log(chalk`
+    //   process.env.RECAPTCHA_SITE_KEY: {red ${process.env.RECAPTCHA_SITE_KEY}}
+    //   process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
+    //   req.body['g-recaptcha-response']: {rgb(255,131,0) ${req.body['g-recaptcha-response']}}
+    //   verificationUrl: {green ${verificationUrl}}
+    // `);
     
     // if (req.recaptcha.error) {
     //   console.log(`recaptcha error`);
@@ -161,18 +179,18 @@ router.post('/',upload.none(), function(req, res, next) {
     
     // console.log(colors.green('err = %s'), err);
     
-    console.log(chalk`
-      err: {red ${err}}
-      user: {green ${user}}
-      info: {rgb(255,131,0) ${info}}
-    `);
+    // console.log(chalk`
+    //   err: {red ${err}}
+    //   user: {green ${user}}
+    //   info: {rgb(255,131,0) ${info}}
+    // `);
     
-    console.log(`\nerr =`);
-    console.dir(err);
-    console.log(`\nuser =`);
-    console.dir(user);
-    console.log(`\ninfo =`);
-    console.dir(info);
+    // console.log(`\nerr =`);
+    // console.dir(err);
+    // console.log(`\nuser =`);
+    // console.dir(user);
+    // console.log(`\ninfo =`);
+    // console.dir(info);
     // console.log(`\nreq.flash() =`);
     // console.dir(req.flash());
     // console.log(`req.flash('message') = ${req.flash('message')}`);
@@ -265,14 +283,14 @@ passport.use(new LocalStrategy({
   },
   (username, password, done) => {
     
-    console.log(`LocalStrategy`);
+    // console.log(`LocalStrategy`);
     // console.log(`username = ${username}`);
     // console.log(`password = ${password}`);
     
     ModelUsers.findOne({ loginId: username }, (err, user) => {
       // console.log(`ModelUsers.findOne / user = ${user}`);
-      console.log(`err = ${err}`);
-      console.log(`user = ${user}`);
+      // console.log(`err = ${err}`);
+      // console.log(`user = ${user}`);
       
       if (err) {
         return done(err);
@@ -410,6 +428,31 @@ router.post('/createAccount', upload.none(), (req, res) => {
     });
     
   });
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   テスト
+// --------------------------------------------------
+
+router.get('/test', upload.none(), (req, res) => {
+  
+  // console.log(chalk`
+  //   test: {red ${req.body.createAccountId}}
+  //   req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
+  // `);
+  
+  console.log(`\n\nAPI test\n\n`);
+  
+  res.json({
+    success: true,
+    challenge_ts: '2018-09-22T10:53:45Z',
+    hostname: '35.203.143.160'
+  });
+  
   
 });
 

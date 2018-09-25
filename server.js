@@ -94,6 +94,33 @@ app.prepare().then(() => {
   });
   
   
+  // const envCopy = {};
+  // for (let e in process.env) envCopy[e] = process.env[e];
+  // console.dir(envCopy);
+  
+  
+  // console.log(`process.env.VERIFY_CSRF = ${typeof process.env.VERIFY_CSRF}`);
+  // console.log(`process.env.VERIFY_CSRF2 = ${typeof process.env.VERIFY_CSRF2}`);
+  // console.log(`process.env.VERIFY_CSRF3 = ${process.env.VERIFY_CSRF3} / ${typeof process.env.VERIFY_CSRF3}`);
+  
+  // const number = 1;
+  
+  // if (number === '1') {
+  //   console.log(`on`);
+  // } else {
+  //   console.log(`off`);
+  // }
+  
+  
+  const crypto = require('crypto');
+  const cipers = crypto.getCiphers();
+  console.log(`cipers = ${cipers}`);
+  
+  const hashes = crypto.getHashes();
+  console.log(`hashes = ${hashes}`);
+  
+  
+  
 
   // --------------------------------------------------
   //   Routing

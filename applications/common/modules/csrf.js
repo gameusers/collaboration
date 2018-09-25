@@ -51,39 +51,60 @@ const createCsrfToken = (req, res) => {
 const verifyCsrfToken = (req, res) => {
   
   
+  // console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV} / ${typeof process.env.NODE_ENV}`);
+  // console.log(`process.env.VERIFY_CSRF = ${process.env.VERIFY_CSRF} / ${typeof process.env.VERIFY_CSRF}`);
+  
+  
   // --------------------------------------------------
-  //   トークンの検証
+  //   製品版 / VERIFY_CSRF === '1' のときは検証する
   // --------------------------------------------------
   
-  const secret = req.session._csrf;
-  const token = req.cookies._csrf;
-  
-  // console.log(chalk`
-  //   secret: {red ${secret}}
-  //   token: {green ${token}}
-  //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
-  // `);
-  
-  // console.log(typeof req);
-  // console.log(typeof res);
-  
-  
-  // 秘密文字 と トークン の組み合わせが正しいか検証
-  if (tokens.verify(secret, token) === false) {
-    // console.log(`Invalid Token`);
-    throw new Error('Invalid Token');
+  if (process.env.NODE_ENV === 'production' || process.env.VERIFY_CSRF === '1') {
+    
+    
+    // --------------------------------------------------
+    //   トークンの検証
+    // --------------------------------------------------
+    
+    const secret = req.session._csrf;
+    const token = req.cookies._csrf;
+    
+    // console.log(chalk`
+    //   secret: {red ${secret}}
+    //   token: {green ${token}}
+    //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
+    // `);
+    
+    
+    
+    // 秘密文字 と トークン の組み合わせが正しいか検証
+    if (tokens.verify(secret, token) === false) {
+      // console.log(`Invalid Token`);
+      throw new Error('CSRF: Invalid Token');
+    }
+    
+    
+    
+    // --------------------------------------------------
+    //   トークン再発行
+    // --------------------------------------------------
+    
+    createCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return true;
+    
   }
   
   
-  // --------------------------------------------------
-  //   トークン再発行
-  // --------------------------------------------------
-  
-  createCsrfToken(req, res);
-  
+  // console.log(`verifyCsrfToken 検証スルー`);
   
   // --------------------------------------------------
-  //   Return
+  //   開発時、VERIFY_CSRF === '0' のときは検証スルー
   // --------------------------------------------------
   
   return true;

@@ -11,6 +11,7 @@ const fetch = require('isomorphic-unfetch');
 // const Tokens = require('csrf');
 // const tokens = new Tokens();
 const shortid = require('shortid');
+const bcrypt = require('bcrypt');
 const chalk = require('chalk');
 
 const { verifyCsrfToken } = require('../../modules/csrf');
@@ -39,6 +40,30 @@ const router = express.Router();
 
 
 // --------------------------------------------------
+//   テスト
+// --------------------------------------------------
+
+// router.get('/test', upload.none(), (req, res) => {
+  
+//   // console.log(chalk`
+//   //   test: {red ${req.body.createAccountId}}
+//   //   req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
+//   // `);
+  
+//   console.log(`\n\nAPI test\n\n`);
+  
+//   res.json({
+//     success: true,
+//     challenge_ts: '2018-09-22T10:53:45Z',
+//     hostname: '35.203.143.160'
+//   });
+  
+  
+// });
+
+
+
+// --------------------------------------------------
 //   ログイン Passport：Local（ID & Password）
 //   
 //   参考：
@@ -55,9 +80,21 @@ router.post('/',upload.none(), function(req, res, next) {
     
     try {
       
+      
+      // ---------------------------------------------
+      //   CSRF
+      // ---------------------------------------------
+      
       verifyCsrfToken(req, res);
+      
+      
+      // ---------------------------------------------
+      //   reCAPTCHA
+      // ---------------------------------------------
+      
       await verifyRecaptcha(req, res);
       console.log(`verifyRecaptchaの後`);
+      
       
     } catch (e) {
       
@@ -68,106 +105,6 @@ router.post('/',upload.none(), function(req, res, next) {
     } finally {
       
     }
-    
-    
-    
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   CSRF
-    //   参考：https://garafu.blogspot.com/2017/04/nodejs-express-csrfprotection.html
-    // ---------------------------------------------
-    
-    
-    
-    // const secret = req.session._csrf;
-    // const token = req.cookies._csrf;
-    
-    // console.log(chalk`
-    //   secret: {red ${secret}}
-    //   token: {green ${token}}
-    //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
-    // `);
-    // // console.log(`secret = ${secret}`);
-    // // console.log(`token = ${token}`);
-    // // console.log(`tokens.verify(secret, token) = ${tokens.verify(secret, token)}`);
-    
-    
-    // // 秘密文字 と トークン の組み合わせが正しいか検証
-    // if (tokens.verify(secret, token) === false) {
-    //   console.log(`Invalid Token`);
-    //   throw new Error("Invalid Token");
-    // }
-    
-    
-    // const newSecret = tokens.secretSync();
-    // const newToken = tokens.create(newSecret);
-    
-    // console.log(chalk`
-    //   newSecret: {green ${newSecret}}
-    //   newToken: {green ${newToken}}
-    // `);
-    
-    // req.session._csrf = newSecret;
-    // res.cookie('_csrf', newToken);
-    
-    // delete req.session._csrf;
-    // res.clearCookie("_csrf");
-    
-    
-    
-    // ---------------------------------------------
-    //   reCAPTCHA
-    // ---------------------------------------------
-    
-    // const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
-    
-    // fetch(verificationUrl, {
-    //   method: 'GET',
-    //   mode: 'cors',
-    //   credentials: 'omit',
-    //   headers: {
-    //     'Accept': 'application/json'
-    //   }
-    // })
-    //   .then((response) => {
-        
-    //     if (response.ok) {
-    //       return response.json();
-    //     }
-        
-    //     throw new Error('Network response was not ok.');
-        
-    //   })
-    //   .then((jsonObj) => {
-        
-    //     console.log(`then`);
-    //     console.dir(jsonObj);
-        
-    //     // this.handleFormReset();
-        
-    //   })
-    //   .catch((error) => {
-        
-    //     console.log(`catch: ${error}`);
-        
-    //   });
-    
-    
-    // console.log(chalk`
-    //   process.env.RECAPTCHA_SITE_KEY: {red ${process.env.RECAPTCHA_SITE_KEY}}
-    //   process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
-    //   req.body['g-recaptcha-response']: {rgb(255,131,0) ${req.body['g-recaptcha-response']}}
-    //   verificationUrl: {green ${verificationUrl}}
-    // `);
-    
-    // if (req.recaptcha.error) {
-    //   console.log(`recaptcha error`);
-    // } else {
-    //   console.log(`recaptcha success`);
-    // }
     
     
     // console.log(`\n\nrouter.post - /api/v1/login`.bgRed);
@@ -300,9 +237,20 @@ passport.use(new LocalStrategy({
         return done(null, false, { message: 'Incorrect username.' });
       }
       
-      if (user.loginPassword !== password) {
+      
+      // abcde012345
+      // $2b$10$Juk0P3bMaOO/eZB7oWPnlOqObE10ksCEefCxEfw8ToMWO7STkD.66
+
+      console.log(`bcrypt.compareSync(password, user.loginPassword) = ${bcrypt.compareSync(password, user.loginPassword)}`);
+      
+      if (bcrypt.compareSync(password, user.loginPassword) === false) {
         return done(null, false, { message: 'Incorrect password.' });
       }
+      
+      
+      // if (user.loginPassword !== password) {
+      //   return done(null, false, { message: 'Incorrect password.' });
+      // }
       
       return done(null, user);
       
@@ -357,7 +305,16 @@ router.post('/createAccount', upload.none(), (req, res) => {
   console.log(chalk`
     req.body.createAccountId: {red ${req.body.createAccountId}}
     req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
+    req.body.createAccountEmail: {green ${req.body.createAccountEmail}}
   `);
+  
+  
+  
+  
+  const saltRounds = 10; //ストレッチング回数
+  
+  const passwordHash = bcrypt.hashSync(req.body.createAccountPassword, saltRounds);
+  console.log(`passwordHash = ${passwordHash}`);
   
   
   
@@ -372,7 +329,7 @@ router.post('/createAccount', upload.none(), (req, res) => {
   const ModelUsersInstance = new ModelUsers({
     _id,
     loginId: req.body.createAccountId,
-    loginPassword: req.body.createAccountPassword,
+    loginPassword: passwordHash,
     email: '',
     name: '',
     status: '',
@@ -434,27 +391,6 @@ router.post('/createAccount', upload.none(), (req, res) => {
 
 
 
-// --------------------------------------------------
-//   テスト
-// --------------------------------------------------
-
-router.get('/test', upload.none(), (req, res) => {
-  
-  // console.log(chalk`
-  //   test: {red ${req.body.createAccountId}}
-  //   req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
-  // `);
-  
-  console.log(`\n\nAPI test\n\n`);
-  
-  res.json({
-    success: true,
-    challenge_ts: '2018-09-22T10:53:45Z',
-    hostname: '35.203.143.160'
-  });
-  
-  
-});
 
 
     

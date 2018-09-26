@@ -5,7 +5,28 @@
 import { action, observable } from 'mobx';
 import fetch from 'isomorphic-unfetch';
 
-import {validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../../applications/common/validations/login';
+import { validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login';
+
+// import { validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login.1';
+
+
+
+// import { validationId } from '../../../common/validations/login';
+
+// import login from '../../../common/validations/login.1';
+// const validationId = login.validationId;
+// const validationPassword = login.validationPassword;
+// const validationPasswordConfirmation = login.validationPasswordConfirmation;
+// const validationEmail = login.validationEmail;
+
+
+// const { action, observable } = require('mobx');
+// const fetch = require('isomorphic-unfetch');
+
+// const login = require('../../../../applications/common/validations/login');
+// const validationId
+
+// const { validationId, validationPassword, validationPasswordConfirmation, validationEmail } = require('../../../../applications/common/validations/login');
 
 
 // --------------------------------------------------
@@ -612,11 +633,59 @@ class Store {
   
   
   
+  
+  
+  
   /**
-   * アカウント作成フォームで送信ボタンを押すと呼び出される
+   * アカウント作成用 reCAPTCHA のトークン
+   * @type {string}
+   */
+  createAccountRecaptchaResponse = null;
+  
+  /**
+   * アカウント作成用 reCAPTCHA のトークンをセットする
+   * ReCAPTCHA コンポーネントの onChange で呼び出される
+   * @param {string} recaptchaResponse - トークンが入っている
    */
   @action.bound
-  handleCreateAccountSubmit() {
+  handleCreateAccountRecaptchaResponse(recaptchaResponse) {
+    
+    
+    // ---------------------------------------------
+    //   Console 出力
+    // ---------------------------------------------
+    
+    console.log(`\n\n`);
+    console.log(`--- handleCreateAccountRecaptchaResponse ---`);
+    console.log(`recaptchaResponse = ${recaptchaResponse}`);
+    console.log(`\n\n`);
+    
+    
+    // ---------------------------------------------
+    //   Set ReCAPTCHA Response & Create Account
+    // ---------------------------------------------
+    
+    if (recaptchaResponse) {
+      
+      this.createAccountRecaptchaResponse = recaptchaResponse;
+      this.handleCreateAccountSubmit();
+      
+    } else {
+      
+      this.createAccountRecaptchaResponse = '';
+      
+    }
+    
+  };
+  
+  
+  
+  /**
+   * アカウント作成フォームで送信ボタンを押すと呼び出される
+   * @param {Object} recaptchaRef - ReCAPTCHA コンポーネントの ref
+   */
+  @action.bound
+  handleCreateAccountSubmit(recaptchaRef = null) {
     
     
     // ---------------------------------------------
@@ -636,7 +705,13 @@ class Store {
     //   Error
     // ---------------------------------------------
     
-    if (
+    if (!this.createAccountRecaptchaResponse) {
+      
+      console.log(`recaptchaRef.current.execute()`);
+      recaptchaRef.current.execute();
+      return;
+      
+    } else if (
       this.createAccountId === '' ||
       this.createAccountPassword === '' ||
       this.createAccountPasswordConfirmation === '' ||
@@ -667,6 +742,7 @@ class Store {
     formData.append('createAccountId', this.createAccountId);
     formData.append('createAccountPassword', this.createAccountPassword);
     formData.append('createAccountEmail', this.createAccountEmail);
+    formData.append('g-recaptcha-response', this.loginRecaptchaResponse);
     
     
     

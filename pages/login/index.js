@@ -259,6 +259,8 @@ class Component extends React.Component {
       createAccountTermsOfService,
       handleCreateAccountTermsOfService,
       
+      handleCreateAccountRecaptchaResponse,
+      
       handleCreateAccountSubmit
       
     } = stores.loginIndex;
@@ -392,7 +394,12 @@ class Component extends React.Component {
     
     
     
-    const recaptchaRef = React.createRef();
+    // --------------------------------------------------
+    //   reCAPTCHA
+    // --------------------------------------------------
+    
+    const loginRecaptchaRef = React.createRef();
+    const createAccountRecaptchaRef = React.createRef();
     
     
     
@@ -424,6 +431,7 @@ class Component extends React.Component {
                   <Description>
                     IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
                   </Description>
+                  
                   
                   
                   {/* フォーム */}
@@ -482,9 +490,7 @@ class Component extends React.Component {
                     <StyledButton
                       variant="contained"
                       color="primary"
-                      // type="submit"
-                      // onClick={() => handleLoginReCAPTCHA(recaptchaRef)}
-                      onClick={() => handleLoginSubmit(recaptchaRef)}
+                      onClick={() => handleLoginSubmit(loginRecaptchaRef)}
                     >
                       ログイン
                     </StyledButton>
@@ -494,7 +500,7 @@ class Component extends React.Component {
                     {/* reCAPTCHA */}
                     <ReCAPTCHAContainer>
                       <ReCAPTCHA
-                        ref={recaptchaRef}
+                        ref={loginRecaptchaRef}
                         size="invisible"
                         badge="inline"
                         sitekey={this.recaptchaSiteKey}
@@ -508,6 +514,7 @@ class Component extends React.Component {
                 </React.Fragment>
               }
             />
+            
             
             
             {/* アカウント作成 */}
@@ -533,6 +540,7 @@ class Component extends React.Component {
                   <Description>
                     ID、パスワード、E-Mailはアカウント作成後に追加・変更することが可能です。
                   </Description>
+                  
                   
                   
                   {/* フォーム */}
@@ -662,10 +670,24 @@ class Component extends React.Component {
                     <StyledButton
                       variant="contained"
                       color="secondary"
-                      onClick={handleCreateAccountSubmit}
+                      onClick={() => handleCreateAccountSubmit(createAccountRecaptchaRef)}
                     >
                       アカウント作成
                     </StyledButton>
+                    
+                    
+                    
+                    {/* reCAPTCHA */}
+                    <ReCAPTCHAContainer>
+                      <ReCAPTCHA
+                        ref={createAccountRecaptchaRef}
+                        size="invisible"
+                        badge="inline"
+                        sitekey={this.recaptchaSiteKey}
+                        onChange={handleCreateAccountRecaptchaResponse}
+                      />
+                    </ReCAPTCHAContainer>
+                    
                     
                   </form>
                   

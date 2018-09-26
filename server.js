@@ -11,8 +11,6 @@ const cookieParser = require('cookie-parser');
 const flash = require("connect-flash");
 const passport = require('passport');
 const session = require('express-session');
-// const Tokens = require('csrf');
-// const tokens = new Tokens();
 const next = require('next');
 
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -22,8 +20,6 @@ const handle = app.getRequestHandler();
 
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
-
-// const Recaptcha = require('express-recaptcha').Recaptcha;
 
 const { createCsrfToken } = require('./applications/common/modules/csrf');
 
@@ -38,9 +34,6 @@ const routerApi = require('./applications/common/routes/v1/');
 // --------------------------------------------------
 
 mobxReact.useStaticRendering(true);
-
-
-// const recaptcha = new Recaptcha('6LfH2nAUAAAAANJ0OZstm88GPuTYHKSH5dxYVsud', '6LfH2nAUAAAAACfsSs_s2WvccDhE1gR6qDjhMuha');
 
 
 
@@ -112,12 +105,39 @@ app.prepare().then(() => {
   // }
   
   
-  const crypto = require('crypto');
-  const cipers = crypto.getCiphers();
-  console.log(`cipers = ${cipers}`);
+  // const crypto = require('crypto');
+  // // const cipers = crypto.getCiphers();
+  // // console.log(`cipers = ${cipers}`);
   
-  const hashes = crypto.getHashes();
-  console.log(`hashes = ${hashes}`);
+  // // const hashes = crypto.getHashes();
+  // // console.log(`hashes = ${hashes}`);
+  
+  
+  // const key = new Buffer(process.env.CRYPTO_KEY, 'utf8');
+  // const iv = new Buffer(process.env.CRYPTO_IV, 'utf8');
+  
+  // const text = "あいうえお";
+  
+  // //暗号化
+  // const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+  // let encrypted = cipher.update(text, 'utf8', 'hex');
+  // encrypted += cipher.final('hex');
+  
+  // //復号化
+  // const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  // let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+  // decrypted += decipher.final('utf8');
+  
+  const { encrypt, decrypt }  = require('./applications/common/modules/crypto');
+  
+  const text = "あいうえお";
+  const encrypted = encrypt(text);
+  const decrypted = decrypt(encrypted);
+  
+  console.log(`encrypted = ${encrypted}`);
+  console.log(`decrypted = ${decrypted}`);
+  
+  
   
   
   

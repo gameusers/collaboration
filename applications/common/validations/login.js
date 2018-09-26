@@ -2,7 +2,8 @@
 //   Import
 // --------------------------------------------------
 
-import zxcvbn from 'zxcvbn';
+// import zxcvbn from 'zxcvbn';
+const zxcvbn = require('zxcvbn');
 
 
 
@@ -10,7 +11,7 @@ import zxcvbn from 'zxcvbn';
  * ID
  * @param {string} value - ID
  */
-export const validationId = (value) => {
+const validationId = (value) => {
   
   
   // ---------------------------------------------
@@ -67,7 +68,7 @@ export const validationId = (value) => {
  * Password
  * @param {string} password - Password
  */
-export const validationPassword = (password, id = '') => {
+const validationPassword = (password, id = '') => {
   
   
   // ---------------------------------------------
@@ -139,7 +140,7 @@ export const validationPassword = (password, id = '') => {
  * @param {string} passwordConfirmation - Password Confirmation
  * @param {string} password - Password
  */
-export const validationPasswordConfirmation = (passwordConfirmation, password) => {
+const validationPasswordConfirmation = (passwordConfirmation, password) => {
   
   
   // ---------------------------------------------
@@ -192,7 +193,7 @@ export const validationPasswordConfirmation = (passwordConfirmation, password) =
  * E-Mail
  * @param {string} value - E-Mail
  */
-export const validationEmail = (value) => {
+const validationEmail = (value) => {
   
   
   // ---------------------------------------------
@@ -241,4 +242,18 @@ export const validationEmail = (value) => {
   
   return resultObj;
   
+};
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
+// export { validationId };
+
+module.exports = {
+  validationId,
+  validationPassword,
+  validationPasswordConfirmation,
+  validationEmail
 };

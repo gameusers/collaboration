@@ -7,15 +7,15 @@ const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const fetch = require('isomorphic-unfetch');
-// const Tokens = require('csrf');
-// const tokens = new Tokens();
+// const fetch = require('isomorphic-unfetch');
+
 const shortid = require('shortid');
 const bcrypt = require('bcrypt');
 const chalk = require('chalk');
 
 const { verifyCsrfToken } = require('../../modules/csrf');
 const { verifyRecaptcha } = require('../../modules/recaptcha');
+const { encrypt, decrypt }  = require('../../modules/crypto');
 
 // import zxcvbn from 'zxcvbn';
 
@@ -241,7 +241,7 @@ passport.use(new LocalStrategy({
       // abcde012345
       // $2b$10$Juk0P3bMaOO/eZB7oWPnlOqObE10ksCEefCxEfw8ToMWO7STkD.66
 
-      console.log(`bcrypt.compareSync(password, user.loginPassword) = ${bcrypt.compareSync(password, user.loginPassword)}`);
+      // console.log(`bcrypt.compareSync(password, user.loginPassword) = ${bcrypt.compareSync(password, user.loginPassword)}`);
       
       if (bcrypt.compareSync(password, user.loginPassword) === false) {
         return done(null, false, { message: 'Incorrect password.' });
@@ -298,23 +298,38 @@ passport.deserializeUser((id, done) => {
 
 router.post('/createAccount', upload.none(), (req, res) => {
   
-  // console.log(`req.body.loginId = ${req.body.loginId}`);
-  // res.json({ 'error': false, 'message': 'Success', 'loginId': req.body.loginId });
-  // err = ValidationError: level: Cast to Number failed for value "test" at path "level"
+  
+  // --------------------------------------------------
+  //   パスワードハッシュ化
+  // --------------------------------------------------
+  
+  // ストレッチング回数
+  const saltRounds = 10;
+  const passwordHash = bcrypt.hashSync(req.body.createAccountPassword, saltRounds);
+  
+  
+  // --------------------------------------------------
+  //   E-Mail 暗号化
+  // --------------------------------------------------
+  
+  let encryptedEmail = '';
+  
+  if (req.body.createAccountEmail) {
+    encryptedEmail = encrypt(req.body.createAccountEmail);
+  }
+  
+  
+  // --------------------------------------------------
+  //   Console 出力
+  // --------------------------------------------------
   
   console.log(chalk`
     req.body.createAccountId: {red ${req.body.createAccountId}}
     req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
     req.body.createAccountEmail: {green ${req.body.createAccountEmail}}
+    passwordHash: {green ${passwordHash}}
+    encryptedEmail: {green ${encryptedEmail}}
   `);
-  
-  
-  
-  
-  const saltRounds = 10; //ストレッチング回数
-  
-  const passwordHash = bcrypt.hashSync(req.body.createAccountPassword, saltRounds);
-  console.log(`passwordHash = ${passwordHash}`);
   
   
   
@@ -330,7 +345,7 @@ router.post('/createAccount', upload.none(), (req, res) => {
     _id,
     loginId: req.body.createAccountId,
     loginPassword: passwordHash,
-    email: '',
+    email: encryptedEmail,
     name: '',
     status: '',
     playerId,
@@ -351,9 +366,6 @@ router.post('/createAccount', upload.none(), (req, res) => {
     // ---------------------------------------------
     
     if (err) {
-      
-      // res.header('Content-Type', 'application/json; charset=utf-8');
-      // console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV}`);
       
       let message = err.message;
       
@@ -387,10 +399,6 @@ router.post('/createAccount', upload.none(), (req, res) => {
   });
   
 });
-
-
-
-
 
 
     

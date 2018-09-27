@@ -2,7 +2,6 @@
 //   Import
 // --------------------------------------------------
 
-// import zxcvbn from 'zxcvbn';
 const zxcvbn = require('zxcvbn');
 
 
@@ -248,8 +247,6 @@ const validationEmail = (value) => {
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
-
-// export { validationId };
 
 module.exports = {
   validationId,

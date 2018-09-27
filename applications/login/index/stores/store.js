@@ -7,26 +7,6 @@ import fetch from 'isomorphic-unfetch';
 
 import { validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login';
 
-// import { validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login.1';
-
-
-
-// import { validationId } from '../../../common/validations/login';
-
-// import login from '../../../common/validations/login.1';
-// const validationId = login.validationId;
-// const validationPassword = login.validationPassword;
-// const validationPasswordConfirmation = login.validationPasswordConfirmation;
-// const validationEmail = login.validationEmail;
-
-
-// const { action, observable } = require('mobx');
-// const fetch = require('isomorphic-unfetch');
-
-// const login = require('../../../../applications/common/validations/login');
-// const validationId
-
-// const { validationId, validationPassword, validationPasswordConfirmation, validationEmail } = require('../../../../applications/common/validations/login');
 
 
 // --------------------------------------------------
@@ -36,6 +16,7 @@ import { validationId, validationPassword, validationPasswordConfirmation, valid
 let storeLoginIndex = null;
 let storeLayout = null;
 let storeData = null;
+
 
 
 // --------------------------------------------------
@@ -788,7 +769,7 @@ class Store {
       })
       .catch((error) => {
         
-        console.log(`catch: ${error}`);
+        console.log(`handleCreateAccountSubmit Error Catch: ${error}`);
         
       });
     

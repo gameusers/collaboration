@@ -87,59 +87,6 @@ app.prepare().then(() => {
   });
   
   
-  // const envCopy = {};
-  // for (let e in process.env) envCopy[e] = process.env[e];
-  // console.dir(envCopy);
-  
-  
-  // console.log(`process.env.VERIFY_CSRF = ${typeof process.env.VERIFY_CSRF}`);
-  // console.log(`process.env.VERIFY_CSRF2 = ${typeof process.env.VERIFY_CSRF2}`);
-  // console.log(`process.env.VERIFY_CSRF3 = ${process.env.VERIFY_CSRF3} / ${typeof process.env.VERIFY_CSRF3}`);
-  
-  // const number = 1;
-  
-  // if (number === '1') {
-  //   console.log(`on`);
-  // } else {
-  //   console.log(`off`);
-  // }
-  
-  
-  // const crypto = require('crypto');
-  // // const cipers = crypto.getCiphers();
-  // // console.log(`cipers = ${cipers}`);
-  
-  // // const hashes = crypto.getHashes();
-  // // console.log(`hashes = ${hashes}`);
-  
-  
-  // const key = new Buffer(process.env.CRYPTO_KEY, 'utf8');
-  // const iv = new Buffer(process.env.CRYPTO_IV, 'utf8');
-  
-  // const text = "あいうえお";
-  
-  // //暗号化
-  // const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-  // let encrypted = cipher.update(text, 'utf8', 'hex');
-  // encrypted += cipher.final('hex');
-  
-  // //復号化
-  // const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-  // let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-  // decrypted += decipher.final('utf8');
-  
-  const { encrypt, decrypt }  = require('./applications/common/modules/crypto');
-  
-  const text = "あいうえお";
-  const encrypted = encrypt(text);
-  const decrypted = decrypt(encrypted);
-  
-  console.log(`encrypted = ${encrypted}`);
-  console.log(`decrypted = ${decrypted}`);
-  
-  
-  
-  
   
 
   // --------------------------------------------------

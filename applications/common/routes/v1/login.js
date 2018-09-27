@@ -12,10 +12,17 @@ const LocalStrategy = require('passport-local').Strategy;
 const shortid = require('shortid');
 const bcrypt = require('bcrypt');
 const chalk = require('chalk');
+const util = require('util');
 
 const { verifyCsrfToken } = require('../../modules/csrf');
 const { verifyRecaptcha } = require('../../modules/recaptcha');
 const { encrypt, decrypt }  = require('../../modules/crypto');
+
+const {
+  validationId,
+  validationPassword,
+  validationEmail
+} = require('../../validations/login');
 
 // import zxcvbn from 'zxcvbn';
 
@@ -296,107 +303,145 @@ passport.deserializeUser((id, done) => {
 //   アカウント作成
 // --------------------------------------------------
 
-router.post('/createAccount', upload.none(), (req, res) => {
+router.post('/createAccount', upload.none(), async (req, res) => {
   
   
-  // --------------------------------------------------
-  //   パスワードハッシュ化
-  // --------------------------------------------------
-  
-  // ストレッチング回数
-  const saltRounds = 10;
-  const passwordHash = bcrypt.hashSync(req.body.createAccountPassword, saltRounds);
-  
-  
-  // --------------------------------------------------
-  //   E-Mail 暗号化
-  // --------------------------------------------------
-  
-  let encryptedEmail = '';
-  
-  if (req.body.createAccountEmail) {
-    encryptedEmail = encrypt(req.body.createAccountEmail);
-  }
-  
-  
-  // --------------------------------------------------
-  //   Console 出力
-  // --------------------------------------------------
-  
-  console.log(chalk`
-    req.body.createAccountId: {red ${req.body.createAccountId}}
-    req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
-    req.body.createAccountEmail: {green ${req.body.createAccountEmail}}
-    passwordHash: {green ${passwordHash}}
-    encryptedEmail: {green ${encryptedEmail}}
-  `);
-  
-  
-  
-  // --------------------------------------------------
-  //   Data
-  // --------------------------------------------------
-  
-  // catch: Error: E11000 duplicate key error collection: gameusers.users index: _id_ dup key: { : "BenvfQDSk" }
-  const _id = shortid.generate();
-  const playerId = shortid.generate();
-  
-  const ModelUsersInstance = new ModelUsers({
-    _id,
-    loginId: req.body.createAccountId,
-    loginPassword: passwordHash,
-    email: encryptedEmail,
-    name: '',
-    status: '',
-    playerId,
-    // level: 'AAA'
-  });
-  
-  
-  // --------------------------------------------------
-  //   DB Insert
-  // --------------------------------------------------
-  
-  ModelUsersInstance.save((err) => {
-    console.log(`err = ${err}`);
+  try {
     
     
-    // ---------------------------------------------
-    //   Error
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   Set Variables
+    // --------------------------------------------------
     
-    if (err) {
-      
-      let message = err.message;
-      
-      if (process.env.NODE_ENV === 'production') {
-        message = 'Error';
-      }
-      
-      res.status(400).json({
-        errorsArr: [
-          {
-            code: 0,
-            message
-          },
-        ]
-      });
-      
-      return;
-      
+    const { createAccountId, createAccountPassword, createAccountEmail } = req.body;
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    const validationIdObj = validationId(createAccountId);
+    const validationPasswordObj = validationPassword(createAccountPassword, createAccountId);
+    const validationEmailObj = validationEmail(createAccountEmail);
+    
+    if (validationIdObj.error || validationPasswordObj.error || validationEmailObj.error) {
+      throw new Error('Error: Validation');
     }
     
     
-    // ---------------------------------------------
-    //   Success
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   パスワードハッシュ化
+    // --------------------------------------------------
     
-    res.status(201).json({
-      loginId: req.body.loginId,
+    // ストレッチング回数
+    const saltRounds = 10;
+    const passwordHash = bcrypt.hashSync(createAccountPassword, saltRounds);
+    
+    
+    // --------------------------------------------------
+    //   E-Mail 暗号化
+    // --------------------------------------------------
+    
+    let encryptedEmail = '';
+    
+    if (createAccountEmail) {
+      encryptedEmail = encrypt(createAccountEmail);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      createAccountId: {red ${createAccountId}}
+      createAccountPassword: {green ${createAccountPassword}}
+      createAccountEmail: {green ${createAccountEmail}}
+      passwordHash: {green ${passwordHash}}
+      encryptedEmail: {green ${encryptedEmail}}
+    `);
+    
+    console.log(`
+      validationIdObj: \n${util.inspect(validationIdObj, { colors: true, depth: null })}
+    `);
+    
+    console.log(`
+      validationPasswordObj: \n${util.inspect(validationPasswordObj, { colors: true, depth: null })}
+    `);
+    
+    console.log(`
+      validationEmailObj: \n${util.inspect(validationEmailObj, { colors: true, depth: null })}
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Model
+    // --------------------------------------------------
+    
+    const _id = shortid.generate();
+    const playerId = shortid.generate();
+    
+    const ModelUsersInstance = new ModelUsers({
+      _id,
+      loginId: createAccountId,
+      loginPassword: passwordHash,
+      email: encryptedEmail,
+      name: '',
+      status: '',
+      playerId,
+      // level: 'AAA'
+    });
+    
+    
+    // --------------------------------------------------
+    //   DB Insert
+    // --------------------------------------------------
+    
+    await ModelUsersInstance.save();
+    
+    
+    // --------------------------------------------------
+    //   Return Success JSON
+    // --------------------------------------------------
+    
+    return res.status(201).json({
       playerId
     });
     
-  });
+    
+  } catch (error) {
+    
+    console.log(chalk`
+      error.message: {red ${error.message}}
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Set Error Message
+    // --------------------------------------------------
+    
+    let message = error.message;
+    
+    if (process.env.NODE_ENV === 'production') {
+      message = 'Error: Create Account';
+    }
+    
+    
+    // --------------------------------------------------
+    //   Return Error JSON
+    // --------------------------------------------------
+    
+    return res.status(400).json({
+      errorsArr: [
+        {
+          code: 0,
+          message
+        },
+      ]
+    });
+    
+  }
+  
   
 });
 

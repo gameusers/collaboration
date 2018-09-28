@@ -7,7 +7,6 @@ const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-// const fetch = require('isomorphic-unfetch');
 
 const shortid = require('shortid');
 const bcrypt = require('bcrypt');
@@ -16,15 +15,13 @@ const util = require('util');
 
 const { verifyCsrfToken } = require('../../modules/csrf');
 const { verifyRecaptcha } = require('../../modules/recaptcha');
-const { encrypt, decrypt }  = require('../../modules/crypto');
+const { encrypt }  = require('../../modules/crypto');
 
 const {
   validationId,
   validationPassword,
   validationEmail
 } = require('../../validations/login');
-
-// import zxcvbn from 'zxcvbn';
 
 
 
@@ -81,11 +78,46 @@ const router = express.Router();
 //     http://knimon-software.github.io/www.passportjs.org/guide/authenticate/
 // --------------------------------------------------
 
-router.post('/',upload.none(), function(req, res, next) {
+router.post('/', upload.none(), function(req, res, next) {
   passport.authenticate('local', async function(err, user, info) {
     
     
     try {
+      
+      
+      // --------------------------------------------------
+      //   Set Variables
+      // --------------------------------------------------
+      
+      const { loginId, loginPassword } = req.body;
+      
+      
+      
+      // --------------------------------------------------
+      //   Console 出力
+      // --------------------------------------------------
+      
+      console.log(chalk`
+        loginId: {green ${loginId}}
+        loginPassword: {green ${loginPassword}}
+      `);
+      
+      // console.log(`
+      //   validationIdObj: \n${util.inspect(validationIdObj, { colors: true, depth: null })}
+      // `);
+      
+      // console.log(`
+      //   validationPasswordObj: \n${util.inspect(validationPasswordObj, { colors: true, depth: null })}
+      // `);
+      
+      console.log(`
+        req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+      `);
+      
+      console.log(`
+        req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+      `);
+      
       
       
       // ---------------------------------------------
@@ -95,98 +127,24 @@ router.post('/',upload.none(), function(req, res, next) {
       verifyCsrfToken(req, res);
       
       
+      // --------------------------------------------------
+      //   Validation
+      // --------------------------------------------------
+      
+      const validationIdObj = validationId(loginId);
+      const validationPasswordObj = validationPassword(loginPassword);
+      
+      if (validationIdObj.error || validationPasswordObj.error) {
+        throw new Error('Validation');
+      }
+      
+      
       // ---------------------------------------------
       //   reCAPTCHA
       // ---------------------------------------------
       
       await verifyRecaptcha(req, res);
-      console.log(`verifyRecaptchaの後`);
-      
-      
-    } catch (e) {
-      
-      console.log(chalk`
-        e.message: {red ${e.message}}
-      `);
-      
-    } finally {
-      
-    }
-    
-    
-    // console.log(`\n\nrouter.post - /api/v1/login`.bgRed);
-    // consola.start(`--- /api/v1/login ---`);
-    // console.log(`\n\n--- server.post('/login' ---`);
-    // consola.success('success Method');
-    // console.log('err ='.yellow);
-    // console.dir(err);
-    
-    // console.log(colors.green('err = %s'), err);
-    
-    // console.log(chalk`
-    //   err: {red ${err}}
-    //   user: {green ${user}}
-    //   info: {rgb(255,131,0) ${info}}
-    // `);
-    
-    // console.log(`\nerr =`);
-    // console.dir(err);
-    // console.log(`\nuser =`);
-    // console.dir(user);
-    // console.log(`\ninfo =`);
-    // console.dir(info);
-    // console.log(`\nreq.flash() =`);
-    // console.dir(req.flash());
-    // console.log(`req.flash('message') = ${req.flash('message')}`);
-    // console.dir(req.logIn);
-    
-    
-    // ---------------------------------------------
-    //   Error Object
-    // ---------------------------------------------
-    
-    const errorObj = {
-      errorsArr: [
-        {
-          code: 0,
-          message: 'Error'
-        },
-      ]
-    };
-    
-    
-    // ---------------------------------------------
-    //   Error
-    // ---------------------------------------------
-    
-    if (err) {
-      console.error(`\nエラー発生`);
-      return res.status(400).json(errorObj);
-      // return next(err);
-    }
-    
-    if (!user) {
-      console.error(`\n認証失敗 / ユーザーがない`);
-      
-      if (info.message) {
-        errorObj.errorsArr[0].message = info.message;
-      }
-      
-      return res.status(401).json(errorObj);
-    }
-    
-    
-    // ---------------------------------------------
-    //   req.logIn - この記述はカスタムコールバックに必要らしい
-    // ---------------------------------------------
-    
-    req.logIn(user, function(err) {
-      
-      console.log(`\nreq.logIn`);
-      console.log(`\nerr =`);
-      console.dir(err);
-      // console.log(`err.name = ${err.name}`);
-      // console.log(`err.status = ${err.status}`);
+      // console.log(`verifyRecaptchaの後`);
       
       
       // ---------------------------------------------
@@ -194,24 +152,105 @@ router.post('/',upload.none(), function(req, res, next) {
       // ---------------------------------------------
       
       if (err) {
-        console.log(`\nエラー`);
-        return res.status(400).json(errorObj);
-        // return next(err);
+        throw new Error('Passport 1');
+      }
+      
+      if (!user) {
+        
+        
+        // --------------------------------------------------
+        //   Set Error Message
+        // --------------------------------------------------
+        
+        let message = info.message;
+        
+        if (process.env.NODE_ENV === 'production') {
+          message = 'ID、またはパスワードが間違っています。';
+        }
+        
+        
+        // --------------------------------------------------
+        //   Return Error JSON
+        // --------------------------------------------------
+        
+        return res.status(401).json({
+          errorsArr: [
+            {
+              code: 0,
+              message
+            },
+          ]
+        });
+        
       }
       
       
       // ---------------------------------------------
-      //   Success
+      //   req.logIn - この記述はカスタムコールバックに必要らしい
       // ---------------------------------------------
       
-      return res.status(200).json({
-        playerId: req.user.playerId
+      req.logIn(user, function(err) {
+        
+        // console.log(`\nreq.logIn`);
+        // console.log(`\nerr =`);
+        // console.dir(err);
+        // console.log(`err.name = ${err.name}`);
+        // console.log(`err.status = ${err.status}`);
+        
+        
+        // ---------------------------------------------
+        //   Error
+        // ---------------------------------------------
+        
+        if (err) {
+          throw new Error('Passport 2');
+        }
+        
+        
+        // ---------------------------------------------
+        //   Success
+        // ---------------------------------------------
+        
+        return res.status(200).json({
+          playerId: req.user.playerId
+        });
+        
       });
       
-    });
-    
-    
-    console.log(`--- server.post('/login' End ---\n\n`);
+      
+    } catch (error) {
+      
+      console.log(chalk`
+        error.message: {red ${error.message}}
+      `);
+      
+      
+      // --------------------------------------------------
+      //   Set Error Message
+      // --------------------------------------------------
+      
+      let message = error.message;
+      
+      if (process.env.NODE_ENV === 'production') {
+        message = 'Login';
+      }
+      
+      
+      // --------------------------------------------------
+      //   Return Error JSON
+      // --------------------------------------------------
+      
+      return res.status(400).json({
+        errorsArr: [
+          {
+            code: 0,
+            message
+          },
+        ]
+      });
+      
+      
+    }
     
   })(req, res, next);
 });
@@ -227,37 +266,36 @@ passport.use(new LocalStrategy({
   },
   (username, password, done) => {
     
-    // console.log(`LocalStrategy`);
-    // console.log(`username = ${username}`);
-    // console.log(`password = ${password}`);
-    
     ModelUsers.findOne({ loginId: username }, (err, user) => {
-      // console.log(`ModelUsers.findOne / user = ${user}`);
-      // console.log(`err = ${err}`);
-      // console.log(`user = ${user}`);
+      
+      
+      // --------------------------------------------------
+      //   Error
+      // --------------------------------------------------
       
       if (err) {
         return done(err);
       }
       
+      
+      // --------------------------------------------------
+      //   Error：ユーザーが存在しない
+      // --------------------------------------------------
+      
       if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
+        return done(null, false, { message: 'Incorrect loginId.' });
       }
       
       
-      // abcde012345
-      // $2b$10$Juk0P3bMaOO/eZB7oWPnlOqObE10ksCEefCxEfw8ToMWO7STkD.66
-
-      // console.log(`bcrypt.compareSync(password, user.loginPassword) = ${bcrypt.compareSync(password, user.loginPassword)}`);
+      // --------------------------------------------------
+      //   bcrypt でハッシュ化したパスワードを検証する
+      //   参照：https://github.com/kelektiv/node.bcrypt.js#to-check-a-password-1
+      // --------------------------------------------------
       
       if (bcrypt.compareSync(password, user.loginPassword) === false) {
-        return done(null, false, { message: 'Incorrect password.' });
+        return done(null, false, { message: 'Incorrect loginPassword.' });
       }
       
-      
-      // if (user.loginPassword !== password) {
-      //   return done(null, false, { message: 'Incorrect password.' });
-      // }
       
       return done(null, user);
       
@@ -273,9 +311,6 @@ passport.use(new LocalStrategy({
 // --------------------------------------------------
 
 passport.serializeUser((user, done) => {
-  // console.log(`passport.serializeUser`);
-  // console.dir(user);
-  // console.log(`user._id = ${user._id}`);
   done(null, user._id);
 });
 
@@ -288,10 +323,24 @@ passport.serializeUser((user, done) => {
 // --------------------------------------------------
 
 passport.deserializeUser((id, done) => {
-  // console.log(`passport.deserializeUser / id = ${id}`);
   ModelUsers.findOne({_id: id}, (err, user) => {
-    // console.dir(user);
-    done(err, user);
+    
+    
+    // --------------------------------------------------
+    //   ここで req.user に送る情報を選択する
+    // --------------------------------------------------
+    
+    const userObj = {
+      _id: user._id,
+      name: user.name,
+      status: user.status,
+      playerId: user.playerId,
+      level: user.level,
+      role: user.role,
+      accessDate: user.accessDate
+    };
+    
+    done(err, userObj);
   });
 });
 
@@ -325,7 +374,7 @@ router.post('/createAccount', upload.none(), async (req, res) => {
     const validationEmailObj = validationEmail(createAccountEmail);
     
     if (validationIdObj.error || validationPasswordObj.error || validationEmailObj.error) {
-      throw new Error('Error: Validation');
+      throw new Error('Validation');
     }
     
     
@@ -423,7 +472,7 @@ router.post('/createAccount', upload.none(), async (req, res) => {
     let message = error.message;
     
     if (process.env.NODE_ENV === 'production') {
-      message = 'Error: Create Account';
+      message = 'Create Account';
     }
     
     
@@ -446,5 +495,5 @@ router.post('/createAccount', upload.none(), async (req, res) => {
 });
 
 
-    
+
 module.exports = router;

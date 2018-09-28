@@ -70,7 +70,8 @@ const verifyCsrfToken = (req, res) => {
     const token = req.cookies._csrf;
     
     // console.log(chalk`
-    //   secret: {red ${secret}}
+    //   verifyCsrfToken
+    //   secret: {green ${secret}}
     //   token: {green ${token}}
     //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
     // `);

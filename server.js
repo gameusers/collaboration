@@ -21,6 +21,9 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
+const chalk = require('chalk');
+const util = require('util');
+
 const { createCsrfToken } = require('./applications/common/modules/csrf');
 
 const routerApi = require('./applications/common/routes/v1/');
@@ -103,6 +106,21 @@ app.prepare().then(() => {
   // ---------------------------------------------
   
   server.get('/login', (req, res) => {
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    console.log(`
+      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+    `);
+    
+    console.log(`
+      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    `);
+    
+    
     createCsrfToken(req, res);
     app.render(req, res, '/login', {});
   });
@@ -145,11 +163,19 @@ app.prepare().then(() => {
   
   server.get('/uc/:param1*', (req, res) => {
     
-    console.log(`req.session =`);
-    console.dir(req.session);
-    console.log(`req.user =`);
-    console.dir(req.user);
-    // console.log(`req.session.passport.user = ${req.session.passport.user}`);
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    console.log(`
+      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+    `);
+    
+    console.log(`
+      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    `);
+    
     
     const { param1 } = req.params;
     

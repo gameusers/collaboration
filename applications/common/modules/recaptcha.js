@@ -35,10 +35,20 @@ const verifyRecaptcha = async (req, res) => {
   
   
   // --------------------------------------------------
+  //   Console 出力
+  // --------------------------------------------------
+  
+  // console.log(chalk`
+  //   loginId: {green ${loginId}}
+  //   loginPassword: {green ${loginPassword}}
+  // `);
+  
+  
+  // --------------------------------------------------
   //   製品版 / VERIFY_RECAPTCHA === '1' のときは検証する
   // --------------------------------------------------
   
-  if (process.env.NODE_ENV === 'production' || process.env.VERIFY_CSRF === '1') {
+  if (process.env.NODE_ENV === 'production' || process.env.VERIFY_RECAPTCHA === '1') {
   
     const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
     // const verificationUrl = `http://35.203.143.160:8080/api/v1/login/test2`;

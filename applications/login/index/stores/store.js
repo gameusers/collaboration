@@ -232,6 +232,7 @@ class Store {
     if (!this.loginRecaptchaResponse) {
       
       console.log(`recaptchaRef.current.execute()`);
+      // recaptchaRef.current.reset();
       recaptchaRef.current.execute();
       return;
       

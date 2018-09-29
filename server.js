@@ -5,12 +5,14 @@
 require('dotenv').config();
 
 const express = require('express');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-const flash = require("connect-flash");
+const flash = require('connect-flash');
 const passport = require('passport');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const next = require('next');
 
 const port = parseInt(process.env.PORT, 10) || 8080;
@@ -23,6 +25,8 @@ const mongoose = require('mongoose');
 
 const chalk = require('chalk');
 const util = require('util');
+
+const logger = require('./lib/logger/logger');
 
 const { createCsrfToken } = require('./applications/common/modules/csrf');
 
@@ -53,6 +57,8 @@ app.prepare().then(() => {
   //   Middleware Settings
   // --------------------------------------------------
   
+  server.use(helmet());
+  
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({
     extended: true
@@ -66,8 +72,15 @@ app.prepare().then(() => {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: new MongoStore({
+      mongooseConnection: mongoose.connection,
+      ttl: 12 * 60 * 60 // 12 hours
+      // ttl: 14 * 24 * 60 * 60 // 14 days
+    }),
     cookie: {
-      maxAge: 60 * 60 * 12 * 1000
+      // secure: true,
+      httpOnly: true,
+      maxAge: 12 * 60 * 60 * 1000 // 12 hours
     }
   }));
   
@@ -102,10 +115,20 @@ app.prepare().then(() => {
   
   
   // ---------------------------------------------
+  //   故意に Error 出力
+  // ---------------------------------------------
+  
+  server.get('/error', (req, res, next) => {
+    throw new Error('故意のエラー');
+  });
+  
+  
+  
+  // ---------------------------------------------
   //   Login
   // ---------------------------------------------
   
-  server.get('/login', (req, res) => {
+  server.get('/login', (req, res, next) => {
     
     
     // --------------------------------------------------
@@ -119,6 +142,8 @@ app.prepare().then(() => {
     console.log(`
       req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
     `);
+    
+    logger.warn('test');
     
     
     createCsrfToken(req, res);
@@ -210,21 +235,36 @@ app.prepare().then(() => {
   
   
   
-  server.get('/a', (req, res) => {
-    return app.render(req, res, '/b', req.query);
-  });
+  // server.get('/a', (req, res) => {
+  //   return app.render(req, res, '/b', req.query);
+  // });
 
-  server.get('/b', (req, res) => {
-    return app.render(req, res, '/a', req.query);
-  });
+  // server.get('/b', (req, res) => {
+  //   return app.render(req, res, '/a', req.query);
+  // });
 
-  server.get('/test/:id', (req, res) => {
-    return app.render(req, res, '/test', { id: req.params.id });
-  });
-
+  // server.get('/test/:id', (req, res) => {
+  //   return app.render(req, res, '/test', { id: req.params.id });
+  // });
+  
+  
+  // ---------------------------------------------
+  //   Error
+  // ---------------------------------------------
+  
   server.get('*', (req, res) => {
     return handle(req, res);
   });
+  
+  
+  server.use((err, req, res, next) => {
+    logger.error(`${err}`);
+    
+    res.status(err.status || 500);
+    res.send('Error');
+  });
+  
+  
 
   server.listen(port, (err) => {
     if (err) throw err;

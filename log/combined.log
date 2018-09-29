@@ -1,0 +1,26 @@
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"message":"test: Error: 故意のエラー","level":"error"}
+{"message":"test: Error: 故意のエラー","level":"error"}
+{"level":"error"}
+{"level":"error"}
+{"message":"Error: 故意のエラー","level":"error"}
+{"message":"Error: 故意のエラー","level":"error"}
+{"message":"Error: 故意のエラー","level":"error"}
+{"message":"Error: 故意のエラー","level":"error"}
+{"message":"Error: 故意のエラー","level":"error"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}
+{"message":"test","level":"warn"}

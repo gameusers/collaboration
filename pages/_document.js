@@ -29,7 +29,6 @@ class MyDocument extends Document {
     return (
       <html>
         <Head>
-          <title>Game Users</title>
           <meta charSet="utf-8" />
           {this.props.styleTags}
         </Head>

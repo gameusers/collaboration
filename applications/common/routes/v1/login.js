@@ -92,6 +92,23 @@ router.post('/', upload.none(), function(req, res, next) {
       const { loginId, loginPassword } = req.body;
       
       
+      // --------------------------------------------------
+      //   ログインチェック
+      // --------------------------------------------------
+      
+      if (req.isAuthenticated()) {
+        console.log(chalk`
+          {green ログインしています}
+        `);
+        
+        throw new Error('Already');
+        
+      } else {
+        console.log(chalk`
+          {green ログインしていません}
+        `);
+      }
+      
       
       // --------------------------------------------------
       //   Console 出力
@@ -100,6 +117,7 @@ router.post('/', upload.none(), function(req, res, next) {
       console.log(chalk`
         loginId: {green ${loginId}}
         loginPassword: {green ${loginPassword}}
+        req.isAuthenticated(): {green ${req.isAuthenticated()}}
       `);
       
       // console.log(`

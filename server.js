@@ -135,19 +135,29 @@ app.prepare().then(() => {
     //   Console 出力
     // --------------------------------------------------
     
-    console.log(`
-      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+    // `);
     
-    console.log(`
-      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    // `);
     
-    logger.warn('test');
+    // logger.warn('test');
     
     
     createCsrfToken(req, res);
     app.render(req, res, '/login', {});
+  });
+  
+  
+  // ---------------------------------------------
+  //   Logout
+  // ---------------------------------------------
+  
+  server.get('/logout', (req, res, next) => {
+    createCsrfToken(req, res);
+    app.render(req, res, '/logout', {});
   });
   
   

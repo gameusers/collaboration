@@ -3,8 +3,8 @@
 // --------------------------------------------------
 
 const express = require('express');
-// const recaptcha = require('./recaptcha');
 const login = require('./login');
+const logout = require('./logout');
 
 
 // --------------------------------------------------
@@ -13,7 +13,7 @@ const login = require('./login');
 
 const router = express.Router();
 
-// router.use('/recaptcha', recaptcha);
 router.use('/login', login);
+router.use('/logout', logout);
 
 module.exports = router;

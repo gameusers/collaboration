@@ -5,16 +5,17 @@
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
+import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-// import initStoreLoginIndex from '../../applications/login/index/stores/store';
+import initStoreIndex from '../../applications/common/stores/index';
+import initStoreLogoutIndex from '../../applications/logout/index/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
+import Panel from '../../applications/common/layout/components/panel';
 
 import withRoot from '../../lib/material-ui/withRoot';
 
@@ -26,24 +27,11 @@ import withRoot from '../../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Container = styled.div`
-  padding: 10px;
-`;
-
-
-// ---------------------------------------------
-//   フォーム
-// ---------------------------------------------
-
-const PaperForm = styled(Paper)`
-  && {
-    margin: 0 0 8px 0;
-    padding: 16px;
+  padding: 10px 10px 18px 10px;
+  
+  @media screen and (max-width: 480px) {
+    padding: 10px 0 18px 0;
   }
-`;
-
-const Title = styled.h2`
-  font-size: 18px;
-  margin: 0 0 10px 0;
 `;
 
 const Description = styled.div`
@@ -76,18 +64,28 @@ class Component extends React.Component {
     
     super(props);
     
-
+    
+    // --------------------------------------------------
+    //   publicRuntimeConfig
+    // --------------------------------------------------
+    
+    const { publicRuntimeConfig } = getConfig();
+    this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
+    
+    
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
-    const storeLayoutInstance = initStoreLayout(props.isServer);
-    
-    this.stores = {
-      layout: storeLayoutInstance,
-      // current: initStoreUcIndex(props.isServer, storeLayoutInstance),
-      pathname: props.pathname
+    const argumentsObj = {
+      isServer: props.isServer,
+      pathname: props.pathname,
+      environment: publicRuntimeConfig.environment,
+      apiUrl: publicRuntimeConfig.apiUrl
     };
+    
+    this.stores = initStoreIndex(argumentsObj);
+    this.stores.logoutIndex = initStoreLogoutIndex(argumentsObj, this.stores);
     
   }
   
@@ -103,6 +101,32 @@ class Component extends React.Component {
     const stores = this.stores;
     
     
+    
+    // --------------------------------------------------
+    //   Header Navigation
+    // --------------------------------------------------
+    
+    const headerNavMainArr = [
+      {
+        name: 'ログアウト',
+        pathname: '/logout'
+      }
+    ];
+    
+    
+    
+    // --------------------------------------------------
+    //   Login
+    // --------------------------------------------------
+    
+    const {
+      
+      handleLogout
+      
+    } = stores.logoutIndex;
+    
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -110,7 +134,7 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout headerNavMainArr={stores.layout.headerNavMainObj.logout}>
+        <Layout headerNavMainArr={headerNavMainArr}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
@@ -120,26 +144,34 @@ class Component extends React.Component {
           
           <Container>
             
-            {/* ログアウト */}
-            <PaperForm elevation={4}>
-            
-              <Title>ログアウト</Title>
-              
-              <Description>
-                ログアウトする場合は下のボタンを押してください。
-              </Description>
-              
-              
-              {/* ボタン */}
-              <StyledButton
-                variant="contained"
-                color="primary"
-                // onClick={stores.current.dialogOpenFunction}
-              >
-                ログアウト
-              </StyledButton>
-              
-            </PaperForm>
+            <Panel
+              id='logout'
+              summary='ログアウト'
+              detailsComponent={
+                <React.Fragment>
+                  
+                  <Description>
+                    ログアウトする場合は以下のボタンを押してください。
+                  </Description>
+                  
+                  
+                  {/* フォーム */}
+                  <form>
+                    
+                    {/* 送信ボタン */}
+                    <StyledButton
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleLogout()}
+                    >
+                      ログアウト
+                    </StyledButton>
+                    
+                  </form>
+                  
+                </React.Fragment>
+              }
+            />
             
           </Container>
           

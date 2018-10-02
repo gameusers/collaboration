@@ -5,7 +5,7 @@
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
-import getConfig from 'next/config'
+import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import ReCAPTCHA from "react-google-recaptcha";

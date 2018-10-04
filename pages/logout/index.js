@@ -8,8 +8,12 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+import fetch from 'isomorphic-unfetch';
 
 import Button from '@material-ui/core/Button';
+
+const chalk = require('chalk');
+const util = require('util');
 
 import initStoreIndex from '../../applications/common/stores/index';
 import initStoreLogoutIndex from '../../applications/logout/index/stores/store';
@@ -54,9 +58,108 @@ const StyledButton = styled(Button)`
 @observer
 class Component extends React.Component {
   
-  static getInitialProps({ pathname, req }) {
+  static async getInitialProps({ pathname, req, res }) {
+    
     const isServer = !!req;
-    return { isServer: isServer, pathname: pathname };
+    
+    // console.log(`
+    //   req.headers: \n${util.inspect(req.headers, { colors: true, depth: null })}
+    // `);
+    
+    // --------------------------------------------------
+    //   publicRuntimeConfig
+    // --------------------------------------------------
+    
+    const { publicRuntimeConfig } = getConfig();
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   API URL
+    // ----------------------------------------
+    
+    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/logout/initialProps`;
+    
+    
+    // ----------------------------------------
+    //   Headers
+    // ----------------------------------------
+    
+    const headersObj = {
+      'Accept': 'application/json'
+    };
+    
+    if (isServer) {
+      headersObj['Cookie'] = req.headers.cookie;
+    }
+    
+    
+    await fetch(apiUrl, {
+      method: 'GET',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: headersObj
+      // headers: {
+      //   'Accept': 'application/json',
+      //   'Cookie': req.headers.cookie
+      // }
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+        　　throw new Error(jsonObj.errorsArr[0].message);
+        　});
+        }
+        
+        return response.json();
+      })
+      .then((jsonObj) => {
+        
+        console.log(`then 1`);
+        // console.dir(jsonObj);
+        
+        
+        
+        // --------------------------------------------------
+        //   Console 出力
+        // --------------------------------------------------
+        
+        // console.log(chalk`
+        //   isServer: {green ${isServer}}
+        //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+        // `);
+        
+        // console.log(`
+        //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+        // `);
+        
+        console.log(`
+          jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        `);
+        
+        
+        // --------------------------------------------------
+        //   ログインしていない時はログインページにリダイレクト
+        // --------------------------------------------------
+        
+        if (jsonObj.login === false) {
+          res.redirect('/login');
+          res.end();
+          return {};
+        }
+        
+      })
+      .catch((error) => {
+        
+        console.log(`catch: ${error}`);
+        
+      });
+    
+    
+    return { isServer, pathname };
   }
   
   
@@ -70,7 +173,6 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const { publicRuntimeConfig } = getConfig();
-    this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
     
     
     // --------------------------------------------------
@@ -87,6 +189,67 @@ class Component extends React.Component {
     this.stores = initStoreIndex(argumentsObj);
     this.stores.logoutIndex = initStoreLogoutIndex(argumentsObj, this.stores);
     
+    
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    // this.apiUrl = `${publicRuntimeConfig.apiUrl}/v1/logout/initialProps`;
+    
+    // fetch(this.apiUrl, {
+    //   method: 'GET',
+    //   credentials: 'same-origin',
+    //   mode: 'same-origin',
+    //   headers: {
+    //     'Accept': 'application/json'
+    //   }
+    // })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       return response.json().then((jsonObj) => {
+    //     　　throw new Error(jsonObj.errorsArr[0].message);
+    //     　});
+    //     }
+        
+    //     return response.json();
+    //   })
+    //   .then((jsonObj) => {
+        
+    //     console.log(`then 2`);
+    //     console.dir(jsonObj);
+        
+        
+        
+    //     // --------------------------------------------------
+    //     //   Console 出力
+    //     // --------------------------------------------------
+        
+    //     // console.log(chalk`
+    //     //   loginId: {green ${loginId}}
+    //     //   loginPassword: {green ${loginPassword}}
+    //     //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    //     // `);
+        
+    //     console.log(`
+    //       jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+    //     `);
+        
+        
+    //     if (jsonObj.login === false) {
+    //       // res.redirect('/login');
+    //       // res.end();
+    //       // return {};
+    //     }
+        
+    //   })
+    //   .catch((error) => {
+        
+    //     console.log(`catch: ${error}`);
+        
+    //   });
+    
   }
   
   
@@ -99,6 +262,66 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const stores = this.stores;
+    
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    // const apiUrl = `${this.apiUrl}`;
+    
+    // fetch(apiUrl, {
+    //   method: 'GET',
+    //   credentials: 'same-origin',
+    //   mode: 'same-origin',
+    //   headers: {
+    //     'Accept': 'application/json'
+    //   }
+    // })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       return response.json().then((jsonObj) => {
+    //     　　throw new Error(jsonObj.errorsArr[0].message);
+    //     　});
+    //     }
+        
+    //     return response.json();
+    //   })
+    //   .then((jsonObj) => {
+        
+    //     console.log(`then 3`);
+    //     console.dir(jsonObj);
+        
+        
+        
+    //     // --------------------------------------------------
+    //     //   Console 出力
+    //     // --------------------------------------------------
+        
+    //     // console.log(chalk`
+    //     //   loginId: {green ${loginId}}
+    //     //   loginPassword: {green ${loginPassword}}
+    //     //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    //     // `);
+        
+    //     console.log(`
+    //       jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+    //     `);
+        
+        
+    //     if (jsonObj.login === false) {
+    //       // res.redirect('/login');
+    //       // res.end();
+    //       // return {};
+    //     }
+        
+    //   })
+    //   .catch((error) => {
+        
+    //     console.log(`catch: ${error}`);
+        
+    //   });
     
     
     

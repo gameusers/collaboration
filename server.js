@@ -156,6 +156,15 @@ app.prepare().then(() => {
   // ---------------------------------------------
   
   server.get('/logout', (req, res, next) => {
+    
+    console.log(`
+      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+    `);
+    
+    console.log(chalk`
+      /logout / req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    `);
+    
     createCsrfToken(req, res);
     app.render(req, res, '/logout', {});
   });
@@ -209,6 +218,10 @@ app.prepare().then(() => {
     
     console.log(`
       req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    `);
+    
+    console.log(chalk`
+      req.isAuthenticated(): {green ${req.isAuthenticated()}}
     `);
     
     

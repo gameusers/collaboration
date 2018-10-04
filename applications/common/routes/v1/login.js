@@ -68,6 +68,102 @@ const router = express.Router();
 
 
 // --------------------------------------------------
+//   Initial Props
+// --------------------------------------------------
+
+router.get('/initialProps', upload.none(), function(req, res, next) {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      {green login api / initialProps}
+      req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    `);
+    
+    console.log(`
+      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    `);
+    
+    
+    // ---------------------------------------------
+    //   CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   ログインチェック
+    // --------------------------------------------------
+    
+    let login = false;
+    
+    if (req.isAuthenticated()) {
+      console.log(chalk`
+        {green login / initialProps / ログインしています}
+      `);
+      login = true;
+    } else {
+      console.log(chalk`
+        {green login / initialProps / ログインしていません}
+      `);
+    }
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json({
+      login
+    });
+    
+    
+  } catch (error) {
+    
+    console.log(chalk`
+      error.message: {red ${error.message}}
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Set Error Message
+    // --------------------------------------------------
+    
+    let message = error.message;
+    
+    if (process.env.NODE_ENV === 'production') {
+      message = 'Login Initial Props';
+    }
+    
+    
+    // --------------------------------------------------
+    //   Return Error JSON
+    // --------------------------------------------------
+    
+    return res.status(400).json({
+      errorsArr: [
+        {
+          code: 0,
+          message
+        },
+      ]
+    });
+    
+  }
+  
+});
+
+
+
+
+// --------------------------------------------------
 //   ログイン Passport：Local（ID & Password）
 //   
 //   参考：

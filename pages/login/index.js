@@ -29,6 +29,9 @@ import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 
+const chalk = require('chalk');
+const util = require('util');
+
 import initStoreIndex from '../../applications/common/stores/index';
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreData from '../../applications/common/stores/data';
@@ -127,11 +130,114 @@ const ReCAPTCHAContainer = styled.div`
 @observer
 class Component extends React.Component {
   
-  static getInitialProps({ pathname, req }) {
+  
+  // --------------------------------------------------
+  //   getInitialProps
+  // --------------------------------------------------
+  
+  static async getInitialProps({ pathname, req, res }) {
+    
     const isServer = !!req;
-    return { isServer: isServer, pathname: pathname };
+    
+    
+    // --------------------------------------------------
+    //   publicRuntimeConfig
+    // --------------------------------------------------
+    
+    const { publicRuntimeConfig } = getConfig();
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    // ----------------------------------------
+    //   API URL
+    // ----------------------------------------
+    
+    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/login/initialProps`;
+    
+    
+    // ----------------------------------------
+    //   Headers
+    // ----------------------------------------
+    
+    const headersObj = {
+      'Accept': 'application/json'
+    };
+    
+    if (isServer) {
+      headersObj['Cookie'] = req.headers.cookie;
+    }
+    
+    
+    await fetch(apiUrl, {
+      method: 'GET',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: headersObj
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+        　　throw new Error(jsonObj.errorsArr[0].message);
+        　});
+        }
+        
+        return response.json();
+      })
+      .then((jsonObj) => {
+        
+        console.log(`then 1`);
+        // console.dir(jsonObj);
+        
+        
+        
+        // --------------------------------------------------
+        //   Console 出力
+        // --------------------------------------------------
+        
+        // console.log(chalk`
+        //   isServer: {green ${isServer}}
+        //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+        // `);
+        
+        // console.log(`
+        //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+        // `);
+        
+        console.log(`
+          jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        `);
+        
+        
+        // --------------------------------------------------
+        //   ログインしている場合はログアウトページにリダイレクト
+        // --------------------------------------------------
+        
+        if (jsonObj.login) {
+          res.redirect('/logout');
+          res.end();
+          return {};
+        }
+        
+      })
+      .catch((error) => {
+        
+        console.log(`catch: ${error}`);
+        
+      });
+    
+    
+    return { isServer, pathname };
+    
   }
   
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     

@@ -78,7 +78,7 @@ export default class extends React.Component {
             <ContainerButton key={index}>
               <ATag href={value.url} target="_blank">
                 <StyledButton
-                  variant="raised"
+                  variant="contained"
                   color="secondary"
                 >
                   公式

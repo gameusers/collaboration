@@ -6,6 +6,8 @@ import React from 'react';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 
+import Typography from '@material-ui/core/Typography';
+
 import initStoreLayout from '../applications/common/layout/stores/layout';
 
 import Layout from '../applications/common/layout/components/layout';
@@ -84,6 +86,10 @@ class Component extends React.Component {
           </Head>
         
           test.js
+          
+          <Typography variant="body1" gutterBottom>
+            5は面白かった！ストーリーで遊べるイベントも2種類用意されてたので、2週目も楽しめた。売れてるだけのことはある！出荷数7500万。本課金の純利益は2億4000万ドル。GTA5すげーな。a
+          </Typography>
           
         </Layout>
       </Provider>

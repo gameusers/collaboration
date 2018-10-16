@@ -19,17 +19,22 @@ moment.locale('ja');
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
+const Container = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  line-height: 1em;
+`;
+
 const Name = styled.div`
   font-size: 14px;
   color: #337ab7;
-  margin: 0;
+  margin: 2px 0 0 0;
   padding: 0;
 `;
 
 const NameNoColor = styled.div`
   font-size: 14px;
-  // color: #337ab7;
-  margin: 0;
+  margin: 2px 0 0 0;
   padding: 0;
 `;
 
@@ -44,12 +49,13 @@ const StatusBox = styled.div`
 const StyledIconHealing = styled(IconHealing)`
   && {
     font-size: 18px;
-    margin: 4px 2px 0 2px;
+    margin: 0 2px 0 2px;
   }
 `;
 
 const Status = styled.div`
   font-size: 14px;
+  margin: 2px 0 0 0;
 `;
 
 const AccessTimeBox = styled.div`
@@ -62,7 +68,7 @@ const AccessTimeBox = styled.div`
 const StyledIconSchedule = styled(IconSchedule)`
   && {
     font-size: 18px;
-    margin: 4px 2px 0 2px;
+    margin: 0 2px 0 2px;
   }
 `;
 
@@ -144,7 +150,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
         
         {loginUser ? (
           <Name>{nameValue}</Name>
@@ -163,7 +169,7 @@ export default class extends React.Component {
             <Status>{accessTime}</Status>
           </AccessTimeBox>
         }
-      </React.Fragment>
+      </Container>
     );
     
   }

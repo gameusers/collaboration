@@ -2,6 +2,10 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
@@ -10,7 +14,18 @@ import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import ReCAPTCHA from "react-google-recaptcha";
 
-// import moment from 'moment';
+
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -22,6 +37,11 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
 import IconId from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
 import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
@@ -29,19 +49,33 @@ import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 
-const chalk = require('chalk');
-const util = require('util');
+
+// ---------------------------------------------
+//   Stores
+// ---------------------------------------------
 
 import initStoreIndex from '../../applications/common/stores/index';
 import initStoreLayout from '../../applications/common/layout/stores/layout';
 import initStoreData from '../../applications/common/stores/data';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
 import Layout from '../../applications/common/layout/components/layout';
 import Panel from '../../applications/common/layout/components/panel';
 import TermsOfService from '../../applications/common/layout/components/terms-of-service';
 
+
+// ---------------------------------------------
+//   Material UI を Next.js で利用するため
+// ---------------------------------------------
+
 import withRoot from '../../lib/material-ui/withRoot';
+
+
 
 
 

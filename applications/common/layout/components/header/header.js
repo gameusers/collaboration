@@ -290,7 +290,7 @@ export default class extends React.Component {
               <IconButton color="inherit" onClick={stores.layout.handleHeaderNotificationDialogClose} aria-label="Close">
                 <IconClose />
               </IconButton>
-              <Typography variant="title" color="inherit">
+              <Typography variant="h6" color="inherit">
                 Notifications
               </Typography>
               <Button color="inherit" onClick={stores.layout.handleHeaderNotificationDialogClose}>

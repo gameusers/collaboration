@@ -172,6 +172,46 @@ app.prepare().then(() => {
   
   
   // ---------------------------------------------
+  //   Player
+  // ---------------------------------------------
+  
+  server.get('/pl/:param1*', (req, res) => {
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    console.log(`
+      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+    `);
+    
+    console.log(`
+      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    `);
+    
+    console.log(chalk`
+      req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    `);
+    
+    
+    const { param1 } = req.params;
+    
+    if (!param1) {
+      app.render(req, res, '/pl/index', req.query);
+    }
+    
+    const queryObj = {
+      param1
+    };
+    
+    app.render(req, res, '/pl/player', queryObj);
+    
+  });
+  
+  
+  
+  // ---------------------------------------------
   //   Game Community
   // ---------------------------------------------
   

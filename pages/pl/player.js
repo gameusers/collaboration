@@ -38,34 +38,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 
 
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-// import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-
-
-
-import IconHealing from '@material-ui/icons/Healing';
-import IconSchedule from '@material-ui/icons/Schedule';
-
-
-
-import UserThumbnail from '../../applications/common/user/components/thumbnail';
-import UserName from '../../applications/common/user/components/name';
-import UserLevel from '../../applications/common/user/components/level';
-
-
-
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
@@ -83,8 +55,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 // ---------------------------------------------
 
 import initStoreIndex from '../../applications/common/stores/index';
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreData from '../../applications/common/stores/data';
+import initStoreCardsPlayer from '../../applications/common/cards/stores/player';
 import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 
 
@@ -94,7 +65,8 @@ import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
 import Panel from '../../applications/common/layout/components/panel';
-import TermsOfService from '../../applications/common/layout/components/terms-of-service';
+// import TermsOfService from '../../applications/common/layout/components/terms-of-service';
+import PlayerCards from '../../applications/common/cards/components/player';
 
 
 // ---------------------------------------------
@@ -121,9 +93,22 @@ const Container = styled.div`
 `;
 
 
+// ---------------------------------------------
+//   Card
+// ---------------------------------------------
+
+const CardTopBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin: 0;
+  padding: 12px 4px 10px 12px;
+  // background-color: thistle;
+`;
+
 
 // ---------------------------------------------
-//   User
+//   Card / User
 // ---------------------------------------------
 
 const UserBox = styled.div`
@@ -137,7 +122,7 @@ const UserBox = styled.div`
 const UserThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  margin: 12px 0 10px 12px;
+  margin: 0 0 0 0;
   // background-color: blue;
 `;
 
@@ -145,10 +130,14 @@ const UserInfoBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   // margin: 15px 12px 12px 10px;
-  padding: 15px 12px 12px 10px;
-  // padding: 10px 0 0 10px;
-  // line-height: 1em;
+  padding: 4px 0 0 10px;
   // background-color: thistle;
+  
+  max-width: 320px;
+  
+  @media screen and (max-width: 480px) {
+    max-width: initial;
+  }
 `;
 
 const UserNameBox = styled.div`
@@ -162,35 +151,16 @@ const UserNameBox = styled.div`
   // background-color: thistle;
 `;
 
-const UserLevelBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 4px 0 0 0;
+
+// ---------------------------------------------
+//   Card / Expand More
+// ---------------------------------------------
+
+const ExpandMoreBox = styled.div`
+  margin: 0 0 0 auto;
   padding: 0;
   // background-color: pink;
 `;
-
-// const StyledIconHealing = styled(IconHealing)`
-//   && {
-//     font-size: 18px;
-//     // line-height: 1em;
-//     margin: 0 2px 0 2px;
-//   }
-// `;
-
-// const Status = styled.div`
-//   font-size: 14px;
-// `;
-
-
-// const AAA = styled.div`
-//   // height: 12px;
-//   font-size: 14px;
-//   line-height: 1em;
-//   margin: 0;
-//   padding: 0;
-//   background-color: pink;
-// `;
 
 
 
@@ -209,6 +179,11 @@ const Description = styled.div`
   // padding: 0 30px 0 0;
   // background-color: pink;
 `;
+
+
+
+
+
 
 
 
@@ -388,6 +363,7 @@ class Component extends React.Component {
     };
     
     this.stores = initStoreIndex(argumentsObj);
+    this.stores.cardsPlayer = initStoreCardsPlayer(argumentsObj, this.stores);
     this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
     
     
@@ -453,81 +429,7 @@ class Component extends React.Component {
           
           <Container>
             
-            
-            <Card>
-              
-              <UserBox>
-                
-                <UserThumbnailBox>
-                  <UserThumbnail id="a8b0gX6lMIz" />
-                </UserThumbnailBox>
-                
-                
-                <UserInfoBox>
-                
-                  <UserNameBox>
-                    <UserName id="a8b0gX6lMIz" />
-                  </UserNameBox>
-                  
-                  <UserLevelBox>
-                    <UserLevel id="a8b0gX6lMIz" />
-                  </UserLevelBox>
-                  
-                </UserInfoBox>
-                
-              </UserBox>
-              
-              
-              {/*<AAA>AAA</AAA>*/}
-              
-              
-              {/*<CardHeader
-                avatar={
-                  <Avatar aria-label="Recipe">
-                    R
-                  </Avatar>
-                }
-                action={
-                  <IconButton>
-                    <MoreVertIcon />
-                  </IconButton>
-                }
-                title="Shrimp and Chorizo Paella Shrimp and Chorizo PaellaShrimp and Chorizo PaellaShrimp and Chorizo PaellaShrimp and Chorizo Paella"
-                subheader="September 14, 2016"
-              />*/}
-              
-              
-              
-              <CardMedia
-                image="/static/img/sample/lion-1920.jpg"
-                title="Contemplative Reptile"
-                style={{ height: 0, paddingTop: '56.25%' }}
-              />
-              <CardContent>
-                <Typography component="p">
-                  AAA This impressive paella is a perfect party dish and a fun meal to cook together with your
-                  guests. Add 1 cup of frozen peas along with the mussels, if you like.
-                </Typography>
-              </CardContent>
-              <CardActions disableActionSpacing>
-                <IconButton aria-label="Add to favorites">
-                  <FavoriteIcon />
-                </IconButton>
-                <IconButton aria-label="Share">
-                  <ShareIcon />
-                </IconButton>
-                <IconButton
-                  // className={classnames(classes.expand, {
-                  //   [classes.expandOpen]: this.state.expanded,
-                  // })}
-                  // onClick={this.handleExpandClick}
-                  // aria-expanded={this.state.expanded}
-                  aria-label="Show more"
-                >
-                  <ExpandMoreIcon />
-                </IconButton>
-              </CardActions>
-            </Card>
+            <PlayerCards />
             
             
             

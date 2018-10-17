@@ -835,7 +835,6 @@ class Store {
 export default function initStorePlayerPlayer(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
-  // const storeInstanceObj = argumentsObj.storeInstanceObj;
   
   
   if ('layout' in storeInstanceObj) {

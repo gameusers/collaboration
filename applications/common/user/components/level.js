@@ -19,8 +19,6 @@ import IconStars from '@material-ui/icons/Stars';
 
 
 
-
-
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components

@@ -312,7 +312,7 @@ class Component extends React.Component {
     
     
     // ---------------------------------------------
-    //   User - Data
+    //   Data - User
     // ---------------------------------------------
     
     dataObj.dataUserObj = {
@@ -322,7 +322,81 @@ class Component extends React.Component {
         playerId: 'az1979',
         playerPage: '/pl/az1979',
         level: 999,
-        accessDate: '2018-08-06T08:50:00Z'
+        accessDate: '2018-08-06T08:50:00Z',
+        cardPlayerObj: {
+          birthday: '2002-10-19T00:00:00Z',
+          sex: 'male',
+        },
+        cardGameObj: {
+          'reaBMD4W6': {
+            birthday: '2002-10-19T00:00:00Z',
+            sex: 'male',
+          }
+        }
+          
+      }
+    };
+    
+    
+    // ---------------------------------------------
+    //   Data - Card Player
+    // ---------------------------------------------
+    
+    dataObj.dataCardPlayerObj = {
+      'a8b0gX6lMIz': {
+        birthdayObj: {
+          value: '2002-10-19T00:00:00Z',
+          alternativeText: '',
+          search: true,
+        },
+        sexObj: {
+          value: 'male',
+          alternativeText: '',
+          search: true,
+        },
+        addressObj: {
+          value: '大阪',
+          alternativeText: '',
+          search: true,
+        },
+        gamingExperienceObj: {
+          value: '2002-10-19T00:00:00Z',
+          alternativeText: '',
+          search: true,
+        },
+        hobbiesObj: {
+          valueArr: ['映画鑑賞', '料理', '海外旅行', 'ヴァイオリン演奏'],
+          alternativeText: '',
+          search: true,
+        },
+        specialSkillsObj: {
+          valueArr: ['英語が話せる！'],
+          alternativeText: '',
+          search: true,
+        },
+        pcSpecsObj: {
+          os: 'Windows 10 Home',
+          cpu: 'AMD CPU Ryzen 3 2200G',
+          cpuCooler: 'CPU 付属品',
+          motherboard: 'MSI B350 PC MATE ATXマザーボード [AMD RYZEN対応 socket AM4] MB3912',
+          memory: 'Crucial [Micron製] DDR4 デスク用メモリー 8GB x 2 ( 2400MT/s / PC4-19200 / 288pin / SR x8 )',
+          storage: 'WD 内蔵SSD 2.5インチ / 240GB / WD Green / SATA3.0 / WDS240G2G0A',
+          videoCard: '',
+          opticalDrive: 'NEC AD7240S/BK',
+          powerSupply: 'Antec EARTHWATTS EA650 650W',
+          case: 'COOLER MASTER CM690',
+          monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
+          alternativeText: '',
+          search: true,
+        },
+        
+        
+        // birthday: '2002-10-19T00:00:00Z',
+        // sex: 'male',
+        // address: '大阪',
+        // gamingExperience: '2002-10-19T00:00:00Z',
+        // hobbies: '',
+        // specialSkills: '',
       }
     };
     
@@ -429,7 +503,7 @@ class Component extends React.Component {
           
           <Container>
             
-            <PlayerCards />
+            <PlayerCards id="W6VI422uO" />
             
             
             

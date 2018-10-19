@@ -8,10 +8,14 @@ import { ServerStyleSheet } from 'styled-components';
 import JssProvider from 'react-jss/lib/JssProvider';
 import flush from 'styled-jsx/server';
 import getPageContext from '../lib/material-ui/getPageContext';
-import injectGlobalStyles from '../lib/styles/global-styles';
+// import injectGlobalStyles from '../lib/styles/global-styles';
 
 
-injectGlobalStyles();
+// injectGlobalStyles();
+// import injectGlobalStyles from '../lib/styles/global-styles';
+
+
+// injectGlobalStyles();
 
 
 const withJssProvider = (App, pageContext, props) => (

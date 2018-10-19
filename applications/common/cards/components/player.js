@@ -44,6 +44,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 //   Components
 // ---------------------------------------------
 
+import Paragraph from '../../layout/components/paragraph';
 import UserThumbnail from '../../user/components/thumbnail';
 import UserName from '../../user/components/name';
 
@@ -65,7 +66,7 @@ const CardTopBox = styled.div`
   flex-flow: row nowrap;
   align-items: center;
   margin: 0;
-  padding: 12px 4px 10px 12px;
+  padding: 12px 4px 12px 12px;
   // background-color: thistle;
 `;
 
@@ -126,6 +127,18 @@ const ExpandMoreBox = styled.div`
 `;
 
 
+// ---------------------------------------------
+//   Content / Description
+// ---------------------------------------------
+
+const DescriptionBox = styled.div`
+  font-size: 14px;
+  line-height: 1.6em;
+  // margin: 12px 0 10px 3px;
+  // padding: 0 0 0 18px;
+`;
+
+
 
 
 
@@ -155,22 +168,22 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   Panel
+    //   Expanded
     // ---------------------------------------------
     
-    // const {
+    const {
       
-    //   panelExpandedObj,
-    //   handlePanelExpanded
+      cardExpandedObj,
+      handleCardExpanded
       
-    // } = stores.layout;
+    } = stores.cardsPlayer;
     
     
-    // let expanded = true;
+    let cardExpanded = true;
     
-    // if (id in panelExpandedObj) {
-    //   expanded = panelExpandedObj[id];
-    // }
+    if (id in cardExpandedObj) {
+      cardExpanded = cardExpandedObj[id];
+    }
     
     
     
@@ -211,52 +224,48 @@ export default class extends React.Component {
           
           <ExpandMoreBox>
             <IconButton
-              // className={classnames(classes.expand, {
-              //   [classes.expandOpen]: this.state.expanded,
-              // })}
-              // onClick={this.handleExpandClick}
-              aria-expanded={false}
+              onClick={() => handleCardExpanded(id)}
+              aria-expanded={cardExpanded}
               aria-label="Show more"
             >
-              <IconExpandLess />
+              {cardExpanded ? (
+                <IconExpandLess />
+              ) : (
+                <IconExpandMore />
+              )}
             </IconButton>
           </ExpandMoreBox>
           
         </CardTopBox>
         
         
+        <Collapse in={cardExpanded} timeout="auto" unmountOnExit>
+          
+          <CardMedia
+            image="/static/img/sample/lion-1920.jpg"
+            // title="Contemplative Reptile"
+            style={{ height: 0, paddingTop: '56.25%' }}
+          />
+          
+          <CardContent>
+            <DescriptionBox>
+              <Paragraph text={`Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
+
+それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`} />
+            </DescriptionBox>
+          </CardContent>
+          
+          <CardActions disableActionSpacing>
+            <IconButton aria-label="Add to favorites">
+              <FavoriteIcon />
+            </IconButton>
+            <IconButton aria-label="Share">
+              <ShareIcon />
+            </IconButton>
+          </CardActions>
+          
+        </Collapse>
         
-        
-        
-        <CardMedia
-          image="/static/img/sample/lion-1920.jpg"
-          title="Contemplative Reptile"
-          style={{ height: 0, paddingTop: '56.25%' }}
-        />
-        <CardContent>
-          <Typography component="p">
-            AAA This impressive paella is a perfect party dish and a fun meal to cook together with your
-            guests. Add 1 cup of frozen peas along with the mussels, if you like.
-          </Typography>
-        </CardContent>
-        <CardActions disableActionSpacing>
-          <IconButton aria-label="Add to favorites">
-            <FavoriteIcon />
-          </IconButton>
-          <IconButton aria-label="Share">
-            <ShareIcon />
-          </IconButton>
-          <IconButton
-            // className={classnames(classes.expand, {
-            //   [classes.expandOpen]: this.state.expanded,
-            // })}
-            // onClick={this.handleExpandClick}
-            // aria-expanded={this.state.expanded}
-            aria-label="Show more"
-          >
-            <IconExpandMore />
-          </IconButton>
-        </CardActions>
       </Card>
     );
     

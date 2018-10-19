@@ -35,56 +35,39 @@ class Store {
   
   constructor() {
     
-    this.idMinLength = 3;
-    this.idMaxLength = 32;
-    this.passwordMinLength = 8;
-    this.passwordMaxLength = 32;
+    // this.idMinLength = 3;
+    // this.idMaxLength = 32;
+    // this.passwordMinLength = 8;
+    // this.passwordMaxLength = 32;
     
   }
   
   
   // ---------------------------------------------
-  //   Login - ID & Password
+  //   Expanded
   // ---------------------------------------------
   
   /**
-   * ログインID
-   * @type {string}
+   * カードの開閉用オブジェクト
+   * @type {Object}
    */
-  @observable loginId = '';
-  
-  /**
-   * ログインID　文字数
-   * @type {number}
-   */
-  @observable loginIdNumberOfCharacters = 0;
-  
-  /**
-   * ログインID　エラー（バリデーション用）
-   * @type {string}
-   */
-  @observable loginIdError = false;
-  
-  /**
-   * ログインID　エラーメッセージ
-   * @type {string}
-   */
-  @observable loginIdErrorMessage = '';
+  @observable cardExpandedObj = {};
   
   
   /**
-   * ログインID入力フォームに文字列を入力したときに呼び出される
-   * @param {Object} event - イベント
+   * カードを開閉する。アイコンをクリックしたときに呼び出される
+   * @param {string} id - ID
    */
   @action.bound
-  handleLoginId(event) {
+  handleCardExpanded(id) {
     
-    // const resultObj = validationId(event.target.value);
+    console.log(`handleCardExpanded id = ${id}`);
     
-    // this.loginId = resultObj.value;
-    // this.loginIdNumberOfCharacters = resultObj.numberOfCharacters;
-    // this.loginIdError = resultObj.error;
-    // this.loginIdErrorMessage = resultObj.errorMessageArr[0];
+    if (id in this.cardExpandedObj) {
+      this.cardExpandedObj[id] = !this.cardExpandedObj[id];
+    } else {
+      this.cardExpandedObj[id] = false;
+    }
     
   };
   

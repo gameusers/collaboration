@@ -366,12 +366,10 @@ class Component extends React.Component {
         },
         hobbiesObj: {
           valueArr: ['映画鑑賞', '料理', '海外旅行', 'ヴァイオリン演奏'],
-          alternativeText: '',
           search: true,
         },
         specialSkillsObj: {
           valueArr: ['英語が話せる！'],
-          alternativeText: '',
           search: true,
         },
         pcSpecsObj: {
@@ -389,14 +387,81 @@ class Component extends React.Component {
           alternativeText: '',
           search: true,
         },
-        
-        
-        // birthday: '2002-10-19T00:00:00Z',
-        // sex: 'male',
-        // address: '大阪',
-        // gamingExperience: '2002-10-19T00:00:00Z',
-        // hobbies: '',
-        // specialSkills: '',
+        ownedHardwareObj: {
+          valueArr: ['u752aJ8tM', 'H3FwPxRHP'],
+          search: true,
+        },
+        idObj: {
+          playstationObj: {
+            value: 'AZ-1979',
+            search: true,
+            showType: 1// 1.表示する 2.フォロワーに表示する 3.相互フォローで表示する 4.表示しない 5.表示しない（表示確認ダイアログ）
+          },
+          xboxObj: {//ゲーマータグ
+            value: 'AZ-1979-Xbox',
+            search: true,
+            showType: 1
+          },
+          nintendoObj: {//フレンドコード
+            value: 'AZ-1979',
+            search: true,
+            showType: 1
+          },
+          steamObj: {//フレンドコード
+            value: 'Azumi1979',
+            search: true,
+            showType: 1
+          },
+        },
+        activityTimeObj: {
+          valueArr: [
+            {
+              startTime: '19:00',
+              endTime: '24:00',
+              weekArr: [0, 1, 2, 3, 4]
+            },
+            {
+              startTime: '9:00',
+              endTime: '24:00',
+              weekArr: [5, 6]
+            }
+          ],
+          search: true,
+        },
+        lookingForFriendsObj: {
+          value: true,
+          icon: 1,
+          comment: '社会人の方よろしく！',
+          search: true,
+        },
+        voiceChatObj: {
+          value: true,
+          comment: '夜21時まで',
+          search: true,
+        },
+        linkObj: {
+          twitter: {
+            url: 'https://twitter.com/Azumi1979',
+            search: true,
+          },
+          facebook: {
+            url: '',
+            search: true,
+          },
+          youtube: {
+            url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
+            search: true,
+          },
+          steam: {
+            url: 'https://steamcommunity.com/profiles/76561198031526480/',
+            search: true,
+          },
+          link1: {
+            label: '開発サイト',
+            url: 'http://35.203.143.160:8080/',
+            search: true,
+          },
+        },
       }
     };
     

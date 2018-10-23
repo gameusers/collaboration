@@ -3,6 +3,15 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
@@ -13,13 +22,6 @@ import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
-
-// ---------------------------------------------
-//   Console 出力用
-// ---------------------------------------------
-
-const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
@@ -55,7 +57,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 // ---------------------------------------------
 
 import initStoreIndex from '../../applications/common/stores/index';
-import initStoreCardsPlayer from '../../applications/common/cards/stores/player';
+import initStoreCardPlayer from '../../applications/common/card/stores/player';
 import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 
 
@@ -66,7 +68,7 @@ import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 import Layout from '../../applications/common/layout/components/layout';
 import Panel from '../../applications/common/layout/components/panel';
 // import TermsOfService from '../../applications/common/layout/components/terms-of-service';
-import PlayerCards from '../../applications/common/cards/components/player';
+import CardPlayer from '../../applications/common/card/components/player';
 
 
 // ---------------------------------------------
@@ -343,7 +345,60 @@ class Component extends React.Component {
     // ---------------------------------------------
     
     dataObj.dataCardPlayerObj = {
-      'a8b0gX6lMIz': {
+      'W6VI422uO': {
+        userId: 'a8b0gX6lMIz',
+        // createdDate: '2018-10-23T12:00:00Z',
+        // updatedDate: '2018-10-23T12:00:00Z',
+        comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
+
+それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
+        // imageSrcSet: '/static/img/card/player/H_NXaMPKG/320w.jpg 320w, /static/img/card/player/H_NXaMPKG/480w.jpg 480w, /static/img/card/player/H_NXaMPKG/640w.jpg 640w, /static/img/card/player/H_NXaMPKG/800w.jpg 800w',
+        // imageSrc: '/static/img/card/player/H_NXaMPKG/800w.jpg',
+        // imageAlt: 'ライオン',
+        imageVideoArr: [
+          {
+            id: 'H_NXaMPKG',
+            type: 'image',
+            imageSetArr: [
+              {
+                w: '320w',
+                src: '/static/img/card/player/H_NXaMPKG/320w.jpg',
+                width: 320,
+                height: 180,
+                type: 'JPEG'
+              },
+              {
+                w: '480w',
+                src: '/static/img/card/player/H_NXaMPKG/480w.jpg',
+                width: 480,
+                height: 270,
+                type: 'JPEG'
+              },
+              {
+                w: '640w',
+                src: '/static/img/card/player/H_NXaMPKG/640w.jpg',
+                width: 640,
+                height: 360,
+                type: 'JPEG'
+              },
+              {
+                w: '800w',
+                src: '/static/img/card/player/H_NXaMPKG/800w.jpg',
+                width: 800,
+                height: 450,
+                type: 'JPEG'
+              },
+              {
+                w: 'source',
+                src: '/static/img/card/player/H_NXaMPKG/1920w.jpg',
+                width: 1920,
+                height: 1080,
+                type: 'JPEG'
+              },
+            ],
+            caption: 'ライオン',
+          },
+        ],
         birthdayObj: {
           value: '2002-10-19T00:00:00Z',
           alternativeText: '',
@@ -407,7 +462,7 @@ class Component extends React.Component {
             search: true,
             showType: 1
           },
-          steamObj: {//フレンドコード
+          steamObj: {
             value: 'Azumi1979',
             search: true,
             showType: 1
@@ -502,20 +557,24 @@ class Component extends React.Component {
     };
     
     this.stores = initStoreIndex(argumentsObj);
-    this.stores.cardsPlayer = initStoreCardsPlayer(argumentsObj, this.stores);
+    this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
     this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
     
     
     
     // --------------------------------------------------
-    //   Insert Data
+    //   Update Data
     // --------------------------------------------------
     
     const {
-      dataUserObj
+      dataUserObj,
+      dataCardPlayerObj
     } = props.dataObj;
     
     this.stores.data.insertUserObj(dataUserObj);
+    
+    this.stores.data.updateCardPlayerObj(dataCardPlayerObj);
+    
     
     
   }
@@ -568,7 +627,7 @@ class Component extends React.Component {
           
           <Container>
             
-            <PlayerCards id="W6VI422uO" />
+            <CardPlayer id="W6VI422uO" />
             
             
             

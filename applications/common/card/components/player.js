@@ -17,6 +17,7 @@ const util = require('util');
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import moment from 'moment';
 
 
 // ---------------------------------------------
@@ -57,6 +58,13 @@ import UserThumbnail from '../../user/components/thumbnail';
 import UserName from '../../user/components/name';
 
 
+// ---------------------------------------------
+//   Moment Locale
+// ---------------------------------------------
+
+moment.locale('ja');
+
+
 
 
 
@@ -66,7 +74,7 @@ import UserName from '../../user/components/name';
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Card
+//   Top
 // ---------------------------------------------
 
 const CardTopBox = styled.div`
@@ -80,7 +88,7 @@ const CardTopBox = styled.div`
 
 
 // ---------------------------------------------
-//   Card / User
+//   Top / User
 // ---------------------------------------------
 
 const UserBox = styled.div`
@@ -125,7 +133,7 @@ const UserNameBox = styled.div`
 
 
 // ---------------------------------------------
-//   Card / Expand More
+//   Top / Expand More
 // ---------------------------------------------
 
 const ExpandMoreBox = styled.div`
@@ -135,8 +143,9 @@ const ExpandMoreBox = styled.div`
 `;
 
 
+
 // ---------------------------------------------
-//   Content / Image
+//   Image
 // ---------------------------------------------
 
 const ImageBox = styled.div`
@@ -145,16 +154,86 @@ const ImageBox = styled.div`
 `;
 
 
+
 // ---------------------------------------------
-//   Content / Description
+//   Content
+// ---------------------------------------------
+
+const StyledCardContent = styled(CardContent)`
+  && {
+    font-size: 14px;
+    line-height: 1.6em;
+  }
+`;
+
+
+// ---------------------------------------------
+//   Content / Comment
 // ---------------------------------------------
 
 const CommentBox = styled.div`
-  font-size: 14px;
-  line-height: 1.6em;
+  // font-size: 14px;
+  // line-height: 1.6em;
   // margin: 12px 0 10px 3px;
   // padding: 0 0 0 18px;
 `;
+
+
+// ---------------------------------------------
+//   Content / Item
+// ---------------------------------------------
+
+const ItemBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  // font-size: 14px;
+  line-height: 2.0em;
+  margin: 14px 0 0 0;
+  padding: 0 0 0 0;
+  
+  @media screen and (max-width: 480px) {
+    flex-flow: column wrap;
+  }
+`;
+
+const Item = styled.div`
+  margin: 0 20px 0 0;
+  padding: 0 0 0 0;
+  
+  @media screen and (max-width: 480px) {
+    margin: 0 0 0 0;
+  }
+`;
+
+
+// ---------------------------------------------
+//   Content / PC Specs
+// ---------------------------------------------
+
+const PcSpecsBox = styled.ul`
+  // line-height: 1.8em;
+  margin: 14px 0 0 0;
+  padding: 0 0 0 0;
+`;
+
+const PcSpecsTitle = styled.p`
+  font-weight: bold;
+  margin: 0 0 3px 0;
+  padding: 0 0 0 0;
+`;
+
+const PcSpecsUl = styled.ul`
+  list-style-type: disc;
+  line-height: 1.8em;
+  margin: 0 0 0 20px;
+  padding: 0 0 0 0;
+`;
+
+const PcSpecsLi = styled.li`
+  margin: 0;
+  padding: 0;
+`;
+
 
 
 
@@ -173,7 +252,6 @@ export default class extends React.Component {
   }
   
   
-  
   render() {
     
     
@@ -185,9 +263,9 @@ export default class extends React.Component {
     
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   Expanded
-    // ---------------------------------------------
+    // --------------------------------------------------
     
     const {
       
@@ -205,9 +283,9 @@ export default class extends React.Component {
     
     
     
-    // ---------------------------------------------
-    //   Data
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   Data - プレイヤーカードオブジェクト取得
+    // --------------------------------------------------
     
     const {
       
@@ -216,22 +294,19 @@ export default class extends React.Component {
     } = stores.data;
     
     
-    
-    // ---------------------------------------------
-    //   Error / 空のコンポーネントを返す
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   オブジェクト内にIDがない場合、空のコンポーネントを返す
+    // --------------------------------------------------
     
     if (id in cardPlayerObj === false) {
       return null;
     }
     
     
-    // ---------------------------------------------
-    //   必要な情報
-    // ---------------------------------------------
     
-    const userId = cardPlayerObj[id].userId;
-    const comment = cardPlayerObj[id].comment;
+    // --------------------------------------------------
+    //   画像
+    // --------------------------------------------------
     
     let imageSrcSet = '';
     let imageSrc = '';
@@ -258,10 +333,315 @@ export default class extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   プロフィール情報
+    // --------------------------------------------------
+    
+    const userId = cardPlayerObj[id].userId;
+    const comment = cardPlayerObj[id].comment;
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   コンポーネント作成 - プロフィール項目（年齢、性別など）
+    // --------------------------------------------------
+    
+    const componentItemsArr = [];
+    
+    
+    // ---------------------------------------------
+    //   年齢
+    // ---------------------------------------------
+    
+    const birthdayValue = cardPlayerObj[id].birthdayObj.value;
+    const birthdayAlternativeText = cardPlayerObj[id].birthdayObj.alternativeText;
+    
+    let age = '';
+    
+    if (birthdayAlternativeText) {
+      age = birthdayAlternativeText;
+    } else if (birthdayValue) {
+      age = `${moment().diff(birthdayValue, 'years')}歳`;
+    }
+    
+    if (age) {
+      componentItemsArr.push(
+        <Item key="age"><strong>年齢:</strong> {age}</Item>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   性別
+    // ---------------------------------------------
+    
+    const sexValue = cardPlayerObj[id].sexObj.value;
+    const sexAlternativeText = cardPlayerObj[id].sexObj.alternativeText;
+    
+    let sex = '';
+    
+    if (sexAlternativeText) {
+      sex = sexAlternativeText;
+    } else if (sexValue === 'male') {
+      sex = '男';
+    } else if (sexValue === 'female') {
+      sex = '女';
+    }
+    
+    if (sex) {
+      componentItemsArr.push(
+        <Item key="sex"><strong>性別:</strong> {sex}</Item>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   住んでいるところ
+    // ---------------------------------------------
+    
+    const addressValue = cardPlayerObj[id].addressObj.value;
+    
+    if (addressValue) {
+      componentItemsArr.push(
+        <Item key="address"><strong>住んでいるところ:</strong> {addressValue}</Item>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   ゲーム歴
+    // ---------------------------------------------
+    
+    const gamingExperienceValue = cardPlayerObj[id].gamingExperienceObj.value;
+    const gamingExperienceAlternativeText = cardPlayerObj[id].gamingExperienceObj.alternativeText;
+    
+    let gamingExperience = '';
+    
+    if (gamingExperienceAlternativeText) {
+      gamingExperience = gamingExperienceAlternativeText;
+    } else if (gamingExperienceValue) {
+      gamingExperience = `${moment(gamingExperienceValue).fromNow(true)}`;
+    }
+    
+    if (gamingExperience) {
+      componentItemsArr.push(
+        <Item key="gamingExperience"><strong>ゲーム歴:</strong> {gamingExperience}</Item>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   趣味
+    // ---------------------------------------------
+    
+    const hobbiesValueArr = cardPlayerObj[id].hobbiesObj.valueArr;
+    
+    if (hobbiesValueArr.length > 0) {
+      componentItemsArr.push(
+        <Item key="hobbie"><strong>趣味:</strong> {hobbiesValueArr.join(' / ')}</Item>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   特技
+    // ---------------------------------------------
+    
+    const specialSkillsValueArr = cardPlayerObj[id].specialSkillsObj.valueArr;
+    
+    if (specialSkillsValueArr.length > 0) {
+      componentItemsArr.push(
+        <Item key="specialSkills"><strong>特技:</strong> {specialSkillsValueArr.join(' / ')}</Item>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   コンポーネント作成
+    // ---------------------------------------------
+    
+    let componentItemBox = '';
+    
+    if (componentItemsArr.length > 0) {
+       componentItemBox = <ItemBox>{componentItemsArr}</ItemBox>;
+    }
+    
+    
+    
+   
+    
+    // --------------------------------------------------
+    //   コンポーネント作成 - PC スペック
+    // --------------------------------------------------
+    
+    const componentPcSpecsItemsArr = [];
+    
+    
+    // ---------------------------------------------
+    //   OS
+    // ---------------------------------------------
+    
+    const os = cardPlayerObj[id].pcSpecsObj.os;
+    
+    if (os) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="os"><strong>OS:</strong> {os}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   CPU
+    // ---------------------------------------------
+    
+    const cpu = cardPlayerObj[id].pcSpecsObj.cpu;
+    
+    if (cpu) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="cpu"><strong>CPU:</strong> {cpu}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   CPU Cooler
+    // ---------------------------------------------
+    
+    const cpuCooler = cardPlayerObj[id].pcSpecsObj.cpuCooler;
+    
+    if (cpuCooler) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="cpuCooler"><strong>CPUクーラー:</strong> {cpuCooler}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   マザーボード
+    // ---------------------------------------------
+    
+    const motherboard = cardPlayerObj[id].pcSpecsObj.motherboard;
+    
+    if (motherboard) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="motherboard"><strong>マザーボード:</strong> {motherboard}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   メモリ
+    // ---------------------------------------------
+    
+    const memory = cardPlayerObj[id].pcSpecsObj.memory;
+    
+    if (memory) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="memory"><strong>メモリ:</strong> {memory}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   ストレージ
+    // ---------------------------------------------
+    
+    const storage = cardPlayerObj[id].pcSpecsObj.storage;
+    
+    if (storage) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="storage"><strong>ストレージ:</strong> {storage}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   グラフィックス
+    // ---------------------------------------------
+    
+    const graphicsCard = cardPlayerObj[id].pcSpecsObj.graphicsCard;
+    
+    if (graphicsCard) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="graphicsCard"><strong>グラフィックス:</strong> {graphicsCard}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   光学ドライブ
+    // ---------------------------------------------
+    
+    const opticalDrive = cardPlayerObj[id].pcSpecsObj.opticalDrive;
+    
+    if (opticalDrive) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="opticalDrive"><strong>光学ドライブ:</strong> {opticalDrive}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   電源
+    // ---------------------------------------------
+    
+    const powerSupply = cardPlayerObj[id].pcSpecsObj.powerSupply;
+    
+    if (powerSupply) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="powerSupply"><strong>電源:</strong> {powerSupply}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   ケース
+    // ---------------------------------------------
+    
+    const pcCase = cardPlayerObj[id].pcSpecsObj.case;
+    
+    if (pcCase) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="pcCase"><strong>ケース:</strong> {pcCase}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   モニター
+    // ---------------------------------------------
+    
+    const monitor = cardPlayerObj[id].pcSpecsObj.monitor;
+    
+    if (monitor) {
+      componentPcSpecsItemsArr.push(
+        <PcSpecsLi key="monitor"><strong>モニター:</strong> {monitor}</PcSpecsLi>
+      );
+    }
+    
+    
+    // ---------------------------------------------
+    //   コンポーネント作成
+    // ---------------------------------------------
+    
+    let componentPcSpecsBox = '';
+    
+    if (componentPcSpecsItemsArr.length > 0) {
+       componentPcSpecsBox = <PcSpecsBox><PcSpecsTitle>PCスペック</PcSpecsTitle><PcSpecsUl>{componentPcSpecsItemsArr}</PcSpecsUl></PcSpecsBox>;
+    }
+    
+    
+    
+    
+    
+    
+    
     
     console.log(chalk`
-      id in cardPlayerObj: {green ${'AAA' in cardPlayerObj}}
       userId: {green ${userId}}
+      age: {green ${age}}
       
       imageSrcSet: {green ${imageSrcSet}}
       imageSrc: {green ${imageSrc}}
@@ -345,33 +725,18 @@ export default class extends React.Component {
           }
           
           
-          {/*
-          <ImageBox>
-              <img
-                srcSet="/static/img/card/player/H_NXaMPKG/320w.jpg 320w,
-                        /static/img/card/player/H_NXaMPKG/480w.jpg 480w,
-                        /static/img/card/player/H_NXaMPKG/640w.jpg 640w,
-                        /static/img/card/player/H_NXaMPKG/800w.jpg 800w"
-                src="/static/img/card/player/H_NXaMPKG/800w.jpg"
-                alt="妖精の衣装を着たエルバ"
-              />
-             </ImageBox>
-          */}
-          
-          
-          {/*<CardMedia
-            image="/static/img/sample/lion-1920.jpg"
-            // title="Contemplative Reptile"
-            style={{ height: 0, paddingTop: '56.25%' }}
-          />*/}
-          
-          
           {/* テキスト */}
-          <CardContent>
+          <StyledCardContent>
+            
             <CommentBox>
               <Paragraph text={comment} />
             </CommentBox>
-          </CardContent>
+            
+            
+            {componentItemBox}
+            {componentPcSpecsBox}
+            
+          </StyledCardContent>
           
           
           {/* リンク */}

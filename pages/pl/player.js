@@ -57,7 +57,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 // ---------------------------------------------
 
 import initStoreIndex from '../../applications/common/stores/index';
-import initStoreCardPlayer from '../../applications/common/card/stores/player';
+import initStoreCardPlayer from '../../applications/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 
 
@@ -68,7 +68,7 @@ import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 import Layout from '../../applications/common/layout/components/layout';
 import Panel from '../../applications/common/layout/components/panel';
 // import TermsOfService from '../../applications/common/layout/components/terms-of-service';
-import CardPlayer from '../../applications/common/card/components/player';
+import CardPlayer from '../../applications/common/card/player/components/player';
 
 
 // ---------------------------------------------
@@ -427,20 +427,35 @@ class Component extends React.Component {
           valueArr: ['英語が話せる！'],
           search: true,
         },
-        pcSpecsObj: {
-          os: 'Windows 10 Home',
-          cpu: 'AMD CPU Ryzen 3 2200G',
-          cpuCooler: 'CPU 付属品',
-          motherboard: 'MSI B350 PC MATE',
-          memory: 'Crucial DDR4 8GB x 2',
-          storage: 'WD SSD 240GB / WD Green / WDS240G2G0A',
-          graphicsCard: '-',
-          opticalDrive: 'NEC AD7240S/BK',
-          powerSupply: 'Antec EARTHWATTS EA650 650W',
-          case: 'COOLER MASTER CM690',
-          monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
-          alternativeText: '',
-          search: true,
+        smartphoneObj: {
+          model: 'g06',
+          comment: `月額無料でスマホを利用したい！ということで買った端末です。電話としては機能してるけど、これでゲームをやるのは難しそうです。`,
+        },
+        tabletObj: {
+          model: 'Google Nexus 9 Wi-Fiモデル 32GB',
+          comment: `2015年に買ったタブレットなので最近はブラウザをチェックするだけでも重い…。`,
+        },
+        pcObj: {
+          model: '自作PC',
+          comment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなどを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
+
+グラボを積んでいないのですが、Ryzen 3 2200Gの機能で昔のゲームや2Dゲームなら普通に動きます。比較的最近のゲームですが、ダーケストダンジョンもいけました。`,
+          specsObj: {
+            os: 'Windows 10 Home',
+            cpu: 'AMD CPU Ryzen 3 2200G',
+            cpuCooler: 'CPU 付属品',
+            motherboard: 'MSI B350 PC MATE',
+            memory: 'Crucial DDR4 8GB x 2',
+            storage: 'WD SSD 240GB / WD Green / WDS240G2G0A',
+            graphicsCard: '-',
+            opticalDrive: 'NEC AD7240S/BK',
+            powerSupply: 'Antec EARTHWATTS EA650 650W',
+            pcCase: 'COOLER MASTER CM690',
+            monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
+            mouse: 'Logitech MX300',
+            keyboard: 'Microsoft Keyboard With Fingerprint Reader',
+            search: true,
+          },
         },
         ownedHardwareObj: {
           valueArr: ['u752aJ8tM', 'H3FwPxRHP'],
@@ -627,7 +642,7 @@ class Component extends React.Component {
           
           <Container>
             
-            <CardPlayer id="W6VI422uO" />
+            <CardPlayer cardPlayerId="W6VI422uO" />
             
             
             

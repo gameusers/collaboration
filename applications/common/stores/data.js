@@ -57,12 +57,24 @@ class Store {
   //   User Data
   // ---------------------------------------------
   
+  /**
+   * ユーザー情報を入れるオブジェクト
+   * @type {Object}
+   */
   @observable userObj = {};
   
   insertUserObj(dataObj) {
     this.userObj = Object.assign({}, dataObj, this.userObj);
     // console.log(`User Community insertData`);
     // console.dir(this.dataObj);
+  };
+  
+  /**
+   * ユーザー情報オブジェクトを更新する
+   * @param {Object} obj - 更新するオブジェクト
+   */
+  updateUserObj(obj) {
+    this.userObj = obj;
   };
   
   
@@ -79,7 +91,7 @@ class Store {
   
   
   /**
-   * プレイヤーカードのオブジェクト更新
+   * プレイヤーカードのオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
   updateCardPlayerObj(obj) {

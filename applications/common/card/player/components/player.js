@@ -301,13 +301,13 @@ export default class extends React.Component {
     
     
     
-    console.log(chalk`
-      userId: {green ${userId}}
+    // console.log(chalk`
+    //   userId: {green ${userId}}
       
-      imageSrcSet: {green ${imageSrcSet}}
-      imageSrc: {green ${imageSrc}}
-      imageAlt: {green ${imageAlt}}
-    `);
+    //   imageSrcSet: {green ${imageSrcSet}}
+    //   imageSrc: {green ${imageSrc}}
+    //   imageAlt: {green ${imageAlt}}
+    // `);
     
     
     
@@ -376,15 +376,16 @@ export default class extends React.Component {
           }
           
           
-          {/* テキスト */}
+          {/* プロフィール */}
           <StyledCardContent>
             
+            {/* コメント */}
             <CommentBox>
               <Paragraph text={comment} />
             </CommentBox>
             
             
-            {/* 年齢・性別などの基本項目 */}
+            {/* 年齢・性別などのプロフィール */}
             <ComponentBox>
               <Profile cardPlayerId={cardPlayerId} />
             </ComponentBox>

@@ -30,7 +30,9 @@ const logger = require('./lib/logger/logger');
 
 const { createCsrfToken } = require('./applications/common/modules/csrf');
 
-const routerApi = require('./applications/common/routes/v1/');
+// const routerApi = require('./applications/common/routes/v1/');
+
+const routerApi = require('./applications/@api/v1/');
 
 
 
@@ -205,6 +207,7 @@ app.prepare().then(() => {
       param1
     };
     
+    createCsrfToken(req, res);
     app.render(req, res, '/pl/player', queryObj);
     
   });

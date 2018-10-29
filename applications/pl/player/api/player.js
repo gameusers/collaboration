@@ -173,53 +173,53 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
         comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
 
 それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
-        // imageSrcSet: '/static/img/card/player/H_NXaMPKG/320w.jpg 320w, /static/img/card/player/H_NXaMPKG/480w.jpg 480w, /static/img/card/player/H_NXaMPKG/640w.jpg 640w, /static/img/card/player/H_NXaMPKG/800w.jpg 800w',
-        // imageSrc: '/static/img/card/player/H_NXaMPKG/800w.jpg',
-        // imageAlt: 'ライオン',
-        imageVideoArr: [
-          {
-            id: 'H_NXaMPKG',
-            type: 'image',
-            imageSetArr: [
-              {
-                w: '320w',
-                src: '/static/img/card/player/H_NXaMPKG/320w.jpg',
-                width: 320,
-                height: 180,
-                type: 'JPEG'
-              },
-              {
-                w: '480w',
-                src: '/static/img/card/player/H_NXaMPKG/480w.jpg',
-                width: 480,
-                height: 270,
-                type: 'JPEG'
-              },
-              {
-                w: '640w',
-                src: '/static/img/card/player/H_NXaMPKG/640w.jpg',
-                width: 640,
-                height: 360,
-                type: 'JPEG'
-              },
-              {
-                w: '800w',
-                src: '/static/img/card/player/H_NXaMPKG/800w.jpg',
-                width: 800,
-                height: 450,
-                type: 'JPEG'
-              },
-              {
-                w: 'source',
-                src: '/static/img/card/player/H_NXaMPKG/1920w.jpg',
-                width: 1920,
-                height: 1080,
-                type: 'JPEG'
-              },
-            ],
-            caption: 'ライオン',
-          },
-        ],
+        imageSrcSet: '/static/img/card/player/H_NXaMPKG/320w.jpg 320w, /static/img/card/player/H_NXaMPKG/480w.jpg 480w, /static/img/card/player/H_NXaMPKG/640w.jpg 640w, /static/img/card/player/H_NXaMPKG/800w.jpg 800w',
+        imageSrc: '/static/img/card/player/H_NXaMPKG/800w.jpg',
+        imageAlt: 'ライオン',
+        // imageVideoArr: [
+        //   {
+        //     id: 'H_NXaMPKG',
+        //     type: 'image',
+        //     imageSetArr: [
+        //       {
+        //         w: '320w',
+        //         src: '/static/img/card/player/H_NXaMPKG/320w.jpg',
+        //         width: 320,
+        //         height: 180,
+        //         type: 'JPEG'
+        //       },
+        //       {
+        //         w: '480w',
+        //         src: '/static/img/card/player/H_NXaMPKG/480w.jpg',
+        //         width: 480,
+        //         height: 270,
+        //         type: 'JPEG'
+        //       },
+        //       {
+        //         w: '640w',
+        //         src: '/static/img/card/player/H_NXaMPKG/640w.jpg',
+        //         width: 640,
+        //         height: 360,
+        //         type: 'JPEG'
+        //       },
+        //       {
+        //         w: '800w',
+        //         src: '/static/img/card/player/H_NXaMPKG/800w.jpg',
+        //         width: 800,
+        //         height: 450,
+        //         type: 'JPEG'
+        //       },
+        //       {
+        //         w: 'source',
+        //         src: '/static/img/card/player/H_NXaMPKG/1920w.jpg',
+        //         width: 1920,
+        //         height: 1080,
+        //         type: 'JPEG'
+        //       },
+        //     ],
+        //     caption: 'ライオン',
+        //   },
+        // ],
         birthdayObj: {
           value: '2002-10-19T00:00:00Z',
           alternativeText: '',
@@ -279,9 +279,13 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
           },
         },
         ownedHardwareObj: {
-          valueArr: ['u752aJ8tM', 'H3FwPxRHP'],
+          valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
           search: true,
         },
+        // ownedHardwareObj: {
+        //   valueArr: ['u752aJ8tM', 'H3FwPxRHP'],
+        //   search: true,
+        // },
         idObj: {
           playstationObj: {
             value: 'AZ-1979',
@@ -303,6 +307,20 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
             search: true,
             showType: 1
           },
+          otherArr: [
+            {
+              label: 'LoL ID',
+              value: 'lol-id',
+              search: true,
+              showType: 1
+            },
+            {
+              label: 'MHW ID',
+              value: 'mhw-id',
+              search: true,
+              showType: 1
+            },
+          ]
         },
         activityTimeObj: {
           valueArr: [
@@ -321,7 +339,7 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
         },
         lookingForFriendsObj: {
           value: true,
-          icon: 1,
+          icon: 'emoji_u1f61c',
           comment: '社会人の方よろしく！',
           search: true,
         },
@@ -347,11 +365,13 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
             url: 'https://steamcommunity.com/profiles/76561198031526480/',
             search: true,
           },
-          link1: {
-            label: '開発サイト',
-            url: 'http://35.203.143.160:8080/',
-            search: true,
-          },
+          linkArr: [
+            {
+              label: '開発サイト',
+              url: 'http://35.203.143.160:8080/',
+              search: true,
+            },
+          ]
         },
       }
     };

@@ -17,7 +17,6 @@ const util = require('util');
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
-// import moment from 'moment';
 
 
 // ---------------------------------------------
@@ -32,13 +31,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
-
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 
 // ---------------------------------------------
@@ -60,13 +54,8 @@ import Profile from './profile';
 import Smartphone from './smartphone';
 import Tablet from './tablet';
 import Pc from './pc';
-
-
-// ---------------------------------------------
-//   Moment Locale
-// ---------------------------------------------
-
-// moment.locale('ja');
+import Hardware from './hardware';
+import IdFriend from './id-friend';
 
 
 
@@ -264,29 +253,37 @@ export default class extends React.Component {
     //   画像
     // --------------------------------------------------
     
-    let imageSrcSet = '';
-    let imageSrc = '';
-    let imageAlt = '';
-    const imageVideoArr = cardPlayerObj[cardPlayerId].imageVideoArr;
+    const {
+      
+      imageSrcSet,
+      imageSrc,
+      imageAlt
+      
+    } = stores.data.cardPlayerObj[cardPlayerId];
     
-    if (imageVideoArr.length > 0) {
+    // let imageSrcSet = '';
+    // let imageSrc = '';
+    // let imageAlt = '';
+    // const imageVideoArr = cardPlayerObj[cardPlayerId].imageVideoArr;
+    
+    // if (imageVideoArr.length > 0) {
       
-      const imageSetArr = imageVideoArr[0].imageSetArr;
-      const tempArr = [];
+    //   const imageSetArr = imageVideoArr[0].imageSetArr;
+    //   const tempArr = [];
       
-      for (let value of imageSetArr.values()) {
+    //   for (let value of imageSetArr.values()) {
         
-        if (value.w !== 'source') {
-          tempArr.push(`${value.src} ${value.w}`);
-          imageSrc = value.src;
-        }
+    //     if (value.w !== 'source') {
+    //       tempArr.push(`${value.src} ${value.w}`);
+    //       imageSrc = value.src;
+    //     }
         
-      }
+    //   }
       
-      imageSrcSet = tempArr.join(', ');
-      imageAlt = imageVideoArr[0].caption;
+    //   imageSrcSet = tempArr.join(', ');
+    //   imageAlt = imageVideoArr[0].caption;
       
-    }
+    // }
     
     
     // --------------------------------------------------
@@ -379,6 +376,7 @@ export default class extends React.Component {
           {/* プロフィール */}
           <StyledCardContent>
             
+            
             {/* コメント */}
             <CommentBox>
               <Paragraph text={comment} />
@@ -390,20 +388,36 @@ export default class extends React.Component {
               <Profile cardPlayerId={cardPlayerId} />
             </ComponentBox>
             
+            
+            {/* 所有ハード */}
+            <ComponentBox>
+              <Hardware cardPlayerId={cardPlayerId} />
+            </ComponentBox>
+            
+            
             {/* スマートフォン */}
             <ComponentBox>
               <Smartphone cardPlayerId={cardPlayerId} />
             </ComponentBox>
+            
             
             {/* タブレット */}
             <ComponentBox>
               <Tablet cardPlayerId={cardPlayerId} />
             </ComponentBox>
             
+            
             {/* PC */}
             <ComponentBox>
               <Pc cardPlayerId={cardPlayerId} />
             </ComponentBox>
+            
+            
+            {/* ID & Friend */}
+            <ComponentBox>
+              <IdFriend cardPlayerId={cardPlayerId} />
+            </ComponentBox>
+            
             
           </StyledCardContent>
           

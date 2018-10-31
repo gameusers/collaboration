@@ -31,8 +31,6 @@ import Icon from '@material-ui/icons/Person';
 //   Components
 // ---------------------------------------------
 
-// import Paragraph from '../../../layout/components/paragraph';
-
 
 // ---------------------------------------------
 //   Moment Locale
@@ -66,7 +64,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Heading = styled.h3`
-  margin: 0 0 0 4px;
+  margin: 3px 0 0 4px;
 `;
 
 

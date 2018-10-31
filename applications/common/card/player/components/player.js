@@ -56,6 +56,8 @@ import Tablet from './tablet';
 import Pc from './pc';
 import Hardware from './hardware';
 import IdFriend from './id-friend';
+import Follow from './follow';
+import Link from './link';
 
 
 
@@ -156,6 +158,8 @@ const StyledCardContent = styled(CardContent)`
   && {
     font-size: 14px;
     line-height: 1.6em;
+    // margin: 0;
+    // padding-bottom: 0;
   }
 `;
 
@@ -180,6 +184,18 @@ const ComponentBox = styled.div`
   margin: 28px 0 0 0;
   padding: 0;
 `;
+
+
+
+// ---------------------------------------------
+//   FollowBox
+// ---------------------------------------------
+
+const FollowBox = styled.div`
+  margin: 0 0 10px 10px;
+  padding: 0;
+`;
+
 
 
 
@@ -419,17 +435,20 @@ export default class extends React.Component {
             </ComponentBox>
             
             
+            {/* Link */}
+            <ComponentBox>
+              <Link cardPlayerId={cardPlayerId} />
+            </ComponentBox>
+            
+            
           </StyledCardContent>
           
           
-          {/* リンク */}
+          {/* フォローボタン */}
           <CardActions disableActionSpacing>
-            <IconButton aria-label="Add to favorites">
-              <FavoriteIcon />
-            </IconButton>
-            <IconButton aria-label="Share">
-              <ShareIcon />
-            </IconButton>
+            <FollowBox>
+              <Follow cardPlayerId={cardPlayerId} />
+            </FollowBox>
           </CardActions>
           
           

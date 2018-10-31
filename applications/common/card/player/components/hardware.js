@@ -30,8 +30,6 @@ import Icon from '@material-ui/icons/Gamepad';
 //   Components
 // ---------------------------------------------
 
-// import Paragraph from '../../../layout/components/paragraph';
-
 
 
 
@@ -58,7 +56,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Heading = styled.h3`
-  margin: 0 0 0 4px;
+  margin: 3px 0 0 4px;
 `;
 
 

@@ -325,12 +325,12 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
         activityTimeObj: {
           valueArr: [
             {
-              startTime: '19:00',
+              beginTime: '19:00',
               endTime: '24:00',
               weekArr: [0, 1, 2, 3, 4]
             },
             {
-              startTime: '9:00',
+              beginTime: '9:00',
               endTime: '24:00',
               weekArr: [5, 6]
             }
@@ -348,31 +348,49 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
           comment: '夜21時まで',
           search: true,
         },
-        linkObj: {
-          twitter: {
+        linkArr: [
+          {
+            type: 'twitter',
             url: 'https://twitter.com/Azumi1979',
             search: true,
           },
-          facebook: {
-            url: '',
+          {
+            type: 'facebook',
+            url: 'https://www.youtube.com/',
             search: true,
           },
-          youtube: {
+          {
+            type: 'instagram',
+            url: 'https://www.youtube.com/',
+            search: true,
+          },
+          {
+            type: 'pixiv',
+            url: 'https://www.youtube.com/',
+            search: true,
+          },
+          {
+            type: 'youtube',
             url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
             search: true,
           },
-          steam: {
+          {
+            type: 'twitch',
+            url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
+            search: true,
+          },
+          {
+            type: 'steam',
             url: 'https://steamcommunity.com/profiles/76561198031526480/',
             search: true,
           },
-          linkArr: [
-            {
-              label: '開発サイト',
-              url: 'http://35.203.143.160:8080/',
-              search: true,
-            },
-          ]
-        },
+          {
+            type: 'other',
+            label: '開発サイト',
+            url: 'http://35.203.143.160:8080/',
+            search: true,
+          },
+        ]
       }
     };
     

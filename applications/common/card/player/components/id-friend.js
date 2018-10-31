@@ -20,6 +20,13 @@ import styled from 'styled-components';
 
 
 // ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import Button from '@material-ui/core/Button';
+
+
+// ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
@@ -57,7 +64,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Heading = styled.h3`
-  margin: 0 0 0 4px;
+  margin: 2px 0 0 4px;
 `;
 
 
@@ -184,7 +191,6 @@ const VoiceChatComment = styled.div`
 
 
 
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -232,8 +238,10 @@ export default class extends React.Component {
     
     
     const voiceChat = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.value;
-    // const voiceChatIcon = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.icon;
     const voiceChatComment = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.comment;
+    
+    
+    const linkArr = stores.data.cardPlayerObj[cardPlayerId].linkArr;
     
     
     
@@ -247,10 +255,11 @@ export default class extends React.Component {
       !xboxObj &&
       !nintendoObj &&
       !steamObj &&
-      !otherArr &&
-      !activityTimeArr &&
+      otherArr.length === 0 &&
+      activityTimeArr.length === 0 &&
       !lookingForFriends &&
-      !voiceChat
+      !voiceChat &&
+      linkArr.length === 0
     ) {
       return null;
     }
@@ -365,7 +374,7 @@ export default class extends React.Component {
         
         componentActivityTimeArr.push(
           <ActivityTime key={`activityTime${index}`}>
-            {value.startTime} ～ {value.endTime}{week}
+            {value.beginTime} ～ {value.endTime}{week}
           </ActivityTime>
         );
         
@@ -395,12 +404,12 @@ export default class extends React.Component {
     
     if (lookingForFriends) {
       
-      let componentFriendHeading = <FriendHeading>フレンド募集中</FriendHeading>;
+      let componentFriendHeading = <FriendHeading>フレンド募集</FriendHeading>;
       let componentFriendComment = '';
       
       if (lookingForFriendsComment) {
         
-        componentFriendHeading = <FriendHeading>フレンド募集中: </FriendHeading>;
+        componentFriendHeading = <FriendHeading>フレンド募集: </FriendHeading>;
         componentFriendComment = <FriendComment>{lookingForFriendsComment}</FriendComment>;
         
       }
@@ -409,7 +418,7 @@ export default class extends React.Component {
         <FriendBox key="lookingForFriends">
           <FriendIcon>
             <img
-              src={`/static/img/blob-emoji/${lookingForFriendsIcon}.png`}
+              src={`/static/img/common/blob-emoji/${lookingForFriendsIcon}.png`}
               width="26"
               height="26"
             />

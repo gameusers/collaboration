@@ -61,13 +61,15 @@ https://gameusers.org/dev/blog/live/
 MongoDB Ver.4 を利用しています。トランザクションを利用したいため、レプリカセット（複数のデータベースを立ち上げて繋げることで安定性を確保する機能）を構築しました。<br /><br />
 **参考サイト**<br />
 - [MongoDB で 3台構成 の レプリカセット を 構築する 方法](https://garafu.blogspot.com/2018/02/mongodb-3instance-replicaset.html)
-- [Deploy a Replica Set for Testing and Development](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-for-testing/)
+- [Deploy a Replica Set for Testing and Development](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-for-testing/)<br /><br />
 
-db/server1<br />db/server2<br />db/server3<br />
+1. db/server1
+2. db/server2
+3. db/server3
 
-こちらのディレクトリ内にデータとログが保存されるようになっています。レプリカセットの構築方法を簡単に解説しますが、環境によって変更が必要な箇所がある場合は、置き換えて読んでみてください。<br />
+こちらのディレクトリ内にデータとログが保存されるようになっています。レプリカセットの構築方法を簡単に解説しますが、環境によって変更が必要な箇所がある場合は、置き換えて読んでみてください。<br /><br />
 
-1. ターミナルを3つ開き、各行のコマンドで MongoDB を3つ起動します。これは db/server 内に設置してあるコンフィグファイルを読み込んで、データベースを起動する方法です。
+1: ターミナルを3つ開き、各行のコマンドで MongoDB を3つ起動します。これは db/server 内に設置してあるコンフィグファイルを読み込んで、データベースを起動する方法です。
 
 
     mongod --config "db/server1/mongod.server1.cfg"
@@ -75,13 +77,13 @@ db/server1<br />db/server2<br />db/server3<br />
     mongod --config "db/server3/mongod.server3.cfg"
 
 
-2. Server1 にログイン
+2: Server1 にログイン
 
 
-	mongo --host 127.0.0.1:27017
+    mongod --host 127.0.0.1:27017
 
 
-3. レプリカセットを初期化
+3: レプリカセットを初期化
 
 
     rsconf = {

@@ -78,7 +78,7 @@ db/server1<br />db/server2<br />db/server3<br />
 2. Server1 にログイン
 
 
-    mongo --host 127.0.0.1:27017
+	mongo --host 127.0.0.1:27017
 
 
 3. レプリカセットを初期化

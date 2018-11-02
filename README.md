@@ -58,12 +58,46 @@ https://gameusers.org/dev/blog/live/
 <br><br>
 
 ## データベース
-MongoDB Ver.4 を使っています。<br /><br />
-db/mongodb ここの場所のデータを利用していますが、GitHub 上にデータをちゃんと移せているか不明です。正常に動作しない場合は、mongodb 内を空にしてください。<br /><br />
-スタートさせるときは以下のコマンドを利用してください。
+MongoDB Ver.4 を利用しています。トランザクションを利用したいため、レプリカセット（複数のデータベースを立ち上げて繋げることで安定性を確保する機能）を構築しました。<br /><br />
+**参考サイト**<br />
+- [MongoDB で 3台構成 の レプリカセット を 構築する 方法](https://garafu.blogspot.com/2018/02/mongodb-3instance-replicaset.html)
+- [Deploy a Replica Set for Testing and Development](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-for-testing/)
 
-`mongod --dbpath db/mongodb`
-<br /><br />
+db/server1<br />db/server2<br />db/server3<br />
+
+こちらのディレクトリ内にデータとログが保存されるようになっています。レプリカセットの構築方法を簡単に解説しますが、環境によって変更が必要な箇所がある場合は、置き換えて読んでみてください。<br />
+
+1. ターミナルを3つ開き、各行のコマンドで MongoDB を3つ起動します。これは db/server 内に設置してあるコンフィグファイルを読み込んで、データベースを起動する方法です。
+
+
+    mongod --config "db/server1/mongod.server1.cfg"
+    mongod --config "db/server2/mongod.server2.cfg"
+    mongod --config "db/server3/mongod.server3.cfg"
+
+
+2. Server1 にログイン
+
+
+    mongo --host 127.0.0.1:27017
+
+
+3. レプリカセットを初期化
+
+
+    rsconf = {
+      _id : "rs0",
+      members: [
+        { _id: 0, host: "127.0.0.1:27017" },
+        { _id: 1, host: "127.0.0.1:27018" },
+        { _id: 2, host: "127.0.0.1:27019" },
+      ]
+    }
+    rs.initiate(rsconf)
+
+
+上記のとおりにコマンドを入力するとレプリカセットの設定が完了し、MongoDB でトランザクションが扱えるようになります。データベースの中身は容量の関係上、GitHub 上には掲載されていません。空のディレクトリと設定ファイルのみになっています。<br />
+
+データベースは各開発環境でそれぞれ構築してください。現在ところ、データベースの中身は空の状態から開始しても開発に影響はありません。<br /><br />
 
 ## ライセンス
 

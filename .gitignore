@@ -18,8 +18,22 @@ desktop.ini
 /node_modules/
 /.c9/
 /.next/
-/db/mongodb/journal/
 /__/
+
+# データベース
+/db/mongodb/
+/db/server1/data/*
+!/db/server1/data/.gitkeep
+/db/server1/log/*
+!/db/server1/log/.gitkeep
+/db/server2/data/*
+!/db/server2/data/.gitkeep
+/db/server2/log/*
+!/db/server2/log/.gitkeep
+/db/server3/data/*
+!/db/server3/data/.gitkeep
+/db/server3/log/*
+!/db/server3/log/.gitkeep
 
 # ファイル
 __*.

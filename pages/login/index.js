@@ -13,6 +13,7 @@ import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import ReCAPTCHA from "react-google-recaptcha";
+import fetch from 'isomorphic-unfetch';
 
 
 // ---------------------------------------------

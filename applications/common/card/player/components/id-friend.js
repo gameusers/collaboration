@@ -219,27 +219,24 @@ export default class extends React.Component {
     //   Data - 必要な情報を取得
     // --------------------------------------------------
     
-    const {
+    // const {
       
-      playstationObj,
-      xboxObj,
-      nintendoObj,
-      steamObj,
-      otherArr
+    //   playstationObj,
+    //   xboxObj,
+    //   nintendoObj,
+    //   steamObj,
+    //   otherArr
       
-    } = stores.data.cardPlayerObj[cardPlayerId].idObj;
-    
+    // } = stores.data.cardPlayerObj[cardPlayerId].idObj;
+    const idArr = stores.data.cardPlayerObj[cardPlayerId].idArr;
     const activityTimeArr = stores.data.cardPlayerObj[cardPlayerId].activityTimeObj.valueArr;
-    
     
     const lookingForFriends = stores.data.cardPlayerObj[cardPlayerId].lookingForFriendsObj.value;
     const lookingForFriendsIcon = stores.data.cardPlayerObj[cardPlayerId].lookingForFriendsObj.icon;
     const lookingForFriendsComment = stores.data.cardPlayerObj[cardPlayerId].lookingForFriendsObj.comment;
     
-    
     const voiceChat = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.value;
     const voiceChatComment = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.comment;
-    
     
     const linkArr = stores.data.cardPlayerObj[cardPlayerId].linkArr;
     
@@ -251,11 +248,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (
-      !playstationObj &&
-      !xboxObj &&
-      !nintendoObj &&
-      !steamObj &&
-      otherArr.length === 0 &&
+      idArr.length === 0 &&
       activityTimeArr.length === 0 &&
       !lookingForFriends &&
       !voiceChat &&
@@ -274,61 +267,77 @@ export default class extends React.Component {
     
     const componentIdArr = [];
     
-    
-    // ---------------------------------------------
-    //   PlayStation
-    // ---------------------------------------------
-    
-    if (playstationObj) {
-      componentIdArr.push(
-        <Id key="idPlaystation"><strong>PlayStation ID: </strong>{playstationObj.value}</Id>
-      );
-    }
-    
-    
-    // ---------------------------------------------
-    //   Xbox
-    // ---------------------------------------------
-    
-    if (xboxObj) {
-      componentIdArr.push(
-        <Id key="idXbox"><strong>Xbox ID: </strong>{xboxObj.value}</Id>
-      );
-    }
-    
-    
-    // ---------------------------------------------
-    //   Nintendo
-    // ---------------------------------------------
-    
-    if (nintendoObj) {
-      componentIdArr.push(
-        <Id key="idNintendo"><strong>Nintendo ID: </strong>{nintendoObj.value}</Id>
-      );
-    }
-    
-    
-    // ---------------------------------------------
-    //   Steam
-    // ---------------------------------------------
-    
-    if (steamObj) {
-      componentIdArr.push(
-        <Id key="idSteam"><strong>Steam ID: </strong>{steamObj.value}</Id>
-      );
-    }
-    
-    
-    // ---------------------------------------------
-    //   Other
-    // ---------------------------------------------
-    
-    if (otherArr.length > 0) {
-      for (const [index, value] of otherArr.entries()) {
-        componentIdArr.push(
-          <Id key={`idOther${index}`}><strong>{value.label}: </strong>{value.value}</Id>
-        );
+    if (idArr.length > 0) {
+      
+      for (const [index, value] of idArr.entries()) {
+        
+        
+        // ---------------------------------------------
+        //   PlayStation
+        // ---------------------------------------------
+        
+        if (value.type === 'playstation') {
+          
+          componentIdArr.push(
+            <Id key={`id${index}`}><strong>PlayStation ID: </strong>{value.id}</Id>
+          );
+          
+        }
+        
+        
+        // ---------------------------------------------
+        //   Xbox
+        // ---------------------------------------------
+        
+        if (value.type === 'xbox') {
+          
+          componentIdArr.push(
+            <Id key={`id${index}`}><strong>Xbox ID: </strong>{value.id}</Id>
+          );
+          
+        }
+        
+        
+        // ---------------------------------------------
+        //   Nintendo
+        // ---------------------------------------------
+        
+        if (value.type === 'nintendo') {
+          
+          componentIdArr.push(
+            <Id key={`id${index}`}><strong>Nintendo ID: </strong>{value.id}</Id>
+          );
+          
+        }
+        
+        
+        // ---------------------------------------------
+        //   Steam
+        // ---------------------------------------------
+        
+        if (value.type === 'steam') {
+          
+          componentIdArr.push(
+            <Id key={`id${index}`}><strong>Steam ID: </strong>{value.id}</Id>
+          );
+          
+        }
+        
+        
+        // ---------------------------------------------
+        //   Other
+        // ---------------------------------------------
+        
+        if (value.type === 'other') {
+          
+          componentIdArr.push(
+            <Id key={`id${index}`}><strong>{value.label} ID: </strong>{value.id}</Id>
+          );
+          
+        }
+        
       }
+      
     }
     
     

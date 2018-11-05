@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 const mongoose = require('mongoose');
+// const shortid = require('shortid');
 
 
 // --------------------------------------------------
@@ -11,6 +12,7 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
   _id: { type: String, required: true },
+  // _id: { type: String, default: shortid.generate(), required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   userId: { type: String, required: true },
@@ -18,14 +20,14 @@ const schema = mongoose.Schema({
   imageVideoArr: [
     {
       id: { type: String, required: true },
-      type: { enum: ['image', 'video'], required: true },
+      type: { type: String, enum: ['image', 'video'], required: true },
       caption: String,
+      fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
       srcSetArr: [
         {
-          w: { enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+          w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
           width: { type: Number, required: true },
           height: { type: Number, required: true },
-          type: { enum: ['JPEG', 'PNG', 'GIF'], required: true }
         }
       ],
     },
@@ -36,7 +38,7 @@ const schema = mongoose.Schema({
     search: { type: Boolean, required: true },
   },
   sexObj: {
-    value: { enum: ['male', 'female'], required: true },
+    value: { type: String, enum: ['male', 'female'], required: true },
     alternativeText: String,
     search: { type: Boolean, required: true },
   },
@@ -94,7 +96,7 @@ const schema = mongoose.Schema({
   },
   idArr: [
     {
-      type: { enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
+      type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other'], required: true },
       label: String,
       id: { type: String, required: true },
       showType: { type: Number, min: 1, max: 5 },
@@ -124,7 +126,7 @@ const schema = mongoose.Schema({
   },
   linkArr: [
     {
-      type: { enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other'], required: true },
+      type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other'], required: true },
       label: String,
       url: { type: String, required: true },
       search: { type: Boolean, required: true },
@@ -132,4 +134,4 @@ const schema = mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model('CardPlayers', schema);
+module.exports = mongoose.model('card-players', schema);

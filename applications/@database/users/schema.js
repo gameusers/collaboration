@@ -29,4 +29,4 @@ const schema = mongoose.Schema({
   // twitterProfileId: String
 });
 
-module.exports = mongoose.model('Users', schema);
+module.exports = mongoose.model('users', schema);

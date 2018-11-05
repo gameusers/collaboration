@@ -47,7 +47,7 @@ const {
 //   Schema / Model
 // ---------------------------------------------
 
-const ModelCardPlayers = require('../../../@database/card-players/model');
+const ModelUsers = require('../../../@database/users/schema');
 
 
 // --------------------------------------------------
@@ -133,14 +133,6 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     if (req.isAuthenticated()) {
       returnObj.login = true;
     }
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Players / Upsert
-    // --------------------------------------------------
-    
-    ModelCardPlayers.upsert('a8b0gX6lMIz', 'zaoOWw89g');
-    // ModelCardPlayers.upsert('a8b0gX6lMIz');
     
     
     // --------------------------------------------------

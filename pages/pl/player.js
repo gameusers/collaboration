@@ -121,7 +121,7 @@ class Component extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res }) {
+  static async getInitialProps({ pathname, req, res, query }) {
     
     const isServer = !!req;
     
@@ -133,6 +133,13 @@ class Component extends React.Component {
     const { publicRuntimeConfig } = getConfig();
     
     
+    console.log(chalk`
+      pathname: {green ${pathname}}
+    `);
+    
+    console.log(`
+      query: \n${util.inspect(query, { colors: true, depth: null })}
+    `);
     
     // --------------------------------------------------
     //   Fetch
@@ -145,7 +152,7 @@ class Component extends React.Component {
     //   API URL
     // ---------------------------------------------
     
-    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/pl/player/initial-props`;
+    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/pl/player/initial-props?playerId=${query.param1}`;
     
     
     // ---------------------------------------------

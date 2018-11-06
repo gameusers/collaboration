@@ -26,7 +26,7 @@ const mongoose = require('mongoose');
 const chalk = require('chalk');
 const util = require('util');
 
-const logger = require('./lib/logger/logger');
+// const logger = require('./lib/logger/logger');
 
 const { createCsrfToken } = require('./applications/common/modules/csrf');
 
@@ -327,7 +327,7 @@ app.prepare().then(() => {
   
   
   server.use((err, req, res, next) => {
-    logger.error(`${err}`);
+    // logger.error(`${err}`);
     
     res.status(err.status || 500);
     res.send('Error');

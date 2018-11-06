@@ -47,6 +47,7 @@ const {
 //   Schema / Model
 // ---------------------------------------------
 
+const ModelUsers = require('../../../@database/users/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
 
 
@@ -61,34 +62,10 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   テスト
-// --------------------------------------------------
-
-// router.get('/test', upload.none(), (req, res) => {
-  
-//   // console.log(chalk`
-//   //   test: {red ${req.body.createAccountId}}
-//   //   req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
-//   // `);
-  
-//   console.log(`\n\nAPI test\n\n`);
-  
-//   res.json({
-//     success: true,
-//     challenge_ts: '2018-09-22T10:53:45Z',
-//     hostname: '35.203.143.160'
-//   });
-  
-  
-// });
-
-
-
-// --------------------------------------------------
 //   Initial Props
 // --------------------------------------------------
 
-router.get('/initial-props', upload.none(), function(req, res, next) {
+router.get('/initial-props', upload.none(), async (req, res, next) => {
   
   
   try {
@@ -103,9 +80,10 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
       req.isAuthenticated(): {green ${req.isAuthenticated()}}
     `);
     
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    // `);
+    console.log(`
+      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+      req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
+    `);
     
     
     // --------------------------------------------------
@@ -120,7 +98,6 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     // --------------------------------------------------
     
     const returnObj = {};
-    // returnObj.initialProps = {};
     returnObj.data = {};
     
     
@@ -136,11 +113,33 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     
     
     // --------------------------------------------------
+    //   Model / Users / Find
+    // --------------------------------------------------
+    
+    const userId = await ModelUsers.findUserId(req.query.playerId);
+    
+    // console.log(chalk`
+    //   userId: {green ${userId}}
+    // `);
+    
+    
+    // --------------------------------------------------
     //   Model / Card Players / Upsert
     // --------------------------------------------------
     
-    ModelCardPlayers.upsert('a8b0gX6lMIz', 'zaoOWw89g');
-    // ModelCardPlayers.upsert('a8b0gX6lMIz');
+    // await ModelCardPlayers.upsert('a8b0gX6lMIz', 'zaoOWw89g');
+    // await ModelCardPlayers.upsert('a8b0gX6lMIz');
+    
+    
+    // --------------------------------------------------
+    //   Model / Card Players / Find
+    // --------------------------------------------------
+    
+    const cardPlayersObj = await ModelCardPlayers.find([userId]);
+    
+    // console.log(`
+    //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
+    // `);
     
     
     // --------------------------------------------------

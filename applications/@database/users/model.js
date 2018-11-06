@@ -39,14 +39,63 @@ const logger = require('../../@modules/logger');
 // --------------------------------------------------
 
 /**
+ * Player IDからUser IDを取得する / 1件だけ
+ * @param {string} playerId - Player ID
+ * @return {string} userId
+ */
+const findUserId = async (playerId) => {
+  
+  
+  // --------------------------------------------------
+  //   Return Object
+  // --------------------------------------------------
+  
+  let userId = '';
+  
+  
+  // --------------------------------------------------
+  //   Find
+  // --------------------------------------------------
+  
+  await Model.findOne({ playerId: playerId }, '_id', (err, docObj) => {
+    
+    if (err) {
+      logger.log('error', `/applications/@database/users/model.js / findUserId / Error: ${err}`);
+    } else if (docObj) {
+      userId = docObj._id;
+      // logger.log('info', `docArr._id = ${docArr._id}`);
+      // logger.log('info', `docArr['_id'] = ${docArr['_id']}`);
+    }
+    
+    console.log(`
+      docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
+    `);
+    
+  });
+  
+  // logger.log('info', `playerId = ${playerId}`);
+  // logger.log('info', `userId = ${userId}`);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return userId;
+  
+  
+};
+
+
+/**
  * 取得する
- * @param {array} userIdArr - User IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
+ * @param {array} playerIdArr - Player IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
  * @return {object} 取得されたデータ
  */
-const find = async (userIdArr) => {
-  // console.log(`
-  //     userIdArr: \n${util.inspect(userIdArr, { colors: true, depth: null })}
-  //   `);
+const find = async (playerIdArr) => {
+  
   
   // --------------------------------------------------
   //   Return Object
@@ -59,17 +108,13 @@ const find = async (userIdArr) => {
   //   Find
   // --------------------------------------------------
   
-  await Model.find({ userId: { $in: userIdArr} }, (err, docArr) => {
+  await Model.find({ playerId: { $in: playerIdArr} }, (err, docObj) => {
     
     if (err) {
-      logger.log('error', `/applications/@database/card-players/model.js / find / Error: ${err}`);
-    } else if (docArr.length > 0) {
-      returnObj = docArr;
+      logger.log('error', `/applications/@database/users/model.js / find / Error: ${err}`);
+    } else {
+      returnObj = docObj;
     }
-    
-    console.log(`
-      docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    `);
     
   });
   
@@ -355,231 +400,6 @@ const upsert = async (userId, cardPlayerId) => {
   });
   
   
-  
-  
-  // --------------------------------------------------
-  //   Find
-  // --------------------------------------------------
-  
-  // let docObj = null;
-  
-  // await Model.findOne({ _id: cardPlayerId }, (err, obj) => {
-    
-  //   if (err) {
-  //     console.log(chalk`
-  //       err: {green ${err}}
-  //     `);
-  //     // console.log("Something wrong when updating data!");
-  //   }
-    
-  //   docObj = obj;
-    
-  //   console.log(`
-  //     findOne
-  //   `);
-    
-  //   // console.log(`
-  //   //   findOne / doc: \n${util.inspect(doc, { colors: true, depth: null })}
-  //   // `);
-    
-  // });
-  
-  
-  
-  // // --------------------------------------------------
-  // //   Update
-  // // --------------------------------------------------
-  
-  // if (docObj) {
-    
-  //   await Model.updateOne({ _id: cardPlayerId }, updateObj, {}, (err, doc) => {
-      
-  //     if (err) {
-  //       console.log(chalk`
-  //         err: {green ${err}}
-  //       `);
-  //       // console.log("Something wrong when updating data!");
-  //     }
-      
-  //     console.log(`
-  //       updateOne
-  //     `);
-      
-  //     // console.log(`
-  //     //   updateOne / doc2: \n${util.inspect(doc2, { colors: true, depth: null })}
-  //     // `);
-      
-  //   });
-  
-  
-  // // --------------------------------------------------
-  // //   Insert
-  // // --------------------------------------------------
-  
-  // } else {
-    
-  //   await Model.create(updateObj, (err, doc) => {
-        
-  //     if (err) {
-  //       console.log(chalk`
-  //         err: {green ${err}}
-  //       `);
-  //       // console.log("Something wrong when updating data!");
-  //     }
-      
-  //     console.log(`
-  //       create
-  //     `);
-      
-  //     // console.log(`
-  //     //   create / doc3: \n${util.inspect(doc3, { colors: true, depth: null })}
-  //     // `);
-      
-  //   });
-    
-  // }
-  
-  
-  
-  // --------------------------------------------------
-  //   Find
-  // --------------------------------------------------
-  
-  // await Model.findOne({ _id: cardPlayerId }, (err, doc) => {
-    
-  //   if (err) {
-  //     console.log(chalk`
-  //       err: {green ${err}}
-  //     `);
-  //     // console.log("Something wrong when updating data!");
-  //   }
-    
-    
-    
-  //   // --------------------------------------------------
-  //   //   Update
-  //   // --------------------------------------------------
-    
-  //   if (doc) {
-      
-  //     Model.updateOne({ _id: cardPlayerId }, updateObj, {}, (err2, doc2) => {
-        
-  //       if (err2) {
-  //         console.log(chalk`
-  //           err2: {green ${err2}}
-  //         `);
-  //         // console.log("Something wrong when updating data!");
-  //       }
-        
-  //       console.log(`
-  //         updateOne
-  //       `);
-        
-  //       // console.log(`
-  //       //   updateOne / doc2: \n${util.inspect(doc2, { colors: true, depth: null })}
-  //       // `);
-        
-  //     });
-      
-      
-  //   // --------------------------------------------------
-  //   //   Insert
-  //   // --------------------------------------------------
-    
-  //   } else {
-      
-  //     Model.create(updateObj, (err3, doc3) => {
-        
-  //       if (err3) {
-  //         console.log(chalk`
-  //           err3: {green ${err3}}
-  //         `);
-  //         // console.log("Something wrong when updating data!");
-  //       }
-        
-  //       console.log(`
-  //         create
-  //       `);
-        
-  //       // console.log(`
-  //       //   create / doc3: \n${util.inspect(doc3, { colors: true, depth: null })}
-  //       // `);
-        
-  //     });
-      
-  //   }
-    
-  //   console.log(`
-  //     findOne
-  //   `);
-    
-  //   // console.log(`
-  //   //   findOne / doc: \n${util.inspect(doc, { colors: true, depth: null })}
-  //   // `);
-    
-  // });
-  
-  
-  // Model.findOneAndUpdate({ _id: cardPlayerId }, updateObj, (err, doc) => {
-    
-  //   if (err) {
-      
-  //     console.log(chalk`
-  //       err: {green ${err}}
-  //     `);
-      
-  //     console.log("Something wrong when updating data!");
-  //   }
-    
-  //   console.log(doc);
-    
-  // });
-  
-  
-  
-  // Model.create(updateObj, (err, doc) => {
-    
-  //   if (err) {
-      
-  //     console.log(chalk`
-  //       err: {green ${err}}
-  //     `);
-      
-  //     console.log("Something wrong when updating data!");
-  //   }
-    
-  //   console.log(doc);
-    
-  // });
-  
-  
-  
-  // Model.update({ _id: cardPlayerId }, updateObj, { upsert: true, setDefaultsOnInsert: true }, (err, doc) => {
-    
-  //   if (err) {
-      
-  //     console.log(chalk`
-  //       err: {green ${err}}
-  //     `);
-      
-  //     console.log("Something wrong when updating data!");
-  //   }
-    
-  //   console.log(doc);
-    
-  // });
-  
-  
-  // console.log(chalk`
-  //   _id: {green ${_id}}
-  // `);
-  
-  // console.log(`
-  //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-  // `);
-  
-  
-  
   // --------------------------------------------------
   //   DB Insert
   // --------------------------------------------------
@@ -593,28 +413,13 @@ const upsert = async (userId, cardPlayerId) => {
 
 
 
-/**
- * 復号する
- * @param {string} text - 復号したいテキスト
- * @return {string} 復号されたテキスト
- */
-// const decrypt = (text) => {
-  
-//   const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-//   let decrypted = decipher.update(text, 'hex', 'utf8');
-//   decrypted += decipher.final('utf8');
-  
-//   return decrypted;
-  
-// };
-
-
 
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
+  findUserId,
   find,
   upsert
 };

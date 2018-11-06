@@ -3,7 +3,6 @@
 // --------------------------------------------------
 
 const mongoose = require('mongoose');
-// const shortid = require('shortid');
 
 
 // --------------------------------------------------
@@ -12,7 +11,6 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
   _id: { type: String, required: true },
-  // _id: { type: String, default: shortid.generate(), required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   userId: { type: String, required: true },

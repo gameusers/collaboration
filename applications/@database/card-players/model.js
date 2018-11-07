@@ -26,6 +26,13 @@ const Model = require('./schema');
 
 
 // ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { srcset } = require('../../@format/image');
+
+
+// ---------------------------------------------
 //   Logger
 // ---------------------------------------------
 
@@ -49,26 +56,32 @@ const find = async (userIdArr) => {
   //   `);
   
   // --------------------------------------------------
-  //   Return Object
+  //   Return Value
   // --------------------------------------------------
   
-  let returnObj = {};
+  let returnArr = [];
   
   
   // --------------------------------------------------
   //   Find
   // --------------------------------------------------
   
-  await Model.find({ userId: { $in: userIdArr} }, (err, docArr) => {
+  await Model.find({ userId: { $in: userIdArr} }, '_id, updatedDate', (err, docArr) => {
     
     if (err) {
       logger.log('error', `/applications/@database/card-players/model.js / find / Error: ${err}`);
     } else if (docArr.length > 0) {
-      returnObj = docArr;
+      returnArr = docArr;
     }
     
+    const formattedData = srcset(returnArr[0].imageVideoArr);
+    
     console.log(`
-      docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+      returnArr: \n${util.inspect(returnArr, { colors: true, depth: null })}
+    `);
+    
+    console.log(`
+      formattedData: \n${util.inspect(formattedData, { colors: true, depth: null })}
     `);
     
   });
@@ -78,7 +91,7 @@ const find = async (userIdArr) => {
   //   Return
   // --------------------------------------------------
   
-  return returnObj;
+  return returnArr;
   
   
 };

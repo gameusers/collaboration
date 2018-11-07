@@ -118,10 +118,15 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     const userId = await ModelUsers.findUserId(req.query.playerId);
     
-    // console.log(chalk`
-    //   userId: {green ${userId}}
-    // `);
+    if (!userId) {
+      throw new Error('userIdが空です。');
+    }
     
+    console.log(chalk`
+      userId: {green ${userId}}
+    `);
+    
+    // throw new Error('Error');
     
     // --------------------------------------------------
     //   Model / Card Players / Upsert

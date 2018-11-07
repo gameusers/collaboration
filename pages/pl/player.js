@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 import React from 'react';
+import Error from 'next/error';
 import Head from 'next/head';
 // import Link from 'next/link';
 import getConfig from 'next/config';
@@ -123,35 +124,36 @@ class Component extends React.Component {
   
   static async getInitialProps({ pathname, req, res, query }) {
     
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
     const isServer = !!req;
+    let initialPropsObj = {};
+    let statusCode = 0;
+    let errorObj = {};
     
     
-    // --------------------------------------------------
-    //   publicRuntimeConfig
-    // --------------------------------------------------
+    // console.log(chalk`
+    //   pathname: {green ${pathname}}
+    // `);
     
-    const { publicRuntimeConfig } = getConfig();
+    // console.log(`
+    //   query: \n${util.inspect(query, { colors: true, depth: null })}
+    // `);
     
     
-    console.log(chalk`
-      pathname: {green ${pathname}}
-    `);
-    
-    console.log(`
-      query: \n${util.inspect(query, { colors: true, depth: null })}
-    `);
     
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
-    let initialPropsObj = {};
-    
-    
     // ---------------------------------------------
     //   API URL
     // ---------------------------------------------
     
+    const { publicRuntimeConfig } = getConfig();
     const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/pl/player/initial-props?playerId=${query.param1}`;
     
     
@@ -175,13 +177,22 @@ class Component extends React.Component {
       headers: headersObj
     })
       .then((response) => {
+        
+        // console.log(`
+        //   response: \n${util.inspect(response, { colors: true, depth: null })}
+        // `);
+        
+        statusCode = response.status;
+        
         if (!response.ok) {
           return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
+            errorObj = jsonObj;
+        　　throw new Error(errorObj.errorsArr[0].message);
         　});
         }
         
         return response.json();
+        
       })
       .then((jsonObj) => {
         
@@ -200,12 +211,16 @@ class Component extends React.Component {
       })
       .catch((error) => {
         
+        console.log(`
+          errorObj: \n${util.inspect(errorObj, { colors: true, depth: null })}
+        `);
+        
         console.log(`getInitialProps / Fetch / ${error}`);
         
       });
     
     
-    return { isServer, pathname, initialPropsObj };
+    return { isServer, pathname, initialPropsObj, statusCode };
     
   }
   
@@ -221,11 +236,10 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   publicRuntimeConfig
+    //   Property / Error 判定用
     // --------------------------------------------------
     
-    const { publicRuntimeConfig } = getConfig();
-    this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
+    this.error = false;
     
     
     
@@ -233,25 +247,61 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
-    const argumentsObj = {
-      isServer: props.isServer,
-      pathname: props.pathname,
-      environment: publicRuntimeConfig.environment,
-      apiUrl: publicRuntimeConfig.apiUrl
-    };
-    
-    this.stores = initStoreIndex(argumentsObj);
-    this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
-    this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
-    
-    
-    
-    // --------------------------------------------------
-    //   Store / Update Data
-    // --------------------------------------------------
-    
-    this.stores.data.updateUserObj(props.initialPropsObj.data.userObj);
-    this.stores.data.updateCardPlayerObj(props.initialPropsObj.data.cardPlayerObj);
+    try {
+      
+      
+      // --------------------------------------------------
+      //   Errorの場合
+      // --------------------------------------------------
+      
+      if (
+        this.props.statusCode !== 200 ||
+        'data' in props.initialPropsObj === false ||
+        'userObj' in props.initialPropsObj.data === false ||
+        'cardPlayerObj' in props.initialPropsObj.data === false
+      ) {
+        throw new Error();
+      }
+      
+        
+        
+      // --------------------------------------------------
+      //   publicRuntimeConfig
+      // --------------------------------------------------
+      
+      const { publicRuntimeConfig } = getConfig();
+      this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
+      
+      
+      
+      // --------------------------------------------------
+      //   Store
+      // --------------------------------------------------
+      
+      const argumentsObj = {
+        isServer: props.isServer,
+        pathname: props.pathname,
+        environment: publicRuntimeConfig.environment,
+        apiUrl: publicRuntimeConfig.apiUrl
+      };
+      
+      this.stores = initStoreIndex(argumentsObj);
+      this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
+      this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
+      
+      
+      
+      // --------------------------------------------------
+      //   Store / Update Data
+      // --------------------------------------------------
+      
+      this.stores.data.updateUserObj(props.initialPropsObj.data.userObj);
+      this.stores.data.updateCardPlayerObj(props.initialPropsObj.data.cardPlayerObj);
+      
+      
+    } catch (e) {
+      this.error = true;
+    }
     
     
   }
@@ -259,6 +309,17 @@ class Component extends React.Component {
   
   
   render() {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    //   参考：https://github.com/zeit/next.js#custom-error-handling
+    // --------------------------------------------------
+    
+    if (this.error) {
+      return <Error statusCode={this.props.statusCode} />;
+    }
+    
     
     
     // --------------------------------------------------

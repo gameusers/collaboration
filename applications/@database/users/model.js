@@ -47,7 +47,7 @@ const findUserId = async (playerId) => {
   
   
   // --------------------------------------------------
-  //   Return Object
+  //   Return Value
   // --------------------------------------------------
   
   let userId = '';
@@ -61,22 +61,15 @@ const findUserId = async (playerId) => {
     
     if (err) {
       logger.log('error', `/applications/@database/users/model.js / findUserId / Error: ${err}`);
-    } else if (docObj) {
+    } else if ('_id' in docObj) {
       userId = docObj._id;
-      // logger.log('info', `docArr._id = ${docArr._id}`);
-      // logger.log('info', `docArr['_id'] = ${docArr['_id']}`);
     }
     
-    console.log(`
-      docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
+    // `);
     
   });
-  
-  // logger.log('info', `playerId = ${playerId}`);
-  // logger.log('info', `userId = ${userId}`);
-  
-  
   
   
   // --------------------------------------------------

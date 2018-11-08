@@ -59,39 +59,92 @@ const find = async (userIdArr) => {
   //   Return Value
   // --------------------------------------------------
   
-  let returnArr = [];
+  let returnObj = {};
   
   
   // --------------------------------------------------
-  //   Find
+  //   Database
   // --------------------------------------------------
   
-  await Model.find({ userId: { $in: userIdArr} }, '_id, updatedDate', (err, docArr) => {
+  try {
     
-    if (err) {
-      logger.log('error', `/applications/@database/card-players/model.js / find / Error: ${err}`);
-    } else if (docArr.length > 0) {
-      returnArr = docArr;
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const condition = { userId: { $in: userIdArr} };
+    const docArr = await Model.find(condition).exec();
+    
+    // console.log(`
+    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   画像配列を<img>タグで出力するためにフォーマット
+    // --------------------------------------------------
+    
+    for (let value of docArr.values()) {
+        
+      const copiedObj = JSON.parse(JSON.stringify(value));
+      
+      copiedObj.imageArr = srcset('/static/img/card/player/', copiedObj.imageVideoArr);
+      delete copiedObj.imageVideoArr;
+      
+      returnObj[value._id] = copiedObj;
+      
     }
     
-    const formattedData = srcset(returnArr[0].imageVideoArr);
     
-    console.log(`
-      returnArr: \n${util.inspect(returnArr, { colors: true, depth: null })}
-    `);
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
     
-    console.log(`
-      formattedData: \n${util.inspect(formattedData, { colors: true, depth: null })}
-    `);
+    return returnObj;
     
-  });
+    
+  } catch (err) {
+    throw err;
+  }
   
   
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
+  // await Model.find({ userId: { $in: userIdArr} }, (err, docArr) => {
+    
+  //   if (err) {
+      
+  //     logger.log('error', `/applications/@database/card-players/model.js / find / Error: ${err}`);
+      
+  //   } else if (docArr.length > 0) {
+      
+  //     for (let value of docArr.values()) {
+        
+  //       const copiedObj = JSON.parse(JSON.stringify(value));
+        
+  //       copiedObj.imageArr = srcset('/static/img/card/player/', copiedObj.imageVideoArr);
+  //       delete copiedObj.imageVideoArr;
+        
+  //       returnObj[value._id] = copiedObj;
+        
+  //     }
+      
+  //     console.log(`
+  //       returnObj: \n${util.inspect(returnObj, { colors: true, depth: null })}
+  //     `);
+      
+  //   }
+    
+  // });
   
-  return returnArr;
+  // console.log(`
+  //   returnObj2: \n${util.inspect(returnObj, { colors: true, depth: null })}
+  // `);
+  
+  // // --------------------------------------------------
+  // //   Return
+  // // --------------------------------------------------
+  
+  // return returnObj;
   
   
 };
@@ -122,7 +175,7 @@ const upsert = async (userId, cardPlayerId) => {
 それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
     imageVideoArr: [
       {
-        id: 'H_NXaMPKG',
+        _id: 'H_NXaMPKG',
         type: 'image',
         caption: 'ライオン',
         fileFormat: 'JPEG',
@@ -180,7 +233,7 @@ const upsert = async (userId, cardPlayerId) => {
       search: true,
     },
     specialSkillsObj: {
-      valueArr: ['英語が話せる！'],
+      valueArr: ['英語���話せる！'],
       search: true,
     },
     smartphoneObj: {
@@ -223,7 +276,7 @@ const upsert = async (userId, cardPlayerId) => {
       {
         type: 'playstation',
         label: '',
-        id: 'AZ-1979',
+        value: 'AZ-1979',
         showType: 1,
         search: true,
         // 1.表示する
@@ -235,35 +288,35 @@ const upsert = async (userId, cardPlayerId) => {
       {
         type: 'xbox',// ゲーマータグ
         label: '',
-        id: 'AZ-1979-Xbox',
+        value: 'AZ-1979-Xbox',
         showType: 1,
         search: true,
       },
       {
         type: 'nintendo',// フレンドコード
         label: '',
-        id: 'AZ-1979',
+        value: 'AZ-1979',
         showType: 1,
         search: true,
       },
       {
         type: 'steam',
         label: '',
-        id: 'Azumi1979',
+        value: 'Azumi1979',
         showType: 1,
         search: true,
       },
       {
         type: 'other',
         label: 'LoL ID',
-        id: 'lol-id',
+        value: 'lol-id',
         showType: 1,
         search: true,
       },
       {
         type: 'other',
         label: 'LoL ID',
-        id: 'lol-id',
+        value: 'lol-id',
         showType: 1,
         search: true,
       }

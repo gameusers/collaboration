@@ -17,7 +17,7 @@ const schema = mongoose.Schema({
   comment: String,
   imageVideoArr: [
     {
-      id: { type: String, required: true },
+      _id: { type: String, required: true },
       type: { type: String, enum: ['image', 'video'], required: true },
       caption: String,
       fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
@@ -96,7 +96,7 @@ const schema = mongoose.Schema({
     {
       type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other'], required: true },
       label: String,
-      id: { type: String, required: true },
+      value: { type: String, required: true },
       showType: { type: Number, min: 1, max: 5 },
       search: { type: Boolean, required: true },
     },

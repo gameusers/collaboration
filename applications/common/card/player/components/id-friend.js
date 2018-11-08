@@ -279,7 +279,7 @@ export default class extends React.Component {
         if (value.type === 'playstation') {
           
           componentIdArr.push(
-            <Id key={`id${index}`}><strong>PlayStation ID: </strong>{value.id}</Id>
+            <Id key={`id${index}`}><strong>PlayStation ID: </strong>{value.value}</Id>
           );
           
         }
@@ -292,7 +292,7 @@ export default class extends React.Component {
         if (value.type === 'xbox') {
           
           componentIdArr.push(
-            <Id key={`id${index}`}><strong>Xbox ID: </strong>{value.id}</Id>
+            <Id key={`id${index}`}><strong>Xbox ID: </strong>{value.value}</Id>
           );
           
         }
@@ -305,7 +305,7 @@ export default class extends React.Component {
         if (value.type === 'nintendo') {
           
           componentIdArr.push(
-            <Id key={`id${index}`}><strong>Nintendo ID: </strong>{value.id}</Id>
+            <Id key={`id${index}`}><strong>Nintendo ID: </strong>{value.value}</Id>
           );
           
         }
@@ -318,7 +318,7 @@ export default class extends React.Component {
         if (value.type === 'steam') {
           
           componentIdArr.push(
-            <Id key={`id${index}`}><strong>Steam ID: </strong>{value.id}</Id>
+            <Id key={`id${index}`}><strong>Steam ID: </strong>{value.value}</Id>
           );
           
         }
@@ -331,7 +331,7 @@ export default class extends React.Component {
         if (value.type === 'other') {
           
           componentIdArr.push(
-            <Id key={`id${index}`}><strong>{value.label} ID: </strong>{value.id}</Id>
+            <Id key={`id${index}`}><strong>{value.label} ID: </strong>{value.value}</Id>
           );
           
         }

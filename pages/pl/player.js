@@ -364,7 +364,7 @@ class Component extends React.Component {
           
           <Container>
             
-            <CardPlayer cardPlayerId="W6VI422uO" />
+            <CardPlayer cardPlayerId="zaoOWw89g" />
             
           </Container>
           

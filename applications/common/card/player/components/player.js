@@ -254,6 +254,10 @@ export default class extends React.Component {
       
     } = stores.data;
     
+    console.log(`
+      cardPlayerObj: \n${util.inspect(cardPlayerObj, { colors: true, depth: null })}
+    `);
+    
     
     // --------------------------------------------------
     //   オブジェクト内にcardPlayerIdがない場合、空のコンポーネントを返す
@@ -275,31 +279,8 @@ export default class extends React.Component {
       imageSrc,
       imageAlt
       
-    } = stores.data.cardPlayerObj[cardPlayerId];
+    } = stores.data.cardPlayerObj[cardPlayerId].imageArr[0];
     
-    // let imageSrcSet = '';
-    // let imageSrc = '';
-    // let imageAlt = '';
-    // const imageVideoArr = cardPlayerObj[cardPlayerId].imageVideoArr;
-    
-    // if (imageVideoArr.length > 0) {
-      
-    //   const imageSetArr = imageVideoArr[0].imageSetArr;
-    //   const tempArr = [];
-      
-    //   for (let value of imageSetArr.values()) {
-        
-    //     if (value.w !== 'source') {
-    //       tempArr.push(`${value.src} ${value.w}`);
-    //       imageSrc = value.src;
-    //     }
-        
-    //   }
-      
-    //   imageSrcSet = tempArr.join(', ');
-    //   imageAlt = imageVideoArr[0].caption;
-      
-    // }
     
     
     // --------------------------------------------------

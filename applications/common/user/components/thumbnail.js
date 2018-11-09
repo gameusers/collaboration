@@ -2,9 +2,15 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+
+
 
 
 
@@ -24,6 +30,8 @@ const ThumbnailSmallImg = styled.img`
   width: 38px;
   // margin: 3px 0 0 0;
 `;
+
+
 
 
 
@@ -61,7 +69,7 @@ export default class extends React.Component {
     //   src = `https://gameusers.org/assets/img/common/thumbnail_none.png`;
     // }
     
-    if (id && id in stores.data.userObj) {
+    if (id && id in stores.data.usersObj) {
       src = `/static/img/user/${id}/thumbnail/128x128.jpg`;
       srcSet = `/static/img/user/${id}/thumbnail/256x256.jpg 320w, /static/img/user/${id}/thumbnail/512x512.jpg 640w`;
     }

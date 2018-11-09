@@ -130,7 +130,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -143,7 +143,7 @@ export default class extends React.Component {
       model,
       comment
       
-    } = stores.data.cardPlayerObj[cardPlayerId].pcObj;
+    } = stores.data.cardPlayersObj[cardPlayers_id].pcObj;
     
     const {
       
@@ -161,7 +161,7 @@ export default class extends React.Component {
       mouse,
       keyboard
       
-    } = stores.data.cardPlayerObj[cardPlayerId].pcObj.specsObj;
+    } = stores.data.cardPlayersObj[cardPlayers_id].pcObj.specsObj;
     
     
     

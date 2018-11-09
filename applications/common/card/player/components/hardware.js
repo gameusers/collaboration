@@ -109,7 +109,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -117,7 +117,7 @@ export default class extends React.Component {
     //   Data - 必要な情報を取得
     // --------------------------------------------------
     
-    const hardwareArr = stores.data.cardPlayerObj[cardPlayerId].ownedHardwareObj.valueArr;
+    const hardwareArr = stores.data.cardPlayersObj[cardPlayers_id].ownedHardwareObj.valueArr;
     
     
     
@@ -164,7 +164,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   cardPlayerId: {green ${cardPlayerId}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
     // console.log(`

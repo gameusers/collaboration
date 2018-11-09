@@ -68,7 +68,7 @@ export default class extends React.Component {
     
     const { stores, id } = this.props;
     
-    const userObj = stores.data.userObj;
+    const usersObj = stores.data.usersObj;
     
     
     
@@ -76,7 +76,7 @@ export default class extends React.Component {
     //   Level
     // --------------------------------------------------
     
-    const level = userObj[id].level;
+    const level = usersObj[id].level;
     
     
     

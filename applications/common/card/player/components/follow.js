@@ -91,7 +91,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -104,7 +104,7 @@ export default class extends React.Component {
       model,
       comment
       
-    } = stores.data.cardPlayerObj[cardPlayerId].pcObj;
+    } = stores.data.cardPlayersObj[cardPlayers_id].pcObj;
     
     
     

@@ -55,7 +55,8 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../applications/common/stores/index';
+// import initStoreIndex from '../../applications/common/stores/index';
+import initStoreIndex from '../../applications/@stores/index';
 import initStoreCardPlayer from '../../applications/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 
@@ -257,8 +258,8 @@ class Component extends React.Component {
       if (
         this.props.statusCode !== 200 ||
         'data' in props.initialPropsObj === false ||
-        'userObj' in props.initialPropsObj.data === false ||
-        'cardPlayerObj' in props.initialPropsObj.data === false
+        'usersObj' in props.initialPropsObj.data === false ||
+        'cardPlayersObj' in props.initialPropsObj.data === false
       ) {
         throw new Error();
       }
@@ -295,8 +296,8 @@ class Component extends React.Component {
       //   Store / Update Data
       // --------------------------------------------------
       
-      this.stores.data.updateUserObj(props.initialPropsObj.data.userObj);
-      this.stores.data.updateCardPlayerObj(props.initialPropsObj.data.cardPlayerObj);
+      this.stores.data.updateUsersObj(props.initialPropsObj.data.usersObj);
+      this.stores.data.updateCardPlayersObj(props.initialPropsObj.data.cardPlayersObj);
       
       
     } catch (e) {
@@ -316,9 +317,9 @@ class Component extends React.Component {
     //   参考：https://github.com/zeit/next.js#custom-error-handling
     // --------------------------------------------------
     
-    if (this.error) {
-      return <Error statusCode={this.props.statusCode} />;
-    }
+    // if (this.error) {
+    //   return <Error statusCode={this.props.statusCode} />;
+    // }
     
     
     
@@ -364,7 +365,7 @@ class Component extends React.Component {
           
           <Container>
             
-            <CardPlayer cardPlayerId="zaoOWw89g" />
+            <CardPlayer cardPlayers_id="zaoOWw89g" />
             
           </Container>
           

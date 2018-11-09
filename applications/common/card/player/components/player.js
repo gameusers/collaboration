@@ -220,7 +220,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -238,8 +238,8 @@ export default class extends React.Component {
     
     let cardExpanded = true;
     
-    if (cardPlayerId in cardExpandedObj) {
-      cardExpanded = cardExpandedObj[cardPlayerId];
+    if (cardPlayers_id in cardExpandedObj) {
+      cardExpanded = cardExpandedObj[cardPlayers_id];
     }
     
     
@@ -250,20 +250,28 @@ export default class extends React.Component {
     
     const {
       
-      cardPlayerObj
+      cardPlayersObj
       
     } = stores.data;
     
-    console.log(`
-      cardPlayerObj: \n${util.inspect(cardPlayerObj, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   cardPlayersObj[cardPlayers_id]: \n${util.inspect(cardPlayersObj[cardPlayers_id], { colors: true, depth: null })}
+    // `);
+    
+    // console.log(chalk`
+    //   cardPlayers_id: {green ${cardPlayers_id}}
+    // `);
     
     
     // --------------------------------------------------
-    //   オブジェクト内にcardPlayerIdがない場合、空のコンポーネントを返す
+    //   オブジェクト内にcardPlayers_idがない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (cardPlayerId in cardPlayerObj === false) {
+    if (cardPlayers_id in cardPlayersObj === false) {
       return null;
     }
     
@@ -279,7 +287,7 @@ export default class extends React.Component {
       imageSrc,
       imageAlt
       
-    } = stores.data.cardPlayerObj[cardPlayerId].imageArr[0];
+    } = stores.data.cardPlayersObj[cardPlayers_id].imageArr[0];
     
     
     
@@ -287,8 +295,8 @@ export default class extends React.Component {
     //   プロフィール情報
     // --------------------------------------------------
     
-    const userId = cardPlayerObj[cardPlayerId].userId;
-    const comment = cardPlayerObj[cardPlayerId].comment;
+    const userId = cardPlayersObj[cardPlayers_id].userId;
+    const comment = cardPlayersObj[cardPlayers_id].comment;
     
     
     
@@ -338,7 +346,7 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handleCardExpanded(cardPlayerId)}
+              onClick={() => handleCardExpanded(cardPlayers_id)}
               aria-expanded={cardExpanded}
               aria-label="Show more"
             >
@@ -382,43 +390,43 @@ export default class extends React.Component {
             
             {/* 年齢・性別などのプロフィール */}
             <ComponentBox>
-              <Profile cardPlayerId={cardPlayerId} />
+              <Profile cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
             {/* 所有ハード */}
             <ComponentBox>
-              <Hardware cardPlayerId={cardPlayerId} />
+              <Hardware cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
             {/* スマートフォン */}
             <ComponentBox>
-              <Smartphone cardPlayerId={cardPlayerId} />
+              <Smartphone cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
             {/* タブレット */}
             <ComponentBox>
-              <Tablet cardPlayerId={cardPlayerId} />
+              <Tablet cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
             {/* PC */}
             <ComponentBox>
-              <Pc cardPlayerId={cardPlayerId} />
+              <Pc cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
             {/* ID & Friend */}
             <ComponentBox>
-              <IdFriend cardPlayerId={cardPlayerId} />
+              <IdFriend cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
             {/* Link */}
             <ComponentBox>
-              <Link cardPlayerId={cardPlayerId} />
+              <Link cardPlayers_id={cardPlayers_id} />
             </ComponentBox>
             
             
@@ -428,7 +436,7 @@ export default class extends React.Component {
           {/* フォローボタン */}
           <CardActions disableActionSpacing>
             <FollowBox>
-              <Follow cardPlayerId={cardPlayerId} />
+              <Follow cardPlayers_id={cardPlayers_id} />
             </FollowBox>
           </CardActions>
           

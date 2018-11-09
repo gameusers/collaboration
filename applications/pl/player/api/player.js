@@ -72,25 +72,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   {green pl/player/api/player / initial-props}
-    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
     //   CSRF
     // --------------------------------------------------
     
     verifyCsrfToken(req, res);
+    
     
     
     // --------------------------------------------------
@@ -99,6 +85,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     const returnObj = {};
     returnObj.data = {};
+    
     
     
     // --------------------------------------------------
@@ -112,21 +99,32 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     }
     
     
+    
     // --------------------------------------------------
-    //   Model / Users / Find
+    //   Model / Users / findOne_IdByPlayerId
     // --------------------------------------------------
     
-    const userId = await ModelUsers.findUserId(req.query.playerId);
+    const users_id = await ModelUsers.findOne_IdByPlayerId(req.query.playerId);
     
-    if (!userId) {
-      throw new Error('userIdが空です。');
+    if (!users_id) {
+      throw new Error('users_id が空です。');
     }
     
-    // console.log(chalk`
-    //   userId: {green ${userId}}
-    // `);
     
-    // throw new Error('Error');
+    
+    // --------------------------------------------------
+    //   Model / Users / findBy_Id
+    // --------------------------------------------------
+    
+    const usersObj = await ModelUsers.findBy_Id([users_id]);
+    
+    if (!usersObj) {
+      throw new Error('usersObj が空です。');
+    }
+    
+    returnObj.data.usersObj = usersObj;
+    
+    
     
     // --------------------------------------------------
     //   Model / Card Players / Upsert
@@ -137,53 +135,66 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // await ModelCardPlayers.upsert('a8b0gX6lMIz');
     
     
+    
     // --------------------------------------------------
     //   Model / Card Players / Find
     // --------------------------------------------------
     
-    const cardPlayersObj = await ModelCardPlayers.find([userId]);
+    const cardPlayersObj = await ModelCardPlayers.find([users_id]);
+    returnObj.data.cardPlayersObj = cardPlayersObj;
     
-    // ModelCardPlayers.findRcd(query)
-    //   .then((searchResultSet) => {
-    //       // console.log(`searchResultSet: ${JSON.stringify(searchResultSet)}`);
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   {green pl/player/api/player / initial-props}
+    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    //   users_id: {green ${users_id}}
+    // `);
+    
+    // console.log(`
+    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
+    //   usersObj: \n${util.inspect(usersObj, { colors: true, depth: null })}
+    //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
+    // `);
+    
+    
+    
+    // --------------------------------------------------
+    //   Database / Users 取得
+    // --------------------------------------------------
+    
+    // returnObj.data.usersObj = {
+    //   'jun-deE4J': {
+    //     name: 'あづみデッドバイデイライト',
+    //     status: 'プロハンター',
+    //     playerId: 'az1979',
+    //     playerPage: '/pl/az1979',
+    //     level: 999,
+    //     accessDate: '2018-08-06T08:50:00Z',
+    //     cardPlayerObj: {
+    //       birthday: '2002-10-19T00:00:00Z',
+    //       sex: 'male',
+    //     },
+    //     cardGameObj: {
+    //       'reaBMD4W6': {
+    //         birthday: '2002-10-19T00:00:00Z',
+    //         sex: 'male',
+    //       }
+    //     }
     //   }
-    
-    console.log(`
-      cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
-    `);
+    // };
     
     
     // --------------------------------------------------
     //   Database / Users 取得
     // --------------------------------------------------
     
-    returnObj.data.userObj = {
-      'jun-deE4J': {
-        name: 'あづみデッドバイデイライト',
-        status: 'プロハンター',
-        playerId: 'az1979',
-        playerPage: '/pl/az1979',
-        level: 999,
-        accessDate: '2018-08-06T08:50:00Z',
-        cardPlayerObj: {
-          birthday: '2002-10-19T00:00:00Z',
-          sex: 'male',
-        },
-        cardGameObj: {
-          'reaBMD4W6': {
-            birthday: '2002-10-19T00:00:00Z',
-            sex: 'male',
-          }
-        }
-      }
-    };
-    
-    
-    // --------------------------------------------------
-    //   Database / Users 取得
-    // --------------------------------------------------
-    
-    returnObj.data.cardPlayerObj = cardPlayersObj;
+    returnObj.data.cardPlayersObj = cardPlayersObj;
     
 //     returnObj.data.cardPlayerObj = {
 //       'W6VI422uO': {

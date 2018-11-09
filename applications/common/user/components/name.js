@@ -172,7 +172,7 @@ export default class extends React.Component {
     
     const { stores, id, anonymity, name, status } = this.props;
     
-    const userObj = stores.data.userObj;
+    const usersObj = stores.data.usersObj;
     
     
     
@@ -190,9 +190,9 @@ export default class extends React.Component {
       
       componentName = <NameNoColor>{name}</NameNoColor>;
       
-    } else if (id && id in userObj) {
+    } else if (id && id in usersObj) {
       
-      componentName = <Name>{userObj[id].name}</Name>;
+      componentName = <Name>{usersObj[id].name}</Name>;
       
     } else {
       
@@ -216,9 +216,9 @@ export default class extends React.Component {
       
       componentStatus = <StatusBox><StyledIconHealing /><Status>{status}</Status></StatusBox>;
       
-    } else if (id && id in userObj) {
+    } else if (id && id in usersObj) {
       
-      componentStatus = <StatusBox><StyledIconHealing /><Status>{userObj[id].status}</Status></StatusBox>;
+      componentStatus = <StatusBox><StyledIconHealing /><Status>{usersObj[id].status}</Status></StatusBox>;
       
     } else {
       
@@ -234,10 +234,10 @@ export default class extends React.Component {
     
     let componentAccessTime = '';
     
-    if (id && id in userObj) {
+    if (id && id in usersObj) {
       
       const datetimeNow = moment().utcOffset(0);
-      const datetimeAccess = moment(userObj[id].accessDate).utcOffset(0);
+      const datetimeAccess = moment(usersObj[id].accessDate).utcOffset(0);
       const accessTime = datetimeAccess.from(datetimeNow);
       
       componentAccessTime = <AccessTimeBox><StyledIconSchedule /><AccessTime>{accessTime}</AccessTime></AccessTimeBox>;
@@ -251,9 +251,9 @@ export default class extends React.Component {
     
     let componentLevel = '';
     
-    if (id && id in userObj) {
+    if (id && id in usersObj) {
       
-      componentLevel = <LevelBox><StyledIconStars /><Level>Lv.{userObj[id].level}</Level></LevelBox>;
+      componentLevel = <LevelBox><StyledIconStars /><Level>Lv.{usersObj[id].level}</Level></LevelBox>;
       
     }
     

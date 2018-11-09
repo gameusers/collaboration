@@ -126,7 +126,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -134,7 +134,7 @@ export default class extends React.Component {
     //   Data - 必要な情報を取得
     // --------------------------------------------------
     
-    const linkArr = stores.data.cardPlayerObj[cardPlayerId].linkArr;
+    const linkArr = stores.data.cardPlayersObj[cardPlayers_id].linkArr;
     
     
     
@@ -205,7 +205,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   cardPlayerId: {green ${cardPlayerId}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
     // console.log(`

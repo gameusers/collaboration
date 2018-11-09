@@ -211,7 +211,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -227,18 +227,18 @@ export default class extends React.Component {
     //   steamObj,
     //   otherArr
       
-    // } = stores.data.cardPlayerObj[cardPlayerId].idObj;
-    const idArr = stores.data.cardPlayerObj[cardPlayerId].idArr;
-    const activityTimeArr = stores.data.cardPlayerObj[cardPlayerId].activityTimeObj.valueArr;
+    // } = stores.data.cardPlayersObj[cardPlayers_id].idObj;
+    const idArr = stores.data.cardPlayersObj[cardPlayers_id].idArr;
+    const activityTimeArr = stores.data.cardPlayersObj[cardPlayers_id].activityTimeObj.valueArr;
     
-    const lookingForFriends = stores.data.cardPlayerObj[cardPlayerId].lookingForFriendsObj.value;
-    const lookingForFriendsIcon = stores.data.cardPlayerObj[cardPlayerId].lookingForFriendsObj.icon;
-    const lookingForFriendsComment = stores.data.cardPlayerObj[cardPlayerId].lookingForFriendsObj.comment;
+    const lookingForFriends = stores.data.cardPlayersObj[cardPlayers_id].lookingForFriendsObj.value;
+    const lookingForFriendsIcon = stores.data.cardPlayersObj[cardPlayers_id].lookingForFriendsObj.icon;
+    const lookingForFriendsComment = stores.data.cardPlayersObj[cardPlayers_id].lookingForFriendsObj.comment;
     
-    const voiceChat = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.value;
-    const voiceChatComment = stores.data.cardPlayerObj[cardPlayerId].voiceChatObj.comment;
+    const voiceChat = stores.data.cardPlayersObj[cardPlayers_id].voiceChatObj.value;
+    const voiceChatComment = stores.data.cardPlayersObj[cardPlayers_id].voiceChatObj.comment;
     
-    const linkArr = stores.data.cardPlayerObj[cardPlayerId].linkArr;
+    const linkArr = stores.data.cardPlayersObj[cardPlayers_id].linkArr;
     
     
     
@@ -489,7 +489,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   cardPlayerId: {green ${cardPlayerId}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
     // console.log(`

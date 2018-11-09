@@ -86,7 +86,7 @@ const find = async (userIdArr) => {
     // --------------------------------------------------
     
     for (let value of docArr.values()) {
-        
+      
       const copiedObj = JSON.parse(JSON.stringify(value));
       
       copiedObj.imageArr = srcset('/static/img/card/player/', copiedObj.imageVideoArr);

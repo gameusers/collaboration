@@ -39,47 +39,125 @@ const logger = require('../../@modules/logger');
 // --------------------------------------------------
 
 /**
- * Player IDからUser IDを取得する / 1件だけ
+ * Player ID で検索し _id を取得する / 1件だけ
  * @param {string} playerId - Player ID
- * @return {string} userId
+ * @return {string} _id
  */
-const findUserId = async (playerId) => {
+const findOne_IdByPlayerId = async (playerId) => {
   
   
   // --------------------------------------------------
   //   Return Value
   // --------------------------------------------------
   
-  let userId = '';
+  let returnValue = '';
   
   
   // --------------------------------------------------
-  //   Find
+  //   Database
   // --------------------------------------------------
   
-  await Model.findOne({ playerId: playerId }, '_id', (err, docObj) => {
+  try {
     
-    if (err) {
-      logger.log('error', `/applications/@database/users/model.js / findUserId / Error: ${err}`);
-    } else if ('_id' in docObj) {
-      userId = docObj._id;
+    
+    // --------------------------------------------------
+    //   FindOne
+    // --------------------------------------------------
+    
+    const condition = { playerId: playerId };
+    const docObj = await Model.findOne(condition).select('_id').exec();
+    
+    if ('_id' in docObj) {
+      returnValue = docObj._id;
     }
+    
+    // console.log(`
+    //   playerId: \n${util.inspect(playerId, { colors: true, depth: null })}
+    // `);
     
     // console.log(`
     //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
     // `);
     
-  });
-  
-  
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
-  
-  return userId;
-  
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnValue;
+    
+    
+  } catch (err) {
+    throw err;
+  }
   
 };
+
+
+
+/**
+ * _id で検索しドキュメントを取得する
+ * @param {array} _idArr - _idの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
+ * @return {object} 取得されたデータ
+ */
+const findBy_Id = async (_idArr) => {
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const condition = { _id: { $in: _idArr} };
+    const docArr = await Model.find(condition).select('_id role name status playerId level accessDate').exec();
+    
+    for (let value of docArr.values()) {
+      const copiedObj = JSON.parse(JSON.stringify(value));
+      delete copiedObj._id;
+      returnObj[value._id] = copiedObj;
+    }
+    
+    
+    // console.log(`
+    //   _idArr: \n${util.inspect(_idArr, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   returnObj: \n${util.inspect(returnObj, { colors: true, depth: null })}
+    // `);
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    throw err;
+  }
+  
+};
+
 
 
 /**
@@ -87,39 +165,39 @@ const findUserId = async (playerId) => {
  * @param {array} playerIdArr - Player IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
  * @return {object} 取得されたデータ
  */
-const find = async (playerIdArr) => {
+// const find = async (playerIdArr) => {
   
   
-  // --------------------------------------------------
-  //   Return Object
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return Object
+//   // --------------------------------------------------
   
-  let returnObj = {};
+//   let returnObj = {};
   
   
-  // --------------------------------------------------
-  //   Find
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Find
+//   // --------------------------------------------------
   
-  await Model.find({ playerId: { $in: playerIdArr} }, (err, docObj) => {
+//   await Model.find({ playerId: { $in: playerIdArr} }, (err, docObj) => {
     
-    if (err) {
-      logger.log('error', `/applications/@database/users/model.js / find / Error: ${err}`);
-    } else {
-      returnObj = docObj;
-    }
+//     if (err) {
+//       logger.log('error', `/applications/@database/users/model.js / find / Error: ${err}`);
+//     } else {
+//       returnObj = docObj;
+//     }
     
-  });
+//   });
   
   
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return
+//   // --------------------------------------------------
   
-  return returnObj;
+//   return returnObj;
   
   
-};
+// };
 
 
 
@@ -412,7 +490,8 @@ const upsert = async (userId, cardPlayerId) => {
 // --------------------------------------------------
 
 module.exports = {
-  findUserId,
-  find,
+  findOne_IdByPlayerId,
+  findBy_Id,
+  // find,
   upsert
 };

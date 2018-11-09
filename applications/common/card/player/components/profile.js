@@ -117,7 +117,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayerId } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     
     
@@ -125,7 +125,7 @@ export default class extends React.Component {
     //   Data - 必要な情報を取得
     // --------------------------------------------------
     
-    const playerObj = stores.data.cardPlayerObj[cardPlayerId];
+    const playerObj = stores.data.cardPlayersObj[cardPlayers_id];
     
     const birthdayValue = playerObj.birthdayObj.value;
     const birthdayAlternativeText = playerObj.birthdayObj.alternativeText;

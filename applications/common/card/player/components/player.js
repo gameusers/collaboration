@@ -89,6 +89,7 @@ const CardTopBox = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
+  // width: 100%;
   margin: 0;
   padding: 0;
   // background-color: red;
@@ -105,10 +106,11 @@ const UserInfoBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   // margin: 15px 12px 12px 10px;
-  padding: 4px 0 0 10px;
+  padding: 2px 0 0 10px;
   // background-color: thistle;
   
-  max-width: 320px;
+  // width: 100%;
+  // max-width: 320px;
   
   @media screen and (max-width: 480px) {
     max-width: initial;
@@ -118,6 +120,7 @@ const UserInfoBox = styled.div`
 const UserNameBox = styled.div`
   display: flex;
   flex-flow: row wrap;
+  // width: 100%;
   margin: 0;
   padding: 0;
   // padding: 0 12px 0 0;

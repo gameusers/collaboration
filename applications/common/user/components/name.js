@@ -13,12 +13,23 @@ import moment from 'moment';
 
 
 // ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+
+
+// ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
 import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconStars from '@material-ui/icons/Stars';
+import IconCard1 from '@material-ui/icons/Layers';
+import IconCard2 from '@material-ui/icons/LayersOutlined';
+
 
 
 // ---------------------------------------------
@@ -38,17 +49,28 @@ moment.locale('ja');
 
 const Container = styled.div`
   display: flex;
-  flex-flow: row wrap;
-  align-items: flex-end;
-  line-height: 1.3em;
-  margin: 0 0 0 0;
+  flex-flow: column wrap;
+  line-height: 1.4em;
+  margin: 0;
   padding: 0;
-  // width: 80%;
-  // background-color: pink;
+  // background-color: green;
   
-  // @media screen and (max-width: 480px) {
-  //   width: 100%;
-  // }
+  @media screen and (max-width: 768px) {
+    flex-flow: row wrap;
+  }
+`;
+
+
+
+// ---------------------------------------------
+//   Name And Status
+// ---------------------------------------------
+
+const NameAndStatusBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  // align-items: flex-end;
+  // background-color: green;
 `;
 
 
@@ -77,7 +99,6 @@ const NameNoColor = styled.div`
 const StatusBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  // align-items: center;
   margin: 0;
   padding: 0;
   // background-color: pink;
@@ -86,7 +107,7 @@ const StatusBox = styled.div`
 const StyledIconHealing = styled(IconHealing)`
   && {
     font-size: 18px;
-    margin: 0 2px 0 0;
+    margin: 1px 2px 0 0;
   }
 `;
 
@@ -97,13 +118,19 @@ const Status = styled.div`
 
 
 // ---------------------------------------------
+//   Player Card
+// ---------------------------------------------
+
+
+
+
+// ---------------------------------------------
 //   Access Time
 // ---------------------------------------------
 
 const AccessTimeBox = styled.div`
   display: flex;
-  flex-flow: row wrap;
-  // align-items: center;
+  flex-flow: row nowrap;
   margin: 0;
   padding: 0;
 `;
@@ -111,7 +138,7 @@ const AccessTimeBox = styled.div`
 const StyledIconSchedule = styled(IconSchedule)`
   && {
     font-size: 18px;
-    margin: 0 3px 0 0;
+    margin: 1px 3px 0 0;
   }
 `;
 
@@ -127,8 +154,7 @@ const AccessTime = styled.div`
 
 const LevelBox = styled.div`
   display: flex;
-  flex-flow: row wrap;
-  // align-items: center;
+  flex-flow: row nowrap;
   margin: 0;
   padding: 0;
 `;
@@ -136,15 +162,48 @@ const LevelBox = styled.div`
 const StyledIconStars = styled(IconStars)`
   && {
     font-size: 18px;
-    margin: 0 3px 0 0;
+    margin: 1px 3px 0 0;
   }
 `;
 
 const Level = styled.div`
   font-size: 14px;
+  margin: 0 6px 0 0;
+`;
+
+
+
+// ---------------------------------------------
+//   Cards
+// ---------------------------------------------
+
+const LevelAndCardBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
   margin: 0 0 0 0;
 `;
 
+const StyledButton = styled(Button)`
+  && {
+    margin: 0 6px 0 0;
+    padding: 0 6px 0 3px;
+    font-size: 12px;
+    // min-width: 36px;
+    min-height: 20px
+  }
+`;
+
+const StyledIconCard1 = styled(IconCard1)`
+  && {
+    font-size: 18px;
+  }
+`;
+
+const StyledIconCard2 = styled(IconCard2)`
+  && {
+    font-size: 18px;
+  }
+`;
 
 
 
@@ -265,10 +324,28 @@ export default class extends React.Component {
     
     return (
       <Container>
-        {componentName}
-        {componentStatus}
-        {componentAccessTime}
-        {componentLevel}
+        <NameAndStatusBox>
+          {componentName}
+          {componentStatus}
+          {componentAccessTime}
+          
+        </NameAndStatusBox>
+        
+        <LevelAndCardBox>
+          
+          {componentLevel}
+          
+          <StyledButton variant="outlined">
+            <StyledIconCard1 />
+            Player
+          </StyledButton>
+          
+          <StyledButton variant="outlined">
+            <StyledIconCard2 />
+            Game
+          </StyledButton>
+          
+        </LevelAndCardBox>
       </Container>
     );
     

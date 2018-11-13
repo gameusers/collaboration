@@ -49,6 +49,7 @@ const {
 
 const ModelUsers = require('../../../@database/users/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
+const ModelCardGames = require('../../../@database/card-games/model');
 
 
 // --------------------------------------------------
@@ -130,7 +131,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   Model / Card Players / Upsert
     // --------------------------------------------------
     
-    // await ModelCardPlayers.upsert(userId, 'zaoOWw89g');
+    await ModelCardPlayers.upsert(users_id, 'zaoOWw89g');
     // await ModelCardPlayers.upsert('a8b0gX6lMIz', 'zaoOWw89g');
     // await ModelCardPlayers.upsert('a8b0gX6lMIz');
     
@@ -142,6 +143,14 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     const cardPlayersObj = await ModelCardPlayers.find([users_id]);
     returnObj.data.cardPlayersObj = cardPlayersObj;
+    
+    
+    
+    // --------------------------------------------------
+    //   Model / Card Games / upsert
+    // --------------------------------------------------
+    
+    await ModelCardGames.upsert(users_id, 'TzjNMDQyl');
     
     
     

@@ -178,9 +178,9 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   DB Insert
     // --------------------------------------------------
     
-    await ModelUsers.create([obj1], { session: session });
-    // throw new Error();
-    await ModelUsers.create([obj2], { session: session });
+    // await ModelUsers.create([obj1], { session: session });
+    // // throw new Error();
+    // await ModelUsers.create([obj2], { session: session });
     
     
     // await ModelUsersInstance1.save();

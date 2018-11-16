@@ -223,7 +223,7 @@ class Component extends React.Component {
       })
       .then((jsonObj) => {
         
-        // console.log(`then 1`);
+        console.log(`then 1`);
         // console.dir(jsonObj);
         
         
@@ -241,9 +241,9 @@ class Component extends React.Component {
         //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
         // `);
         
-        // console.log(`
-        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-        // `);
+        console.log(`
+          jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        `);
         
         
         // --------------------------------------------------
@@ -285,17 +285,6 @@ class Component extends React.Component {
     
     const { publicRuntimeConfig } = getConfig();
     this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
-    
-    this.verifyRecaptcha = true;
-    
-    if (publicRuntimeConfig.verifyRecaptcha === '0') {
-      this.verifyRecaptcha = false;
-    }
-    
-    
-    // console.log(chalk`
-    //   this.verifyRecaptcha: {green ${this.verifyRecaptcha}}
-    // `);
     
     
     // --------------------------------------------------
@@ -550,13 +539,8 @@ class Component extends React.Component {
     //   reCAPTCHA
     // --------------------------------------------------
     
-    let loginRecaptchaRef = '';
-    let createAccountRecaptchaRef = '';
-    
-    if (this.verifyRecaptcha) {
-      loginRecaptchaRef = React.createRef();
-      createAccountRecaptchaRef = React.createRef();
-    }
+    const loginRecaptchaRef = React.createRef();
+    const createAccountRecaptchaRef = React.createRef();
     
     
     
@@ -655,17 +639,15 @@ class Component extends React.Component {
                     
                     
                     {/* reCAPTCHA */}
-                    { this.verifyRecaptcha &&
-                      <ReCAPTCHAContainer>
-                        <ReCAPTCHA
-                          ref={loginRecaptchaRef}
-                          size="invisible"
-                          badge="inline"
-                          sitekey={this.recaptchaSiteKey}
-                          onChange={handleLoginRecaptchaResponse}
-                        />
-                      </ReCAPTCHAContainer>
-                    }
+                    <ReCAPTCHAContainer>
+                      <ReCAPTCHA
+                        ref={loginRecaptchaRef}
+                        size="invisible"
+                        badge="inline"
+                        sitekey={this.recaptchaSiteKey}
+                        onChange={handleLoginRecaptchaResponse}
+                      />
+                    </ReCAPTCHAContainer>
                     
                     
                   </form>
@@ -837,17 +819,15 @@ class Component extends React.Component {
                     
                     
                     {/* reCAPTCHA */}
-                    { this.verifyRecaptcha &&
-                      <ReCAPTCHAContainer>
-                        <ReCAPTCHA
-                          ref={createAccountRecaptchaRef}
-                          size="invisible"
-                          badge="inline"
-                          sitekey={this.recaptchaSiteKey}
-                          onChange={handleCreateAccountRecaptchaResponse}
-                        />
-                      </ReCAPTCHAContainer>
-                    }
+                    <ReCAPTCHAContainer>
+                      <ReCAPTCHA
+                        ref={createAccountRecaptchaRef}
+                        size="invisible"
+                        badge="inline"
+                        sitekey={this.recaptchaSiteKey}
+                        onChange={handleCreateAccountRecaptchaResponse}
+                      />
+                    </ReCAPTCHAContainer>
                     
                     
                   </form>

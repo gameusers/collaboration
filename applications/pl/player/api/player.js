@@ -132,8 +132,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     await ModelCardPlayers.upsert(users_id, 'zaoOWw89g');
-    // await ModelCardPlayers.upsert('a8b0gX6lMIz', 'zaoOWw89g');
-    // await ModelCardPlayers.upsert('a8b0gX6lMIz');
     
     
     
@@ -172,13 +170,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // `);
     
     
-    
-    
-    // --------------------------------------------------
-    //   Database / Users 取得
-    // --------------------------------------------------
-    
-    // returnObj.data.cardPlayersObj = cardPlayersObj;
     
     
     

@@ -47,12 +47,12 @@ const logger = require('../../@modules/logger');
 
 /**
  * 取得する
- * @param {array} userIdArr - User IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
+ * @param {array} users_idArr - User IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
  * @return {object} 取得されたデータ
  */
-const find = async (userIdArr) => {
+const find = async (users_idArr) => {
   // console.log(`
-  //     userIdArr: \n${util.inspect(userIdArr, { colors: true, depth: null })}
+  //     users_idArr: \n${util.inspect(users_idArr, { colors: true, depth: null })}
   //   `);
   
   // --------------------------------------------------
@@ -73,7 +73,7 @@ const find = async (userIdArr) => {
     //   Find
     // --------------------------------------------------
     
-    const condition = { userId: { $in: userIdArr} };
+    const condition = { users_id: { $in: users_idArr} };
     const docArr = await Model.find(condition).exec();
     
     // console.log(`
@@ -105,47 +105,10 @@ const find = async (userIdArr) => {
     
     
   } catch (err) {
+    
     throw err;
+    
   }
-  
-  
-  // await Model.find({ userId: { $in: userIdArr} }, (err, docArr) => {
-    
-  //   if (err) {
-      
-  //     logger.log('error', `/applications/@database/card-players/model.js / find / Error: ${err}`);
-      
-  //   } else if (docArr.length > 0) {
-      
-  //     for (let value of docArr.values()) {
-        
-  //       const copiedObj = JSON.parse(JSON.stringify(value));
-        
-  //       copiedObj.imageArr = srcset('/static/img/card/player/', copiedObj.imageVideoArr);
-  //       delete copiedObj.imageVideoArr;
-        
-  //       returnObj[value._id] = copiedObj;
-        
-  //     }
-      
-  //     console.log(`
-  //       returnObj: \n${util.inspect(returnObj, { colors: true, depth: null })}
-  //     `);
-      
-  //   }
-    
-  // });
-  
-  // console.log(`
-  //   returnObj2: \n${util.inspect(returnObj, { colors: true, depth: null })}
-  // `);
-  
-  // // --------------------------------------------------
-  // //   Return
-  // // --------------------------------------------------
-  
-  // return returnObj;
-  
   
 };
 
@@ -156,7 +119,7 @@ const find = async (userIdArr) => {
  * @param {string} cardPlayers_id - ID
  * @return {string} 
  */
-const upsert = async (userId, cardPlayers_id) => {
+const upsert = async (users_id, cardPlayers_id) => {
   
   
   // --------------------------------------------------
@@ -174,7 +137,7 @@ const upsert = async (userId, cardPlayers_id) => {
     
     
     const saveObj = {
-      userId,
+      users_id,
       updatedDate: moment().utcOffset(0),
       comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
@@ -187,26 +150,31 @@ const upsert = async (userId, cardPlayers_id) => {
           fileFormat: 'JPEG',
           srcSetArr: [
             {
+              _id: 'himsYqtCL',
               w: '320w',
               width: 320,
               height: 180,
             },
             {
+              _id: 'Cfjt2j3Y_',
               w: '480w',
               width: 480,
               height: 270,
             },
             {
+              _id: 'EjUz0NL8z',
               w: '640w',
               width: 640,
               height: 360,
             },
             {
+              _id: 'g9u6JQkLh',
               w: '800w',
               width: 800,
               height: 450,
             },
             {
+              _id: 'TsNkkGwok',
               w: 'source',
               width: 1920,
               height: 1080,
@@ -336,11 +304,13 @@ const upsert = async (userId, cardPlayers_id) => {
       activityTimeObj: {
         valueArr: [
           {
+            _id: 'fkqjMZzff',
             beginTime: '19:00',
             endTime: '24:00',
             weekArr: [0, 1, 2, 3, 4]
           },
           {
+            _id: 'J-ReJUaTK',
             beginTime: '9:00',
             endTime: '24:00',
             weekArr: [5, 6]
@@ -361,48 +331,56 @@ const upsert = async (userId, cardPlayers_id) => {
       },
       linkArr: [
         {
+          _id: 'FbbgE5PTW',
           type: 'twitter',
           label: '',
           url: 'https://twitter.com/Azumi1979',
           search: true,
         },
         {
+          _id: 'VMp_Vlk_V',
           type: 'facebook',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
+          _id: 'IqNtEQQsO',
           type: 'instagram',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
+          _id: 'yBC3AHqrP',
           type: 'youtube',
           label: '',
           url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
           search: true,
         },
         {
+          _id: 'YD8DHCvb_',
           type: 'twitch',
           label: '',
           url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
           search: true,
         },
         {
+          _id: '8u2ht4NLv',
           type: 'steam',
           label: '',
           url: 'https://steamcommunity.com/profiles/76561198031526480/',
           search: true,
         },
         {
+          _id: 'lqNaKEL49',
           type: 'pixiv',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
+          _id: 'zcPp3XyEw',
           type: 'other',
           label: '開発サイト',
           url: 'http://35.203.143.160:8080/',

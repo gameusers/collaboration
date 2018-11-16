@@ -132,3 +132,11 @@
 {"level":"error","message":"/applications/@database/card-players/model.js / find / Error: CastError: Cast to string failed for value \"Promise { <pending> }\" at path \"userId\" for model \"card-players\""}
 {"level":"error","message":"/applications/@database/card-players/model.js / find / Error: CastError: Cast to string failed for value \"Promise { <pending> }\" at path \"userId\" for model \"card-players\""}
 {"level":"error","message":"/applications/@database/card-players/model.js / find / Error: CastError: Cast to string failed for value \"Promise { <pending> }\" at path \"userId\" for model \"card-players\""}
+{"level":"error","message":"/applications/@database/users/model.js / insert / Error: ValidationError: level: Cast to Number failed for value \"AAA\" at path \"level\""}
+{"level":"error","message":"/applications/login/index/api/login.js\nrouter.post('/')\nTest"}
+{"level":"error","message":"/applications/login/index/api/login.js\n  router.post('/')\n  Test"}
+{"level":"error","message":"/applications/login/index/api/login.js\n - router.post('/')\n - Test"}
+{"level":"error","message":"\n        /applications/login/index/api/login.js\n          - router.post('/')\n          - Test\n      "}
+{"level":"error","message":"\n        /applications/login/index/api/login.js\n        router.post('/')\n        Test\n      "}
+{"level":"error","message":"/applications/login/index/api/login.js\nrouter.post('/create-account')\nLogin Already"}
+{"level":"error","message":"/applications/login/index/api/login.js\nrouter.post('/create-account')\nError: 作成したアカウントでログインできませんでした。"}

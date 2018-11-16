@@ -298,7 +298,7 @@ export default class extends React.Component {
     //   プロフィール情報
     // --------------------------------------------------
     
-    const userId = cardPlayersObj[cardPlayers_id].userId;
+    const users_id = cardPlayersObj[cardPlayers_id].users_id;
     const comment = cardPlayersObj[cardPlayers_id].comment;
     
     
@@ -307,7 +307,7 @@ export default class extends React.Component {
     
     
     // console.log(chalk`
-    //   userId: {green ${userId}}
+    //   users_id: {green ${users_id}}
       
     //   imageSrcSet: {green ${imageSrcSet}}
     //   imageSrc: {green ${imageSrc}}
@@ -331,14 +331,14 @@ export default class extends React.Component {
           <UserBox>
             
             <UserThumbnailBox>
-              <UserThumbnail id={userId} />
+              <UserThumbnail id={users_id} />
             </UserThumbnailBox>
             
             
             <UserInfoBox>
             
               <UserNameBox>
-                <UserName id={userId} />
+                <UserName id={users_id} />
               </UserNameBox>
               
             </UserInfoBox>

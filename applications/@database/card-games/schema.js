@@ -13,7 +13,8 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
-  userId: { type: String, required: true },
+  users_id: { type: String, required: true },
+  games_id: { type: String, required: true },
   theme: String,
   comment: String,
   imageVideoArr: [
@@ -24,6 +25,7 @@ const schema = mongoose.Schema({
       fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
       srcSetArr: [
         {
+          _id: { type: String, required: true },
           w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
           width: { type: Number, required: true },
           height: { type: Number, required: true },
@@ -38,8 +40,9 @@ const schema = mongoose.Schema({
   itemArr: mongoose.Schema.Types.Mixed,
   idArr: [
     {
-      quotation: String,
-      type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other'], required: true },
+      _id: { type: String, required: true },
+      quotation_id: String,
+      type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other', 'quotation'], required: true },
       label: String,
       value: { type: String, required: true },
       showType: { type: Number, min: 1, max: 5 },
@@ -50,6 +53,7 @@ const schema = mongoose.Schema({
     quotation: { type: Boolean, required: true },
     valueArr: [
       {
+        _id: { type: String, required: true },
         beginTime: { type: String, required: true },
         endTime: { type: String, required: true },
         weekArr: [Number],
@@ -70,6 +74,16 @@ const schema = mongoose.Schema({
     comment: String,
     search: { type: Boolean, required: true },
   },
+  linkArr: [
+    {
+      _id: { type: String, required: true },
+      quotation_id: String,
+      type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other', 'quotation'], required: true },
+      label: String,
+      url: { type: String, required: true },
+      search: { type: Boolean, required: true },
+    },
+  ],
 });
 
 module.exports = mongoose.model('card-games', schema);

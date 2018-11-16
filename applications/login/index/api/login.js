@@ -2,35 +2,58 @@
 //   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-
-const shortid = require('shortid');
+// const shortid = require('shortid');
 const bcrypt = require('bcrypt');
-const chalk = require('chalk');
-const util = require('util');
+const fetch = require('isomorphic-unfetch');
+const FormData = require('form-data');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../../@modules/csrf');
 const { verifyRecaptcha } = require('../../../@modules/recaptcha');
-const { encrypt }  = require('../../../@modules/crypto');
-
-const {
-  validationId,
-  validationPassword,
-  validationEmail
-} = require('../../../@database/users/validations/login');
-
 
 
 // ---------------------------------------------
-//   Require: Model
+//   Validation
 // ---------------------------------------------
 
-const ModelUsers = require('../../../@database/users/schema');
+const validationLoginId = require('../../../@database/users/validations/login-id');
+const { validationLoginPassword } = require('../../../@database/users/validations/login-password');
 
+
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelUsers = require('../../../@database/users/model');
+const SchemaUsers = require('../../../@database/users/schema');
+
+
+// ---------------------------------------------
+//   Logger
+// ---------------------------------------------
+
+const logger = require('../../../@modules/logger');
 
 
 // --------------------------------------------------
@@ -44,34 +67,10 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   テスト
-// --------------------------------------------------
-
-// router.get('/test', upload.none(), (req, res) => {
-  
-//   // console.log(chalk`
-//   //   test: {red ${req.body.createAccountId}}
-//   //   req.body.createAccountPassword: {green ${req.body.createAccountPassword}}
-//   // `);
-  
-//   console.log(`\n\nAPI test\n\n`);
-  
-//   res.json({
-//     success: true,
-//     challenge_ts: '2018-09-22T10:53:45Z',
-//     hostname: '35.203.143.160'
-//   });
-  
-  
-// });
-
-
-
-// --------------------------------------------------
 //   Initial Props
 // --------------------------------------------------
 
-router.get('/initialProps', upload.none(), function(req, res, next) {
+router.get('/initial-props', upload.none(), function(req, res, next) {
   
   
   try {
@@ -81,14 +80,14 @@ router.get('/initialProps', upload.none(), function(req, res, next) {
     //   Console 出力
     // --------------------------------------------------
     
-    console.log(chalk`
-      {green login api / initialProps}
-      req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    `);
+    // console.log(chalk`
+    //   {green /applications/login/index/api/login.js / initial-props}
+    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    // `);
     
-    console.log(`
-      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+    // `);
     
     
     // ---------------------------------------------
@@ -105,14 +104,7 @@ router.get('/initialProps', upload.none(), function(req, res, next) {
     let login = false;
     
     if (req.isAuthenticated()) {
-      console.log(chalk`
-        {green login / initialProps / ログインしています}
-      `);
       login = true;
-    } else {
-      console.log(chalk`
-        {green login / initialProps / ログインしていません}
-      `);
     }
     
     
@@ -174,8 +166,8 @@ router.get('/initialProps', upload.none(), function(req, res, next) {
 //     http://knimon-software.github.io/www.passportjs.org/guide/authenticate/
 // --------------------------------------------------
 
-router.post('/', upload.none(), function(req, res, next) {
-  passport.authenticate('local', async function(err, user, info) {
+router.post('/', upload.none(), (req, res, next) => {
+  passport.authenticate('local', async (err, user, info) => {
     
     
     try {
@@ -193,16 +185,8 @@ router.post('/', upload.none(), function(req, res, next) {
       // --------------------------------------------------
       
       if (req.isAuthenticated()) {
-        console.log(chalk`
-          {green ログインしています}
-        `);
-        
-        throw new Error('Already');
-        
-      } else {
-        console.log(chalk`
-          {green ログインしていません}
-        `);
+        logger.log('error', `/applications/login/index/api/login.js\nrouter.post('/')\nLogin Already`);
+        throw new Error('Login Already');
       }
       
       
@@ -210,55 +194,53 @@ router.post('/', upload.none(), function(req, res, next) {
       //   Console 出力
       // --------------------------------------------------
       
-      console.log(chalk`
-        loginId: {green ${loginId}}
-        loginPassword: {green ${loginPassword}}
-        req.isAuthenticated(): {green ${req.isAuthenticated()}}
-      `);
-      
-      // console.log(`
-      //   validationIdObj: \n${util.inspect(validationIdObj, { colors: true, depth: null })}
+      // console.log(chalk`
+      //   loginId: {green ${loginId}}
+      //   loginPassword: {green ${loginPassword}}
+      //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
       // `);
       
       // console.log(`
-      //   validationPasswordObj: \n${util.inspect(validationPasswordObj, { colors: true, depth: null })}
+      //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
       // `);
       
-      console.log(`
-        req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-      `);
+      // console.log(`
+      //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+      // `);
       
-      console.log(`
-        req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-      `);
+      // console.log(`
+      //   err: \n${util.inspect(err, { colors: true, depth: null })}
+      // `);
+      
+      // console.log(`
+      //   user: \n${util.inspect(user, { colors: true, depth: null })}
+      // `);
+      
+      // console.log(`
+      //   info: \n${util.inspect(info, { colors: true, depth: null })}
+      // `);
       
       
       
       // ---------------------------------------------
-      //   CSRF
+      //   CSRF & reCAPTCHA
       // ---------------------------------------------
       
       verifyCsrfToken(req, res);
+      await verifyRecaptcha(req, res);
       
       
       // --------------------------------------------------
       //   Validation
       // --------------------------------------------------
       
-      const validationIdObj = validationId(loginId);
-      const validationPasswordObj = validationPassword(loginPassword);
+      const validationLoginIdObj = validationLoginId(loginId);
+      const validationLoginPasswordObj = validationLoginPassword(loginPassword);
       
-      if (validationIdObj.error || validationPasswordObj.error) {
+      if (validationLoginIdObj.error || validationLoginPasswordObj.error) {
+        logger.log('error', `/applications/login/index/api/login.js / router.post('/') / Validation`);
         throw new Error('Validation');
       }
-      
-      
-      // ---------------------------------------------
-      //   reCAPTCHA
-      // ---------------------------------------------
-      
-      await verifyRecaptcha(req, res);
-      // console.log(`verifyRecaptchaの後`);
       
       
       // ---------------------------------------------
@@ -266,8 +248,10 @@ router.post('/', upload.none(), function(req, res, next) {
       // ---------------------------------------------
       
       if (err) {
+        logger.log('error', `/applications/login/index/api/login.js / router.post('/') / Error: ${err}`);
         throw new Error('Passport 1');
       }
+      
       
       if (!user) {
         
@@ -304,12 +288,6 @@ router.post('/', upload.none(), function(req, res, next) {
       // ---------------------------------------------
       
       req.logIn(user, function(err) {
-        
-        // console.log(`\nreq.logIn`);
-        // console.log(`\nerr =`);
-        // console.dir(err);
-        // console.log(`err.name = ${err.name}`);
-        // console.log(`err.status = ${err.status}`);
         
         
         // ---------------------------------------------
@@ -380,7 +358,13 @@ passport.use(new LocalStrategy({
   },
   (username, password, done) => {
     
-    ModelUsers.findOne({ loginId: username }, (err, user) => {
+    // console.log(chalk`
+    //   username: {green ${username}}
+    //   password: {green ${password}}
+    // `);
+    
+    
+    SchemaUsers.findOne({ loginId: username }, (err, user) => {
       
       
       // --------------------------------------------------
@@ -414,6 +398,50 @@ passport.use(new LocalStrategy({
       return done(null, user);
       
     });
+    
+    
+    // try {
+      
+      
+    //   // --------------------------------------------------
+    //   //   FindOne
+    //   // --------------------------------------------------
+      
+    //   const usersObj = await ModelUsers.findOne({ loginId: username });
+      
+    //   console.log(`
+    //     Passport Local usersObj: \n${util.inspect(usersObj, { colors: true, depth: null })}
+    //   `);
+      
+      
+    //   // --------------------------------------------------
+    //   //   Error：ユーザーが存在しない
+    //   // --------------------------------------------------
+      
+    //   if (!usersObj) {
+    //     return done(null, false, { message: 'Incorrect loginId.' });
+    //   }
+      
+      
+    //   // --------------------------------------------------
+    //   //   bcrypt でハッシュ化したパスワードを検証する
+    //   //   参照：https://github.com/kelektiv/node.bcrypt.js#to-check-a-password-1
+    //   // --------------------------------------------------
+      
+    //   if (bcrypt.compareSync(password, usersObj.loginPassword) === false) {
+    //     return done(null, false, { message: 'Incorrect loginPassword.' });
+    //   }
+      
+      
+    //   return done(null, usersObj);
+      
+      
+    // } catch (err) {
+      
+    //   return done(err);
+      
+    // }
+    
   }
 ));
 
@@ -437,14 +465,19 @@ passport.serializeUser((user, done) => {
 // --------------------------------------------------
 
 passport.deserializeUser((id, done) => {
-  ModelUsers.findOne({_id: id}, (err, user) => {
+  
+  SchemaUsers.findOne({_id: id}, (err, user) => {
+    
+    // console.log(`
+    //   deserializeUser user ${new Date()}: \n${util.inspect(user, { colors: true, depth: null })}
+    // `);
     
     
     // --------------------------------------------------
     //   ここで req.user に送る情報を選択する
     // --------------------------------------------------
     
-    const userObj = {
+    const usersObj = {
       _id: user._id,
       name: user.name,
       status: user.status,
@@ -454,8 +487,48 @@ passport.deserializeUser((id, done) => {
       accessDate: user.accessDate
     };
     
-    done(err, userObj);
+    done(err, usersObj);
+    
+    
   });
+  
+  // try {
+    
+    
+  //   // --------------------------------------------------
+  //   //   FindOne
+  //   // --------------------------------------------------
+    
+  //   const resultObj = await ModelUsers.findOne({_id: id});
+    
+  //   console.log(`
+  //     deserializeUser resultObj ${new Date()}: \n${util.inspect(resultObj, { colors: true, depth: null })}
+  //   `);
+    
+    
+  //   // --------------------------------------------------
+  //   //   ここで req.user に送る情報を選択する
+  //   // --------------------------------------------------
+    
+  //   const usersObj = {
+  //     _id: resultObj._id,
+  //     name: resultObj.name,
+  //     status: resultObj.status,
+  //     playerId: resultObj.playerId,
+  //     level: resultObj.level,
+  //     role: resultObj.role,
+  //     accessDate: resultObj.accessDate
+  //   };
+    
+  //   done(null, usersObj);
+    
+    
+  // } catch (err) {
+    
+  //   // done(err);
+    
+  // }
+  
 });
 
 
@@ -463,120 +536,153 @@ passport.deserializeUser((id, done) => {
 
 
 // --------------------------------------------------
-//   アカウント作成
+//   アカウント作成 / 作成後ログインする
 // --------------------------------------------------
 
-router.post('/createAccount', upload.none(), async (req, res) => {
+router.post('/create-account', upload.none(), async (req, res) => {
+  
+  
+  // --------------------------------------------------
+  //   Logger
+  // --------------------------------------------------
+  
+  const loggerPath = "/applications/login/index/api/login.js\nrouter.post('/create-account')\n";
   
   
   try {
     
     
     // --------------------------------------------------
-    //   Set Variables
+    //   ログインチェック
     // --------------------------------------------------
     
-    const { createAccountId, createAccountPassword, createAccountEmail } = req.body;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationIdObj = validationId(createAccountId);
-    const validationPasswordObj = validationPassword(createAccountPassword, createAccountId);
-    const validationEmailObj = validationEmail(createAccountEmail);
-    
-    if (validationIdObj.error || validationPasswordObj.error || validationEmailObj.error) {
-      throw new Error('Validation');
+    if (req.isAuthenticated()) {
+      logger.log('error', `${loggerPath}Login Already`);
+      throw new Error('Login Already');
     }
     
     
+    // ---------------------------------------------
+    //   CSRF & reCAPTCHA
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    await verifyRecaptcha(req, res);
+    
+    
     // --------------------------------------------------
-    //   パスワードハッシュ化
+    //   Model / Users / insert
     // --------------------------------------------------
     
-    // ストレッチング回数
-    const saltRounds = 10;
-    const passwordHash = bcrypt.hashSync(createAccountPassword, saltRounds);
+    await ModelUsers.insert(req.body);
     
     
-    // --------------------------------------------------
-    //   E-Mail 暗号化
-    // --------------------------------------------------
     
-    let encryptedEmail = '';
     
-    if (createAccountEmail) {
-      encryptedEmail = encrypt(createAccountEmail);
-    }
+    
+    // ---------------------------------------------
+    //   Fetch - Login
+    // ---------------------------------------------
+    
+    let resultObj = {};
+    // let errorObj = {};
+    
+    
+    // ----------------------------------------
+    //   API URL
+    // ----------------------------------------
+    
+    const apiUrl = `${process.env.API_URL}/v1/login`;
+    
+    
+    // ----------------------------------------
+    //   Headers
+    // ----------------------------------------
+    
+    const headersObj = {
+      'Accept': 'application/json',
+      'Cookie': req.headers.cookie
+    };
+    
+    
+    // ----------------------------------------
+    //   FormData
+    // ----------------------------------------
+    
+    const formDataObj = new FormData();
+    
+    formDataObj.append('loginId', req.body.createAccountId);
+    formDataObj.append('loginPassword', req.body.createAccountPassword);
+    // formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
+    // これをどうするか
+    
+
+    
+    await fetch(apiUrl, {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: headersObj,
+      body: formDataObj
+    })
+      .then((response) => {
+        
+        if (!response.ok) {
+          throw new Error('作成したアカウントでログインできませんでした。');
+        }
+        
+        return response.json();
+        
+      })
+      .then((jsonObj) => {
+        
+        resultObj = jsonObj;
+        
+      });
+      // .catch((error) => {
+        
+      //   throw new Error();
+        
+      // });
     
     
     // --------------------------------------------------
     //   Console 出力
     // --------------------------------------------------
     
-    console.log(chalk`
-      createAccountId: {red ${createAccountId}}
-      createAccountPassword: {green ${createAccountPassword}}
-      createAccountEmail: {green ${createAccountEmail}}
-      passwordHash: {green ${passwordHash}}
-      encryptedEmail: {green ${encryptedEmail}}
-    `);
+    // console.log(chalk`
+    //   apiUrl: {green ${apiUrl}}
+    // `);
+    
+    // console.log(`
+    //   err: \n${util.inspect(err, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   user: \n${util.inspect(user, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   info: \n${util.inspect(info, { colors: true, depth: null })}
+    // `);
     
     console.log(`
-      validationIdObj: \n${util.inspect(validationIdObj, { colors: true, depth: null })}
+      resultObj: \n${util.inspect(resultObj, { colors: true, depth: null })}
     `);
     
-    console.log(`
-      validationPasswordObj: \n${util.inspect(validationPasswordObj, { colors: true, depth: null })}
-    `);
-    
-    console.log(`
-      validationEmailObj: \n${util.inspect(validationEmailObj, { colors: true, depth: null })}
-    `);
-    
-    
-    // --------------------------------------------------
-    //   Model
-    // --------------------------------------------------
-    
-    const _id = shortid.generate();
-    const playerId = shortid.generate();
-    
-    const ModelUsersInstance = new ModelUsers({
-      _id,
-      loginId: createAccountId,
-      loginPassword: passwordHash,
-      email: encryptedEmail,
-      name: '',
-      status: '',
-      playerId,
-      // level: 'AAA'
-    });
-    
-    
-    // --------------------------------------------------
-    //   DB Insert
-    // --------------------------------------------------
-    
-    await ModelUsersInstance.save();
     
     
     // --------------------------------------------------
     //   Return Success JSON
     // --------------------------------------------------
     
-    return res.status(201).json({
-      playerId
-    });
+    return res.status(201).json(resultObj);
     
     
   } catch (error) {
     
-    console.log(chalk`
-      error.message: {red ${error.message}}
-    `);
+    
+    logger.log('error', `${loggerPath}${error}`);
     
     
     // --------------------------------------------------
@@ -605,8 +711,9 @@ router.post('/createAccount', upload.none(), async (req, res) => {
     
   }
   
-  
 });
+
+
 
 
 

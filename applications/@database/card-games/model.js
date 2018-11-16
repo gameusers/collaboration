@@ -116,11 +116,11 @@ const find = async (userIdArr) => {
 
 
 /**
- * 挿入/更新する
+ * 挿入 / 更新する
  * @param {string} cardGames_id - ID
  * @return {string} 暗号化されたテキスト
  */
-const upsert = async (userId, cardGames_id) => {
+const upsert = async (users_id, cardGames_id) => {
   
   
   // --------------------------------------------------
@@ -138,8 +138,9 @@ const upsert = async (userId, cardGames_id) => {
     
     
     const saveObj = {
-      userId,
+      users_id,
       updatedDate: moment().utcOffset(0),
+      games_id: 'MKIXnjIzM',
       theme: '',
       comment: `楽しかった時間が終わってしまいました。
 いいゲームをプレイしたときの独特の余韻を味わえました。
@@ -162,26 +163,31 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           fileFormat: 'JPEG',
           srcSetArr: [
             {
+              _id: 'xz_HamTMS',
               w: '320w',
               width: 320,
               height: 180,
             },
             {
+              _id: 'VGaeXottk',
               w: '480w',
               width: 480,
               height: 270,
             },
             {
+              _id: 'E3kjgGmJ7',
               w: '640w',
               width: 640,
               height: 360,
             },
             {
+              _id: 'JHgN0IFXD',
               w: '800w',
               width: 800,
               height: 450,
             },
             {
+              _id: 'XMZ2Ioh2x',
               w: 'source',
               width: 1920,
               height: 1080,
@@ -196,9 +202,11 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
       itemArr: [],
       idArr: [
         {
+          _id: '9_-NXN6rQ',
+          quotation_id: '',
           type: 'playstation',
           label: '',
-          value: 'AZ-1979',
+          value: 'AZ-1979-Game',
           showType: 1,
           search: true,
           // 1.表示する
@@ -208,20 +216,26 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           // 5.表示しない
         },
         {
+          _id: '-9hC-izPG',
+          quotation_id: '',
           type: 'xbox',// ゲーマータグ
           label: '',
-          value: 'AZ-1979-Xbox',
+          value: 'AZ-1979-Xbox-Game',
           showType: 1,
           search: true,
         },
         {
-          type: 'nintendo',// フレンドコード
+          _id: 'QbkY_-AjW',
+          quotation_id: 'VY9aFMoVh',
+          type: 'other',
           label: '',
-          value: 'AZ-1979',
-          showType: 1,
+          value: '',
+          showType: 5,
           search: true,
         },
         {
+          _id: 'qMsL_dgHW',
+          quotation_id: '',
           type: 'steam',
           label: '',
           value: 'Azumi1979',
@@ -229,6 +243,8 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           search: true,
         },
         {
+          _id: 'quLSl_A90',
+          quotation_id: '',
           type: 'other',
           label: 'LoL ID',
           value: 'lol-id',
@@ -236,6 +252,8 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           search: true,
         },
         {
+          _id: '19bLgUTWU',
+          quotation_id: '',
           type: 'other',
           label: 'LoL ID',
           value: 'lol-id',
@@ -244,13 +262,16 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
         }
       ],
       activityTimeObj: {
+        quotation: true,
         valueArr: [
           {
+            _id: '0X3yH-BnG',
             beginTime: '19:00',
             endTime: '24:00',
             weekArr: [0, 1, 2, 3, 4]
           },
           {
+            _id: '7Euewb_Ik',
             beginTime: '9:00',
             endTime: '24:00',
             weekArr: [5, 6]
@@ -259,16 +280,51 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
         search: true,
       },
       lookingForFriendsObj: {
+        quotation: true,
         value: true,
         icon: 'emoji_u1f61c',
         comment: '社会人の方よろしく！',
         search: true,
       },
       voiceChatObj: {
+        quotation: true,
         value: true,
         comment: '夜21時まで',
         search: true,
       },
+      linkArr: [
+        {
+          _id: 'K2NRYVCox',
+          quotation_id: '',
+          type: 'twitter',
+          label: '',
+          url: 'https://twitter.com/Azumi1979',
+          search: true,
+        },
+        {
+          _id: '0syPuDv6O',
+          quotation_id: '',
+          type: 'facebook',
+          label: '',
+          url: 'https://www.youtube.com/',
+          search: true,
+        },
+        {
+          _id: 'STJa3TLJX',
+          quotation_id: 'IqNtEQQsO',
+          type: 'quotation',
+          label: '',
+          url: '',
+          search: true,
+        },
+        {
+          _id: 'spRqODqbz',
+          type: 'other',
+          label: '開発サイト',
+          url: 'http://35.203.143.160:8080/',
+          search: true,
+        },
+      ]
     };
     
     

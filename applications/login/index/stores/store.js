@@ -2,10 +2,29 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import { action, observable } from 'mobx';
 import fetch from 'isomorphic-unfetch';
 
+
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
 import { validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login';
+
+
 
 
 
@@ -16,6 +35,8 @@ import { validationId, validationPassword, validationPasswordConfirmation, valid
 let storeLoginIndex = null;
 let storeLayout = null;
 let storeData = null;
+
+
 
 
 
@@ -212,24 +233,24 @@ class Store {
   handleLoginSubmit(recaptchaRef = null) {
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   Console 出力
-    // ---------------------------------------------
+    // --------------------------------------------------
     
-    console.log(`\n\n`);
-    console.log(`--- handleLoginSubmit ---`);
-    console.log(`this.loginId = ${this.loginId}`);
-    console.log(`this.loginPassword = ${this.loginPassword}`);
-    console.log(`this.loginRecaptchaResponse = ${this.loginRecaptchaResponse}`);
-    console.dir(recaptchaRef);
-    console.log(`\n\n`);
+    // console.log(`\n\n`);
+    // console.log(`--- handleLoginSubmit ---`);
+    // console.log(`this.loginId = ${this.loginId}`);
+    // console.log(`this.loginPassword = ${this.loginPassword}`);
+    // console.log(`this.loginRecaptchaResponse = ${this.loginRecaptchaResponse}`);
+    // console.dir(recaptchaRef);
+    // console.log(`\n\n`);
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   Error
-    // ---------------------------------------------
+    // --------------------------------------------------
     
-    if (!this.loginRecaptchaResponse) {
+    if (!this.loginRecaptchaResponse && recaptchaRef) {
       
       console.log(`recaptchaRef.current.execute()`);
       // recaptchaRef.current.reset();
@@ -249,22 +270,29 @@ class Store {
     }
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   FormData
-    // ---------------------------------------------
+    // --------------------------------------------------
     
-    const formData = new FormData();
+    const formDataObj = new FormData();
     
-    formData.append('loginId', this.loginId);
-    formData.append('loginPassword', this.loginPassword);
-    formData.append('g-recaptcha-response', this.loginRecaptchaResponse);
+    formDataObj.append('loginId', this.loginId);
+    formDataObj.append('loginPassword', this.loginPassword);
+    formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   Fetch
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Property
     // ---------------------------------------------
     
+    let errorObj = {};
     const apiUrl = `${storeData.apiUrl}/v1/login`;
+    
+    
     
     fetch(apiUrl, {
       method: 'POST',
@@ -273,28 +301,32 @@ class Store {
       headers: {
         'Accept': 'application/json'
       },
-      body: formData
+      body: formDataObj
     })
       .then((response) => {
+        
         if (!response.ok) {
           return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
+            errorObj = jsonObj;
+        　　throw new Error();
         　});
         }
         
         return response.json();
+        
       })
       .then((jsonObj) => {
         
-        console.log(`then`);
-        console.dir(jsonObj);
+        // console.log(`then`);
+        // console.dir(jsonObj);
         
         this.handleFormReset();
         
       })
       .catch((error) => {
         
-        console.log(`catch: ${error}`);
+        storeLayout.handleSnackbarOpen('error', errorObj.errorsArr[0].message);
+        return;
         
       });
     
@@ -687,7 +719,7 @@ class Store {
     //   Error
     // ---------------------------------------------
     
-    if (!this.createAccountRecaptchaResponse) {
+    if (!this.createAccountRecaptchaResponse && recaptchaRef) {
       
       console.log(`recaptchaRef.current.execute()`);
       recaptchaRef.current.execute();
@@ -719,12 +751,12 @@ class Store {
     //   FormData
     // ---------------------------------------------
     
-    const formData = new FormData();
+    const formDataObj = new FormData();
     
-    formData.append('createAccountId', this.createAccountId);
-    formData.append('createAccountPassword', this.createAccountPassword);
-    formData.append('createAccountEmail', this.createAccountEmail);
-    formData.append('g-recaptcha-response', this.loginRecaptchaResponse);
+    formDataObj.append('createAccountId', this.createAccountId);
+    formDataObj.append('createAccountPassword', this.createAccountPassword);
+    formDataObj.append('createAccountEmail', this.createAccountEmail);
+    formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
     
     
     
@@ -732,7 +764,9 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const apiUrl = `${storeData.apiUrl}/v1/login/createAccount`;
+    let errorObj = {};
+    const apiUrl = `${storeData.apiUrl}/v1/login/create-account`;
+    
     
     fetch(apiUrl, {
       method: 'POST',
@@ -741,16 +775,24 @@ class Store {
       headers: {
         'Accept': 'application/json'
       },
-      body: formData
+      body: formDataObj
     })
       .then((response) => {
+        // if (!response.ok) {
+        //   return response.json().then((jsonObj) => {
+        // 　　throw new Error(jsonObj.errorsArr[0].message);
+        // 　});
+        // }
+        
         if (!response.ok) {
           return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
+            errorObj = jsonObj;
+        　　throw new Error();
         　});
         }
         
         return response.json();
+        
       })
       .then((jsonObj) => {
         
@@ -759,18 +801,13 @@ class Store {
         
         this.handleFormReset();
         
-        // this.createAccountId = '';
-        // this.createAccountIdNumberOfCharacters = 0;
-        // this.createAccountPassword = '';
-        // this.createAccountPasswordNumberOfCharacters = 0;
-        // this.createAccountPasswordConfirmation = '';
-        // this.createAccountPasswordConfirmationNumberOfCharacters = 0;
-        // this.createAccountTermsOfService = false;
-        
       })
       .catch((error) => {
         
         console.log(`handleCreateAccountSubmit Error Catch: ${error}`);
+        
+        storeLayout.handleSnackbarOpen('error', errorObj.errorsArr[0].message);
+        return;
         
       });
     

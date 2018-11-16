@@ -13,7 +13,7 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
-  userId: { type: String, required: true },
+  users_id: { type: String, required: true },
   comment: String,
   imageVideoArr: [
     {
@@ -23,6 +23,7 @@ const schema = mongoose.Schema({
       fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
       srcSetArr: [
         {
+          _id: { type: String, required: true },
           w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
           width: { type: Number, required: true },
           height: { type: Number, required: true },
@@ -105,6 +106,7 @@ const schema = mongoose.Schema({
   activityTimeObj: {
     valueArr: [
       {
+        _id: { type: String, required: true },
         beginTime: { type: String, required: true },
         endTime: { type: String, required: true },
         weekArr: [Number],
@@ -125,6 +127,7 @@ const schema = mongoose.Schema({
   },
   linkArr: [
     {
+      _id: { type: String, required: true },
       type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other'], required: true },
       label: String,
       url: { type: String, required: true },

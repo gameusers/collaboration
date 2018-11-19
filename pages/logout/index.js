@@ -81,7 +81,7 @@ class Component extends React.Component {
     //   API URL
     // ----------------------------------------
     
-    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/logout/initialProps`;
+    const urlApi = `${publicRuntimeConfig.urlApi}/v1/logout/initialProps`;
     
     
     // ----------------------------------------
@@ -97,7 +97,7 @@ class Component extends React.Component {
     }
     
     
-    await fetch(apiUrl, {
+    await fetch(urlApi, {
       method: 'GET',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -183,7 +183,7 @@ class Component extends React.Component {
       isServer: props.isServer,
       pathname: props.pathname,
       environment: publicRuntimeConfig.environment,
-      apiUrl: publicRuntimeConfig.apiUrl
+      urlApi: publicRuntimeConfig.urlApi
     };
     
     this.stores = initStoreIndex(argumentsObj);
@@ -196,9 +196,9 @@ class Component extends React.Component {
     //   Fetch
     // ---------------------------------------------
     
-    // this.apiUrl = `${publicRuntimeConfig.apiUrl}/v1/logout/initialProps`;
+    // this.urlApi = `${publicRuntimeConfig.urlApi}/v1/logout/initialProps`;
     
-    // fetch(this.apiUrl, {
+    // fetch(this.urlApi, {
     //   method: 'GET',
     //   credentials: 'same-origin',
     //   mode: 'same-origin',
@@ -269,9 +269,9 @@ class Component extends React.Component {
     //   Fetch
     // ---------------------------------------------
     
-    // const apiUrl = `${this.apiUrl}`;
+    // const urlApi = `${this.urlApi}`;
     
-    // fetch(apiUrl, {
+    // fetch(urlApi, {
     //   method: 'GET',
     //   credentials: 'same-origin',
     //   mode: 'same-origin',

@@ -27,7 +27,7 @@ class Store {
   constructor(argumentsObj) {
     
     this.environment = argumentsObj.environment;
-    this.apiUrl = argumentsObj.apiUrl;
+    this.urlApi = argumentsObj.urlApi;
     
   }
   
@@ -37,7 +37,7 @@ class Store {
   // ---------------------------------------------
   
   environment = 'development';
-  apiUrl = '';
+  urlApi = '';
   
   
   
@@ -128,7 +128,7 @@ export default function initStoreData(argumentsObj) {
   // console.dir(argumentsObj);
   // console.log(`argumentsObj.environment = ${argumentsObj.environment}`);
   // this.environment = argumentsObj.environment;
-  // this.apiUrl = argumentsObj.apiUrl;
+  // this.urlApi = argumentsObj.urlApi;
   
   
   if (isServer) {

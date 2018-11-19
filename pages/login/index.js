@@ -55,9 +55,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../applications/common/stores/index';
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreData from '../../applications/common/stores/data';
+import initStoreIndex from '../../applications/@stores/index';
 import initStoreLoginIndex from '../../applications/login/index/stores/store';
 
 
@@ -190,7 +188,7 @@ class Component extends React.Component {
     //   API URL
     // ----------------------------------------
     
-    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/login/initial-props`;
+    const urlApi = `${publicRuntimeConfig.urlApi}/v1/login/initial-props`;
     
     
     // ----------------------------------------
@@ -206,7 +204,7 @@ class Component extends React.Component {
     }
     
     
-    await fetch(apiUrl, {
+    await fetch(urlApi, {
       method: 'GET',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -223,28 +221,6 @@ class Component extends React.Component {
       })
       .then((jsonObj) => {
         
-        // console.log(`then 1`);
-        // console.dir(jsonObj);
-        
-        
-        
-        // --------------------------------------------------
-        //   Console 出力
-        // --------------------------------------------------
-        
-        // console.log(chalk`
-        //   isServer: {green ${isServer}}
-        //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-        // `);
-        
-        // console.log(`
-        //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-        // `);
-        
-        // console.log(`
-        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-        // `);
-        
         
         // --------------------------------------------------
         //   ログインしている場合はログアウトページにリダイレクト
@@ -255,6 +231,7 @@ class Component extends React.Component {
           res.end();
           return {};
         }
+        
         
       })
       .catch((error) => {
@@ -297,6 +274,10 @@ class Component extends React.Component {
     //   this.verifyRecaptcha: {green ${this.verifyRecaptcha}}
     // `);
     
+    // console.log(`
+    //   publicRuntimeConfig: \n${util.inspect(publicRuntimeConfig, { colors: true, depth: null })}
+    // `);
+    
     
     // --------------------------------------------------
     //   Store
@@ -306,18 +287,13 @@ class Component extends React.Component {
       isServer: props.isServer,
       pathname: props.pathname,
       environment: publicRuntimeConfig.environment,
-      apiUrl: publicRuntimeConfig.apiUrl
+      urlBase: publicRuntimeConfig.urlBase,
+      urlApi: publicRuntimeConfig.urlApi
     };
     
     this.stores = initStoreIndex(argumentsObj);
     this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
     
-    
-    // const datetimeNow = moment().utcOffset(0);
-    // console.log(`datetimeNow = ${datetimeNow}`);
-    // console.log(`ISO 8601 string = ${moment().toISOString()}`);
-    // const datetimeUpdated = moment(value.updatedDate).utcOffset(0);
-    // const datetimeFrom = datetimeUpdated.from(datetimeNow);
     
   }
   

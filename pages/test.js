@@ -127,7 +127,7 @@ class Component extends React.Component {
     //   API URL
     // ---------------------------------------------
     
-    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/test/initial-props`;
+    const urlApi = `${publicRuntimeConfig.urlApi}/v1/test/initial-props`;
     
     
     // ---------------------------------------------
@@ -143,7 +143,7 @@ class Component extends React.Component {
     }
     
     
-    await fetch(apiUrl, {
+    await fetch(urlApi, {
       method: 'GET',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -212,7 +212,7 @@ class Component extends React.Component {
       isServer: props.isServer,
       pathname: props.pathname,
       environment: publicRuntimeConfig.environment,
-      apiUrl: publicRuntimeConfig.apiUrl
+      urlApi: publicRuntimeConfig.urlApi
     };
     
     this.stores = initStoreIndex(argumentsObj);

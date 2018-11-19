@@ -68,7 +68,7 @@ const findOne = async (conditionObj) => {
   //   Return Value
   // --------------------------------------------------
   
-  // let returnObj = {};
+  let returnObj = {};
   
   
   // --------------------------------------------------
@@ -82,10 +82,16 @@ const findOne = async (conditionObj) => {
     //   FindOne
     // --------------------------------------------------
     
-    const returnObj = await Model.findOne(conditionObj).exec();
+    const docObj = await Model.findOne(conditionObj).exec();
     
-    // if ('_id' in docObj) {
-    //   returnObj = docObj;
+    const copiedObj = JSON.parse(JSON.stringify(docObj));
+    delete copiedObj._id;
+    returnObj[docObj._id] = copiedObj;
+    
+    // for (let value of docArr.values()) {
+    //   const copiedObj = JSON.parse(JSON.stringify(value));
+    //   delete copiedObj._id;
+    //   returnObj[value._id] = copiedObj;
     // }
     
     // console.log(`

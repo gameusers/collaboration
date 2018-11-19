@@ -28,27 +28,27 @@ import fetch from 'isomorphic-unfetch';
 //   Material UI
 // ---------------------------------------------
 
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+// import Button from '@material-ui/core/Button';
+// import IconButton from '@material-ui/core/IconButton';
+// import Input from '@material-ui/core/Input';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import InputAdornment from '@material-ui/core/InputAdornment';
+// import FormControl from '@material-ui/core/FormControl';
+// import FormHelperText from '@material-ui/core/FormHelperText';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconId from '@material-ui/icons/Person';
-import IconPassword from '@material-ui/icons/Lock';
-import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
-import IconVisibility from '@material-ui/icons/Visibility';
-import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
-import IconMailOutline from '@material-ui/icons/MailOutline';
+// import IconId from '@material-ui/icons/Person';
+// import IconPassword from '@material-ui/icons/Lock';
+// import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
+// import IconVisibility from '@material-ui/icons/Visibility';
+// import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
+// import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
@@ -66,7 +66,7 @@ import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../applications/common/layout/components/layout';
-import Panel from '../../applications/common/layout/components/panel';
+// import Panel from '../../applications/common/layout/components/panel';
 // import TermsOfService from '../../applications/common/layout/components/terms-of-service';
 import CardPlayer from '../../applications/common/card/player/components/player';
 
@@ -99,12 +99,9 @@ const Container = styled.div`
 //   フォーム
 // ---------------------------------------------
 
-const Description = styled.div`
-  // width: 100%;
-  margin: 0 0 16px 0;
-  // padding: 0 30px 0 0;
-  // background-color: pink;
-`;
+// const Description = styled.div`
+//   margin: 0 0 16px 0;
+// `;
 
 
 
@@ -155,7 +152,7 @@ class Component extends React.Component {
     // ---------------------------------------------
     
     const { publicRuntimeConfig } = getConfig();
-    const apiUrl = `${publicRuntimeConfig.apiUrl}/v1/pl/player/initial-props?playerId=${query.param1}`;
+    const urlApi = `${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerId=${query.param1}`;
     
     
     // ---------------------------------------------
@@ -171,7 +168,7 @@ class Component extends React.Component {
     }
     
     
-    await fetch(apiUrl, {
+    await fetch(urlApi, {
       method: 'GET',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -216,7 +213,7 @@ class Component extends React.Component {
           errorObj: \n${util.inspect(errorObj, { colors: true, depth: null })}
         `);
         
-        console.log(`getInitialProps / Fetch / ${error}`);
+        console.log(`/pages/pl/player.js\ngetInitialProps\nFetch / ${error}`);
         
       });
     
@@ -258,21 +255,21 @@ class Component extends React.Component {
       if (
         this.props.statusCode !== 200 ||
         'data' in props.initialPropsObj === false ||
+        'usersLoginObj' in props.initialPropsObj.data === false ||
         'usersObj' in props.initialPropsObj.data === false ||
-        'cardPlayersObj' in props.initialPropsObj.data === false
+        'cardPlayersObj' in props.initialPropsObj.data === false ||
+        'cardsArr' in props.initialPropsObj === false
       ) {
         throw new Error();
       }
       
-        
-        
+      
       // --------------------------------------------------
       //   publicRuntimeConfig
       // --------------------------------------------------
       
       const { publicRuntimeConfig } = getConfig();
       this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
-      
       
       
       // --------------------------------------------------
@@ -283,13 +280,13 @@ class Component extends React.Component {
         isServer: props.isServer,
         pathname: props.pathname,
         environment: publicRuntimeConfig.environment,
-        apiUrl: publicRuntimeConfig.apiUrl
+        urlBase: publicRuntimeConfig.urlBase,
+        urlApi: publicRuntimeConfig.urlApi
       };
       
       this.stores = initStoreIndex(argumentsObj);
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
-      
       
       
       // --------------------------------------------------
@@ -322,13 +319,11 @@ class Component extends React.Component {
     // }
     
     
-    
     // --------------------------------------------------
     //   Props
     // --------------------------------------------------
     
     const stores = this.stores;
-    
     
     
     // --------------------------------------------------
@@ -345,6 +340,30 @@ class Component extends React.Component {
         pathname: '/pl/AZ-1979/config'
       }
     ];
+    
+    
+    // --------------------------------------------------
+    //   Player Card
+    // --------------------------------------------------
+    
+    const componentCardsArr = [];
+    
+    for (const [index, value] of this.props.initialPropsObj.cardsArr.entries()) {
+      // console.log(index, value);
+      
+      if (value.type === 'player') {
+        
+        componentCardsArr.push(
+          <CardPlayer cardPlayers_id={value._id} key={index} />
+        );
+        
+      } else {
+        
+      }
+      
+    }
+    
+    
     
     
     
@@ -365,7 +384,8 @@ class Component extends React.Component {
           
           <Container>
             
-            <CardPlayer cardPlayers_id="zaoOWw89g" />
+            {componentCardsArr}
+            {/*<CardPlayer cardPlayers_id="zaoOWw89g" />*/}
             
           </Container>
           

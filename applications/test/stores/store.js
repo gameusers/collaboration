@@ -264,9 +264,9 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const apiUrl = `${storeData.apiUrl}/v1/login`;
+    const urlApi = `${storeData.urlApi}/v1/login`;
     
-    fetch(apiUrl, {
+    fetch(urlApi, {
       method: 'POST',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -732,9 +732,9 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const apiUrl = `${storeData.apiUrl}/v1/login/createAccount`;
+    const urlApi = `${storeData.urlApi}/v1/login/createAccount`;
     
-    fetch(apiUrl, {
+    fetch(urlApi, {
       method: 'POST',
       mode: 'same-origin',
       credentials: 'same-origin',

@@ -290,11 +290,22 @@ class Store {
     // ---------------------------------------------
     
     let errorObj = {};
-    const apiUrl = `${storeData.apiUrl}/v1/login`;
+    const urlBase = storeData.urlBase;
+    const urlApi = `${storeData.urlApi}/v1/login`;
+    
+    // console.log(chalk`
+    //   storeData.urlBase: {green ${storeData.urlBase}}
+    // `);
+    
+    // console.log(`
+    //   storeData: \n${util.inspect(storeData, { colors: true, depth: null })}
+    // `);
+    
+    // return;
     
     
     
-    fetch(apiUrl, {
+    fetch(urlApi, {
       method: 'POST',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -308,7 +319,7 @@ class Store {
         if (!response.ok) {
           return response.json().then((jsonObj) => {
             errorObj = jsonObj;
-        　　throw new Error();
+        　　throw new Error(errorObj.errorsArr[0].message);
         　});
         }
         
@@ -318,14 +329,20 @@ class Store {
       .then((jsonObj) => {
         
         // console.log(`then`);
-        // console.dir(jsonObj);
+        // console.log(`
+        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        // `);
         
+        // Form Reset
         this.handleFormReset();
+        
+        // Page Transition
+        window.location.href = `${urlBase}pl/${jsonObj.playerId}`;
         
       })
       .catch((error) => {
         
-        storeLayout.handleSnackbarOpen('error', errorObj.errorsArr[0].message);
+        storeLayout.handleSnackbarOpen('error', error);
         return;
         
       });
@@ -765,10 +782,10 @@ class Store {
     // ---------------------------------------------
     
     let errorObj = {};
-    const apiUrl = `${storeData.apiUrl}/v1/login/create-account`;
+    const urlApi = `${storeData.urlApi}/v1/login/create-account`;
     
     
-    fetch(apiUrl, {
+    fetch(urlApi, {
       method: 'POST',
       mode: 'same-origin',
       credentials: 'same-origin',
@@ -799,7 +816,12 @@ class Store {
         console.log(`then`);
         console.dir(jsonObj);
         
+        
+        // Form Reset
         this.handleFormReset();
+        
+        // Page Transition
+        window.location.href = `http://35.203.143.160:8080/pl/${jsonObj.playerId}`;
         
       })
       .catch((error) => {
@@ -873,6 +895,11 @@ export default function initStoreLoginIndex(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
   // const storeInstanceObj = argumentsObj.storeInstanceObj;
+  
+  
+  // console.log(`
+  //   argumentsObj: \n${util.inspect(argumentsObj, { colors: true, depth: null })}
+  // `);
   
   
   if ('layout' in storeInstanceObj) {

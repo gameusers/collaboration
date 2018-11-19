@@ -3,6 +3,14 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
@@ -75,7 +83,14 @@ export default class extends React.Component {
     }
     
     
+    // console.log(chalk`
+    //   isServer: {green ${isServer}}
+    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    // `);
     
+    // console.log(`
+    //   stores.data.usersObj: \n${util.inspect(stores.data.usersObj, { colors: true, depth: null })}
+    // `);
     
     
     

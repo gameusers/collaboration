@@ -17,10 +17,10 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const shortid = require('shortid');
-const bcrypt = require('bcrypt');
+// const passport = require('passport');
+// const LocalStrategy = require('passport-local').Strategy;
+// const shortid = require('shortid');
+// const bcrypt = require('bcrypt');
 
 
 // ---------------------------------------------
@@ -28,19 +28,19 @@ const bcrypt = require('bcrypt');
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../../@modules/csrf');
-const { verifyRecaptcha } = require('../../../@modules/recaptcha');
-const { encrypt }  = require('../../../@modules/crypto');
+// const { verifyRecaptcha } = require('../../../@modules/recaptcha');
+// const { encrypt }  = require('../../../@modules/crypto');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const {
-  validationId,
-  validationPassword,
-  validationEmail
-} = require('../../../@database/users/validations/login');
+// const {
+//   validationId,
+//   validationPassword,
+//   validationEmail
+// } = require('../../../@database/users/validations/login');
 
 
 // ---------------------------------------------
@@ -79,6 +79,12 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     verifyCsrfToken(req, res);
     
     
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const playerId = req.query.playerId;
+    
     
     // --------------------------------------------------
     //   Return オブジェクト
@@ -86,38 +92,23 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     const returnObj = {};
     returnObj.data = {};
-    
+    returnObj.data.usersLoginObj = req.user;
+    returnObj.cardsArr = [];
     
     
     // --------------------------------------------------
     //   ログインチェック
     // --------------------------------------------------
     
-    returnObj.login = false;
-    
-    if (req.isAuthenticated()) {
-      returnObj.login = true;
-    }
-    
+    returnObj.login = req.isAuthenticated() ? true : false;
     
     
     // --------------------------------------------------
-    //   Model / Users / findOne_IdByPlayerId
+    //   Model / Users
+    //   アクセスしたページ所有者のユーザー情報取得
     // --------------------------------------------------
     
-    const users_id = await ModelUsers.findOne_IdByPlayerId(req.query.playerId);
-    
-    if (!users_id) {
-      throw new Error('users_id が空です。');
-    }
-    
-    
-    
-    // --------------------------------------------------
-    //   Model / Users / findBy_Id
-    // --------------------------------------------------
-    
-    const usersObj = await ModelUsers.findBy_Id([users_id]);
+    const usersObj = await ModelUsers.findOne({ playerId });
     
     if (!usersObj) {
       throw new Error('usersObj が空です。');
@@ -125,31 +116,40 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     returnObj.data.usersObj = usersObj;
     
+    const usersKeysArr = Object.keys(usersObj);
+    const users_id = usersKeysArr[0];
+    
+    
+    // --------------------------------------------------
+    //   Model / Card Players
+    //   アクセスしたページ所有者のプレイヤーカード情報取得
+    // --------------------------------------------------
+    
+    const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
+    returnObj.data.cardPlayersObj = cardPlayersObj;
+    
+    const cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    
+    if (cardPlayersKeysArr.length > 0) {
+      returnObj.cardsArr.push({
+        type: 'player',
+        _id: cardPlayersKeysArr[0]
+      });
+    }
     
     
     // --------------------------------------------------
     //   Model / Card Players / Upsert
     // --------------------------------------------------
     
-    await ModelCardPlayers.upsert(users_id, 'zaoOWw89g');
-    
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Players / Find
-    // --------------------------------------------------
-    
-    const cardPlayersObj = await ModelCardPlayers.find([users_id]);
-    returnObj.data.cardPlayersObj = cardPlayersObj;
-    
+    // await ModelCardPlayers.upsert(users_id, 'zaoOWw89g');
     
     
     // --------------------------------------------------
     //   Model / Card Games / upsert
     // --------------------------------------------------
     
-    await ModelCardGames.upsert(users_id, 'TzjNMDQyl');
-    
+    // await ModelCardGames.upsert(users_id, 'TzjNMDQyl');
     
     
     // --------------------------------------------------
@@ -158,19 +158,35 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     // console.log(chalk`
     //   {green pl/player/api/player / initial-props}
-    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    //   users_id: {green ${users_id}}
+    //   playerId: {green ${playerId}}
     // `);
     
     // console.log(`
     //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
     //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    //   usersObj: \n${util.inspect(usersObj, { colors: true, depth: null })}
-    //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
     // `);
     
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+      
+    //   ----- cardPlayersObj -----\n
+    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(`
+    //   ----- objectKeysArr -----\n
+    //   ${util.inspect(objectKeysArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------

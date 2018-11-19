@@ -21,6 +21,10 @@ const schema = mongoose.Schema({
   status: String,
   playerId: { type: String, required: true, unique: true },
   level: { type: Number, default: 1, required: true },
+  followArr: [String],
+  followCount:{ type: Number, default: 0, required: true },
+  followedArr: [String],
+  followedCount:{ type: Number, default: 0, required: true },
   role: { type: String, default: 'User', required: true },
 });
 

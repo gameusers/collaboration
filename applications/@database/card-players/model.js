@@ -47,13 +47,11 @@ const logger = require('../../@modules/logger');
 
 /**
  * 取得する
- * @param {array} users_idArr - User IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
- * @return {object} 取得されたデータ
+ * @param {Object} conditionObj - 検索条件
+ * @return {Object} 取得データ
  */
-const find = async (users_idArr) => {
-  // console.log(`
-  //     users_idArr: \n${util.inspect(users_idArr, { colors: true, depth: null })}
-  //   `);
+const find = async (conditionObj) => {
+  
   
   // --------------------------------------------------
   //   Return Value
@@ -73,12 +71,7 @@ const find = async (users_idArr) => {
     //   Find
     // --------------------------------------------------
     
-    const condition = { users_id: { $in: users_idArr} };
-    const docArr = await Model.find(condition).exec();
-    
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
+    const docArr = await Model.find(conditionObj).exec();
     
     
     // --------------------------------------------------

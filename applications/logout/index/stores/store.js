@@ -65,9 +65,9 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const apiUrl = `${storeData.apiUrl}/v1/logout`;
+    const urlApi = `${storeData.urlApi}/v1/logout`;
     
-    fetch(apiUrl, {
+    fetch(urlApi, {
       method: 'POST',
       credentials: 'same-origin',
       mode: 'same-origin',

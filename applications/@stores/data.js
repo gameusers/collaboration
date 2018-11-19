@@ -27,7 +27,8 @@ class Store {
   constructor(argumentsObj) {
     
     this.environment = argumentsObj.environment;
-    this.apiUrl = argumentsObj.apiUrl;
+    this.urlBase = argumentsObj.urlBase;
+    this.urlApi = argumentsObj.urlApi;
     
   }
   
@@ -37,7 +38,7 @@ class Store {
   // ---------------------------------------------
   
   // environment = 'development';
-  // apiUrl = '';
+  // urlApi = '';
   
   
   

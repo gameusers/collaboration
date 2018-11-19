@@ -26,13 +26,13 @@ import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
 
 import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
+// import CardHeader from '@material-ui/core/CardHeader';
+// import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
+// import FavoriteIcon from '@material-ui/icons/Favorite';
+// import ShareIcon from '@material-ui/icons/Share';
 
 
 // ---------------------------------------------
@@ -226,7 +226,6 @@ export default class extends React.Component {
     const { stores, cardPlayers_id } = this.props;
     
     
-    
     // --------------------------------------------------
     //   Expanded
     // --------------------------------------------------
@@ -246,7 +245,6 @@ export default class extends React.Component {
     }
     
     
-    
     // --------------------------------------------------
     //   Data - プレイヤーカードオブジェクト取得
     // --------------------------------------------------
@@ -257,18 +255,6 @@ export default class extends React.Component {
       
     } = stores.data;
     
-    // console.log(`
-    //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   cardPlayersObj[cardPlayers_id]: \n${util.inspect(cardPlayersObj[cardPlayers_id], { colors: true, depth: null })}
-    // `);
-    
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
-    // `);
-    
     
     // --------------------------------------------------
     //   オブジェクト内にcardPlayers_idがない場合、空のコンポーネントを返す
@@ -277,7 +263,6 @@ export default class extends React.Component {
     if (cardPlayers_id in cardPlayersObj === false) {
       return null;
     }
-    
     
     
     // --------------------------------------------------
@@ -293,7 +278,6 @@ export default class extends React.Component {
     } = stores.data.cardPlayersObj[cardPlayers_id].imageArr[0];
     
     
-    
     // --------------------------------------------------
     //   プロフィール情報
     // --------------------------------------------------
@@ -303,7 +287,17 @@ export default class extends React.Component {
     
     
     
+    // console.log(`
+    //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
+    // `);
     
+    // console.log(`
+    //   cardPlayersObj[cardPlayers_id]: \n${util.inspect(cardPlayersObj[cardPlayers_id], { colors: true, depth: null })}
+    // `);
+    
+    // console.log(chalk`
+    //   cardPlayers_id: {green ${cardPlayers_id}}
+    // `);
     
     
     // console.log(chalk`

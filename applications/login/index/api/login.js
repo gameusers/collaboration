@@ -399,49 +399,6 @@ passport.use(new LocalStrategy({
       
     });
     
-    
-    // try {
-      
-      
-    //   // --------------------------------------------------
-    //   //   FindOne
-    //   // --------------------------------------------------
-      
-    //   const usersObj = await ModelUsers.findOne({ loginId: username });
-      
-    //   console.log(`
-    //     Passport Local usersObj: \n${util.inspect(usersObj, { colors: true, depth: null })}
-    //   `);
-      
-      
-    //   // --------------------------------------------------
-    //   //   Error：ユーザーが存在しない
-    //   // --------------------------------------------------
-      
-    //   if (!usersObj) {
-    //     return done(null, false, { message: 'Incorrect loginId.' });
-    //   }
-      
-      
-    //   // --------------------------------------------------
-    //   //   bcrypt でハッシュ化したパスワードを検証する
-    //   //   参照：https://github.com/kelektiv/node.bcrypt.js#to-check-a-password-1
-    //   // --------------------------------------------------
-      
-    //   if (bcrypt.compareSync(password, usersObj.loginPassword) === false) {
-    //     return done(null, false, { message: 'Incorrect loginPassword.' });
-    //   }
-      
-      
-    //   return done(null, usersObj);
-      
-      
-    // } catch (err) {
-      
-    //   return done(err);
-      
-    // }
-    
   }
 ));
 
@@ -491,43 +448,6 @@ passport.deserializeUser((id, done) => {
     
     
   });
-  
-  // try {
-    
-    
-  //   // --------------------------------------------------
-  //   //   FindOne
-  //   // --------------------------------------------------
-    
-  //   const resultObj = await ModelUsers.findOne({_id: id});
-    
-  //   console.log(`
-  //     deserializeUser resultObj ${new Date()}: \n${util.inspect(resultObj, { colors: true, depth: null })}
-  //   `);
-    
-    
-  //   // --------------------------------------------------
-  //   //   ここで req.user に送る情報を選択する
-  //   // --------------------------------------------------
-    
-  //   const usersObj = {
-  //     _id: resultObj._id,
-  //     name: resultObj.name,
-  //     status: resultObj.status,
-  //     playerId: resultObj.playerId,
-  //     level: resultObj.level,
-  //     role: resultObj.role,
-  //     accessDate: resultObj.accessDate
-  //   };
-    
-  //   done(null, usersObj);
-    
-    
-  // } catch (err) {
-    
-  //   // done(err);
-    
-  // }
   
 });
 
@@ -584,15 +504,8 @@ router.post('/create-account', upload.none(), async (req, res) => {
     //   Fetch - Login
     // ---------------------------------------------
     
-    let resultObj = {};
-    // let errorObj = {};
-    
-    
-    // ----------------------------------------
-    //   API URL
-    // ----------------------------------------
-    
-    const apiUrl = `${process.env.API_URL}/v1/login`;
+    let resultLoginObj = {};
+    const urlApi = `${process.env.URL_API}/v1/login`;
     
     
     // ----------------------------------------
@@ -618,7 +531,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
     
 
     
-    await fetch(apiUrl, {
+    await fetch(urlApi, {
       method: 'POST',
       credentials: 'same-origin',
       mode: 'same-origin',
@@ -636,7 +549,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
       })
       .then((jsonObj) => {
         
-        resultObj = jsonObj;
+        resultLoginObj = jsonObj;
         
       });
       // .catch((error) => {
@@ -651,7 +564,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   apiUrl: {green ${apiUrl}}
+    //   urlApi: {green ${urlApi}}
     // `);
     
     // console.log(`
@@ -667,7 +580,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
     // `);
     
     console.log(`
-      resultObj: \n${util.inspect(resultObj, { colors: true, depth: null })}
+      resultLoginObj: \n${util.inspect(resultLoginObj, { colors: true, depth: null })}
     `);
     
     
@@ -676,7 +589,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
     //   Return Success JSON
     // --------------------------------------------------
     
-    return res.status(201).json(resultObj);
+    return res.status(201).json(resultLoginObj);
     
     
   } catch (error) {

@@ -17,10 +17,6 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
-// const passport = require('passport');
-// const LocalStrategy = require('passport-local').Strategy;
-// const shortid = require('shortid');
-// const bcrypt = require('bcrypt');
 
 
 // ---------------------------------------------
@@ -28,19 +24,13 @@ const upload = multer({ dest: 'static/' });
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../../@modules/csrf');
-// const { verifyRecaptcha } = require('../../../@modules/recaptcha');
-// const { encrypt }  = require('../../../@modules/crypto');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-// const {
-//   validationId,
-//   validationPassword,
-//   validationEmail
-// } = require('../../../@database/users/validations/login');
+const validationPlayerId = require('../../../@database/users/validations/player-id');
 
 
 // ---------------------------------------------
@@ -50,6 +40,13 @@ const { verifyCsrfToken } = require('../../../@modules/csrf');
 const ModelUsers = require('../../../@database/users/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
 const ModelCardGames = require('../../../@database/card-games/model');
+
+
+// ---------------------------------------------
+//   Logger
+// ---------------------------------------------
+
+const logger = require('../../../@modules/logger');
 
 
 // --------------------------------------------------
@@ -69,6 +66,13 @@ const router = express.Router();
 router.get('/initial-props', upload.none(), async (req, res, next) => {
   
   
+  // --------------------------------------------------
+  //   Status Code
+  // --------------------------------------------------
+  
+  let statusCode = 400;
+  
+  
   try {
     
     
@@ -80,27 +84,40 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Property
+    //   Player ID
     // --------------------------------------------------
     
     const playerId = req.query.playerId;
+    const validationPlayerIdObj = validationPlayerId(playerId);
+    
+    if (validationPlayerIdObj.error) {
+      logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nValidation`);
+      throw new Error('Validation');
+    }
     
     
     // --------------------------------------------------
-    //   Return オブジェクト
+    //   Property
     // --------------------------------------------------
     
     const returnObj = {};
     returnObj.data = {};
-    returnObj.data.usersLoginObj = req.user;
+    returnObj.data.usersLoginObj = {};
     returnObj.cardsArr = [];
     
+    let cardPlayersKeysArr = [];
+    
     
     // --------------------------------------------------
-    //   ログインチェック
+    //   ログインしているユーザー情報
     // --------------------------------------------------
     
-    returnObj.login = req.isAuthenticated() ? true : false;
+    let userslogin_id = '';
+    
+    if (req.user) {
+      returnObj.data.usersLoginObj = req.user;
+      userslogin_id = req.user._id;
+    }
     
     
     // --------------------------------------------------
@@ -108,10 +125,16 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   アクセスしたページ所有者のユーザー情報取得
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOne({ playerId });
+    const usersObj = await ModelUsers.findOne({ playerId }, userslogin_id);
     
-    if (!usersObj) {
+    if (Object.keys(usersObj).length === 0) {
+      
+      // ステータスコード
+      statusCode = 404;
+      
+      // エラー
       throw new Error('usersObj が空です。');
+      
     }
     
     returnObj.data.usersObj = usersObj;
@@ -128,7 +151,8 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
     returnObj.data.cardPlayersObj = cardPlayersObj;
     
-    const cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    // カードを一覧で表示するための配列を作成する
+    cardPlayersKeysArr = Object.keys(cardPlayersObj);
     
     if (cardPlayersKeysArr.length > 0) {
       returnObj.cardsArr.push({
@@ -166,11 +190,14 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
     // `);
     
+    
     // console.log(`
     //   ----- usersObj -----\n
     //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
     //   --------------------\n
-      
+    // `);
+    
+    // console.log(`
     //   ----- cardPlayersObj -----\n
     //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -198,9 +225,12 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
   } catch (error) {
     
-    // console.log(chalk`
-    //   error.message: {red ${error.message}}
-    // `);
+    
+    // ---------------------------------------------
+    //   Logger
+    // ---------------------------------------------
+    
+    logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\n${error}`);
     
     
     // --------------------------------------------------
@@ -218,7 +248,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(400).json({
+    return res.status(statusCode).json({
       errorsArr: [
         {
           code: 0,

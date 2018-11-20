@@ -59,9 +59,10 @@ const logger = require('../../@modules/logger');
 /**
  * 検索してデータを取得する / 1件だけ
  * @param {Object} conditionObj - 検索条件
+ * @param {String} select - 必要な情報を選択
  * @return {Object} 取得データ
  */
-const findOne = async (conditionObj) => {
+const findOne = async (conditionObj, usersLogin_id) => {
   
   
   // --------------------------------------------------
@@ -82,20 +83,53 @@ const findOne = async (conditionObj) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docObj = await Model.findOne(conditionObj).exec();
+    const docObj = await Model.findOne(conditionObj).select('_id accessDate name status playerId level followArr followCount followedArr followedCount role').exec();
+    
+    if (docObj === null) {
+      return returnObj;
+    }
+    
+    
+    // --------------------------------------------------
+    //   コピー
+    // --------------------------------------------------
     
     const copiedObj = JSON.parse(JSON.stringify(docObj));
+    
+    
+    // --------------------------------------------------
+    //   Follow の処理
+    // --------------------------------------------------
+    
+    copiedObj.followed = false;
+    
+    if (
+      usersLogin_id &&
+      copiedObj._id !== usersLogin_id &&
+      copiedObj.followedArr.includes(usersLogin_id)
+    ) {
+      copiedObj.followed = true;
+    }
+    
+    
+    // --------------------------------------------------
+    //   _id をキーにして削除する
+    // --------------------------------------------------
+    
     delete copiedObj._id;
+    delete copiedObj.followArr;
+    delete copiedObj.followedArr;
     returnObj[docObj._id] = copiedObj;
     
-    // for (let value of docArr.values()) {
-    //   const copiedObj = JSON.parse(JSON.stringify(value));
-    //   delete copiedObj._id;
-    //   returnObj[value._id] = copiedObj;
-    // }
+    
+    
     
     // console.log(`
-    //   returnObj: \n${util.inspect(returnObj, { colors: true, depth: null })}
+    //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(chalk`
+    //   usersLogin_id: {green ${usersLogin_id}}
     // `);
     
     

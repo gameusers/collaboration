@@ -66,8 +66,6 @@ import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../applications/common/layout/components/layout';
-// import Panel from '../../applications/common/layout/components/panel';
-// import TermsOfService from '../../applications/common/layout/components/terms-of-service';
 import CardPlayer from '../../applications/common/card/player/components/player';
 
 
@@ -199,9 +197,9 @@ class Component extends React.Component {
         //   Console 出力
         // --------------------------------------------------
         
-        // console.log(`
-        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-        // `);
+        console.log(`
+          jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        `);
         
         initialPropsObj = jsonObj;
         
@@ -314,9 +312,9 @@ class Component extends React.Component {
     //   参考：https://github.com/zeit/next.js#custom-error-handling
     // --------------------------------------------------
     
-    // if (this.error) {
-    //   return <Error statusCode={this.props.statusCode} />;
-    // }
+    if (this.error) {
+      return <Error statusCode={this.props.statusCode} />;
+    }
     
     
     // --------------------------------------------------
@@ -385,7 +383,6 @@ class Component extends React.Component {
           <Container>
             
             {componentCardsArr}
-            {/*<CardPlayer cardPlayers_id="zaoOWw89g" />*/}
             
           </Container>
           

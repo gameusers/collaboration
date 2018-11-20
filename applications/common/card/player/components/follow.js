@@ -62,7 +62,7 @@ const FollowersBox = styled.div`
 const StyledIconFollowers = styled(IconFollowers)`
   && {
     font-size: 24px;
-    // margin: 0 2px 0 2px
+    // margin: 0 2px 0 0;
     padding: 0;
   }
 `;
@@ -101,10 +101,18 @@ export default class extends React.Component {
     
     const {
       
-      model,
-      comment
+      users_id
       
-    } = stores.data.cardPlayersObj[cardPlayers_id].pcObj;
+    } = stores.data.cardPlayersObj[cardPlayers_id];
+    
+    const {
+      
+      followedCount,
+      followed
+      
+    } = stores.data.usersObj[users_id];
+    
+    
     
     
     
@@ -119,20 +127,23 @@ export default class extends React.Component {
     //   return null;
     // }
     
+    let componentButton = <Button variant="outlined" color="primary">フォローする</Button>;
+    
+    if (followed) {
+      componentButton = <Button variant="outlined" color="primary">フォロー中</Button>;
+    }
     
     
     
     
     
     
-    // console.log(chalk`
-    //   userId: {green ${userId}}
-    //   age: {green ${age}}
-      
-    //   imageSrcSet: {green ${imageSrcSet}}
-    //   imageSrc: {green ${imageSrc}}
-    //   imageAlt: {green ${imageAlt}}
-    // `);
+    console.log(chalk`
+      cardPlayers_id: {green ${cardPlayers_id}}
+      users_id: {green ${users_id}}
+      followedCount: {green ${followedCount}}
+      followed: {green ${followed}}
+    `);
     
     
     
@@ -143,12 +154,10 @@ export default class extends React.Component {
     return (
       <FollowBox>
         
-        <Button variant="outlined" color="primary">
-          フォローする
-        </Button>
+        {componentButton}
         
         <FollowersBox>
-          <StyledIconFollowers />1,2345,6789 人
+          <StyledIconFollowers />{followedCount} 人
         </FollowersBox>
         
       </FollowBox>

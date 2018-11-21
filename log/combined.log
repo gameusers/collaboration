@@ -159,3 +159,13 @@
 {"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nTypeError: Cannot read property 'includes' of undefined"}
 {"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nTypeError: Cannot read property 'includes' of undefined"}
 {"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nTypeError: Cannot read property 'includes' of undefined"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Error TEST"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nValidation"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Validation"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nValidation"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Validation"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nReferenceError: playerId is not defined"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nTypeError: ModelUsers.findOne is not a function"}

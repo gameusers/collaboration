@@ -2,15 +2,20 @@
 //   Import
 // --------------------------------------------------
 
-import React from 'react';
-// import withRoot from '../lib/material-ui/withRoot';
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+// import React from 'react';
+const React = require('react');
 
 
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
 
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
+const { fetchWrapper } = require('../applications/@modules/fetch');
+
 
 
 
@@ -18,20 +23,29 @@ import React from 'react';
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/test
+//   URL: http://35.203.143.160:8080/pl/***
 // --------------------------------------------------
 
 class Component extends React.Component {
   
-  static getInitialProps({ pathname, req, query: { id } }) {
-    console.log(`id = ${id}`);
-    const isServer = !!req;
-    return { isServer, pathname };
-  }
   
+  // --------------------------------------------------
+  //   getInitialProps
+  // --------------------------------------------------
+  
+  // static async getInitialProps({ pathname, req, res }) {
+  // }
+  
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
+    
+    fetchWrapper();
   }
   
   
@@ -39,11 +53,7 @@ class Component extends React.Component {
   render() {
     
     
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
     
-    // const stores = this.stores;
     
     
     
@@ -52,7 +62,9 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div>test</div>
+      <div>
+        AAA
+      </div>
     );
   }
 }

@@ -112,8 +112,11 @@ export default class extends React.Component {
       
     } = stores.data.usersObj[users_id];
     
-    
-    
+    const {
+      
+      handleFollowSubmit
+      
+    } = stores.cardPlayer;
     
     
     // --------------------------------------------------
@@ -127,7 +130,12 @@ export default class extends React.Component {
     //   return null;
     // }
     
-    let componentButton = <Button variant="outlined" color="primary">フォローする</Button>;
+    
+    // --------------------------------------------------
+    //   Component - Button
+    // --------------------------------------------------
+    
+    let componentButton = <Button variant="outlined" color="primary" onClick={() => handleFollowSubmit(users_id)}>フォローする</Button>;
     
     if (followed) {
       componentButton = <Button variant="outlined" color="primary">フォロー中</Button>;

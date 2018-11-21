@@ -331,7 +331,7 @@ export default class extends React.Component {
         if (value.type === 'other') {
           
           componentIdArr.push(
-            <Id key={`id${index}`}><strong>{value.label} ID: </strong>{value.value}</Id>
+            <Id key={`id${index}`}><strong>{value.label}: </strong>{value.value}</Id>
           );
           
         }

@@ -197,9 +197,9 @@ class Component extends React.Component {
         //   Console 出力
         // --------------------------------------------------
         
-        console.log(`
-          jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-        `);
+        // console.log(`
+        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        // `);
         
         initialPropsObj = jsonObj;
         

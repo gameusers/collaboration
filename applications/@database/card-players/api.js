@@ -23,30 +23,29 @@ const upload = multer({ dest: 'static/' });
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../@modules/csrf');
+const { verifyCsrfToken } = require('../../@modules/csrf');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const validationPlayerId = require('../../../@database/users/validations/player-id');
+const validation_id = require('../../@validations/_id');
 
 
 // ---------------------------------------------
-//   Schema / Model
+//   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../@database/users/model');
-const ModelCardPlayers = require('../../../@database/card-players/model');
-const ModelCardGames = require('../../../@database/card-games/model');
+const ModelUsers = require('../users/model');
+const ModelCardPlayers = require('./model');
 
 
 // ---------------------------------------------
 //   Logger
 // ---------------------------------------------
 
-const logger = require('../../../@modules/logger');
+const logger = require('../../@modules/logger');
 
 
 // --------------------------------------------------
@@ -63,7 +62,7 @@ const router = express.Router();
 //   Initial Props
 // --------------------------------------------------
 
-router.get('/initial-props', upload.none(), async (req, res, next) => {
+router.post('/follow', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -84,14 +83,34 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Player ID
+    //   Login Check
     // --------------------------------------------------
     
-    const playerId = req.query.playerId;
-    const validationPlayerIdObj = validationPlayerId(playerId);
+    if (!req.isAuthenticated()) {
+      statusCode = 401;
+      throw new Error('Loginする必要があります。');
+    }
     
-    if (validationPlayerIdObj.error) {
-      logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nValidation`);
+    
+    // --------------------------------------------------
+    //   POST 取得
+    // --------------------------------------------------
+    
+    const { users_id } = req.body;
+    
+    
+    // --------------------------------------------------
+    //   users_id
+    // --------------------------------------------------
+    
+    const validation_idObj = validation_id(users_id);
+    
+    console.log(chalk`
+      users_id: {green ${users_id}}
+    `);
+    
+    if (validation_idObj.error) {
+      logger.log('error', `/applications/@database/card-players/api.js\nrouter.post('/follow')\nValidation`);
       throw new Error('Validation');
     }
     
@@ -101,72 +120,46 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const returnObj = {};
-    returnObj.data = {};
-    returnObj.data.usersLoginObj = {};
-    returnObj.cardsArr = [];
     
-    let cardPlayersKeysArr = [];
+    // returnObj.test = 'AAA';
+    // throw new Error('Error TEST');
     
     
     // --------------------------------------------------
-    //   ログインしているユーザー情報
+    //   ログインしているユーザーの _id
     // --------------------------------------------------
     
     let usersLogin_id = '';
     
     if (req.user) {
-      returnObj.data.usersLoginObj = req.user;
       usersLogin_id = req.user._id;
     }
     
     
     // --------------------------------------------------
     //   Model / Users
-    //   アクセスしたページ所有者のユーザー情報取得
+    //   ログイン中のユーザー情報取得
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOneFormatted({ playerId }, usersLogin_id);
+    // const usersObj = await ModelUsers.findOne({ _id: userslogin_id });
     
-    if (Object.keys(usersObj).length === 0) {
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // if (Object.keys(usersObj).length === 0) {
+    //   throw new Error('usersObj が空です。');
       
-      // ステータスコード
-      statusCode = 404;
-      
-      // エラー
-      throw new Error('usersObj が空です。');
-      
-    }
-    
-    returnObj.data.usersObj = usersObj;
-    
-    const usersKeysArr = Object.keys(usersObj);
-    const users_id = usersKeysArr[0];
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報取得
-    // --------------------------------------------------
-    
-    const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
-    returnObj.data.cardPlayersObj = cardPlayersObj;
-    
-    // カードを一覧で表示するための配列を作成する
-    cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    if (cardPlayersKeysArr.length > 0) {
-      returnObj.cardsArr.push({
-        type: 'player',
-        _id: cardPlayersKeysArr[0]
-      });
-    }
+    // }
     
     
     // --------------------------------------------------
     //   Model / Card Players / Upsert
     // --------------------------------------------------
     
-    // await ModelCardPlayers.upsert(users_id, 'zaoOWw89g');
+    await ModelUsers.updateForFollow(usersLogin_id, users_id);
     
     
     // --------------------------------------------------
@@ -230,7 +223,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   Logger
     // ---------------------------------------------
     
-    logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\n${error}`);
+    logger.log('error', `/applications/@database/card-players/api.js\nrouter.post('/follow')\n${error}`);
     
     
     // --------------------------------------------------
@@ -240,7 +233,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     let message = error.message;
     
     if (process.env.NODE_ENV === 'production') {
-      message = 'Initial Props';
+      message = 'Follow';
     }
     
     

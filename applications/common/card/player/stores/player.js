@@ -3,11 +3,30 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+// const chalk = require('chalk');
+// const util = require('util');
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+// const { action, observable } = require('mobx');
 
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../../../@modules/fetch';
+
+// const { fetchWrapper } = require('../../../../@modules/fetch');
 
 
 
@@ -63,6 +82,77 @@ class Store {
     }
     
   };
+  
+  
+  
+  
+  /**
+   * フォローボタンを押すと呼び出される
+   * @param {Object} users_id - フォローする相手のデータベース users の _id
+   */
+  @action.bound
+  async handleFollowSubmit(users_id) {
+    
+    
+    // ---------------------------------------------
+    //   FormData
+    // ---------------------------------------------
+    
+    const formData = new FormData();
+    
+    formData.append('users_id', users_id);
+    
+    
+    // ---------------------------------------------
+    //   Fetch
+    // ---------------------------------------------
+    
+    const resultObj = await fetchWrapper({
+      urlApi: `${storeData.urlApi}/v1/card-players/follow`,
+      methodType: 'POST',
+      formData: formData
+    });
+    
+    console.log(`
+      resultObj: \n${util.inspect(resultObj, { colors: true, depth: null })}
+    `);
+    
+    
+    
+    // fetch(urlApi, {
+    //   method: 'POST',
+    //   credentials: 'same-origin',
+    //   mode: 'same-origin',
+    //   headers: {
+    //     'Accept': 'application/json'
+    //   },
+    //   body: formData
+    // })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       return response.json().then((jsonObj) => {
+    //     　　throw new Error(jsonObj.errorsArr[0].message);
+    //     　});
+    //     }
+        
+    //     return response.json();
+    //   })
+    //   .then((jsonObj) => {
+        
+    //     console.log(`then`);
+    //     console.dir(jsonObj);
+        
+    //     this.handleFormReset();
+        
+    //   })
+    //   .catch((error) => {
+        
+    //     console.log(`catch: ${error}`);
+        
+    //   });
+    
+  };
+  
   
 }
 

@@ -291,7 +291,7 @@ class Component extends React.Component {
       //   Store / Update Data
       // --------------------------------------------------
       
-      this.stores.data.updateUsersObj(props.initialPropsObj.data.usersObj);
+      this.stores.data.replaceUsersObj(props.initialPropsObj.data.usersObj);
       this.stores.data.updateCardPlayersObj(props.initialPropsObj.data.cardPlayersObj);
       
       

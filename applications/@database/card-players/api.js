@@ -93,36 +93,29 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   POST 取得
+    //   POST 取得 & Property
     // --------------------------------------------------
     
     const { users_id } = req.body;
     
+    let returnObj = {};
+    
     
     // --------------------------------------------------
-    //   users_id
+    //   Validation
     // --------------------------------------------------
     
     const validation_idObj = validation_id(users_id);
     
-    console.log(chalk`
-      users_id: {green ${users_id}}
-    `);
-    
     if (validation_idObj.error) {
+      
+      // Log
       logger.log('error', `/applications/@database/card-players/api.js\nrouter.post('/follow')\nValidation`);
+      
+      // Error
       throw new Error('Validation');
+      
     }
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const returnObj = {};
-    
-    // returnObj.test = 'AAA';
-    // throw new Error('Error TEST');
     
     
     // --------------------------------------------------
@@ -137,36 +130,10 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Model / Users
-    //   ログイン中のユーザー情報取得
+    //   Model / Users / Follow
     // --------------------------------------------------
     
-    // const usersObj = await ModelUsers.findOne({ _id: userslogin_id });
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // if (Object.keys(usersObj).length === 0) {
-    //   throw new Error('usersObj が空です。');
-      
-    // }
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Players / Upsert
-    // --------------------------------------------------
-    
-    await ModelUsers.updateForFollow(usersLogin_id, users_id);
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Games / upsert
-    // --------------------------------------------------
-    
-    // await ModelCardGames.upsert(users_id, 'TzjNMDQyl');
+    returnObj = await ModelUsers.updateForFollow(usersLogin_id, users_id);
     
     
     // --------------------------------------------------
@@ -174,8 +141,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   {green pl/player/api/player / initial-props}
-    //   playerId: {green ${playerId}}
+    //   users_id: {green ${users_id}}
     // `);
     
     // console.log(`
@@ -183,22 +149,9 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
     // `);
     
-    
     // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- objectKeysArr -----\n
-    //   ${util.inspect(objectKeysArr, { colors: true, depth: null })}\n
+    //   ----- validation_idObj -----\n
+    //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -220,7 +173,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     
     // ---------------------------------------------
-    //   Logger
+    //   Log
     // ---------------------------------------------
     
     logger.log('error', `/applications/@database/card-players/api.js\nrouter.post('/follow')\n${error}`);

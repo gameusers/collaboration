@@ -212,175 +212,12 @@ const findOneFormatted = async (conditionObj, usersLogin_id) => {
 
 
 /**
- * Player ID で検索し _id を取得する / 1件だけ
- * @param {string} playerId - Player ID
- * @return {string} _id
+ * 検索してデータを取得する / 1件だけ
+ * @param {Object} conditionObj - 検索条件
+ * @param {String} select - 必要な情報を選択
+ * @return {Object} 取得データ
  */
-// const findOne_IdByPlayerId = async (playerId) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnValue = '';
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   FindOne
-//     // --------------------------------------------------
-    
-//     const condition = { playerId: playerId };
-//     const docObj = await Model.findOne(condition).select('_id').exec();
-    
-//     if ('_id' in docObj) {
-//       returnValue = docObj._id;
-//     }
-    
-//     // console.log(`
-//     //   playerId: \n${util.inspect(playerId, { colors: true, depth: null })}
-//     // `);
-    
-//     // console.log(`
-//     //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnValue;
-    
-    
-//   } catch (err) {
-//     throw err;
-//   }
-  
-// };
-
-
-
-/**
- * _id で検索しドキュメントを取得する
- * @param {array} _idArr - _idの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
- * @return {object} 取得されたデータ
- */
-// const findBy_Id = async (_idArr) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Find
-//     // --------------------------------------------------
-    
-//     const condition = { _id: { $in: _idArr} };
-//     const docArr = await Model.find(condition).select('_id role name status playerId level accessDate').exec();
-    
-//     for (let value of docArr.values()) {
-//       const copiedObj = JSON.parse(JSON.stringify(value));
-//       delete copiedObj._id;
-//       returnObj[value._id] = copiedObj;
-//     }
-    
-    
-//     // console.log(`
-//     //   _idArr: \n${util.inspect(_idArr, { colors: true, depth: null })}
-//     // `);
-    
-//     // console.log(`
-//     //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-//     // `);
-    
-//     // console.log(`
-//     //   returnObj: \n${util.inspect(returnObj, { colors: true, depth: null })}
-//     // `);
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-//     throw err;
-//   }
-  
-// };
-
-
-
-/**
- * 取得する
- * @param {array} playerIdArr - Player IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
- * @return {object} 取得されたデータ
- */
-// const find = async (playerIdArr) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Object
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Find
-//   // --------------------------------------------------
-  
-//   await Model.find({ playerId: { $in: playerIdArr} }, (err, docObj) => {
-    
-//     if (err) {
-//       logger.log('error', `/applications/@database/users/model.js / find / Error: ${err}`);
-//     } else {
-//       returnObj = docObj;
-//     }
-    
-//   });
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return returnObj;
-  
-  
-// };
-
-
-
-/**
- * フォローする
- * @param {string} usersLogin_id - フォローするユーザーの_id
- * @param {string} users_id - フォローされるユーザーの_id
- * @return {string} 
- */
-const updateForFollow = async (usersLogin_id, users_id) => {
+const findFormatted = async (conditionObj, usersLogin_id) => {
   
   
   // --------------------------------------------------
@@ -398,14 +235,149 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     
     
     // --------------------------------------------------
+    //   FindOne
+    // --------------------------------------------------
+    
+    const docArr = await Model.find(conditionObj).select('_id accessDate name status playerId level followArr followCount followedArr followedCount role').exec();
+    
+    if (docArr === null) {
+      return returnObj;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Loop
+    // --------------------------------------------------
+    
+    for (let value of docArr.values()) {
+      
+      
+      // --------------------------------------------------
+      //   コピー
+      // --------------------------------------------------
+      
+      const copiedObj = JSON.parse(JSON.stringify(value));
+      
+      
+      // --------------------------------------------------
+      //   Follow の処理
+      // --------------------------------------------------
+      
+      if (usersLogin_id) {
+        
+        copiedObj.followed = false;
+        
+        if (
+          usersLogin_id &&
+          copiedObj._id !== usersLogin_id &&
+          copiedObj.followedArr.includes(usersLogin_id)
+        ) {
+          copiedObj.followed = true;
+        }
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   _id をキーにして削除する
+      // --------------------------------------------------
+      
+      delete copiedObj._id;
+      delete copiedObj.followArr;
+      delete copiedObj.followedArr;
+      returnObj[value._id] = copiedObj;
+      
+    }
+    
+    
+    
+    
+    
+    // console.log(chalk`
+    //   usersLogin_id: {green ${usersLogin_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+/**
+ * フォローする
+ * @param {string} usersLogin_id - フォローするユーザーの_id
+ * @param {string} users_id - フォローされるユーザーの_id
+ * @return {string} 
+ */
+const updateForFollow = async (usersLogin_id, users_id) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await Model.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    // --------------------------------------------------
     //   Find One
     // --------------------------------------------------
     
-    const conditionFindOneObj = { _id: usersLogin_id };
-    const usersObj = await Model.findOne(conditionFindOneObj).exec();
+    const conditionFindOne1Obj = { _id: usersLogin_id };
+    const users1Obj = await Model.findOne(conditionFindOne1Obj).exec();
     
-    if (usersObj === null) {
-      throw new Error('ログインしているユーザーが存在しません。');
+    const conditionFindOne2Obj = { _id: users_id };
+    const users2Obj = await Model.findOne(conditionFindOne2Obj).exec();
+    
+    if (users1Obj === null || users2Obj === null) {
+      throw new Error('必要なユーザーが存在しません。');
     }
     
     
@@ -413,16 +385,22 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     //   フォロー解除
     // --------------------------------------------------
     
-    if (usersObj.followArr.includes(users_id)) {
+    if (users1Obj.followArr.includes(users_id)) {
       
       
       // --------------------------------------------------
       //   Update
       // --------------------------------------------------
       
-      const conditionObj = { _id: usersLogin_id };
-      const saveObj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
-      const docArr = await Model.update(conditionObj, saveObj).exec();
+      const condition1Obj = { _id: usersLogin_id };
+      const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
+      const option1Obj = { session: session };
+      await Model.update(condition1Obj, save1Obj, option1Obj).exec();
+      
+      const condition2Obj = { _id: users_id };
+      const save2Obj = { $pull: { followedArr: usersLogin_id }, $inc: { followedCount: -1 }  };
+      const option2Obj = { session: session };
+      await Model.update(condition2Obj, save2Obj, option2Obj).exec();
       
       
     // --------------------------------------------------
@@ -436,18 +414,37 @@ const updateForFollow = async (usersLogin_id, users_id) => {
       //   Update
       // --------------------------------------------------
       
-      const conditionObj = { _id: usersLogin_id };
-      const saveObj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
-      const docArr = await Model.update(conditionObj, saveObj).exec();
+      const condition1Obj = { _id: usersLogin_id };
+      const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
+      const option1Obj = { session: session };
+      await Model.update(condition1Obj, save1Obj, option1Obj).exec();
       
+      const condition2Obj = { _id: users_id };
+      const save2Obj = { $addToSet: { followedArr: usersLogin_id }, $inc: { followedCount: 1 }  };
+      const option2Obj = { session: session };
+      await Model.update(condition2Obj, save2Obj, option2Obj).exec();
       
-      console.log(`
-        ----- docArr -----\n
-        ${util.inspect(docArr, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
       
     }
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction(); // コミット
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    // --------------------------------------------------
+    //   Model / Users / データ取得
+    // --------------------------------------------------
+    
+    const conditionObj = { _id: { $in: [usersLogin_id, users_id]} };
+    returnObj.usersObj = await findFormatted(conditionObj, usersLogin_id);
     
     
     
@@ -455,15 +452,23 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     //   Console 出力
     // --------------------------------------------------
     
-    console.log(chalk`
-      usersObj.followArr.includes(users_id): {green ${usersObj.followArr.includes(users_id)}}
-    `);
+    // console.log(chalk`
+    //   usersObj.followArr.includes(users_id): {green ${usersObj.followArr.includes(users_id)}}
+    // `);
     
-    console.log(`
-      ----- usersObj -----\n
-      ${util.inspect(usersObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -474,6 +479,17 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     
     
   } catch (err) {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
     
     throw err;
     
@@ -650,8 +666,7 @@ const insert = async (reqBody) => {
 module.exports = {
   findOne,
   findOneFormatted,
-  // findOne_IdByPlayerId,
-  // findBy_Id,
+  findFormatted,
   updateForFollow,
   insert
 };

@@ -24,6 +24,11 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -114,7 +119,10 @@ export default class extends React.Component {
     
     const {
       
-      handleFollowSubmit
+      handleFollowSubmit,
+      followDialogOpenObj,
+      handleFollowDialogOpen,
+      handleFollowDialogClose
       
     } = stores.cardPlayer;
     
@@ -135,23 +143,49 @@ export default class extends React.Component {
     //   Component - Button
     // --------------------------------------------------
     
-    let componentButton = <Button variant="outlined" color="primary" onClick={() => handleFollowSubmit(users_id)}>フォローする</Button>;
+    let componentButton =
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleFollowSubmit(cardPlayers_id, users_id)}
+        >
+          フォローする
+        </Button>
+      ;
     
     if (followed) {
-      componentButton = <Button variant="outlined" color="primary">フォロー中</Button>;
+      componentButton = 
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleFollowDialogOpen(cardPlayers_id)}
+        >
+          フォロー中
+        </Button>
+      ;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Dialog Open
+    // --------------------------------------------------
+    
+    let followDialogOpen = false;
+    
+    if (cardPlayers_id in followDialogOpenObj) {
+      followDialogOpen = followDialogOpenObj[cardPlayers_id];
     }
     
     
     
     
     
-    
-    console.log(chalk`
-      cardPlayers_id: {green ${cardPlayers_id}}
-      users_id: {green ${users_id}}
-      followedCount: {green ${followedCount}}
-      followed: {green ${followed}}
-    `);
+    // console.log(chalk`
+    //   cardPlayers_id: {green ${cardPlayers_id}}
+    //   users_id: {green ${users_id}}
+    //   followedCount: {green ${followedCount}}
+    //   followed: {green ${followed}}
+    // `);
     
     
     
@@ -167,6 +201,29 @@ export default class extends React.Component {
         <FollowersBox>
           <StyledIconFollowers />{followedCount} 人
         </FollowersBox>
+        
+        
+        <Dialog
+          open={followDialogOpen}
+          onClose={() => handleFollowDialogClose(cardPlayers_id)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">フォロー解除</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              このユーザーのフォローを解除しますか？
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleFollowDialogClose(cardPlayers_id)} color="primary">
+              いいえ
+            </Button>
+            <Button onClick={() => handleFollowSubmit(cardPlayers_id, users_id)} color="primary" autoFocus>
+              はい
+            </Button>
+          </DialogActions>
+        </Dialog>
         
       </FollowBox>
     );

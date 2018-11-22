@@ -75,8 +75,6 @@ class Store {
   
   insertUsersObj(obj) {
     this.usersObj = Object.assign({}, obj, this.usersObj);
-    // console.log(`User Community insertData`);
-    // console.dir(this.dataObj);
   };
   
   /**
@@ -84,6 +82,14 @@ class Store {
    * @param {Object} obj - 更新するオブジェクト
    */
   updateUsersObj(obj) {
+    this.usersObj = Object.assign({}, this.usersObj, obj);
+  };
+  
+  /**
+   * ユーザー情報オブジェクトを置き換える
+   * @param {Object} obj - 置き換えるオブジェクト
+   */
+  replaceUsersObj(obj) {
     this.usersObj = obj;
   };
   

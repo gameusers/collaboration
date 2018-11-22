@@ -85,13 +85,17 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   Follow
+  // ---------------------------------------------
   
   /**
    * フォローボタンを押すと呼び出される
+   * @param {Object} cardPlayers_id - データベース card-players の _id
    * @param {Object} users_id - フォローする相手のデータベース users の _id
    */
   @action.bound
-  async handleFollowSubmit(users_id) {
+  async handleFollowSubmit(cardPlayers_id, users_id) {
     
     
     // ---------------------------------------------
@@ -113,44 +117,52 @@ class Store {
       formData: formData
     });
     
-    console.log(`
-      resultObj: \n${util.inspect(resultObj, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   resultObj: \n${util.inspect(resultObj, { colors: true, depth: null })}
+    // `);
     
     
+    // ---------------------------------------------
+    //   ダイアログを閉じる
+    // ---------------------------------------------
     
-    // fetch(urlApi, {
-    //   method: 'POST',
-    //   credentials: 'same-origin',
-    //   mode: 'same-origin',
-    //   headers: {
-    //     'Accept': 'application/json'
-    //   },
-    //   body: formData
-    // })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       return response.json().then((jsonObj) => {
-    //     　　throw new Error(jsonObj.errorsArr[0].message);
-    //     　});
-    //     }
-        
-    //     return response.json();
-    //   })
-    //   .then((jsonObj) => {
-        
-    //     console.log(`then`);
-    //     console.dir(jsonObj);
-        
-    //     this.handleFormReset();
-        
-    //   })
-    //   .catch((error) => {
-        
-    //     console.log(`catch: ${error}`);
-        
-    //   });
+    this.handleFollowDialogClose(cardPlayers_id);
     
+    
+    // ---------------------------------------------
+    //   Data Users 更新
+    // ---------------------------------------------
+    
+    storeData.updateUsersObj(resultObj.usersObj);
+    
+    
+  };
+  
+  
+  /**
+   * ダイアログを表示するかどうかを決めるオブジェクト
+   * @type {Object}
+   */
+  @observable followDialogOpenObj = {};
+  
+  
+  /**
+   * ダイアログを開く
+   * @param {string} cardPlayers_id - ID
+   */
+  @action.bound
+  handleFollowDialogOpen(cardPlayers_id) {
+    this.followDialogOpenObj[cardPlayers_id] = true;
+  };
+  
+  
+  /**
+   * ダイアログを閉じる
+   * @param {string} cardPlayers_id - ID
+   */
+  @action.bound
+  handleFollowDialogClose(cardPlayers_id) {
+    this.followDialogOpenObj[cardPlayers_id] = false;
   };
   
   

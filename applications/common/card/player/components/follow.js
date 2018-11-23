@@ -147,7 +147,8 @@ export default class extends React.Component {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleFollowSubmit(cardPlayers_id, users_id)}
+          onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
+          disabled
         >
           フォローする
         </Button>
@@ -159,6 +160,7 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleFollowDialogOpen(cardPlayers_id)}
+          disabled
         >
           フォロー中
         </Button>
@@ -219,7 +221,7 @@ export default class extends React.Component {
             <Button onClick={() => handleFollowDialogClose(cardPlayers_id)} color="primary">
               いいえ
             </Button>
-            <Button onClick={() => handleFollowSubmit(cardPlayers_id, users_id)} color="primary" autoFocus>
+            <Button onClick={() => handleFollowSubmit('unfollow', cardPlayers_id, users_id)} color="primary" autoFocus>
               はい
             </Button>
           </DialogActions>

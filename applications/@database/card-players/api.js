@@ -197,7 +197,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     return res.status(statusCode).json({
       errorsArr: [
         {
-          code: 0,
+          code: 1,
           message
         },
       ]

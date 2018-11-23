@@ -34,6 +34,10 @@ const fetchWrapper = (argumentsObj) => {
   //   Property
   // ---------------------------------------------
   
+  const resultObj = {
+    statusCode: 400
+  };
+  
   const urlApi = argumentsObj.urlApi;
   const methodType = argumentsObj.methodType;
   const formData = argumentsObj.formData;
@@ -65,17 +69,34 @@ const fetchWrapper = (argumentsObj) => {
     body: formData
   })
     .then((response) => {
+      
+      // console.log(`
+      //   ----- response -----\n
+      //   ${util.inspect(response, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      resultObj.statusCode = response.status;
       return response.json();
+      
+    })
+    .then((jsonObj) => {
+      
+      resultObj.data = jsonObj;
+      return resultObj;
+      
     })
     .catch((error) => {
-      return {
-        errorsArr: [
-          {
-            code: 0,
-            message: error.message
-          },
-        ]
-      };
+      
+      resultObj.errorsArr = [
+        {
+          code: 0,
+          message: error.message
+        },
+      ];
+      
+      return resultObj;
+      
     });
   
 };

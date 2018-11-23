@@ -186,3 +186,48 @@
 {"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nMongoError: No transaction started"}
 {"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: 必要なユーザーが存在しません。"}
 {"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: 必要なユーザーが存在しません。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/@database/card-players/api.js\nrouter.post('/follow')\nError: Loginする必要があります。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: Validation"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: Validation"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: Validation"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}
+{"level":"error","message":"/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nError: usersObj が空です。"}

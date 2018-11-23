@@ -90,9 +90,24 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     const playerId = req.query.playerId;
     const validationPlayerIdObj = validationPlayerId(playerId);
     
+    // console.log(chalk`
+    //   playerId: {green ${playerId}}
+    // `);
+    
+    // console.log(`
+    //   ----- validationPlayerIdObj -----\n
+    //   ${util.inspect(validationPlayerIdObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     if (validationPlayerIdObj.error) {
-      logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\nValidation`);
+      
+      // ステータスコード
+      statusCode = 400;
+      
+      // エラー
       throw new Error('Validation');
+      
     }
     
     
@@ -101,8 +116,8 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const returnObj = {};
-    returnObj.data = {};
-    returnObj.data.usersLoginObj = {};
+    // returnObj.data = {};
+    // returnObj.data.usersLoginObj = {};
     returnObj.cardsArr = [];
     
     let cardPlayersKeysArr = [];
@@ -115,7 +130,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     let usersLogin_id = '';
     
     if (req.user) {
-      returnObj.data.usersLoginObj = req.user;
+      returnObj.usersLoginObj = req.user;
       usersLogin_id = req.user._id;
     }
     
@@ -137,7 +152,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       
     }
     
-    returnObj.data.usersObj = usersObj;
+    returnObj.usersObj = usersObj;
     
     const usersKeysArr = Object.keys(usersObj);
     const users_id = usersKeysArr[0];
@@ -149,7 +164,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
-    returnObj.data.cardPlayersObj = cardPlayersObj;
+    returnObj.cardPlayersObj = cardPlayersObj;
     
     // カードを一覧で表示するための配列を作成する
     cardPlayersKeysArr = Object.keys(cardPlayersObj);
@@ -234,7 +249,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // ---------------------------------------------
-    //   Logger
+    //   Log
     // ---------------------------------------------
     
     logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\n${error}`);

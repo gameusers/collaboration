@@ -8,8 +8,6 @@
 
 import chalk from 'chalk';
 import util from 'util';
-// const chalk = require('chalk');
-// const util = require('util');
 
 
 // ---------------------------------------------
@@ -17,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-// const { action, observable } = require('mobx');
 
 
 // ---------------------------------------------
@@ -26,7 +23,13 @@ import { action, observable } from 'mobx';
 
 import { fetchWrapper } from '../../../../@modules/fetch';
 
-// const { fetchWrapper } = require('../../../../@modules/fetch');
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+import { errorsArrIntoErrorMessage } from '../../../../@format/error';
+
 
 
 
@@ -38,6 +41,8 @@ import { fetchWrapper } from '../../../../@modules/fetch';
 let storeLoginIndex = null;
 let storeLayout = null;
 let storeData = null;
+
+
 
 
 
@@ -91,50 +96,93 @@ class Store {
   
   /**
    * フォローボタンを押すと呼び出される
+   * @param {string} type - フォローかフォロー解除か follow / unfollow
    * @param {Object} cardPlayers_id - データベース card-players の _id
    * @param {Object} users_id - フォローする相手のデータベース users の _id
    */
   @action.bound
-  async handleFollowSubmit(cardPlayers_id, users_id) {
+  async handleFollowSubmit(type, cardPlayers_id, users_id) {
     
     
-    // ---------------------------------------------
-    //   FormData
-    // ---------------------------------------------
-    
-    const formData = new FormData();
-    
-    formData.append('users_id', users_id);
-    
-    
-    // ---------------------------------------------
-    //   Fetch
-    // ---------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: `${storeData.urlApi}/v1/card-players/follow`,
-      methodType: 'POST',
-      formData: formData
-    });
-    
-    // console.log(`
-    //   resultObj: \n${util.inspect(resultObj, { colors: true, depth: null })}
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   ダイアログを閉じる
-    // ---------------------------------------------
-    
-    this.handleFollowDialogClose(cardPlayers_id);
-    
-    
-    // ---------------------------------------------
-    //   Data Users 更新
-    // ---------------------------------------------
-    
-    storeData.updateUsersObj(resultObj.usersObj);
-    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('users_id', users_id);
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${storeData.urlApi}/v1/card-players/follow`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
+      
+      
+      // ---------------------------------------------
+      //   ダイアログを閉じる
+      // ---------------------------------------------
+      
+      this.handleFollowDialogClose(cardPlayers_id);
+      
+      
+      // ---------------------------------------------
+      //   Data Users 更新
+      // ---------------------------------------------
+      
+      storeData.updateUsersObj(resultObj.usersObj);
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      if (type === 'follow') {
+        storeLayout.handleSnackbarOpen('success', 'フォローしました。');
+      } else {
+        storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
+      }
+      
+      
+    } catch (error) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      if (type === 'follow') {
+        storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
+      } else {
+        storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
+      }
+      
+      
+    }
     
   };
   

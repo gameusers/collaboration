@@ -21,13 +21,7 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from '../../applications/@modules/fetch';
+import fetch from 'isomorphic-unfetch';
 
 
 // ---------------------------------------------
@@ -61,6 +55,7 @@ import { fetchWrapper } from '../../applications/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
+// import initStoreIndex from '../../applications/common/stores/index';
 import initStoreIndex from '../../applications/@stores/index';
 import initStoreCardPlayer from '../../applications/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
@@ -130,31 +125,95 @@ class Component extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const { publicRuntimeConfig } = getConfig();
-    
     const isServer = !!req;
     let initialPropsObj = {};
-    let statusCode = 400;
+    let statusCode = 0;
+    let errorObj = {};
+    
+    
+    // console.log(chalk`
+    //   pathname: {green ${pathname}}
+    // `);
+    
+    // console.log(`
+    //   query: \n${util.inspect(query, { colors: true, depth: null })}
+    // `);
+    
     
     
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerId=${query.param1}`),
-      methodType: 'GET',
-      reqHeadersCookie: isServer ? req.headers.cookie : ''
-    });
+    // ---------------------------------------------
+    //   API URL
+    // ---------------------------------------------
     
-    statusCode = resultObj.statusCode;
-    initialPropsObj = resultObj.data;
+    const { publicRuntimeConfig } = getConfig();
+    const urlApi = `${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerId=${query.param1}`;
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
+    // ---------------------------------------------
+    //   Headers
+    // ---------------------------------------------
+    
+    const headersObj = {
+      'Accept': 'application/json'
+    };
+    
+    if (isServer) {
+      headersObj['Cookie'] = req.headers.cookie;
+    }
+    
+    
+    await fetch(urlApi, {
+      method: 'GET',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      headers: headersObj
+    })
+      .then((response) => {
+        
+        // console.log(`
+        //   response: \n${util.inspect(response, { colors: true, depth: null })}
+        // `);
+        
+        statusCode = response.status;
+        
+        if (!response.ok) {
+          return response.json().then((jsonObj) => {
+            errorObj = jsonObj;
+        　　throw new Error(errorObj.errorsArr[0].message);
+        　});
+        }
+        
+        return response.json();
+        
+      })
+      .then((jsonObj) => {
+        
+        
+        // --------------------------------------------------
+        //   Console 出力
+        // --------------------------------------------------
+        
+        // console.log(`
+        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+        // `);
+        
+        initialPropsObj = jsonObj;
+        
+        
+      })
+      .catch((error) => {
+        
+        console.log(`
+          errorObj: \n${util.inspect(errorObj, { colors: true, depth: null })}
+        `);
+        
+        console.log(`/pages/pl/player.js\ngetInitialProps\nFetch / ${error}`);
+        
+      });
     
     
     return { isServer, pathname, initialPropsObj, statusCode };
@@ -179,6 +238,7 @@ class Component extends React.Component {
     this.error = false;
     
     
+    
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
@@ -192,9 +252,10 @@ class Component extends React.Component {
       
       if (
         this.props.statusCode !== 200 ||
-        'usersLoginObj' in props.initialPropsObj === false ||
-        'usersObj' in props.initialPropsObj === false ||
-        'cardPlayersObj' in props.initialPropsObj === false ||
+        'data' in props.initialPropsObj === false ||
+        'usersLoginObj' in props.initialPropsObj.data === false ||
+        'usersObj' in props.initialPropsObj.data === false ||
+        'cardPlayersObj' in props.initialPropsObj.data === false ||
         'cardsArr' in props.initialPropsObj === false
       ) {
         throw new Error();
@@ -206,7 +267,7 @@ class Component extends React.Component {
       // --------------------------------------------------
       
       const { publicRuntimeConfig } = getConfig();
-      // this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
+      this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
       
       
       // --------------------------------------------------
@@ -230,8 +291,8 @@ class Component extends React.Component {
       //   Store / Update Data
       // --------------------------------------------------
       
-      this.stores.data.replaceUsersObj(props.initialPropsObj.usersObj);
-      this.stores.data.updateCardPlayersObj(props.initialPropsObj.cardPlayersObj);
+      this.stores.data.replaceUsersObj(props.initialPropsObj.data.usersObj);
+      this.stores.data.updateCardPlayersObj(props.initialPropsObj.data.cardPlayersObj);
       
       
     } catch (e) {
@@ -239,11 +300,6 @@ class Component extends React.Component {
     }
     
     
-  }
-  
-  
-  componentDidMount(){
-    console.log("コンポーネントのマウント後");
   }
   
   

@@ -24,7 +24,7 @@ const upload = multer({ dest: 'static/' });
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../@modules/csrf');
-const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
+const { errorCodeIntoErrorObj } = require('../../@modules/error/errors-obj');
 
 
 // ---------------------------------------------
@@ -74,10 +74,9 @@ router.post('/follow', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
-  //   Property
+  //   Status Code
   // --------------------------------------------------
   
-  let returnObj = {};
   let statusCode = 400;
   let errorCodeArr = [1];
   
@@ -108,6 +107,8 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const { users_id } = req.body;
+    
+    let returnObj = {};
     
     
     // --------------------------------------------------
@@ -173,26 +174,57 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     return res.status(200).json(returnObj);
     
     
-  } catch (errorObj) {
+  } catch (error) {
     
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    const resultErrorObj = errorCodeIntoErrorObj(
-      errorObj,
+    // logger.log('error', `/applications/@database/card-players/api.js\nrouter.post('/follow')\n${error}`);
+    
+    const errorsObj = errorCodeIntoErrorObj(
+      error,
       errorCodeArr,
       `/applications/@database/card-players/api.js\nrouter.post('/follow')`
     );
     
     
     // --------------------------------------------------
+    //   Error Message
+    // --------------------------------------------------
+    
+    // let message = '';
+    
+    // if (errorCode === 100) {
+      
+    //   message = 'ログインする必要があります。';
+      
+    // } else if (errorCode === 101) {
+      
+    //   message = 'Validation';
+      
+    // } else if (process.env.NODE_ENV !== 'production') {
+      
+    //   message = error.message;
+      
+    // }
+    
+    
+    // --------------------------------------------------
     //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(statusCode).json(resultErrorObj);
+    return res.status(statusCode).json(errorsObj);
     
+    // return res.status(statusCode).json({
+    //   errorsArr: [
+    //     {
+    //       code: errorCode,
+    //       message
+    //     },
+    //   ]
+    // });
     
   }
   

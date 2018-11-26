@@ -34,7 +34,7 @@ const fetchWrapper = (argumentsObj) => {
   //   Property
   // ---------------------------------------------
   
-  const resultObj = {
+  let resultObj = {
     statusCode: 400
   };
   
@@ -82,7 +82,12 @@ const fetchWrapper = (argumentsObj) => {
     })
     .then((jsonObj) => {
       
-      resultObj.data = jsonObj;
+      if ('errorsArr' in jsonObj) {
+        resultObj = jsonObj;
+      } else {
+        resultObj.data = jsonObj;
+      }
+      
       return resultObj;
       
     })

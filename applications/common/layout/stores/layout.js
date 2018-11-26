@@ -574,6 +574,32 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Button Disabled
+  // ---------------------------------------------
+  
+  /**
+   * ボタンの利用禁止判定
+   * @type {boolean}
+   */
+  @observable buttonDisabledObj = {};
+  
+  /**
+   * ボタンの利用禁止判定を更新する
+   * @param {boolean} value - 利用不可 true / 利用可能 false
+   */
+  handleButtonDisabledObj(_id) {
+    if (_id in this.buttonDisabledObj) {
+      this.buttonDisabledObj[_id] = !this.buttonDisabledObj[_id];
+    } else {
+      this.buttonDisabledObj[_id] = false;
+    }
+  };
+  
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Terms of Service（利用規約）
   // ---------------------------------------------
   
@@ -631,19 +657,14 @@ export default function initStoreLayout(argumentsObj) {
   
   
   if (isServer) {
-    // console.log(`@ initStoreLayout / isServer`);
+    
     return new Store();
     
   } else {
     
-    // console.log(`@ initStoreLayout / isClient`);
-    
     if (storeLayout === null) {
-      // console.log(`initStoreLayout / initialDataObj 挿入`);
       storeLayout = new Store();
     }
-    
-    // console.log(`@ initStoreLayout / return前`);
     
     return storeLayout;
     

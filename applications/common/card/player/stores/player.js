@@ -60,6 +60,11 @@ class Store {
   constructor() {}
   
   
+  
+  
+  
+  
+  
   // ---------------------------------------------
   //   Expanded
   // ---------------------------------------------
@@ -95,6 +100,22 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * フォローボタンの利用禁止判定
+   * @type {boolean}
+   */
+  // @observable followButtonDisabled = true;
+  
+  /**
+   * フォローボタンの利用禁止判定を更新する
+   * @param {boolean} value - 利用不可 true / 利用可能 false
+   */
+  // setFollowButtonDisabled(value) {
+  //   this.followButtonDisabled = value;
+  // };
+  
+  
+  
+  /**
    * フォローボタンを押すと呼び出される
    * @param {string} type - フォローかフォロー解除か follow / unfollow
    * @param {Object} cardPlayers_id - データベース card-players の _id
@@ -117,6 +138,14 @@ class Store {
       
       
       // ---------------------------------------------
+      //   Button Disabled
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-follow`);
+      // this.setFollowButtonDisabled(true);
+      
+      
+      // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
@@ -127,11 +156,11 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -154,7 +183,7 @@ class Store {
       //   Data Users 更新
       // ---------------------------------------------
       
-      storeData.updateUsersObj(resultObj.usersObj);
+      storeData.updateUsersObj(resultObj.data.usersObj);
       
       
       // ---------------------------------------------
@@ -182,9 +211,21 @@ class Store {
       }
       
       
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-follow`);
+      // this.setFollowButtonDisabled(false);
+      
+      
     }
     
   };
+  
   
   
   /**
@@ -192,7 +233,6 @@ class Store {
    * @type {Object}
    */
   @observable followDialogOpenObj = {};
-  
   
   /**
    * ダイアログを開く
@@ -202,7 +242,6 @@ class Store {
   handleFollowDialogOpen(cardPlayers_id) {
     this.followDialogOpenObj[cardPlayers_id] = true;
   };
-  
   
   /**
    * ダイアログを閉じる

@@ -16,9 +16,6 @@
 
 
 
-
-
-
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
@@ -47,8 +44,9 @@ const errorsArrIntoErrorMessage = (errorsArr) => {
     const errorMessageArr = [];
     
     for (let value of errorsArr.values()) {
-      errorMessageArr.push(`Error Code: ${value.code}`);
-      // errorMessageArr.push(`Error Code: ${value.code} - ${value.message}`);
+      // errorMessageArr.push(`Error Code: ${value.code}`);
+      // errorMessageArr.push(`${value.message} エラーコード ${value.code}`);
+      errorMessageArr.push(`${value.message}`);
     }
     
     returnValue = errorMessageArr.join(' / ');

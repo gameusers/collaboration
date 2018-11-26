@@ -325,14 +325,14 @@ export default class extends React.Component {
           <UserBox>
             
             <UserThumbnailBox>
-              <UserThumbnail id={users_id} />
+              <UserThumbnail users_id={users_id} />
             </UserThumbnailBox>
             
             
             <UserInfoBox>
             
               <UserNameBox>
-                <UserName id={users_id} />
+                <UserName users_id={users_id} />
               </UserNameBox>
               
             </UserInfoBox>

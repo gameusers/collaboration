@@ -63,7 +63,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, id, anonymity, small } = this.props;
+    const { stores, users_id, anonymity, small } = this.props;
     
     
     // --------------------------------------------------
@@ -77,9 +77,9 @@ export default class extends React.Component {
     //   src = `https://gameusers.org/assets/img/common/thumbnail_none.png`;
     // }
     
-    if (id && id in stores.data.usersObj) {
-      src = `/static/img/user/${id}/thumbnail/128x128.jpg`;
-      srcSet = `/static/img/user/${id}/thumbnail/256x256.jpg 320w, /static/img/user/${id}/thumbnail/512x512.jpg 640w`;
+    if (users_id && users_id in stores.data.usersObj) {
+      src = `/static/img/user/${users_id}/thumbnail/128x128.jpg`;
+      srcSet = `/static/img/user/${users_id}/thumbnail/256x256.jpg 320w, /static/img/user/${users_id}/thumbnail/512x512.jpg 640w`;
     }
     
     

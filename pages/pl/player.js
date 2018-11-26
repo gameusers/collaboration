@@ -192,7 +192,7 @@ class Component extends React.Component {
       
       if (
         this.props.statusCode !== 200 ||
-        'usersLoginObj' in props.initialPropsObj === false ||
+        // 'usersLoginObj' in props.initialPropsObj === false ||
         'usersObj' in props.initialPropsObj === false ||
         'cardPlayersObj' in props.initialPropsObj === false ||
         'cardsArr' in props.initialPropsObj === false
@@ -206,7 +206,6 @@ class Component extends React.Component {
       // --------------------------------------------------
       
       const { publicRuntimeConfig } = getConfig();
-      // this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
       
       
       // --------------------------------------------------
@@ -242,9 +241,10 @@ class Component extends React.Component {
   }
   
   
-  componentDidMount(){
-    console.log("コンポーネントのマウント後");
-  }
+  // componentDidMount(){
+  //   console.log("コンポーネントのマウント後");
+  //   this.stores.data.setOnload(true);
+  // }
   
   
   

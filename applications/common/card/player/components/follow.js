@@ -89,6 +89,12 @@ export default class extends React.Component {
   }
   
   
+  componentDidMount(){
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-follow`);
+    // this.props.stores.cardPlayer.setFollowButtonDisabled(false);
+  }
+  
+  
   render() {
     
     
@@ -99,10 +105,15 @@ export default class extends React.Component {
     const { stores, cardPlayers_id } = this.props;
     
     
-    
     // --------------------------------------------------
     //   Data - 必要な情報を取得
     // --------------------------------------------------
+    
+    const {
+      
+      buttonDisabledObj
+      
+    } = stores.layout;
     
     const {
       
@@ -119,6 +130,7 @@ export default class extends React.Component {
     
     const {
       
+      // followButtonDisabled,
       handleFollowSubmit,
       followDialogOpenObj,
       handleFollowDialogOpen,
@@ -143,12 +155,19 @@ export default class extends React.Component {
     //   Component - Button
     // --------------------------------------------------
     
+    let buttonDisabledFollow = true;
+    
+    if (`${cardPlayers_id}-follow` in buttonDisabledObj) {
+      buttonDisabledFollow = buttonDisabledObj[`${cardPlayers_id}-follow`];
+    }
+    
+    
     let componentButton =
         <Button
           variant="outlined"
           color="primary"
           onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
-          disabled
+          disabled={buttonDisabledFollow}
         >
           フォローする
         </Button>
@@ -160,7 +179,7 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleFollowDialogOpen(cardPlayers_id)}
-          disabled
+          disabled={buttonDisabledFollow}
         >
           フォロー中
         </Button>

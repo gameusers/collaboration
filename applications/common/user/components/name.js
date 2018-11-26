@@ -222,6 +222,12 @@ export default class extends React.Component {
   }
   
   
+  componentDidMount(){
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-player`);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-game`);
+  }
+  
+  
   render() {
     
     
@@ -229,9 +235,35 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, id, anonymity, name, status } = this.props;
+    const { stores, users_id, anonymity, name, status } = this.props;
     
     const usersObj = stores.data.usersObj;
+    
+    
+    
+    // --------------------------------------------------
+    //   Button Disabled
+    // --------------------------------------------------
+    
+    const {
+      
+      buttonDisabledObj
+      
+    } = stores.layout;
+    
+    
+    let buttonDisabledCardPlayer = true;
+    
+    if (`${users_id}-card-player` in buttonDisabledObj) {
+      buttonDisabledCardPlayer = buttonDisabledObj[`${users_id}-card-player`];
+    }
+    
+    let buttonDisabledCardGame = true;
+    
+    if (`${users_id}-card-game` in buttonDisabledObj) {
+      buttonDisabledCardGame = buttonDisabledObj[`${users_id}-card-game`];
+    }
+    
     
     
     
@@ -249,9 +281,9 @@ export default class extends React.Component {
       
       componentName = <NameNoColor>{name}</NameNoColor>;
       
-    } else if (id && id in usersObj) {
+    } else if (users_id && users_id in usersObj) {
       
-      componentName = <Name>{usersObj[id].name}</Name>;
+      componentName = <Name>{usersObj[users_id].name}</Name>;
       
     } else {
       
@@ -275,9 +307,9 @@ export default class extends React.Component {
       
       componentStatus = <StatusBox><StyledIconHealing /><Status>{status}</Status></StatusBox>;
       
-    } else if (id && id in usersObj) {
+    } else if (users_id && users_id in usersObj) {
       
-      componentStatus = <StatusBox><StyledIconHealing /><Status>{usersObj[id].status}</Status></StatusBox>;
+      componentStatus = <StatusBox><StyledIconHealing /><Status>{usersObj[users_id].status}</Status></StatusBox>;
       
     } else {
       
@@ -293,10 +325,10 @@ export default class extends React.Component {
     
     let componentAccessTime = '';
     
-    if (id && id in usersObj) {
+    if (users_id && users_id in usersObj) {
       
       const datetimeNow = moment().utcOffset(0);
-      const datetimeAccess = moment(usersObj[id].accessDate).utcOffset(0);
+      const datetimeAccess = moment(usersObj[users_id].accessDate).utcOffset(0);
       const accessTime = datetimeAccess.from(datetimeNow);
       
       componentAccessTime = <AccessTimeBox><StyledIconSchedule /><AccessTime>{accessTime}</AccessTime></AccessTimeBox>;
@@ -310,9 +342,9 @@ export default class extends React.Component {
     
     let componentLevel = '';
     
-    if (id && id in usersObj) {
+    if (users_id && users_id in usersObj) {
       
-      componentLevel = <LevelBox><StyledIconStars /><Level>Lv.{usersObj[id].level}</Level></LevelBox>;
+      componentLevel = <LevelBox><StyledIconStars /><Level>Lv.{usersObj[users_id].level}</Level></LevelBox>;
       
     }
     
@@ -335,12 +367,19 @@ export default class extends React.Component {
           
           {componentLevel}
           
-          <StyledButton variant="outlined">
+          <StyledButton
+            variant="outlined"
+            // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
+            disabled={buttonDisabledCardPlayer}
+          >
             <StyledIconCard1 />
             Player
           </StyledButton>
           
-          <StyledButton variant="outlined">
+          <StyledButton
+            variant="outlined"
+            disabled={buttonDisabledCardGame}
+          >
             <StyledIconCard2 />
             Game
           </StyledButton>

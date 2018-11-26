@@ -33,12 +33,24 @@ class Store {
   }
   
   
+  
   // ---------------------------------------------
-  //   Environment
+  //   ページの読み込み判定
   // ---------------------------------------------
   
-  // environment = 'development';
-  // urlApi = '';
+  /**
+   * ページの読み込みが終わったかどうか
+   * @type {boolean}
+   */
+  // @observable onload = false;
+  
+  /**
+   * ページの読み込み判定を更新する
+   * @param {boolean} value - 読み込み後 true / 読み込み前 false
+   */
+  // setOnload(value) {
+  //   this.onload = value;
+  // };
   
   
   

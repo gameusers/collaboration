@@ -24,11 +24,13 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import green from '@material-ui/core/colors/green';
 
 
 // ---------------------------------------------
@@ -41,6 +43,10 @@ import IconFollowers from '@material-ui/icons/PermIdentity';
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
+
+
+
+
 
 
 
@@ -72,7 +78,20 @@ const StyledIconFollowers = styled(IconFollowers)`
   }
 `;
 
+const ButtonBox = styled.div`
+  position: relative;
+`;
 
+const StyledCircularProgress = styled(CircularProgress)`
+  && {
+    color: ${green[500]};
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+  }
+`;
 
 
 
@@ -187,6 +206,15 @@ export default class extends React.Component {
     }
     
     
+    // let componentCircularProgress = '';
+    
+    // if (buttonDisabledFollow) {
+    //   componentCircularProgress = <StyledCircularProgress size={24} />;
+    // }
+    
+    
+    
+    
     // --------------------------------------------------
     //   Dialog Open
     // --------------------------------------------------
@@ -217,7 +245,10 @@ export default class extends React.Component {
     return (
       <FollowBox>
         
-        {componentButton}
+        <ButtonBox>
+          {componentButton}
+        </ButtonBox>
+        
         
         <FollowersBox>
           <StyledIconFollowers />{followedCount} 人

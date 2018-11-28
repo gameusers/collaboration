@@ -1,4 +1,6 @@
-module.exports = {
+const withCSS = require('@zeit/next-css');
+
+module.exports = withCSS({
   publicRuntimeConfig: {
     environment: process.env.NODE_ENV,
     recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
@@ -6,4 +8,4 @@ module.exports = {
     urlBase: process.env.URL_BASE,
     urlApi: process.env.URL_API
   }
-};
+});

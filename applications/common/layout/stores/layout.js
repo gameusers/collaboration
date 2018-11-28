@@ -574,6 +574,26 @@ class Store {
   
   
   // ---------------------------------------------
+  //   On Load
+  // ---------------------------------------------
+  
+  /**
+   * ページの読み込み判定
+   * @type {boolean}
+   */
+  @observable onload = false;
+  
+  /**
+   * ページの読み込み判定を更新する
+   * @param {boolean} value - true /  false
+   */
+  handleOnload(value) {
+    this.onload = value;
+  };
+  
+  
+  
+  // ---------------------------------------------
   //   Button Disabled
   // ---------------------------------------------
   
@@ -585,7 +605,7 @@ class Store {
   
   /**
    * ボタンの利用禁止判定を更新する
-   * @param {boolean} value - 利用不可 true / 利用可能 false
+   * @param {string} _id - ID
    */
   handleButtonDisabledObj(_id) {
     if (_id in this.buttonDisabledObj) {

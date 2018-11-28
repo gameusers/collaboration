@@ -127,6 +127,23 @@ class Store {
     
     try {
       
+      // console.log(`${cardPlayers_id}-follow` in storeLayout.buttonDisabledObj);
+      // console.log(storeLayout.buttonDisabledObj[`${cardPlayers_id}-follow`]);
+      // ---------------------------------------------
+      //   DOM の読み込みが終わってない場合、処理停止
+      // ---------------------------------------------
+      
+      // if (
+      //   cardPlayers_id in storeLayout.buttonDisabledObj === false ||
+      //   storeLayout.buttonDisabledObj[`${cardPlayers_id}-follow`] === true
+      // ) {
+      // // if (storeLayout.buttonDisabledObj[`${cardPlayers_id}-follow`]) {
+      //   console.log('disabled');
+      //   return;
+      // }
+      // return;
+      
+      
       
       // ---------------------------------------------
       //   FormData

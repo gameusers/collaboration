@@ -26,13 +26,9 @@ import styled from 'styled-components';
 import IconButton from '@material-ui/core/IconButton';
 
 import Card from '@material-ui/core/Card';
-// import CardHeader from '@material-ui/core/CardHeader';
-// import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
-// import FavoriteIcon from '@material-ui/icons/Favorite';
-// import ShareIcon from '@material-ui/icons/Share';
 
 
 // ---------------------------------------------
@@ -194,11 +190,24 @@ const ComponentBox = styled.div`
 //   FollowBox
 // ---------------------------------------------
 
-const FollowBox = styled.div`
-  margin: 0 0 10px 10px;
-  padding: 0;
+const StyledCardActions = styled(CardActions)`
+  && {
+    // font-size: 14px;
+    // line-height: 1.6em;
+    // margin-bottom: 0;
+    padding-bottom: 0;
+  }
 `;
 
+// const FollowBox = styled.div`
+//   margin: 0 0 10px 10px;
+//   padding: 0;
+// `;
+
+// const FollowBox = styled.div`
+//   margin: 0 0 0 10px;
+//   padding: 0;
+// `;
 
 
 
@@ -216,6 +225,11 @@ export default class extends React.Component {
   }
   
   
+  componentDidMount(){
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-panel`, false);
+  }
+  
+  
   render() {
     
     
@@ -227,33 +241,30 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Expanded
+    //   必要な情報を取得
     // --------------------------------------------------
     
     const {
       
-      cardExpandedObj,
-      handleCardExpanded
+      panelExpandedObj,
+      handlePanelExpanded,
+      buttonDisabledObj
       
-    } = stores.cardPlayer;
-    
-    
-    let cardExpanded = true;
-    
-    if (cardPlayers_id in cardExpandedObj) {
-      cardExpanded = cardExpandedObj[cardPlayers_id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   Data - プレイヤーカードオブジェクト取得
-    // --------------------------------------------------
+    } = stores.layout;
     
     const {
       
       cardPlayersObj
       
     } = stores.data;
+    
+    const {
+      
+      imageSrcSet,
+      imageSrc,
+      imageAlt
+      
+    } = stores.data.cardPlayersObj[cardPlayers_id].imageArr[0];
     
     
     // --------------------------------------------------
@@ -266,16 +277,20 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   画像
+    //   Button Disabled & Panel Expanded
     // --------------------------------------------------
     
-    const {
-      
-      imageSrcSet,
-      imageSrc,
-      imageAlt
-      
-    } = stores.data.cardPlayersObj[cardPlayers_id].imageArr[0];
+    let panelButtonDisabled = true;
+    
+    if (`${cardPlayers_id}-panel` in buttonDisabledObj) {
+      panelButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-panel`];
+    }
+    
+    let panelExpanded = true;
+    
+    if (cardPlayers_id in panelExpandedObj) {
+      panelExpanded = panelExpandedObj[cardPlayers_id];
+    }
     
     
     // --------------------------------------------------
@@ -291,9 +306,9 @@ export default class extends React.Component {
     //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
     // `);
     
-    // console.log(`
-    //   cardPlayersObj[cardPlayers_id]: \n${util.inspect(cardPlayersObj[cardPlayers_id], { colors: true, depth: null })}
-    // `);
+    console.log(`
+      Follow: \n${util.inspect(Follow, { colors: true, depth: null })}
+    `);
     
     // console.log(chalk`
     //   cardPlayers_id: {green ${cardPlayers_id}}
@@ -343,11 +358,12 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handleCardExpanded(cardPlayers_id)}
-              aria-expanded={cardExpanded}
+              onClick={() => handlePanelExpanded(cardPlayers_id)}
+              aria-expanded={panelExpanded}
               aria-label="Show more"
+              disabled={panelButtonDisabled}
             >
-              {cardExpanded ? (
+              {panelExpanded ? (
                 <IconExpandLess />
               ) : (
                 <IconExpandMore />
@@ -360,7 +376,7 @@ export default class extends React.Component {
         
         
         {/* カードのコンテンツ - 折り畳まれる部分 */}
-        <Collapse in={cardExpanded} timeout="auto" unmountOnExit>
+        <Collapse in={panelExpanded} timeout="auto" unmountOnExit>
           
           
           {/* 大きな画像 */}
@@ -431,12 +447,9 @@ export default class extends React.Component {
           
           
           {/* フォローボタン */}
-          <CardActions disableActionSpacing>
-            <FollowBox>
-              <Follow cardPlayers_id={cardPlayers_id} />
-            </FollowBox>
-          </CardActions>
-          
+          <StyledCardActions>
+            <Follow cardPlayers_id={cardPlayers_id} />
+          </StyledCardActions>
           
         </Collapse>
         

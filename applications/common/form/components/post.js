@@ -10,6 +10,7 @@ import Lightbox from 'react-images';
 // import ModalVideo from 'react-modal-video';
 
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 
 import TextField from '@material-ui/core/TextField';
@@ -253,7 +254,7 @@ const PreviewImg = styled.img`
   }
 `;
 
-const PreviewDeleteButton = styled(Button)`
+const PreviewDeleteFab = styled(Fab)`
   && {
     background-color: ${cyan[500]};
     &:hover {
@@ -487,13 +488,12 @@ export default class extends React.Component {
                 onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
               />
               
-              <PreviewDeleteButton
-                variant="fab"
+              <PreviewDeleteFab
                 color="primary"
                 onClick={() => handleImageVideoDelete(id, index)}
               >
                 <IconClose />
-              </PreviewDeleteButton>
+              </PreviewDeleteFab>
             </PreviewBox>
           );
           
@@ -517,13 +517,12 @@ export default class extends React.Component {
                 src="/static/img/common/video-play-button.png"
               />
               
-              <PreviewDeleteButton
-                variant="fab"
+              <PreviewDeleteFab
                 color="primary"
                 onClick={() => handleImageVideoDelete(id, index)}
               >
                 <IconClose />
-              </PreviewDeleteButton>
+              </PreviewDeleteFab>
               
             </PreviewBox>
           );

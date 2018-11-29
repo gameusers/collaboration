@@ -73,25 +73,25 @@ class Store {
    * カードの開閉用オブジェクト
    * @type {Object}
    */
-  @observable cardExpandedObj = {};
+  // @observable cardExpandedObj = {};
   
   
   /**
    * カードを開閉する。アイコンをクリックしたときに呼び出される
    * @param {string} id - ID
    */
-  @action.bound
-  handleCardExpanded(id) {
+  // @action.bound
+  // handleCardExpanded(id) {
     
-    // console.log(`handleCardExpanded id = ${id}`);
+  //   // console.log(`handleCardExpanded id = ${id}`);
     
-    if (id in this.cardExpandedObj) {
-      this.cardExpandedObj[id] = !this.cardExpandedObj[id];
-    } else {
-      this.cardExpandedObj[id] = false;
-    }
+  //   if (id in this.cardExpandedObj) {
+  //     this.cardExpandedObj[id] = !this.cardExpandedObj[id];
+  //   } else {
+  //     this.cardExpandedObj[id] = false;
+  //   }
     
-  };
+  // };
   
   
   
@@ -158,8 +158,7 @@ class Store {
       //   Button Disabled
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-follow`);
-      // this.setFollowButtonDisabled(true);
+      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-follow`, true);
       
       
       // ---------------------------------------------
@@ -235,8 +234,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-follow`);
-      // this.setFollowButtonDisabled(false);
+      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-follow`, false);
       
       
     }

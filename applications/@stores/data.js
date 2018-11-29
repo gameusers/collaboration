@@ -62,15 +62,14 @@ class Store {
    * ログインユーザー情報を入れるオブジェクト
    * @type {Object}
    */
-  @observable usersloginObj = {};
+  @observable usersLoginObj = {};
   
   /**
    * ログインユーザー情報オブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
-  updateUsersLoginObj(obj) {
-    this.usersloginObj = obj;
-    // console.dir(this.dataObj);
+  replaceUsersLoginObj(obj) {
+    this.usersLoginObj = obj;
   };
   
   

@@ -74,16 +74,16 @@ const Heading = styled.h3`
 const LinkBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 8px 0 0 0;
+  margin: 0 0 0 0;
   padding: 0 0 0 0;
 `;
 
 const LinkItem = styled.div`
-  margin: 0 14px 10px 0;
+  margin: 10px 14px 0 0;
 `;
 
 const LinkOtherBox = styled.div`
-  margin: 0 12px 10px 0;
+  margin: 10px 12px 0 0;
 `;
 
 const LinkOtherA = styled.a`

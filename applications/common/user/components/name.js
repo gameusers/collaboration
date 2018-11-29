@@ -223,8 +223,8 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-player`);
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-game`);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-player`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-game`, false);
   }
   
   

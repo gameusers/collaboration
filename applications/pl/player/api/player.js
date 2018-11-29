@@ -1,4 +1,8 @@
 // --------------------------------------------------
+//   File ID: 4tT2vx700
+// --------------------------------------------------
+
+// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -24,6 +28,7 @@ const upload = multer({ dest: 'static/' });
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../../@modules/csrf');
+const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
@@ -60,17 +65,29 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   Initial Props
+//   Initial Props / Function ID: P3ut9x3Fj
 // --------------------------------------------------
 
 router.get('/initial-props', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
-  //   Status Code
+  //   Property
   // --------------------------------------------------
   
+  let returnObj = {
+    cardsArr: []
+  };
+  
+  let cardPlayersKeysArr = [];
   let statusCode = 400;
+  
+  let errorArgumentsObj = {
+    fileId: '4tT2vx700',
+    functionId: 'P3ut9x3Fj',
+    errorCodeArr: [500000],
+    errorObj: {},
+  };
   
   
   try {
@@ -84,43 +101,17 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Player ID
+    //   GET 取得
     // --------------------------------------------------
     
     const playerId = req.query.playerId;
     const validationPlayerIdObj = validationPlayerId(playerId);
     
-    // console.log(chalk`
-    //   playerId: {green ${playerId}}
-    // `);
-    
-    // console.log(`
-    //   ----- validationPlayerIdObj -----\n
-    //   ${util.inspect(validationPlayerIdObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     if (validationPlayerIdObj.error) {
-      
-      // ステータスコード
       statusCode = 400;
-      
-      // エラー
-      throw new Error('Validation');
-      
+      errorArgumentsObj.errorCodeArr = [502002];
+      throw new Error();
     }
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const returnObj = {};
-    // returnObj.data = {};
-    // returnObj.data.usersLoginObj = {};
-    returnObj.cardsArr = [];
-    
-    let cardPlayersKeysArr = [];
     
     
     // --------------------------------------------------
@@ -143,13 +134,9 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     const usersObj = await ModelUsers.findOneFormatted({ playerId }, usersLogin_id);
     
     if (Object.keys(usersObj).length === 0) {
-      
-      // ステータスコード
       statusCode = 404;
-      
-      // エラー
-      throw new Error('usersObj が空です。');
-      
+      errorArgumentsObj.errorCodeArr = [503001];
+      throw new Error();
     }
     
     returnObj.usersObj = usersObj;
@@ -175,10 +162,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
         _id: cardPlayersKeysArr[0]
       });
     }
-    
-    
-    
-    
     
     
     
@@ -245,39 +228,54 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     return res.status(200).json(returnObj);
     
     
-  } catch (error) {
+  } catch (errorObj) {
     
     
     // ---------------------------------------------
-    //   Log
+    //   Error Object
     // ---------------------------------------------
     
-    logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\n${error}`);
-    
-    
-    // --------------------------------------------------
-    //   製品版の場合、エラーメッセージを定型文に変更
-    // --------------------------------------------------
-    
-    let message = error.message;
-    
-    if (process.env.NODE_ENV === 'production') {
-      message = 'Initial Props';
-    }
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
     
     
     // --------------------------------------------------
     //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(statusCode).json({
-      errorsArr: [
-        {
-          code: 0,
-          message
-        },
-      ]
-    });
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    // logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\n${error}`);
+    
+    
+    // --------------------------------------------------
+    //   製品版の場合、エラーメッセージを定型文に変更
+    // --------------------------------------------------
+    
+    // let message = error.message;
+    
+    // if (process.env.NODE_ENV === 'production') {
+    //   message = 'Initial Props';
+    // }
+    
+    
+    // // --------------------------------------------------
+    // //   Return JSON Object / Error
+    // // --------------------------------------------------
+    
+    // return res.status(statusCode).json({
+    //   errorsArr: [
+    //     {
+    //       code: 0,
+    //       message
+    //     },
+    //   ]
+    // });
     
   }
   

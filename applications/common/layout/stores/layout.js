@@ -572,7 +572,6 @@ class Store {
   
   
   
-  
   // ---------------------------------------------
   //   On Load
   // ---------------------------------------------
@@ -585,7 +584,7 @@ class Store {
   
   /**
    * ページの読み込み判定を更新する
-   * @param {boolean} value - true /  false
+   * @param {boolean} value - 読み込み済み true / 読み込み前 false
    */
   handleOnload(value) {
     this.onload = value;
@@ -606,14 +605,19 @@ class Store {
   /**
    * ボタンの利用禁止判定を更新する
    * @param {string} _id - ID
+   * @param {boolean} value - 利用禁止 true / 利用可能 false
    */
-  handleButtonDisabledObj(_id) {
-    if (_id in this.buttonDisabledObj) {
-      this.buttonDisabledObj[_id] = !this.buttonDisabledObj[_id];
-    } else {
-      this.buttonDisabledObj[_id] = false;
-    }
+  handleButtonDisabledObj(_id, value) {
+    this.buttonDisabledObj[_id] = value;
   };
+  // handleButtonDisabledObj(_id) {
+  //   if (_id in this.buttonDisabledObj) {
+  //     this.buttonDisabledObj[_id] = !this.buttonDisabledObj[_id];
+  //   } else {
+  //     this.buttonDisabledObj[_id] = false;
+  //   }
+  // };
+  
   
   
   

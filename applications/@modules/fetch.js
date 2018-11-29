@@ -82,8 +82,14 @@ const fetchWrapper = (argumentsObj) => {
     })
     .then((jsonObj) => {
       
+      // console.log(`
+      //   ----- jsonObj -----\n
+      //   ${util.inspect(jsonObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
       if ('errorsArr' in jsonObj) {
-        resultObj = jsonObj;
+        resultObj.errorsArr = jsonObj.errorsArr;
       } else {
         resultObj.data = jsonObj;
       }

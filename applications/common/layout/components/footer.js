@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 
 import IconLocalFlorist from '@material-ui/icons/LocalFlorist';
 import IconCopyright from '@material-ui/icons/Copyright';
@@ -188,9 +189,9 @@ export default class extends React.Component {
           </MenuTextBox>
           
           <MenuScrollToTop>
-            <Button variant="fab" color="secondary" mini>
+            <Fab color="secondary" size="small">
               <IconNavigation />
-            </Button>
+            </Fab>
           </MenuScrollToTop>
           
         </MenuBox>

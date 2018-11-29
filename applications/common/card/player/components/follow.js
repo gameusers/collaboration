@@ -24,13 +24,13 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
+// import CardActions from '@material-ui/core/CardActions';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import green from '@material-ui/core/colors/green';
+// import green from '@material-ui/core/colors/green';
 
 
 // ---------------------------------------------
@@ -61,6 +61,9 @@ const FollowBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
+  margin: 10px 10px 20px 10px;
+  // margin: 18px 23px 20px 23px;
+  // padding: 0;
 `;
 
 const FollowersBox = styled.div`
@@ -82,16 +85,16 @@ const ButtonBox = styled.div`
   position: relative;
 `;
 
-const StyledCircularProgress = styled(CircularProgress)`
-  && {
-    color: ${green[500]};
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -12px;
-    margin-left: -12px;
-  }
-`;
+// const StyledCircularProgress = styled(CircularProgress)`
+//   && {
+//     color: ${green[500]};
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     margin-top: -12px;
+//     margin-left: -12px;
+//   }
+// `;
 
 
 
@@ -109,8 +112,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-follow`);
-    // this.props.stores.cardPlayer.setFollowButtonDisabled(false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-follow`, false);
   }
   
   
@@ -123,16 +125,17 @@ export default class extends React.Component {
     
     const { stores, cardPlayers_id } = this.props;
     
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
     const {
       
       buttonDisabledObj
       
     } = stores.layout;
+    
+    const {
+      
+      usersLoginObj
+      
+    } = stores.data;
     
     const {
       
@@ -149,7 +152,6 @@ export default class extends React.Component {
     
     const {
       
-      // followButtonDisabled,
       handleFollowSubmit,
       followDialogOpenObj,
       handleFollowDialogOpen,
@@ -159,25 +161,22 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   必要な情報がない場合、空のコンポーネントを返す
+    //   ログインしていない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    // if (
-    //   model === '' &&
-    //   comment === ''
-    // ) {
-    //   return null;
-    // }
+    if (Object.keys(usersLoginObj).length === 0) {
+      return null;
+    }
     
     
     // --------------------------------------------------
     //   Component - Button
     // --------------------------------------------------
     
-    let buttonDisabledFollow = true;
+    let followButtonDisabled = true;
     
     if (`${cardPlayers_id}-follow` in buttonDisabledObj) {
-      buttonDisabledFollow = buttonDisabledObj[`${cardPlayers_id}-follow`];
+      followButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-follow`];
     }
     
     
@@ -186,7 +185,7 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
-          disabled={buttonDisabledFollow}
+          disabled={followButtonDisabled}
         >
           フォローする
         </Button>
@@ -198,21 +197,12 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleFollowDialogOpen(cardPlayers_id)}
-          disabled={buttonDisabledFollow}
+          disabled={followButtonDisabled}
         >
           フォロー中
         </Button>
       ;
     }
-    
-    
-    // let componentCircularProgress = '';
-    
-    // if (buttonDisabledFollow) {
-    //   componentCircularProgress = <StyledCircularProgress size={24} />;
-    // }
-    
-    
     
     
     // --------------------------------------------------
@@ -227,7 +217,15 @@ export default class extends React.Component {
     
     
     
+    // console.log(chalk`
+    //   cardPlayers_id-follow in buttonDisabledObj: {green ${`${cardPlayers_id}-follow` in buttonDisabledObj}}
+    //   buttonDisabledObj[cardPlayers_id-follow]: {green ${buttonDisabledObj[`${cardPlayers_id}-follow`]}}
+    //   followButtonDisabled: {green ${followButtonDisabled}}
+    // `);
     
+    // console.log(`
+    //   buttonDisabledObj: \n${util.inspect(buttonDisabledObj, { colors: true, depth: null })}
+    // `);
     
     // console.log(chalk`
     //   cardPlayers_id: {green ${cardPlayers_id}}

@@ -1,4 +1,8 @@
 // --------------------------------------------------
+//   File ID: QOVB4jVBQ
+// --------------------------------------------------
+
+// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -67,7 +71,7 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   Initial Props
+//   Initial Props / Function ID: hlc3gh0aL
 // --------------------------------------------------
 
 router.post('/follow', upload.none(), async (req, res, next) => {
@@ -79,7 +83,13 @@ router.post('/follow', upload.none(), async (req, res, next) => {
   
   let returnObj = {};
   let statusCode = 400;
-  let errorCodeArr = [1];
+  
+  let errorArgumentsObj = {
+    fileId: 'QOVB4jVBQ',
+    functionId: 'hlc3gh0aL',
+    errorCodeArr: [500000],
+    errorObj: {},
+  };
   
   
   try {
@@ -98,7 +108,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorCodeArr = [100];
+      errorArgumentsObj.errorCodeArr = [101001];
       throw new Error();
     }
     
@@ -117,7 +127,8 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     const validation_idObj = validation_id(users_id);
     
     if (validation_idObj.error) {
-      errorCodeArr = [101];
+      statusCode = 400;
+      errorArgumentsObj.errorCodeArr = [502001];
       throw new Error();
     }
     
@@ -180,11 +191,8 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     //   Error Object
     // ---------------------------------------------
     
-    const resultErrorObj = errorCodeIntoErrorObj(
-      errorObj,
-      errorCodeArr,
-      `/applications/@database/card-players/api.js\nrouter.post('/follow')`
-    );
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
     
     
     // --------------------------------------------------

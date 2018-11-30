@@ -1,4 +1,8 @@
 // --------------------------------------------------
+//   File ID: QOVB4jVBQ
+// --------------------------------------------------
+
+// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -24,7 +28,7 @@ const upload = multer({ dest: 'static/' });
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../@modules/csrf');
-const { errorCodeIntoErrorObj } = require('../../@modules/error/errors-obj');
+const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
@@ -67,18 +71,25 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   Initial Props
+//   Initial Props / Function ID: hlc3gh0aL
 // --------------------------------------------------
 
 router.post('/follow', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
-  //   Status Code
+  //   Property
   // --------------------------------------------------
   
+  let returnObj = {};
   let statusCode = 400;
-  let errorCodeArr = [1];
+  
+  let errorArgumentsObj = {
+    fileId: 'QOVB4jVBQ',
+    functionId: 'hlc3gh0aL',
+    errorCodeArr: [500000],
+    errorObj: {},
+  };
   
   
   try {
@@ -97,7 +108,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorCodeArr = [100];
+      errorArgumentsObj.errorCodeArr = [101001];
       throw new Error();
     }
     
@@ -108,8 +119,6 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     const { users_id } = req.body;
     
-    let returnObj = {};
-    
     
     // --------------------------------------------------
     //   Validation
@@ -118,7 +127,8 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     const validation_idObj = validation_id(users_id);
     
     if (validation_idObj.error) {
-      errorCodeArr = [101];
+      statusCode = 400;
+      errorArgumentsObj.errorCodeArr = [502001];
       throw new Error();
     }
     
@@ -174,57 +184,23 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     return res.status(200).json(returnObj);
     
     
-  } catch (error) {
+  } catch (errorObj) {
     
     
     // ---------------------------------------------
-    //   Log
+    //   Error Object
     // ---------------------------------------------
     
-    // logger.log('error', `/applications/@database/card-players/api.js\nrouter.post('/follow')\n${error}`);
-    
-    const errorsObj = errorCodeIntoErrorObj(
-      error,
-      errorCodeArr,
-      `/applications/@database/card-players/api.js\nrouter.post('/follow')`
-    );
-    
-    
-    // --------------------------------------------------
-    //   Error Message
-    // --------------------------------------------------
-    
-    // let message = '';
-    
-    // if (errorCode === 100) {
-      
-    //   message = 'ログインする必要があります。';
-      
-    // } else if (errorCode === 101) {
-      
-    //   message = 'Validation';
-      
-    // } else if (process.env.NODE_ENV !== 'production') {
-      
-    //   message = error.message;
-      
-    // }
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
     
     
     // --------------------------------------------------
     //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(statusCode).json(errorsObj);
+    return res.status(statusCode).json(resultErrorObj);
     
-    // return res.status(statusCode).json({
-    //   errorsArr: [
-    //     {
-    //       code: errorCode,
-    //       message
-    //     },
-    //   ]
-    // });
     
   }
   

@@ -4,7 +4,7 @@
   "description": "Game Users Node.js Version. 現在、collaborationリポジトリを使用していますが、Node.jsバージョンが形になったら、webリポジトリの方に移し替えます。collaborationリポジトリは共同開発のテスト用として作られたリポジトリです。",
   "main": "public/js/build.js",
   "scripts": {
-    "nodemon:start": "nodemon -w server.js -w applications/@api/v1 -w applications/@modules -w applications/@database -w applications/login/index/api -w applications/logout/index/api -w applications/pl/player/api -w applications/test/api server.js",
+    "nodemon:start": "nodemon -w server.js -w applications/@api/v1 -w applications/@modules -w applications/@database -w applications/login/index/api -w applications/logout/index/api -w applications/pl/player/api -w applications/admin -w applications/test/api server.js",
     "mongo-express:start": "cd node_modules/mongo-express/ && ME_CONFIG_MONGODB_ENABLE_ADMIN=true node app",
     "dev": "NODE_ENV=development run-p nodemon:start mongo-express:start",
     "build": "next build",
@@ -72,7 +72,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-decorators": "^7.1.6",
-    "babel-plugin-styled-components": "^1.9.1",
+    "babel-plugin-styled-components": "^1.9.2",
     "cpx": "^1.5.0",
     "mkdirp": "^0.5.1",
     "nodemon": "^1.18.7",

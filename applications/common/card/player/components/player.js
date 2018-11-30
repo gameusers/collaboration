@@ -306,9 +306,9 @@ export default class extends React.Component {
     //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
     // `);
     
-    console.log(`
-      Follow: \n${util.inspect(Follow, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   Follow: \n${util.inspect(Follow, { colors: true, depth: null })}
+    // `);
     
     // console.log(chalk`
     //   cardPlayers_id: {green ${cardPlayers_id}}

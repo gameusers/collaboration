@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-// const chalk = require('chalk');
-// const util = require('util');
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -38,6 +38,12 @@ import Icon from '@material-ui/icons/Gamepad';
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+const Container = styled.div`
+  margin: 28px 0 0 0;
+  padding: 0;
+`;
+
 
 // ---------------------------------------------
 //   見出し
@@ -109,26 +115,16 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
-    const hardwareArr = stores.data.cardPlayersObj[cardPlayers_id].ownedHardwareObj.valueArr;
-    
+    const { hardwareArr } = this.props;
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (hardwareArr.length === 0) {
+    if (!Array.isArray(hardwareArr) || hardwareArr.length === 0) {
       return null;
     }
-    
     
     
     // --------------------------------------------------
@@ -136,7 +132,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     let componentHeading = '所有ハード';
-    
     
     
     // ---------------------------------------------
@@ -150,13 +145,11 @@ export default class extends React.Component {
     );
     
     
-    
     // ---------------------------------------------
     //   コンポーネント作成
     // ---------------------------------------------
     
     const componentBox = <ItemBox>{componentArr}</ItemBox>;
-    
     
     
     // --------------------------------------------------
@@ -178,7 +171,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
           
         {/* 見出し */}
         <HeadingBox>
@@ -189,7 +182,7 @@ export default class extends React.Component {
         {/* ハードウェア */}
         {componentBox}
           
-      </React.Fragment>
+      </Container>
     );
     
   }

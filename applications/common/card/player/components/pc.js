@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -46,6 +46,12 @@ import Paragraph from '../../../layout/components/paragraph';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
+const Container = styled.div`
+  margin: 28px 0 0 0;
+  padding: 0;
+`;
+
+
 // ---------------------------------------------
 //   見出し
 // ---------------------------------------------
@@ -66,12 +72,6 @@ const Heading = styled.h3`
   margin: 0 0 0 4px;
 `;
 
-
-
-const Model = styled.p`
-  font-weight: bold;
-`;
-
 const CommentBox = styled.div`
   margin: 3px 0 0 0;
   padding: 0 0 0 0;
@@ -83,15 +83,12 @@ const CommentBox = styled.div`
 // ---------------------------------------------
 
 const SpecsBox = styled.ul`
-  // line-height: 1.8em;
   margin: 14px 0 0 0;
   padding: 0 0 0 0;
 `;
 
 const SpecsTitle = styled.p`
   font-weight: bold;
-  // margin: 0 0 3px 0;
-  // padding: 0 0 0 0;
 `;
 
 const SpecsUl = styled.ul`
@@ -130,39 +127,23 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
     const {
-      
-      model,
-      comment
-      
-    } = stores.data.cardPlayersObj[cardPlayers_id].pcObj;
-    
-    const {
-      
-      os,
-      cpu,
-      cpuCooler,
-      motherboard,
-      memory,
-      storage,
-      graphicsCard,
-      opticalDrive,
-      powerSupply,
+      pcModel,
+      pcComment,
+      pcOs,
+      pcCpu,
+      pcCpuCooler,
+      pcMotherboard,
+      pcMemory,
+      pcStorage,
+      pcGraphicsCard,
+      pcOpticalDrive,
+      pcPowerSupply,
       pcCase,
-      monitor,
-      mouse,
-      keyboard
-      
-    } = stores.data.cardPlayersObj[cardPlayers_id].pcObj.specsObj;
-    
+      pcMonitor,
+      pcMouse,
+      pcKeyboard
+    } = this.props;
     
     
     // --------------------------------------------------
@@ -170,25 +151,24 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (
-      model === '' &&
-      comment === '' &&
-      os === '' &&
-      cpu === '' &&
-      cpuCooler === '' &&
-      motherboard === '' &&
-      memory === '' &&
-      storage === '' &&
-      graphicsCard === '' &&
-      opticalDrive === '' &&
-      powerSupply === '' &&
-      pcCase === '' &&
-      monitor === '' &&
-      mouse === '' &&
-      keyboard === ''
+      !pcModel &&
+      !pcComment &&
+      !pcOs &&
+      !pcCpu &&
+      !pcCpuCooler &&
+      !pcMotherboard &&
+      !pcMemory &&
+      !pcStorage &&
+      !pcGraphicsCard &&
+      !pcOpticalDrive &&
+      !pcPowerSupply &&
+      !pcCase &&
+      !pcMonitor &&
+      !pcMouse &&
+      !pcKeyboard
     ) {
       return null;
     }
-    
     
     
     // --------------------------------------------------
@@ -197,16 +177,9 @@ export default class extends React.Component {
     
     let componentModel = 'PC';
     
-    if (model) {
-      componentModel = `PC: ${model}`;
+    if (pcModel) {
+      componentModel = `PC: ${pcModel}`;
     }
-    
-    // let componentModel = <Model>PC</Model>;
-    
-    // if (model) {
-    //   componentModel = <Model>PC: {model}</Model>;
-    // }
-    
     
     
     // --------------------------------------------------
@@ -215,11 +188,9 @@ export default class extends React.Component {
     
     let componentComment = '';
     
-    if (comment) {
-      componentComment = <CommentBox><Paragraph text={comment} /></CommentBox>;
+    if (pcComment) {
+      componentComment = <CommentBox><Paragraph text={pcComment} /></CommentBox>;
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -233,9 +204,9 @@ export default class extends React.Component {
     //   OS
     // ---------------------------------------------
     
-    if (os) {
+    if (pcOs) {
       componentSpecsArr.push(
-        <SpecsLi key="os"><strong>OS:</strong> {os}</SpecsLi>
+        <SpecsLi key="os"><strong>OS:</strong> {pcOs}</SpecsLi>
       );
     }
     
@@ -244,9 +215,9 @@ export default class extends React.Component {
     //   CPU
     // ---------------------------------------------
     
-    if (cpu) {
+    if (pcCpu) {
       componentSpecsArr.push(
-        <SpecsLi key="cpu"><strong>CPU:</strong> {cpu}</SpecsLi>
+        <SpecsLi key="cpu"><strong>CPU:</strong> {pcCpu}</SpecsLi>
       );
     }
     
@@ -255,9 +226,9 @@ export default class extends React.Component {
     //   CPU Cooler
     // ---------------------------------------------
     
-    if (cpuCooler) {
+    if (pcCpuCooler) {
       componentSpecsArr.push(
-        <SpecsLi key="cpuCooler"><strong>CPUクーラー:</strong> {cpuCooler}</SpecsLi>
+        <SpecsLi key="cpuCooler"><strong>CPUクーラー:</strong> {pcCpuCooler}</SpecsLi>
       );
     }
     
@@ -266,9 +237,9 @@ export default class extends React.Component {
     //   マザーボード
     // ---------------------------------------------
     
-    if (motherboard) {
+    if (pcMotherboard) {
       componentSpecsArr.push(
-        <SpecsLi key="motherboard"><strong>マザーボード:</strong> {motherboard}</SpecsLi>
+        <SpecsLi key="motherboard"><strong>マザーボード:</strong> {pcMotherboard}</SpecsLi>
       );
     }
     
@@ -277,9 +248,9 @@ export default class extends React.Component {
     //   メモリ
     // ---------------------------------------------
     
-    if (memory) {
+    if (pcMemory) {
       componentSpecsArr.push(
-        <SpecsLi key="memory"><strong>メモリ:</strong> {memory}</SpecsLi>
+        <SpecsLi key="memory"><strong>メモリ:</strong> {pcMemory}</SpecsLi>
       );
     }
     
@@ -288,9 +259,9 @@ export default class extends React.Component {
     //   ストレージ
     // ---------------------------------------------
     
-    if (storage) {
+    if (pcStorage) {
       componentSpecsArr.push(
-        <SpecsLi key="storage"><strong>ストレージ:</strong> {storage}</SpecsLi>
+        <SpecsLi key="storage"><strong>ストレージ:</strong> {pcStorage}</SpecsLi>
       );
     }
     
@@ -299,9 +270,9 @@ export default class extends React.Component {
     //   グラフィックス
     // ---------------------------------------------
     
-    if (graphicsCard) {
+    if (pcGraphicsCard) {
       componentSpecsArr.push(
-        <SpecsLi key="graphicsCard"><strong>グラフィックス:</strong> {graphicsCard}</SpecsLi>
+        <SpecsLi key="graphicsCard"><strong>グラフィックス:</strong> {pcGraphicsCard}</SpecsLi>
       );
     }
     
@@ -310,9 +281,9 @@ export default class extends React.Component {
     //   光学ドライブ
     // ---------------------------------------------
     
-    if (opticalDrive) {
+    if (pcOpticalDrive) {
       componentSpecsArr.push(
-        <SpecsLi key="opticalDrive"><strong>光学ドライブ:</strong> {opticalDrive}</SpecsLi>
+        <SpecsLi key="opticalDrive"><strong>光学ドライブ:</strong> {pcOpticalDrive}</SpecsLi>
       );
     }
     
@@ -321,9 +292,9 @@ export default class extends React.Component {
     //   電源
     // ---------------------------------------------
     
-    if (powerSupply) {
+    if (pcPowerSupply) {
       componentSpecsArr.push(
-        <SpecsLi key="powerSupply"><strong>電源:</strong> {powerSupply}</SpecsLi>
+        <SpecsLi key="powerSupply"><strong>電源:</strong> {pcPowerSupply}</SpecsLi>
       );
     }
     
@@ -343,20 +314,20 @@ export default class extends React.Component {
     //   モニター
     // ---------------------------------------------
     
-    if (monitor) {
+    if (pcMonitor) {
       componentSpecsArr.push(
-        <SpecsLi key="monitor"><strong>モニター:</strong> {monitor}</SpecsLi>
+        <SpecsLi key="monitor"><strong>モニター:</strong> {pcMonitor}</SpecsLi>
       );
     }
     
     
     // ---------------------------------------------
-    //   モニター
+    //   マウス
     // ---------------------------------------------
     
-    if (mouse) {
+    if (pcMouse) {
       componentSpecsArr.push(
-        <SpecsLi key="mouse"><strong>マウス:</strong> {mouse}</SpecsLi>
+        <SpecsLi key="mouse"><strong>マウス:</strong> {pcMouse}</SpecsLi>
       );
     }
     
@@ -365,9 +336,9 @@ export default class extends React.Component {
     //   キーボード
     // ---------------------------------------------
     
-    if (keyboard) {
+    if (pcKeyboard) {
       componentSpecsArr.push(
-        <SpecsLi key="keyboard"><strong>キーボード:</strong> {keyboard}</SpecsLi>
+        <SpecsLi key="keyboard"><strong>キーボード:</strong> {pcKeyboard}</SpecsLi>
       );
     }
     
@@ -380,20 +351,9 @@ export default class extends React.Component {
     
     if (componentSpecsArr.length > 0) {
        componentSpecsBox = <SpecsBox><SpecsTitle>スペック</SpecsTitle><SpecsUl>{componentSpecsArr}</SpecsUl></SpecsBox>;
+    } else {
+      return null;
     }
-    
-    
-    
-    
-    // console.log(chalk`
-    //   userId: {green ${userId}}
-    //   age: {green ${age}}
-      
-    //   imageSrcSet: {green ${imageSrcSet}}
-    //   imageSrc: {green ${imageSrc}}
-    //   imageAlt: {green ${imageAlt}}
-    // `);
-    
     
     
     // --------------------------------------------------
@@ -401,8 +361,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
-        
+      <Container>
         
         {/* 見出し */}
         <HeadingBox>
@@ -416,7 +375,7 @@ export default class extends React.Component {
         {/* PCスペック */}
         {componentSpecsBox}
         
-      </React.Fragment>
+      </Container>
     );
     
   }

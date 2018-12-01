@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -45,6 +45,12 @@ import Icon from '@material-ui/icons/Public';
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+const Container = styled.div`
+  margin: 28px 0 0 0;
+  padding: 0;
+`;
+
 
 // ---------------------------------------------
 //   見出し
@@ -126,31 +132,16 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
-    const linkArr = stores.data.cardPlayersObj[cardPlayers_id].linkArr;
-    
-    
+    const { linkArr } = this.props;
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (
-      linkArr.length === 0
-    ) {
+    if (!Array.isArray(linkArr) || linkArr.length === 0) {
       return null;
     }
-    
-    
-    
     
     
     // --------------------------------------------------
@@ -159,43 +150,43 @@ export default class extends React.Component {
     
     const componentLinkArr = [];
     
-    if (linkArr.length > 0) {
-      for (const [index, value] of linkArr.entries()) {
+    for (const [index, value] of linkArr.entries()) {
+      
+      if (value.type === 'other') {
         
-        if (value.type === 'other') {
-          
-          componentLinkArr.push(
-            <LinkOtherBox key={index}>
-              <LinkOtherA href={value.url} target="_blank">
-                <LinkOtherButton
-                  variant="contained"
-                  color="secondary"
-                >
-                  {value.label}
-                </LinkOtherButton>
-              </LinkOtherA>
-            </LinkOtherBox>
-          );
-          
-        } else if (value.url) {
-          
-          componentLinkArr.push(
-            <LinkItem key={`link${index}`}>
-              <a href={value.url} target="_blank">
-                <img src={`/static/img/common/social/card/${value.type}.png`} width="26" height="26" />
-              </a>
-            </LinkItem>
-          );
-          
-        }
+        componentLinkArr.push(
+          <LinkOtherBox key={index}>
+            <LinkOtherA href={value.url} target="_blank">
+              <LinkOtherButton
+                variant="contained"
+                color="secondary"
+              >
+                {value.label}
+              </LinkOtherButton>
+            </LinkOtherA>
+          </LinkOtherBox>
+        );
+        
+      } else if (value.url) {
+        
+        componentLinkArr.push(
+          <LinkItem key={`link${index}`}>
+            <a href={value.url} target="_blank">
+              <img src={`/static/img/common/social/card/${value.type}.png`} width="26" height="26" />
+            </a>
+          </LinkItem>
+        );
         
       }
+      
     }
     
     let componentLinkBox = '';
     
     if (componentLinkArr.length > 0) {
        componentLinkBox = <LinkBox>{componentLinkArr}</LinkBox>;
+    } else {
+      return null;
     }
     
     
@@ -219,7 +210,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
         
         <HeadingBox>
           <StyledIcon />
@@ -228,7 +219,7 @@ export default class extends React.Component {
         
         {componentLinkBox}
         
-      </React.Fragment>
+      </Container>
     );
     
   }

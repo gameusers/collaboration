@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-// const chalk = require('chalk');
-// const util = require('util');
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -40,6 +40,11 @@ import Paragraph from '../../../layout/components/paragraph';
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+const Container = styled.div`
+  margin: 28px 0 0 0;
+  padding: 0;
+`;
 
 const HeadingBox = styled.div`
   display: flex;
@@ -86,21 +91,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
-    const {
-      
-      model,
-      comment
-      
-    } = stores.data.cardPlayersObj[cardPlayers_id].tabletObj;
-    
+    const { tabletModel, tabletComment } = this.props;
     
     
     // --------------------------------------------------
@@ -108,12 +99,11 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (
-      model === '' &&
-      comment === ''
+      !tabletModel &&
+      !tabletComment
     ) {
       return null;
     }
-    
     
     
     // --------------------------------------------------
@@ -122,10 +112,9 @@ export default class extends React.Component {
     
     let componentModel = 'タブレット';
     
-    if (model) {
-      componentModel = `タブレット: ${model}`;
+    if (tabletModel) {
+      componentModel = `タブレット: ${tabletModel}`;
     }
-    
     
     
     // --------------------------------------------------
@@ -134,21 +123,9 @@ export default class extends React.Component {
     
     let componentComment = '';
     
-    if (comment) {
-      componentComment = <CommentBox><Paragraph text={comment} /></CommentBox>;
+    if (tabletComment) {
+      componentComment = <CommentBox><Paragraph text={tabletComment} /></CommentBox>;
     }
-    
-    
-    
-    // console.log(chalk`
-    //   userId: {green ${userId}}
-    //   age: {green ${age}}
-      
-    //   imageSrcSet: {green ${imageSrcSet}}
-    //   imageSrc: {green ${imageSrc}}
-    //   imageAlt: {green ${imageAlt}}
-    // `);
-    
     
     
     // --------------------------------------------------
@@ -156,7 +133,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
           
         {/* 見出し */}
         <HeadingBox>
@@ -167,7 +144,7 @@ export default class extends React.Component {
         {/* コメント */}
         {componentComment}
           
-      </React.Fragment>
+      </Container>
     );
     
   }

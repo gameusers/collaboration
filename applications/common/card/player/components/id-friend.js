@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -22,8 +22,6 @@ import styled from 'styled-components';
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
-
-import Button from '@material-ui/core/Button';
 
 
 // ---------------------------------------------
@@ -46,6 +44,12 @@ import IconHeadsetMic from '@material-ui/icons/HeadsetMic';
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+const Container = styled.div`
+  margin: 28px 0 0 0;
+  padding: 0;
+`;
+
 
 // ---------------------------------------------
 //   見出し
@@ -211,36 +215,15 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
-    // const {
+    const {
       
-    //   playstationObj,
-    //   xboxObj,
-    //   nintendoObj,
-    //   steamObj,
-    //   otherArr
+      idArr,
+      activityTimeArr,
+      lookingForFriendsIcon,
+      lookingForFriendsComment,
+      voiceChatComment
       
-    // } = stores.data.cardPlayersObj[cardPlayers_id].idObj;
-    const idArr = stores.data.cardPlayersObj[cardPlayers_id].idArr;
-    const activityTimeArr = stores.data.cardPlayersObj[cardPlayers_id].activityTimeObj.valueArr;
-    
-    const lookingForFriends = stores.data.cardPlayersObj[cardPlayers_id].lookingForFriendsObj.value;
-    const lookingForFriendsIcon = stores.data.cardPlayersObj[cardPlayers_id].lookingForFriendsObj.icon;
-    const lookingForFriendsComment = stores.data.cardPlayersObj[cardPlayers_id].lookingForFriendsObj.comment;
-    
-    const voiceChat = stores.data.cardPlayersObj[cardPlayers_id].voiceChatObj.value;
-    const voiceChatComment = stores.data.cardPlayersObj[cardPlayers_id].voiceChatObj.comment;
-    
-    const linkArr = stores.data.cardPlayersObj[cardPlayers_id].linkArr;
-    
-    
+    } = this.props;
     
     
     // --------------------------------------------------
@@ -248,17 +231,14 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (
-      idArr.length === 0 &&
-      activityTimeArr.length === 0 &&
-      !lookingForFriends &&
-      !voiceChat &&
-      linkArr.length === 0
+      !idArr &&
+      !activityTimeArr &&
+      !lookingForFriendsIcon &&
+      !lookingForFriendsComment &&
+      !voiceChatComment
     ) {
       return null;
     }
-    
-    
-    
     
     
     // --------------------------------------------------
@@ -267,7 +247,7 @@ export default class extends React.Component {
     
     const componentIdArr = [];
     
-    if (idArr.length > 0) {
+    if (Array.isArray(idArr) && idArr.length > 0) {
       
       for (const [index, value] of idArr.entries()) {
         
@@ -361,7 +341,7 @@ export default class extends React.Component {
     
     const componentActivityTimeArr = [];
     
-    if (activityTimeArr.length > 0) {
+    if (Array.isArray(activityTimeArr) && activityTimeArr.length > 0) {
       for (const [index, value] of activityTimeArr.entries()) {
         
         const weekTextArr = ['月', '火', '水', '木', '金', '土', '日'];
@@ -411,17 +391,10 @@ export default class extends React.Component {
     //   フレンド募集
     // ---------------------------------------------
     
-    if (lookingForFriends) {
+    if (lookingForFriendsComment) {
       
-      let componentFriendHeading = <FriendHeading>フレンド募集</FriendHeading>;
-      let componentFriendComment = '';
-      
-      if (lookingForFriendsComment) {
-        
-        componentFriendHeading = <FriendHeading>フレンド募集: </FriendHeading>;
-        componentFriendComment = <FriendComment>{lookingForFriendsComment}</FriendComment>;
-        
-      }
+      const componentFriendHeading = <FriendHeading>フレンド募集: </FriendHeading>;
+      const componentFriendComment = <FriendComment>{lookingForFriendsComment}</FriendComment>;
       
       componentFriendVoiceArr.push(
         <FriendBox key="lookingForFriends">
@@ -446,17 +419,10 @@ export default class extends React.Component {
     //   ボイスチャット
     // ---------------------------------------------
     
-    if (voiceChat) {
+    if (voiceChatComment) {
       
-      let componentVoiceChatHeading = <VoiceChatHeading>ボイスチャット可能</VoiceChatHeading>;
-      let componentVoiceChatComment = '';
-      
-      if (voiceChatComment) {
-        
-        componentVoiceChatHeading = <VoiceChatHeading>ボイスチャット可能: </VoiceChatHeading>;
-        componentVoiceChatComment = <VoiceChatComment>{voiceChatComment}</VoiceChatComment>;
-        
-      }
+      const componentVoiceChatHeading = <VoiceChatHeading>ボイスチャット可能: </VoiceChatHeading>;
+      const componentVoiceChatComment = <VoiceChatComment>{voiceChatComment}</VoiceChatComment>;
       
       componentFriendVoiceArr.push(
         <VoiceChatBox key="voiceChat">
@@ -470,7 +436,6 @@ export default class extends React.Component {
     }
     
     
-    
     // ---------------------------------------------
     //   コンポーネント作成
     // ---------------------------------------------
@@ -482,6 +447,25 @@ export default class extends React.Component {
     }
     
     
+    
+    // --------------------------------------------------
+    //   空の場合、nullを返す
+    // --------------------------------------------------
+    
+    if (!componentIdBox && !componentActivityTimeBox && !componentFriendVoiceBox) {
+      return null;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Heading
+    // --------------------------------------------------
+    
+    let componentHeading = <Heading>ID</Heading>;
+    
+    if (lookingForFriendsComment || voiceChatComment) {
+      componentHeading = <Heading>ID・フレンド募集</Heading>;
+    }
     
     
     // --------------------------------------------------
@@ -503,18 +487,18 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
         
         <HeadingBox>
           <StyledIcon />
-          <Heading>ID・フレンド募集</Heading>
+          {componentHeading}
         </HeadingBox>
         
         {componentIdBox}
         {componentActivityTimeBox}
         {componentFriendVoiceBox}
         
-      </React.Fragment>
+      </Container>
     );
     
   }

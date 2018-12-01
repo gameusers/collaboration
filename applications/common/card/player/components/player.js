@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -24,7 +24,6 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import IconButton from '@material-ui/core/IconButton';
-
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -74,7 +73,6 @@ const CardTopBox = styled.div`
   align-items: center;
   margin: 0;
   padding: 12px 4px 12px 12px;
-  // background-color: thistle;
 `;
 
 
@@ -85,28 +83,20 @@ const CardTopBox = styled.div`
 const UserBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  // width: 100%;
   margin: 0;
   padding: 0;
-  // background-color: red;
 `;
 
 const UserThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   margin: 0 0 0 0;
-  // background-color: blue;
 `;
 
 const UserInfoBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  // margin: 15px 12px 12px 10px;
   padding: 2px 0 0 10px;
-  // background-color: thistle;
-  
-  // width: 100%;
-  // max-width: 320px;
   
   @media screen and (max-width: 480px) {
     max-width: initial;
@@ -116,13 +106,8 @@ const UserInfoBox = styled.div`
 const UserNameBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  // width: 100%;
   margin: 0;
   padding: 0;
-  // padding: 0 12px 0 0;
-  // line-height: 1em;
-  // word-wrap: break-word;
-  // background-color: thistle;
 `;
 
 
@@ -133,7 +118,6 @@ const UserNameBox = styled.div`
 const ExpandMoreBox = styled.div`
   margin: 0 0 0 auto;
   padding: 0;
-  // background-color: pink;
 `;
 
 
@@ -157,57 +141,20 @@ const StyledCardContent = styled(CardContent)`
   && {
     font-size: 14px;
     line-height: 1.6em;
-    // margin: 0;
-    // padding-bottom: 0;
   }
 `;
 
 
 // ---------------------------------------------
-//   Content / Comment
-// ---------------------------------------------
-
-const CommentBox = styled.div`
-  // font-size: 14px;
-  // line-height: 1.6em;
-  // margin: 12px 0 10px 3px;
-  // padding: 0 0 0 18px;
-`;
-
-
-// ---------------------------------------------
-//   Content / ItemBox
-// ---------------------------------------------
-
-const ComponentBox = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-
-
-// ---------------------------------------------
-//   FollowBox
+//   Card Actions
 // ---------------------------------------------
 
 const StyledCardActions = styled(CardActions)`
-  && {
-    // font-size: 14px;
-    // line-height: 1.6em;
-    // margin-bottom: 0;
+  && { 
     padding-bottom: 0;
   }
 `;
 
-// const FollowBox = styled.div`
-//   margin: 0 0 10px 10px;
-//   padding: 0;
-// `;
-
-// const FollowBox = styled.div`
-//   margin: 0 0 0 10px;
-//   padding: 0;
-// `;
 
 
 
@@ -241,8 +188,28 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   必要な情報を取得
+    //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
+    
+    if (cardPlayers_id in stores.data.cardPlayersObj === false) {
+      return null;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   LCID
+    // ---------------------------------------------
+    
+    const lcid = 'ja';
+    
+    
+    // ---------------------------------------------
+    //   Panel
+    // ---------------------------------------------
     
     const {
       
@@ -252,11 +219,13 @@ export default class extends React.Component {
       
     } = stores.layout;
     
-    const {
-      
-      cardPlayersObj
-      
-    } = stores.data;
+    
+    const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
+    
+    
+    // ---------------------------------------------
+    //   Image
+    // ---------------------------------------------
     
     const {
       
@@ -264,16 +233,110 @@ export default class extends React.Component {
       imageSrc,
       imageAlt
       
-    } = stores.data.cardPlayersObj[cardPlayers_id].imageArr[0];
+    } = cardPlayersObj.imageArr[0];
     
     
-    // --------------------------------------------------
-    //   オブジェクト内にcardPlayers_idがない場合、空のコンポーネントを返す
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   Users ID
+    // ---------------------------------------------
     
-    if (cardPlayers_id in cardPlayersObj === false) {
-      return null;
-    }
+    const users_id = cardPlayersObj.users_id;
+    
+    
+    // ---------------------------------------------
+    //   dataObj
+    // ---------------------------------------------
+    
+    const dataObj = cardPlayersObj.dataArr.find((value) => {
+      return value.lcid === lcid;
+    });
+    
+    
+    // ---------------------------------------------
+    //   Comment
+    // ---------------------------------------------
+    
+    const comment = dataObj.comment;
+    
+    
+    // ---------------------------------------------
+    //   Profile
+    // ---------------------------------------------
+    
+    const birthdayValue = dataObj.birthdayObj.value;
+    const birthdayAlternativeText = dataObj.birthdayObj.alternativeText;
+    const sexValue = dataObj.sexObj.value;
+    const sexAlternativeText = dataObj.sexObj.alternativeText;
+    const addressValue = dataObj.addressObj.value;
+    const gamingExperienceValue = dataObj.gamingExperienceObj.value;
+    const gamingExperienceAlternativeText = dataObj.gamingExperienceObj.alternativeText;
+    const hobbiesValueArr = dataObj.hobbiesObj.valueArr;
+    const specialSkillsValueArr = dataObj.specialSkillsObj.valueArr;
+    
+    
+    // ---------------------------------------------
+    //   Hardware
+    // ---------------------------------------------
+    
+    const hardwareArr = dataObj.ownedHardwareObj.valueArr;
+    
+    
+    // ---------------------------------------------
+    //   Smartphone
+    // ---------------------------------------------
+    
+    const smartphoneModel = dataObj.smartphoneObj.model;
+    const smartphoneComment = dataObj.smartphoneObj.comment;
+    
+    
+    // ---------------------------------------------
+    //   Tablet
+    // ---------------------------------------------
+    
+    const tabletModel = dataObj.tabletObj.model;
+    const tabletComment = dataObj.tabletObj.comment;
+    
+    
+    // ---------------------------------------------
+    //   PC
+    // ---------------------------------------------
+    
+    const pcModel = dataObj.pcObj.model;
+    const pcComment = dataObj.pcObj.comment;
+    const pcOs = dataObj.pcObj.specsObj.os;
+    const pcCpu = dataObj.pcObj.specsObj.cpu;
+    const pcCpuCooler = dataObj.pcObj.specsObj.cpuCooler;
+    const pcMotherboard = dataObj.pcObj.specsObj.motherboard;
+    const pcMemory = dataObj.pcObj.specsObj.memory;
+    const pcStorage = dataObj.pcObj.specsObj.storage;
+    const pcGraphicsCard = dataObj.pcObj.specsObj.graphicsCard;
+    const pcOpticalDrive = dataObj.pcObj.specsObj.opticalDrive;
+    const pcPowerSupply = dataObj.pcObj.specsObj.powerSupply;
+    const pcCase = dataObj.pcObj.specsObj.pcCase;
+    const pcMonitor = dataObj.pcObj.specsObj.monitor;
+    const pcMouse = dataObj.pcObj.specsObj.mouse;
+    const pcKeyboard = dataObj.pcObj.specsObj.keyboard;
+      
+    
+    // ---------------------------------------------
+    //   ID & Friend
+    // ---------------------------------------------
+    
+    const idArr = dataObj.idArr;
+    const activityTimeArr = dataObj.activityTimeObj.valueArr;
+    const lookingForFriendsIcon = dataObj.lookingForFriendsObj.icon;
+    const lookingForFriendsComment = dataObj.lookingForFriendsObj.comment;
+    const voiceChatComment = dataObj.voiceChatObj.comment;
+    
+    
+    // ---------------------------------------------
+    //   Link
+    // ---------------------------------------------
+    
+    const linkArr = dataObj.linkArr;
+    
+    
+    
     
     
     // --------------------------------------------------
@@ -294,20 +357,15 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   プロフィール情報
+    //   データ取り出し
     // --------------------------------------------------
-    
-    const users_id = cardPlayersObj[cardPlayers_id].users_id;
-    const comment = cardPlayersObj[cardPlayers_id].comment;
-    
-    
     
     // console.log(`
     //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
     // `);
     
     // console.log(`
-    //   Follow: \n${util.inspect(Follow, { colors: true, depth: null })}
+    //   dataObj: \n${util.inspect(dataObj, { colors: true, depth: null })}
     // `);
     
     // console.log(chalk`
@@ -316,11 +374,7 @@ export default class extends React.Component {
     
     
     // console.log(chalk`
-    //   users_id: {green ${users_id}}
-      
-    //   imageSrcSet: {green ${imageSrcSet}}
-    //   imageSrc: {green ${imageSrc}}
-    //   imageAlt: {green ${imageAlt}}
+    //   duplication: {green ${duplication}}
     // `);
     
     
@@ -396,51 +450,73 @@ export default class extends React.Component {
             
             
             {/* コメント */}
-            <CommentBox>
-              <Paragraph text={comment} />
-            </CommentBox>
+            <Paragraph text={comment} />
             
             
             {/* 年齢・性別などのプロフィール */}
-            <ComponentBox>
-              <Profile cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <Profile
+              birthdayValue={birthdayValue}
+              birthdayAlternativeText={birthdayAlternativeText}
+              sexValue={sexValue}
+              sexAlternativeText={sexAlternativeText}
+              addressValue={addressValue}
+              gamingExperienceValue={gamingExperienceValue}
+              gamingExperienceAlternativeText={gamingExperienceAlternativeText}
+              hobbiesValueArr={hobbiesValueArr}
+              specialSkillsValueArr={specialSkillsValueArr}
+            />
             
             
             {/* 所有ハード */}
-            <ComponentBox>
-              <Hardware cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <Hardware hardwareArr={hardwareArr} />
             
             
             {/* スマートフォン */}
-            <ComponentBox>
-              <Smartphone cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <Smartphone
+              smartphoneModel={smartphoneModel}
+              smartphoneComment={smartphoneComment}
+            />
             
             
             {/* タブレット */}
-            <ComponentBox>
-              <Tablet cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <Tablet
+              tabletModel={tabletModel}
+              tabletComment={tabletComment}
+            />
             
             
             {/* PC */}
-            <ComponentBox>
-              <Pc cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <Pc
+              pcModel={pcModel}
+              pcComment={pcComment}
+              pcOs={pcOs}
+              pcCpu={pcCpu}
+              pcCpuCooler={pcCpuCooler}
+              pcMotherboard={pcMotherboard}
+              pcMemory={pcMemory}
+              pcStorage={pcStorage}
+              pcGraphicsCard={pcGraphicsCard}
+              pcOpticalDrive={pcOpticalDrive}
+              pcPowerSupply={pcPowerSupply}
+              pcCase={pcCase}
+              pcMonitor={pcMonitor}
+              pcMouse={pcMouse}
+              pcKeyboard={pcKeyboard}
+            />
             
             
             {/* ID & Friend */}
-            <ComponentBox>
-              <IdFriend cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <IdFriend
+              idArr={idArr}
+              activityTimeArr={activityTimeArr}
+              lookingForFriendsIcon={lookingForFriendsIcon}
+              lookingForFriendsComment={lookingForFriendsComment}
+              voiceChatComment={voiceChatComment}
+            />
             
             
             {/* Link */}
-            <ComponentBox>
-              <Link cardPlayers_id={cardPlayers_id} />
-            </ComponentBox>
+            <Link linkArr={linkArr} />
             
             
           </StyledCardContent>

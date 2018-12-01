@@ -41,6 +41,7 @@ const logger = require('../../@modules/logger');
 
 
 
+
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
@@ -130,16 +131,10 @@ const upsert = async (conditionObj, saveObj) => {
   try {
     
     
-    // const saveObj = {
-      
-    // };
-    
-    
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
     
-    // const conditionObj = { _id: cardPlayers_id || shortid.generate() };
     const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
     
     

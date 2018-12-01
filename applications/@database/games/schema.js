@@ -34,6 +34,8 @@ const schema = mongoose.Schema({
   dataArr: [
     {
       _id: { type: String, required: true },
+      createdDate: { type: Date, default: Date.now, required: true },
+      updatedDate: { type: Date, default: Date.now, required: true },
       country: { type: String, required: true },
       name: { type: String, required: true },
       subtitle: String,

@@ -2,10 +2,22 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import { action, observable } from 'mobx';
 import fetch from 'isomorphic-unfetch';
 
-import { validationId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login';
+
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validationLoginId = require('../../../@database/users/validations/login-id');
+const { validationLoginPassword, validationLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
+const validationEmail = require('../../../@database/users/validations/email');
+
 
 
 
@@ -16,6 +28,8 @@ import { validationId, validationPassword, validationPasswordConfirmation, valid
 let storeLoginIndex = null;
 let storeLayout = null;
 let storeData = null;
+
+
 
 
 
@@ -76,7 +90,7 @@ class Store {
   @action.bound
   handleLoginId(event) {
     
-    const resultObj = validationId(event.target.value);
+    const resultObj = validationLoginId(event.target.value);
     
     this.loginId = resultObj.value;
     this.loginIdNumberOfCharacters = resultObj.numberOfCharacters;
@@ -119,7 +133,7 @@ class Store {
   @action.bound
   handleLoginPassword(event) {
     
-    const resultObj = validationPassword(event.target.value);
+    const resultObj = validationLoginPassword(event.target.value);
     
     this.loginPassword = resultObj.value;
     this.loginPasswordNumberOfCharacters = resultObj.numberOfCharacters;
@@ -343,7 +357,7 @@ class Store {
     //   ID
     // ---------------------------------------------
     
-    const resultIdObj = validationId(event.target.value);
+    const resultIdObj = validationLoginId(event.target.value);
     
     this.createAccountId = resultIdObj.value;
     this.createAccountIdNumberOfCharacters = resultIdObj.numberOfCharacters;
@@ -357,7 +371,7 @@ class Store {
     
     if (this.createAccountPassword !== '') {
       
-      const resultPasswordObj = validationPassword(this.createAccountPassword, resultIdObj.value);
+      const resultPasswordObj = validationLoginPassword(this.createAccountPassword, resultIdObj.value);
       
       this.createAccountPasswordError = resultPasswordObj.error;
       this.createAccountPasswordErrorMessage = resultPasswordObj.errorMessageArr[0];
@@ -410,7 +424,7 @@ class Store {
     //   Password
     // ---------------------------------------------
     
-    const resultPasswordObj = validationPassword(event.target.value, this.createAccountId);
+    const resultPasswordObj = validationLoginPassword(event.target.value, this.createAccountId);
     
     this.createAccountPassword = resultPasswordObj.value;
     this.createAccountPasswordNumberOfCharacters = resultPasswordObj.numberOfCharacters;
@@ -496,7 +510,7 @@ class Store {
   @action.bound
   handleCreateAccountPasswordConfirmation(event) {
     
-    const resultObj = validationPasswordConfirmation(event.target.value, this.createAccountPassword);
+    const resultObj = validationLoginPasswordConfirmation(event.target.value, this.createAccountPassword);
     
     this.createAccountPasswordConfirmation = resultObj.value;
     this.createAccountPasswordConfirmationNumberOfCharacters = resultObj.numberOfCharacters;

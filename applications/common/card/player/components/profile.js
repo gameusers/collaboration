@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-// const chalk = require('chalk');
-// const util = require('util');
+// import chalk from 'chalk';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -46,6 +46,12 @@ moment.locale('ja');
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+const Container = styled.div`
+  margin: 28px 0 0 0;
+  padding: 0;
+`;
+
 
 // ---------------------------------------------
 //   見出し
@@ -117,31 +123,17 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   Data - 必要な情報を取得
-    // --------------------------------------------------
-    
-    const playerObj = stores.data.cardPlayersObj[cardPlayers_id];
-    
-    const birthdayValue = playerObj.birthdayObj.value;
-    const birthdayAlternativeText = playerObj.birthdayObj.alternativeText;
-    
-    const sexValue = playerObj.sexObj.value;
-    const sexAlternativeText = playerObj.sexObj.alternativeText;
-    
-    const addressValue = playerObj.addressObj.value;
-    
-    const gamingExperienceValue = playerObj.gamingExperienceObj.value;
-    const gamingExperienceAlternativeText = playerObj.gamingExperienceObj.alternativeText;
-    
-    const hobbiesValueArr = playerObj.hobbiesObj.valueArr;
-    
-    const specialSkillsValueArr = playerObj.specialSkillsObj.valueArr;
-    
+    const {
+      birthdayValue,
+      birthdayAlternativeText,
+      sexValue,
+      sexAlternativeText,
+      addressValue,
+      gamingExperienceValue,
+      gamingExperienceAlternativeText,
+      hobbiesValueArr,
+      specialSkillsValueArr,
+    } = this.props;
     
     
     // --------------------------------------------------
@@ -149,13 +141,22 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (
-      birthdayValue === '' &&
-      birthdayAlternativeText === ''
+      !birthdayValue &&
+      !birthdayAlternativeText &&
+      !sexValue &&
+      !sexAlternativeText &&
+      !addressValue &&
+      !gamingExperienceValue &&
+      !gamingExperienceAlternativeText &&
+      !hobbiesValueArr &&
+      !specialSkillsValueArr
     ) {
       return null;
     }
     
-    
+    // console.log(chalk`
+    //   hobbiesValueArr: {green ${hobbiesValueArr}}
+    // `);
     
     // --------------------------------------------------
     //   コンポーネント作成 - プロフィール項目（年齢、性別など）
@@ -238,7 +239,7 @@ export default class extends React.Component {
     //   趣味
     // ---------------------------------------------
     
-    if (hobbiesValueArr.length > 0) {
+    if (Array.isArray(hobbiesValueArr) && hobbiesValueArr.length > 0) {
       componentBasicsArr.push(
         <Item key="hobbie"><strong>趣味:</strong> {hobbiesValueArr.join(' / ')}</Item>
       );
@@ -249,7 +250,7 @@ export default class extends React.Component {
     //   特技
     // ---------------------------------------------
     
-    if (specialSkillsValueArr.length > 0) {
+    if (Array.isArray(specialSkillsValueArr) && specialSkillsValueArr.length > 0) {
       componentBasicsArr.push(
         <Item key="specialSkills"><strong>特技:</strong> {specialSkillsValueArr.join(' / ')}</Item>
       );
@@ -264,6 +265,8 @@ export default class extends React.Component {
     
     if (componentBasicsArr.length > 0) {
        componentBasicsBox = <ItemBox>{componentBasicsArr}</ItemBox>;
+    } else {
+      return null;
     }
     
     
@@ -284,7 +287,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
         
         <HeadingBox>
           <StyledIcon />
@@ -294,7 +297,7 @@ export default class extends React.Component {
         {/* 各項目 */}
         {componentBasicsBox}
         
-      </React.Fragment>
+      </Container>
     );
     
   }

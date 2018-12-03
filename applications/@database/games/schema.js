@@ -31,6 +31,8 @@ const schema = mongoose.Schema({
       ],
     },
   ],
+  genreArr: [String],
+  subGenreArr: [String],
   dataArr: [
     {
       _id: { type: String, required: true },
@@ -42,6 +44,7 @@ const schema = mongoose.Schema({
       similarityArr: [String],
       forSort: { type: String, required: true },
       twitterHashtag: String,
+      genreTagArr: [String],
       hardwareArr: [
         {
           _id: { type: String, required: true },

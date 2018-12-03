@@ -14,8 +14,8 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
+// const shortid = require('shortid');
+// const moment = require('moment');
 
 
 // ---------------------------------------------
@@ -23,13 +23,6 @@ const moment = require('moment');
 // ---------------------------------------------
 
 const Model = require('./schema');
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-const { srcset } = require('../../@format/image');
 
 
 // ---------------------------------------------
@@ -41,7 +34,6 @@ const { srcset } = require('../../@format/image');
 
 
 
-
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
@@ -49,7 +41,7 @@ const { srcset } = require('../../@format/image');
 /**
  * 取得する
  * @param {Object} conditionObj - 検索条件
- * @return {Object} 取得データ
+ * @return {Object} 取得されたデータ
  */
 const find = async (conditionObj) => {
   
@@ -58,7 +50,7 @@ const find = async (conditionObj) => {
   //   Return Value
   // --------------------------------------------------
   
-  // let returnObj = {};
+  let returnObj = {};
   
   
   // --------------------------------------------------
@@ -74,12 +66,16 @@ const find = async (conditionObj) => {
     
     const docArr = await Model.find(conditionObj).exec();
     
+    // console.log(`
+    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    // `);
+    
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return docArr;
+    return returnObj;
     
     
   } catch (err) {
@@ -87,6 +83,7 @@ const find = async (conditionObj) => {
     throw err;
     
   }
+  
   
 };
 
@@ -144,6 +141,57 @@ const upsert = async (conditionObj, saveObj) => {
 
 
 
+/**
+ * 挿入する
+ * @param {Object} saveObj - 保存データ
+ * @return {Array} 
+ */
+const insertMany = async (saveObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  // let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    const docArr = await Model.insertMany(saveObj);
+    
+    
+    console.log(`
+      docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
 
 
 // --------------------------------------------------
@@ -152,5 +200,6 @@ const upsert = async (conditionObj, saveObj) => {
 
 module.exports = {
   find,
-  upsert
+  upsert,
+  insertMany
 };

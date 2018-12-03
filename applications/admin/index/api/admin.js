@@ -47,6 +47,7 @@ const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 const ModelGames = require('../../../@database/games/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
 const ModelCardGames = require('../../../@database/card-games/model');
+const ModelGameGenres = require('../../../@database/game-genres/model');
 
 
 // --------------------------------------------------
@@ -116,6 +117,8 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     const date = moment().utcOffset(0);
     let conditionObj = {};
     let saveObj = {};
+    let saveArr = [];
+    
     
     
     
@@ -141,6 +144,8 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       gameId: 'dead-by-daylight',
       thumbnail: false,
       imageVideoArr: [],
+      genreArr: ['nO7XxHZYM'],
+      subGenreArr: [],
       dataArr: [
         {
           _id: 'VjSSBUYlJ',
@@ -154,6 +159,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           ],
           forSort: 'デッドバイデイライト',
           twitterHashtag: 'DeadbyDaylight',
+          genreTagArr: [],
           hardwareArr: [
             {
               _id: 'pIcOj6-43',
@@ -515,7 +521,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       createdDate: date,
       updatedDate: date,
       users_id: 'jun-deE4J',
-      games_id: 'MKIXnjIzM',
+      games_id: 'w_zkqpr3R',
       imageVideoArr: [
         {
           _id: 'H_NXaMPKG',
@@ -714,6 +720,314 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     // --------------------------------------------------
     
     returnObj = await ModelCardGames.upsert(conditionObj, saveObj);
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Game Genres
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Arr
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'nO7XxHZYM',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Action',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'アクション',
+          }
+        ]
+      },
+      {
+        _id: 'ksTu6wRs0l',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Shooter',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'シューティング',
+          }
+        ]
+      },
+      {
+        _id: 'ouLGbf_KSd',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Adventure',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'アドベンチャー',
+          }
+        ]
+      },
+      {
+        _id: '9iRS29w3we',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'RPG',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'RPG',
+          }
+        ]
+      },
+      {
+        _id: '0Uaz_dOxXq',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Simulation',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'シミュレーター',
+          }
+        ]
+      },
+      {
+        _id: 'RpptnE2zlp',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Strategy',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'シミュレーション（ストラテジー）',
+          }
+        ]
+      },
+      {
+        _id: 'b_QI2RFSEQ6',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Sports',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'スポーツ',
+          }
+        ]
+      },
+      {
+        _id: 'mlfWkx-ZxJL',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Racing',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'レース',
+          }
+        ]
+      },
+      {
+        _id: 'deBQJJV-m8s',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Fighting',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: '格闘ゲーム',
+          }
+        ]
+      },
+      {
+        _id: 'uEUpcTb87D_',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Puzzle',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'パズル',
+          }
+        ]
+      },
+      {
+        _id: 'ejdGhTwE1Gb',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Board game / Card game',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'ボードゲーム / カードゲーム',
+          }
+        ]
+      },
+      {
+        _id: 'cU9z-CA3d29',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Music game',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: '音ゲー',
+          }
+        ]
+      },
+      {
+        _id: 'bfxzmy3eib9',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'en',
+            name: 'Other',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            lcid: 'ja',
+            name: 'その他',
+          }
+        ]
+      },
+    ]
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    returnObj = await ModelGameGenres.insertMany(saveArr);
     
     
     

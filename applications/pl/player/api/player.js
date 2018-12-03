@@ -35,6 +35,7 @@ const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
+const validationLocale = require('../../../@validations/locale');
 const validationPlayerId = require('../../../@database/users/validations/player-id');
 
 
@@ -80,6 +81,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   };
   
   let cardPlayersKeysArr = [];
+  let cardGamesKeysArr = [];
   let statusCode = 400;
   
   let errorArgumentsObj = {
@@ -104,12 +106,35 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   GET 取得
     // --------------------------------------------------
     
+    let locale = req.query.locale;
+    const validationLocaleObj = validationLocale(locale);
+    
+    // console.log(chalk`
+    //   locale: {green ${locale}}
+    // `);
+    
+    // console.log(`
+    //   validationLocaleObj: \n${util.inspect(validationLocaleObj, { colors: true, depth: null })}
+    // `);
+    
+    
+    if (validationLocaleObj.error) {
+      locale = 'ja';
+      // statusCode = 400;
+      // errorArgumentsObj.errorCodeArr = [502001];
+      // throw new Error();
+    }
+    
+    const country = 'Japan';
+    
+    
+    
     const playerId = req.query.playerId;
     const validationPlayerIdObj = validationPlayerId(playerId);
     
     if (validationPlayerIdObj.error) {
       statusCode = 400;
-      errorArgumentsObj.errorCodeArr = [502002];
+      errorArgumentsObj.errorCodeArr = [502102];
       throw new Error();
     }
     
@@ -127,8 +152,8 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Model / Users
-    //   アクセスしたページ所有者のユーザー情報取得
+    //   データ取得 / Users
+    //   アクセスしたページ所有者のユーザー情報
     // --------------------------------------------------
     
     const usersObj = await ModelUsers.findOneFormatted({ playerId }, usersLogin_id);
@@ -146,11 +171,12 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Model / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報取得
+    //   データ取得 / Card Players
+    //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
+    // const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
+    const cardPlayersObj = await ModelCardPlayers.find({ users_id });
     returnObj.cardPlayersObj = cardPlayersObj;
     
     // カードを一覧で表示するための配列を作成する
@@ -160,6 +186,29 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       returnObj.cardsArr.push({
         type: 'player',
         _id: cardPlayersKeysArr[0]
+      });
+    }
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Card Games
+    //   アクセスしたページ所有者のゲームカード情報
+    // --------------------------------------------------
+    
+    const cardGamesObj = await ModelCardGames.find({
+      country,
+      conditionObj: { users_id }
+    });
+    
+    returnObj.cardGamesObj = cardGamesObj;
+    
+    // カードを一覧で表示するための配列を作成する
+    cardGamesKeysArr = Object.keys(cardGamesObj);
+    
+    if (cardGamesKeysArr.length > 0) {
+      returnObj.cardsArr.push({
+        type: 'game',
+        _id: cardGamesKeysArr[0]
       });
     }
     
@@ -205,6 +254,12 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // console.log(`
     //   ----- cardPlayersObj -----\n
     //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- cardGamesObj -----\n
+    //   ${util.inspect(cardGamesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

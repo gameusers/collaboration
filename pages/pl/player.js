@@ -21,6 +21,8 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+// import osLocale from 'os-locale';
+// const osLocale = require('os-locale');
 
 
 // ---------------------------------------------
@@ -137,12 +139,44 @@ class Component extends React.Component {
     let statusCode = 400;
     
     
+    let locale = req.cookies.locale;
+    // console.log(`locale = ${locale}`);
+    
+    if (!locale) {
+      locale = 'ja';
+    }
+    
+    // console.log(`locale = ${locale}`);
+    
+    
+    // console.log(`locale = ${new Intl.NumberFormat().resolvedOptions().locale}`);
+    
+    // if (!isServer) {
+    //   const language = (window.navigator.languages && window.navigator.languages[0]) ||
+    //   window.navigator.language ||
+    //   window.navigator.userLanguage ||
+    //   window.navigator.browserLanguage;
+      
+    //   console.log(language);
+    // } else {
+    //   // console.log(await osLocale());
+      
+      
+      
+    // }
+    
+    
+    // console.log(chalk`
+    //   isServer: {green ${isServer}}
+    // `);
+    
+    
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerId=${query.param1}`),
+      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?locale=${locale}&playerId=${query.param1}`),
       methodType: 'GET',
       reqHeadersCookie: isServer ? req.headers.cookie : ''
     });
@@ -150,11 +184,11 @@ class Component extends React.Component {
     statusCode = resultObj.statusCode;
     initialPropsObj = resultObj.data;
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     return { isServer, pathname, initialPropsObj, statusCode };
@@ -195,6 +229,7 @@ class Component extends React.Component {
         // 'usersLoginObj' in props.initialPropsObj === false ||
         'usersObj' in props.initialPropsObj === false ||
         'cardPlayersObj' in props.initialPropsObj === false ||
+        'cardGamesObj' in props.initialPropsObj === false ||
         'cardsArr' in props.initialPropsObj === false
       ) {
         throw new Error();

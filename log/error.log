@@ -57,3 +57,27 @@
 {"level":"error","message":"Sat Dec 01 2018 08:55:04 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Sat Dec 01 2018 08:55:37 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Sat Dec 01 2018 10:10:14 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Mon Dec 03 2018 03:03:01 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: ModelCardGames.insertMany is not a function\n"}
+{"level":"error","message":"Mon Dec 03 2018 03:04:07 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Model.insertMany(...).exec is not a function\n"}
+{"level":"error","message":"Mon Dec 03 2018 05:19:34 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Mon Dec 03 2018 05:36:34 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.game-genres index: _id_ dup key: { : \"nO7XxHZYM\" }\n"}
+{"level":"error","message":"Mon Dec 03 2018 07:47:09 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in needs an array\n"}
+{"level":"error","message":"Mon Dec 03 2018 07:47:09 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in needs an array\n"}
+{"level":"error","message":"Mon Dec 03 2018 07:48:07 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in needs an array\n"}
+{"level":"error","message":"Mon Dec 03 2018 07:48:07 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in needs an array\n"}
+{"level":"error","message":"Mon Dec 03 2018 08:22:22 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.game-genres index: _id_ dup key: { : \"nO7XxHZYM\" }\n"}
+{"level":"error","message":"Mon Dec 03 2018 08:24:32 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.game-genres index: _id_ dup key: { : \"nO7XxHZYM\" }\n"}
+{"level":"error","message":"Mon Dec 03 2018 09:05:37 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.game-genres index: _id_ dup key: { : \"nO7XxHZYM\" }\n"}
+{"level":"error","message":"Mon Dec 03 2018 09:08:20 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.game-genres index: _id_ dup key: { : \"nO7XxHZYM\" }\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:05:58 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502102\nMessage: Validation\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:05:58 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502102\nMessage: Validation\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:07:20 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502001\nMessage: Validation / locale\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:08:36 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502001\nMessage: Validation / locale\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:08:37 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502001\nMessage: Validation / locale\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:09:45 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502001\nMessage: Validation / locale\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:16:59 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@502001\nMessage: Validation / locale\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:50:42 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: argumentsObj is not a function\n"}
+{"level":"error","message":"Mon Dec 03 2018 12:50:42 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: argumentsObj is not a function\n"}
+{"level":"error","message":"Mon Dec 03 2018 13:02:35 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: gamesObj is not defined\n"}
+{"level":"error","message":"Mon Dec 03 2018 13:02:35 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: gamesObj is not defined\n"}
+{"level":"error","message":"Mon Dec 03 2018 13:03:01 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: gamesObj is not defined\n"}

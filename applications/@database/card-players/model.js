@@ -82,7 +82,7 @@ const find = async (conditionObj) => {
       
       const copiedObj = JSON.parse(JSON.stringify(value));
       
-      copiedObj.imageArr = srcset('/static/img/card/player/', copiedObj.imageVideoArr);
+      copiedObj.imageArr = srcset('/static/img/card/players/', copiedObj.imageVideoArr);
       delete copiedObj.imageVideoArr;
       
       returnObj[value._id] = copiedObj;

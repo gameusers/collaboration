@@ -23,6 +23,7 @@ const moment = require('moment');
 // ---------------------------------------------
 
 const Model = require('./schema');
+const ModelGames = require('../games/schema');
 
 
 // ---------------------------------------------
@@ -36,7 +37,7 @@ const { srcset } = require('../../@format/image');
 //   Logger
 // ---------------------------------------------
 
-const logger = require('../../@modules/logger');
+// const logger = require('../../@modules/logger');
 
 
 
@@ -47,13 +48,23 @@ const logger = require('../../@modules/logger');
 
 /**
  * 取得する
- * @param {array} userIdArr - User IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
- * @return {object} 取得されたデータ
+ * @param {Object} conditionObj - 検索条件
+ * @return {Object} 取得データ
  */
-const find = async (userIdArr) => {
-  // console.log(`
-  //     userIdArr: \n${util.inspect(userIdArr, { colors: true, depth: null })}
-  //   `);
+const find = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    country,
+    conditionObj
+    
+  } = argumentsObj;
+  
   
   // --------------------------------------------------
   //   Return Value
@@ -73,28 +84,86 @@ const find = async (userIdArr) => {
     //   Find
     // --------------------------------------------------
     
-    const condition = { userId: { $in: userIdArr} };
-    const docArr = await Model.find(condition).exec();
-    
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
+    let docCardGamesArr = await Model.find(conditionObj).exec();
     
     
     // --------------------------------------------------
-    //   画像配列を<img>タグで出力するためにフォーマット
+    //   games_id を取得する
     // --------------------------------------------------
     
-    for (let value of docArr.values()) {
+    const games_idArr = [];
+    
+    for (let value of docCardGamesArr.values()) {
+      games_idArr.push(value.games_id);
+    }
+    
+    const docGamesArr = await ModelGames.find({ _id: { $in: games_idArr} }).exec();
+    
+    
+    // --------------------------------------------------
+    //   ゲーム名を取得する
+    // --------------------------------------------------
+    
+    for (let value of docCardGamesArr.values()) {
+      
+      
+      // --------------------------------------------------
+      //   オブジェクトをディープコピー
+      // --------------------------------------------------
       
       const copiedObj = JSON.parse(JSON.stringify(value));
       
-      copiedObj.imageArr = srcset('/static/img/card/player/', copiedObj.imageVideoArr);
+      
+      // --------------------------------------------------
+      //   ゲームID ＆ ゲーム名を設定する
+      // --------------------------------------------------
+      
+      const gamesObj = docGamesArr.find((value2) => {
+        return value2._id === value.games_id;
+      });
+      
+      const dataObj = gamesObj.dataArr.find((value3) => {
+        return value3.country === country;
+      });
+      
+      copiedObj.gameId = gamesObj.gameId;
+      copiedObj.gameName = dataObj.name;
+      
+      
+      // console.log(`
+      //   gamesObj: \n${util.inspect(gamesObj, { colors: true, depth: null })}
+      // `);
+      
+      
+      // --------------------------------------------------
+      //   画像配列を<img>タグで出力するためにフォーマット
+      // --------------------------------------------------
+      
+      copiedObj.imageArr = srcset('/static/img/card/games/', copiedObj.imageVideoArr);
       delete copiedObj.imageVideoArr;
+      
+      
+      // --------------------------------------------------
+      //   return オブジェクト
+      // --------------------------------------------------
       
       returnObj[value._id] = copiedObj;
       
+      
     }
+    
+    
+    // console.log(`
+    //   docCardGamesArr: \n${util.inspect(docCardGamesArr, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   games_idArr: \n${util.inspect(games_idArr, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   docGamesArr: \n${util.inspect(docGamesArr, { colors: true, depth: null })}
+    // `);
     
     
     // --------------------------------------------------
@@ -109,7 +178,6 @@ const find = async (userIdArr) => {
     throw err;
     
   }
-  
   
 };
 
@@ -164,251 +232,6 @@ const upsert = async (conditionObj, saveObj) => {
   }
   
 };
-
-
-
-
-/**
- * 挿入 / 更新する
- * @param {string} cardGames_id - ID
- * @return {string} 暗号化されたテキスト
- */
-// const upsert = async (users_id, cardGames_id) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     const saveObj = {
-//       users_id,
-//       updatedDate: moment().utcOffset(0),
-//       games_id: 'MKIXnjIzM',
-//       theme: '',
-//       comment: `楽しかった時間が終わってしまいました。
-// いいゲームをプレイしたときの独特の余韻を味わえました。
-// 今までゼルダの伝説でこんなに余韻が残ることはなかったのですが
-// やり遂げた嬉しさに少しの寂しさが混じったような、ビターな味わいです。
-
-// 今作はかなりの高評価を受けていて
-// それは任天堂ファンボーイが騒いでるだけだと思っていたのですが
-// 実際やってみるとその評価に違わない面白さでした。
-// オープンワールド童貞だった任天堂なのに
-// このクオリティのものをいきなり作れるのは正直すごいと思いましたね。
-// 僕の場合、オープンワールドゲームはやり込みすぎて
-// いつも最後は嫌になってクリアする感じなのですが
-// BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
-//       imageVideoArr: [
-//         {
-//           _id: 'H_NXaMPKG',
-//           type: 'image',
-//           caption: 'ライオン',
-//           fileFormat: 'JPEG',
-//           srcSetArr: [
-//             {
-//               _id: 'xz_HamTMS',
-//               w: '320w',
-//               width: 320,
-//               height: 180,
-//             },
-//             {
-//               _id: 'VGaeXottk',
-//               w: '480w',
-//               width: 480,
-//               height: 270,
-//             },
-//             {
-//               _id: 'E3kjgGmJ7',
-//               w: '640w',
-//               width: 640,
-//               height: 360,
-//             },
-//             {
-//               _id: 'JHgN0IFXD',
-//               w: '800w',
-//               width: 800,
-//               height: 450,
-//             },
-//             {
-//               _id: 'XMZ2Ioh2x',
-//               w: 'source',
-//               width: 1920,
-//               height: 1080,
-//             },
-//           ],
-//         },
-//       ],
-//       playingHardwareObj: {
-//         valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
-//         search: true,
-//       },
-//       itemArr: [],
-//       idArr: [
-//         {
-//           _id: '9_-NXN6rQ',
-//           quotation_id: '',
-//           type: 'playstation',
-//           label: '',
-//           value: 'AZ-1979-Game',
-//           showType: 1,
-//           search: true,
-//           // 1.表示する
-//           // 2.自分をフォローしているユーザーに表示する
-//           // 3.自分がフォローしているユーザーに表示する
-//           // 4.相互フォローで表示する
-//           // 5.表示しない
-//         },
-//         {
-//           _id: '-9hC-izPG',
-//           quotation_id: '',
-//           type: 'xbox',// ゲーマータグ
-//           label: '',
-//           value: 'AZ-1979-Xbox-Game',
-//           showType: 1,
-//           search: true,
-//         },
-//         {
-//           _id: 'QbkY_-AjW',
-//           quotation_id: 'VY9aFMoVh',
-//           type: 'other',
-//           label: '',
-//           value: '',
-//           showType: 5,
-//           search: true,
-//         },
-//         {
-//           _id: 'qMsL_dgHW',
-//           quotation_id: '',
-//           type: 'steam',
-//           label: '',
-//           value: 'Azumi1979',
-//           showType: 1,
-//           search: true,
-//         },
-//         {
-//           _id: 'quLSl_A90',
-//           quotation_id: '',
-//           type: 'other',
-//           label: 'LoL ID',
-//           value: 'lol-id',
-//           showType: 1,
-//           search: true,
-//         },
-//         {
-//           _id: '19bLgUTWU',
-//           quotation_id: '',
-//           type: 'other',
-//           label: 'LoL ID',
-//           value: 'lol-id',
-//           showType: 1,
-//           search: true,
-//         }
-//       ],
-//       activityTimeObj: {
-//         quotation: true,
-//         valueArr: [
-//           {
-//             _id: '0X3yH-BnG',
-//             beginTime: '19:00',
-//             endTime: '24:00',
-//             weekArr: [0, 1, 2, 3, 4]
-//           },
-//           {
-//             _id: '7Euewb_Ik',
-//             beginTime: '9:00',
-//             endTime: '24:00',
-//             weekArr: [5, 6]
-//           }
-//         ],
-//         search: true,
-//       },
-//       lookingForFriendsObj: {
-//         quotation: true,
-//         value: true,
-//         icon: 'emoji_u1f61c',
-//         comment: '社会人の方よろしく！',
-//         search: true,
-//       },
-//       voiceChatObj: {
-//         quotation: true,
-//         value: true,
-//         comment: '夜21時まで',
-//         search: true,
-//       },
-//       linkArr: [
-//         {
-//           _id: 'K2NRYVCox',
-//           quotation_id: '',
-//           type: 'twitter',
-//           label: '',
-//           url: 'https://twitter.com/Azumi1979',
-//           search: true,
-//         },
-//         {
-//           _id: '0syPuDv6O',
-//           quotation_id: '',
-//           type: 'facebook',
-//           label: '',
-//           url: 'https://www.youtube.com/',
-//           search: true,
-//         },
-//         {
-//           _id: 'STJa3TLJX',
-//           quotation_id: 'IqNtEQQsO',
-//           type: 'quotation',
-//           label: '',
-//           url: '',
-//           search: true,
-//         },
-//         {
-//           _id: 'spRqODqbz',
-//           type: 'other',
-//           label: '開発サイト',
-//           url: 'http://35.203.143.160:8080/',
-//           search: true,
-//         },
-//       ]
-//     };
-    
-    
-//     // --------------------------------------------------
-//     //   Upsert
-//     // --------------------------------------------------
-    
-//     const conditionObj = { _id: cardGames_id || shortid.generate() };
-//     const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
-    
-    
-//     // console.log(`
-//     //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
 
 
 

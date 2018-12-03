@@ -76,9 +76,13 @@ const errorCodeIntoErrorObj = (errorArgumentsObj) => {
       
     } else if (value === 502001) {
       
+      tempObj.message = 'Validation / locale';
+      
+    } else if (value === 502101) {
+      
       tempObj.message = 'Validation / users / users_id';
       
-    } else if (value === 502002) {
+    } else if (value === 502102) {
       
       tempObj.message = 'Validation / users / Player ID';
       

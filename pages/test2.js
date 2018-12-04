@@ -6,15 +6,15 @@
 //   Node Packages
 // ---------------------------------------------
 
-// import React from 'react';
-const React = require('react');
+import React from 'react';
+// const React = require('react');
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-const { fetchWrapper } = require('../applications/@modules/fetch');
+// const { fetchWrapper } = require('../applications/@modules/fetch');
 
 
 
@@ -45,7 +45,7 @@ class Component extends React.Component {
   constructor(props) {
     super(props);
     
-    fetchWrapper();
+    // fetchWrapper();
   }
   
   

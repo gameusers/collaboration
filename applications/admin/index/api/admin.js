@@ -151,7 +151,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           _id: 'VjSSBUYlJ',
           createdDate: date,
           updatedDate: date,
-          country: 'Japan',
+          country: 'JP',
           name: 'Dead by Daylight',
           subtitle: '',
           similarityArr: [
@@ -212,6 +212,315 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     returnObj = await ModelGames.upsert(conditionObj, saveObj);
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Game Genres
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Arr
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'nO7XxHZYM',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Action',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'アクション',
+          }
+        ]
+      },
+      {
+        _id: 'ksTu6wRs0l',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Shooter',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'シューティング',
+          }
+        ]
+      },
+      {
+        _id: 'ouLGbf_KSd',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Adventure',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'アドベンチャー',
+          }
+        ]
+      },
+      {
+        _id: '9iRS29w3we',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'RPG',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'RPG',
+          }
+        ]
+      },
+      {
+        _id: '0Uaz_dOxXq',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Simulation',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'シミュレーター',
+          }
+        ]
+      },
+      {
+        _id: 'RpptnE2zlp',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Strategy',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'シミュレーション（ストラテジー）',
+          }
+        ]
+      },
+      {
+        _id: 'b_QI2RFSEQ6',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Sports',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'スポーツ',
+          }
+        ]
+      },
+      {
+        _id: 'mlfWkx-ZxJL',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Racing',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'レース',
+          }
+        ]
+      },
+      {
+        _id: 'deBQJJV-m8s',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Fighting',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: '格闘ゲーム',
+          }
+        ]
+      },
+      {
+        _id: 'uEUpcTb87D_',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Puzzle',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'パズル',
+          }
+        ]
+      },
+      {
+        _id: 'ejdGhTwE1Gb',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Board game / Card game',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'ボードゲーム / カードゲーム',
+          }
+        ]
+      },
+      {
+        _id: 'cU9z-CA3d29',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Music game',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: '音ゲー',
+          }
+        ]
+      },
+      {
+        _id: 'bfxzmy3eib9',
+        createdDate: date,
+        updatedDate: date,
+        type: 1,
+        dataArr: [
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'en',
+            name: 'Other',
+          },
+          {
+            _id: shortid.generate(),
+            createdDate: date,
+            updatedDate: date,
+            language: 'ja',
+            name: 'その他',
+          }
+        ]
+      },
+    ]
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    returnObj = await ModelGameGenres.insertMany(saveArr);
+    
     
     
     
@@ -280,7 +589,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           _id: 'VjSSBUYlJ',
           createdDate: date,
           updatedDate: date,
-          lcid: 'ja',
+          language: 'ja',
           comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
   それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
@@ -567,7 +876,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           _id: 'VjSSBUYlJ',
           createdDate: date,
           updatedDate: date,
-          lcid: 'ja',
+          language: 'ja',
           theme: '',
           itemArr: [],
           comment: `楽しかった時間が終わってしまいました。
@@ -725,309 +1034,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     
     
     
-    // --------------------------------------------------
-    //   DB / Game Genres
-    // --------------------------------------------------
     
-    // ---------------------------------------------
-    //   Save Arr
-    // ---------------------------------------------
-    
-    saveArr = [
-      {
-        _id: 'nO7XxHZYM',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Action',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'アクション',
-          }
-        ]
-      },
-      {
-        _id: 'ksTu6wRs0l',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Shooter',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'シューティング',
-          }
-        ]
-      },
-      {
-        _id: 'ouLGbf_KSd',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Adventure',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'アドベンチャー',
-          }
-        ]
-      },
-      {
-        _id: '9iRS29w3we',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'RPG',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'RPG',
-          }
-        ]
-      },
-      {
-        _id: '0Uaz_dOxXq',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Simulation',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'シミュレーター',
-          }
-        ]
-      },
-      {
-        _id: 'RpptnE2zlp',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Strategy',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'シミュレーション（ストラテジー）',
-          }
-        ]
-      },
-      {
-        _id: 'b_QI2RFSEQ6',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Sports',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'スポーツ',
-          }
-        ]
-      },
-      {
-        _id: 'mlfWkx-ZxJL',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Racing',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'レース',
-          }
-        ]
-      },
-      {
-        _id: 'deBQJJV-m8s',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Fighting',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: '格闘ゲーム',
-          }
-        ]
-      },
-      {
-        _id: 'uEUpcTb87D_',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Puzzle',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'パズル',
-          }
-        ]
-      },
-      {
-        _id: 'ejdGhTwE1Gb',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Board game / Card game',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'ボードゲーム / カードゲーム',
-          }
-        ]
-      },
-      {
-        _id: 'cU9z-CA3d29',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Music game',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: '音ゲー',
-          }
-        ]
-      },
-      {
-        _id: 'bfxzmy3eib9',
-        createdDate: date,
-        updatedDate: date,
-        type: 1,
-        dataArr: [
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'en',
-            name: 'Other',
-          },
-          {
-            _id: shortid.generate(),
-            createdDate: date,
-            updatedDate: date,
-            lcid: 'ja',
-            name: 'その他',
-          }
-        ]
-      },
-    ]
-    
-    
-    // --------------------------------------------------
-    //   insertMany
-    // --------------------------------------------------
-    
-    returnObj = await ModelGameGenres.insertMany(saveArr);
     
     
     

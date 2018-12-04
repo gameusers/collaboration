@@ -21,15 +21,6 @@ import Head from 'next/head';
 import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-// import osLocale from 'os-locale';
-// const osLocale = require('os-locale');
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from '../../applications/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -57,6 +48,25 @@ import { fetchWrapper } from '../../applications/@modules/fetch';
 // import IconVisibility from '@material-ui/icons/Visibility';
 // import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 // import IconMailOutline from '@material-ui/icons/MailOutline';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import ja from 'react-intl/locale-data/ja';
+addLocaleData([...en, ...ja]);
+
+import { locale } from '../../applications/@locales/locale';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../applications/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -138,37 +148,15 @@ class Component extends React.Component {
     let initialPropsObj = {};
     let statusCode = 400;
     
+    const localeObj = locale({
+      acceptLanguage: req.headers['accept-language']
+    });
     
-    let locale = req.cookies.locale;
-    // console.log(`locale = ${locale}`);
-    
-    if (!locale) {
-      locale = 'ja';
-    }
-    
-    // console.log(`locale = ${locale}`);
-    
-    
-    // console.log(`locale = ${new Intl.NumberFormat().resolvedOptions().locale}`);
-    
-    // if (!isServer) {
-    //   const language = (window.navigator.languages && window.navigator.languages[0]) ||
-    //   window.navigator.language ||
-    //   window.navigator.userLanguage ||
-    //   window.navigator.browserLanguage;
-      
-    //   console.log(language);
-    // } else {
-    //   // console.log(await osLocale());
-      
-      
-      
-    // }
-    
-    
-    // console.log(chalk`
-    //   isServer: {green ${isServer}}
-    // `);
+    console.log(`
+      ----- localeObj -----\n
+      ${util.inspect(localeObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -176,22 +164,23 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?locale=${locale}&playerId=${query.param1}`),
+      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerId=${query.param1}`),
       methodType: 'GET',
-      reqHeadersCookie: isServer ? req.headers.cookie : ''
+      reqHeadersCookie: isServer ? req.headers.cookie : '',
+      reqAcceptLanguage: isServer ? req.headers['accept-language'] : ''
     });
     
     statusCode = resultObj.statusCode;
     initialPropsObj = resultObj.data;
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
-    return { isServer, pathname, initialPropsObj, statusCode };
+    return { isServer, pathname, initialPropsObj, statusCode, localeObj };
     
   }
   
@@ -355,21 +344,34 @@ class Component extends React.Component {
     return (
       <Provider stores={this.stores}>
       
-        <Layout headerNavMainArr={headerNavMainArr}>
+        <IntlProvider 
+          locale={this.props.localeObj.language}
+          messages={this.props.localeObj.dataObj}
+        >
           
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>あづみ - Game Users</title>
-          </Head>
-          
-          
-          <Container>
+          <Layout headerNavMainArr={headerNavMainArr}>
             
-            {componentCardsArr}
+            {/* Head 内部のタグをここで追記する */}
+            <Head>
+              <title>あづみ - Game Users</title>
+            </Head>
             
-          </Container>
+            
+            <Container>
+              
+              {this.props.localeObj.language} / 
+              <FormattedMessage
+                id='hello'
+              />
+              
+              {componentCardsArr}
+              
+            </Container>
+            
+          </Layout>
           
-        </Layout>
+        </IntlProvider>
+        
       </Provider>
     );
   }

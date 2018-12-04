@@ -32,10 +32,17 @@ const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+// const { acceptLanguage } = require('../../../@format/accept-language');
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const validationLocale = require('../../../@validations/locale');
+// const validationLocale = require('../../../@validations/locale');
 const validationPlayerId = require('../../../@database/users/validations/player-id');
 
 
@@ -52,7 +59,7 @@ const ModelCardGames = require('../../../@database/card-games/model');
 //   Logger
 // ---------------------------------------------
 
-const logger = require('../../../@modules/logger');
+// const logger = require('../../../@modules/logger');
 
 
 // --------------------------------------------------
@@ -60,6 +67,23 @@ const logger = require('../../../@modules/logger');
 // --------------------------------------------------
 
 const router = express.Router();
+
+
+
+
+
+// --------------------------------------------------
+//   Status Code & Error Arguments Object
+// --------------------------------------------------
+
+let statusCode = 400;
+
+let errorArgumentsObj = {
+  fileId: '4tT2vx700',
+  functionId: '',
+  errorCodeArr: [500000],
+  errorObj: {},
+};
 
 
 
@@ -76,20 +100,23 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
+  errorArgumentsObj.functionId = 'P3ut9x3Fj';
+  
   let returnObj = {
     cardsArr: []
   };
   
   let cardPlayersKeysArr = [];
   let cardGamesKeysArr = [];
-  let statusCode = 400;
   
-  let errorArgumentsObj = {
-    fileId: '4tT2vx700',
-    functionId: 'P3ut9x3Fj',
-    errorCodeArr: [500000],
-    errorObj: {},
-  };
+  // let statusCode = 400;
+  
+  // let errorArgumentsObj = {
+  //   fileId: '4tT2vx700',
+  //   functionId: 'P3ut9x3Fj',
+  //   errorCodeArr: [500000],
+  //   errorObj: {},
+  // };
   
   
   try {
@@ -102,12 +129,30 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     verifyCsrfToken(req, res);
     
     
+    
+    // const languageAndCountryObj = acceptLanguage({
+    //   acceptLanguage: req.headers['accept-language']
+    // });
+    
+    
+    // console.log(chalk`
+    //   req.headers['accept-language']: {green ${req.headers['accept-language']}}
+    // `);
+    
+    // console.log(`
+    //   ----- languageAndCountryObj -----\n
+    //   ${util.inspect(languageAndCountryObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
     // --------------------------------------------------
     //   GET 取得
     // --------------------------------------------------
     
-    let locale = req.query.locale;
-    const validationLocaleObj = validationLocale(locale);
+    // let locale = req.query.locale;
+    // const validationLocaleObj = validationLocale(locale);
     
     // console.log(chalk`
     //   locale: {green ${locale}}
@@ -118,14 +163,14 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // `);
     
     
-    if (validationLocaleObj.error) {
-      locale = 'ja';
-      // statusCode = 400;
-      // errorArgumentsObj.errorCodeArr = [502001];
-      // throw new Error();
-    }
+    // if (validationLocaleObj.error) {
+    //   locale = 'ja';
+    //   // statusCode = 400;
+    //   // errorArgumentsObj.errorCodeArr = [502001];
+    //   // throw new Error();
+    // }
     
-    const country = 'Japan';
+    const country = 'JP';
     
     
     

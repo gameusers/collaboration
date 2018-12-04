@@ -35,7 +35,7 @@ const schema = mongoose.Schema({
       _id: { type: String, required: true },
       createdDate: { type: Date, default: Date.now, required: true },
       updatedDate: { type: Date, default: Date.now, required: true },
-      lcid: { type: String, enum: ['ja'], required: true },
+      language: { type: String, enum: ['ja'], required: true },
       comment: String,
       birthdayObj: {
         value: Date,

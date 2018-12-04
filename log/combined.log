@@ -394,3 +394,13 @@
 {"level":"error","message":"Mon Dec 03 2018 13:02:35 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: gamesObj is not defined\n"}
 {"level":"error","message":"Mon Dec 03 2018 13:02:35 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: gamesObj is not defined\n"}
 {"level":"error","message":"Mon Dec 03 2018 13:03:01 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: gamesObj is not defined\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:33:32 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguageParser is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:33:32 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguageParser is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:48:38 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:48:38 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:49:05 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:49:45 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:50:25 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 05:50:25 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
+{"level":"error","message":"Tue Dec 04 2018 06:51:55 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'name' of undefined\n"}
+{"level":"error","message":"Tue Dec 04 2018 06:52:21 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'name' of undefined\n"}

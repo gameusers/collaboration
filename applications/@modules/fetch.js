@@ -42,6 +42,7 @@ const fetchWrapper = (argumentsObj) => {
   const methodType = argumentsObj.methodType;
   const formData = argumentsObj.formData;
   const reqHeadersCookie = argumentsObj.reqHeadersCookie;
+  const reqAcceptLanguage = argumentsObj.reqAcceptLanguage;
   
   
   // ---------------------------------------------
@@ -58,6 +59,10 @@ const fetchWrapper = (argumentsObj) => {
   
   if (reqHeadersCookie) {
     headersObj['Cookie'] = reqHeadersCookie;
+  }
+  
+  if (reqAcceptLanguage) {
+    headersObj['accept-language'] = reqAcceptLanguage;
   }
   
   

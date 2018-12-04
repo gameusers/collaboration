@@ -201,10 +201,10 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   LCID
+    //   language
     // ---------------------------------------------
     
-    const lcid = 'ja';
+    const language = 'ja';
     
     
     // ---------------------------------------------
@@ -248,7 +248,7 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     const dataObj = cardPlayersObj.dataArr.find((value) => {
-      return value.lcid === lcid;
+      return value.language === language;
     });
     
     

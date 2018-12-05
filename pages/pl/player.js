@@ -359,10 +359,10 @@ class Component extends React.Component {
             
             <Container>
               
-              {this.props.localeObj.language} / 
+              {/*{this.props.localeObj.language} / 
               <FormattedMessage
                 id='hello'
-              />
+              />*/}
               
               {componentCardsArr}
               

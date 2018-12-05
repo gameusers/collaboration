@@ -404,3 +404,7 @@
 {"level":"error","message":"Tue Dec 04 2018 05:50:25 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: acceptLanguage is not a function\n"}
 {"level":"error","message":"Tue Dec 04 2018 06:51:55 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'name' of undefined\n"}
 {"level":"error","message":"Tue Dec 04 2018 06:52:21 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'name' of undefined\n"}
+{"level":"error","message":"Wed Dec 05 2018 03:11:12 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot destructure property `country` of 'undefined' or 'null'.\n"}
+{"level":"error","message":"Wed Dec 05 2018 03:20:42 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: path option to $unwind stage should be prefixed with a '$': users\n"}
+{"level":"error","message":"Wed Dec 05 2018 08:16:44 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Expression $eq takes exactly 2 arguments. 1 were passed in.\n"}
+{"level":"error","message":"Wed Dec 05 2018 08:16:56 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Expression $eq takes exactly 2 arguments. 1 were passed in.\n"}

@@ -51,6 +51,198 @@ const { srcset } = require('../../@format/image');
  * @param {Object} conditionObj - 検索条件
  * @return {Object} 取得データ
  */
+const findTest = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  // const {
+    
+  //   country,
+  //   conditionObj
+    
+  // } = argumentsObj;
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    let docArr = await Model.aggregate([
+      {
+        $lookup:
+          {
+            from: 'games',
+            localField: 'games_id',
+            foreignField: '_id',
+            as: 'dbGames'
+          }
+      },
+      {
+        $unwind: '$dbGames'
+      },
+      
+      // {
+      //   '$dbGames.dataArr':
+      //     {
+      //       $elemMatch: { language: 'ja', country: 'JP' }
+      //     }
+      // },
+      
+      {
+        $match: { 'dbGames.dataArr':
+          {
+            $elemMatch: { language: 'ja', country: 'JP' }
+          }
+        }
+      },
+      
+      {
+        $project: {
+          "complist.b": 1,
+          list: { $elemMatch: { $in: ["a"] } }
+        }
+      },
+      
+      {
+        $project: {
+          _id: 1,
+          // updatedDate: 1,
+          users_id: 1,
+          // games_id: 1,
+          // imageVideoArr: 1,
+          // dataArr: 1,
+          
+          // 'dataArr.language': { $elemMatch: { $in: ['ja'] } }
+          
+          // 'new_users_id': '$users_id',
+          
+          // 'dbGames.dataArr.language': 1,
+          
+          // 'new_users_id': {
+          //   $cond: {
+          //     if: { $ne: [ 'jun-deE4J', '$users_id' ] },
+          //     // if: { users_id: { $eq: 'jun-deE4J' } },
+          //     // if: { users_id: 'jun-deE4J' },
+          //     // if: { $match: { 'dbGames.dataArr':
+          //     //   {
+          //     //     $elemMatch: { language: 'ja', country: 'JP' }
+          //     //   }
+          //     // } },
+          //     // if: { $elemMatch: { 'dbGames.dataArr': 'ja' } },
+          //     then: '$$REMOVE',
+          //     else: '$users_id'
+          //   }
+          // },
+          
+          // 'new_users_id': {
+          //   $cond: {
+          //     // if: { $ne: [ 'jun-deE4J', '$users_id' ] },
+          //     // if: { users_id: { $eq: 'jun-deE4J' } },
+          //     // if: { users_id: 'jun-deE4J' },
+          //     if: { '$dbGames.dataArr': { $elemMatch: { language: 'en' } } },
+          //     // if: { $elemMatch: { 'dbGames.dataArr': 'ja' } },
+          //     then: '$$REMOVE',
+          //     else: '$users_id'
+          //   }
+          // },
+          
+          // 'gameId': '$dbGames.gameId'
+        }
+      },
+      
+      // {
+      //   $project: {
+      //     'gameName': '$dbGames.dataArr'
+      //   }
+      // },
+      
+      // {
+      //   $match: { 'dbGames.dataArr':
+      //     {
+      //       $elemMatch: { language: 'ja' }
+      //     }
+      //   }
+      // },
+      
+      
+      // {
+      //   $match: { 'dbGames.dataArr':
+      //     {
+      //       $elemMatch: {
+      //         $and: [
+      //           { $eq: ['language', 'ja'] }
+                
+      //         ]
+      //       }
+      //     }
+      //   }
+      // },
+      
+      // {
+      //   $match: { 'dbGames._id': { $ne: 'w_zkqpr3R2' } }
+      // },
+      // {
+      //   $project: { _id: 1, createdDate: 1 }
+      // },
+    ]).exec();
+    
+    // const conditionObj = { _id: 'TzjNMDQyl' };
+    // let docArr = await Model.find(conditionObj).exec();
+    
+    
+    
+    console.log(`
+      docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    `);
+    
+    // console.log(`
+    //   games_idArr: \n${util.inspect(games_idArr, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   docGamesArr: \n${util.inspect(docGamesArr, { colors: true, depth: null })}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+/**
+ * 取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {Object} 取得データ
+ */
 const find = async (argumentsObj) => {
   
   
@@ -242,6 +434,7 @@ const upsert = async (conditionObj, saveObj) => {
 // --------------------------------------------------
 
 module.exports = {
+  findTest,
   find,
   upsert
 };

@@ -72,7 +72,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
     "@babel/plugin-proposal-decorators": "^7.2.0",
     "babel-plugin-styled-components": "^1.9.2",
     "cpx": "^1.5.0",

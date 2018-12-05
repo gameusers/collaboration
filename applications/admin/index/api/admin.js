@@ -151,6 +151,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           _id: 'VjSSBUYlJ',
           createdDate: date,
           updatedDate: date,
+          language: 'ja',
           country: 'JP',
           name: 'Dead by Daylight',
           subtitle: '',
@@ -211,7 +212,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    returnObj = await ModelGames.upsert(conditionObj, saveObj);
+    // returnObj = await ModelGames.upsert(conditionObj, saveObj);
     
     
     
@@ -237,6 +238,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Action',
           },
           {
@@ -244,6 +246,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'アクション',
           }
         ]
@@ -259,6 +262,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Shooter',
           },
           {
@@ -266,6 +270,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'シューティング',
           }
         ]
@@ -281,6 +286,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Adventure',
           },
           {
@@ -288,6 +294,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'アドベンチャー',
           }
         ]
@@ -303,6 +310,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'RPG',
           },
           {
@@ -310,6 +318,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'RPG',
           }
         ]
@@ -325,6 +334,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Simulation',
           },
           {
@@ -332,6 +342,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'シミュレーター',
           }
         ]
@@ -347,6 +358,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Strategy',
           },
           {
@@ -354,6 +366,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'シミュレーション（ストラテジー）',
           }
         ]
@@ -369,6 +382,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Sports',
           },
           {
@@ -376,6 +390,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'スポーツ',
           }
         ]
@@ -391,6 +406,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Racing',
           },
           {
@@ -398,6 +414,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'レース',
           }
         ]
@@ -413,6 +430,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Fighting',
           },
           {
@@ -420,6 +438,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: '格闘ゲーム',
           }
         ]
@@ -435,6 +454,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Puzzle',
           },
           {
@@ -442,6 +462,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'パズル',
           }
         ]
@@ -457,6 +478,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Board game / Card game',
           },
           {
@@ -464,6 +486,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'ボードゲーム / カードゲーム',
           }
         ]
@@ -479,6 +502,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Music game',
           },
           {
@@ -486,6 +510,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: '音ゲー',
           }
         ]
@@ -501,6 +526,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'en',
+            country: 'US',
             name: 'Other',
           },
           {
@@ -508,6 +534,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             createdDate: date,
             updatedDate: date,
             language: 'ja',
+            country: 'JP',
             name: 'その他',
           }
         ]
@@ -519,7 +546,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    returnObj = await ModelGameGenres.insertMany(saveArr);
+    // returnObj = await ModelGameGenres.insertMany(saveArr);
     
     
     
@@ -590,6 +617,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           createdDate: date,
           updatedDate: date,
           language: 'ja',
+          country: 'JP',
           comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
   それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
@@ -805,7 +833,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   Upsert
     // --------------------------------------------------
     
-    returnObj = await ModelCardPlayers.upsert(conditionObj, saveObj);
+    // returnObj = await ModelCardPlayers.upsert(conditionObj, saveObj);
     
     
     
@@ -877,6 +905,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           createdDate: date,
           updatedDate: date,
           language: 'ja',
+          country: 'JP',
           theme: '',
           itemArr: [],
           comment: `楽しかった時間が終わってしまいました。
@@ -1019,6 +1048,72 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
               search: true,
             },
           ]
+        },
+        {
+          _id: '-DvUcmovr',
+          createdDate: date,
+          updatedDate: date,
+          language: 'en',
+          country: 'US',
+          theme: '',
+          itemArr: [],
+          comment: `English / US`,
+          quotationObj: {
+            activityTime: true,
+            lookingForFriends: true,
+            voiceChat: true,
+            link: true,
+          },
+          playingHardwareObj: {
+            valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
+            search: true,
+          },
+          idArr: [
+            {
+              _id: '2uYoXH_Bq',
+              quotation_id: '',
+              type: 'playstation',
+              label: '',
+              value: 'AZ-1979-Game',
+              showType: 1,
+              search: true,
+            }
+          ],
+          activityTimeObj: {
+            valueArr: [
+              {
+                _id: 'XNhx24h9e',
+                beginTime: '19:00',
+                endTime: '24:00',
+                weekArr: [0, 1, 2, 3, 4]
+              },
+              {
+                _id: '7M5xcBdxO',
+                beginTime: '9:00',
+                endTime: '24:00',
+                weekArr: [5, 6]
+              }
+            ],
+            search: true,
+          },
+          lookingForFriendsObj: {
+            icon: 'emoji_u1f61c',
+            comment: 'Friend',
+            search: true,
+          },
+          voiceChatObj: {
+            comment: 'Voice Chat',
+            search: true,
+          },
+          linkArr: [
+            {
+              _id: 'ymfHTbYdo',
+              type: 'twitter',
+              label: '',
+              url: 'https://twitter.com/',
+              search: true,
+            },
+          ]
         }
       ],
     };
@@ -1028,11 +1123,17 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     //   Upsert
     // --------------------------------------------------
     
-    returnObj = await ModelCardGames.upsert(conditionObj, saveObj);
+    // returnObj = await ModelCardGames.upsert(conditionObj, saveObj);
     
     
     
     
+    
+    // --------------------------------------------------
+    //   DB / Test
+    // --------------------------------------------------
+    
+    returnObj = await ModelCardGames.findTest();
     
     
     

@@ -14,6 +14,10 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
+  name: String,
+  status: String,
+  level: { type: Number, default: 1, required: true },
+  thumbnail: { type: Boolean, required: true },
   imageVideoArr: [
     {
       _id: { type: String, required: true },

@@ -584,6 +584,7 @@ const insert = async (reqBody) => {
       name: '',
       status: '',
       playerId,
+      country: 'JP',
       // level: 'AAA'
     };
     

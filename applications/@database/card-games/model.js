@@ -85,87 +85,234 @@ const findTest = async (argumentsObj) => {
     // --------------------------------------------------
     
     let docArr = await Model.aggregate([
+      
       {
         $lookup:
           {
             from: 'games',
             localField: 'games_id',
             foreignField: '_id',
-            as: 'dbGames'
+            as: 'gamesObj'
           }
       },
       {
-        $unwind: '$dbGames'
+        $unwind: '$gamesObj'
+      },
+      {
+        $unwind: '$gamesObj.dataArr'
+      },
+      {
+        $match: { 'gamesObj.dataArr.language': 'ja' }
       },
       
       // {
-      //   '$dbGames.dataArr':
+      //   $lookup:
       //     {
-      //       $elemMatch: { language: 'ja', country: 'JP' }
+      //       from: 'users',
+      //       localField: 'users_id',
+      //       foreignField: '_id',
+      //       as: 'usersObj'
       //     }
       // },
-      
       {
-        $match: { 'dbGames.dataArr':
+        $lookup:
           {
-            $elemMatch: { language: 'ja', country: 'JP' }
+            from: 'users',
+            let: { cardGamesUsers_id: '$users_id' },
+            pipeline: [{
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$_id', '$$cardGamesUsers_id'] },
+                    { $eq: ['$country', 'JP'] }
+                  ]
+                }
+              }
+            }],
+            as: 'usersObj'
           }
-        }
+      },
+      {
+        $unwind: '$usersObj'
       },
       
-      {
-        $project: {
-          "complist.b": 1,
-          list: { $elemMatch: { $in: ["a"] } }
-        }
-      },
+      
+      
       
       {
         $project: {
           _id: 1,
-          // updatedDate: 1,
+          updatedDate: 1,
           users_id: 1,
-          // games_id: 1,
-          // imageVideoArr: 1,
-          // dataArr: 1,
+          games_id: 1,
+          imageVideoArr: 1,
           
-          // 'dataArr.language': { $elemMatch: { $in: ['ja'] } }
+          dataArr: {
+            $filter: {
+              input: '$dataArr',
+              as: 'item',
+              cond: { $eq: [ '$$item.language', 'ja' ] }
+            }
+          },
           
-          // 'new_users_id': '$users_id',
-          
-          // 'dbGames.dataArr.language': 1,
-          
-          // 'new_users_id': {
-          //   $cond: {
-          //     if: { $ne: [ 'jun-deE4J', '$users_id' ] },
-          //     // if: { users_id: { $eq: 'jun-deE4J' } },
-          //     // if: { users_id: 'jun-deE4J' },
-          //     // if: { $match: { 'dbGames.dataArr':
-          //     //   {
-          //     //     $elemMatch: { language: 'ja', country: 'JP' }
-          //     //   }
-          //     // } },
-          //     // if: { $elemMatch: { 'dbGames.dataArr': 'ja' } },
-          //     then: '$$REMOVE',
-          //     else: '$users_id'
+          // gamesDataObj: {
+          //   $filter: {
+          //     input: '$gamesObj.dataArr',
+          //     as: 'item',
+          //     cond: { $eq: [ '$$item.language', 'ja' ] }
           //   }
           // },
           
-          // 'new_users_id': {
-          //   $cond: {
-          //     // if: { $ne: [ 'jun-deE4J', '$users_id' ] },
-          //     // if: { users_id: { $eq: 'jun-deE4J' } },
-          //     // if: { users_id: 'jun-deE4J' },
-          //     if: { '$dbGames.dataArr': { $elemMatch: { language: 'en' } } },
-          //     // if: { $elemMatch: { 'dbGames.dataArr': 'ja' } },
-          //     then: '$$REMOVE',
-          //     else: '$users_id'
-          //   }
-          // },
+          gameName: '$gamesObj.dataArr.name',
+          gameId: '$gamesObj.gameId',
+          gameThumbnail: '$gamesObj.thumbnail',
           
-          // 'gameId': '$dbGames.gameId'
+          usersObj: 1
+          
         }
       },
+      
+      
+      // {
+      //   $unwind: '$dataArr'
+      // },
+      // {
+      //   $match: { $or: [ {'dataArr.language': 'ja', 'dataArr.country': 'JP' }, {'dataArr.language': 'en', 'dataArr.country': 'US' } ] }
+      // },
+      // {
+      //   $match: { 'dataArr.language': 'ja', 'dataArr.country': 'JP' }
+      // },
+      
+      // {
+      //   $match: { 'gamesObj.dataArr.language': 'ja', 'gamesObj.dataArr.country': 'JP' }
+      // },
+      
+      // { _id: { $in: _idArr} };
+      
+      // {
+      //   $project: {
+      //     _id: 0,
+      //     games_id: 0,
+      //   }
+      // },
+      
+      
+      // {
+      //   $match: { 'gamesObj.dataArr':
+      //     {
+      //       $elemMatch: { language: 'ja', country: 'JP' }
+      //     }
+      //   }
+      // },
+      
+      
+      
+      // {
+      //   $project: {
+      //     // _id: 1,
+      //     // updatedDate: 1,
+      //     // users_id: 1,
+      //     // games_id: 1,
+      //     // imageVideoArr: 1,
+          
+      //     dataArr: {
+      //       $filter: {
+      //         input: '$dataArr',
+      //         as: 'item',
+      //         cond: { $eq: [ '$$item.language', 'ja' ] }
+      //       }
+      //     },
+          
+      //     gamesDataObj: {
+      //       $filter: {
+      //         input: '$gamesObj.dataArr',
+      //         as: 'item',
+      //         cond: { $eq: [ '$$item.language', 'ja' ] }
+      //       }
+      //     },
+          
+      //     // gameId: '$gamesObj.gameId',
+      //     // gameThumbnail: '$gamesObj.thumbnail'
+          
+      //   }
+      // },
+      
+      
+      
+      // {
+      //   $unwind: '$gamesDataObj'
+      // },
+      // {
+      //   $project: {
+      //     _id: 1,
+      //     updatedDate: 1,
+      //     users_id: 1,
+      //     imageVideoArr: 1,
+      //     gameName: '$gamesDataObj[0].name',
+      //     gameId: '$gamesObj.gameId',
+      //     gameThumbnail: '$gamesObj.thumbnail'
+      //   }
+      // },
+      // {
+      //   $unwind: '$gamesDataArr'
+      // },
+      
+      // {
+      //   $project: {
+      //     _id: 1,
+      //     updatedDate: 1,
+      //     users_id: 1,
+      //     games_id: 1,
+      //     imageVideoArr: 1,
+          
+      //     dataArr: {
+      //       $filter: {
+      //         input: '$dataArr',
+      //         as: 'item',
+      //         cond: { $eq: [ '$$item.language', 'ja' ] }
+      //       }
+      //     },
+          
+          
+      //     // dataArr: 1,
+          
+      //     // 'dataArr.language': { $elemMatch: { $in: ['ja'] } }
+          
+      //     // 'new_users_id': '$users_id',
+          
+      //     // 'dbGames.dataArr.language': 1,
+          
+      //     // 'new_users_id': {
+      //     //   $cond: {
+      //     //     if: { $ne: [ 'jun-deE4J', '$users_id' ] },
+      //     //     // if: { users_id: { $eq: 'jun-deE4J' } },
+      //     //     // if: { users_id: 'jun-deE4J' },
+      //     //     // if: { $match: { 'dbGames.dataArr':
+      //     //     //   {
+      //     //     //     $elemMatch: { language: 'ja', country: 'JP' }
+      //     //     //   }
+      //     //     // } },
+      //     //     // if: { $elemMatch: { 'dbGames.dataArr': 'ja' } },
+      //     //     then: '$$REMOVE',
+      //     //     else: '$users_id'
+      //     //   }
+      //     // },
+          
+      //     // 'new_users_id': {
+      //     //   $cond: {
+      //     //     // if: { $ne: [ 'jun-deE4J', '$users_id' ] },
+      //     //     // if: { users_id: { $eq: 'jun-deE4J' } },
+      //     //     // if: { users_id: 'jun-deE4J' },
+      //     //     if: { '$dbGames.dataArr': { $elemMatch: { language: 'en' } } },
+      //     //     // if: { $elemMatch: { 'dbGames.dataArr': 'ja' } },
+      //     //     then: '$$REMOVE',
+      //     //     else: '$users_id'
+      //     //   }
+      //     // },
+          
+      //     // 'gameId': '$dbGames.gameId'
+      //   }
+      // },
       
       // {
       //   $project: {

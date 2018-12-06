@@ -204,6 +204,39 @@ router.post('/insert', upload.none(), async (req, res, next) => {
             },
           ]
         },
+        {
+          _id: 'n8oEwcHYl',
+          createdDate: date,
+          updatedDate: date,
+          language: 'en',
+          country: 'US',
+          name: 'Dead by Daylight',
+          subtitle: '',
+          similarityArr: [
+            'DbD'
+          ],
+          forSort: '',
+          twitterHashtag: 'DeadbyDaylight',
+          genreTagArr: [],
+          hardwareArr: [
+            {
+              _id: 'qH6AGs1CN',
+              hardware_id: '60TVB7_if',
+              releaseData: '2016-06-14T00:00:00.000Z',
+              players: 5,
+              publisher_id: 'fa_jpSg5L',
+              developer_id: '_sCyO1JV1',
+            }
+          ],
+          linkArr: [
+            {
+              _id: 'fiKukECBN',
+              type: 'twitter',
+              label: '',
+              url: 'https://twitter.com/',
+            },
+          ]
+        },
       ],
     };
     
@@ -571,6 +604,10 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       createdDate: date,
       updatedDate: date,
       users_id: 'jun-deE4J',
+      name: 'あづみ',
+      status: 'パックンフラワー',
+      level: 99,
+      thumbnail: false,
       imageVideoArr: [
         {
           _id: 'H_NXaMPKG',
@@ -858,6 +895,9 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       createdDate: date,
       updatedDate: date,
       users_id: 'jun-deE4J',
+      name: 'AZ-1979',
+      status: 'トラッパー',
+      thumbnail: false,
       games_id: 'w_zkqpr3R',
       imageVideoArr: [
         {

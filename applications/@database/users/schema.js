@@ -20,6 +20,7 @@ const schema = mongoose.Schema({
   name: String,
   status: String,
   playerId: { type: String, required: true, unique: true },
+  country: { type: String, required: true },
   level: { type: Number, default: 1, required: true },
   followArr: [String],
   followCount:{ type: Number, default: 0, required: true },

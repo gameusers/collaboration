@@ -3,6 +3,14 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
@@ -235,36 +243,13 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, users_id, anonymity, name, status } = this.props;
-    
-    const usersObj = stores.data.usersObj;
-    
-    
-    
-    // --------------------------------------------------
-    //   Button Disabled
-    // --------------------------------------------------
+    const { stores, users_id, cardGames_id, anonymity, name, status, accessDate, level } = this.props;
     
     const {
       
       buttonDisabledObj
       
     } = stores.layout;
-    
-    
-    let buttonDisabledCardPlayer = true;
-    
-    if (`${users_id}-card-player` in buttonDisabledObj) {
-      buttonDisabledCardPlayer = buttonDisabledObj[`${users_id}-card-player`];
-    }
-    
-    let buttonDisabledCardGame = true;
-    
-    if (`${users_id}-card-game` in buttonDisabledObj) {
-      buttonDisabledCardGame = buttonDisabledObj[`${users_id}-card-game`];
-    }
-    
-    
     
     
     // --------------------------------------------------
@@ -281,16 +266,11 @@ export default class extends React.Component {
       
       componentName = <NameNoColor>{name}</NameNoColor>;
       
-    } else if (users_id && users_id in usersObj) {
-      
-      componentName = <Name>{usersObj[users_id].name}</Name>;
-      
     } else {
       
       componentName = <NameNoColor>削除済みユーザー</NameNoColor>;
       
     }
-    
     
     
     // --------------------------------------------------
@@ -307,10 +287,6 @@ export default class extends React.Component {
       
       componentStatus = <StatusBox><StyledIconHealing /><Status>{status}</Status></StatusBox>;
       
-    } else if (users_id && users_id in usersObj) {
-      
-      componentStatus = <StatusBox><StyledIconHealing /><Status>{usersObj[users_id].status}</Status></StatusBox>;
-      
     } else {
       
       componentStatus = <StatusBox><StyledIconHealing /><Status>deleted</Status></StatusBox>;
@@ -325,10 +301,10 @@ export default class extends React.Component {
     
     let componentAccessTime = '';
     
-    if (users_id && users_id in usersObj) {
+    if (!anonymity && accessDate) {
       
       const datetimeNow = moment().utcOffset(0);
-      const datetimeAccess = moment(usersObj[users_id].accessDate).utcOffset(0);
+      const datetimeAccess = moment(accessDate).utcOffset(0);
       const accessTime = datetimeAccess.from(datetimeNow);
       
       componentAccessTime = <AccessTimeBox><StyledIconSchedule /><AccessTime>{accessTime}</AccessTime></AccessTimeBox>;
@@ -342,11 +318,90 @@ export default class extends React.Component {
     
     let componentLevel = '';
     
-    if (users_id && users_id in usersObj) {
+    if (!anonymity && level) {
       
-      componentLevel = <LevelBox><StyledIconStars /><Level>Lv.{usersObj[users_id].level}</Level></LevelBox>;
+      componentLevel = <LevelBox><StyledIconStars /><Level>Lv.{level}</Level></LevelBox>;
+      
+    } else {
+      
+       componentLevel = <LevelBox><StyledIconStars /><Level>Lv.0</Level></LevelBox>;
       
     }
+    
+    
+    // --------------------------------------------------
+    //   Button Card Player
+    // --------------------------------------------------
+    
+    let componentCardPlayersButton = '';
+    
+    if (!anonymity && users_id) {
+      
+      
+      // --------------------------------------------------
+      //   Button Disabled
+      // --------------------------------------------------
+      
+      let buttonDisabledCardPlayer = true;
+      
+      if (`${users_id}-card-player` in buttonDisabledObj) {
+        buttonDisabledCardPlayer = buttonDisabledObj[`${users_id}-card-player`];
+      }
+      
+      
+      componentCardPlayersButton = 
+        <StyledButton
+          variant="outlined"
+          // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
+          disabled={buttonDisabledCardPlayer}
+        >
+          <StyledIconCard1 />
+          Player
+        </StyledButton>
+      ;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Button Card Game
+    // --------------------------------------------------
+    
+    let componentCardGamesButton = '';
+    
+    if (!anonymity && cardGames_id) {
+      
+      
+      // --------------------------------------------------
+      //   Button Disabled
+      // --------------------------------------------------
+      
+      let buttonDisabledCardGame = true;
+      
+      if (`${cardGames_id}-card-game` in buttonDisabledObj) {
+        buttonDisabledCardGame = buttonDisabledObj[`${cardGames_id}-card-game`];
+      }
+      
+      
+      componentCardGamesButton = 
+        <StyledButton
+          variant="outlined"
+          // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
+          disabled={buttonDisabledCardGame}
+        >
+          <StyledIconCard1 />
+          Game
+        </StyledButton>
+      ;
+      
+    }
+    
+    
+    
+    // console.log(chalk`
+    //   users_id: {green ${users_id}}
+    // `);
+    
     
     
     
@@ -367,22 +422,25 @@ export default class extends React.Component {
           
           {componentLevel}
           
-          <StyledButton
+          {componentCardPlayersButton}
+          {componentCardGamesButton}
+          
+          {/*<StyledButton
             variant="outlined"
             // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
             disabled={buttonDisabledCardPlayer}
           >
             <StyledIconCard1 />
             Player
-          </StyledButton>
+          </StyledButton>*/}
           
-          <StyledButton
+          {/*<StyledButton
             variant="outlined"
             disabled={buttonDisabledCardGame}
           >
             <StyledIconCard2 />
             Game
-          </StyledButton>
+          </StyledButton>*/}
           
         </LevelAndCardBox>
       </Container>

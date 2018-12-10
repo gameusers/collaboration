@@ -40,7 +40,6 @@ const schema = mongoose.Schema({
       createdDate: { type: Date, default: Date.now, required: true },
       updatedDate: { type: Date, default: Date.now, required: true },
       language: { type: String, enum: ['en', 'ja'], required: true },
-      country: { type: String, enum: ['US', 'JP'], required: true },
       theme: String,
       itemArr: mongoose.Schema.Types.Mixed,
       comment: String,

@@ -103,6 +103,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   errorArgumentsObj.functionId = 'P3ut9x3Fj';
   
   let returnObj = {
+    usersObj: {},
     cardsArr: []
   };
   
@@ -211,8 +212,10 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     returnObj.usersObj = usersObj;
     
+    
     const usersKeysArr = Object.keys(usersObj);
     const users_id = usersKeysArr[0];
+    // returnObj.usersObj[users_id] = {};
     
     
     // --------------------------------------------------
@@ -220,8 +223,10 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    // const cardPlayersObj = await ModelCardPlayers.find({ users_id: { $in: users_id} });
-    const cardPlayersObj = await ModelCardPlayers.find({ users_id });
+    const cardPlayersObj = await ModelCardPlayers.find({
+      conditionObj: { users_id }
+    });
+    
     returnObj.cardPlayersObj = cardPlayersObj;
     
     // カードを一覧で表示するための配列を作成する
@@ -258,7 +263,18 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     }
     
     
-    
+    // const cardUsersObj = {
+    //   'jun-deE4J(users_id)': {
+    //     players: {
+          
+    //     },
+    //     games: {
+    //       'w_zkqpr3R(games_id)': {
+            
+    //       }
+    //     }
+    //   }
+    // }
     
     
     // --------------------------------------------------
@@ -314,11 +330,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // ---------------------------------------------

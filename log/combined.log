@@ -411,3 +411,16 @@
 {"level":"error","message":"Thu Dec 06 2018 05:28:12 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Thu Dec 06 2018 06:00:49 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Unrecognized pipeline stage name: '$filter'\n"}
 {"level":"error","message":"Thu Dec 06 2018 06:00:57 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Unrecognized pipeline stage name: '$filter'\n"}
+{"level":"error","message":"Sat Dec 08 2018 01:42:58 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 02:05:00 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot set property 'cardPlayersObj' of undefined\n"}
+{"level":"error","message":"Sat Dec 08 2018 02:05:01 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot set property 'cardPlayersObj' of undefined\n"}
+{"level":"error","message":"Sat Dec 08 2018 08:13:11 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 08:13:24 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 08:41:35 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: users_id is not defined\n"}
+{"level":"error","message":"Sat Dec 08 2018 08:41:35 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: users_id is not defined\n"}
+{"level":"error","message":"Sat Dec 08 2018 09:18:53 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 11:16:11 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 15:08:19 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 15:08:48 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 08 2018 15:13:57 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sun Dec 09 2018 05:31:04 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}

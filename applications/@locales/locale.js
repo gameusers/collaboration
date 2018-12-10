@@ -57,8 +57,8 @@ const locale = (argumentsObj) => {
   let dataObj = ja_JP;
   
   
-  language = 'en';
-  country = 'US';
+  // language = 'en';
+  // country = 'US';
   
   
   // --------------------------------------------------

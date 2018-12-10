@@ -36,7 +36,7 @@ const { srcset } = require('../../@format/image');
 //   Logger
 // ---------------------------------------------
 
-const logger = require('../../@modules/logger');
+// const logger = require('../../@modules/logger');
 
 
 
@@ -47,10 +47,21 @@ const logger = require('../../@modules/logger');
 
 /**
  * 取得する
- * @param {Object} conditionObj - 検索条件
+ * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const find = async (conditionObj) => {
+const find = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    conditionObj
+    
+  } = argumentsObj;
   
   
   // --------------------------------------------------
@@ -82,10 +93,10 @@ const find = async (conditionObj) => {
       
       const copiedObj = JSON.parse(JSON.stringify(value));
       
-      copiedObj.imageArr = srcset('/static/img/card/players/', copiedObj.imageVideoArr);
+      copiedObj.imageArr = srcset(`/static/img/card/players/${value._id}/`, copiedObj.imageVideoArr);
       delete copiedObj.imageVideoArr;
       
-      returnObj[value._id] = copiedObj;
+      returnObj[value.users_id] = copiedObj;
       
     }
     

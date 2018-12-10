@@ -152,11 +152,11 @@ class Component extends React.Component {
       acceptLanguage: req.headers['accept-language']
     });
     
-    console.log(`
-      ----- localeObj -----\n
-      ${util.inspect(localeObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -218,7 +218,7 @@ class Component extends React.Component {
         // 'usersLoginObj' in props.initialPropsObj === false ||
         'usersObj' in props.initialPropsObj === false ||
         'cardPlayersObj' in props.initialPropsObj === false ||
-        'cardGamesObj' in props.initialPropsObj === false ||
+        // 'cardGamesObj' in props.initialPropsObj === false ||
         'cardsArr' in props.initialPropsObj === false
       ) {
         throw new Error();
@@ -318,13 +318,16 @@ class Component extends React.Component {
     
     const componentCardsArr = [];
     
-    for (const [index, value] of this.props.initialPropsObj.cardsArr.entries()) {
+    for (const [index, valueObj] of this.props.initialPropsObj.cardsArr.entries()) {
       // console.log(index, value);
       
-      if (value.type === 'player') {
+      if (valueObj.type === 'player') {
         
         componentCardsArr.push(
-          <CardPlayer cardPlayers_id={value._id} key={index} />
+          <CardPlayer
+            users_id={valueObj._id}
+            key={index}
+          />
         );
         
       } else {

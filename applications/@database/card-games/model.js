@@ -48,7 +48,7 @@ const { srcset } = require('../../@format/image');
 
 /**
  * 取得する
- * @param {Object} conditionObj - 検索条件
+ * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
 const findTest = async (argumentsObj) => {
@@ -89,6 +89,28 @@ const findTest = async (argumentsObj) => {
       {
         $lookup:
           {
+            from: 'users',
+            let: { cardGamesUsers_id: '$users_id' },
+            pipeline: [{
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$_id', '$$cardGamesUsers_id'] },
+                    { $eq: ['$country', 'JP'] }
+                  ]
+                }
+              }
+            }],
+            as: 'usersObj'
+          }
+      },
+      {
+        $unwind: '$usersObj'
+      },
+      
+      {
+        $lookup:
+          {
             from: 'games',
             localField: 'games_id',
             foreignField: '_id',
@@ -114,27 +136,7 @@ const findTest = async (argumentsObj) => {
       //       as: 'usersObj'
       //     }
       // },
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { cardGamesUsers_id: '$users_id' },
-            pipeline: [{
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$_id', '$$cardGamesUsers_id'] },
-                    { $eq: ['$country', 'JP'] }
-                  ]
-                }
-              }
-            }],
-            as: 'usersObj'
-          }
-      },
-      {
-        $unwind: '$usersObj'
-      },
+      
       
       
       
@@ -167,7 +169,7 @@ const findTest = async (argumentsObj) => {
           gameId: '$gamesObj.gameId',
           gameThumbnail: '$gamesObj.thumbnail',
           
-          usersObj: 1
+          // usersObj: 1
           
         }
       },

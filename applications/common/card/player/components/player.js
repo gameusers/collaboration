@@ -184,16 +184,38 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
+    const { stores, users_id } = this.props;
     
     
     // --------------------------------------------------
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (cardPlayers_id in stores.data.cardPlayersObj === false) {
+    // if (
+    //   users_id in stores.data.usersObj === false ||
+    //   'cardPlayersObj' in stores.data.usersObj[users_id] === false 
+    // ) {
+    //   return null;
+    // }
+    
+    // console.log('AAA');
+    
+    if (users_id in stores.data.cardPlayersObj === false) {
       return null;
     }
+    
+    // console.log(chalk`
+    //   users_id: {green ${users_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- cardPlayersObj -----\n
+    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // return null;
+    
     
     
     // --------------------------------------------------
@@ -220,12 +242,48 @@ export default class extends React.Component {
     } = stores.layout;
     
     
-    const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
+    // ---------------------------------------------
+    //   Access Date & Level & Follow
+    // ---------------------------------------------
+    
+    const {
+      
+      accessDate,
+      level,
+      followedCount
+      
+    } = stores.data.usersObj[users_id];
+    
+    
+    // ---------------------------------------------
+    //   Name & Status & Thumbnail
+    // ---------------------------------------------
+    
+    const cardPlayersObj = stores.data.cardPlayersObj[users_id];
+    
+    
+    const {
+      
+      _id,
+      name,
+      status,
+      thumbnail
+      
+    } = cardPlayersObj;
+    
+    
+    let thumbnailSrc = '';
+    
+    if (thumbnail) {
+      thumbnailSrc = `/static/img/card/players/${_id}/thumbnail/image.jpg`;
+    }
     
     
     // ---------------------------------------------
     //   Image
     // ---------------------------------------------
+    
+    // const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
     
     const {
       
@@ -234,13 +292,6 @@ export default class extends React.Component {
       imageAlt
       
     } = cardPlayersObj.imageArr[0];
-    
-    
-    // ---------------------------------------------
-    //   Users ID
-    // ---------------------------------------------
-    
-    const users_id = cardPlayersObj.users_id;
     
     
     // ---------------------------------------------
@@ -345,20 +396,26 @@ export default class extends React.Component {
     
     let panelButtonDisabled = true;
     
-    if (`${cardPlayers_id}-panel` in buttonDisabledObj) {
-      panelButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-panel`];
+    if (`${users_id}-panel` in buttonDisabledObj) {
+      panelButtonDisabled = buttonDisabledObj[`${users_id}-panel`];
     }
     
     let panelExpanded = true;
     
-    if (cardPlayers_id in panelExpandedObj) {
-      panelExpanded = panelExpandedObj[cardPlayers_id];
+    if (users_id in panelExpandedObj) {
+      panelExpanded = panelExpandedObj[users_id];
     }
     
     
     // --------------------------------------------------
     //   データ取り出し
     // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   accessDate: {green ${accessDate}}
+    //   level: {green ${level}}
+    //   followedCount: {green ${followedCount}}
+    // `);
     
     // console.log(`
     //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
@@ -378,6 +435,9 @@ export default class extends React.Component {
     // `);
     
     
+    // return null;
+    
+    
     
     // --------------------------------------------------
     //   Return
@@ -394,14 +454,21 @@ export default class extends React.Component {
           <UserBox>
             
             <UserThumbnailBox>
-              <UserThumbnail users_id={users_id} />
+              <UserThumbnail thumbnailSrc={thumbnailSrc} />
             </UserThumbnailBox>
             
             
             <UserInfoBox>
-            
+              
               <UserNameBox>
-                <UserName users_id={users_id} />
+                <UserName
+                  users_id={users_id}
+                  accessDate={accessDate}
+                  // anonymity={true}
+                  name={name}
+                  status={status}
+                  level={level}
+                />
               </UserNameBox>
               
             </UserInfoBox>
@@ -412,7 +479,7 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handlePanelExpanded(cardPlayers_id)}
+              onClick={() => handlePanelExpanded(users_id)}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={panelButtonDisabled}
@@ -524,7 +591,7 @@ export default class extends React.Component {
           
           {/* フォローボタン */}
           <StyledCardActions>
-            <Follow cardPlayers_id={cardPlayers_id} />
+            {/*<Follow cardPlayers_id={cardPlayers_id} />*/}
           </StyledCardActions>
           
         </Collapse>

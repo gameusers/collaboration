@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+// const chalk = require('chalk');
+// const util = require('util');
 
 
 // ---------------------------------------------
@@ -25,14 +25,12 @@ const util = require('util');
 
 /**
  * 取得する
- * @param {array} userIdArr - User IDの入った配列 [8OM0dhDak, Wk_nHYW0q, oXiNOYRax]
- * @return {object} 取得されたデータ
+ * @param {string} basePath - ベースになるパス
+ * @param {Array} imageVideoArr - 
+ * @return {Object} 取得されたデータ
  */
-const srcset = (imagePath, imageVideoArr) => {
+const srcset = (basePath, imageVideoArr) => {
   
-  // console.log(`
-  //   imageVideoArr: \n${util.inspect(imageVideoArr, { colors: true, depth: null })}
-  // `);
   
   // --------------------------------------------------
   //   Return Value
@@ -67,9 +65,9 @@ const srcset = (imagePath, imageVideoArr) => {
         for (let value2 of value.srcSetArr.values()) {
           
           if (value2.w !== 'source') {
-            // const src = `${imagePath}${value._id}/${value2.w}${extension} ${value2.w}`;
-            tempArr.push(`${imagePath}${value._id}/${value2.w}${extension} ${value2.w}`);
-            imageSrc = `${imagePath}${value._id}/${value2.w}${extension}`;
+            // const src = `${basePath}${value._id}/${value2.w}${extension} ${value2.w}`;
+            tempArr.push(`${basePath}${value._id}/${value2.w}${extension} ${value2.w}`);
+            imageSrc = `${basePath}${value._id}/${value2.w}${extension}`;
           }
           
         }

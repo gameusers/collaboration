@@ -22,11 +22,9 @@ import fetch from 'isomorphic-unfetch';
 //   Validation
 // ---------------------------------------------
 
-const validationLoginId = require('../../../../@database/users/validations/login-id');
-const { validationLoginPassword, validationLoginPasswordConfirmation } = require('../../../../@database/users/validations/login-password');
-const validationEmail = require('../../../../@database/users/validations/email');
-
-// import { validationLoginId, validationPassword, validationPasswordConfirmation, validationEmail } from '../../../common/validations/login';
+const validationLoginId = require('../../../@database/users/validations/login-id');
+const { validationLoginPassword, validationLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
+const validationEmail = require('../../../@database/users/validations/email');
 
 
 

@@ -424,3 +424,9 @@
 {"level":"error","message":"Sat Dec 08 2018 15:08:48 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Sat Dec 08 2018 15:13:57 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Sun Dec 09 2018 05:31:04 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Tue Dec 11 2018 08:45:12 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Tue Dec 11 2018 08:45:12 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Tue Dec 11 2018 10:09:25 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: valueObj.findIndex is not a function\n"}
+{"level":"error","message":"Tue Dec 11 2018 10:09:25 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: valueObj.findIndex is not a function\n"}
+{"level":"error","message":"Tue Dec 11 2018 10:23:49 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Tue Dec 11 2018 10:23:59 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}

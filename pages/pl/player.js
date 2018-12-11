@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -152,12 +152,6 @@ class Component extends React.Component {
       acceptLanguage: req.headers['accept-language']
     });
     
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // --------------------------------------------------
     //   Fetch
@@ -173,11 +167,19 @@ class Component extends React.Component {
     statusCode = resultObj.statusCode;
     initialPropsObj = resultObj.data;
     
+    
+    
     // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     return { isServer, pathname, initialPropsObj, statusCode, localeObj };
@@ -348,7 +350,7 @@ class Component extends React.Component {
       <Provider stores={this.stores}>
       
         <IntlProvider 
-          locale={this.props.localeObj.language}
+          locale={this.props.localeObj.languageArr[0]}
           messages={this.props.localeObj.dataObj}
         >
           

@@ -114,11 +114,23 @@ const findOne = async (conditionObj) => {
 
 /**
  * 検索してデータを取得する / 1件だけ
- * @param {Object} conditionObj - 検索条件
- * @param {String} select - 必要な情報を選択
+ * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findOneFormatted = async (conditionObj, usersLogin_id) => {
+const findOneFormatted = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    localeObj,
+    conditionObj,
+    usersLogin_id
+    
+  } = argumentsObj;
   
   
   // --------------------------------------------------
@@ -139,7 +151,7 @@ const findOneFormatted = async (conditionObj, usersLogin_id) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docObj = await Model.findOne(conditionObj).select('_id accessDate name status playerId level followArr followCount followedArr followedCount role').exec();
+    const docObj = await Model.findOne(conditionObj).select('_id accessDate level playerId followArr followCount followedArr followedCount role').exec();
     
     if (docObj === null) {
       return returnObj;

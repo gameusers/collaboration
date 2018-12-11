@@ -14,8 +14,8 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
+// const shortid = require('shortid');
+// const moment = require('moment');
 
 
 // ---------------------------------------------
@@ -31,12 +31,6 @@ const Model = require('./schema');
 
 const { srcset } = require('../../@format/image');
 
-
-// ---------------------------------------------
-//   Logger
-// ---------------------------------------------
-
-// const logger = require('../../@modules/logger');
 
 
 
@@ -59,6 +53,7 @@ const find = async (argumentsObj) => {
   
   const {
     
+    localeObj,
     conditionObj
     
   } = argumentsObj;
@@ -82,21 +77,45 @@ const find = async (argumentsObj) => {
     //   Find
     // --------------------------------------------------
     
-    const docArr = await Model.find(conditionObj).exec();
+    const docArr = await Model.find(conditionObj).select(
+      '_id updatedDate users_id name status thumbnail imageVideoArr dataArr'
+    ).exec();
     
     
     // --------------------------------------------------
     //   画像配列を<img>タグで出力するためにフォーマット
     // --------------------------------------------------
     
-    for (let value of docArr.values()) {
+    for (let valueObj of docArr.values()) {
       
-      const copiedObj = JSON.parse(JSON.stringify(value));
+      const copiedObj = JSON.parse(JSON.stringify(valueObj));
       
-      copiedObj.imageArr = srcset(`/static/img/card/players/${value._id}/`, copiedObj.imageVideoArr);
+      // 画像の処理
+      copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
       delete copiedObj.imageVideoArr;
       
-      returnObj[value.users_id] = copiedObj;
+      // dataArrの処理
+      // for (let value2Obj of copiedObj.dataArr.values()) {
+        
+      //   if (localeObj.languageArr.includes(value2Obj.language)) {
+          
+      //   }
+        
+      // }
+      const index = valueObj.dataArr.findIndex((value) => {
+        return localeObj.languageArr.includes(value.language) === false;
+      });
+      
+      // delete copiedObj.dataArr[index];
+      
+      copiedObj.dataArr.splice(index, 1);
+      
+      console.log(chalk`
+        index: {green ${index}}
+      `);
+      
+      
+      returnObj[valueObj.users_id] = copiedObj;
       
     }
     

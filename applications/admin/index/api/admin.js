@@ -606,8 +606,8 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       users_id: 'jun-deE4J',
       name: 'あづみ',
       status: 'パックンフラワー',
-      level: 99,
-      thumbnail: false,
+      // level: 99,
+      thumbnail: true,
       imageVideoArr: [
         {
           _id: 'H_NXaMPKG',
@@ -857,6 +857,120 @@ router.post('/insert', upload.none(), async (req, res, next) => {
               type: 'other',
               label: '開発サイト',
               url: 'http://35.203.143.160:8080/',
+              search: true,
+            },
+          ]
+        },
+        {
+          _id: 'OI2LVocPM',
+          createdDate: date,
+          updatedDate: date,
+          language: 'en',
+          comment: `English`,
+          birthdayObj: {
+            value: '2002-10-19T00:00:00Z',
+            alternativeText: '',
+            search: true,
+          },
+          sexObj: {
+            value: 'male',
+            alternativeText: '',
+            search: true,
+          },
+          addressObj: {
+            value: 'Osaka',
+            alternativeText: '',
+            search: true,
+          },
+          gamingExperienceObj: {
+            value: '2008-09-19T00:00:00Z',
+            alternativeText: '',
+            search: true,
+          },
+          hobbiesObj: {
+            valueArr: ['Movie'],
+            search: true,
+          },
+          specialSkillsObj: {
+            valueArr: ['English'],
+            search: true,
+          },
+          smartphoneObj: {
+            model: 'g06',
+            comment: `a`,
+            search: true,
+          },
+          tabletObj: {
+            model: 'Google Nexus 9 32GB',
+            comment: `b`,
+            search: true,
+          },
+          pcObj: {
+            model: 'PC',
+            comment: `c`,
+            specsObj: {
+              os: 'Windows 10 Home',
+              cpu: 'AMD CPU Ryzen 3 2200G',
+              cpuCooler: 'CPU 付属品',
+              motherboard: 'MSI B350 PC MATE',
+              memory: 'Crucial DDR4 8GB x 2',
+              storage: 'WD SSD 240GB / WD Green / WDS240G2G0A',
+              graphicsCard: '-',
+              opticalDrive: 'NEC AD7240S/BK',
+              powerSupply: 'Antec EARTHWATTS EA650 650W',
+              pcCase: 'COOLER MASTER CM690',
+              monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
+              mouse: 'Logitech MX300',
+              keyboard: 'Microsoft Keyboard With Fingerprint Reader'
+            },
+            search: true,
+          },
+          ownedHardwareObj: {
+            valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
+            search: true,
+          },
+          idArr: [
+            {
+              _id: 'QYcxqagPL',
+              type: 'playstation',
+              label: '',
+              value: 'AZ-1979',
+              showType: 1,
+              search: true,
+            },
+          ],
+          activityTimeObj: {
+            valueArr: [
+              {
+                _id: 'MqkYX_Ja3',
+                beginTime: '19:00',
+                endTime: '24:00',
+                weekArr: [0, 1, 2, 3, 4]
+              },
+              {
+                _id: '_-4oVnb7F',
+                beginTime: '9:00',
+                endTime: '24:00',
+                weekArr: [5, 6]
+              }
+            ],
+            search: true,
+          },
+          lookingForFriendsObj: {
+            icon: 'emoji_u1f61c',
+            comment: 'Hello',
+            search: true,
+          },
+          voiceChatObj: {
+            comment: 'Hello',
+            search: true,
+          },
+          linkArr: [
+            {
+              _id: 'pFwK8i4Nq',
+              type: 'twitter',
+              label: '',
+              url: 'https://twitter.com/',
               search: true,
             },
           ]

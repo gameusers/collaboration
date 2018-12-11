@@ -173,7 +173,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-panel`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-players-panel`, false);
   }
   
   
@@ -233,13 +233,7 @@ export default class extends React.Component {
     //   Panel
     // ---------------------------------------------
     
-    const {
-      
-      panelExpandedObj,
-      handlePanelExpanded,
-      buttonDisabledObj
-      
-    } = stores.layout;
+    const { panelExpandedObj, handlePanelExpanded, buttonDisabledObj } = stores.layout;
     
     
     // ---------------------------------------------
@@ -250,7 +244,8 @@ export default class extends React.Component {
       
       accessDate,
       level,
-      followedCount
+      followedCount,
+      followed
       
     } = stores.data.usersObj[users_id];
     
@@ -261,7 +256,6 @@ export default class extends React.Component {
     
     const cardPlayersObj = stores.data.cardPlayersObj[users_id];
     
-    
     const {
       
       _id,
@@ -270,7 +264,6 @@ export default class extends React.Component {
       thumbnail
       
     } = cardPlayersObj;
-    
     
     let thumbnailSrc = '';
     
@@ -282,8 +275,6 @@ export default class extends React.Component {
     // ---------------------------------------------
     //   Image
     // ---------------------------------------------
-    
-    // const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
     
     const {
       
@@ -388,23 +379,23 @@ export default class extends React.Component {
     
     
     
-    
-    
     // --------------------------------------------------
-    //   Button Disabled & Panel Expanded
+    //   Panel Expanded & Button Disabled
     // --------------------------------------------------
-    
-    let panelButtonDisabled = true;
-    
-    if (`${users_id}-panel` in buttonDisabledObj) {
-      panelButtonDisabled = buttonDisabledObj[`${users_id}-panel`];
-    }
     
     let panelExpanded = true;
     
     if (users_id in panelExpandedObj) {
-      panelExpanded = panelExpandedObj[users_id];
+      panelExpanded = panelExpandedObj[`${users_id}-card-players`];
     }
+    
+    let panelButtonDisabled = true;
+    
+    if (`${users_id}-card-players-panel` in buttonDisabledObj) {
+      panelButtonDisabled = buttonDisabledObj[`${users_id}-card-players-panel`];
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -420,22 +411,6 @@ export default class extends React.Component {
     // console.log(`
     //   cardPlayersObj: \n${util.inspect(cardPlayersObj, { colors: true, depth: null })}
     // `);
-    
-    // console.log(`
-    //   dataObj: \n${util.inspect(dataObj, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
-    // `);
-    
-    
-    // console.log(chalk`
-    //   duplication: {green ${duplication}}
-    // `);
-    
-    
-    // return null;
     
     
     
@@ -479,7 +454,7 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handlePanelExpanded(users_id)}
+              onClick={() => handlePanelExpanded(`${users_id}-card-players`)}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={panelButtonDisabled}
@@ -591,7 +566,11 @@ export default class extends React.Component {
           
           {/* フォローボタン */}
           <StyledCardActions>
-            {/*<Follow cardPlayers_id={cardPlayers_id} />*/}
+            <Follow
+              users_id={users_id}
+              followedCount={followedCount}
+              followed={followed}
+            />
           </StyledCardActions>
           
         </Collapse>

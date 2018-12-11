@@ -52,8 +52,8 @@ const locale = (argumentsObj) => {
   // --------------------------------------------------
   
   let returnObj = {};
-  let language = 'ja';
-  let country = 'JP';
+  let languageArr = ['ja'];
+  let countryArr = ['JP'];
   let dataObj = ja_JP;
   
   
@@ -88,23 +88,24 @@ const locale = (argumentsObj) => {
   //   Locale Data
   // --------------------------------------------------
   
-  if (language === 'en') {
+  // if (language === 'en') {
     
-    dataObj = en_US;
+  //   dataObj = en_US;
     
-  } else if (language === 'ja') {
+  // } else if (language === 'ja') {
     
-    dataObj = ja_JP;
+  //   dataObj = ja_JP;
     
-  }
+  // }
+  
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  returnObj.language = language;
-  returnObj.country = country;
+  returnObj.languageArr = languageArr;
+  returnObj.countryArr = countryArr;
   returnObj.dataObj = dataObj;
   
   return returnObj;

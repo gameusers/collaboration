@@ -32,17 +32,9 @@ const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { acceptLanguage } = require('../../../@format/accept-language');
-
-
-// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-// const validationLocale = require('../../../@validations/locale');
 const validationPlayerId = require('../../../@database/users/validations/player-id');
 
 
@@ -56,10 +48,15 @@ const ModelCardGames = require('../../../@database/card-games/model');
 
 
 // ---------------------------------------------
-//   Logger
+//   Locales
 // ---------------------------------------------
 
-// const logger = require('../../../@modules/logger');
+const { addLocaleData } = require('react-intl');
+const en = require('react-intl/locale-data/en');
+const ja = require('react-intl/locale-data/ja');
+addLocaleData([...en, ...ja]);
+
+const { locale } = require('../../../@locales/locale');
 
 
 // --------------------------------------------------
@@ -110,15 +107,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   let cardPlayersKeysArr = [];
   let cardGamesKeysArr = [];
   
-  // let statusCode = 400;
-  
-  // let errorArgumentsObj = {
-  //   fileId: '4tT2vx700',
-  //   functionId: 'P3ut9x3Fj',
-  //   errorCodeArr: [500000],
-  //   errorObj: {},
-  // };
-  
   
   try {
     
@@ -130,46 +118,32 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     verifyCsrfToken(req, res);
     
     
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
     
-    // const languageAndCountryObj = acceptLanguage({
-    //   acceptLanguage: req.headers['accept-language']
-    // });
+    const localeObj = locale({
+      acceptLanguage: req.headers['accept-language']
+    });
+    
+    
     
     
     // console.log(chalk`
     //   req.headers['accept-language']: {green ${req.headers['accept-language']}}
     // `);
     
-    // console.log(`
-    //   ----- languageAndCountryObj -----\n
-    //   ${util.inspect(languageAndCountryObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- localeObj -----\n
+      ${util.inspect(localeObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
     // --------------------------------------------------
     //   GET 取得
     // --------------------------------------------------
-    
-    // let locale = req.query.locale;
-    // const validationLocaleObj = validationLocale(locale);
-    
-    // console.log(chalk`
-    //   locale: {green ${locale}}
-    // `);
-    
-    // console.log(`
-    //   validationLocaleObj: \n${util.inspect(validationLocaleObj, { colors: true, depth: null })}
-    // `);
-    
-    
-    // if (validationLocaleObj.error) {
-    //   locale = 'ja';
-    //   // statusCode = 400;
-    //   // errorArgumentsObj.errorCodeArr = [502001];
-    //   // throw new Error();
-    // }
     
     const country = 'JP';
     
@@ -202,7 +176,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   アクセスしたページ所有者のユーザー情報
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOneFormatted({ playerId }, usersLogin_id);
+    const usersObj = await ModelUsers.findOneFormatted({
+      localeObj,
+      conditionObj: { playerId },
+      usersLogin_id
+    });
     
     if (Object.keys(usersObj).length === 0) {
       statusCode = 404;
@@ -212,10 +190,8 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     returnObj.usersObj = usersObj;
     
-    
     const usersKeysArr = Object.keys(usersObj);
     const users_id = usersKeysArr[0];
-    // returnObj.usersObj[users_id] = {};
     
     
     // --------------------------------------------------
@@ -224,6 +200,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.find({
+      localeObj,
       conditionObj: { users_id }
     });
     
@@ -246,6 +223,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardGamesObj = await ModelCardGames.find({
+      localeObj,
       country,
       conditionObj: { users_id }
     });
@@ -330,11 +308,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------

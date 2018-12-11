@@ -16,7 +16,7 @@ const schema = mongoose.Schema({
   users_id: { type: String, required: true },
   name: String,
   status: String,
-  level: { type: Number, default: 1, required: true },
+  // level: { type: Number, default: 1, required: true },
   thumbnail: { type: Boolean, required: true },
   imageVideoArr: [
     {

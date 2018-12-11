@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-import chalk from 'chalk';
-import util from 'util';
+const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -24,11 +24,13 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+// import CardActions from '@material-ui/core/CardActions';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+// import green from '@material-ui/core/colors/green';
 
 
 // ---------------------------------------------
@@ -110,7 +112,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-follow`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-follow`, false);
   }
   
   
@@ -121,7 +123,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, users_id, followedCount, followed } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     const {
       
@@ -135,18 +137,18 @@ export default class extends React.Component {
       
     } = stores.data;
     
-    // const {
+    const {
       
-    //   users_id
+      users_id
       
-    // } = stores.data.cardPlayersObj[users_id];
+    } = stores.data.cardPlayersObj[cardPlayers_id];
     
-    // const {
+    const {
       
-    //   followedCount,
-    //   followed
+      followedCount,
+      followed
       
-    // } = stores.data.usersObj[users_id];
+    } = stores.data.usersObj[users_id];
     
     const {
       
@@ -173,8 +175,8 @@ export default class extends React.Component {
     
     let followButtonDisabled = true;
     
-    if (`${users_id}-follow` in buttonDisabledObj) {
-      followButtonDisabled = buttonDisabledObj[`${users_id}-follow`];
+    if (`${cardPlayers_id}-follow` in buttonDisabledObj) {
+      followButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-follow`];
     }
     
     
@@ -182,7 +184,7 @@ export default class extends React.Component {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleFollowSubmit('follow', users_id)}
+          onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
           disabled={followButtonDisabled}
         >
           フォローする
@@ -194,7 +196,7 @@ export default class extends React.Component {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleFollowDialogOpen(users_id)}
+          onClick={() => handleFollowDialogOpen(cardPlayers_id)}
           disabled={followButtonDisabled}
         >
           フォロー中
@@ -209,15 +211,15 @@ export default class extends React.Component {
     
     let followDialogOpen = false;
     
-    if (users_id in followDialogOpenObj) {
-      followDialogOpen = followDialogOpenObj[users_id];
+    if (cardPlayers_id in followDialogOpenObj) {
+      followDialogOpen = followDialogOpenObj[cardPlayers_id];
     }
     
     
     
     // console.log(chalk`
-    //   users_id-follow in buttonDisabledObj: {green ${`${users_id}-follow` in buttonDisabledObj}}
-    //   buttonDisabledObj[users_id-follow]: {green ${buttonDisabledObj[`${users_id}-follow`]}}
+    //   cardPlayers_id-follow in buttonDisabledObj: {green ${`${cardPlayers_id}-follow` in buttonDisabledObj}}
+    //   buttonDisabledObj[cardPlayers_id-follow]: {green ${buttonDisabledObj[`${cardPlayers_id}-follow`]}}
     //   followButtonDisabled: {green ${followButtonDisabled}}
     // `);
     
@@ -226,7 +228,7 @@ export default class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   users_id: {green ${users_id}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
     //   users_id: {green ${users_id}}
     //   followedCount: {green ${followedCount}}
     //   followed: {green ${followed}}
@@ -253,7 +255,7 @@ export default class extends React.Component {
         
         <Dialog
           open={followDialogOpen}
-          onClose={() => handleFollowDialogClose(users_id)}
+          onClose={() => handleFollowDialogClose(cardPlayers_id)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -264,10 +266,10 @@ export default class extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleFollowDialogClose(users_id)} color="primary">
+            <Button onClick={() => handleFollowDialogClose(cardPlayers_id)} color="primary">
               いいえ
             </Button>
-            <Button onClick={() => handleFollowSubmit('unfollow', users_id)} color="primary" autoFocus>
+            <Button onClick={() => handleFollowSubmit('unfollow', cardPlayers_id, users_id)} color="primary" autoFocus>
               はい
             </Button>
           </DialogActions>

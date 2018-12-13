@@ -144,6 +144,49 @@ const upsert = async (conditionObj, saveObj) => {
 
 
 
+/**
+ * 挿入する
+ * @param {Array} saveArr - 保存データ
+ * @return {Array} 
+ */
+const insertMany = async (saveArr) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    const docArr = await Model.insertMany(saveArr);
+    
+    
+    console.log(`
+      docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
 
 
 // --------------------------------------------------
@@ -152,5 +195,6 @@ const upsert = async (conditionObj, saveObj) => {
 
 module.exports = {
   find,
-  upsert
+  upsert,
+  insertMany
 };

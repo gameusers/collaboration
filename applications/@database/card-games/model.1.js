@@ -63,7 +63,6 @@ const find = async (argumentsObj) => {
     
     countryArr,
     languageArr,
-    usersLogin_id
     
   } = argumentsObj;
   
@@ -156,6 +155,35 @@ const find = async (argumentsObj) => {
       },
       
       
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'card-players',
+      //       let: { cardGamesUsers_id: '$users_id' },
+      //       pipeline: [
+      //         { $match:
+      //           { $expr:
+      //             { $eq: ['$users_id', '$$cardGamesUsers_id'] },
+      //           }
+      //         },
+      //         { $project:
+      //           {
+      //             _id: 0,
+      //             activityTimeObj: 1,
+      //             lookingForFriendsObj: 1,
+      //             voiceChatObj: 1,
+      //             linkArr: 1
+      //           }
+      //         }
+      //       ],
+      //       as: 'cardPlayersObj'
+      //     }
+      // },
+      // {
+      //   $unwind: '$cardPlayersObj'
+      // },
+      
+      
       {
         $lookup:
           {
@@ -183,6 +211,23 @@ const find = async (argumentsObj) => {
       {
         $unwind: '$cardPlayersObj'
       },
+      
+      
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'card-players',
+      //       localField: 'quotationObj.cardPlayers_id',
+      //       foreignField: '_id',
+      //       as: 'cardPlayersObj'
+      //     }
+      // },
+      // {
+      //   $unwind: '$cardPlayersObj'
+      // },
+      // {
+      //   $match: { 'gamesObj.language': 'ja' }
+      // },
       
       
       {
@@ -214,81 +259,6 @@ const find = async (argumentsObj) => {
     
     
     
-    // --------------------------------------------------
-    //   Return Value
-    // --------------------------------------------------
-    
-    // let returnObj = {};
-    
-    
-    // --------------------------------------------------
-    //   データの処理
-    // --------------------------------------------------
-    
-    for (let value of cardGamesArr) {
-      
-      
-      // --------------------------------------------------
-      //   コピー
-      // --------------------------------------------------
-      
-      const copiedObj = JSON.parse(JSON.stringify(value));
-      
-      
-      // --------------------------------------------------
-      //   Follow の処理
-      // --------------------------------------------------
-      
-      if (usersLogin_id) {
-        
-        copiedObj.usersObj.followed = false;
-        
-        if (
-          copiedObj.users_id !== usersLogin_id &&
-          copiedObj.usersObj.followedArr.includes(usersLogin_id)
-        ) {
-          copiedObj.usersObj.followed = true;
-        }
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   プレイヤーカードからの引用
-      // --------------------------------------------------
-      
-      if (value.quotationObj.activityTime) {
-        copiedObj.activityTimeObj = value.cardPlayersObj.activityTimeObj;
-      }
-      
-      if (value.quotationObj.lookingForFriends) {
-        copiedObj.lookingForFriendsObj = value.cardPlayersObj.lookingForFriendsObj;
-      }
-      
-      if (value.quotationObj.voiceChat) {
-        copiedObj.voiceChatObj = value.cardPlayersObj.voiceChatObj;
-      }
-      
-      if (value.quotationObj.link) {
-        copiedObj.linkArr = value.cardPlayersObj.linkArr;
-      }
-      
-      
-      // --------------------------------------------------
-      //   不要な項目を削除する
-      // --------------------------------------------------
-      
-      delete copiedObj.usersObj.followedArr;
-      delete copiedObj.quotationObj;
-      delete copiedObj.cardPlayersObj;
-      
-      
-      returnObj[value._id] = copiedObj;
-      
-    }
-    
-    
-    // console.log(cardGamesArr.length);
     
     
     // const cardPlayers_id = cardGamesArr.quotationObj.cardPlayers_id;
@@ -315,12 +285,6 @@ const find = async (argumentsObj) => {
     //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
     
     

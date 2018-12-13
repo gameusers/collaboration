@@ -14,9 +14,9 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
+  language: { type: String, enum: ['en', 'ja'], required: true },
   name: String,
   status: String,
-  // level: { type: Number, default: 1, required: true },
   thumbnail: { type: Boolean, required: true },
   imageVideoArr: [
     {
@@ -34,116 +34,108 @@ const schema = mongoose.Schema({
       ],
     },
   ],
-  dataArr: [
+  comment: String,
+  birthdayObj: {
+    value: Date,
+    alternativeText: String,
+    search: { type: Boolean, required: true },
+  },
+  sexObj: {
+    value: { type: String, enum: ['male', 'female'], required: true },
+    alternativeText: String,
+    search: { type: Boolean, required: true },
+  },
+  addressObj: {
+    value: String,
+    alternativeText: String,
+    search: { type: Boolean, required: true },
+  },
+  gamingExperienceObj: {
+    value: Date,
+    alternativeText: String,
+    search: { type: Boolean, required: true },
+  },
+  hobbiesObj: {
+    valueArr: [String],
+    search: { type: Boolean, required: true },
+  },
+  specialSkillsObj: {
+    valueArr: [String],
+    search: { type: Boolean, required: true },
+  },
+  smartphoneObj: {
+    model: String,
+    comment: String,
+    search: { type: Boolean, required: true },
+  },
+  tabletObj: {
+    model: String,
+    comment: String,
+    search: { type: Boolean, required: true },
+  },
+  pcObj: {
+    model: String,
+    comment: String,
+    specsObj: {
+      os: String,
+      cpu: String,
+      cpuCooler: String,
+      motherboard: String,
+      memory: String,
+      storage: String,
+      graphicsCard: String,
+      opticalDrive: String,
+      powerSupply: String,
+      pcCase: String,
+      monitor: String,
+      mouse: String,
+      keyboard: String
+    },
+    search: { type: Boolean, required: true },
+  },
+  ownedHardwareObj: {
+    valueArr: [String],
+    search: { type: Boolean, required: true },
+  },
+  idArr: [
     {
       _id: { type: String, required: true },
-      createdDate: { type: Date, default: Date.now, required: true },
-      updatedDate: { type: Date, default: Date.now, required: true },
-      language: { type: String, enum: ['en', 'ja'], required: true },
-      comment: String,
-      birthdayObj: {
-        value: Date,
-        alternativeText: String,
-        search: { type: Boolean, required: true },
-      },
-      sexObj: {
-        value: { type: String, enum: ['male', 'female'], required: true },
-        alternativeText: String,
-        search: { type: Boolean, required: true },
-      },
-      addressObj: {
-        value: String,
-        alternativeText: String,
-        search: { type: Boolean, required: true },
-      },
-      gamingExperienceObj: {
-        value: Date,
-        alternativeText: String,
-        search: { type: Boolean, required: true },
-      },
-      hobbiesObj: {
-        valueArr: [String],
-        search: { type: Boolean, required: true },
-      },
-      specialSkillsObj: {
-        valueArr: [String],
-        search: { type: Boolean, required: true },
-      },
-      smartphoneObj: {
-        model: String,
-        comment: String,
-        search: { type: Boolean, required: true },
-      },
-      tabletObj: {
-        model: String,
-        comment: String,
-        search: { type: Boolean, required: true },
-      },
-      pcObj: {
-        model: String,
-        comment: String,
-        specsObj: {
-          os: String,
-          cpu: String,
-          cpuCooler: String,
-          motherboard: String,
-          memory: String,
-          storage: String,
-          graphicsCard: String,
-          opticalDrive: String,
-          powerSupply: String,
-          pcCase: String,
-          monitor: String,
-          mouse: String,
-          keyboard: String
-        },
-        search: { type: Boolean, required: true },
-      },
-      ownedHardwareObj: {
-        valueArr: [String],
-        search: { type: Boolean, required: true },
-      },
-      idArr: [
-        {
-          _id: { type: String, required: true },
-          type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other'], required: true },
-          label: String,
-          value: { type: String, required: true },
-          showType: { type: Number, min: 1, max: 5 },
-          search: { type: Boolean, required: true },
-        },
-      ],
-      activityTimeObj: {
-        valueArr: [
-          {
-            _id: { type: String, required: true },
-            beginTime: { type: String, required: true },
-            endTime: { type: String, required: true },
-            weekArr: [Number],
-          },
-        ],
-        search: { type: Boolean, required: true },
-      },
-      lookingForFriendsObj: {
-        icon: { type: String, required: true },
-        comment: String,
-        search: { type: Boolean, required: true },
-      },
-      voiceChatObj: {
-        comment: String,
-        search: { type: Boolean, required: true },
-      },
-      linkArr: [
-        {
-          _id: { type: String, required: true },
-          type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other'], required: true },
-          label: String,
-          url: { type: String, required: true },
-          search: { type: Boolean, required: true },
-        },
-      ],
-    }
+      type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other'], required: true },
+      label: String,
+      value: { type: String, required: true },
+      showType: { type: Number, min: 1, max: 5 },
+      search: { type: Boolean, required: true },
+    },
   ],
+  activityTimeObj: {
+    valueArr: [
+      {
+        _id: { type: String, required: true },
+        beginTime: { type: String, required: true },
+        endTime: { type: String, required: true },
+        weekArr: [Number],
+      },
+    ],
+    search: { type: Boolean, required: true },
+  },
+  lookingForFriendsObj: {
+    icon: { type: String, required: true },
+    comment: String,
+    search: { type: Boolean, required: true },
+  },
+  voiceChatObj: {
+    comment: String,
+    search: { type: Boolean, required: true },
+  },
+  linkArr: [
+    {
+      _id: { type: String, required: true },
+      type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other'], required: true },
+      label: String,
+      url: { type: String, required: true },
+      search: { type: Boolean, required: true },
+    },
+  ]
 });
 
 module.exports = mongoose.model('card-players', schema);

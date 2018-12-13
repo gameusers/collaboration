@@ -143,17 +143,10 @@ const upsert = async (conditionObj, saveObj) => {
 
 /**
  * 挿入する
- * @param {Object} saveObj - 保存データ
+ * @param {Array} saveArr - 保存データ
  * @return {Array} 
  */
-const insertMany = async (saveObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  // let returnObj = {};
+const insertMany = async (saveArr) => {
   
   
   // --------------------------------------------------
@@ -167,7 +160,7 @@ const insertMany = async (saveObj) => {
     //   Upsert
     // --------------------------------------------------
     
-    const docArr = await Model.insertMany(saveObj);
+    const docArr = await Model.insertMany(saveArr);
     
     
     console.log(`

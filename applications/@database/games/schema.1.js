@@ -13,10 +13,7 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
-  gameID: { type: String, required: true },
-  urlID: { type: String, required: true },
-  language: { type: String, enum: ['en', 'ja'], required: true },
-  country: { type: String, enum: ['US', 'JP'], required: true },
+  gameId: { type: String, required: true },
   thumbnail: { type: Boolean, required: true },
   imageVideoArr: [
     {
@@ -34,32 +31,41 @@ const schema = mongoose.Schema({
       ],
     },
   ],
-  name: { type: String, required: true },
-  subtitle: String,
-  similarityArr: [String],
-  forSort: { type: String, required: true },
-  twitterHashtag: String,
   genreArr: [String],
-  genreSubArr: [String],
-  genreTagArr: [String],
-  hardwareArr: [
+  subGenreArr: [String],
+  dataArr: [
     {
       _id: { type: String, required: true },
-      hardware_id: { type: String, required: true },
-      releaseData: Date,
-      players: { type: Number, required: true },
-      publisher_id: String,
-      developer_id: String,
-    }
-  ],
-  linkArr: [
-    {
-      _id: { type: String, required: true },
-      type: { type: String, enum: ['official', 'twitter', 'facebook', 'youtube', 'steam', 'other'], required: true },
-      label: String,
-      url: { type: String, required: true },
+      createdDate: { type: Date, default: Date.now, required: true },
+      updatedDate: { type: Date, default: Date.now, required: true },
+      language: { type: String, enum: ['en', 'ja'], required: true },
+      country: { type: String, enum: ['US', 'JP'], required: true },
+      name: { type: String, required: true },
+      subtitle: String,
+      similarityArr: [String],
+      forSort: { type: String, required: true },
+      twitterHashtag: String,
+      genreTagArr: [String],
+      hardwareArr: [
+        {
+          _id: { type: String, required: true },
+          hardware_id: { type: String, required: true },
+          releaseData: Date,
+          players: { type: Number, required: true },
+          publisher_id: String,
+          developer_id: String,
+        }
+      ],
+      linkArr: [
+        {
+          _id: { type: String, required: true },
+          type: { type: String, enum: ['official', 'twitter', 'facebook', 'youtube', 'steam', 'other'], required: true },
+          label: String,
+          url: { type: String, required: true },
+        },
+      ],
     },
-  ]
+  ],
 });
 
 module.exports = mongoose.model('games', schema);

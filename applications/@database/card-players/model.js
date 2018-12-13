@@ -53,7 +53,7 @@ const find = async (argumentsObj) => {
   
   const {
     
-    localeObj,
+    // localeObj,
     conditionObj
     
   } = argumentsObj;
@@ -77,9 +77,11 @@ const find = async (argumentsObj) => {
     //   Find
     // --------------------------------------------------
     
-    const docArr = await Model.find(conditionObj).select(
-      '_id updatedDate users_id name status thumbnail imageVideoArr dataArr'
-    ).exec();
+    const docArr = await Model.find(conditionObj).exec();
+    
+    // const docArr = await Model.find(conditionObj).select(
+    //   '_id updatedDate users_id name status thumbnail imageVideoArr dataArr'
+    // ).exec();
     
     
     // --------------------------------------------------
@@ -102,17 +104,17 @@ const find = async (argumentsObj) => {
       //   }
         
       // }
-      const index = valueObj.dataArr.findIndex((value) => {
-        return localeObj.languageArr.includes(value.language) === false;
-      });
+      // const index = valueObj.dataArr.findIndex((value) => {
+      //   return localeObj.languageArr.includes(value.language) === false;
+      // });
       
       // delete copiedObj.dataArr[index];
       
-      copiedObj.dataArr.splice(index, 1);
+      // copiedObj.dataArr.splice(index, 1);
       
-      console.log(chalk`
-        index: {green ${index}}
-      `);
+      // console.log(chalk`
+      //   index: {green ${index}}
+      // `);
       
       
       returnObj[valueObj.users_id] = copiedObj;

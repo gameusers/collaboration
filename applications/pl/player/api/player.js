@@ -200,8 +200,8 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.find({
-      localeObj,
-      conditionObj: { users_id }
+      // localeObj,
+      conditionObj: { users_id, language: { $in: localeObj.languageArr } }
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;
@@ -223,8 +223,8 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardGamesObj = await ModelCardGames.find({
-      localeObj,
-      country,
+      countryArr: localeObj.countryArr,
+      languageArr: localeObj.languageArr,
       conditionObj: { users_id }
     });
     

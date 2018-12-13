@@ -191,15 +191,6 @@ export default class extends React.Component {
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    // if (
-    //   users_id in stores.data.usersObj === false ||
-    //   'cardPlayersObj' in stores.data.usersObj[users_id] === false 
-    // ) {
-    //   return null;
-    // }
-    
-    // console.log('AAA');
-    
     if (users_id in stores.data.cardPlayersObj === false) {
       return null;
     }
@@ -261,7 +252,8 @@ export default class extends React.Component {
       _id,
       name,
       status,
-      thumbnail
+      thumbnail,
+      comment
       
     } = cardPlayersObj;
     
@@ -271,7 +263,7 @@ export default class extends React.Component {
       thumbnailSrc = `/static/img/card/players/${_id}/thumbnail/image.jpg`;
     }
     
-    
+    // return null;
     // ---------------------------------------------
     //   Image
     // ---------------------------------------------
@@ -289,93 +281,93 @@ export default class extends React.Component {
     //   dataObj
     // ---------------------------------------------
     
-    const dataObj = cardPlayersObj.dataArr.find((value) => {
-      return value.language === language;
-    });
+    // const dataObj = cardPlayersObj.dataArr.find((value) => {
+    //   return value.language === language;
+    // });
     
     
     // ---------------------------------------------
     //   Comment
     // ---------------------------------------------
     
-    const comment = dataObj.comment;
+    // const comment = comment;
     
     
     // ---------------------------------------------
     //   Profile
     // ---------------------------------------------
     
-    const birthdayValue = dataObj.birthdayObj.value;
-    const birthdayAlternativeText = dataObj.birthdayObj.alternativeText;
-    const sexValue = dataObj.sexObj.value;
-    const sexAlternativeText = dataObj.sexObj.alternativeText;
-    const addressValue = dataObj.addressObj.value;
-    const gamingExperienceValue = dataObj.gamingExperienceObj.value;
-    const gamingExperienceAlternativeText = dataObj.gamingExperienceObj.alternativeText;
-    const hobbiesValueArr = dataObj.hobbiesObj.valueArr;
-    const specialSkillsValueArr = dataObj.specialSkillsObj.valueArr;
+    const birthdayValue = cardPlayersObj.birthdayObj.value;
+    const birthdayAlternativeText = cardPlayersObj.birthdayObj.alternativeText;
+    const sexValue = cardPlayersObj.sexObj.value;
+    const sexAlternativeText = cardPlayersObj.sexObj.alternativeText;
+    const addressValue = cardPlayersObj.addressObj.value;
+    const gamingExperienceValue = cardPlayersObj.gamingExperienceObj.value;
+    const gamingExperienceAlternativeText = cardPlayersObj.gamingExperienceObj.alternativeText;
+    const hobbiesValueArr = cardPlayersObj.hobbiesObj.valueArr;
+    const specialSkillsValueArr = cardPlayersObj.specialSkillsObj.valueArr;
     
     
     // ---------------------------------------------
     //   Hardware
     // ---------------------------------------------
     
-    const hardwareArr = dataObj.ownedHardwareObj.valueArr;
+    const hardwareArr = cardPlayersObj.ownedHardwareObj.valueArr;
     
     
     // ---------------------------------------------
     //   Smartphone
     // ---------------------------------------------
     
-    const smartphoneModel = dataObj.smartphoneObj.model;
-    const smartphoneComment = dataObj.smartphoneObj.comment;
+    const smartphoneModel = cardPlayersObj.smartphoneObj.model;
+    const smartphoneComment = cardPlayersObj.smartphoneObj.comment;
     
     
     // ---------------------------------------------
     //   Tablet
     // ---------------------------------------------
     
-    const tabletModel = dataObj.tabletObj.model;
-    const tabletComment = dataObj.tabletObj.comment;
+    const tabletModel = cardPlayersObj.tabletObj.model;
+    const tabletComment = cardPlayersObj.tabletObj.comment;
     
     
     // ---------------------------------------------
     //   PC
     // ---------------------------------------------
     
-    const pcModel = dataObj.pcObj.model;
-    const pcComment = dataObj.pcObj.comment;
-    const pcOs = dataObj.pcObj.specsObj.os;
-    const pcCpu = dataObj.pcObj.specsObj.cpu;
-    const pcCpuCooler = dataObj.pcObj.specsObj.cpuCooler;
-    const pcMotherboard = dataObj.pcObj.specsObj.motherboard;
-    const pcMemory = dataObj.pcObj.specsObj.memory;
-    const pcStorage = dataObj.pcObj.specsObj.storage;
-    const pcGraphicsCard = dataObj.pcObj.specsObj.graphicsCard;
-    const pcOpticalDrive = dataObj.pcObj.specsObj.opticalDrive;
-    const pcPowerSupply = dataObj.pcObj.specsObj.powerSupply;
-    const pcCase = dataObj.pcObj.specsObj.pcCase;
-    const pcMonitor = dataObj.pcObj.specsObj.monitor;
-    const pcMouse = dataObj.pcObj.specsObj.mouse;
-    const pcKeyboard = dataObj.pcObj.specsObj.keyboard;
+    const pcModel = cardPlayersObj.pcObj.model;
+    const pcComment = cardPlayersObj.pcObj.comment;
+    const pcOs = cardPlayersObj.pcObj.specsObj.os;
+    const pcCpu = cardPlayersObj.pcObj.specsObj.cpu;
+    const pcCpuCooler = cardPlayersObj.pcObj.specsObj.cpuCooler;
+    const pcMotherboard = cardPlayersObj.pcObj.specsObj.motherboard;
+    const pcMemory = cardPlayersObj.pcObj.specsObj.memory;
+    const pcStorage = cardPlayersObj.pcObj.specsObj.storage;
+    const pcGraphicsCard = cardPlayersObj.pcObj.specsObj.graphicsCard;
+    const pcOpticalDrive = cardPlayersObj.pcObj.specsObj.opticalDrive;
+    const pcPowerSupply = cardPlayersObj.pcObj.specsObj.powerSupply;
+    const pcCase = cardPlayersObj.pcObj.specsObj.pcCase;
+    const pcMonitor = cardPlayersObj.pcObj.specsObj.monitor;
+    const pcMouse = cardPlayersObj.pcObj.specsObj.mouse;
+    const pcKeyboard = cardPlayersObj.pcObj.specsObj.keyboard;
       
     
     // ---------------------------------------------
     //   ID & Friend
     // ---------------------------------------------
     
-    const idArr = dataObj.idArr;
-    const activityTimeArr = dataObj.activityTimeObj.valueArr;
-    const lookingForFriendsIcon = dataObj.lookingForFriendsObj.icon;
-    const lookingForFriendsComment = dataObj.lookingForFriendsObj.comment;
-    const voiceChatComment = dataObj.voiceChatObj.comment;
+    const idArr = cardPlayersObj.idArr;
+    const activityTimeArr = cardPlayersObj.activityTimeObj.valueArr;
+    const lookingForFriendsIcon = cardPlayersObj.lookingForFriendsObj.icon;
+    const lookingForFriendsComment = cardPlayersObj.lookingForFriendsObj.comment;
+    const voiceChatComment = cardPlayersObj.voiceChatObj.comment;
     
     
     // ---------------------------------------------
     //   Link
     // ---------------------------------------------
     
-    const linkArr = dataObj.linkArr;
+    const linkArr = cardPlayersObj.linkArr;
     
     
     

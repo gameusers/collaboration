@@ -117,3 +117,23 @@
 {"level":"error","message":"Tue Dec 11 2018 10:09:25 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: valueObj.findIndex is not a function\n"}
 {"level":"error","message":"Tue Dec 11 2018 10:23:49 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Tue Dec 11 2018 10:23:59 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Wed Dec 12 2018 05:43:09 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Wed Dec 12 2018 06:43:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 06:43:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 06:44:03 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 06:47:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:20:07 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:20:08 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:21:44 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:21:45 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:23:21 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:28:46 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:29:17 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:31:26 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: Cannot read property 'findIndex' of undefined\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:42:33 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:47:30 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:47:45 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Wed Dec 12 2018 07:47:51 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Thu Dec 13 2018 08:53:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Thu Dec 13 2018 08:53:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Thu Dec 13 2018 08:53:47 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}

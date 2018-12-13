@@ -14,10 +14,12 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
+  gameID: { type: String, required: true },
+  language: { type: String, enum: ['en', 'ja'], required: true },
+  theme: String,
   name: String,
   status: String,
   thumbnail: { type: Boolean, required: true },
-  games_id: { type: String, required: true },
   imageVideoArr: [
     {
       _id: { type: String, required: true },
@@ -34,67 +36,59 @@ const schema = mongoose.Schema({
       ],
     },
   ],
-  dataArr: [
+  itemArr: mongoose.Schema.Types.Mixed,
+  comment: String,
+  playingHardwareObj: {
+    valueArr: [String],
+    search: { type: Boolean, required: true },
+  },
+  idArr: [
     {
       _id: { type: String, required: true },
-      createdDate: { type: Date, default: Date.now, required: true },
-      updatedDate: { type: Date, default: Date.now, required: true },
-      language: { type: String, enum: ['en', 'ja'], required: true },
-      theme: String,
-      itemArr: mongoose.Schema.Types.Mixed,
-      comment: String,
-      quotationObj: {
-        activityTime: { type: Boolean, required: true },
-        lookingForFriends: { type: Boolean, required: true },
-        voiceChat: { type: Boolean, required: true },
-        link: { type: Boolean, required: true },
-      },
-      playingHardwareObj: {
-        valueArr: [String],
-        search: { type: Boolean, required: true },
-      },
-      idArr: [
-        {
-          _id: { type: String, required: true },
-          quotation_id: String,
-          type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other', 'quotation'], required: true },
-          label: String,
-          value: { type: String, required: true },
-          showType: { type: Number, min: 1, max: 5 },
-          search: { type: Boolean, required: true },
-        },
-      ],
-      activityTimeObj: {
-        valueArr: [
-          {
-            _id: { type: String, required: true },
-            beginTime: { type: String, required: true },
-            endTime: { type: String, required: true },
-            weekArr: [Number],
-          },
-        ],
-        search: { type: Boolean, required: true },
-      },
-      lookingForFriendsObj: {
-        icon: { type: String, required: true },
-        comment: String,
-        search: { type: Boolean, required: true },
-      },
-      voiceChatObj: {
-        comment: String,
-        search: { type: Boolean, required: true },
-      },
-      linkArr: [
-        {
-          _id: { type: String, required: true },
-          type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other', 'quotation'], required: true },
-          label: String,
-          url: { type: String, required: true },
-          search: { type: Boolean, required: true },
-        },
-      ],
-    }
+      quotation_id: String,
+      type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other', 'quotation'], required: true },
+      label: String,
+      value: { type: String, required: true },
+      showType: { type: Number, min: 1, max: 5 },
+      search: { type: Boolean, required: true },
+    },
   ],
+  activityTimeObj: {
+    valueArr: [
+      {
+        _id: { type: String, required: true },
+        beginTime: { type: String, required: true },
+        endTime: { type: String, required: true },
+        weekArr: [Number],
+      },
+    ],
+    search: { type: Boolean, required: true },
+  },
+  lookingForFriendsObj: {
+    icon: { type: String, required: true },
+    comment: String,
+    search: { type: Boolean, required: true },
+  },
+  voiceChatObj: {
+    comment: String,
+    search: { type: Boolean, required: true },
+  },
+  linkArr: [
+    {
+      _id: { type: String, required: true },
+      type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other', 'quotation'], required: true },
+      label: String,
+      url: { type: String, required: true },
+      search: { type: Boolean, required: true },
+    },
+  ],
+  quotationObj: {
+    cardPlayers_id: { type: String, required: true },
+    activityTime: { type: Boolean, required: true },
+    lookingForFriends: { type: Boolean, required: true },
+    voiceChat: { type: Boolean, required: true },
+    link: { type: Boolean, required: true },
+  },
 });
 
 module.exports = mongoose.model('card-games', schema);

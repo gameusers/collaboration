@@ -38,14 +38,17 @@ const srcset = (basePath, imageVideoArr) => {
   
   let returnArr = [];
   
+  // console.log(typeof imageVideoArr[Symbol.iterator]);
+  
   
   // --------------------------------------------------
-  //   Find
+  //   データ処理
   // --------------------------------------------------
   
   if (imageVideoArr.length > 0) {
     
-    for (let value of imageVideoArr.values()) {
+    // for (let value of imageVideoArr.values()) {
+    for (let value of imageVideoArr) {
       
       if (value.type === 'image') {
         
@@ -62,7 +65,8 @@ const srcset = (basePath, imageVideoArr) => {
         }
         
         
-        for (let value2 of value.srcSetArr.values()) {
+        // for (let value2 of value.srcSetArr.values()) {
+        for (let value2 of value.srcSetArr) {
           
           if (value2.w !== 'source') {
             // const src = `${basePath}${value._id}/${value2.w}${extension} ${value2.w}`;

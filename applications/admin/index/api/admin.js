@@ -143,7 +143,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         _id: 'w_zkqpr3R',
         createdDate: date,
         updatedDate: date,
-        gameID: 'Dead-by-Daylight',
+        gameID: 'Jk92aglWl',
         urlID: 'Dead-by-Daylight',
         language: 'ja',
         country: 'JP',
@@ -156,7 +156,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         ],
         forSort: 'デッドバイデイライト',
         twitterHashtag: 'DeadbyDaylight',
-        genreArr: ['nO7XxHZYM'],
+        genreArr: ['YC3gSkK67'],
         genreSubArr: [],
         genreTagArr: [],
         hardwareArr: [
@@ -208,7 +208,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         _id: 'dhjc8SPwK',
         createdDate: date,
         updatedDate: date,
-        gameID: 'Dead-by-Daylight',
+        gameID: 'Jk92aglWl',
         urlID: 'Dead-by-Daylight',
         language: 'en',
         country: 'US',
@@ -221,7 +221,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         ],
         forSort: 'Dead by Daylight',
         twitterHashtag: 'DeadbyDaylight',
-        genreArr: ['nO7XxHZYM'],
+        genreArr: ['YC3gSkK67'],
         genreSubArr: [],
         genreTagArr: [],
         hardwareArr: [
@@ -249,7 +249,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         _id: '8OKcZy3R-',
         createdDate: date,
         updatedDate: date,
-        gameID: 'Super-Smash-Bros-Ultimate',
+        gameID: 'lxdubg6IY',
         urlID: 'Super-Smash-Bros-SPECIAL',
         language: 'ja',
         country: 'JP',
@@ -262,7 +262,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         ],
         forSort: 'ダイラントウスマッシュブラザーズスペシャル',
         twitterHashtag: 'スマブラSP',
-        genreArr: ['nO7XxHZYM'],
+        genreArr: ['n2k7J_e12'],
         genreSubArr: [],
         genreTagArr: [],
         hardwareArr: [
@@ -296,7 +296,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         _id: '007_qLOR2',
         createdDate: date,
         updatedDate: date,
-        gameID: 'Super-Smash-Bros-Ultimate',
+        gameID: 'lxdubg6IY',
         urlID: 'Super-Smash-Bros-Ultimate',
         language: 'en',
         country: 'US',
@@ -309,7 +309,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         ],
         forSort: 'Super Smash Bros. Ultimate',
         twitterHashtag: '',
-        genreArr: ['nO7XxHZYM'],
+        genreArr: ['n2k7J_e12'],
         genreSubArr: [],
         genreTagArr: [],
         hardwareArr: [
@@ -346,7 +346,8 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    // returnObj = await ModelGames.insertMany(saveArr);
+    // await ModelGames.deleteMany({});
+    // returnObj = await ModelGames.insertMany({ saveArr });
     
     
     
@@ -367,7 +368,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Action',
+        genreID: 'YC3gSkK67',
         name: 'Action'
       },
       {
@@ -376,7 +377,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Action',
+        genreID: 'YC3gSkK67',
         name: 'アクション'
       },
       
@@ -387,7 +388,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Shooter',
+        genreID: 'jpPfXudBt',
         name: 'Shooter'
       },
       {
@@ -396,7 +397,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Shooter',
+        genreID: 'jpPfXudBt',
         name: 'シューティング'
       },
       
@@ -407,7 +408,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Adventure',
+        genreID: 'aiB1RZ0f8',
         name: 'Adventure'
       },
       {
@@ -416,7 +417,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Adventure',
+        genreID: 'aiB1RZ0f8',
         name: 'アドベンチャー'
       },
       
@@ -427,7 +428,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'RPG',
+        genreID: 'sU94RUPS7',
         name: 'RPG'
       },
       {
@@ -436,7 +437,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'RPG',
+        genreID: 'sU94RUPS7',
         name: 'RPG'
       },
       
@@ -447,7 +448,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Simulation',
+        genreID: 'lDdVW5ANX',
         name: 'Simulation'
       },
       {
@@ -456,7 +457,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Simulation',
+        genreID: 'lDdVW5ANX',
         name: 'シミュレーター'
       },
       
@@ -467,7 +468,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Strategy',
+        genreID: '-HKDHuR2v',
         name: 'Strategy'
       },
       {
@@ -476,7 +477,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Strategy',
+        genreID: '-HKDHuR2v',
         name: 'シミュレーション（ストラテジー）'
       },
       
@@ -487,7 +488,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Sports',
+        genreID: 'NCt2Bb7WF',
         name: 'Sports'
       },
       {
@@ -496,7 +497,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Sports',
+        genreID: 'NCt2Bb7WF',
         name: 'スポーツ'
       },
       
@@ -507,7 +508,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Racing',
+        genreID: 'CoIMeJDxB',
         name: 'Racing'
       },
       {
@@ -516,7 +517,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Racing',
+        genreID: 'CoIMeJDxB',
         name: 'レース'
       },
       
@@ -527,7 +528,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Fighting',
+        genreID: 'n2k7J_e12',
         name: 'Fighting'
       },
       {
@@ -536,7 +537,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Fighting',
+        genreID: 'n2k7J_e12',
         name: '格闘ゲーム'
       },
       
@@ -547,7 +548,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Puzzle',
+        genreID: 'SV1mg4iuD',
         name: 'Puzzle'
       },
       {
@@ -556,7 +557,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Puzzle',
+        genreID: 'SV1mg4iuD',
         name: 'パズル'
       },
       
@@ -567,7 +568,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Board-Card',
+        genreID: '691Od0Wty',
         name: 'Board game / Card game'
       },
       {
@@ -576,7 +577,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Board-Card',
+        genreID: '691Od0Wty',
         name: 'ボードゲーム / カードゲーム'
       },
       
@@ -587,7 +588,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Music',
+        genreID: 'rsx6C2bsy',
         name: 'Music game'
       },
       {
@@ -596,7 +597,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Music',
+        genreID: 'rsx6C2bsy',
         name: '音ゲー'
       },
       
@@ -607,7 +608,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'en',
         country: 'US',
-        genreID: 'Other',
+        genreID: 'HBpRRumc3',
         name: 'Other'
       },
       {
@@ -616,7 +617,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         updatedDate: date,
         language: 'ja',
         country: 'JP',
-        genreID: 'Other',
+        genreID: 'HBpRRumc3',
         name: 'その他'
       },
     ]
@@ -626,7 +627,8 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    // returnObj = await ModelGameGenres.insertMany(saveArr);
+    // await ModelGameGenres.deleteMany({});
+    // returnObj = await ModelGameGenres.insertMany({ saveArr });
     
     
     
@@ -901,130 +903,6 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           search: true,
         },
       ]
-      
-      
-      // dataArr: [
-      //   {
-      //     _id: 'VjSSBUYlJ',
-      //     createdDate: date,
-      //     updatedDate: date,
-          
-      //   },
-      //   {
-      //     _id: 'OI2LVocPM',
-      //     createdDate: date,
-      //     updatedDate: date,
-      //     language: 'en',
-      //     comment: `English`,
-      //     birthdayObj: {
-      //       value: '2002-10-19T00:00:00Z',
-      //       alternativeText: '',
-      //       search: true,
-      //     },
-      //     sexObj: {
-      //       value: 'male',
-      //       alternativeText: '',
-      //       search: true,
-      //     },
-      //     addressObj: {
-      //       value: 'Osaka',
-      //       alternativeText: '',
-      //       search: true,
-      //     },
-      //     gamingExperienceObj: {
-      //       value: '2008-09-19T00:00:00Z',
-      //       alternativeText: '',
-      //       search: true,
-      //     },
-      //     hobbiesObj: {
-      //       valueArr: ['Movie'],
-      //       search: true,
-      //     },
-      //     specialSkillsObj: {
-      //       valueArr: ['English'],
-      //       search: true,
-      //     },
-      //     smartphoneObj: {
-      //       model: 'g06',
-      //       comment: `a`,
-      //       search: true,
-      //     },
-      //     tabletObj: {
-      //       model: 'Google Nexus 9 32GB',
-      //       comment: `b`,
-      //       search: true,
-      //     },
-      //     pcObj: {
-      //       model: 'PC',
-      //       comment: `c`,
-      //       specsObj: {
-      //         os: 'Windows 10 Home',
-      //         cpu: 'AMD CPU Ryzen 3 2200G',
-      //         cpuCooler: 'CPU 付属品',
-      //         motherboard: 'MSI B350 PC MATE',
-      //         memory: 'Crucial DDR4 8GB x 2',
-      //         storage: 'WD SSD 240GB / WD Green / WDS240G2G0A',
-      //         graphicsCard: '-',
-      //         opticalDrive: 'NEC AD7240S/BK',
-      //         powerSupply: 'Antec EARTHWATTS EA650 650W',
-      //         pcCase: 'COOLER MASTER CM690',
-      //         monitor: 'MITSUBISHI TFT RDT233WX / ASUS VZ239HR',
-      //         mouse: 'Logitech MX300',
-      //         keyboard: 'Microsoft Keyboard With Fingerprint Reader'
-      //       },
-      //       search: true,
-      //     },
-      //     ownedHardwareObj: {
-      //       valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
-      //       search: true,
-      //     },
-      //     idArr: [
-      //       {
-      //         _id: 'QYcxqagPL',
-      //         type: 'playstation',
-      //         label: '',
-      //         value: 'AZ-1979',
-      //         showType: 1,
-      //         search: true,
-      //       },
-      //     ],
-      //     activityTimeObj: {
-      //       valueArr: [
-      //         {
-      //           _id: 'MqkYX_Ja3',
-      //           beginTime: '19:00',
-      //           endTime: '24:00',
-      //           weekArr: [0, 1, 2, 3, 4]
-      //         },
-      //         {
-      //           _id: '_-4oVnb7F',
-      //           beginTime: '9:00',
-      //           endTime: '24:00',
-      //           weekArr: [5, 6]
-      //         }
-      //       ],
-      //       search: true,
-      //     },
-      //     lookingForFriendsObj: {
-      //       icon: 'emoji_u1f61c',
-      //       comment: 'Hello',
-      //       search: true,
-      //     },
-      //     voiceChatObj: {
-      //       comment: 'Hello',
-      //       search: true,
-      //     },
-      //     linkArr: [
-      //       {
-      //         _id: 'pFwK8i4Nq',
-      //         type: 'twitter',
-      //         label: '',
-      //         url: 'https://twitter.com/',
-      //         search: true,
-      //       },
-      //     ]
-      //   }
-      // ],
     };
     
     
@@ -1032,7 +910,10 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   Upsert
     // --------------------------------------------------
     
-    // returnObj = await ModelCardPlayers.upsert(conditionObj, saveObj);
+    // returnObj = await ModelCardPlayers.upsert({
+    //   conditionObj,
+    //   saveObj
+    // });
     
     
     
@@ -1057,7 +938,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       createdDate: date,
       updatedDate: date,
       users_id: 'jun-deE4J',
-      gameID: 'Dead-by-Daylight',
+      gameID: 'Jk92aglWl',
       language: 'ja',
       theme: '',
       name: 'AZ-1979',
@@ -1065,40 +946,40 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       thumbnail: false,
       imageVideoArr: [
         {
-          _id: 'H_NXaMPKG',
+          _id: 'ZIEOqRppY',
           type: 'image',
-          caption: 'ライオン',
+          caption: '黄色のお花',
           fileFormat: 'JPEG',
           srcSetArr: [
             {
               _id: 'xz_HamTMS',
               w: '320w',
               width: 320,
-              height: 180,
+              height: 213,
             },
             {
               _id: 'VGaeXottk',
               w: '480w',
               width: 480,
-              height: 270,
+              height: 320,
             },
             {
               _id: 'E3kjgGmJ7',
               w: '640w',
               width: 640,
-              height: 360,
+              height: 427,
             },
             {
               _id: 'JHgN0IFXD',
               w: '800w',
               width: 800,
-              height: 450,
+              height: 533,
             },
             {
               _id: 'XMZ2Ioh2x',
               w: 'source',
               width: 1920,
-              height: 1080,
+              height: 1280,
             },
           ],
         },
@@ -1117,13 +998,6 @@ router.post('/insert', upload.none(), async (req, res, next) => {
 僕の場合、オープンワールドゲームはやり込みすぎて
 いつも最後は嫌になってクリアする感じなのですが
 BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
-      quotationObj: {
-        cardPlayers_id: 'zaoOWw89g',
-        activityTime: true,
-        lookingForFriends: true,
-        voiceChat: true,
-        link: true,
-      },
       playingHardwareObj: {
         valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
         search: true,
@@ -1244,7 +1118,14 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           url: 'http://35.203.143.160:8080/',
           search: true,
         },
-      ]
+      ],
+      quotationObj: {
+        cardPlayers_id: 'zaoOWw89g',
+        activityTime: true,
+        lookingForFriends: true,
+        voiceChat: true,
+        link: true,
+      },
     };
     
     
@@ -1252,7 +1133,10 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     //   Upsert
     // --------------------------------------------------
     
-    // returnObj = await ModelCardGames.upsert(conditionObj, saveObj);
+    // returnObj = await ModelCardGames.upsert({
+    //   conditionObj,
+    //   saveObj
+    // });
     
     
     
@@ -1262,11 +1146,20 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     //   DB / Test
     // --------------------------------------------------
     
-    returnObj = await ModelCardGames.find({
-      countryArr: ['JP', 'US'],
-      languageArr: ['ja'],
-      usersLogin_id: 'P7UJMuUnx'
-    });
+    // returnObj = await ModelCardGames.find({
+    //   countryArr: ['JP', 'US'],
+    //   languageArr: ['ja'],
+    //   usersLogin_id: 'P7UJMuUnx'
+    // });
+    
+    
+    
+    // const cardPlayersObj = await ModelCardPlayers.find({
+    //   conditionObj: { 
+    //     users_id: 'jun-deE4J',
+    //     language: { $in: ['ja'] }
+    //   }
+    // });
     
     
     
@@ -1296,10 +1189,16 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     // `);
     
     // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   ----- cardPlayersObj -----\n
+    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // ---------------------------------------------

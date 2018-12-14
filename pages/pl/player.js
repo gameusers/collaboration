@@ -84,6 +84,7 @@ import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
 
 import Layout from '../../applications/common/layout/components/layout';
 import CardPlayer from '../../applications/common/card/player/components/player';
+import CardGame from '../../applications/common/card/player/components/game';
 
 
 // ---------------------------------------------
@@ -91,7 +92,6 @@ import CardPlayer from '../../applications/common/card/player/components/player'
 // ---------------------------------------------
 
 import withRoot from '../../lib/material-ui/withRoot';
-
 
 
 
@@ -109,15 +109,9 @@ const Container = styled.div`
   }
 `;
 
-
-// ---------------------------------------------
-//   フォーム
-// ---------------------------------------------
-
-// const Description = styled.div`
-//   margin: 0 0 16px 0;
-// `;
-
+const CardBox = styled.div`
+  margin: 20px 0 0 0;
+`;
 
 
 
@@ -185,6 +179,7 @@ class Component extends React.Component {
     return { isServer, pathname, initialPropsObj, statusCode, localeObj };
     
   }
+  
   
   
   
@@ -260,7 +255,8 @@ class Component extends React.Component {
       }
       
       this.stores.data.replaceUsersObj(props.initialPropsObj.usersObj);
-      this.stores.data.updateCardPlayersObj(props.initialPropsObj.cardPlayersObj);
+      this.stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
+      this.stores.data.replaceCardGamesObj(props.initialPropsObj.cardGamesObj);
       
       
     } catch (e) {
@@ -270,11 +266,6 @@ class Component extends React.Component {
     
   }
   
-  
-  // componentDidMount(){
-  //   console.log("コンポーネントのマウント後");
-  //   this.stores.data.setOnload(true);
-  // }
   
   
   
@@ -295,7 +286,7 @@ class Component extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
+    // const stores = this.stores;
     
     
     // --------------------------------------------------
@@ -321,23 +312,44 @@ class Component extends React.Component {
     const componentCardsArr = [];
     
     for (const [index, valueObj] of this.props.initialPropsObj.cardsArr.entries()) {
-      // console.log(index, value);
       
-      if (valueObj.type === 'player') {
+      if ('cardPlayers_id' in valueObj) {
         
         componentCardsArr.push(
           <CardPlayer
-            users_id={valueObj._id}
+            cardPlayers_id={valueObj.cardPlayers_id}
             key={index}
           />
         );
         
       } else {
         
+        if (index === 0) {
+          
+          componentCardsArr.push(
+            <CardGame
+              cardGames_id={valueObj.cardGames_id}
+              key={index}
+            />
+          );
+          
+        } else {
+          
+          componentCardsArr.push(
+            <CardBox key={index}>
+              <CardGame
+                cardGames_id={valueObj.cardGames_id}
+                key={index}
+              />
+            </CardBox>
+          );
+          
+        }
+        
+        
       }
       
     }
-    
     
     
     

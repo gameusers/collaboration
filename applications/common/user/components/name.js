@@ -231,8 +231,8 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-player`, false);
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-card-game`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-card-player`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardGames_id}-card-game`, false);
   }
   
   
@@ -243,7 +243,16 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, users_id, cardGames_id, anonymity, name, status, accessDate, level } = this.props;
+    const {
+      stores,
+      cardPlayers_id,
+      cardGames_id,
+      anonymity,
+      name,
+      status,
+      accessDate,
+      level
+    } = this.props;
     
     const {
       
@@ -294,7 +303,6 @@ export default class extends React.Component {
     }
     
     
-    
     // --------------------------------------------------
     //   Access Time
     // --------------------------------------------------
@@ -335,7 +343,7 @@ export default class extends React.Component {
     
     let componentCardPlayersButton = '';
     
-    if (!anonymity && users_id) {
+    if (!anonymity && cardPlayers_id) {
       
       
       // --------------------------------------------------
@@ -344,8 +352,8 @@ export default class extends React.Component {
       
       let buttonDisabledCardPlayer = true;
       
-      if (`${users_id}-card-player` in buttonDisabledObj) {
-        buttonDisabledCardPlayer = buttonDisabledObj[`${users_id}-card-player`];
+      if (`${cardPlayers_id}-card-player` in buttonDisabledObj) {
+        buttonDisabledCardPlayer = buttonDisabledObj[`${cardPlayers_id}-card-player`];
       }
       
       
@@ -424,23 +432,6 @@ export default class extends React.Component {
           
           {componentCardPlayersButton}
           {componentCardGamesButton}
-          
-          {/*<StyledButton
-            variant="outlined"
-            // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
-            disabled={buttonDisabledCardPlayer}
-          >
-            <StyledIconCard1 />
-            Player
-          </StyledButton>*/}
-          
-          {/*<StyledButton
-            variant="outlined"
-            disabled={buttonDisabledCardGame}
-          >
-            <StyledIconCard2 />
-            Game
-          </StyledButton>*/}
           
         </LevelAndCardBox>
       </Container>

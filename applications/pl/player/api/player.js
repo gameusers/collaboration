@@ -68,7 +68,6 @@ const router = express.Router();
 
 
 
-
 // --------------------------------------------------
 //   Status Code & Error Arguments Object
 // --------------------------------------------------
@@ -81,7 +80,6 @@ let errorArgumentsObj = {
   errorCodeArr: [500000],
   errorObj: {},
 };
-
 
 
 
@@ -127,27 +125,9 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     });
     
     
-    
-    
-    // console.log(chalk`
-    //   req.headers['accept-language']: {green ${req.headers['accept-language']}}
-    // `);
-    
-    console.log(`
-      ----- localeObj -----\n
-      ${util.inspect(localeObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
-    
     // --------------------------------------------------
     //   GET 取得
     // --------------------------------------------------
-    
-    const country = 'JP';
-    
-    
     
     const playerId = req.query.playerId;
     const validationPlayerIdObj = validationPlayerId(playerId);
@@ -200,21 +180,13 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.find({
-      // localeObj,
-      conditionObj: { users_id, language: { $in: localeObj.languageArr } }
+      conditionObj: {
+        users_id,
+        language: { $in: localeObj.languageArr }
+      }
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;
-    
-    // カードを一覧で表示するための配列を作成する
-    cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    if (cardPlayersKeysArr.length > 0) {
-      returnObj.cardsArr.push({
-        type: 'player',
-        _id: cardPlayersKeysArr[0]
-      });
-    }
     
     
     // --------------------------------------------------
@@ -230,43 +202,26 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     returnObj.cardGamesObj = cardGamesObj;
     
-    // カードを一覧で表示するための配列を作成する
+    
+    // --------------------------------------------------
+    //   カードを一覧で表示するための配列を作成する
+    // --------------------------------------------------
+    
+    cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    
+    if (cardPlayersKeysArr.length > 0) {
+      returnObj.cardsArr.push({
+        cardPlayers_id: cardPlayersKeysArr[0]
+      });
+    }
+    
     cardGamesKeysArr = Object.keys(cardGamesObj);
     
     if (cardGamesKeysArr.length > 0) {
       returnObj.cardsArr.push({
-        type: 'game',
-        _id: cardGamesKeysArr[0]
+        cardGames_id: cardGamesKeysArr[0]
       });
     }
-    
-    
-    // const cardUsersObj = {
-    //   'jun-deE4J(users_id)': {
-    //     players: {
-          
-    //     },
-    //     games: {
-    //       'w_zkqpr3R(games_id)': {
-            
-    //       }
-    //     }
-    //   }
-    // }
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Players / Upsert
-    // --------------------------------------------------
-    
-    // await ModelCardPlayers.upsert(users_id, 'zaoOWw89g');
-    
-    
-    // --------------------------------------------------
-    //   Model / Card Games / upsert
-    // --------------------------------------------------
-    
-    // await ModelCardGames.upsert(users_id, 'TzjNMDQyl');
     
     
     // --------------------------------------------------
@@ -283,6 +238,15 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
     // `);
     
+    // console.log(chalk`
+    //   req.headers['accept-language']: {green ${req.headers['accept-language']}}
+    // `);
+    
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- usersObj -----\n
@@ -339,37 +303,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     return res.status(statusCode).json(resultErrorObj);
     
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    // logger.log('error', `/applications/pl/player/api/player.js\nrouter.get('/initial-props')\n${error}`);
-    
-    
-    // --------------------------------------------------
-    //   製品版の場合、エラーメッセージを定型文に変更
-    // --------------------------------------------------
-    
-    // let message = error.message;
-    
-    // if (process.env.NODE_ENV === 'production') {
-    //   message = 'Initial Props';
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Return JSON Object / Error
-    // // --------------------------------------------------
-    
-    // return res.status(statusCode).json({
-    //   errorsArr: [
-    //     {
-    //       code: 0,
-    //       message
-    //     },
-    //   ]
-    // });
     
   }
   

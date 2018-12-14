@@ -225,14 +225,21 @@ const find = async (argumentsObj) => {
     //   データの処理
     // --------------------------------------------------
     
-    for (let value of cardGamesArr) {
+    for (let valueObj of cardGamesArr) {
       
       
       // --------------------------------------------------
       //   コピー
       // --------------------------------------------------
       
-      const copiedObj = JSON.parse(JSON.stringify(value));
+      const copiedObj = JSON.parse(JSON.stringify(valueObj));
+      
+      
+      // --------------------------------------------------
+      //   画像の処理
+      // --------------------------------------------------
+      
+      copiedObj.imageArr = srcset(`/static/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
       
       
       // --------------------------------------------------
@@ -257,20 +264,20 @@ const find = async (argumentsObj) => {
       //   プレイヤーカードからの引用
       // --------------------------------------------------
       
-      if (value.quotationObj.activityTime) {
-        copiedObj.activityTimeObj = value.cardPlayersObj.activityTimeObj;
+      if (valueObj.quotationObj.activityTime) {
+        copiedObj.activityTimeObj = valueObj.cardPlayersObj.activityTimeObj;
       }
       
-      if (value.quotationObj.lookingForFriends) {
-        copiedObj.lookingForFriendsObj = value.cardPlayersObj.lookingForFriendsObj;
+      if (valueObj.quotationObj.lookingForFriends) {
+        copiedObj.lookingForFriendsObj = valueObj.cardPlayersObj.lookingForFriendsObj;
       }
       
-      if (value.quotationObj.voiceChat) {
-        copiedObj.voiceChatObj = value.cardPlayersObj.voiceChatObj;
+      if (valueObj.quotationObj.voiceChat) {
+        copiedObj.voiceChatObj = valueObj.cardPlayersObj.voiceChatObj;
       }
       
-      if (value.quotationObj.link) {
-        copiedObj.linkArr = value.cardPlayersObj.linkArr;
+      if (valueObj.quotationObj.link) {
+        copiedObj.linkArr = valueObj.cardPlayersObj.linkArr;
       }
       
       
@@ -278,15 +285,22 @@ const find = async (argumentsObj) => {
       //   不要な項目を削除する
       // --------------------------------------------------
       
+      delete copiedObj.imageVideoArr;
       delete copiedObj.usersObj.followedArr;
       delete copiedObj.quotationObj;
       delete copiedObj.cardPlayersObj;
       
       
-      returnObj[value._id] = copiedObj;
+      returnObj[valueObj._id] = copiedObj;
       
     }
     
+    
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
     
     // console.log(cardGamesArr.length);
     
@@ -304,11 +318,11 @@ const find = async (argumentsObj) => {
     //   cardGamesArr: \n${util.inspect(cardGamesArr, { colors: true, depth: null })}
     // `);
     
-    console.log(`
-      ----- cardGamesArr -----\n
-      ${util.inspect(cardGamesArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- cardGamesArr -----\n
+    //   ${util.inspect(cardGamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- cardPlayersArr -----\n
@@ -316,11 +330,11 @@ const find = async (argumentsObj) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -342,12 +356,13 @@ const find = async (argumentsObj) => {
 
 
 
+
 /**
- * 取得する
- * @param {Object} conditionObj - 検索条件
- * @return {Object} 取得データ
+ * 挿入 / 更新する
+ * @param {Object} argumentsObj - 引数
+ * @return {Object} 
  */
-const find2 = async (argumentsObj) => {
+const upsert = async (argumentsObj) => {
   
   
   // --------------------------------------------------
@@ -356,143 +371,10 @@ const find2 = async (argumentsObj) => {
   
   const {
     
-    country,
-    conditionObj
+    conditionObj,
+    saveObj
     
   } = argumentsObj;
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    let docCardGamesArr = await Model.find(conditionObj).exec();
-    
-    
-    // --------------------------------------------------
-    //   games_id を取得する
-    // --------------------------------------------------
-    
-    const games_idArr = [];
-    
-    for (let value of docCardGamesArr.values()) {
-      games_idArr.push(value.games_id);
-    }
-    
-    const docGamesArr = await ModelGames.find({ _id: { $in: games_idArr} }).exec();
-    
-    
-    // --------------------------------------------------
-    //   ゲーム名を取得する
-    // --------------------------------------------------
-    
-    for (let value of docCardGamesArr.values()) {
-      
-      
-      // --------------------------------------------------
-      //   オブジェクトをディープコピー
-      // --------------------------------------------------
-      
-      const copiedObj = JSON.parse(JSON.stringify(value));
-      
-      
-      // --------------------------------------------------
-      //   ゲームID ＆ ゲーム名を設定する
-      // --------------------------------------------------
-      
-      const gamesObj = docGamesArr.find((value2) => {
-        return value2._id === value.games_id;
-      });
-      
-      const dataObj = gamesObj.dataArr.find((value3) => {
-        return value3.country === country;
-      });
-      
-      copiedObj.gameId = gamesObj.gameId;
-      copiedObj.gameName = dataObj.name;
-      
-      
-      // console.log(`
-      //   gamesObj: \n${util.inspect(gamesObj, { colors: true, depth: null })}
-      // `);
-      
-      
-      // --------------------------------------------------
-      //   画像配列を<img>タグで出力するためにフォーマット
-      // --------------------------------------------------
-      
-      copiedObj.imageArr = srcset('/static/img/card/games/', copiedObj.imageVideoArr);
-      delete copiedObj.imageVideoArr;
-      
-      
-      // --------------------------------------------------
-      //   return オブジェクト
-      // --------------------------------------------------
-      
-      returnObj[value._id] = copiedObj;
-      
-      
-    }
-    
-    
-    // console.log(`
-    //   docCardGamesArr: \n${util.inspect(docCardGamesArr, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   games_idArr: \n${util.inspect(games_idArr, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   docGamesArr: \n${util.inspect(docGamesArr, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-/**
- * 挿入 / 更新する
- * @param {Object} conditionObj - 検索条件
- * @param {Object} saveObj - 保存データ
- * @return {Object} 
- */
-const upsert = async (conditionObj, saveObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
   
   
   // --------------------------------------------------
@@ -509,16 +391,11 @@ const upsert = async (conditionObj, saveObj) => {
     const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
     
     
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
-    
-    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return returnObj;
+    return docArr;
     
     
   } catch (err) {
@@ -532,13 +409,115 @@ const upsert = async (conditionObj, saveObj) => {
 
 
 
+/**
+ * 挿入する
+ * @param {Object} argumentsObj - 引数
+ * @return {Array} 
+ */
+const insertMany = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    saveArr
+    
+  } = argumentsObj;
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    const docArr = await Model.insertMany(saveArr);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 削除する
+ * @param {Object} argumentsObj - 引数
+ * @return {Array} 
+ */
+const deleteMany = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    conditionObj
+    
+  } = argumentsObj;
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Remove
+    // --------------------------------------------------
+    
+    const docArr = await Model.deleteMany(conditionObj);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
 
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
-  // findTest,
   find,
-  upsert
+  upsert,
+  insertMany,
+  deleteMany
 };

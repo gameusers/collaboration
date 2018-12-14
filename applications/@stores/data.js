@@ -34,25 +34,6 @@ class Store {
   
   
   
-  // ---------------------------------------------
-  //   ページの読み込み判定
-  // ---------------------------------------------
-  
-  /**
-   * ページの読み込みが終わったかどうか
-   * @type {boolean}
-   */
-  // @observable onload = false;
-  
-  /**
-   * ページの読み込み判定を更新する
-   * @param {boolean} value - 読み込み後 true / 読み込み前 false
-   */
-  // setOnload(value) {
-  //   this.onload = value;
-  // };
-  
-  
   
   // ---------------------------------------------
   //   Login Users
@@ -71,6 +52,7 @@ class Store {
   replaceUsersLoginObj(obj) {
     this.usersLoginObj = obj;
   };
+  
   
   
   
@@ -106,6 +88,7 @@ class Store {
   
   
   
+  
   // ---------------------------------------------
   //   Card / Players
   // ---------------------------------------------
@@ -117,12 +100,34 @@ class Store {
   @observable cardPlayersObj = {};
   
   /**
-   * プレイヤーカードのオブジェクトを更新する
-   * @param {Object} obj - 更新するオブジェクト
+   * プレイヤーカードのオブジェクトを置き換える
+   * @param {Object} obj - 置き換えるオブジェクト
    */
-  updateCardPlayersObj(obj) {
+  replaceCardPlayersObj(obj) {
     this.cardPlayersObj = obj;
   };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Card / Players
+  // ---------------------------------------------
+  
+  /**
+   * ゲームカードの情報を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable cardGamesObj = {};
+  
+  /**
+   * ゲームカードのオブジェクトを置き換える
+   * @param {Object} obj - 置き換えるオブジェクト
+   */
+  replaceCardGamesObj(obj) {
+    this.cardGamesObj = obj;
+  };
+  
   
   
   

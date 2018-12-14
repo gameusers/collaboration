@@ -161,7 +161,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-card-players-panel`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardGames_id}-card-games-panel`, false);
   }
   
   
@@ -172,7 +172,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
+    const { stores, cardGames_id } = this.props;
     
     
     
@@ -181,7 +181,7 @@ export default class extends React.Component {
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (cardPlayers_id in stores.data.cardPlayersObj === false) {
+    if (cardGames_id in stores.data.cardGamesObj === false) {
       return null;
     }
     
@@ -206,11 +206,11 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   cardPlayersObj & users_id
+    //   cardGamesObj & users_id
     // ---------------------------------------------
     
-    const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
-    const users_id = cardPlayersObj.users_id;
+    const cardGamesObj = stores.data.cardGamesObj[cardGames_id];
+    const users_id = cardGamesObj.users_id;
     
     
     // ---------------------------------------------
@@ -238,12 +238,12 @@ export default class extends React.Component {
       thumbnail,
       comment
       
-    } = cardPlayersObj;
+    } = cardGamesObj;
     
     let thumbnailSrc = '';
     
     if (thumbnail) {
-      thumbnailSrc = `/static/img/card/players/${cardPlayers_id}/thumbnail/image.jpg`;
+      thumbnailSrc = `/static/img/card/games/${cardGames_id}/thumbnail/image.jpg`;
     }
     
     
@@ -257,84 +257,32 @@ export default class extends React.Component {
       imageSrc,
       imageAlt
       
-    } = cardPlayersObj.imageArr[0];
-    
-    
-    // ---------------------------------------------
-    //   Profile
-    // ---------------------------------------------
-    
-    const birthdayValue = cardPlayersObj.birthdayObj.value;
-    const birthdayAlternativeText = cardPlayersObj.birthdayObj.alternativeText;
-    const sexValue = cardPlayersObj.sexObj.value;
-    const sexAlternativeText = cardPlayersObj.sexObj.alternativeText;
-    const addressValue = cardPlayersObj.addressObj.value;
-    const gamingExperienceValue = cardPlayersObj.gamingExperienceObj.value;
-    const gamingExperienceAlternativeText = cardPlayersObj.gamingExperienceObj.alternativeText;
-    const hobbiesValueArr = cardPlayersObj.hobbiesObj.valueArr;
-    const specialSkillsValueArr = cardPlayersObj.specialSkillsObj.valueArr;
+    } = cardGamesObj.imageArr[0];
     
     
     // ---------------------------------------------
     //   Hardware
     // ---------------------------------------------
     
-    const hardwareArr = cardPlayersObj.ownedHardwareObj.valueArr;
-    
-    
-    // ---------------------------------------------
-    //   Smartphone
-    // ---------------------------------------------
-    
-    const smartphoneModel = cardPlayersObj.smartphoneObj.model;
-    const smartphoneComment = cardPlayersObj.smartphoneObj.comment;
-    
-    
-    // ---------------------------------------------
-    //   Tablet
-    // ---------------------------------------------
-    
-    const tabletModel = cardPlayersObj.tabletObj.model;
-    const tabletComment = cardPlayersObj.tabletObj.comment;
-    
-    
-    // ---------------------------------------------
-    //   PC
-    // ---------------------------------------------
-    
-    const pcModel = cardPlayersObj.pcObj.model;
-    const pcComment = cardPlayersObj.pcObj.comment;
-    const pcOs = cardPlayersObj.pcObj.specsObj.os;
-    const pcCpu = cardPlayersObj.pcObj.specsObj.cpu;
-    const pcCpuCooler = cardPlayersObj.pcObj.specsObj.cpuCooler;
-    const pcMotherboard = cardPlayersObj.pcObj.specsObj.motherboard;
-    const pcMemory = cardPlayersObj.pcObj.specsObj.memory;
-    const pcStorage = cardPlayersObj.pcObj.specsObj.storage;
-    const pcGraphicsCard = cardPlayersObj.pcObj.specsObj.graphicsCard;
-    const pcOpticalDrive = cardPlayersObj.pcObj.specsObj.opticalDrive;
-    const pcPowerSupply = cardPlayersObj.pcObj.specsObj.powerSupply;
-    const pcCase = cardPlayersObj.pcObj.specsObj.pcCase;
-    const pcMonitor = cardPlayersObj.pcObj.specsObj.monitor;
-    const pcMouse = cardPlayersObj.pcObj.specsObj.mouse;
-    const pcKeyboard = cardPlayersObj.pcObj.specsObj.keyboard;
+    const hardwareArr = cardGamesObj.playingHardwareObj.valueArr;
       
     
     // ---------------------------------------------
     //   ID & Friend
     // ---------------------------------------------
     
-    const idArr = cardPlayersObj.idArr;
-    const activityTimeArr = cardPlayersObj.activityTimeObj.valueArr;
-    const lookingForFriendsIcon = cardPlayersObj.lookingForFriendsObj.icon;
-    const lookingForFriendsComment = cardPlayersObj.lookingForFriendsObj.comment;
-    const voiceChatComment = cardPlayersObj.voiceChatObj.comment;
+    const idArr = cardGamesObj.idArr;
+    const activityTimeArr = cardGamesObj.activityTimeObj.valueArr;
+    const lookingForFriendsIcon = cardGamesObj.lookingForFriendsObj.icon;
+    const lookingForFriendsComment = cardGamesObj.lookingForFriendsObj.comment;
+    const voiceChatComment = cardGamesObj.voiceChatObj.comment;
     
     
     // ---------------------------------------------
     //   Link
     // ---------------------------------------------
     
-    const linkArr = cardPlayersObj.linkArr;
+    const linkArr = cardGamesObj.linkArr;
     
     
     
@@ -345,14 +293,14 @@ export default class extends React.Component {
     
     let panelExpanded = true;
     
-    if (`${cardPlayers_id}-card-players` in panelExpandedObj) {
-      panelExpanded = panelExpandedObj[`${cardPlayers_id}-card-players`];
+    if (`${cardGames_id}-card-games` in panelExpandedObj) {
+      panelExpanded = panelExpandedObj[`${cardGames_id}-card-games`];
     }
     
     let panelButtonDisabled = true;
     
-    if (`${cardPlayers_id}-card-players-panel` in buttonDisabledObj) {
-      panelButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-card-players-panel`];
+    if (`${cardGames_id}-card-games-panel` in buttonDisabledObj) {
+      panelButtonDisabled = buttonDisabledObj[`${cardGames_id}-card-games-panel`];
     }
     
     
@@ -363,12 +311,12 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
+    //   cardGames_id: {green ${cardGames_id}}
     // `);
     
     // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+    //   ----- cardGamesObj -----\n
+    //   ${util.inspect(cardGamesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -398,7 +346,7 @@ export default class extends React.Component {
               
               <UserNameBox>
                 <UserName
-                  cardPlayers_id={cardPlayers_id}
+                  cardGames_id={cardGames_id}
                   accessDate={accessDate}
                   // anonymity={true}
                   name={name}
@@ -415,7 +363,7 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handlePanelExpanded(`${cardPlayers_id}-card-players`)}
+              onClick={() => handlePanelExpanded(`${cardGames_id}-card-games`)}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={panelButtonDisabled}
@@ -454,56 +402,8 @@ export default class extends React.Component {
             <Paragraph text={comment} />
             
             
-            {/* 年齢・性別などのプロフィール */}
-            <Profile
-              birthdayValue={birthdayValue}
-              birthdayAlternativeText={birthdayAlternativeText}
-              sexValue={sexValue}
-              sexAlternativeText={sexAlternativeText}
-              addressValue={addressValue}
-              gamingExperienceValue={gamingExperienceValue}
-              gamingExperienceAlternativeText={gamingExperienceAlternativeText}
-              hobbiesValueArr={hobbiesValueArr}
-              specialSkillsValueArr={specialSkillsValueArr}
-            />
-            
-            
-            {/* 所有ハード */}
+            {/* 遊んでいるハード */}
             <Hardware hardwareArr={hardwareArr} />
-            
-            
-            {/* スマートフォン */}
-            <Smartphone
-              smartphoneModel={smartphoneModel}
-              smartphoneComment={smartphoneComment}
-            />
-            
-            
-            {/* タブレット */}
-            <Tablet
-              tabletModel={tabletModel}
-              tabletComment={tabletComment}
-            />
-            
-            
-            {/* PC */}
-            <Pc
-              pcModel={pcModel}
-              pcComment={pcComment}
-              pcOs={pcOs}
-              pcCpu={pcCpu}
-              pcCpuCooler={pcCpuCooler}
-              pcMotherboard={pcMotherboard}
-              pcMemory={pcMemory}
-              pcStorage={pcStorage}
-              pcGraphicsCard={pcGraphicsCard}
-              pcOpticalDrive={pcOpticalDrive}
-              pcPowerSupply={pcPowerSupply}
-              pcCase={pcCase}
-              pcMonitor={pcMonitor}
-              pcMouse={pcMouse}
-              pcKeyboard={pcKeyboard}
-            />
             
             
             {/* ID & Friend */}

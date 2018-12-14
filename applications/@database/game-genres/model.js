@@ -25,13 +25,6 @@ const util = require('util');
 const Model = require('./schema');
 
 
-// ---------------------------------------------
-//   Logger
-// ---------------------------------------------
-
-// const logger = require('../../@modules/logger');
-
-
 
 
 // --------------------------------------------------
@@ -40,17 +33,21 @@ const Model = require('./schema');
 
 /**
  * 取得する
- * @param {Object} conditionObj - 検索条件
- * @return {Object} 取得されたデータ
+ * @param {Object} argumentsObj - 引数
+ * @return {Object} 取得データ
  */
-const find = async (conditionObj) => {
+const find = async (argumentsObj) => {
   
   
   // --------------------------------------------------
-  //   Return Value
+  //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
+  const {
+    
+    conditionObj
+    
+  } = argumentsObj;
   
   
   // --------------------------------------------------
@@ -66,16 +63,12 @@ const find = async (conditionObj) => {
     
     const docArr = await Model.find(conditionObj).exec();
     
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
-    
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return returnObj;
+    return docArr;
     
     
   } catch (err) {
@@ -84,18 +77,29 @@ const find = async (conditionObj) => {
     
   }
   
-  
 };
+
 
 
 
 /**
  * 挿入 / 更新する
- * @param {Object} conditionObj - 検索条件
- * @param {Object} saveObj - 保存データ
+ * @param {Object} argumentsObj - 引数
  * @return {Object} 
  */
-const upsert = async (conditionObj, saveObj) => {
+const upsert = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    conditionObj,
+    saveObj
+    
+  } = argumentsObj;
   
   
   // --------------------------------------------------
@@ -119,11 +123,6 @@ const upsert = async (conditionObj, saveObj) => {
     const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
     
     
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
-    
-    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -141,12 +140,24 @@ const upsert = async (conditionObj, saveObj) => {
 
 
 
+
 /**
  * 挿入する
- * @param {Array} saveArr - 保存データ
+ * @param {Object} argumentsObj - 引数
  * @return {Array} 
  */
-const insertMany = async (saveArr) => {
+const insertMany = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    saveArr
+    
+  } = argumentsObj;
   
   
   // --------------------------------------------------
@@ -157,15 +168,15 @@ const insertMany = async (saveArr) => {
     
     
     // --------------------------------------------------
-    //   Upsert
+    //   insertMany
     // --------------------------------------------------
     
     const docArr = await Model.insertMany(saveArr);
     
     
-    console.log(`
-      docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    // `);
     
     
     // --------------------------------------------------
@@ -186,6 +197,61 @@ const insertMany = async (saveArr) => {
 
 
 
+/**
+ * 削除する
+ * @param {Object} argumentsObj - 引数
+ * @return {Array} 
+ */
+const deleteMany = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    conditionObj
+    
+  } = argumentsObj;
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Remove
+    // --------------------------------------------------
+    
+    const docArr = await Model.deleteMany(conditionObj);
+    
+    
+    // console.log(`
+    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
 
 // --------------------------------------------------
 //   Export
@@ -194,5 +260,6 @@ const insertMany = async (saveArr) => {
 module.exports = {
   find,
   upsert,
-  insertMany
+  insertMany,
+  deleteMany
 };

@@ -59,7 +59,8 @@ const errorCodeIntoErrorObj = (errorArgumentsObj) => {
   //   Message
   // ---------------------------------------------
   
-  for (let value of errorCodeArr.values()) {
+  // for (let value of errorCodeArr.values()) {
+  for (let value of errorCodeArr) {
     
     let tempObj = {
       code: `${fileId}@${functionId}@${value}`,

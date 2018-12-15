@@ -44,7 +44,7 @@ const { srcset } = require('../../@format/image');
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findTest = async (argumentsObj) => {
+const find = async (argumentsObj) => {
   
   
   // --------------------------------------------------
@@ -53,22 +53,13 @@ const findTest = async (argumentsObj) => {
   
   const {
     
-    // localeObj,
-    users_id,
     language,
-    country,
+    counrty,
+    countryArr,
+    languageArr,
     usersLogin_id
     
   } = argumentsObj;
-  
-  // const {
-    
-  //   language,
-  //   counrty,
-  //   languageArr,
-  //   countryArr
-    
-  // } = localeObj;
   
   
   // --------------------------------------------------
@@ -86,15 +77,17 @@ const findTest = async (argumentsObj) => {
     
     
     // --------------------------------------------------
+    //   Condition
+    // --------------------------------------------------
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
     
     let cardPlayersArr = await Model.aggregate([
-      
-      {
-        $match : { users_id }
-      },
-      
       
       {
         $lookup:
@@ -104,7 +97,12 @@ const findTest = async (argumentsObj) => {
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+                  { $and:
+                    [
+                      { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+                      { $in: ['$country', countryArr] }
+                    ]
+                  }
                 }
               },
               { $project:
@@ -129,29 +127,14 @@ const findTest = async (argumentsObj) => {
         $lookup:
           {
             from: 'hardwares',
-            let: {
-              cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
-              cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
-            },
+            let: { cardGamesGameID: '$gameID' },
             pipeline: [
               { $match:
                 { $expr:
-                  { $or:
+                  { $and:
                     [
-                      { $and:
-                        [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
-                        ]
-                      },
-                      { $and:
-                        [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
-                        ]
-                      }
+                      { $eq: ['$gameID', '$$cardGamesGameID'] },
+                      { $in: ['$language', languageArr] }
                     ]
                   }
                 }
@@ -159,53 +142,74 @@ const findTest = async (argumentsObj) => {
               { $project:
                 {
                   _id: 0,
-                  hardwareID: 1,
+                  gameID: 1,
+                  urlID: 1,
                   name: 1,
+                  thumbnail: 1
                 }
               }
             ],
-            as: 'hardwaresArr'
+            as: 'gamesObj'
           }
       },
-      // {
-      //   $unwind: '$hardwaresObj'
-      // },
-     
-      
-      
       {
-        $project: {
-          // __v: 0,
-          // createdDate: 0,
-          // language: 0,
-          // _id: 0,
-          updatedDate: 1,
-          users_id: 1,
-          name: 1,
-          status: 1,
-          thumbnail: 1,
-          imageVideoArr: 1,
-          comment: 1,
-          birthdayObj: { value: 1, alternativeText: 1 },
-          sexObj: { value: 1, alternativeText: 1 },
-          addressObj: { value: 1, alternativeText: 1 },
-          gamingExperienceObj: { value: 1, alternativeText: 1 },
-          hobbiesArr: '$hobbiesObj.valueArr',
-          specialSkillsArr: '$specialSkillsObj.valueArr',
-          smartphoneObj: { model: 1, comment: 1 },
-          tabletObj: { model: 1, comment: 1 },
-          pcObj: { model: 1, comment: 1, specsObj: 1 },
-          hardwareActiveArr: '$hardwareActiveObj.valueArr',
-          hardwareInactiveArr: '$hardwareInactiveObj.valueArr',
-          idArr: 1,
-          activityTimeArr: '$activityTimeObj.valueArr',
-          lookingForFriendsObj: { icon: 1, comment: 1 },
-          voiceChat: '$voiceChatObj.comment',
-          linkArr: 1,
-          usersObj: 1,
-          hardwaresArr: 1,
-        }
+        $unwind: '$gamesObj'
       },
+      
+      
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'card-players',
+      //       let: { cardGamesQuotationObjCardPlayers_id: '$quotationObj.cardPlayers_id' },
+      //       pipeline: [
+      //         { $match:
+      //           { $expr:
+      //             { $eq: ['$_id', '$$cardGamesQuotationObjCardPlayers_id'] },
+      //           }
+      //         },
+      //         { $project:
+      //           {
+      //             _id: 0,
+      //             activityTimeObj: 1,
+      //             lookingForFriendsObj: 1,
+      //             voiceChatObj: 1,
+      //             linkArr: 1
+      //           }
+      //         }
+      //       ],
+      //       as: 'cardPlayersObj'
+      //     }
+      // },
+      // {
+      //   $unwind: '$cardPlayersObj'
+      // },
+      
+      
+      // {
+      //   $project: {
+      //     _id: 1,
+      //     updatedDate: 1,
+      //     users_id: 1,
+      //     theme: 1,
+      //     name: 1,
+      //     status: 1,
+      //     thumbnail: 1,
+      //     imageVideoArr: 1,
+      //     itemArr: 1,
+      //     comment: 1,
+      //     playingHardwareObj: 1,
+      //     idArr: 1,
+      //     activityTimeObj: 1,
+      //     lookingForFriendsObj: 1,
+      //     voiceChatObj: 1,
+      //     linkArr: 1,
+      //     quotationObj: 1,
+      //     usersObj: 1,
+      //     gamesObj: 1,
+      //     // cardPlayersObj: 1,
+      //   }
+      // },
     ]).exec();
     
     
@@ -222,83 +226,75 @@ const findTest = async (argumentsObj) => {
     //   データの処理
     // --------------------------------------------------
     
-    // for (let valueObj of cardPlayersArr) {
+    for (let valueObj of cardPlayersArr) {
       
       
-    //   // --------------------------------------------------
-    //   //   コピー
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   コピー
+      // --------------------------------------------------
       
-    //   const copiedObj = JSON.parse(JSON.stringify(valueObj));
-      
-      
-    //   // --------------------------------------------------
-    //   //   画像の処理
-    //   // --------------------------------------------------
-      
-    //   copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
+      const copiedObj = JSON.parse(JSON.stringify(valueObj));
       
       
-    //   // --------------------------------------------------
-    //   //   hardwareActive
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   画像の処理
+      // --------------------------------------------------
       
-    //   copiedObj.hardwareActiveArr = [];
+      copiedObj.imageArr = srcset(`/static/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
       
-    //   for (let value of valueObj.hardwareActiveObj.valueArr) {
+      
+      // --------------------------------------------------
+      //   Follow の処理
+      // --------------------------------------------------
+      
+      if (usersLogin_id) {
         
-    //     // console.log(value);
+        copiedObj.usersObj.followed = false;
         
-    //     const obj = valueObj.hardwaresArr.find((value2) => {
-    //       return value2.hardwareID === value;
-    //     });
+        if (
+          copiedObj.users_id !== usersLogin_id &&
+          copiedObj.usersObj.followedArr.includes(usersLogin_id)
+        ) {
+          copiedObj.usersObj.followed = true;
+        }
         
-    //     // console.log(`
-    //     //   ----- obj -----\n
-    //     //   ${util.inspect(obj, { colors: true, depth: null })}\n
-    //     //   --------------------\n
-    //     // `);
-        
-    //     if (obj && 'name' in obj) {
-    //       copiedObj.hardwareActiveArr.push({
-    //         name: obj.name
-    //       });
-    //       // copiedObj.hardwareActiveArr.push(obj.name);
-    //     }
-        
-    //   }
+      }
       
       
-    //   // --------------------------------------------------
-    //   //   Follow の処理
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   プレイヤーカードからの引用
+      // --------------------------------------------------
       
-    //   if (usersLogin_id) {
-        
-    //     copiedObj.usersObj.followed = false;
-        
-    //     if (
-    //       copiedObj.users_id !== usersLogin_id &&
-    //       copiedObj.usersObj.followedArr.includes(usersLogin_id)
-    //     ) {
-    //       copiedObj.usersObj.followed = true;
-    //     }
-        
-    //   }
-    //   console.log(`valueObj._id = ${valueObj._id}`);
+      if (valueObj.quotationObj.activityTime) {
+        copiedObj.activityTimeObj = valueObj.cardPlayersObj.activityTimeObj;
+      }
       
-    //   // --------------------------------------------------
-    //   //   不要な項目を削除する
-    //   // --------------------------------------------------
+      if (valueObj.quotationObj.lookingForFriends) {
+        copiedObj.lookingForFriendsObj = valueObj.cardPlayersObj.lookingForFriendsObj;
+      }
       
-    //   delete copiedObj.imageVideoArr;
-    //   delete copiedObj.usersObj.followedArr;
-    //   // delete copiedObj.cardPlayersObj;
+      if (valueObj.quotationObj.voiceChat) {
+        copiedObj.voiceChatObj = valueObj.cardPlayersObj.voiceChatObj;
+      }
+      
+      if (valueObj.quotationObj.link) {
+        copiedObj.linkArr = valueObj.cardPlayersObj.linkArr;
+      }
       
       
-    //   returnObj[valueObj._id] = copiedObj;
+      // --------------------------------------------------
+      //   不要な項目を削除する
+      // --------------------------------------------------
       
-    // }
+      delete copiedObj.imageVideoArr;
+      delete copiedObj.usersObj.followedArr;
+      delete copiedObj.quotationObj;
+      delete copiedObj.cardPlayersObj;
+      
+      
+      returnObj[valueObj._id] = copiedObj;
+      
+    }
     
     
     
@@ -307,11 +303,27 @@ const findTest = async (argumentsObj) => {
     //   Console 出力
     // --------------------------------------------------
     
-    console.log(`
-      ----- cardPlayersArr -----\n
-      ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(cardPlayersArr.length);
+    
+    
+    // const cardPlayers_id = cardPlayersArr.quotationObj.cardPlayers_id;
+    
+    // let cardPlayersArr = await ModelCardPlayers.find({
+    //   conditionObj: {
+    //     _id: cardPlayers_id
+    //   }
+    // }).exec();
+    
+    
+    // console.log(`
+    //   cardPlayersArr: \n${util.inspect(cardPlayersArr, { colors: true, depth: null })}
+    // `);
+    
+    // console.log(`
+    //   ----- cardPlayersArr -----\n
+    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -342,7 +354,7 @@ const findTest = async (argumentsObj) => {
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const find = async (argumentsObj) => {
+const find2 = async (argumentsObj) => {
   
   
   // --------------------------------------------------
@@ -595,7 +607,6 @@ const deleteMany = async (argumentsObj) => {
 // --------------------------------------------------
 
 module.exports = {
-  findTest,
   find,
   upsert,
   insertMany,

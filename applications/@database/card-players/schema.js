@@ -93,7 +93,11 @@ const schema = mongoose.Schema({
     },
     search: { type: Boolean, required: true },
   },
-  ownedHardwareObj: {
+  hardwareActiveObj: {
+    valueArr: [String],
+    search: { type: Boolean, required: true },
+  },
+  hardwareInactiveObj: {
     valueArr: [String],
     search: { type: Boolean, required: true },
   },

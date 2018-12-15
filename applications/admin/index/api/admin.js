@@ -48,6 +48,19 @@ const ModelGames = require('../../../@database/games/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
 const ModelCardGames = require('../../../@database/card-games/model');
 const ModelGameGenres = require('../../../@database/game-genres/model');
+const ModelHardwares = require('../../../@database/hardwares/model');
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { addLocaleData } = require('react-intl');
+const en = require('react-intl/locale-data/en');
+const ja = require('react-intl/locale-data/ja');
+addLocaleData([...en, ...ja]);
+
+const { locale } = require('../../../@locales/locale');
 
 
 // --------------------------------------------------
@@ -101,6 +114,15 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   errorArgumentsObj.errorCodeArr = [101001];
     //   throw new Error();
     // }
+    
+    
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
+    
+    const localeObj = locale({
+      acceptLanguage: req.headers['accept-language']
+    });
     
     
     // --------------------------------------------------
@@ -633,6 +655,398 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     
     
     
+    // --------------------------------------------------
+    //   DB / Hardware
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Arr
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: '4FJM8n4Xa',
+        createdDate: date,
+        updatedDate: date,
+        language: 'en',
+        country: 'US',
+        hardwareID: 'I-iu-WmkO',
+        name: 'Nintendo Entertainment System'
+      },
+      {
+        _id: 'R6uD6BzZ5',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'I-iu-WmkO',
+        name: 'ファミリーコンピュータ'
+      },
+      
+      
+      {
+        _id: 'adzG1JLYu',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'KyOSlwcLk',
+        name: 'PCエンジン'
+      },
+      
+      
+      {
+        _id: 'KVvkuvZF2',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '2yKF4qXAw',
+        name: 'メガドライブ'
+      },
+      
+      
+      {
+        _id: 'WOQKUSPPR',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'eKmDxi8lX',
+        name: 'スーパーファミコン'
+      },
+      
+      
+      {
+        _id: '8oGNQ2hMR',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Z4R-SPN2-',
+        name: 'ネオジオ'
+      },
+      
+      
+      {
+        _id: '9zeb0m_13',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'lBSGQeGmx',
+        name: 'セガサターン'
+      },
+      
+      
+      {
+        _id: 'zSvRzOp0V',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'zB4ivcsqM',
+        name: 'PlayStation'
+      },
+      
+      
+      {
+        _id: 'wlDy9Dqmv',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'o9bdsq5af',
+        name: 'バーチャルボーイ'
+      },
+      
+      
+      {
+        _id: 'N-V_maXNc',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '45syCFviA',
+        name: 'NINTENDO64'
+      },
+      
+      
+      {
+        _id: 'iZ7MmkuQw',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Kj_Djheqt',
+        name: 'ドリームキャスト'
+      },
+      
+      
+      {
+        _id: 'I2cKTLJNk',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '8RERfeQQ9',
+        name: 'PlayStation 2'
+      },
+      
+      
+      {
+        _id: '8RERfeQQ9',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'XLUt628gr',
+        name: 'ニンテンドーゲームキューブ'
+      },
+      
+      
+      {
+        _id: 'XLUt628gr',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '78lc0hPjL',
+        name: 'Xbox'
+      },
+      
+      
+      {
+        _id: 'NiozcDYe-',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: '08Qp5KxPA',
+        name: 'Xbox 360'
+      },
+      
+      
+      {
+        _id: '4iGMasHh4',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'YNZ6nb1Ki',
+        name: 'PlayStation 3'
+      },
+      
+      
+      {
+        _id: '91N2yPx6B',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'n3wYKZ_ao',
+        name: 'Wii'
+      },
+      
+      
+      {
+        _id: 'qX8WLLubQ',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'GTxWVd0z-',
+        name: 'Wii U'
+      },
+      
+      
+      {
+        _id: 'FW76LaH_H',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'TdK3Oc-yV',
+        name: 'PlayStation 4'
+      },
+      
+      
+      {
+        _id: 'vk2kF94Ks',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'uPqoiXA_8',
+        name: 'Xbox One'
+      },
+      
+      
+      {
+        _id: 'Gu1hYjbv7',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'Zd_Ia4Hwm',
+        name: 'Nintendo Switch'
+      },
+      
+      
+      {
+        _id: '_z4DBLYNi',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'XBKalRRW7',
+        name: 'ゲームボーイ'
+      },
+      
+      
+      {
+        _id: '9Z6Wh_JJ2',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'sO2U2PzHl',
+        name: 'ゲームギア'
+      },
+      
+      
+      {
+        _id: 'QQtnx7FEN',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'qBsY8y0nO',
+        name: 'PCエンジンGT'
+      },
+      
+      
+      {
+        _id: 'IcH7HG2f7',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'u3SQqtJ-u',
+        name: 'ネオジオポケット'
+      },
+      
+      
+      {
+        _id: 'S2Q_3MrBo',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'PYIE0rv_e',
+        name: 'ワンダースワン'
+      },
+      
+      
+      {
+        _id: '4OkTt-VSM',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'AIvzEgDCd',
+        name: 'ゲームボーイアドバンス'
+      },
+      
+      
+      {
+        _id: 'Uem6UalMW',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'HATpnt7sl',
+        name: 'ニンテンドーDS'
+      },
+      
+      
+      {
+        _id: 'nMhdlLGm6',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'efIOgWs3N',
+        name: 'PlayStation Portable'
+      },
+      
+      
+      {
+        _id: 'YvgkE6inK',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'qk9DiUwN-',
+        name: 'ニンテンドー3DS'
+      },
+      
+      
+      {
+        _id: '_3asC9ODV',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'mOpBZsQBm',
+        name: 'PlayStation Vita'
+      },
+      
+      
+      {
+        _id: 'pr6k8Jn6_',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'P0UG-LHOQ',
+        name: 'PC'
+      },
+      
+      
+      {
+        _id: 'KN9AMVKP7',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'SXybALV1f',
+        name: 'Android'
+      },
+      
+      
+      {
+        _id: 'M7YVRglvr',
+        createdDate: date,
+        updatedDate: date,
+        language: 'ja',
+        country: 'JP',
+        hardwareID: 'o-f3Zxd49',
+        name: 'iOS'
+      },
+      
+    ];
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    // await ModelHardwares.deleteMany({});
+    // returnObj = await ModelHardwares.insertMany({ saveArr });
+    
+    
+    
     
     // --------------------------------------------------
     //   DB / Card Players
@@ -760,8 +1174,12 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         },
         search: true,
       },
-      ownedHardwareObj: {
-        valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
+      hardwareActiveObj: {
+        valueArr: ['P0UG-LHOQ', 'n3wYKZ_ao', 'TdK3Oc-yV', 'Zd_Ia4Hwm', 'qk9DiUwN-', 'SXybALV1f', 'YNZ6nb1Ki', '8RERfeQQ9'],
+        search: true,
+      },
+      hardwareInactiveObj: {
+        valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
         search: true,
       },
       idArr: [
@@ -1154,12 +1572,18 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     
     
     
-    // const cardPlayersObj = await ModelCardPlayers.find({
-    //   conditionObj: { 
-    //     users_id: 'jun-deE4J',
-    //     language: { $in: ['ja'] }
-    //   }
-    // });
+    const cardPlayersObj = await ModelCardPlayers.findTest({
+      // localeObj,
+      users_id: 'jun-deE4J',
+      language: localeObj.language,
+      country: localeObj.country,
+      // languageArr: ['ja'],
+      // countryArr: ['JP', 'US'],
+      // conditionObj: { 
+      //   users_id: 'jun-deE4J',
+      //   language: { $in: ['ja'] }
+      // }
+    });
     
     
     
@@ -1183,8 +1607,8 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     // `);
     
     // console.log(`
-    //   ----- validation_idObj -----\n
-    //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1194,11 +1618,11 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------

@@ -279,7 +279,7 @@ export default class extends React.Component {
     //   Hardware
     // ---------------------------------------------
     
-    const hardwareArr = cardPlayersObj.ownedHardwareObj.valueArr;
+    const hardwareArr = cardPlayersObj.hardwareActiveObj.valueArr;
     
     
     // ---------------------------------------------

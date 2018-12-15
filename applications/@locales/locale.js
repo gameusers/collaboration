@@ -27,7 +27,6 @@ const ja_JP = require('../../applications/@locales/ja-jp');
 
 
 
-
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
@@ -44,7 +43,7 @@ const locale = (argumentsObj) => {
   //   Property
   // --------------------------------------------------
   
-  const { acceptLanguage } = argumentsObj;
+  // const { acceptLanguage } = argumentsObj;
   
   
   // --------------------------------------------------
@@ -52,13 +51,11 @@ const locale = (argumentsObj) => {
   // --------------------------------------------------
   
   let returnObj = {};
+  let language = 'ja';
+  let country = 'JP';
   let languageArr = ['ja'];
   let countryArr = ['JP'];
   let dataObj = ja_JP;
-  
-  
-  // language = 'en';
-  // country = 'US';
   
   
   // --------------------------------------------------
@@ -104,6 +101,8 @@ const locale = (argumentsObj) => {
   //   Return
   // --------------------------------------------------
   
+  returnObj.language = language;
+  returnObj.country = country;
   returnObj.languageArr = languageArr;
   returnObj.countryArr = countryArr;
   returnObj.dataObj = dataObj;

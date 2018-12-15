@@ -459,3 +459,29 @@
 {"level":"error","message":"Fri Dec 14 2018 06:08:32 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Fri Dec 14 2018 07:44:54 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Fri Dec 14 2018 12:01:09 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot convert undefined or null to object\n"}
+{"level":"error","message":"Sat Dec 15 2018 05:16:40 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: hardware validation failed: hardwareID: Path `hardwareID` is required.\n"}
+{"level":"error","message":"Sat Dec 15 2018 05:34:13 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.hardwares index: _id_ dup key: { : \"NiozcDYe-\" }\n"}
+{"level":"error","message":"Sat Dec 15 2018 05:35:25 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: E11000 duplicate key error collection: gameusers.hardwares index: _id_ dup key: { : \"FW76LaH_H\" }\n"}
+{"level":"error","message":"Sat Dec 15 2018 05:48:01 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:41:19 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:41:20 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:41:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:44:34 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:44:34 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:53:40 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:53:41 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:54:12 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'activityTime' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:54:54 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:54:54 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:57:34 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:57:34 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: $in requires an array as a second argument, found: null\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:57:41 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'activityTime' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 08:58:16 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'activityTime' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 09:10:27 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot destructure property `language` of 'undefined' or 'null'.\n"}
+{"level":"error","message":"Sat Dec 15 2018 13:11:15 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'find' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 13:12:06 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'find' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 13:22:34 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'name' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 13:26:04 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'name' of undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 13:27:52 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot use 'in' operator to search for 'name' in undefined\n"}
+{"level":"error","message":"Sat Dec 15 2018 13:59:46 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Bad projection specification, cannot exclude fields other than '_id' in an inclusion projection: { updatedDate: 1, users_id: 1, name: 1, status: 1, thumbnail: 1, imageVideoArr: 1, comment: 1, birthdayObj: { search: 0 } }\n"}
+{"level":"error","message":"Sat Dec 15 2018 14:00:36 GMT+0000\nCode: SInn-saE6@zenm51Io4@500000\nMessage: Cannot read property 'valueArr' of undefined\n"}

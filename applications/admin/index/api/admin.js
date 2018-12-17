@@ -194,31 +194,31 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         linkArr: [
           {
             _id: 'aiK3_xZsM',
-            type: 'twitter',
+            type: 'Twitter',
             label: '',
             url: 'https://twitter.com/',
           },
           {
             _id: 'YPIzVEYuA',
-            type: 'facebook',
+            type: 'Facebook',
             label: '',
             url: 'https://ja-jp.facebook.com/',
           },
           {
             _id: 'j14biyEhD',
-            type: 'youtube',
+            type: 'YouTube',
             label: '',
             url: 'https://www.youtube.com/',
           },
           {
             _id: 'RAI0yDihN',
-            type: 'steam',
+            type: 'Steam',
             label: '',
             url: 'https://steamcommunity.com/',
           },
           {
             _id: 'BtePeoi0i',
-            type: 'other',
+            type: 'Other',
             label: '開発サイト',
             url: 'http://35.203.143.160:8080/',
           },
@@ -259,7 +259,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         linkArr: [
           {
             _id: 'MBT2C5WGE',
-            type: 'twitter',
+            type: 'Twitter',
             label: '',
             url: 'https://twitter.com/',
           },
@@ -300,13 +300,13 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         linkArr: [
           {
             _id: 'VZ2G-g2a4',
-            type: 'official',
+            type: 'Official',
             label: '',
             url: 'https://www.smashbros.com/ja_JP/',
           },
           {
             _id: 'l0oy9ei0f',
-            type: 'twitter',
+            type: 'Twitter',
             label: '',
             url: 'https://twitter.com/smashbrosjp',
           },
@@ -347,13 +347,13 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         linkArr: [
           {
             _id: 'VZ2G-g2a4',
-            type: 'official',
+            type: 'Official',
             label: '',
             url: 'https://www.smashbros.com/en_US/',
           },
           {
             _id: 'l0oy9ei0f',
-            type: 'twitter',
+            type: 'Twitter',
             label: '',
             url: 'https://twitter.com/NintendoVS',
           },
@@ -1149,7 +1149,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       },
       tabletObj: {
         model: 'Google Nexus 9 Wi-Fiモデル 32GB',
-        comment: `2015年に買ったタブレットなので最近はブラウザをチェックするだけでも重い…。2`,
+        comment: `2015年に買ったタブレットなので最近はブラウザをチェックするだけでも重い…。`,
         search: true,
       },
       pcObj: {
@@ -1185,7 +1185,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       idArr: [
         {
           _id: 'au1gnYf6b',
-          type: 'playstation',
+          type: 'PlayStation',
           label: '',
           value: 'AZ-1979',
           showType: 1,
@@ -1198,7 +1198,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         },
         {
           _id: 'OXNtQjxgF',
-          type: 'xbox',// ゲーマータグ
+          type: 'Xbox',// ゲーマータグ
           label: '',
           value: 'AZ-1979-Xbox',
           showType: 1,
@@ -1209,31 +1209,31 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'nintendo',// フレンドコード
           label: '',
           value: 'AZ-1979',
-          showType: 1,
+          showType: 2,
           search: true,
         },
         {
           _id: 'BNJPgqtoR',
-          type: 'steam',
+          type: 'Steam',
           label: '',
           value: 'Azumi1979',
-          showType: 1,
+          showType: 3,
           search: true,
         },
         {
           _id: 'ndQgliRHK',
-          type: 'other',
+          type: 'Other',
           label: 'LoL ID',
           value: 'lol-id',
-          showType: 1,
+          showType: 4,
           search: true,
         },
         {
           _id: 'pJxHh8ZaR',
-          type: 'other',
-          label: 'LoL ID',
-          value: 'lol-id',
-          showType: 1,
+          type: 'Other',
+          label: 'MHW ID',
+          value: 'mhw-id',
+          showType: 5,
           search: true,
         }
       ],
@@ -1266,56 +1266,56 @@ router.post('/insert', upload.none(), async (req, res, next) => {
       linkArr: [
         {
           _id: 'FbbgE5PTW',
-          type: 'twitter',
+          type: 'Twitter',
           label: '',
           url: 'https://twitter.com/Azumi1979',
           search: true,
         },
         {
           _id: 'VMp_Vlk_V',
-          type: 'facebook',
+          type: 'Facebook',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
           _id: 'IqNtEQQsO',
-          type: 'instagram',
+          type: 'Instagram',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
           _id: 'yBC3AHqrP',
-          type: 'youtube',
+          type: 'YouTube',
           label: '',
           url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
           search: true,
         },
         {
           _id: 'YD8DHCvb_',
-          type: 'twitch',
+          type: 'Twitch',
           label: '',
           url: 'https://gaming.youtube.com/channel/UCGmS-B707Sqa19BXRn02JIw/live',
           search: true,
         },
         {
           _id: '8u2ht4NLv',
-          type: 'steam',
+          type: 'Steam',
           label: '',
           url: 'https://steamcommunity.com/profiles/76561198031526480/',
           search: true,
         },
         {
           _id: 'lqNaKEL49',
-          type: 'pixiv',
+          type: 'Pixiv',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
           _id: 'zcPp3XyEw',
-          type: 'other',
+          type: 'Other',
           label: '開発サイト',
           url: 'http://35.203.143.160:8080/',
           search: true,
@@ -1328,10 +1328,10 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   Upsert
     // --------------------------------------------------
     
-    // returnObj = await ModelCardPlayers.upsert({
-    //   conditionObj,
-    //   saveObj
-    // });
+    returnObj = await ModelCardPlayers.upsert({
+      conditionObj,
+      saveObj
+    });
     
     
     
@@ -1416,29 +1416,24 @@ router.post('/insert', upload.none(), async (req, res, next) => {
 僕の場合、オープンワールドゲームはやり込みすぎて
 いつも最後は嫌になってクリアする感じなのですが
 BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
-      playingHardwareObj: {
-        valueArr: ['PC', 'PS4', 'Xbox One', 'Switch', 'Wii', '3DS', 'Android', 'iOS'],
+      hardwarePlayingObj: {
+        valueArr: ['TdK3Oc-yV'],
         search: true,
       },
       idArr: [
         {
           _id: '9_-NXN6rQ',
           quotation_id: '',
-          type: 'playstation',
+          type: 'PlayStation',
           label: '',
           value: 'AZ-1979-Game',
           showType: 1,
           search: true,
-          // 1.表示する
-          // 2.自分をフォローしているユーザーに表示する
-          // 3.自分がフォローしているユーザーに表示する
-          // 4.相互フォローで表示する
-          // 5.表示しない
         },
         {
           _id: '-9hC-izPG',
           quotation_id: '',
-          type: 'xbox',// ゲーマータグ
+          type: 'Xbox',// ゲーマータグ
           label: '',
           value: 'AZ-1979-Xbox-Game',
           showType: 1,
@@ -1447,7 +1442,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
         {
           _id: 'QbkY_-AjW',
           quotation_id: 'VY9aFMoVh',
-          type: 'other',
+          type: 'Other',
           label: '',
           value: '',
           showType: 5,
@@ -1456,7 +1451,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
         {
           _id: 'qMsL_dgHW',
           quotation_id: '',
-          type: 'steam',
+          type: 'Steam',
           label: '',
           value: 'Azumi1979',
           showType: 1,
@@ -1465,7 +1460,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
         {
           _id: 'quLSl_A90',
           quotation_id: '',
-          type: 'other',
+          type: 'Other',
           label: 'LoL ID',
           value: 'lol-id',
           showType: 1,
@@ -1474,9 +1469,9 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
         {
           _id: '19bLgUTWU',
           quotation_id: '',
-          type: 'other',
-          label: 'LoL ID',
-          value: 'lol-id',
+          type: 'Other',
+          label: 'MHW ID',
+          value: 'mhw-id',
           showType: 1,
           search: true,
         }
@@ -1510,28 +1505,21 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
       linkArr: [
         {
           _id: 'K2NRYVCox',
-          type: 'twitter',
+          type: 'Twitter',
           label: '',
           url: 'https://twitter.com/Azumi1979',
           search: true,
         },
         {
           _id: '0syPuDv6O',
-          type: 'facebook',
+          type: 'Facebook',
           label: '',
           url: 'https://www.youtube.com/',
           search: true,
         },
         {
-          _id: 'STJa3TLJX',
-          type: 'quotation',
-          label: '',
-          url: '',
-          search: true,
-        },
-        {
           _id: 'spRqODqbz',
-          type: 'other',
+          type: 'Other',
           label: 'Game開発サイト',
           url: 'http://35.203.143.160:8080/',
           search: true,
@@ -1551,10 +1539,10 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     //   Upsert
     // --------------------------------------------------
     
-    // returnObj = await ModelCardGames.upsert({
-    //   conditionObj,
-    //   saveObj
-    // });
+    returnObj = await ModelCardGames.upsert({
+      conditionObj,
+      saveObj
+    });
     
     
     
@@ -1570,20 +1558,19 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     //   usersLogin_id: 'P7UJMuUnx'
     // });
     
-    
-    
-    const cardPlayersObj = await ModelCardPlayers.findTest({
-      // localeObj,
+    const cardGamesObj = await ModelCardGames.find({
       users_id: 'jun-deE4J',
       language: localeObj.language,
       country: localeObj.country,
-      // languageArr: ['ja'],
-      // countryArr: ['JP', 'US'],
-      // conditionObj: { 
-      //   users_id: 'jun-deE4J',
-      //   language: { $in: ['ja'] }
-      // }
+      usersLogin_id: 'P7UJMuUnx'
     });
+    
+    // const cardPlayersObj = await ModelCardPlayers.find({
+    //   users_id: 'jun-deE4J',
+    //   language: localeObj.language,
+    //   country: localeObj.country,
+    //   usersLogin_id: 'P7UJMuUnx'
+    // });
     
     
     

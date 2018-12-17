@@ -224,7 +224,16 @@ export default class extends React.Component {
       followedCount,
       followed
       
-    } = stores.data.usersObj[users_id];
+    } = cardPlayersObj.usersObj;
+    
+    // const {
+      
+    //   accessDate,
+    //   level,
+    //   followedCount,
+    //   followed
+      
+    // } = stores.data.usersObj[users_id];
     
     
     // ---------------------------------------------
@@ -279,7 +288,8 @@ export default class extends React.Component {
     //   Hardware
     // ---------------------------------------------
     
-    const hardwareArr = cardPlayersObj.hardwareActiveObj.valueArr;
+    const hardwareActiveArr = cardPlayersObj.hardwareActiveArr;
+    const hardwareInactiveArr = cardPlayersObj.hardwareInactiveArr;
     
     
     // ---------------------------------------------
@@ -469,7 +479,10 @@ export default class extends React.Component {
             
             
             {/* 所有ハード */}
-            <Hardware hardwareArr={hardwareArr} />
+            <Hardware
+              hardwareActiveArr={hardwareActiveArr}
+              hardwareInactiveArr={hardwareInactiveArr}
+            />
             
             
             {/* スマートフォン */}

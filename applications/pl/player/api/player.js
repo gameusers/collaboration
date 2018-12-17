@@ -180,11 +180,18 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.find({
-      conditionObj: {
-        users_id,
-        language: { $in: localeObj.languageArr }
-      }
+      users_id,
+      language: localeObj.language,
+      country: localeObj.country,
+      usersLogin_id
     });
+    
+    // const cardPlayersObj = await ModelCardPlayers.find({
+    //   conditionObj: {
+    //     users_id,
+    //     language: { $in: localeObj.languageArr }
+    //   }
+    // });
     
     returnObj.cardPlayersObj = cardPlayersObj;
     
@@ -195,10 +202,17 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardGamesObj = await ModelCardGames.find({
-      countryArr: localeObj.countryArr,
-      languageArr: localeObj.languageArr,
-      conditionObj: { users_id }
+      users_id,
+      language: localeObj.language,
+      country: localeObj.country,
+      usersLogin_id
     });
+    
+    // const cardGamesObj = await ModelCardGames.find({
+    //   countryArr: localeObj.countryArr,
+    //   languageArr: localeObj.languageArr,
+    //   conditionObj: { users_id }
+    // });
     
     returnObj.cardGamesObj = cardGamesObj;
     

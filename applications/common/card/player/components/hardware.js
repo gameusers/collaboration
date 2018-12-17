@@ -33,7 +33,6 @@ import Icon from '@material-ui/icons/Gamepad';
 
 
 
-
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
@@ -91,6 +90,20 @@ const Item = styled.div`
   }
 `;
 
+// const ItemInactive = styled.div`
+//   margin: 0 20px 0 0;
+//   padding: 0;
+//   color: #FE2E64;
+  
+//   @media screen and (max-width: 480px) {
+//     margin: 0;
+//   }
+// `;
+
+const SpanColor = styled.span`
+  color: #088A08;
+`;
+
 
 
 
@@ -115,34 +128,93 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { hardwareArr } = this.props;
+    const { hardwareActiveArr, hardwareInactiveArr, hardwarePlayingArr } = this.props;
+    
+    const componentArr = [];
+    let tempArr = [];
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (!Array.isArray(hardwareArr) || hardwareArr.length === 0) {
-      return null;
-    }
+    // if (!Array.isArray(hardwareArr) || hardwareArr.length === 0) {
+    //   return null;
+    // }
     
     
     // --------------------------------------------------
     //   見出し
     // --------------------------------------------------
     
-    let componentHeading = '所有ハード';
+    let componentHeading = <Heading>所有ハードウェア<SpanColor>（昔所有）</SpanColor></Heading>;
+    
+    if (hardwarePlayingArr) {
+      componentHeading = <Heading>ハードウェア</Heading>;
+    }
+    
     
     
     // ---------------------------------------------
     //   所有ハード
     // ---------------------------------------------
     
-    const componentArr = [];
+    if (Array.isArray(hardwareActiveArr) && hardwareActiveArr.length > 0) {
+      
+      for (let valueObj of hardwareActiveArr) {
+        tempArr.push(valueObj.name);
+      }
+      
+      componentArr.push(
+        <Item key="hardwareActive">{tempArr.join(' / ')}</Item>
+      );
+      
+    }
     
-    componentArr.push(
-      <Item key="ownedHardware">{hardwareArr.join(' / ')}</Item>
-    );
+    
+    // ---------------------------------------------
+    //   非所有ハード
+    // ---------------------------------------------
+    
+    tempArr = [];
+    
+    if (Array.isArray(hardwareInactiveArr) && hardwareInactiveArr.length > 0) {
+      
+      for (let valueObj of hardwareInactiveArr) {
+        tempArr.push(valueObj.name);
+      }
+      
+      componentArr.push(
+        <Item key="hardwareInactive"><SpanColor>{tempArr.join(' / ')}</SpanColor></Item>
+      );
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   ハードウェア
+    // ---------------------------------------------
+    
+    if (Array.isArray(hardwarePlayingArr) && hardwarePlayingArr.length > 0) {
+      
+      for (let valueObj of hardwarePlayingArr) {
+        tempArr.push(valueObj.name);
+      }
+      
+      componentArr.push(
+        <Item key="hardwarePlaying">{tempArr.join(' / ')}</Item>
+      );
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   コンテンツが存在しない場合、空のコンポーネントを返す
+    // --------------------------------------------------
+    
+    if (componentArr.length === 0) {
+      return null;
+    }
     
     
     // ---------------------------------------------
@@ -176,7 +248,7 @@ export default class extends React.Component {
         {/* 見出し */}
         <HeadingBox>
           <StyledIcon />
-          <Heading>{componentHeading}</Heading>
+          {componentHeading}
         </HeadingBox>
         
         {/* ハードウェア */}

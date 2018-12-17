@@ -34,13 +34,6 @@ const ModelCardPlayers = require('../card-players/schema');
 const { srcset } = require('../../@format/image');
 
 
-// ---------------------------------------------
-//   Logger
-// ---------------------------------------------
-
-// const logger = require('../../@modules/logger');
-
-
 
 
 // --------------------------------------------------
@@ -61,8 +54,9 @@ const find = async (argumentsObj) => {
   
   const {
     
-    countryArr,
-    languageArr,
+    users_id,
+    language,
+    country,
     usersLogin_id
     
   } = argumentsObj;
@@ -89,6 +83,11 @@ const find = async (argumentsObj) => {
     let cardGamesArr = await Model.aggregate([
       
       {
+        $match : { users_id }
+      },
+      
+      
+      {
         $lookup:
           {
             from: 'users',
@@ -96,12 +95,7 @@ const find = async (argumentsObj) => {
             pipeline: [
               { $match:
                 { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$_id', '$$cardGamesUsers_id'] },
-                      { $in: ['$country', countryArr] }
-                    ]
-                  }
+                  { $eq: ['$_id', '$$cardGamesUsers_id'] },
                 }
               },
               { $project:
@@ -109,6 +103,7 @@ const find = async (argumentsObj) => {
                   _id: 0,
                   accessDate: 1,
                   level: 1,
+                  followArr: 1,
                   followedArr: 1,
                   followedCount: 1,
                 }
@@ -133,7 +128,8 @@ const find = async (argumentsObj) => {
                   { $and:
                     [
                       { $eq: ['$gameID', '$$cardGamesGameID'] },
-                      { $in: ['$language', languageArr] }
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
                     ]
                   }
                 }
@@ -186,39 +182,83 @@ const find = async (argumentsObj) => {
       
       
       {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: { hardwarePlayingArr: '$hardwarePlayingObj.valueArr' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$hardwareID', '$$hardwarePlayingArr'] }
+                    ]
+                  }
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+      
+      
+      {
         $project: {
-          _id: 1,
-          updatedDate: 1,
-          users_id: 1,
-          theme: 1,
-          name: 1,
-          status: 1,
-          thumbnail: 1,
-          imageVideoArr: 1,
-          itemArr: 1,
-          comment: 1,
-          playingHardwareObj: 1,
-          idArr: 1,
-          activityTimeObj: 1,
-          lookingForFriendsObj: 1,
-          voiceChatObj: 1,
-          linkArr: 1,
-          quotationObj: 1,
-          usersObj: 1,
-          gamesObj: 1,
-          cardPlayersObj: 1,
+          __v: 0,
+          createdDate: 0,
+          language: 0,
+          hardwarePlayingObj: { search: 0 },
+          activityTimeObj: { search: 0 },
+          'activityTimeObj.valueArr': { _id: 0 },
+          lookingForFriendsObj: { search: 0 },
+          voiceChatObj: { search: 0 },
+          idArr: { _id: 0, search: 0 },
+          linkArr: { _id: 0, search: 0 },
+          
+          'cardPlayersObj.activityTimeObj': { search: 0 },
+          'cardPlayersObj.activityTimeObj.valueArr': { _id: 0 },
+          'cardPlayersObj.lookingForFriendsObj': { search: 0 },
+          'cardPlayersObj.voiceChatObj': { search: 0 },
+          'cardPlayersObj.linkArr': { _id: 0, search: 0 },
         }
       },
+      // {
+      //   $project: {
+      //     _id: 1,
+      //     updatedDate: 1,
+      //     users_id: 1,
+      //     theme: 1,
+      //     name: 1,
+      //     status: 1,
+      //     thumbnail: 1,
+      //     imageVideoArr: 1,
+      //     itemArr: 1,
+      //     comment: 1,
+      //     hardwarePlayingObj: 1,
+      //     idArr: 1,
+      //     activityTimeObj: 1,
+      //     lookingForFriendsObj: 1,
+      //     voiceChatObj: 1,
+      //     linkArr: 1,
+      //     quotationObj: 1,
+      //     usersObj: 1,
+      //     gamesObj: 1,
+      //     cardPlayersObj: 1,
+      //   }
+      // },
     ]).exec();
     
     
     
-    
-    // --------------------------------------------------
-    //   Return Value
-    // --------------------------------------------------
-    
-    // let returnObj = {};
     
     
     // --------------------------------------------------
@@ -243,18 +283,70 @@ const find = async (argumentsObj) => {
       
       
       // --------------------------------------------------
+      //   hardwarePlaying
+      // --------------------------------------------------
+      
+      copiedObj.hardwarePlayingArr = [];
+      
+      for (let value of valueObj.hardwarePlayingObj.valueArr) {
+        
+        const obj = valueObj.hardwaresArr.find((value2) => {
+          return value2.hardwareID === value;
+        });
+        
+        if (obj && 'name' in obj) {
+          copiedObj.hardwarePlayingArr.push({
+            name: obj.name
+          });
+        }
+        
+      }
+      
+      
+      // --------------------------------------------------
       //   Follow の処理
       // --------------------------------------------------
       
+      copiedObj.usersObj.follow = false;
+      copiedObj.usersObj.followed = false;
+      
       if (usersLogin_id) {
         
-        copiedObj.usersObj.followed = false;
+        if (copiedObj.users_id !== usersLogin_id) {
+          
+          if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
+            copiedObj.usersObj.follow = true;
+          }
+          
+          if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
+            copiedObj.usersObj.followed = true;
+          }
+          
+        }
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   ID
+      // --------------------------------------------------
+      
+      copiedObj.idArr = [];
+      
+      for (let tempObj of valueObj.idArr) {
         
         if (
-          copiedObj.users_id !== usersLogin_id &&
-          copiedObj.usersObj.followedArr.includes(usersLogin_id)
+          tempObj.showType === 1 ||
+          tempObj.showType === 2 && copiedObj.usersObj.followed ||
+          tempObj.showType === 3 && copiedObj.usersObj.follow ||
+          tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
+          tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
         ) {
-          copiedObj.usersObj.followed = true;
+          copiedObj.idArr.push({
+            type: tempObj.type,
+            label: tempObj.label,
+            value: tempObj.value
+          });
         }
         
       }
@@ -285,8 +377,12 @@ const find = async (argumentsObj) => {
       //   不要な項目を削除する
       // --------------------------------------------------
       
+      delete copiedObj._id;
       delete copiedObj.imageVideoArr;
+      delete copiedObj.usersObj.followArr;
       delete copiedObj.usersObj.followedArr;
+      delete copiedObj.hardwarePlayingObj;
+      delete copiedObj.hardwaresArr;
       delete copiedObj.quotationObj;
       delete copiedObj.cardPlayersObj;
       
@@ -299,34 +395,89 @@ const find = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   データの処理
     // --------------------------------------------------
     
-    // console.log(cardGamesArr.length);
-    
-    
-    // const cardPlayers_id = cardGamesArr.quotationObj.cardPlayers_id;
-    
-    // let cardPlayersArr = await ModelCardPlayers.find({
-    //   conditionObj: {
-    //     _id: cardPlayers_id
+    // for (let valueObj of cardGamesArr) {
+      
+      
+    //   // --------------------------------------------------
+    //   //   コピー
+    //   // --------------------------------------------------
+      
+    //   const copiedObj = JSON.parse(JSON.stringify(valueObj));
+      
+      
+    //   // --------------------------------------------------
+    //   //   画像の処理
+    //   // --------------------------------------------------
+      
+    //   copiedObj.imageArr = srcset(`/static/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
+      
+      
+    //   // --------------------------------------------------
+    //   //   Follow の処理
+    //   // --------------------------------------------------
+      
+    //   if (usersLogin_id) {
+        
+    //     copiedObj.usersObj.followed = false;
+        
+    //     if (
+    //       copiedObj.users_id !== usersLogin_id &&
+    //       copiedObj.usersObj.followedArr.includes(usersLogin_id)
+    //     ) {
+    //       copiedObj.usersObj.followed = true;
+    //     }
+        
     //   }
-    // }).exec();
+      
+      
+    //   // --------------------------------------------------
+    //   //   プレイヤーカードからの引用
+    //   // --------------------------------------------------
+      
+    //   if (valueObj.quotationObj.activityTime) {
+    //     copiedObj.activityTimeObj = valueObj.cardPlayersObj.activityTimeObj;
+    //   }
+      
+    //   if (valueObj.quotationObj.lookingForFriends) {
+    //     copiedObj.lookingForFriendsObj = valueObj.cardPlayersObj.lookingForFriendsObj;
+    //   }
+      
+    //   if (valueObj.quotationObj.voiceChat) {
+    //     copiedObj.voiceChatObj = valueObj.cardPlayersObj.voiceChatObj;
+    //   }
+      
+    //   if (valueObj.quotationObj.link) {
+    //     copiedObj.linkArr = valueObj.cardPlayersObj.linkArr;
+    //   }
+      
+      
+    //   // --------------------------------------------------
+    //   //   不要な項目を削除する
+    //   // --------------------------------------------------
+      
+    //   delete copiedObj.imageVideoArr;
+    //   delete copiedObj.usersObj.followedArr;
+    //   delete copiedObj.quotationObj;
+    //   delete copiedObj.cardPlayersObj;
+      
+      
+    //   returnObj[valueObj._id] = copiedObj;
+      
+    // }
     
     
-    // console.log(`
-    //   cardGamesArr: \n${util.inspect(cardGamesArr, { colors: true, depth: null })}
-    // `);
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
     
     // console.log(`
     //   ----- cardGamesArr -----\n
     //   ${util.inspect(cardGamesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersArr -----\n
-    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

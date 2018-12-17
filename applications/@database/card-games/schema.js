@@ -38,7 +38,7 @@ const schema = mongoose.Schema({
   ],
   itemArr: mongoose.Schema.Types.Mixed,
   comment: String,
-  playingHardwareObj: {
+  hardwarePlayingObj: {
     valueArr: [String],
     search: { type: Boolean, required: true },
   },

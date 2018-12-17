@@ -109,9 +109,6 @@ const LinkOtherButton = styled(Button)`
 
 
 
-
-
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -152,7 +149,7 @@ export default class extends React.Component {
     
     for (const [index, value] of linkArr.entries()) {
       
-      if (value.type === 'other') {
+      if (value.type === 'Other') {
         
         componentLinkArr.push(
           <LinkOtherBox key={index}>
@@ -172,7 +169,7 @@ export default class extends React.Component {
         componentLinkArr.push(
           <LinkItem key={`link${index}`}>
             <a href={value.url} target="_blank">
-              <img src={`/static/img/common/social/card/${value.type}.png`} width="26" height="26" />
+              <img src={`/static/img/common/social/card/${value.type.toLowerCase()}.png`} width="26" height="26" />
             </a>
           </LinkItem>
         );

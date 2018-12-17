@@ -45,15 +45,10 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 import Paragraph from '../../../layout/components/paragraph';
 import UserThumbnail from '../../../user/components/thumbnail';
 import UserName from '../../../user/components/name';
-import Profile from './profile';
-import Smartphone from './smartphone';
-import Tablet from './tablet';
-import Pc from './pc';
 import Hardware from './hardware';
 import IdFriend from './id-friend';
 import Follow from './follow';
 import Link from './link';
-
 
 
 
@@ -175,8 +170,6 @@ export default class extends React.Component {
     const { stores, cardGames_id } = this.props;
     
     
-    
-    
     // --------------------------------------------------
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
@@ -184,8 +177,6 @@ export default class extends React.Component {
     if (cardGames_id in stores.data.cardGamesObj === false) {
       return null;
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -224,7 +215,16 @@ export default class extends React.Component {
       followedCount,
       followed
       
-    } = stores.data.usersObj[users_id];
+    } = cardGamesObj.usersObj;
+    
+    // const {
+      
+    //   accessDate,
+    //   level,
+    //   followedCount,
+    //   followed
+      
+    // } = stores.data.usersObj[users_id];
     
     
     // ---------------------------------------------
@@ -264,7 +264,7 @@ export default class extends React.Component {
     //   Hardware
     // ---------------------------------------------
     
-    const hardwareArr = cardGamesObj.playingHardwareObj.valueArr;
+    const hardwarePlayingArr = cardGamesObj.hardwarePlayingArr;
       
     
     // ---------------------------------------------
@@ -403,7 +403,7 @@ export default class extends React.Component {
             
             
             {/* 遊んでいるハード */}
-            <Hardware hardwareArr={hardwareArr} />
+            <Hardware hardwarePlayingArr={hardwarePlayingArr} />
             
             
             {/* ID & Friend */}

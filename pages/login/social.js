@@ -11,10 +11,10 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreLoginSocial from '../../applications/login/social/stores/store';
+import initStoreLayout from '../../app/common/layout/stores/layout';
+import initStoreLoginSocial from '../../app/login/social/stores/store';
 
-import Layout from '../../applications/common/layout/components/layout';
+import Layout from '../../app/common/layout/components/layout';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

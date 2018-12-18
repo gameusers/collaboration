@@ -19,10 +19,10 @@ import Typography from '@material-ui/core/Typography';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 
-import initStoreLayout from '../applications/common/layout/stores/layout';
-import initStoreIndex from '../applications/index/stores/store';
+import initStoreLayout from '../app/common/layout/stores/layout';
+import initStoreIndex from '../app/index/stores/store';
 
-import Layout from '../applications/common/layout/components/layout';
+import Layout from '../app/common/layout/components/layout';
 
 import withRoot from '../lib/material-ui/withRoot';
 

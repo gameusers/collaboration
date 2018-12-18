@@ -59,32 +59,32 @@ import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
 addLocaleData([...en, ...ja]);
 
-import { locale } from '../../applications/@locales/locale';
+import { locale } from '../../app/@locales/locale';
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../applications/@modules/fetch';
+import { fetchWrapper } from '../../app/@modules/fetch';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../applications/@stores/index';
-import initStoreCardPlayer from '../../applications/common/card/player/stores/player';
-import initStorePlayerPlayer from '../../applications/pl/player/stores/store';
+import initStoreIndex from '../../app/@stores/index';
+import initStoreCardPlayer from '../../app/common/card/player/stores/player';
+import initStorePlayerPlayer from '../../app/pl/player/stores/store';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../applications/common/layout/components/layout';
-import CardPlayer from '../../applications/common/card/player/components/player';
-import CardGame from '../../applications/common/card/player/components/game';
+import Layout from '../../app/common/layout/components/layout';
+import CardPlayer from '../../app/common/card/player/components/player';
+import CardGame from '../../app/common/card/player/components/game';
 
 
 // ---------------------------------------------
@@ -152,7 +152,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerId=${query.param1}`),
+      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerID=${query.param1}`),
       methodType: 'GET',
       reqHeadersCookie: isServer ? req.headers.cookie : '',
       reqAcceptLanguage: isServer ? req.headers['accept-language'] : ''
@@ -340,6 +340,10 @@ class Component extends React.Component {
               <CardGame
                 cardGames_id={valueObj.cardGames_id}
                 key={index}
+                showGameName={true}
+                showCardPlayerButton={false}
+                showCardGameButton={false}
+                showFollow={false}
               />
             </CardBox>
           );

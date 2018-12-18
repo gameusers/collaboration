@@ -10,16 +10,16 @@ import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 
-import initStoreData from '../../applications/common/layout/stores/data';
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreFormPost from '../../applications/common/form/stores/post';
-import initStoreBbsNavigation from '../../applications/common/bbs/stores/navigation';
-import initStoreBbs from '../../applications/common/bbs/stores/bbs';
-import initStoreUserCommunity from '../../applications/uc/community/stores/store';
+import initStoreData from '../../app/common/layout/stores/data';
+import initStoreLayout from '../../app/common/layout/stores/layout';
+import initStoreFormPost from '../../app/common/form/stores/post';
+import initStoreBbsNavigation from '../../app/common/bbs/stores/navigation';
+import initStoreBbs from '../../app/common/bbs/stores/bbs';
+import initStoreUserCommunity from '../../app/uc/community/stores/store';
 
-import Layout from '../../applications/common/layout/components/layout';
-import BbsNavigation from '../../applications/common/bbs/components/navigation';
-import Bbs from '../../applications/common/bbs/components/bbs';
+import Layout from '../../app/common/layout/components/layout';
+import BbsNavigation from '../../app/common/bbs/components/navigation';
+import Bbs from '../../app/common/bbs/components/bbs';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

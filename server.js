@@ -28,11 +28,11 @@ const util = require('util');
 
 // const logger = require('./lib/logger/logger');
 
-const { createCsrfToken } = require('./applications/@modules/csrf');
+const { createCsrfToken } = require('./app/@modules/csrf');
 
-// const routerApi = require('./applications/common/routes/v1/');
+// const routerApi = require('./app/common/routes/v1/');
 
-const routerApi = require('./applications/@api/v1/');
+const routerApi = require('./app/@api/v1/');
 
 
 

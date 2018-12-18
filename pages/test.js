@@ -41,14 +41,14 @@ import fetch from 'isomorphic-unfetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../applications/common/stores/index';
+import initStoreIndex from '../app/common/stores/index';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../applications/common/layout/components/layout';
+import Layout from '../app/common/layout/components/layout';
 
 
 // ---------------------------------------------

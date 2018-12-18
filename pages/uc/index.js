@@ -34,10 +34,10 @@ import IconSchedule from '@material-ui/icons/Schedule';
 import IconLaunch from '@material-ui/icons/Launch';
 import IconVideogameAsset from '@material-ui/icons/VideogameAsset';
 
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreUcIndex from '../../applications/uc/index/stores/store';
+import initStoreLayout from '../../app/common/layout/stores/layout';
+import initStoreUcIndex from '../../app/uc/index/stores/store';
 
-import Layout from '../../applications/common/layout/components/layout';
+import Layout from '../../app/common/layout/components/layout';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

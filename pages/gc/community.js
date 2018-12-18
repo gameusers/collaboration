@@ -8,10 +8,10 @@ import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreGcCommunity from '../../applications/gc/community/stores/store';
+import initStoreLayout from '../../app/common/layout/stores/layout';
+import initStoreGcCommunity from '../../app/gc/community/stores/store';
 
-import Layout from '../../applications/common/layout/components/layout';
+import Layout from '../../app/common/layout/components/layout';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

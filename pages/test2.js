@@ -14,7 +14,7 @@ import React from 'react';
 //   Material UI
 // ---------------------------------------------
 
-// const { fetchWrapper } = require('../applications/@modules/fetch');
+// const { fetchWrapper } = require('../app/@modules/fetch');
 
 
 

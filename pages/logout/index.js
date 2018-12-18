@@ -15,11 +15,11 @@ import Button from '@material-ui/core/Button';
 const chalk = require('chalk');
 const util = require('util');
 
-import initStoreIndex from '../../applications/common/stores/index';
-import initStoreLogoutIndex from '../../applications/logout/index/stores/store';
+import initStoreIndex from '../../app/common/stores/index';
+import initStoreLogoutIndex from '../../app/logout/index/stores/store';
 
-import Layout from '../../applications/common/layout/components/layout';
-import Panel from '../../applications/common/layout/components/panel';
+import Layout from '../../app/common/layout/components/layout';
+import Panel from '../../app/common/layout/components/panel';
 
 import withRoot from '../../lib/material-ui/withRoot';
 

@@ -55,19 +55,19 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../applications/common/stores/index';
-import initStoreLayout from '../../applications/common/layout/stores/layout';
-import initStoreData from '../../applications/common/stores/data';
-import initStoreLoginIndex from '../../applications/login/index/stores/store';
+import initStoreIndex from '../../app/common/stores/index';
+import initStoreLayout from '../../app/common/layout/stores/layout';
+import initStoreData from '../../app/common/stores/data';
+import initStoreLoginIndex from '../../app/login/index/stores/store';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../applications/common/layout/components/layout';
-import Panel from '../../applications/common/layout/components/panel';
-import TermsOfService from '../../applications/common/layout/components/terms-of-service';
+import Layout from '../../app/common/layout/components/layout';
+import Panel from '../../app/common/layout/components/panel';
+import TermsOfService from '../../app/common/layout/components/terms-of-service';
 
 
 // ---------------------------------------------

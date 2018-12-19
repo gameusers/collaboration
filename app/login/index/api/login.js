@@ -195,7 +195,7 @@ router.post('/', upload.none(), (req, res, next) => {
       // --------------------------------------------------
       
       // console.log(chalk`
-      //   loginId: {green ${loginID}}
+      //   loginID: {green ${loginID}}
       //   loginPassword: {green ${loginPassword}}
       //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
       // `);
@@ -304,7 +304,7 @@ router.post('/', upload.none(), (req, res, next) => {
         // ---------------------------------------------
         
         return res.status(200).json({
-          playerId: req.user.playerId
+          playerID: req.user.playerID
         });
         
       });
@@ -440,7 +440,7 @@ passport.deserializeUser((id, done) => {
       // status: user.status,
       accessDate: user.accessDate,
       level: user.level,
-      playerId: user.playerId,
+      playerID: user.playerID,
       role: user.role,
     };
     
@@ -524,7 +524,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
     
     const formDataObj = new FormData();
     
-    formDataObj.append('loginID', req.body.createAccountId);
+    formDataObj.append('loginID', req.body.createAccountID);
     formDataObj.append('loginPassword', req.body.createAccountPassword);
     // formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
     // これをどうするか

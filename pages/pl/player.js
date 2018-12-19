@@ -242,7 +242,7 @@ class Component extends React.Component {
       };
       
       this.stores = initStoreIndex(argumentsObj);
-      this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
+      // this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
       
       
@@ -318,6 +318,9 @@ class Component extends React.Component {
         componentCardsArr.push(
           <CardPlayer
             cardPlayers_id={valueObj.cardPlayers_id}
+            cardGames_id="TzjNMDQyl"
+            showCardGameButton={true}
+            showFollow={true}
             key={index}
           />
         );
@@ -329,6 +332,10 @@ class Component extends React.Component {
           componentCardsArr.push(
             <CardGame
               cardGames_id={valueObj.cardGames_id}
+              showGameName={true}
+              showCardPlayerButton={false}
+              // showCardGameButton={false}
+              showFollow={false}
               key={index}
             />
           );
@@ -339,10 +346,9 @@ class Component extends React.Component {
             <CardBox key={index}>
               <CardGame
                 cardGames_id={valueObj.cardGames_id}
-                key={index}
                 showGameName={true}
                 showCardPlayerButton={false}
-                showCardGameButton={false}
+                // showCardGameButton={false}
                 showFollow={false}
               />
             </CardBox>

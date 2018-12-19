@@ -254,7 +254,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         urlID: 'Dead-by-Daylight',
         language: 'ja',
         country: 'JP',
-        thumbnail: false,
+        thumbnail: true,
         imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',

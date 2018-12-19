@@ -22,7 +22,7 @@ import fetch from 'isomorphic-unfetch';
 //   Validation
 // ---------------------------------------------
 
-const validationLoginID = require('../../../@database/users/validations/login-id');
+const validationLoginId = require('../../../@database/users/validations/login-id');
 const { validationLoginPassword, validationLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
 const validationEmail = require('../../../@database/users/validations/email');
 
@@ -71,25 +71,25 @@ class Store {
    * ログインID
    * @type {string}
    */
-  @observable loginID = '';
+  @observable loginId = '';
   
   /**
    * ログインID　文字数
    * @type {number}
    */
-  @observable loginIDNumberOfCharacters = 0;
+  @observable loginIdNumberOfCharacters = 0;
   
   /**
    * ログインID　エラー（バリデーション用）
    * @type {string}
    */
-  @observable loginIDError = false;
+  @observable loginIdError = false;
   
   /**
    * ログインID　エラーメッセージ
    * @type {string}
    */
-  @observable loginIDErrorMessage = '';
+  @observable loginIdErrorMessage = '';
   
   
   /**
@@ -97,14 +97,14 @@ class Store {
    * @param {Object} event - イベント
    */
   @action.bound
-  handleLoginID(event) {
+  handleLoginId(event) {
     
-    const resultObj = validationLoginID(event.target.value);
+    const resultObj = validationLoginId(event.target.value);
     
-    this.loginID = resultObj.value;
-    this.loginIDNumberOfCharacters = resultObj.numberOfCharacters;
-    this.loginIDError = resultObj.error;
-    this.loginIDErrorMessage = resultObj.errorMessageArr[0];
+    this.loginId = resultObj.value;
+    this.loginIdNumberOfCharacters = resultObj.numberOfCharacters;
+    this.loginIdError = resultObj.error;
+    this.loginIdErrorMessage = resultObj.errorMessageArr[0];
     
   };
   
@@ -241,7 +241,7 @@ class Store {
     
     // console.log(`\n\n`);
     // console.log(`--- handleLoginSubmit ---`);
-    // console.log(`this.loginID = ${this.loginID}`);
+    // console.log(`this.loginId = ${this.loginId}`);
     // console.log(`this.loginPassword = ${this.loginPassword}`);
     // console.log(`this.loginRecaptchaResponse = ${this.loginRecaptchaResponse}`);
     // console.dir(recaptchaRef);
@@ -260,9 +260,9 @@ class Store {
       return;
       
     } else if (
-      this.loginID === '' ||
+      this.loginId === '' ||
       this.loginPassword === '' ||
-      this.loginIDError ||
+      this.loginIdError ||
       this.loginPasswordError
     ) {
       
@@ -278,7 +278,7 @@ class Store {
     
     const formDataObj = new FormData();
     
-    formDataObj.append('loginID', this.loginID);
+    formDataObj.append('loginId', this.loginId);
     formDataObj.append('loginPassword', this.loginPassword);
     formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
     
@@ -339,7 +339,7 @@ class Store {
         this.handleFormReset();
         
         // Page Transition
-        window.location.href = `${urlBase}pl/${jsonObj.playerID}`;
+        window.location.href = `${urlBase}pl/${jsonObj.playerId}`;
         
       })
       .catch((error) => {
@@ -362,44 +362,44 @@ class Store {
    * アカウント作成 ID
    * @type {string}
    */
-  @observable createAccountID = '';
+  @observable createAccountId = '';
   
   /**
    * アカウント作成 ID　文字数
    * @type {number}
    */
-  @observable createAccountIDNumberOfCharacters = 0;
+  @observable createAccountIdNumberOfCharacters = 0;
   
   /**
    * アカウント作成 ID　エラー（バリデーション用）
    * @type {string}
    */
-  @observable createAccountIDError = false;
+  @observable createAccountIdError = false;
   
   /**
    * アカウント作成 ID　エラーメッセージ
    * @type {string}
    */
-  @observable createAccountIDErrorMessage = '';
+  @observable createAccountIdErrorMessage = '';
   
   /**
    * アカウント作成 ID入力フォームに文字列を入力したときに呼び出される
    * @param {Object} event - イベント
    */
   @action.bound
-  handleCreateAccountID(event) {
+  handleCreateAccountId(event) {
     
     
     // ---------------------------------------------
     //   ID
     // ---------------------------------------------
     
-    const resultIDObj = validationLoginID(event.target.value);
+    const resultIdObj = validationLoginId(event.target.value);
     
-    this.createAccountID = resultIDObj.value;
-    this.createAccountIDNumberOfCharacters = resultIDObj.numberOfCharacters;
-    this.createAccountIDError = resultIDObj.error;
-    this.createAccountIDErrorMessage = resultIDObj.errorMessageArr[0];
+    this.createAccountId = resultIdObj.value;
+    this.createAccountIdNumberOfCharacters = resultIdObj.numberOfCharacters;
+    this.createAccountIdError = resultIdObj.error;
+    this.createAccountIdErrorMessage = resultIdObj.errorMessageArr[0];
     
     
     // ---------------------------------------------
@@ -408,7 +408,7 @@ class Store {
     
     if (this.createAccountPassword !== '') {
       
-      const resultPasswordObj = validationLoginPassword(this.createAccountPassword, resultIDObj.value);
+      const resultPasswordObj = validationLoginPassword(this.createAccountPassword, resultIdObj.value);
       
       this.createAccountPasswordError = resultPasswordObj.error;
       this.createAccountPasswordErrorMessage = resultPasswordObj.errorMessageArr[0];
@@ -461,7 +461,7 @@ class Store {
     //   Password
     // ---------------------------------------------
     
-    const resultPasswordObj = validationLoginPassword(event.target.value, this.createAccountID);
+    const resultPasswordObj = validationLoginPassword(event.target.value, this.createAccountId);
     
     this.createAccountPassword = resultPasswordObj.value;
     this.createAccountPasswordNumberOfCharacters = resultPasswordObj.numberOfCharacters;
@@ -623,12 +623,12 @@ class Store {
     //   ID
     // ---------------------------------------------
     
-    const resultIDObj = validationEmail(event.target.value);
+    const resultIdObj = validationEmail(event.target.value);
     
-    this.createAccountEmail = resultIDObj.value;
-    this.createAccountEmailNumberOfCharacters = resultIDObj.numberOfCharacters;
-    this.createAccountEmailError = resultIDObj.error;
-    this.createAccountEmailErrorMessage = resultIDObj.errorMessageArr[0];
+    this.createAccountEmail = resultIdObj.value;
+    this.createAccountEmailNumberOfCharacters = resultIdObj.numberOfCharacters;
+    this.createAccountEmailError = resultIdObj.error;
+    this.createAccountEmailErrorMessage = resultIdObj.errorMessageArr[0];
     
   };
   
@@ -727,7 +727,7 @@ class Store {
     
     console.log(`\n\n`);
     console.log(`--- handleCreateAccountSubmit ---`);
-    console.log(`this.createAccountID = ${this.createAccountID}`);
+    console.log(`this.createAccountId = ${this.createAccountId}`);
     console.log(`this.createAccountPassword = ${this.createAccountPassword}`);
     console.log(`this.createAccountEmail = ${this.createAccountEmail}`);
     console.log(`\n\n`);
@@ -745,10 +745,10 @@ class Store {
       return;
       
     } else if (
-      this.createAccountID === '' ||
+      this.createAccountId === '' ||
       this.createAccountPassword === '' ||
       this.createAccountPasswordConfirmation === '' ||
-      this.createAccountIDError ||
+      this.createAccountIdError ||
       this.createAccountPasswordError || 
       this.createAccountPasswordConfirmationError ||
       this.createAccountEmailError
@@ -772,7 +772,7 @@ class Store {
     
     const formDataObj = new FormData();
     
-    formDataObj.append('createAccountID', this.createAccountID);
+    formDataObj.append('createAccountId', this.createAccountId);
     formDataObj.append('createAccountPassword', this.createAccountPassword);
     formDataObj.append('createAccountEmail', this.createAccountEmail);
     formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
@@ -823,7 +823,7 @@ class Store {
         this.handleFormReset();
         
         // Page Transition
-        window.location.href = `http://35.203.143.160:8080/pl/${jsonObj.playerID}`;
+        window.location.href = `http://35.203.143.160:8080/pl/${jsonObj.playerId}`;
         
       })
       .catch((error) => {
@@ -850,10 +850,10 @@ class Store {
     //   Login
     // ---------------------------------------------
     
-    this.loginID = '';
-    this.loginIDNumberOfCharacters = 0;
-    this.loginIDError = false;
-    this.loginIDErrorMessage = '';
+    this.loginId = '';
+    this.loginIdNumberOfCharacters = 0;
+    this.loginIdError = false;
+    this.loginIdErrorMessage = '';
     this.loginPassword = '';
     this.loginPasswordNumberOfCharacters = 0;
     this.loginPasswordError = false;
@@ -864,10 +864,10 @@ class Store {
     //   Create Account
     // ---------------------------------------------
     
-    this.createAccountID = '';
-    this.createAccountIDNumberOfCharacters = 0;
-    this.createAccountIDError = false;
-    this.createAccountIDErrorMessage = '';
+    this.createAccountId = '';
+    this.createAccountIdNumberOfCharacters = 0;
+    this.createAccountIdError = false;
+    this.createAccountIdErrorMessage = '';
     this.createAccountPassword = '';
     this.createAccountPasswordNumberOfCharacters = 0;
     this.createAccountPasswordError = false;

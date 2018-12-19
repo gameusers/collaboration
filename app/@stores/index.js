@@ -5,6 +5,7 @@
 import initStoreLayout from '../common/layout/stores/layout';
 import initStoreData from './data';
 
+import initStoreCardPlayer from '../common/card/player/stores/player';
 
 
 // --------------------------------------------------
@@ -13,9 +14,18 @@ import initStoreData from './data';
 
 export default function(argumentsObj) {
   
-  return {
+  const storeInstanceObj = {
     layout: new initStoreLayout(argumentsObj),
     data: new initStoreData(argumentsObj),
   };
+  
+  storeInstanceObj.cardPlayer = new initStoreCardPlayer(argumentsObj, storeInstanceObj);
+  
+  return storeInstanceObj;
+  
+  // return {
+  //   layout: new initStoreLayout(argumentsObj),
+  //   data: new initStoreData(argumentsObj),
+  // };
   
 };

@@ -137,7 +137,7 @@ const find = async (argumentsObj) => {
               },
               { $project:
                 {
-                  _id: 0,
+                  _id: 1,
                   gameID: 1,
                   urlID: 1,
                   name: 1,

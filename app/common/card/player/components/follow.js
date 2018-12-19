@@ -45,11 +45,6 @@ import IconFollowers from '@material-ui/icons/PermIdentity';
 
 
 
-
-
-
-
-
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
@@ -59,9 +54,15 @@ const FollowBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  margin: 10px 10px 20px 10px;
-  // margin: 18px 23px 20px 23px;
-  // padding: 0;
+  
+  margin: 28px 0 0 0;
+  padding: 0;
+  
+  // margin: 8px 0 16px 3px;
+  
+  // @media screen and (max-width: 480px) {
+  //   padding: 4px 0 0 7px;
+  // }
 `;
 
 const FollowersBox = styled.div`
@@ -93,6 +94,7 @@ const ButtonBox = styled.div`
 //     margin-left: -12px;
 //   }
 // `;
+
 
 
 

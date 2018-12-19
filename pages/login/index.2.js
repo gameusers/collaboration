@@ -43,7 +43,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconID from '@material-ui/icons/Person';
+import IconId from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
 import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
@@ -333,11 +333,11 @@ class Component extends React.Component {
     
     const {
       
-      loginID,
-      loginIDNumberOfCharacters,
-      loginIDError,
-      loginIDErrorMessage,
-      handleLoginID,
+      loginId,
+      loginIdNumberOfCharacters,
+      loginIdError,
+      loginIdErrorMessage,
+      handleLoginId,
       
       loginPassword,
       loginPasswordNumberOfCharacters,
@@ -353,11 +353,11 @@ class Component extends React.Component {
       handleLoginSubmit,
       
       
-      createAccountID,
-      createAccountIDNumberOfCharacters,
-      createAccountIDError,
-      createAccountIDErrorMessage,
-      handleCreateAccountID,
+      createAccountId,
+      createAccountIdNumberOfCharacters,
+      createAccountIdError,
+      createAccountIdErrorMessage,
+      handleCreateAccountId,
       
       createAccountPassword,
       createAccountPasswordNumberOfCharacters,
@@ -411,10 +411,10 @@ class Component extends React.Component {
     //   文字数
     // --------------------------------------------------
     
-    let loginIDNoC = '';
+    let loginIdNoC = '';
     
-    if (loginIDNumberOfCharacters > 0) {
-      loginIDNoC = `（${loginIDNumberOfCharacters}文字）`;
+    if (loginIdNumberOfCharacters > 0) {
+      loginIdNoC = `（${loginIdNumberOfCharacters}文字）`;
     }
     
     
@@ -425,10 +425,10 @@ class Component extends React.Component {
     }
     
     
-    let createAccountIDNoC = '';
+    let createAccountIdNoC = '';
     
-    if (createAccountIDNumberOfCharacters > 0) {
-      createAccountIDNoC = `（${createAccountIDNumberOfCharacters}文字）`;
+    if (createAccountIdNumberOfCharacters > 0) {
+      createAccountIdNoC = `（${createAccountIdNumberOfCharacters}文字）`;
     }
     
     
@@ -457,10 +457,10 @@ class Component extends React.Component {
     //   エラーメッセージ
     // --------------------------------------------------
     
-    let loginIDEM = '';
+    let loginIdEM = '';
     
-    if (loginIDErrorMessage) {
-      loginIDEM = <StyledFormHelperText>{loginIDErrorMessage}</StyledFormHelperText>;
+    if (loginIdErrorMessage) {
+      loginIdEM = <StyledFormHelperText>{loginIdErrorMessage}</StyledFormHelperText>;
     }
     
     
@@ -471,10 +471,10 @@ class Component extends React.Component {
     }
     
     
-    let createAccountIDEM = '';
+    let createAccountIdEM = '';
     
-    if (createAccountIDErrorMessage) {
-      createAccountIDEM = <StyledFormHelperText>{createAccountIDErrorMessage}</StyledFormHelperText>;
+    if (createAccountIdErrorMessage) {
+      createAccountIdEM = <StyledFormHelperText>{createAccountIdErrorMessage}</StyledFormHelperText>;
     }
     
     
@@ -572,20 +572,20 @@ class Component extends React.Component {
                     
                     <InputBox>
                       
-                      <StyledFormControl error={loginIDError}>
-                        <InputLabel htmlFor="loginID">ID{loginIDNoC}</InputLabel>
+                      <StyledFormControl error={loginIdError}>
+                        <InputLabel htmlFor="loginId">ID{loginIdNoC}</InputLabel>
                         <Input
-                          id="loginID"
+                          id="loginId"
                           type="text"
-                          value={loginID}
-                          onChange={handleLoginID}
+                          value={loginId}
+                          onChange={handleLoginId}
                           startAdornment={
                             <InputAdornment position="start">
-                              <IconID />
+                              <IconId />
                             </InputAdornment>
                           }
                         />
-                        {loginIDEM}
+                        {loginIdEM}
                       </StyledFormControl>
                       
                       <StyledFormControl error={loginPasswordError}>
@@ -683,19 +683,19 @@ class Component extends React.Component {
                     
                     <InputBox>
                       
-                      <StyledFormControl error={createAccountIDError}>
-                        <InputLabel htmlFor="createAccountID">ID{createAccountIDNoC}</InputLabel>
+                      <StyledFormControl error={createAccountIdError}>
+                        <InputLabel htmlFor="createAccountId">ID{createAccountIdNoC}</InputLabel>
                         <Input
-                          id="createAccountID"
-                          value={createAccountID}
-                          onChange={handleCreateAccountID}
+                          id="createAccountId"
+                          value={createAccountId}
+                          onChange={handleCreateAccountId}
                           startAdornment={
                             <InputAdornment position="start">
-                              <IconID />
+                              <IconId />
                             </InputAdornment>
                           }
                         />
-                        {createAccountIDEM}
+                        {createAccountIdEM}
                       </StyledFormControl>
                       
                       

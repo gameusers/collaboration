@@ -33,15 +33,13 @@ import { errorsArrIntoErrorMessage } from '../../../../@format/error';
 
 
 
-
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let storeLoginIndex = null;
+let store = null;
 let storeLayout = null;
 let storeData = null;
-
 
 
 
@@ -60,6 +58,129 @@ class Store {
   constructor() {}
   
   
+  
+  
+  // ---------------------------------------------
+  //   Card Player
+  // ---------------------------------------------
+  
+  /**
+   * プレイヤーカードをダイアログで表示する
+   * @param {string} cardPlayers_id - DB card-players _id
+   * @param {string} cardGames_id - DB card-games _id
+   */
+  @action.bound
+  async handleOpenCardPlayerDialog(cardPlayers_id, cardGames_id) {
+    
+    
+    console.log(chalk`
+      cardPlayers_id: {green ${cardPlayers_id}}
+      cardGames_id: {green ${cardGames_id}}
+    `);
+    
+    
+    // try {
+      
+      
+    //   // ---------------------------------------------
+    //   //   FormData
+    //   // ---------------------------------------------
+      
+    //   const formData = new FormData();
+      
+    //   formData.append('users_id', users_id);
+      
+      
+    //   // ---------------------------------------------
+    //   //   Button Disabled
+    //   // ---------------------------------------------
+      
+    //   storeLayout.handleButtonDisabledObj(`${users_id}-follow`, true);
+      
+      
+    //   // ---------------------------------------------
+    //   //   Fetch
+    //   // ---------------------------------------------
+      
+    //   const resultObj = await fetchWrapper({
+    //     urlApi: `${storeData.urlApi}/v1/card-players/follow`,
+    //     methodType: 'POST',
+    //     formData: formData
+    //   });
+      
+      
+    //   // console.log(`
+    //   //   ----- resultObj -----\n
+    //   //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   //   --------------------\n
+    //   // `);
+      
+      
+    //   // ---------------------------------------------
+    //   //   Error
+    //   // ---------------------------------------------
+      
+    //   if ('errorsArr' in resultObj) {
+    //     throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+    //   }
+      
+      
+    //   // ---------------------------------------------
+    //   //   ダイアログを閉じる
+    //   // ---------------------------------------------
+      
+    //   this.handleFollowDialogClose(users_id);
+      
+      
+    //   // ---------------------------------------------
+    //   //   Data Users 更新
+    //   // ---------------------------------------------
+      
+    //   storeData.updateUsersObj(resultObj.data.usersObj);
+      
+      
+    //   // ---------------------------------------------
+    //   //   Snackbar: Success
+    //   // ---------------------------------------------
+      
+    //   if (type === 'follow') {
+    //     storeLayout.handleSnackbarOpen('success', 'フォローしました。');
+    //   } else {
+    //     storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
+    //   }
+      
+      
+    // } catch (error) {
+      
+      
+    //   // ---------------------------------------------
+    //   //   Snackbar: Error
+    //   // ---------------------------------------------
+      
+    //   if (type === 'follow') {
+    //     storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
+    //   } else {
+    //     storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
+    //   }
+      
+      
+    // } finally {
+      
+      
+    //   // ---------------------------------------------
+    //   //   Button Enable
+    //   // ---------------------------------------------
+      
+    //   storeLayout.handleButtonDisabledObj(`${users_id}-follow`, false);
+      
+      
+    // }
+    
+  };
+  
+  
+  
+  
   // ---------------------------------------------
   //   Follow
   // ---------------------------------------------
@@ -74,23 +195,6 @@ class Store {
     
     
     try {
-      
-      // console.log(`${cardPlayers_id}-follow` in storeLayout.buttonDisabledObj);
-      // console.log(storeLayout.buttonDisabledObj[`${cardPlayers_id}-follow`]);
-      // ---------------------------------------------
-      //   DOM の読み込みが終わってない場合、処理停止
-      // ---------------------------------------------
-      
-      // if (
-      //   cardPlayers_id in storeLayout.buttonDisabledObj === false ||
-      //   storeLayout.buttonDisabledObj[`${cardPlayers_id}-follow`] === true
-      // ) {
-      // // if (storeLayout.buttonDisabledObj[`${cardPlayers_id}-follow`]) {
-      //   console.log('disabled');
-      //   return;
-      // }
-      // return;
-      
       
       
       // ---------------------------------------------
@@ -191,6 +295,7 @@ class Store {
   
   
   
+  
   /**
    * ダイアログを表示するかどうかを決めるオブジェクト
    * @type {Object}
@@ -244,11 +349,11 @@ export default function initStoreCardPlayer(argumentsObj, storeInstanceObj) {
     
   } else {
     
-    if (storeLoginIndex === null) {
-      storeLoginIndex = new Store();
+    if (store === null) {
+      store = new Store();
     }
     
-    return storeLoginIndex;
+    return store;
     
   }
   

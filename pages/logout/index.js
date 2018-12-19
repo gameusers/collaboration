@@ -2,6 +2,18 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
@@ -10,18 +22,39 @@ import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import fetch from 'isomorphic-unfetch';
 
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
 import Button from '@material-ui/core/Button';
 
-const chalk = require('chalk');
-const util = require('util');
 
-import initStoreIndex from '../../app/common/stores/index';
+// ---------------------------------------------
+//   Stores
+// ---------------------------------------------
+
+import initStoreIndex from '../../app/@stores/index';
 import initStoreLogoutIndex from '../../app/logout/index/stores/store';
+
+// import initStoreIndex from '../../app/common/stores/index';
+// import initStoreLogoutIndex from '../../app/logout/index/stores/store';
+
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
 import Panel from '../../app/common/layout/components/panel';
 
+
+// ---------------------------------------------
+//   Material UI を Next.js で利用するため
+// ---------------------------------------------
+
 import withRoot from '../../lib/material-ui/withRoot';
+
 
 
 
@@ -47,6 +80,7 @@ const StyledButton = styled(Button)`
     margin: 10px 0 0 0;
   }
 `;
+
 
 
 

@@ -43,6 +43,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 // ---------------------------------------------
 
 import Paragraph from '../../../layout/components/paragraph';
+import User from '../../../user/components/user';
 import UserThumbnail from '../../../user/components/thumbnail';
 import UserName from '../../../user/components/name';
 import Hardware from './hardware';
@@ -72,41 +73,6 @@ const CardTopBox = styled.div`
 
 
 // ---------------------------------------------
-//   Top / User Infomation
-// ---------------------------------------------
-
-const UserBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0;
-  padding: 0;
-`;
-
-const UserThumbnailBox = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  margin: 0 0 0 0;
-`;
-
-const UserInfoBox = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 2px 0 0 10px;
-  
-  @media screen and (max-width: 480px) {
-    max-width: initial;
-  }
-`;
-
-const UserNameBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
-
-
-// ---------------------------------------------
 //   Top / Expand More Button
 // ---------------------------------------------
 
@@ -117,27 +83,37 @@ const ExpandMoreBox = styled.div`
 
 
 // ---------------------------------------------
-//   Content / Container
+//   Content / Card Content
 // ---------------------------------------------
 
 const StyledCardContent = styled(CardContent)`
   && {
     font-size: 14px;
     line-height: 1.6em;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Card Actions
-// ---------------------------------------------
-
-const StyledCardActions = styled(CardActions)`
-  && { 
     padding-bottom: 0;
   }
 `;
 
+
+// ---------------------------------------------
+//   Bottom / Card Actions
+// ---------------------------------------------
+
+const StyledCardActions = styled(CardActions)`
+  && {
+    padding-top: 0;
+    padding-bottom: 16px;
+    
+    @media screen and (max-width: 480px) {
+      padding: 0 10px 16px 10px;
+    }
+  }
+`;
+
+const ActionsBox = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+`;
 
 
 
@@ -169,11 +145,10 @@ export default class extends React.Component {
     
     const {
       stores,
-      cardPlayers_id,
-      cardGames_id,
       showGameName,
+      cardPlayers_id,
       showCardPlayerButton,
-      showCardGameButton,
+      cardGames_id,
       showFollow
     } = this.props;
     
@@ -226,20 +201,12 @@ export default class extends React.Component {
       
     } = cardGamesObj.usersObj;
     
-    // const {
-      
-    //   accessDate,
-    //   level,
-    //   followedCount,
-    //   followed
-      
-    // } = stores.data.usersObj[users_id];
-    
     
     // ---------------------------------------------
     //   Games
     // ---------------------------------------------
     
+    const games_id = cardGamesObj.gamesObj._id;
     const gameUrlID = cardGamesObj.gamesObj.urlID;
     const gameThumbnail = cardGamesObj.gamesObj.thumbnail;
     const gameName = cardGamesObj.gamesObj.name;
@@ -258,10 +225,13 @@ export default class extends React.Component {
       
     } = cardGamesObj;
     
+    
     let thumbnailSrc = '';
     
     if (thumbnail) {
       thumbnailSrc = `/static/img/card/games/${cardGames_id}/thumbnail/image.jpg`;
+    } else if (gameThumbnail) {
+      thumbnailSrc = `/static/img/games/${games_id}/thumbnail/image.jpg`;
     }
     
     
@@ -353,35 +323,24 @@ export default class extends React.Component {
         <CardTopBox>
           
           {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
-          <UserBox>
+          <User
+            thumbnailSrc={thumbnailSrc}
             
-            <UserThumbnailBox>
-              <UserThumbnail thumbnailSrc={thumbnailSrc} />
-            </UserThumbnailBox>
+            name={name}
+            playerID={playerID}
+            status={status}
+            accessDate={accessDate}
             
+            gameName={gameName}
+            gameUrlID={gameUrlID}
+            showGameName={showGameName}
             
-            <UserInfoBox>
-              
-              <UserNameBox>
-                <UserName
-                  cardPlayers_id={cardPlayers_id}
-                  cardGames_id={cardGames_id}
-                  name={name}
-                  playerID={playerID}
-                  status={status}
-                  accessDate={accessDate}
-                  level={level}
-                  gameName={gameName}
-                  gameUrlID={gameUrlID}
-                  showGameName={showGameName}
-                  showCardPlayerButton={showCardPlayerButton}
-                  showCardGameButton={showCardGameButton}
-                />
-              </UserNameBox>
-              
-            </UserInfoBox>
-            
-          </UserBox>
+            level={level}
+            cardPlayers_id={cardPlayers_id}
+            showCardPlayerButton={showCardPlayerButton}
+            // cardGames_id={cardGames_id}
+            // showCardGameButton={false}
+          />
           
           
           {/* 右上に設置されているパネル開閉用のボタン */}
@@ -439,24 +398,29 @@ export default class extends React.Component {
               voiceChatComment={voiceChatComment}
             />
             
-            
-            {/* Link */}
-            <Link linkArr={linkArr} />
-            
-            
           </StyledCardContent>
           
           
-          {/* フォローボタン */}
-          {showFollow &&
-            <StyledCardActions>
-              <Follow
-                users_id={users_id}
-                followedCount={followedCount}
-                followed={followed}
-              />
-            </StyledCardActions>
-          }
+          
+          <StyledCardActions>
+            <ActionsBox>
+            
+              {/* Link */}
+              <Link linkArr={linkArr} />
+              
+              
+              {/* フォローボタン */}
+              {showFollow &&
+                <Follow
+                  users_id={users_id}
+                  followedCount={followedCount}
+                  followed={followed}
+                />
+              }
+              
+            </ActionsBox>
+          </StyledCardActions>
+          
           
         </Collapse>
         

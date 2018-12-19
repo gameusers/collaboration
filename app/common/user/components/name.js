@@ -260,26 +260,30 @@ export default class extends React.Component {
     
     const {
       stores,
-      cardPlayers_id,
-      cardGames_id,
+      
       anonymity,
+      
       name,
       playerID,
       status,
       accessDate,
-      level,
+      
       gameName,
       gameUrlID,
       showGameName,
+      
+      level,
+      cardPlayers_id,
       showCardPlayerButton,
+      cardGames_id,
       showCardGameButton
     } = this.props;
     
-    const {
-      
-      buttonDisabledObj
-      
-    } = stores.layout;
+    const { buttonDisabledObj } = stores.layout;
+    
+    const { handleOpenCardPlayerDialog } = stores.cardPlayer;
+    
+    handleOpenCardPlayerDialog
     
     
     // --------------------------------------------------
@@ -372,13 +376,19 @@ export default class extends React.Component {
       if (!anonymity && level) {
         
         componentBottomArr.push(
-          <LevelBox><StyledIconStars /><Level>Lv.{level}</Level></LevelBox>
+          <LevelBox key="levelBox">
+            <StyledIconStars />
+            <Level>Lv.{level}</Level>
+          </LevelBox>
         );
         
       } else {
         
         componentBottomArr.push(
-          <LevelBox><StyledIconStars /><Level>Lv.0</Level></LevelBox>
+          <LevelBox key="levelBox">
+            <StyledIconStars />
+            <Level>Lv.0</Level>
+          </LevelBox>
         );
         
       }
@@ -405,8 +415,9 @@ export default class extends React.Component {
         componentBottomArr.push(
           <StyledButton
             variant="outlined"
-            // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
+            onClick={() => handleOpenCardPlayerDialog(cardPlayers_id, '')}
             disabled={buttonDisabledCardPlayer}
+            key="cardPlayersButton"
           >
             <StyledIconCard1 />
             Player
@@ -437,8 +448,9 @@ export default class extends React.Component {
         componentBottomArr.push(
           <StyledButton
             variant="outlined"
-            // onClick={() => handleFollowSubmit('follow', cardPlayers_id, users_id)}
+            onClick={() => handleOpenCardPlayerDialog('', cardGames_id)}
             disabled={buttonDisabledCardGame}
+            key="cardGamesButton"
           >
             <StyledIconCard1 />
             Game

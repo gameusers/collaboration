@@ -104,7 +104,7 @@ const schema = mongoose.Schema({
   idArr: [
     {
       _id: { type: String, required: true },
-      type: { type: String, enum: ['playstation', 'xbox', 'nintendo', 'steam', 'other'], required: true },
+      type: { type: String, enum: ['Playstation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
       label: String,
       value: { type: String, required: true },
       showType: { type: Number, min: 1, max: 5 },
@@ -134,7 +134,7 @@ const schema = mongoose.Schema({
   linkArr: [
     {
       _id: { type: String, required: true },
-      type: { type: String, enum: ['twitter', 'facebook', 'instagram', 'youtube', 'twitch', 'steam', 'pixiv', 'other'], required: true },
+      type: { type: String, enum: ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Pixiv', 'Other'], required: true },
       label: String,
       url: { type: String, required: true },
       search: { type: Boolean, required: true },

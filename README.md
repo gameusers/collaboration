@@ -4,6 +4,7 @@
 
 [![node](https://img.shields.io/badge/node-v8.12.0-lightgrey.svg)](https://nodejs.org/ja/)
 [![npm](https://img.shields.io/badge/npm-v6.4.1-blue.svg)](https://www.npmjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-v4.0.3-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
 
@@ -47,18 +48,26 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 <br><br>
 
 
-## 開発について
+## 1. インストール
+まずこちらのリポジトリから任意の場所にファイルを Clone（ダウンロード） してください。
+そして .env（環境変数を設定する） ファイルを開いて、URL_BASE と URL_API と書かれている部分を、開発環境でアクセスする URL に書き換えて保存してください。
 
-ここで開発について解説していますのでチェックしてみてください。
-記事にパスワードが表示されている時は 1979 を入力してください。
 
-https://gameusers.org/dev/blog/live/
+    # URL
+    URL_BASE=http://35.203.143.160:8080/
+    URL_API=http://35.203.143.160:8080/api
 
-<span style="color: red; ">※ GitHub 上の Wiki も参照してください。</span>
-<br><br>
+デフォルトでは上記の値に設定されていますが、例えば localhost でアクセスする場合は、以下のように変更してください。
 
-## データベース
-MongoDB Ver.4 を利用しています。トランザクションを利用したいため、レプリカセット（複数のデータベースを立ち上げて繋げることで安定性を確保する機能）を構築しました。<br /><br />
+
+    # URL
+    URL_BASE=http://localhost:8080/
+    URL_API=http://localhost:8080/api
+
+
+
+## 2. データベース
+次にデータベースの設定を行います。こちらの開発では MongoDB Ver.4  を利用しています。開発環境にインストールされていない場合、まずインストールを行ってください。MongoDB のトランザクション機能を利用するため、レプリカセット（複数のデータベースを立ち上げて繋げることで安定性を確保する機能）を構築しています。<br /><br />
 **参考サイト**<br />
 - [MongoDB で 3台構成 の レプリカセット を 構築する 方法](https://garafu.blogspot.com/2018/02/mongodb-3instance-replicaset.html)
 - [Deploy a Replica Set for Testing and Development](https://docs.mongodb.com/manual/tutorial/deploy-replica-set-for-testing/)<br /><br />
@@ -72,12 +81,17 @@ MongoDB Ver.4 を利用しています。トランザクションを利用した
 1: ターミナルを3つ開き、各行のコマンドで MongoDB を3つ起動します。これは db/server 内に設置してあるコンフィグファイルを読み込んで、データベースを起動する方法です。
 
 
+    ターミナル 1
     mongod --config "db/server1/mongod.server1.cfg"
+    
+    ターミナル 2
     mongod --config "db/server2/mongod.server2.cfg"
+    
+    ターミナル 3
     mongod --config "db/server3/mongod.server3.cfg"
 
 
-2: Server1 にログイン
+2: 4つ目のターミナルを開き、Server1 にログインします。
 
 
     mongod --host 127.0.0.1:27017
@@ -97,9 +111,46 @@ MongoDB Ver.4 を利用しています。トランザクションを利用した
     rs.initiate(rsconf)
 
 
-上記のとおりにコマンドを入力するとレプリカセットの設定が完了し、MongoDB でトランザクションが扱えるようになります。データベースの中身は容量の関係上、GitHub 上には掲載されていません。空のディレクトリと設定ファイルのみになっています。<br />
+上記のとおりにコマンドを入力するとレプリカセットの設定が完了し、MongoDB でトランザクションが扱えるようになります。上記入力後は4つ目のターミナルから抜けてもらって構いません。
+<br /><br />
 
-データベースは各開発環境でそれぞれ構築してください。現在ところ、データベースの中身は空の状態から開始しても開発に影響はありません。<br /><br />
+
+## 3. 起動する
+次に再度新しくターミナルを開き、以下のコマンドを入力してください。
+
+
+    npm run dev
+    
+
+特に問題が起きなければ、アプリケーションが起動します。
+<br /><br />
+
+
+## 4. データベースに初期データを挿入する
+データベースの中身は容量の関係上、GitHub 上には掲載されておらず、空のディレクトリと設定ファイルのみになっていますが、以下のページにアクセスすることで簡単に初期データが挿入できるようになっています。<br />
+
+
+    http://（.env で設定したトップページのアドレス）/initialize
+    
+
+「データベース - データ挿入」と書かれたボタンがありますので、押してください。gameusers というデータベースに初期コレクションが挿入されます。<br />
+
+上記ページには、開発している主要なページのリンクも貼られています。
+<br /><br />
+
+
+## 5. mongo-express
+データベースの中身を視覚的に把握できる GUI ツールも入っています。<br />
+
+
+    http://（.env で設定したトップページのアドレス [ポート番号だけ変更]）:8081/
+    
+
+上記アドレスにアクセスすると、Basic 認証が起動します。「ユーザー名：admin」「パスワード：pass」でログインしてください。データベースの構成などを確認する場合に利用すると便利です。<br />
+
+詳しくは [mongo-express](https://github.com/mongo-express/mongo-express) を確認してください。
+<br /><br />
+
 
 ## ライセンス
 
@@ -107,8 +158,8 @@ Game Users プロジェクトに帰属します。
 <br /><br />
 
 
-## ブログ
+## 開発について
 
-開発についての情報をブログにまとめていきます。React & Node.jsで開発していくので、参考になる情報も掲載していきたいです。
+ここで開発について解説していますので、よければチェックしてみてください。
 
-[Game Users 開発ノート](https://gameusers.org/dev/blog/)
+https://gameusers.org/dev/blog/live/

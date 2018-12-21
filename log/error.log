@@ -14,3 +14,8 @@
 {"level":"error","message":"Wed Dec 19 2018 07:26:46 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Wed Dec 19 2018 09:38:52 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Wed Dec 19 2018 09:39:48 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Fri Dec 21 2018 03:56:41 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Fri Dec 21 2018 03:58:18 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Fri Dec 21 2018 06:26:43 GMT+0000\nCode: Mv7RFeKQ1@gUwZx1hDG@500000\nMessage: games validation failed: linkArr.0.type: `Twitter` is not a valid enum value for path `type`., linkArr.1.type: `Facebook` is not a valid enum value for path `type`., linkArr.2.type: `YouTube` is not a valid enum value for path `type`., linkArr.3.type: `Steam` is not a valid enum value for path `type`., linkArr.4.type: `Other` is not a valid enum value for path `type`.\n"}
+{"level":"error","message":"Fri Dec 21 2018 08:06:05 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Fri Dec 21 2018 08:07:31 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}

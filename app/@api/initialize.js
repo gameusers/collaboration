@@ -1412,7 +1412,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       theme: '',
       name: 'AZ-1979',
       status: 'トラッパー',
-      thumbnail: true,
+      thumbnail: false,
       imageVideoArr: [
         {
           _id: 'ZIEOqRppY',

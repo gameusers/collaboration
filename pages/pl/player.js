@@ -86,6 +86,8 @@ import Layout from '../../app/common/layout/components/layout';
 import CardPlayer from '../../app/common/card/player/components/player';
 import CardGame from '../../app/common/card/player/components/game';
 
+// import DialogTest from '../../app/common/user/components/dialog';
+
 
 // ---------------------------------------------
 //   Material UI を Next.js で利用するため
@@ -169,11 +171,11 @@ class Component extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     return { isServer, pathname, initialPropsObj, statusCode, localeObj };
@@ -390,6 +392,7 @@ class Component extends React.Component {
               <FormattedMessage
                 id='hello'
               />*/}
+              {/*<DialogTest />*/}
               
               {componentCardsArr}
               

@@ -65,12 +65,39 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * プレイヤーカード用ダイアログを表示するかどうかを決めるオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerDialogObj = {};
+  
+  /**
+   * プレイヤーカード用ダイアログを開く
+   * @param {string} _id - ID
+   */
+  // @action.bound
+  // handleCardPlayerDialogOpen(_id) {
+  //   this.cardPlayerDialogOpenObj[_id] = true;
+  // };
+  
+  /**
+   * プレイヤーカード用ダイアログを閉じる
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleCardPlayerDialogClose(_id) {
+    this.cardPlayerDialogObj[_id] = false;
+  };
+  
+  
+  
+  
+  /**
    * プレイヤーカードをダイアログで表示する
    * @param {string} cardPlayers_id - DB card-players _id
    * @param {string} cardGames_id - DB card-games _id
    */
   @action.bound
-  async handleOpenCardPlayerDialog(cardPlayers_id, cardGames_id) {
+  async handleCardPlayerDialogOpen(cardPlayers_id, cardGames_id) {
     
     
     console.log(chalk`
@@ -79,102 +106,109 @@ class Store {
     `);
     
     
-    // try {
+    try {
       
       
-    //   // ---------------------------------------------
-    //   //   FormData
-    //   // ---------------------------------------------
-      
-    //   const formData = new FormData();
-      
-    //   formData.append('users_id', users_id);
+      if (cardGames_id && cardGames_id in storeData.cardGamesObj) {
+        this.cardPlayerDialogObj[cardGames_id] = true; 
+      }
       
       
-    //   // ---------------------------------------------
-    //   //   Button Disabled
-    //   // ---------------------------------------------
-      
-    //   storeLayout.handleButtonDisabledObj(`${users_id}-follow`, true);
       
       
-    //   // ---------------------------------------------
-    //   //   Fetch
-    //   // ---------------------------------------------
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
       
-    //   const resultObj = await fetchWrapper({
-    //     urlApi: `${storeData.urlApi}/v1/card-players/follow`,
-    //     methodType: 'POST',
-    //     formData: formData
-    //   });
+      // const formData = new FormData();
+      
+      // formData.append('users_id', users_id);
       
       
-    //   // console.log(`
-    //   //   ----- resultObj -----\n
-    //   //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
+      // // ---------------------------------------------
+      // //   Button Disabled
+      // // ---------------------------------------------
+      
+      // storeLayout.handleButtonDisabledObj(`${users_id}-follow`, true);
       
       
-    //   // ---------------------------------------------
-    //   //   Error
-    //   // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
       
-    //   if ('errorsArr' in resultObj) {
-    //     throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
-    //   }
-      
-      
-    //   // ---------------------------------------------
-    //   //   ダイアログを閉じる
-    //   // ---------------------------------------------
-      
-    //   this.handleFollowDialogClose(users_id);
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${storeData.urlApi}/v1/card-players/follow`,
+      //   methodType: 'POST',
+      //   formData: formData
+      // });
       
       
-    //   // ---------------------------------------------
-    //   //   Data Users 更新
-    //   // ---------------------------------------------
-      
-    //   storeData.updateUsersObj(resultObj.data.usersObj);
-      
-      
-    //   // ---------------------------------------------
-    //   //   Snackbar: Success
-    //   // ---------------------------------------------
-      
-    //   if (type === 'follow') {
-    //     storeLayout.handleSnackbarOpen('success', 'フォローしました。');
-    //   } else {
-    //     storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
-    //   }
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
       
       
-    // } catch (error) {
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      // }
       
       
-    //   // ---------------------------------------------
-    //   //   Snackbar: Error
-    //   // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   ダイアログを閉じる
+      // // ---------------------------------------------
       
-    //   if (type === 'follow') {
-    //     storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
-    //   } else {
-    //     storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
-    //   }
+      // this.handleFollowDialogClose(users_id);
       
       
-    // } finally {
+      // // ---------------------------------------------
+      // //   Data Users 更新
+      // // ---------------------------------------------
+      
+      // storeData.updateUsersObj(resultObj.data.usersObj);
       
       
-    //   // ---------------------------------------------
-    //   //   Button Enable
-    //   // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Snackbar: Success
+      // // ---------------------------------------------
       
-    //   storeLayout.handleButtonDisabledObj(`${users_id}-follow`, false);
+      // if (type === 'follow') {
+      //   storeLayout.handleSnackbarOpen('success', 'フォローしました。');
+      // } else {
+      //   storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
+      // }
       
       
-    // }
+    } catch (error) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      // if (type === 'follow') {
+      //   storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
+      // } else {
+      //   storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
+      // }
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      // storeLayout.handleButtonDisabledObj(`${users_id}-follow`, false);
+      
+      
+    }
     
   };
   
@@ -297,13 +331,13 @@ class Store {
   
   
   /**
-   * ダイアログを表示するかどうかを決めるオブジェクト
+   * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
    * @type {Object}
    */
   @observable followDialogOpenObj = {};
   
   /**
-   * ダイアログを開く
+   * フォロー用ダイアログを開く
    * @param {string} users_id - ID
    */
   @action.bound
@@ -312,7 +346,7 @@ class Store {
   };
   
   /**
-   * ダイアログを閉じる
+   * フォロー用ダイアログを閉じる
    * @param {string} users_id - ID
    */
   @action.bound

@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import Link from 'next/link'
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -36,7 +36,6 @@ import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconStars from '@material-ui/icons/Stars';
 import IconCard1 from '@material-ui/icons/Layers';
-// import IconCard2 from '@material-ui/icons/LayersOutlined';
 
 
 
@@ -45,7 +44,6 @@ import IconCard1 from '@material-ui/icons/Layers';
 // ---------------------------------------------
 
 moment.locale('ja');
-
 
 
 
@@ -69,7 +67,6 @@ const Container = styled.div`
 `;
 
 
-
 // ---------------------------------------------
 //   Name And Status
 // ---------------------------------------------
@@ -85,13 +82,6 @@ const TopBox = styled.div`
 // ---------------------------------------------
 //   Name
 // ---------------------------------------------
-
-// const Name = styled.div`
-//   font-size: 14px;
-//   // color: #337ab7;
-//   margin: 0 2px 0 0;
-//   padding: 0;
-// `;
 
 const NameNoColor = styled.div`
   font-size: 14px;
@@ -123,13 +113,6 @@ const Status = styled.div`
   font-size: 14px;
   margin: 0 2px 0 0;
 `;
-
-
-// ---------------------------------------------
-//   Player Card
-// ---------------------------------------------
-
-
 
 
 // ---------------------------------------------
@@ -180,7 +163,6 @@ const Level = styled.div`
 `;
 
 
-
 // ---------------------------------------------
 //   Cards
 // ---------------------------------------------
@@ -207,12 +189,6 @@ const StyledIconCard1 = styled(IconCard1)`
   }
 `;
 
-// const StyledIconCard2 = styled(IconCard2)`
-//   && {
-//     font-size: 18px;
-//   }
-// `;
-
 
 // ---------------------------------------------
 //   Game
@@ -226,8 +202,6 @@ const GameBox = styled.div`
   margin: 0;
   padding: 0;
 `;
-
-
 
 
 
@@ -281,9 +255,7 @@ export default class extends React.Component {
     
     const { buttonDisabledObj } = stores.layout;
     
-    const { handleOpenCardPlayerDialog } = stores.cardPlayer;
-    
-    handleOpenCardPlayerDialog
+    const { handleCardPlayerDialogOpen } = stores.cardPlayer;
     
     
     // --------------------------------------------------
@@ -415,7 +387,7 @@ export default class extends React.Component {
         componentBottomArr.push(
           <StyledButton
             variant="outlined"
-            onClick={() => handleOpenCardPlayerDialog(cardPlayers_id, '')}
+            onClick={() => handleCardPlayerDialogOpen(cardPlayers_id, '')}
             disabled={buttonDisabledCardPlayer}
             key="cardPlayersButton"
           >
@@ -448,7 +420,7 @@ export default class extends React.Component {
         componentBottomArr.push(
           <StyledButton
             variant="outlined"
-            onClick={() => handleOpenCardPlayerDialog('', cardGames_id)}
+            onClick={() => handleCardPlayerDialogOpen('', cardGames_id)}
             disabled={buttonDisabledCardGame}
             key="cardGamesButton"
           >

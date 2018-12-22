@@ -373,6 +373,7 @@ export default class extends React.Component {
               srcSet={imageSrcSet}
               src={imageSrc}
               alt={imageAlt}
+              width="100%"
             />
           }
           

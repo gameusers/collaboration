@@ -59,7 +59,6 @@ const Container = styled.div`
   line-height: 1.4em;
   margin: 0;
   padding: 0;
-  // background-color: green;
   
   @media screen and (max-width: 768px) {
     flex-flow: row wrap;
@@ -74,8 +73,6 @@ const Container = styled.div`
 const TopBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  // align-items: flex-end;
-  // background-color: green;
 `;
 
 
@@ -195,9 +192,6 @@ const StyledIconCard1 = styled(IconCard1)`
 // ---------------------------------------------
 
 const GameBox = styled.div`
-  // display: flex;
-  // flex-flow: row nowrap;
-  // text-decoration: none;
   font-size: 14px;
   margin: 0;
   padding: 0;
@@ -322,6 +316,8 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Bottom Box
     // --------------------------------------------------
@@ -374,7 +370,7 @@ export default class extends React.Component {
         
         
         // --------------------------------------------------
-        //   Button Disabled
+        //   Button Disabled - ロードが終わるまで使用禁止
         // --------------------------------------------------
         
         let buttonDisabledCardPlayer = true;
@@ -384,10 +380,14 @@ export default class extends React.Component {
         }
         
         
+        // --------------------------------------------------
+        //   Component
+        // --------------------------------------------------
+        
         componentBottomArr.push(
           <StyledButton
             variant="outlined"
-            onClick={() => handleCardPlayerDialogOpen(cardPlayers_id, '')}
+            onClick={() => handleCardPlayerDialogOpen('player', cardPlayers_id)}
             disabled={buttonDisabledCardPlayer}
             key="cardPlayersButton"
           >
@@ -407,7 +407,7 @@ export default class extends React.Component {
         
         
         // --------------------------------------------------
-        //   Button Disabled
+        //   Button Disabled - ロードが終わるまで使用禁止
         // --------------------------------------------------
         
         let buttonDisabledCardGame = true;
@@ -417,10 +417,14 @@ export default class extends React.Component {
         }
         
         
+        // --------------------------------------------------
+        //   Component
+        // --------------------------------------------------
+        
         componentBottomArr.push(
           <StyledButton
             variant="outlined"
-            onClick={() => handleCardPlayerDialogOpen('', cardGames_id)}
+            onClick={() => handleCardPlayerDialogOpen('game', cardGames_id)}
             disabled={buttonDisabledCardGame}
             key="cardGamesButton"
           >

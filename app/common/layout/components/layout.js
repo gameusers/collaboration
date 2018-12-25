@@ -23,6 +23,8 @@ import Footer from './footer';
 import Snackbar from './snackbar';
 import Loading from './loading';
 
+import CardPlayerDialog from '../../card/player/components/dialog';
+
 
 // ---------------------------------------------
 //   CSS
@@ -33,7 +35,6 @@ import 'react-id-swiper/src/styles/css/swiper.css';
 import 'rc-pagination/assets/index.css';
 import 'react-modal-video/css/modal-video.min.css';
 import '../../../../app/@css/style.css';
-
 
 
 
@@ -112,6 +113,9 @@ export default class extends React.Component {
         
         {/* Snackbar 通知用 */}
         <Snackbar />
+        
+        {/* プレイヤーカードを表示するダイアログ */}
+        <CardPlayerDialog />
         
         {/* Loading */}
         <Loading />

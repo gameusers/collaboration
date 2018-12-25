@@ -65,123 +65,127 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * プレイヤーカード用ダイアログを表示するかどうかを決めるオブジェクト
+   * プレイヤーカード用ダイアログ内のカードを指定するオブジェクト
    * @type {Object}
    */
-  @observable cardPlayerDialogObj = {};
+  @observable cardPlayerDialogObj = {
+    type: '',
+    _id: ''
+  };
   
   /**
-   * プレイヤーカード用ダイアログを開く
-   * @param {string} _id - ID
+   * プレイヤーカード用ダイアログを表示するかどうかを決める変数
+   * @type {boolean}
    */
-  // @action.bound
-  // handleCardPlayerDialogOpen(_id) {
-  //   this.cardPlayerDialogOpenObj[_id] = true;
-  // };
+  @observable cardPlayerDialog = false ;
   
   /**
    * プレイヤーカード用ダイアログを閉じる
-   * @param {string} _id - ID
    */
   @action.bound
-  handleCardPlayerDialogClose(_id) {
-    this.cardPlayerDialogObj[_id] = false;
+  handleCardPlayerDialogClose() {
+    this.cardPlayerDialog = false;
   };
   
-  
-  
-  
   /**
-   * プレイヤーカードをダイアログで表示する
+   * プレイヤーカード用ダイアログを開く
    * @param {string} cardPlayers_id - DB card-players _id
    * @param {string} cardGames_id - DB card-games _id
    */
   @action.bound
-  async handleCardPlayerDialogOpen(cardPlayers_id, cardGames_id) {
+  async handleCardPlayerDialogOpen(type, _id) {
     
     
     console.log(chalk`
-      cardPlayers_id: {green ${cardPlayers_id}}
-      cardGames_id: {green ${cardGames_id}}
+      type: {green ${type}}
+      _id: {green ${_id}}
     `);
     
     
     try {
       
       
-      if (cardGames_id && cardGames_id in storeData.cardGamesObj) {
-        this.cardPlayerDialogObj[cardGames_id] = true; 
+      if (type === 'player') {
+        
+        if (_id in storeData.cardPlayersObj && storeData.cardPlayersObj[_id].comment) {
+          
+          this.cardPlayerDialogObj.type = type;
+          this.cardPlayerDialogObj._id = _id;
+          this.cardPlayerDialog = true;
+          
+        } else {
+          
+          console.log('fetchWrapper');
+           
+          
+          // ---------------------------------------------
+          //   FormData
+          // ---------------------------------------------
+          
+          const formData = new FormData();
+          
+          formData.append('_id', _id);
+          
+          
+          // ---------------------------------------------
+          //   Button Disabled
+          // ---------------------------------------------
+          
+          storeLayout.handleButtonDisabledObj(`${_id}-card-player`, true);
+          
+          
+          // ---------------------------------------------
+          //   Fetch
+          // ---------------------------------------------
+          
+          const resultObj = await fetchWrapper({
+            urlApi: `${storeData.urlApi}/v1/card-players/find-one-by-id`,
+            methodType: 'POST',
+            formData: formData
+          });
+          
+          
+          // console.log(`
+          //   ----- resultObj -----\n
+          //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          
+          // ---------------------------------------------
+          //   Error
+          // ---------------------------------------------
+          
+          if ('errorsArr' in resultObj) {
+            throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+          }
+          
+          
+          // ---------------------------------------------
+          //   Data 更新
+          // ---------------------------------------------
+          
+          storeData.updateCardPlayersObj(resultObj.data);
+          
+          
+          // ---------------------------------------------
+          //   ダイアログ表示
+          // ---------------------------------------------
+          
+          this.cardPlayerDialogObj.type = type;
+          this.cardPlayerDialogObj._id = _id;
+          this.cardPlayerDialog = true;
+           
+           
+         }
+        
+      } else if (type === 'game' && _id in storeData.cardGamesObj) {
+        
+        this.cardPlayerDialogObj.type = type;
+        this.cardPlayerDialogObj._id = _id;
+        this.cardPlayerDialog = true;
+        
       }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      // const formData = new FormData();
-      
-      // formData.append('users_id', users_id);
-      
-      
-      // // ---------------------------------------------
-      // //   Button Disabled
-      // // ---------------------------------------------
-      
-      // storeLayout.handleButtonDisabledObj(`${users_id}-follow`, true);
-      
-      
-      // // ---------------------------------------------
-      // //   Fetch
-      // // ---------------------------------------------
-      
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${storeData.urlApi}/v1/card-players/follow`,
-      //   methodType: 'POST',
-      //   formData: formData
-      // });
-      
-      
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
-      
-      // if ('errorsArr' in resultObj) {
-      //   throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
-      // }
-      
-      
-      // // ---------------------------------------------
-      // //   ダイアログを閉じる
-      // // ---------------------------------------------
-      
-      // this.handleFollowDialogClose(users_id);
-      
-      
-      // // ---------------------------------------------
-      // //   Data Users 更新
-      // // ---------------------------------------------
-      
-      // storeData.updateUsersObj(resultObj.data.usersObj);
-      
-      
-      // // ---------------------------------------------
-      // //   Snackbar: Success
-      // // ---------------------------------------------
-      
-      // if (type === 'follow') {
-      //   storeLayout.handleSnackbarOpen('success', 'フォローしました。');
-      // } else {
-      //   storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
-      // }
       
       
     } catch (error) {
@@ -205,7 +209,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      // storeLayout.handleButtonDisabledObj(`${users_id}-follow`, false);
+      storeLayout.handleButtonDisabledObj(`${_id}-card-player`, false);
       
       
     }

@@ -6,6 +6,7 @@ import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
+import getConfig from 'next/config';
 import styled from 'styled-components';
 import Swiper from 'react-id-swiper';
 
@@ -19,8 +20,9 @@ import Typography from '@material-ui/core/Typography';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 
-import initStoreLayout from '../app/common/layout/stores/layout';
-import initStoreIndex from '../app/index/stores/store';
+// import initStoreLayout from '../app/common/layout/stores/layout';
+// import initStoreIndex from '../app/index/stores/store';
+import initStoreIndex from '../app/@stores/index';
 
 import Layout from '../app/common/layout/components/layout';
 
@@ -213,13 +215,60 @@ class Component extends React.Component {
     //   Store
     // --------------------------------------------------
     
-    const storeLayoutInstance = initStoreLayout(props.isServer, props.initialData);
+    // const storeLayoutInstance = initStoreLayout(props.isServer, props.initialData);
     
-    this.stores = {
-      layout: storeLayoutInstance,
-      current: initStoreIndex(props.isServer, storeLayoutInstance),
-      pathname: props.pathname
-    };
+    // this.stores = {
+    //   layout: storeLayoutInstance,
+    //   current: initStoreIndex(props.isServer, storeLayoutInstance),
+    //   pathname: props.pathname
+    // };
+    
+    
+    try {
+      
+      
+      // --------------------------------------------------
+      //   Errorの場合
+      // --------------------------------------------------
+      
+      // if (
+      //   this.props.statusCode !== 200 ||
+      //   // 'usersLoginObj' in props.initialPropsObj === false ||
+      //   'usersObj' in props.initialPropsObj === false ||
+      //   'cardPlayersObj' in props.initialPropsObj === false ||
+      //   // 'cardGamesObj' in props.initialPropsObj === false ||
+      //   'cardsArr' in props.initialPropsObj === false
+      // ) {
+      //   throw new Error();
+      // }
+      
+      
+      // --------------------------------------------------
+      //   publicRuntimeConfig
+      // --------------------------------------------------
+      
+      const { publicRuntimeConfig } = getConfig();
+      
+      
+      // --------------------------------------------------
+      //   Store
+      // --------------------------------------------------
+      
+      const argumentsObj = {
+        isServer: props.isServer,
+        pathname: props.pathname,
+        environment: publicRuntimeConfig.environment,
+        urlBase: publicRuntimeConfig.urlBase,
+        urlApi: publicRuntimeConfig.urlApi
+      };
+      
+      this.stores = initStoreIndex(argumentsObj);
+      
+      
+    } catch (e) {
+      this.error = true;
+    }
+    
     
   }
   
@@ -251,13 +300,30 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
+    //   Header Navigation
+    // --------------------------------------------------
+    
+    const headerNavMainArr = [
+      {
+        name: 'プロフィール',
+        pathname: '/pl/AZ-1979'
+      },
+      {
+        name: '設定',
+        pathname: '/pl/AZ-1979/config'
+      }
+    ];
+    
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
       <Provider stores={this.stores}>
       
-        <Layout headerNavMainArr={stores.layout.headerNavMainObj.index}>
+        <Layout headerNavMainArr={headerNavMainArr}>
           
           {/* Head 内部のタグをここで追記する */}
           <Head>

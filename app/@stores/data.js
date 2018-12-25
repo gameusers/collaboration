@@ -100,6 +100,14 @@ class Store {
   @observable cardPlayersObj = {};
   
   /**
+   * プレイヤーカードのオブジェクトを更新する
+   * @param {Object} obj - 更新するオブジェクト
+   */
+  updateCardPlayersObj(obj) {
+    this.cardPlayersObj = Object.assign({}, this.cardPlayersObj, obj);
+  };
+  
+  /**
    * プレイヤーカードのオブジェクトを置き換える
    * @param {Object} obj - 置き換えるオブジェクト
    */

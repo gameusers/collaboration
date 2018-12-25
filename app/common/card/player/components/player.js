@@ -228,13 +228,17 @@ export default class extends React.Component {
     //   Image
     // ---------------------------------------------
     
-    const {
+    let imageSrcSet = '';
+    let imageSrc = '';
+    let imageAlt = '';
+    
+    if (cardPlayersObj.imageArr.length > 0) {
       
-      imageSrcSet,
-      imageSrc,
-      imageAlt
+      imageSrcSet = cardPlayersObj.imageArr[0].imageSrcSet;
+      imageSrc = cardPlayersObj.imageArr[0].imageSrc;
+      imageAlt = cardPlayersObj.imageArr[0].imageAlt;
       
-    } = cardPlayersObj.imageArr[0];
+    }
     
     
     // ---------------------------------------------
@@ -411,6 +415,7 @@ export default class extends React.Component {
               srcSet={imageSrcSet}
               src={imageSrc}
               alt={imageAlt}
+              width="100%"
             />
           }
           

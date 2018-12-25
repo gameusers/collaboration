@@ -19,17 +19,6 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
 
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-
-
 
 
 // --------------------------------------------------
@@ -46,7 +35,6 @@ const Container = styled.div`
     padding: 0;
   }
 `;
-
 
 
 
@@ -89,9 +77,7 @@ export default class extends React.Component {
     //   読み込みが終わった場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (
-      onload
-    ) {
+    if (onload) {
       return null;
     }
     

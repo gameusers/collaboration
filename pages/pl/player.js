@@ -87,6 +87,7 @@ import CardPlayer from '../../app/common/card/player/components/player';
 import CardGame from '../../app/common/card/player/components/game';
 
 // import DialogTest from '../../app/common/user/components/dialog';
+import User from '../../app/common/user/components/user';
 
 
 // ---------------------------------------------
@@ -393,6 +394,22 @@ class Component extends React.Component {
                 id='hello'
               />*/}
               {/*<DialogTest />*/}
+              
+              <div style={{ margin: '0 0 20px 0', padding: '10px', backgroundColor: 'white' }}>
+                <User
+                  thumbnailSrc={'http://35.203.143.160:8080/static/img/card/players/zaoOWw89g/thumbnail/image.jpg'}
+                  name={'Name'}
+                  playerID={'user1'}
+                  status={'Status'}
+                  accessDate={'2018-12-22T02:56:41.194Z'}
+                  level={'99'}
+                  cardPlayers_id={'WAMuArrBZ'}
+                  showCardPlayerButton={true}
+                  cardGames_id={'TzjNMDQyl'}
+                  showCardGameButton={true}
+                />
+              </div>
+              
               
               {componentCardsArr}
               

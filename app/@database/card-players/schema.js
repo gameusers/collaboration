@@ -104,7 +104,7 @@ const schema = mongoose.Schema({
   idArr: [
     {
       _id: { type: String, required: true },
-      type: { type: String, enum: ['Playstation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
+      type: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
       label: String,
       value: { type: String, required: true },
       showType: { type: Number, min: 1, max: 5 },

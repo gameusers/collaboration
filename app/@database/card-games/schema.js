@@ -46,7 +46,7 @@ const schema = mongoose.Schema({
     {
       _id: { type: String, required: true },
       quotation_id: String,
-      type: { type: String, enum: ['Playstation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
+      type: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
       label: String,
       value: { type: String, required: true },
       showType: { type: Number, min: 1, max: 5 },

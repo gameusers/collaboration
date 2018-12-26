@@ -57,12 +57,6 @@ const FollowBox = styled.div`
   
   margin: 28px 0 0 0;
   padding: 0;
-  
-  // margin: 8px 0 16px 3px;
-  
-  // @media screen and (max-width: 480px) {
-  //   padding: 4px 0 0 7px;
-  // }
 `;
 
 const FollowersBox = styled.div`
@@ -75,7 +69,6 @@ const FollowersBox = styled.div`
 const StyledIconFollowers = styled(IconFollowers)`
   && {
     font-size: 24px;
-    // margin: 0 2px 0 0;
     padding: 0;
   }
 `;
@@ -83,17 +76,6 @@ const StyledIconFollowers = styled(IconFollowers)`
 const ButtonBox = styled.div`
   position: relative;
 `;
-
-// const StyledCircularProgress = styled(CircularProgress)`
-//   && {
-//     color: ${green[500]};
-//     position: absolute;
-//     top: 50%;
-//     left: 50%;
-//     margin-top: -12px;
-//     margin-left: -12px;
-//   }
-// `;
 
 
 
@@ -125,30 +107,9 @@ export default class extends React.Component {
     
     const { stores, users_id, followedCount, followed } = this.props;
     
-    const {
-      
-      buttonDisabledObj
-      
-    } = stores.layout;
+    const { buttonDisabledObj } = stores.layout;
     
-    const {
-      
-      usersLoginObj
-      
-    } = stores.data;
-    
-    // const {
-      
-    //   users_id
-      
-    // } = stores.data.cardPlayersObj[users_id];
-    
-    // const {
-      
-    //   followedCount,
-    //   followed
-      
-    // } = stores.data.usersObj[users_id];
+    const { usersLoginObj } = stores.data;
     
     const {
       
@@ -160,11 +121,22 @@ export default class extends React.Component {
     } = stores.cardPlayer;
     
     
+    
+    
     // --------------------------------------------------
     //   ログインしていない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
     if (Object.keys(usersLoginObj).length === 0) {
+      return null;
+    }
+    
+    
+    // --------------------------------------------------
+    //   自分のカードの場合、空のコンポーネントを返す
+    // --------------------------------------------------
+    
+    if (users_id === usersLoginObj._id) {
       return null;
     }
     
@@ -217,19 +189,20 @@ export default class extends React.Component {
     
     
     
-    // console.log(chalk`
-    //   users_id-follow in buttonDisabledObj: {green ${`${users_id}-follow` in buttonDisabledObj}}
-    //   buttonDisabledObj[users_id-follow]: {green ${buttonDisabledObj[`${users_id}-follow`]}}
-    //   followButtonDisabled: {green ${followButtonDisabled}}
-    // `);
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
     
     // console.log(`
-    //   buttonDisabledObj: \n${util.inspect(buttonDisabledObj, { colors: true, depth: null })}
+    //   ----- usersLoginObj -----\n
+    //   ${util.inspect(usersLoginObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(chalk`
     //   users_id: {green ${users_id}}
-    //   users_id: {green ${users_id}}
+    //   usersLoginObj._id: {green ${usersLoginObj._id}}
     //   followedCount: {green ${followedCount}}
     //   followed: {green ${followed}}
     // `);

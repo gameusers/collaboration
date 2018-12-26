@@ -199,7 +199,17 @@ export default class extends React.Component {
       followedCount,
       followed
       
-    } = cardGamesObj.usersObj;
+    } = stores.data.usersObj[users_id];
+    
+    // const {
+      
+    //   accessDate,
+    //   level,
+    //   playerID,
+    //   followedCount,
+    //   followed
+      
+    // } = cardGamesObj.usersObj;
     
     
     // ---------------------------------------------

@@ -1521,13 +1521,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   Condition Object
-    // ---------------------------------------------
-    
-    // conditionObj = { _id: 'TzjNMDQyl' || shortid.generate() };
-    
-    
-    // ---------------------------------------------
     //   Save Object
     // ---------------------------------------------
     
@@ -1709,6 +1702,152 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
       },
       
+      
+      {
+         _id: '3sZUV34Q_',
+        createdDate: date,
+        updatedDate: date,
+        users_id: 'P7UJMuUnx',
+        gameID: 'lxdubg6IY',
+        language: 'ja',
+        theme: '',
+        name: 'パックンフラワー',
+        status: '人喰い植物',
+        thumbnail: false,
+        imageVideoArr: [
+          {
+            _id: 'BrhMB9ieu',
+            type: 'image',
+            caption: 'Tree',
+            fileFormat: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'BolWOUmkF',
+                w: '320w',
+                width: 320,
+                height: 213,
+              },
+              {
+                _id: 'gsRUhcWl3',
+                w: '480w',
+                width: 480,
+                height: 320,
+              },
+              {
+                _id: '54sVdlP49',
+                w: '640w',
+                width: 640,
+                height: 427,
+              },
+              {
+                _id: 'kyUo0yIl2',
+                w: '800w',
+                width: 800,
+                height: 533,
+              },
+              {
+                _id: 'Tnp5c8Yh0',
+                w: 'source',
+                width: 1920,
+                height: 1280,
+              },
+            ],
+          },
+        ],
+        itemArr: [],
+        comment: `ドラゴンクエストビルダーズ2 #2～5
+
+序盤のモンゾーラ島でめちゃくちゃ気合を入れて
+街を作ってしまいました。
+このペースだとクリアまで相当時間がかかるかもしれませんね。
+
+あと進行不能バグがめっちゃ怖いです。
+バグ満載で購入者にデバッグさせる姿勢は悪どすぎますね。
+ゲームは面白いだけにもうちょっと真面目に取り組んでもらいたいです。
+
+からっぽ島に戻ってきて開拓を始める話になりましたが
+広大で整地もされていない土地をどう開拓していくのか
+まったくビジョンが見えないので、ちゃんとやっていけるか心配です。
+はたして最初の街のように綺麗な場所にできるんでしょうか？`,
+        hardwarePlayingObj: {
+          valueArr: ['TdK3Oc-yV'],
+          search: true,
+        },
+        idArr: [
+          {
+            _id: 'IaxG9Svs-',
+            type: 'PlayStation',
+            label: '',
+            value: 'PlayStation',
+            showType: 1,
+            search: true,
+          },
+          {
+            _id: 'NuIHKif7T',
+            type: 'Xbox',
+            label: '',
+            value: 'Xbox',
+            showType: 1,
+            search: true,
+          },
+        ],
+        activityTimeObj: {
+          valueArr: [
+            {
+              _id: 'dZCJsb6f-',
+              beginTime: '19:00',
+              endTime: '24:00',
+              weekArr: [0, 1, 2, 3, 4]
+            },
+            {
+              _id: '2eD3Ovfqr',
+              beginTime: '21:00',
+              endTime: '3:00',
+              weekArr: [5, 6]
+            }
+          ],
+          search: true,
+        },
+        lookingForFriendsObj: {
+          icon: 'emoji_u1f61e',
+          comment: '',
+          search: true,
+        },
+        voiceChatObj: {
+          comment: '',
+          search: true,
+        },
+        linkArr: [
+          {
+            _id: 'c8gHFXEij',
+            type: 'Twitter',
+            label: '',
+            url: 'https://twitter.com/Azumi1979',
+            search: true,
+          },
+          {
+            _id: '6tHU4FvfC',
+            type: 'Facebook',
+            label: '',
+            url: 'https://www.youtube.com/',
+            search: true,
+          },
+          {
+            _id: 'CTyK8Om31',
+            type: 'Other',
+            label: 'Game開発サイト',
+            url: 'http://35.203.143.160:8080/',
+            search: true,
+          },
+        ],
+        quotationObj: {
+          cardPlayers_id: 'WAMuArrBZ',
+          activityTime: false,
+          lookingForFriends: false,
+          voiceChat: false,
+          link: false,
+        },
+      },
       
       
     ];

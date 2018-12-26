@@ -405,7 +405,7 @@ class Component extends React.Component {
                   level={'99'}
                   cardPlayers_id={'WAMuArrBZ'}
                   showCardPlayerButton={true}
-                  cardGames_id={'TzjNMDQyl'}
+                  cardGames_id={'3sZUV34Q_'}
                   showCardGameButton={true}
                 />
               </div>

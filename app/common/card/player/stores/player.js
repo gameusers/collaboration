@@ -115,7 +115,7 @@ class Store {
           
         } else {
           
-          console.log('fetchWrapper');
+          // console.log('fetchWrapper');
            
           
           // ---------------------------------------------
@@ -145,13 +145,6 @@ class Store {
           });
           
           
-          // console.log(`
-          //   ----- resultObj -----\n
-          //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          
           // ---------------------------------------------
           //   Error
           // ---------------------------------------------
@@ -162,7 +155,17 @@ class Store {
           
           
           // ---------------------------------------------
-          //   Data 更新
+          //   Data 更新 - usersObj
+          // ---------------------------------------------
+          
+          const usersObj = {};
+          usersObj[resultObj.data[_id].users_id] = resultObj.data[_id].usersObj;
+          
+          storeData.updateUsersObj(usersObj);
+          
+          
+          // ---------------------------------------------
+          //  Data 更新 - cardPlayersObj
           // ---------------------------------------------
           
           storeData.updateCardPlayersObj(resultObj.data);
@@ -175,15 +178,155 @@ class Store {
           this.cardPlayerDialogObj.type = type;
           this.cardPlayerDialogObj._id = _id;
           this.cardPlayerDialog = true;
+          
+          
+          // ---------------------------------------------
+          //   Button Enable
+          // ---------------------------------------------
+          
+          storeLayout.handleButtonDisabledObj(`${_id}-card-player`, false);
+          
+          
+          // console.log(`
+          //   ----- resultObj -----\n
+          //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // console.log(chalk`
+          //   cardPlayersObj.users_id: {green ${cardPlayersObj.users_id}}
+          // `);
+          
+          // console.log(`
+          //   ----- cardPlayersObj -----\n
+          //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // console.log(`
+          //   ----- resultObj.data -----\n
+          //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
            
            
-         }
+        }
         
-      } else if (type === 'game' && _id in storeData.cardGamesObj) {
+      } else if (type === 'game') {
         
-        this.cardPlayerDialogObj.type = type;
-        this.cardPlayerDialogObj._id = _id;
-        this.cardPlayerDialog = true;
+        if (_id in storeData.cardGamesObj && storeData.cardGamesObj[_id].comment) {
+          
+          this.cardPlayerDialogObj.type = type;
+          this.cardPlayerDialogObj._id = _id;
+          this.cardPlayerDialog = true;
+          
+        } else {
+          
+          console.log('fetchWrapper');
+          
+           
+          
+          // ---------------------------------------------
+          //   FormData
+          // ---------------------------------------------
+          
+          const formData = new FormData();
+          
+          formData.append('_id', _id);
+          
+          
+          // ---------------------------------------------
+          //   Button Disabled
+          // ---------------------------------------------
+          
+          storeLayout.handleButtonDisabledObj(`${_id}-card-game`, true);
+          
+          
+          // ---------------------------------------------
+          //   Fetch
+          // ---------------------------------------------
+          
+          const resultObj = await fetchWrapper({
+            urlApi: `${storeData.urlApi}/v1/card-games/find-one-by-id`,
+            methodType: 'POST',
+            formData: formData
+          });
+          
+          
+          // ---------------------------------------------
+          //   Error
+          // ---------------------------------------------
+          
+          if ('errorsArr' in resultObj) {
+            throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+          }
+          
+          
+          // ---------------------------------------------
+          //   Data 更新 - usersObj
+          // ---------------------------------------------
+          
+          const usersObj = {};
+          usersObj[resultObj.data[_id].users_id] = resultObj.data[_id].usersObj;
+          
+          storeData.updateUsersObj(usersObj);
+          
+          
+          // console.log(`
+          //   ----- resultObj -----\n
+          //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // ---------------------------------------------
+          //  Data 更新 - cardGamesObj
+          // ---------------------------------------------
+          
+          storeData.updateCardGamesObj(resultObj.data);
+          // console.log('AAA');
+          
+          
+          // ---------------------------------------------
+          //   ダイアログ表示
+          // ---------------------------------------------
+          
+          this.cardPlayerDialogObj.type = type;
+          this.cardPlayerDialogObj._id = _id;
+          this.cardPlayerDialog = true;
+          
+          
+          // ---------------------------------------------
+          //   Button Enable
+          // ---------------------------------------------
+          
+          storeLayout.handleButtonDisabledObj(`${_id}-card-game`, false);
+          
+          
+          // console.log(`
+          //   ----- resultObj -----\n
+          //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // console.log(chalk`
+          //   cardPlayersObj.users_id: {green ${cardPlayersObj.users_id}}
+          // `);
+          
+          // console.log(`
+          //   ----- cardPlayersObj -----\n
+          //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // console.log(`
+          //   ----- resultObj.data -----\n
+          //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+           
+           
+        }
+        
         
       }
       
@@ -200,16 +343,6 @@ class Store {
       // } else {
       //   storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
       // }
-      
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisabledObj(`${_id}-card-player`, false);
       
       
     }
@@ -256,17 +389,17 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/card-players/follow`,
+        urlApi: `${storeData.urlApi}/v1/users/follow`,
         methodType: 'POST',
         formData: formData
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -289,6 +422,7 @@ class Store {
       //   Data Users 更新
       // ---------------------------------------------
       
+      // storeData.replaceUsersObj(resultObj.data.usersObj);
       storeData.updateUsersObj(resultObj.data.usersObj);
       
       

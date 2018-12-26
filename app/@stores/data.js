@@ -66,6 +66,7 @@ class Store {
    */
   @observable usersObj = {};
   
+  // @action.bound
   insertUsersObj(obj) {
     this.usersObj = Object.assign({}, obj, this.usersObj);
   };
@@ -74,6 +75,7 @@ class Store {
    * ユーザー情報オブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
+  // @action.bound
   updateUsersObj(obj) {
     this.usersObj = Object.assign({}, this.usersObj, obj);
   };
@@ -82,6 +84,7 @@ class Store {
    * ユーザー情報オブジェクトを置き換える
    * @param {Object} obj - 置き換えるオブジェクト
    */
+  // @action.bound
   replaceUsersObj(obj) {
     this.usersObj = obj;
   };
@@ -119,7 +122,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Card / Players
+  //   Card / Games
   // ---------------------------------------------
   
   /**
@@ -127,6 +130,14 @@ class Store {
    * @type {Object}
    */
   @observable cardGamesObj = {};
+  
+  /**
+   * ゲームカードのオブジェクトを更新する
+   * @param {Object} obj - 更新するオブジェクト
+   */
+  updateCardGamesObj(obj) {
+    this.cardGamesObj = Object.assign({}, this.cardGamesObj, obj);
+  };
   
   /**
    * ゲームカードのオブジェクトを置き換える

@@ -591,7 +591,7 @@ const findOneBy_id = async (argumentsObj) => {
 
 
 /**
- * DBから取得したプレイヤーカード情報をフォーマットする
+ * DBから取得したカード情報をフォーマットする
  * @param {Object} argumentsObj - 引数
  * @return {Object} フォーマット後のデータ
  */

@@ -348,7 +348,7 @@ export default class extends React.Component {
     
     const cardPlayerEditFormOpenObj = stores.cardPlayer.cardPlayerEditFormOpenObj;
     
-    let editFormOpen = true;
+    let editFormOpen = false;
     
     if (cardPlayers_id in cardPlayerEditFormOpenObj) {
       editFormOpen = cardPlayerEditFormOpenObj[cardPlayers_id];
@@ -356,23 +356,22 @@ export default class extends React.Component {
     
     
     
-    
     // --------------------------------------------------
     //   Console 出力
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
-    //   users_id: {green ${users_id}}
-    //   stores.data.usersLoginObj._id: {green ${stores.data.usersLoginObj._id}}
-    //   users_id: {green ${users_id}}
-    //   editFormOpen: {green ${editFormOpen}}
-    // `);
+    console.log(chalk`
+      cardPlayers_id: {green ${cardPlayers_id}}
+      users_id: {green ${users_id}}
+      stores.data.usersLoginObj._id: {green ${stores.data.usersLoginObj._id}}
+      users_id: {green ${users_id}}
+      editFormOpen: {green ${editFormOpen}}
+    `);
     
     
     // console.log(`
-    //   ----- cardPlayerEditFormOpenObj -----\n
-    //   ${util.inspect(cardPlayerEditFormOpenObj, { colors: true, depth: null })}\n
+    //   ----- stores.data.usersLoginObj -----\n
+    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -437,137 +436,122 @@ export default class extends React.Component {
         <Collapse in={panelExpanded} timeout="auto" unmountOnExit>
           
           
-          {/* 編集フォーム */}
           {editFormOpen ? (
+            <EditForm />
+          ) : (
+            {/* プロフィール */}
+          <StyledCardContent>
             
-            <EditForm
-              cardPlayers_id={cardPlayers_id}
+            
+            {/* コメント */}
+            <Paragraph text={comment} />
+            
+            
+            {/* 年齢・性別などのプロフィール */}
+            <Profile
+              birthdayValue={birthdayValue}
+              birthdayAlternativeText={birthdayAlternativeText}
+              sexValue={sexValue}
+              sexAlternativeText={sexAlternativeText}
+              addressValue={addressValue}
+              gamingExperienceValue={gamingExperienceValue}
+              gamingExperienceAlternativeText={gamingExperienceAlternativeText}
+              hobbiesValueArr={hobbiesValueArr}
+              specialSkillsValueArr={specialSkillsValueArr}
             />
             
-          ) : (
             
-            <React.Fragment>
+            {/* 所有ハード */}
+            <Hardware
+              hardwareActiveArr={hardwareActiveArr}
+              hardwareInactiveArr={hardwareInactiveArr}
+            />
+            
+            
+            {/* スマートフォン */}
+            <Smartphone
+              smartphoneModel={smartphoneModel}
+              smartphoneComment={smartphoneComment}
+            />
+            
+            
+            {/* タブレット */}
+            <Tablet
+              tabletModel={tabletModel}
+              tabletComment={tabletComment}
+            />
+            
+            
+            {/* PC */}
+            <Pc
+              pcModel={pcModel}
+              pcComment={pcComment}
+              pcOs={pcOs}
+              pcCpu={pcCpu}
+              pcCpuCooler={pcCpuCooler}
+              pcMotherboard={pcMotherboard}
+              pcMemory={pcMemory}
+              pcStorage={pcStorage}
+              pcGraphicsCard={pcGraphicsCard}
+              pcOpticalDrive={pcOpticalDrive}
+              pcPowerSupply={pcPowerSupply}
+              pcCase={pcCase}
+              pcMonitor={pcMonitor}
+              pcMouse={pcMouse}
+              pcKeyboard={pcKeyboard}
+            />
+            
+            
+            {/* ID & Friend */}
+            <IdFriend
+              idArr={idArr}
+              activityTimeArr={activityTimeArr}
+              lookingForFriendsIcon={lookingForFriendsIcon}
+              lookingForFriendsComment={lookingForFriendsComment}
+              voiceChatComment={voiceChatComment}
+            />
+            
+          </StyledCardContent>
+          
+          
+          <StyledCardActions>
+            <ActionsBox>
+            
+              {/* Link */}
+              <Link linkArr={linkArr} />
               
               
-              {/* 大きな画像 */}
-              {imageSrc &&
-                <img
-                  srcSet={imageSrcSet}
-                  src={imageSrc}
-                  alt={imageAlt}
-                  width="100%"
+              {/* フォローボタン */}
+              {showFollow &&
+                <FollowButton
+                  users_id={users_id}
+                  followedCount={followedCount}
+                  followed={followed}
                 />
               }
               
+              {/* 編集ボタン */}
+              <EditButton
+                cardPlayers_id={cardPlayers_id}
+                users_id={users_id}
+              />
               
-              {/* プロフィール*/}
-              <StyledCardContent>
-                
-                
-                {/* コメント */}
-                <Paragraph text={comment} />
-                
-                
-                {/* 年齢・性別などのプロフィール */}
-                <Profile
-                  birthdayValue={birthdayValue}
-                  birthdayAlternativeText={birthdayAlternativeText}
-                  sexValue={sexValue}
-                  sexAlternativeText={sexAlternativeText}
-                  addressValue={addressValue}
-                  gamingExperienceValue={gamingExperienceValue}
-                  gamingExperienceAlternativeText={gamingExperienceAlternativeText}
-                  hobbiesValueArr={hobbiesValueArr}
-                  specialSkillsValueArr={specialSkillsValueArr}
-                />
-                
-                
-                {/* 所有ハード */}
-                <Hardware
-                  hardwareActiveArr={hardwareActiveArr}
-                  hardwareInactiveArr={hardwareInactiveArr}
-                />
-                
-                
-                {/* スマートフォン */}
-                <Smartphone
-                  smartphoneModel={smartphoneModel}
-                  smartphoneComment={smartphoneComment}
-                />
-                
-                
-                {/* タブレット */}
-                <Tablet
-                  tabletModel={tabletModel}
-                  tabletComment={tabletComment}
-                />
-                
-                
-                {/* PC */}
-                <Pc
-                  pcModel={pcModel}
-                  pcComment={pcComment}
-                  pcOs={pcOs}
-                  pcCpu={pcCpu}
-                  pcCpuCooler={pcCpuCooler}
-                  pcMotherboard={pcMotherboard}
-                  pcMemory={pcMemory}
-                  pcStorage={pcStorage}
-                  pcGraphicsCard={pcGraphicsCard}
-                  pcOpticalDrive={pcOpticalDrive}
-                  pcPowerSupply={pcPowerSupply}
-                  pcCase={pcCase}
-                  pcMonitor={pcMonitor}
-                  pcMouse={pcMouse}
-                  pcKeyboard={pcKeyboard}
-                />
-                
-                
-                {/* ID & Friend */}
-                <IdFriend
-                  idArr={idArr}
-                  activityTimeArr={activityTimeArr}
-                  lookingForFriendsIcon={lookingForFriendsIcon}
-                  lookingForFriendsComment={lookingForFriendsComment}
-                  voiceChatComment={voiceChatComment}
-                />
-                
-              </StyledCardContent>
-              
-              
-              <StyledCardActions>
-                <ActionsBox>
-                
-                  {/* Link */}
-                  <Link linkArr={linkArr} />
-                  
-                  
-                  {/* フォローボタン */}
-                  {showFollow &&
-                    <FollowButton
-                      users_id={users_id}
-                      followedCount={followedCount}
-                      followed={followed}
-                    />
-                  }
-                  
-                  {/* 編集ボタン */}
-                  <EditButton
-                    cardPlayers_id={cardPlayers_id}
-                    users_id={users_id}
-                  />
-                  
-                </ActionsBox>
-              </StyledCardActions>
-              
-              
-            </React.Fragment>
-            
+            </ActionsBox>
+          </StyledCardActions>
           )}
           
           
           
           
+          {/* 大きな画像 */}
+          {imageSrc &&
+            <img
+              srcSet={imageSrcSet}
+              src={imageSrc}
+              alt={imageAlt}
+              width="100%"
+            />
+          }
           
           
           

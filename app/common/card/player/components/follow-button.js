@@ -50,7 +50,7 @@ import IconFollowers from '@material-ui/icons/PermIdentity';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const FollowBox = styled.div`
+const Container = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
@@ -141,14 +141,16 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Component - Button
     // --------------------------------------------------
     
-    let followButtonDisabled = true;
+    let buttonDisabled = true;
     
     if (`${users_id}-follow` in buttonDisabledObj) {
-      followButtonDisabled = buttonDisabledObj[`${users_id}-follow`];
+      buttonDisabled = buttonDisabledObj[`${users_id}-follow`];
     }
     
     
@@ -157,7 +159,7 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleFollowSubmit('follow', users_id)}
-          disabled={followButtonDisabled}
+          disabled={buttonDisabled}
         >
           フォローする
         </Button>
@@ -169,7 +171,7 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleFollowDialogOpen(users_id)}
-          disabled={followButtonDisabled}
+          disabled={buttonDisabled}
         >
           フォロー中
         </Button>
@@ -214,7 +216,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <FollowBox>
+      <Container>
         
         <ButtonBox>
           {componentButton}
@@ -239,16 +241,17 @@ export default class extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleFollowDialogClose(users_id)} color="primary">
-              いいえ
-            </Button>
             <Button onClick={() => handleFollowSubmit('unfollow', users_id)} color="primary" autoFocus>
               はい
+            </Button>
+            
+            <Button onClick={() => handleFollowDialogClose(users_id)} color="primary">
+              いいえ
             </Button>
           </DialogActions>
         </Dialog>
         
-      </FollowBox>
+      </Container>
     );
     
   }

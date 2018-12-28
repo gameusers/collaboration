@@ -48,7 +48,7 @@ import UserThumbnail from '../../../user/components/thumbnail';
 import UserName from '../../../user/components/name';
 import Hardware from './hardware';
 import IdFriend from './id-friend';
-import Follow from './follow';
+import FollowButton from './follow-button';
 import Link from './link';
 
 
@@ -422,7 +422,7 @@ export default class extends React.Component {
               
               {/* フォローボタン */}
               {showFollow &&
-                <Follow
+                <FollowButton
                   users_id={users_id}
                   followedCount={followedCount}
                   followed={followed}

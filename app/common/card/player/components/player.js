@@ -53,7 +53,7 @@ import IdFriend from './id-friend';
 import Link from './link';
 import FollowButton from './follow-button';
 import EditButton from './edit-button';
-import EditForm from './edit-form';
+import FormPlayer from './form/player';
 
 
 
@@ -136,7 +136,10 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-card-players-panel`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-panelButton`, false);
+    
+    // フォームを表示する、あとで消すように
+    this.props.stores.cardPlayer.handleCardPlayerEditFormOpen('zaoOWw89g');
   }
   
   
@@ -188,14 +191,14 @@ export default class extends React.Component {
     
     let panelExpanded = true;
     
-    if (`${cardPlayers_id}-card-players` in panelExpandedObj) {
-      panelExpanded = panelExpandedObj[`${cardPlayers_id}-card-players`];
+    if (cardPlayers_id in panelExpandedObj) {
+      panelExpanded = panelExpandedObj[cardPlayers_id];
     }
     
     let panelButtonDisabled = true;
     
-    if (`${cardPlayers_id}-card-players-panel` in buttonDisabledObj) {
-      panelButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-card-players-panel`];
+    if (`${cardPlayers_id}-panelButton` in buttonDisabledObj) {
+      panelButtonDisabled = buttonDisabledObj[`${cardPlayers_id}-panelButton`];
     }
     
     
@@ -348,7 +351,7 @@ export default class extends React.Component {
     
     const cardPlayerEditFormOpenObj = stores.cardPlayer.cardPlayerEditFormOpenObj;
     
-    let editFormOpen = true;
+    let editFormOpen = false;
     
     if (cardPlayers_id in cardPlayerEditFormOpenObj) {
       editFormOpen = cardPlayerEditFormOpenObj[cardPlayers_id];
@@ -416,7 +419,7 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handlePanelExpanded(`${cardPlayers_id}-card-players`)}
+              onClick={() => handlePanelExpanded(cardPlayers_id)}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={panelButtonDisabled}
@@ -440,7 +443,7 @@ export default class extends React.Component {
           {/* 編集フォーム */}
           {editFormOpen ? (
             
-            <EditForm
+            <FormPlayer
               cardPlayers_id={cardPlayers_id}
             />
             
@@ -564,13 +567,6 @@ export default class extends React.Component {
             </React.Fragment>
             
           )}
-          
-          
-          
-          
-          
-          
-          
           
           
         </Collapse>

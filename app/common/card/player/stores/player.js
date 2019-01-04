@@ -520,7 +520,6 @@ class Store {
   /**
    * 編集フォームを開く
    * @param {string} cardPlayers_id - DB card-players _id
-   * @param {string} cardGames_id - DB card-games _id
    */
   @action.bound
   async handleCardPlayerEditFormOpen(cardPlayers_id) {
@@ -534,105 +533,96 @@ class Store {
     try {
       
       
-      this.cardPlayerEditFormOpenObj[cardPlayers_id] = true;
+      // ---------------------------------------------
+      //   編集フォームに表示するデータがすでに読み込まれている場合
+      //   編集フォームを即表示する
+      // ---------------------------------------------
       
-      // if (_id in storeData.cardPlayersObj && storeData.cardPlayersObj[_id].comment) {
+      if (cardPlayers_id in this.cardPlayerEditFormObj) {
         
-      //   this.cardPlayerDialogObj.type = type;
-      //   this.cardPlayerDialogObj._id = _id;
-      //   this.cardPlayerDialog = true;
+        this.cardPlayerEditFormOpenObj[cardPlayers_id] = true;
         
-      // } else {
+      
+      // ---------------------------------------------
+      //   編集フォームに表示するデータがまだ読み込まれていない場合
+      //   Fetch でデータを取得してから編集フォームを表示する
+      // ---------------------------------------------
+      
+      } else {
         
-      //   // console.log('fetchWrapper');
+        console.log('fetchWrapper');
          
         
-      //   // ---------------------------------------------
-      //   //   FormData
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
         
-      //   const formData = new FormData();
+        const formData = new FormData();
         
-      //   formData.append('_id', _id);
-        
-        
-      //   // ---------------------------------------------
-      //   //   Button Disabled
-      //   // ---------------------------------------------
-        
-      //   storeLayout.handleButtonDisabledObj(`${_id}-card-player`, true);
+        formData.append('_id', cardPlayers_id);
         
         
-      //   // ---------------------------------------------
-      //   //   Fetch
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   Button Disabled
+        // ---------------------------------------------
         
-      //   const resultObj = await fetchWrapper({
-      //     urlApi: `${storeData.urlApi}/v1/card-players/find-one-by-id`,
-      //     methodType: 'POST',
-      //     formData: formData
-      //   });
+        storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-editButton`, true);
         
         
-      //   // ---------------------------------------------
-      //   //   Error
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   Fetch
+        // ---------------------------------------------
         
-      //   if ('errorsArr' in resultObj) {
-      //     throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
-      //   }
-        
-        
-      //   // ---------------------------------------------
-      //   //   Data 更新 - usersObj
-      //   // ---------------------------------------------
-        
-      //   const usersObj = {};
-      //   usersObj[resultObj.data[_id].users_id] = resultObj.data[_id].usersObj;
-        
-      //   storeData.updateUsersObj(usersObj);
+        const resultObj = await fetchWrapper({
+          urlApi: `${storeData.urlApi}/v1/card-players/find-one-by-id-for-edit-form`,
+          methodType: 'POST',
+          formData: formData
+        });
         
         
-      //   // ---------------------------------------------
-      //   //  Data 更新 - cardPlayersObj
-      //   // ---------------------------------------------
+        // ---------------------------------------------
+        //   Error
+        // ---------------------------------------------
         
-      //   storeData.updateCardPlayersObj(resultObj.data);
-        
-        
-      //   // ---------------------------------------------
-      //   //   ダイアログ表示
-      //   // ---------------------------------------------
-        
-      //   this.cardPlayerDialogObj.type = type;
-      //   this.cardPlayerDialogObj._id = _id;
-      //   this.cardPlayerDialog = true;
+        if ('errorsArr' in resultObj) {
+          throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        }
         
         
-      //   // console.log(`
-      //   //   ----- resultObj -----\n
-      //   //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   //   --------------------\n
-      //   // `);
+        // ---------------------------------------------
+        //  Data 更新
+        // ---------------------------------------------
         
-      //   // console.log(chalk`
-      //   //   cardPlayersObj.users_id: {green ${cardPlayersObj.users_id}}
-      //   // `);
+        this.cardPlayerEditFormObj = Object.assign({}, this.cardPlayerEditFormObj, resultObj.data);
         
-      //   // console.log(`
-      //   //   ----- cardPlayersObj -----\n
-      //   //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-      //   //   --------------------\n
-      //   // `);
         
-      //   // console.log(`
-      //   //   ----- resultObj.data -----\n
-      //   //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-      //   //   --------------------\n
-      //   // `);
+        // ---------------------------------------------
+        //   編集フォーム表示
+        // ---------------------------------------------
+        
+        this.cardPlayerEditFormOpenObj[cardPlayers_id] = true;
+        
+        
+        // console.log(`
+        //   ----- resultObj -----\n
+        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- this.cardPlayerEditFormObj -----\n
+        //   ${util.inspect(this.cardPlayerEditFormObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- resultObj.data -----\n
+        //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
          
          
-      // }
+      }
       
       
     } catch (error) {
@@ -656,11 +646,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      // if (type === 'player') {
-      //   storeLayout.handleButtonDisabledObj(`${_id}-card-player`, false);
-      // } else if (type === 'game') {
-      //   storeLayout.handleButtonDisabledObj(`${_id}-card-game`, false);
-      // }
+      storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-editButton`, false);
       
       
     }
@@ -668,7 +654,44 @@ class Store {
   };
   
   
+  
+  
+  /**
+   * 編集フォームの趣味 <TextField /> の数をカウントするオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormHobbyTextFieldCountObj = {};
+  
+  
+  /**
+   * 編集フォームの趣味 <TextField /> の数を増やす
+   */
+  @action.bound
+  handleCardPlayerEditFormHobbyTextFieldCountIncrement(cardPlayers_id) {
+    if (cardPlayers_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
+      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] += 1;
+    } else {
+      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] = 2;
+    }
+  };
+  
+  
+  /**
+   * 編集フォームの趣味 <TextField /> の数を減らす
+   */
+  @action.bound
+  handleCardPlayerEditFormHobbyTextFieldCountDecrement(cardPlayers_id) {
+    if (cardPlayers_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
+      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] -= 1;
+    } else {
+      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] = 1;
+    }
+  };
+  
+  
+  
 }
+
 
 
 

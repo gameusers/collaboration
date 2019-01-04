@@ -37,6 +37,13 @@ import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
 
 
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import Hobby from './hobby';
+
+
 
 
 // --------------------------------------------------
@@ -223,6 +230,14 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Hobby
+    // --------------------------------------------------
+    
+    // const hobbyTextFieldCount = handleGetCardPlayerEditFormHobbyTextFieldCount(cardPlayers_id);
+    
+    
+    
+    // --------------------------------------------------
     //   Component - Button
     // --------------------------------------------------
     
@@ -315,7 +330,7 @@ export default class extends React.Component {
             
             <Box>
               <Title>年齢</Title>
-              <TextP>入力すると年齢が表示されます。誕生日か年齢（固定値）のどちらかを入力してください。</TextP>
+              <TextP>入力すると年齢が表示されます。誕生日か、年齢（固定値）のどちらかを入力してください。</TextP>
               
               <StyledTextField
                 id="birthday"
@@ -427,7 +442,7 @@ export default class extends React.Component {
             
             <Box>
               <Title>ゲーム歴</Title>
-              <TextP>入力するとゲーム歴が表示されます。ゲームを始めた日かゲーム歴（固定値）のどちらかを入力してください。</TextP>
+              <TextP>入力するとゲーム歴が表示されます。ゲームを始めた日か、ゲーム歴（固定値）のどちらかを入力してください。</TextP>
               
               <StyledTextField
                 id="gamingExperience"
@@ -461,6 +476,12 @@ export default class extends React.Component {
                   label="ゲーム歴で検索可能にする"
                 />
               </SearchBox>
+            </Box>
+            
+            
+            {/* 趣味 */}
+            <Box>
+              <Hobby cardPlayers_id={cardPlayers_id} />
             </Box>
             
             

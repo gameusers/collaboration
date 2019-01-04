@@ -55,7 +55,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-edit`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-editButton`, false);
   }
   
   
@@ -107,8 +107,8 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${users_id}-edit` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${users_id}-edit`];
+    if (`${cardPlayers_id}-editButton` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${cardPlayers_id}-editButton`];
     }
     
     let componentButton =

@@ -591,6 +591,206 @@ const findOneBy_id = async (argumentsObj) => {
 
 
 /**
+ * _id で検索して取得する
+ * @param {Object} argumentsObj - 引数
+ * @return {Object} 取得データ
+ */
+const findOneBy_idForEditForm = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    _id,
+    language,
+    country,
+    usersLogin_id
+    
+  } = argumentsObj;
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    let cardPlayersArr = await Model.aggregate([
+      
+      {
+        $match:
+          {
+            _id,
+            users_id: usersLogin_id
+          }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'users',
+            let: { cardPlayersUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  accessDate: 1,
+                  level: 1,
+                  playerID: 1,
+                  followArr: 1,
+                  followedArr: 1,
+                  followedCount: 1,
+                }
+              }
+            ],
+            as: 'usersObj'
+          }
+      },
+      {
+        $unwind: '$usersObj'
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: {
+              cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
+              cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $or:
+                    [
+                      { $and:
+                        [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+                        ]
+                      },
+                      { $and:
+                        [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+      
+      
+      // {
+      //   $project: {
+      //     __v: 0,
+      //     createdDate: 0,
+      //     language: 0,
+      //     birthdayObj: { search: 0 },
+      //     sexObj: { search: 0 },
+      //     addressObj: { search: 0 },
+      //     gamingExperienceObj: { search: 0 },
+      //     hobbiesObj: { search: 0 },
+      //     specialSkillsObj: { search: 0 },
+      //     smartphoneObj: { search: 0 },
+      //     tabletObj: { search: 0 },
+      //     pcObj: { search: 0 },
+      //     hardwareActiveObj: { search: 0 },
+      //     hardwareInactiveObj: { search: 0 },
+      //     activityTimeObj: { search: 0 },
+      //     'activityTimeObj.valueArr': { _id: 0 },
+      //     lookingForFriendsObj: { search: 0 },
+      //     voiceChatObj: { search: 0 },
+      //     idArr: { _id: 0, search: 0 },
+      //     linkArr: { _id: 0, search: 0 },
+      //   }
+      // },
+    ]).exec();
+    
+    
+    // --------------------------------------------------
+    //   カードデータのフォーマット
+    // --------------------------------------------------
+    
+    returnObj = format({
+      arr: cardPlayersArr,
+      usersLogin_id
+    });
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- cardPlayersArr -----\n
+    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * DBから取得したカード情報をフォーマットする
  * @param {Object} argumentsObj - 引数
  * @return {Object} フォーマット後のデータ
@@ -1020,6 +1220,7 @@ module.exports = {
   // findTest,
   find,
   findOneBy_id,
+  findOneBy_idForEditForm,
   upsert,
   insertMany,
   deleteMany

@@ -1179,8 +1179,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
           search: true,
         },
         addressObj: {
-          value: '大阪',
-          alternativeText: '',
+          value: '',
+          alternativeText: '大阪',
           search: true,
         },
         gamingExperienceObj: {
@@ -1397,8 +1397,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
           search: true,
         },
         addressObj: {
-          value: 'イギリス',
-          alternativeText: '',
+          value: '',
+          alternativeText: 'イギリス',
           search: true,
         },
         gamingExperienceObj: {

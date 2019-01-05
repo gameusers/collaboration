@@ -45,30 +45,20 @@ import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Container = styled.div`
-  margin: 0;
-  padding: 0;
+const Heading = styled.div`
+  font-weight: bold;
+  margin: 0 0 2px 0;
+`;
+
+const Description = styled.p`
+  font-size: 14px;
+  line-height: 1.6em;
 `;
 
 const TextFieldBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-`;
-
-
-// ----------------------------------------
-//   共通
-// ----------------------------------------
-
-const TextP = styled.p`
-  font-size: 14px;
-  line-height: 1.6em;
-`;
-
-const Title = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
 `;
 
 const StyledTextField = styled(TextField)`
@@ -98,7 +88,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-edit-form-hobby`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editFormHobby`, false);
   }
   
   
@@ -109,7 +99,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id } = this.props;
+    const { stores, _id, arr, search } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -117,7 +107,8 @@ export default class extends React.Component {
       
       cardPlayerEditFormHobbyTextFieldCountObj,
       handleCardPlayerEditFormHobbyTextFieldCountIncrement,
-      handleCardPlayerEditFormHobbyTextFieldCountDecrement
+      handleCardPlayerEditFormHobbyTextFieldCountDecrement,
+      handleCardPlayerEditHobbySearch
       
     } = stores.cardPlayer;
     
@@ -130,8 +121,8 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${_id}-edit-form-hobby` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-edit-form-hobby`];
+    if (`${_id}-editFormHobby` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${_id}-editFormHobby`];
     }
     
     
@@ -141,7 +132,9 @@ export default class extends React.Component {
     //   Component
     // --------------------------------------------------
     
-    let hobbyTextFieldCount = 1;
+    // テキストフィールドを表示する個数
+    let hobbyTextFieldCount = arr.length;
+    // let hobbyTextFieldCount = 5;
     
     if (_id in cardPlayerEditFormHobbyTextFieldCountObj) {
       hobbyTextFieldCount = cardPlayerEditFormHobbyTextFieldCountObj[_id];
@@ -152,43 +145,35 @@ export default class extends React.Component {
     
     for (let i = 0; i < hobbyTextFieldCount; i++) {
       
-      if (i === 0) {
-        
-        componentsArr.push(
-          <StyledTextField
-            // id="outlined-bare"
-            // defaultValue="Bare"
-            margin="dense"
-            variant="outlined"
-            key={i}
-          />
-        );
-        
-      } else {
-        
-        componentsArr.push(
-          <StyledTextField
-            // id="outlined-bare"
-            // defaultValue="Bare"
-            margin="dense"
-            variant="outlined"
-            key={i}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id)}
-                    disabled={buttonDisabled}
-                  >
-                    <IconRemoveCircle />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        );
-        
+      // console.log(i);
+      
+      let value = '';
+      
+      if (i < arr.length) {
+        value = arr[i];
       }
+      
+      
+      componentsArr.push(
+        <StyledTextField
+          value={value}
+          margin="dense"
+          variant="outlined"
+          key={i}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() => handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, i)}
+                  disabled={buttonDisabled}
+                >
+                  <IconRemoveCircle />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        />
+      );
       
     }
     
@@ -200,8 +185,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- usersLoginObj -----\n
-    //   ${util.inspect(usersLoginObj, { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(arr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -217,10 +202,11 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <React.Fragment>
         
-        <Title>趣味</Title>
-        <TextP>入力すると趣味が表示されます。</TextP>
+        <Heading>趣味</Heading>
+        <Description>入力すると趣味が表示されます。</Description>
+        
         
         <TextFieldBox>
           
@@ -240,15 +226,15 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                // checked={this.state.checkedA}
-                // onChange={this.handleChange('checkedA')}
+                checked={search}
+                onChange={(event) => handleCardPlayerEditHobbySearch(event, _id)}
               />
             }
             label="趣味で検索可能にする"
           />
         </SearchBox>
         
-      </Container>
+      </React.Fragment>
     );
     
   }

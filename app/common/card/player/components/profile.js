@@ -128,7 +128,7 @@ export default class extends React.Component {
       birthdayAlternativeText,
       sexValue,
       sexAlternativeText,
-      addressValue,
+      addressAlternativeText,
       gamingExperienceValue,
       gamingExperienceAlternativeText,
       hobbiesValueArr,
@@ -145,7 +145,7 @@ export default class extends React.Component {
       !birthdayAlternativeText &&
       !sexValue &&
       !sexAlternativeText &&
-      !addressValue &&
+      !addressAlternativeText &&
       !gamingExperienceValue &&
       !gamingExperienceAlternativeText &&
       !hobbiesValueArr &&
@@ -206,12 +206,12 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   住んでいるところ
+    //   住所
     // ---------------------------------------------
     
-    if (addressValue) {
+    if (addressAlternativeText) {
       componentBasicsArr.push(
-        <Item key="address"><strong>住んでいるところ:</strong> {addressValue}</Item>
+        <Item key="address"><strong>住所:</strong> {addressAlternativeText}</Item>
       );
     }
     

@@ -273,7 +273,7 @@ export default class extends React.Component {
     const birthdayAlternativeText = cardPlayersObj.birthdayObj.alternativeText;
     const sexValue = cardPlayersObj.sexObj.value;
     const sexAlternativeText = cardPlayersObj.sexObj.alternativeText;
-    const addressValue = cardPlayersObj.addressObj.value;
+    const addressAlternativeText = cardPlayersObj.addressObj.alternativeText;
     const gamingExperienceValue = cardPlayersObj.gamingExperienceObj.value;
     const gamingExperienceAlternativeText = cardPlayersObj.gamingExperienceObj.alternativeText;
     const hobbiesValueArr = cardPlayersObj.hobbiesObj.valueArr;
@@ -477,7 +477,7 @@ export default class extends React.Component {
                   birthdayAlternativeText={birthdayAlternativeText}
                   sexValue={sexValue}
                   sexAlternativeText={sexAlternativeText}
-                  addressValue={addressValue}
+                  addressAlternativeText={addressAlternativeText}
                   gamingExperienceValue={gamingExperienceValue}
                   gamingExperienceAlternativeText={gamingExperienceAlternativeText}
                   hobbiesValueArr={hobbiesValueArr}

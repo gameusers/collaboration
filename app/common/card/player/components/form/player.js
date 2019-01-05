@@ -17,7 +17,6 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
-import TextareaAutosize from 'react-autosize-textarea';
 
 
 // ---------------------------------------------
@@ -30,17 +29,25 @@ import CardActions from '@material-ui/core/CardActions';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-// import InputLabel from '@material-ui/core/InputLabel';
-import Divider from '@material-ui/core/Divider';
+
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
+import HandleName from './handle-name';
+import Status from './status';
+import Comment from './comment';
+import Age from './age';
+import Sex from './sex';
+import Address from './address';
+import GamingExperience from './gaming-experience';
 import Hobby from './hobby';
 
 
@@ -72,6 +79,22 @@ const StyledCardContent = styled(CardContent)`
 
 
 // ----------------------------------------
+//   見出し
+// ----------------------------------------
+
+const Heading = styled.div`
+  font-weight: bold;
+  margin: 0 0 6px 0;
+`;
+
+const Description = styled.p`
+  font-size: 14px;
+  line-height: 1.6em;
+  margin: 0 0 24px 0;
+`;
+
+
+// ----------------------------------------
 //   共通
 // ----------------------------------------
 
@@ -84,10 +107,7 @@ const Box = styled.div`
   margin: 36px 0 0 0;
 `;
 
-const TitleMain = styled.div`
-  font-weight: bold;
-  margin: 0 0 6px 0;
-`;
+
 
 const Title = styled.div`
   font-weight: bold;
@@ -127,33 +147,6 @@ const ImageTitle = styled.div`
   color: rgba(0, 0, 0, 0.54);
   // margin: 16px 0 0 0;
 `;
-
-
-
-
-const CommentTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 600px;
-    max-width: 600px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin: 6px 0 10px 0;
-    padding: 8px 12px;
-    line-height: 1.6em;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      max-width: auto;
-      resize: none;
-    }
-  }
-`;
-
-
 
 
 // ---------------------------------------------
@@ -202,7 +195,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-edit-form`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-editForm`, false);
   }
   
   
@@ -221,7 +214,11 @@ export default class extends React.Component {
     
     const {
       
-      handleCardPlayerEditFormOpen,
+      cardPlayerEditFormDataObj,
+      cardPlayerEditFormUndoDataDialogOpenObj,
+      handleCardPlayerEditFormUndoDataDialogOpen,
+      handleCardPlayerEditFormUndoDataDialogClose,
+      handleCardPlayerEditFormUndoData,
       handleCardPlayerEditFormClose
       
     } = stores.cardPlayer;
@@ -230,11 +227,32 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Hobby
+    //   Form Data
     // --------------------------------------------------
     
-    // const hobbyTextFieldCount = handleGetCardPlayerEditFormHobbyTextFieldCount(cardPlayers_id);
+    const {
+      
+      name,
+      status,
+      comment,
+      birthdayObj,
+      sexObj,
+      addressObj,
+      gamingExperienceObj,
+      hobbiesObj
+      
+    } = cardPlayerEditFormDataObj[cardPlayers_id];
     
+    
+    // --------------------------------------------------
+    //   Dialog
+    // --------------------------------------------------
+    
+    let dialogOpen = false;
+    
+    if (cardPlayers_id in cardPlayerEditFormUndoDataDialogOpenObj) {
+      dialogOpen = cardPlayerEditFormUndoDataDialogOpenObj[cardPlayers_id];
+    }
     
     
     // --------------------------------------------------
@@ -243,8 +261,8 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${cardPlayers_id}-edit-form` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${cardPlayers_id}-edit-form`];
+    if (`${cardPlayers_id}-editForm` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${cardPlayers_id}-editForm`];
     }
     
     
@@ -255,9 +273,15 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- usersLoginObj -----\n
-    //   ${util.inspect(usersLoginObj, { colors: true, depth: null })}\n
+    //   ----- sexObj -----\n
+    //   ${util.inspect(sexObj, { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   sexObj.value: {green ${sexObj.value}}
+    //   sexObj.alternativeText: {green ${sexObj.alternativeText}}
+    //   sexObj.search: {green ${sexObj.search}}
     // `);
     
     // console.log(chalk`
@@ -275,245 +299,169 @@ export default class extends React.Component {
     
     return (
       <form>
+        
+        <StyledCardContent>
           
-          <StyledCardContent>
-            
-            
-            <TitleMain>プレイヤーカード</TitleMain>
-            
-            <TextP>プレイヤーカードというのは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になりますので、いろいろ入力してみてください。</TextP>
-            
-            
-            <StyledTextField
-              id="name"
-              label="ハンドルネーム"
-              // value={this.state.name}
-              // onChange={this.handleChange('name')}
-              // placeholder="a"
-              helperText="公開される名前です"
-              margin="dense"
+          
+          <Heading>プレイヤーカード</Heading>
+          
+          <Description>プレイヤーカードというのは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になりますので、いろいろ入力してみてください。</Description>
+          
+          
+          {/* ハンドルネーム */}
+          <HandleName
+            _id={cardPlayers_id}
+            name={name}
+          />
+          
+          
+          {/* ステータス */}
+          <Status
+            _id={cardPlayers_id}
+            status={status}
+          />
+          
+          
+          <ThumbnailBox>
+            <ThumbnailTitle>サムネイル</ThumbnailTitle>
+            <input type="file" name="example" size="30" />
+          </ThumbnailBox>
+          
+          
+          <ImageBox>
+            <ImageTitle>画像</ImageTitle>
+            <input type="file" name="example" size="30" />
+          </ImageBox>
+          
+          
+          {/* コメント */}
+          <Box>
+            <Comment
+              _id={cardPlayers_id}
+              comment={comment}
             />
-            
-            <StyledTextField
-              id="status"
-              label="ステータス"
-              // value={this.state.name}
-              // onChange={this.handleChange('name')}
-              helperText="ハンドルネームの横に表示される文字です"
-              margin="dense"
+          </Box>
+          
+          
+          {/* 年齢 */}
+          <Box>
+            <Age
+              _id={cardPlayers_id}
+              value={birthdayObj.value}
+              alternativeText={birthdayObj.alternativeText}
+              search={birthdayObj.search}
             />
-            
-            
-            <ThumbnailBox>
-              <ThumbnailTitle>サムネイル</ThumbnailTitle>
-              <input type="file" name="example" size="30" />
-            </ThumbnailBox>
-            
-            
-            <ImageBox>
-              <ImageTitle>画像</ImageTitle>
-              <input type="file" name="example" size="30" />
-            </ImageBox>
-            
-            
-            <Box>
-              <Title>コメント</Title>
-              
-              <CommentTextareaAutosize
-                rows={5}
-                placeholder="コメントを入力してください"
-                // value={threadUpdateFormDescription}
-                // onChange={(event) => handleThreadUpdateFormDescription(event, value.id)}
-              />
-            </Box>
-            
-            
-            <Box>
-              <Title>年齢</Title>
-              <TextP>入力すると年齢が表示されます。誕生日か、年齢（固定値）のどちらかを入力してください。</TextP>
-              
-              <StyledTextField
-                id="birthday"
-                label="誕生日"
-                type="date"
-                // defaultValue="2017-05-24"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                helperText="誕生日から年齢が自動で計算されます"
-                margin="dense"
-              />
-              
-              <StyledTextField
-                id="birthdayAlternativeText"
-                label="年齢（固定値）"
-                // value={this.state.name}
-                // onChange={this.handleChange('name')}
-                helperText="例えば17歳と入力すると、ずっと17歳に固定されます"
-                margin="dense"
-              />
-              
-              <SearchBox>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // checked={this.state.checkedA}
-                      // onChange={this.handleChange('checkedA')}
-                    />
-                  }
-                  label="年齢で検索可能にする"
-                />
-              </SearchBox>
-            </Box>
-            
-            
-            <Box>
-              <Title>性別</Title>
-              <TextP>性別を選択してください。選択すると性別が表示されます。選択肢以外の値を入力したい場合は、その他のフォームに入力してください。</TextP>
-              
-              <FormControl>
-                <Select
-                  value={''}
-                  // onChange={this.handleChange}
-                  inputProps={{
-                    name: 'sex',
-                    id: 'sex',
-                  }}
-                >
-                  <MenuItem value=""></MenuItem>
-                  <MenuItem value={'male'}>男性</MenuItem>
-                  <MenuItem value={'female'}>女性</MenuItem>
-                </Select>
-              </FormControl>
-              
-              <div>
-                <StyledTextField
-                  id="sexAlternativeText"
-                  label="その他"
-                  // value={this.state.name}
-                  // onChange={this.handleChange('name')}
-                  helperText="他の値を表示したい場合はこちらに入力してください"
-                  margin="dense"
-                />
-                
-                <SearchBox>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        // checked={this.state.checkedA}
-                        // onChange={this.handleChange('checkedA')}
-                      />
-                    }
-                    label="性別で検索可能にする"
-                  />
-                </SearchBox>
-              </div>
-            </Box>
-            
-            
-            <Box>
-              <Title>住所</Title>
-              <TextP>入力すると住所が表示されます。公開される情報なので、あまり詳しい情報は載せないようにしましょう。</TextP>
-              
-              <div>
-                <StyledTextField
-                  id="addressAlternativeText"
-                  label="住所"
-                  // value={this.state.name}
-                  // onChange={this.handleChange('name')}
-                  helperText=""
-                  margin="dense"
-                />
-                
-                <SearchBox>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        // checked={this.state.checkedA}
-                        // onChange={this.handleChange('checkedA')}
-                      />
-                    }
-                    label="住所で検索可能にする"
-                  />
-                </SearchBox>
-              </div>
-            </Box>
-            
-            
-            <Box>
-              <Title>ゲーム歴</Title>
-              <TextP>入力するとゲーム歴が表示されます。ゲームを始めた日か、ゲーム歴（固定値）のどちらかを入力してください。</TextP>
-              
-              <StyledTextField
-                id="gamingExperience"
-                label="ゲームを始めた日"
-                type="date"
-                // defaultValue="2017-05-24"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                helperText="入力日からゲーム歴が自動で計算されます"
-                margin="dense"
-              />
-              
-              <StyledTextField
-                id="gamingExperienceAlternativeText"
-                label="ゲーム歴（固定値）"
-                // value={this.state.name}
-                // onChange={this.handleChange('name')}
-                helperText="例えば3年を入力すると、ずっと3年に固定されます"
-                margin="dense"
-              />
-              
-              <SearchBox>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      // checked={this.state.checkedA}
-                      // onChange={this.handleChange('checkedA')}
-                    />
-                  }
-                  label="ゲーム歴で検索可能にする"
-                />
-              </SearchBox>
-            </Box>
-            
-            
-            {/* 趣味 */}
-            <Box>
-              <Hobby cardPlayers_id={cardPlayers_id} />
-            </Box>
-            
-            
-          </StyledCardContent>
+          </Box>
           
           
-          <StyledCardActions>
-            <ButtonBox>
-              
+          {/* 性別 */}
+          <Box>
+            <Sex
+              _id={cardPlayers_id}
+              value={sexObj.value}
+              alternativeText={sexObj.alternativeText}
+              search={sexObj.search}
+            />
+          </Box>
+          
+          
+          {/* 住所 */}
+          <Box>
+            <Address
+              _id={cardPlayers_id}
+              alternativeText={addressObj.alternativeText}
+              search={addressObj.search}
+            />
+          </Box>
+          
+          
+          {/* ゲーム歴 */}
+          <Box>
+            <GamingExperience
+              _id={cardPlayers_id}
+              value={gamingExperienceObj.value}
+              alternativeText={gamingExperienceObj.alternativeText}
+              search={gamingExperienceObj.search}
+            />
+          </Box>
+          
+          
+          {/* 趣味 */}
+          <Box>
+            <Hobby
+              _id={cardPlayers_id}
+              arr={hobbiesObj.valueArr}
+              search={hobbiesObj.search}
+            />
+          </Box>
+          
+          
+        </StyledCardContent>
+        
+        
+        <StyledCardActions>
+          <ButtonBox>
+            
+            <Button
+              variant="outlined"
+              color="primary"
+              // onClick={() => handleCardPlayerEditFormOpen(cardPlayers_id)}
+              disabled={buttonDisabled}
+            >
+              保存する
+            </Button>
+            
+            
+            <CloseButtonBox>
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleCardPlayerEditFormOpen(cardPlayers_id)}
+                onClick={() => handleCardPlayerEditFormUndoDataDialogOpen(cardPlayers_id)}
                 disabled={buttonDisabled}
               >
-                保存する
+                元に戻す
               </Button>
-              
-              <CloseButtonBox>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() => handleCardPlayerEditFormClose(cardPlayers_id)}
-                  disabled={buttonDisabled}
-                >
-                  閉じる
-                </Button>
-              </CloseButtonBox>
-              
-            </ButtonBox>
-          </StyledCardActions>
-          
+            </CloseButtonBox>
+            
+            
+            <CloseButtonBox>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => handleCardPlayerEditFormClose(cardPlayers_id)}
+                disabled={buttonDisabled}
+              >
+                閉じる
+              </Button>
+            </CloseButtonBox>
+            
+          </ButtonBox>
+        </StyledCardActions>
+        
+        
+        <Dialog
+          open={dialogOpen}
+          onClose={() => handleCardPlayerEditFormUndoDataDialogClose(cardPlayers_id)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">元に戻す</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              編集フォームの状態をフォームが最初に表示されたときの状態に戻します。よろしいですか？
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => handleCardPlayerEditFormUndoData(cardPlayers_id)} color="primary" autoFocus>
+              はい
+            </Button>
+            
+            <Button onClick={() => handleCardPlayerEditFormUndoDataDialogClose(cardPlayers_id)} color="primary">
+              いいえ
+            </Button>
+          </DialogActions>
+        </Dialog>
+        
       </form>
     );
     

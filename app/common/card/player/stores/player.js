@@ -61,7 +61,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Card Player
+  //   Dialog
   // ---------------------------------------------
   
   /**
@@ -92,8 +92,8 @@ class Store {
   
   /**
    * プレイヤーカード用ダイアログを開く
-   * @param {string} cardPlayers_id - DB card-players _id
-   * @param {string} cardGames_id - DB card-games _id
+   * @param {string} type - 開くカードのタイプ player / game
+   * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
   async handleCardPlayerDialogOpen(type, _id) {
@@ -463,6 +463,7 @@ class Store {
   
   /**
    * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
+   * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
    * @type {Object}
    */
   @observable followDialogOpenObj = {};
@@ -491,15 +492,73 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Card Player
+  //   Edit Form - Data
   // ---------------------------------------------
+  
+  /**
+   * 編集フォームのデータ（編集前の原本）を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormSourceDataObj = {};
+  
   
   /**
    * 編集フォームのデータを入れるオブジェクト
    * @type {Object}
    */
-  @observable cardPlayerEditFormObj = {};
+  @observable cardPlayerEditFormDataObj = {};
   
+  
+  /**
+   * ダイアログを表示するかどうかを決めるオブジェクト
+   * データを元に戻す際に利用。ダイアログで元に戻していいか尋ねる
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormUndoDataDialogOpenObj = {};
+  
+  
+  /**
+   * ダイアログを開く
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditFormUndoDataDialogOpen(_id) {
+    this.cardPlayerEditFormUndoDataDialogOpenObj[_id] = true;
+  };
+  
+  
+  /**
+   * ダイアログを閉じる
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditFormUndoDataDialogClose(_id) {
+    this.cardPlayerEditFormUndoDataDialogOpenObj[_id] = false;
+  };
+  
+  
+  /**
+   * 編集フォームに表示されているデータを編集前のデータに戻す
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditFormUndoData(_id) {
+    
+    // ディープコピー
+    this.cardPlayerEditFormDataObj[_id] = JSON.parse(JSON.stringify(this.cardPlayerEditFormSourceDataObj[_id]));
+    
+    // 趣味の <TextField /> の数をリセットする
+    delete this.cardPlayerEditFormHobbyTextFieldCountObj[_id];
+    
+    // ダイアログを閉じる
+    this.cardPlayerEditFormUndoDataDialogOpenObj[_id] = false;
+  };
+  
+  
+  
+  // ---------------------------------------------
+  //   Edit Form - Open
+  // ---------------------------------------------
   
   /**
    * 編集フォームを表示するかどうかを決める変数
@@ -535,10 +594,10 @@ class Store {
       
       // ---------------------------------------------
       //   編集フォームに表示するデータがすでに読み込まれている場合
-      //   編集フォームを即表示する
+      //   編集フォームをすぐに表示する
       // ---------------------------------------------
       
-      if (cardPlayers_id in this.cardPlayerEditFormObj) {
+      if (cardPlayers_id in this.cardPlayerEditFormDataObj) {
         
         this.cardPlayerEditFormOpenObj[cardPlayers_id] = true;
         
@@ -593,7 +652,9 @@ class Store {
         //  Data 更新
         // ---------------------------------------------
         
-        this.cardPlayerEditFormObj = Object.assign({}, this.cardPlayerEditFormObj, resultObj.data);
+        this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data);
+        
+        this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data);
         
         
         // ---------------------------------------------
@@ -610,8 +671,8 @@ class Store {
         // `);
         
         // console.log(`
-        //   ----- this.cardPlayerEditFormObj -----\n
-        //   ${util.inspect(this.cardPlayerEditFormObj, { colors: true, depth: null })}\n
+        //   ----- this.cardPlayerEditFormDataObj -----\n
+        //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
         
@@ -626,18 +687,6 @@ class Store {
       
       
     } catch (error) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      // if (type === 'follow') {
-      //   storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
-      // } else {
-      //   storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
-      // }
-      
       
     } finally {
       
@@ -656,36 +705,208 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   Edit Form
+  // ---------------------------------------------
+  
   /**
-   * 編集フォームの趣味 <TextField /> の数をカウントするオブジェクト
+   * 名前を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditName(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].name = event.target.value;
+  };
+  
+  
+  /**
+   * ステータスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditStatus(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].status = event.target.value;
+  };
+  
+  
+  /**
+   * コメントを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].comment = event.target.value;
+  };
+  
+  
+  
+  
+  /**
+   * 誕生日を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditBirthday(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].birthdayObj.value = event.target.value;
+  };
+  
+  
+  /**
+   * 年齢（alternativeText）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditBirthdayAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].birthdayObj.alternativeText = event.target.value;
+  };
+  
+  
+  /**
+   * 年齢の検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditBirthdaySearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].birthdayObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * 性別を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSex(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.value = event.target.value;
+  };
+  
+  
+  /**
+   * 性別（alternativeText）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSexAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.alternativeText = event.target.value;
+  };
+  
+  
+  /**
+   * 性別の検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSexSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * 住所（alternativeText）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditAddressAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].addressObj.alternativeText = event.target.value;
+  };
+  
+  
+  /**
+   * 住所の検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditAddressSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].addressObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * ゲーム歴（ゲームを始めた日）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditGamingExperience(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.value = event.target.value;
+  };
+  
+  
+  /**
+   * ゲーム歴（alternativeText）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditGamingExperienceAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.alternativeText = event.target.value;
+  };
+  
+  
+  /**
+   * ゲーム歴の検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditGamingExperienceSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * 趣味の <TextField /> の数をカウントするオブジェクト
    * @type {Object}
    */
   @observable cardPlayerEditFormHobbyTextFieldCountObj = {};
   
   
   /**
-   * 編集フォームの趣味 <TextField /> の数を増やす
+   * 趣味の <TextField /> の数を増やす
+   * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditFormHobbyTextFieldCountIncrement(cardPlayers_id) {
-    if (cardPlayers_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] += 1;
+  handleCardPlayerEditFormHobbyTextFieldCountIncrement(_id) {
+    
+    if (_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
+      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] += 1;
     } else {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] = 2;
+      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] = this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.length + 1;
     }
+    
   };
   
   
   /**
-   * 編集フォームの趣味 <TextField /> の数を減らす
+   * 趣味の <TextField /> の数を減らす
+   * @param {string}  _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditFormHobbyTextFieldCountDecrement(cardPlayers_id) {
-    if (cardPlayers_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] -= 1;
+  handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, deleteKey) {
+    
+    if (_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
+      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] -= 1;
+      this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.splice(deleteKey, 1);
     } else {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[cardPlayers_id] = 1;
+      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] = this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.length - 1;
+      this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.splice(deleteKey, 1);
     }
+    
+  };
+  
+  
+  /**
+   * 趣味の検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditHobbySearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].hobbiesObj.search = event.target.checked;
   };
   
   

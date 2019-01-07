@@ -88,7 +88,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editFormHobby`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editFormSpecialSkill`, false);
   }
   
   
@@ -105,10 +105,10 @@ export default class extends React.Component {
     
     const {
       
-      handleCardPlayerEditFormHobbyTextFieldCountIncrement,
-      handleCardPlayerEditFormHobbyTextFieldCountDecrement,
-      handleCardPlayerEditHobby,
-      handleCardPlayerEditHobbySearch
+      handleCardPlayerEditFormSpecialSkillTextFieldCountIncrement,
+      handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement,
+      handleCardPlayerEditSpecialSkill,
+      handleCardPlayerEditSpecialSkillSearch
       
     } = stores.cardPlayer;
     
@@ -121,8 +121,8 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${_id}-editFormHobby` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-editFormHobby`];
+    if (`${_id}-editFormSpecialSkill` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${_id}-editFormSpecialSkill`];
     }
     
     
@@ -138,9 +138,9 @@ export default class extends React.Component {
       
       componentsArr.push(
         <StyledTextField
-          id={`hobby-${i}`}
+          id={`specialSkill-${i}`}
           value={arr[i]}
-          onChange={(event) => handleCardPlayerEditHobby(event, _id, i)}
+          onChange={(event) => handleCardPlayerEditSpecialSkill(event, _id, i)}
           margin="dense"
           variant="outlined"
           key={i}
@@ -151,7 +151,7 @@ export default class extends React.Component {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, i)}
+                  onClick={() => handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement(_id, i)}
                   disabled={buttonDisabled}
                 >
                   <IconRemoveCircle />
@@ -191,8 +191,8 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>趣味</Heading>
-        <Description>入力すると趣味が表示されます。</Description>
+        <Heading>特技</Heading>
+        <Description>入力すると特技が表示されます。</Description>
         
         
         <TextFieldBox>
@@ -200,7 +200,7 @@ export default class extends React.Component {
           {componentsArr}
           
           <IconButton
-            onClick={() => handleCardPlayerEditFormHobbyTextFieldCountIncrement(_id)}
+            onClick={() => handleCardPlayerEditFormSpecialSkillTextFieldCountIncrement(_id)}
             disabled={buttonDisabled}
           >
             <IconAddCircle />
@@ -214,10 +214,10 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditHobbySearch(event, _id)}
+                onChange={(event) => handleCardPlayerEditSpecialSkillSearch(event, _id)}
               />
             }
-            label="趣味で検索可能にする"
+            label="特技で検索可能にする"
           />
         </SearchBox>
         

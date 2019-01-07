@@ -154,6 +154,9 @@ export default class extends React.Component {
           onChange={(event) => handleCardPlayerEditBirthdayAlternativeText(event, _id)}
           helperText="例えば17歳と入力すると、ずっと17歳に固定されます"
           margin="normal"
+          inputProps={{
+            maxLength: 20,
+          }}
         />
         
         <SearchBox>

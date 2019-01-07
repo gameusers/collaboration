@@ -547,9 +547,6 @@ class Store {
     // ディープコピー
     this.cardPlayerEditFormDataObj[_id] = JSON.parse(JSON.stringify(this.cardPlayerEditFormSourceDataObj[_id]));
     
-    // 趣味の <TextField /> の数をリセットする
-    delete this.cardPlayerEditFormHobbyTextFieldCountObj[_id];
-    
     // ダイアログを閉じる
     this.cardPlayerEditFormUndoDataDialogOpenObj[_id] = false;
   };
@@ -742,7 +739,7 @@ class Store {
   
   
   /**
-   * 誕生日を変更する
+   * 年齢（誕生日）を変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
@@ -860,25 +857,12 @@ class Store {
   
   
   /**
-   * 趣味の <TextField /> の数をカウントするオブジェクト
-   * @type {Object}
-   */
-  @observable cardPlayerEditFormHobbyTextFieldCountObj = {};
-  
-  
-  /**
    * 趣味の <TextField /> の数を増やす
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
   handleCardPlayerEditFormHobbyTextFieldCountIncrement(_id) {
-    
-    if (_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] += 1;
-    } else {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] = this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.length + 1;
-    }
-    
+    this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.push('');
   };
   
   
@@ -887,16 +871,18 @@ class Store {
    * @param {string}  _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, deleteKey) {
-    
-    if (_id in this.cardPlayerEditFormHobbyTextFieldCountObj) {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] -= 1;
-      this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.splice(deleteKey, 1);
-    } else {
-      this.cardPlayerEditFormHobbyTextFieldCountObj[_id] = this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.length - 1;
-      this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.splice(deleteKey, 1);
-    }
-    
+  handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, index) {
+    this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.splice(index, 1);
+  };
+  
+  
+  /**
+   * 趣味を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditHobby(event, _id, index) {
+    this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr[index] = event.target.value;
   };
   
   
@@ -909,6 +895,272 @@ class Store {
     this.cardPlayerEditFormDataObj[_id].hobbiesObj.search = event.target.checked;
   };
   
+  
+  
+  /**
+   * 特技の <TextField /> の数を増やす
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditFormSpecialSkillTextFieldCountIncrement(_id) {
+    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.push('');
+  };
+  
+  
+  /**
+   * 特技の <TextField /> の数を減らす
+   * @param {string}  _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement(_id, index) {
+    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.splice(index, 1);
+  };
+  
+  
+  /**
+   * 特技を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSpecialSkill(event, _id, index) {
+    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr[index] = event.target.value;
+  };
+  
+  
+  /**
+   * 特技の検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSpecialSkillSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * スマートフォンのモデルを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSmartphoneModel(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].smartphoneObj.model = event.target.value;
+  };
+  
+  
+  /**
+   * スマートフォンのコメントを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSmartphoneComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].smartphoneObj.comment = event.target.value;
+  };
+  
+  
+  /**
+   * スマートフォンの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditSmartphoneSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].smartphoneObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * タブレットのモデルを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditTabletModel(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].tabletObj.model = event.target.value;
+  };
+  
+  
+  /**
+   * タブレットのコメントを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditTabletComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].tabletObj.comment = event.target.value;
+  };
+  
+  
+  /**
+   * タブレットの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditTabletSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].tabletObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * PCのモデルを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCModel(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.model = event.target.value;
+  };
+  
+  
+  /**
+   * PCのコメントを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.comment = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのOSを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecOS(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.os = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのCPUを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecCPU(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpu = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのCPUクーラーを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecCPUCooler(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpuCooler = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのマザーボードを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecMotherboard(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.motherboard = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのメモリーを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecMemory(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.memory = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのストレージを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecStorage(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.storage = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのグラフィックカードを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecGraphicsCard(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.graphicsCard = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックの光学ドライブを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecOpticalDrive(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.opticalDrive = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックの電源を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecPowerSupply(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.powerSupply = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのケースを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecPCCase(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.pcCase = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのモニターを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecMonitor(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.monitor = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのマウスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecMouse(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.mouse = event.target.value;
+  };
+  
+  
+  /**
+   * PCスペックのキーボードを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSpecKeyboard(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.keyboard = event.target.value;
+  };
+  
+  
+  /**
+   * PCの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditPCSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.search = event.target.checked;
+  };
   
   
 }

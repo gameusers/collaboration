@@ -763,11 +763,11 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -852,6 +852,7 @@ const format = (argumentsObj) => {
       
       if (obj && 'name' in obj) {
         copiedObj.hardwareActiveArr.push({
+          hardwareID: value,
           name: obj.name
         });
       }
@@ -873,6 +874,7 @@ const format = (argumentsObj) => {
       
       if (obj && 'name' in obj) {
         copiedObj.hardwareInactiveArr.push({
+          hardwareID: value,
           name: obj.name
         });
       }

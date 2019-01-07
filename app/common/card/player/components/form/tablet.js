@@ -17,7 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
-import moment from 'moment';
+import TextareaAutosize from 'react-autosize-textarea';
 
 
 // ---------------------------------------------
@@ -27,13 +27,6 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
-
-// ---------------------------------------------
-//   Moment Locale
-// ---------------------------------------------
-
-moment.locale('ja');
 
 
 
@@ -53,9 +46,38 @@ const Description = styled.p`
   line-height: 1.6em;
 `;
 
-const StyledTextField = styled(TextField)`
+const StyledTextFieldWide = styled(TextField)`
   && {
-    margin-right: 16px;
+    width: 400px;
+    
+    @media screen and (max-width: 480px) {
+      width: 100%;
+    }
+  }
+`;
+
+const TextareaBox = styled.div`
+  margin: 12px 0 0 0;
+`;
+
+const StyledTextareaAutosize = styled(TextareaAutosize)`
+  && {
+    width: 600px;
+    max-width: 600px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    line-height: 1.6em;
+    
+    &:focus {
+      outline: 1px #A9F5F2 solid;
+    }
+    
+    @media screen and (max-width: 480px) {
+      width: 100%;
+      max-width: auto;
+      resize: none;
+    }
   }
 `;
 
@@ -86,22 +108,15 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, alternativeText, search } = this.props;
+    const { stores, _id, model, comment, search } = this.props;
     
     const {
       
-      handleCardPlayerEditGamingExperience,
-      handleCardPlayerEditGamingExperienceAlternativeText,
-      handleCardPlayerEditGamingExperienceSearch
+      handleCardPlayerEditTabletModel,
+      handleCardPlayerEditTabletComment,
+      handleCardPlayerEditTabletSearch
       
     } = stores.cardPlayer;
-    
-    
-    // --------------------------------------------------
-    //   フォーマット
-    // --------------------------------------------------
-    
-    const formattedDate = moment(value).format('YYYY-MM-DD');
     
     
     // --------------------------------------------------
@@ -129,47 +144,47 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>ゲーム歴</Heading>
+        <Heading>タブレット</Heading>
         
-        <Description>入力するとゲーム歴が表示されます。ゲームを始めた日か、ゲーム歴（固定値）のどちらかを入力してください。</Description>
+        <Description>入力するとタブレットについての情報が表示されます。現在、利用しているタブレットの情報を入力してください。</Description>
         
         
-        <StyledTextField
-          id="gamingExperience"
-          label="ゲームを始めた日"
-          type="date"
-          value={formattedDate}
-          onChange={(event) => handleCardPlayerEditGamingExperience(event, _id)}
-          helperText="始めた日からゲーム歴が自動で計算されます"
-          margin="normal"
-          InputLabelProps={{
-            shrink: true,
-          }}
-        />
-        
-        <StyledTextField
-          id="gamingExperienceAlternativeText"
-          label="ゲーム歴（固定値）"
-          value={alternativeText}
-          onChange={(event) => handleCardPlayerEditGamingExperienceAlternativeText(event, _id)}
-          helperText="例えば3年と入力すると、ずっと3年に固定されます"
+        <StyledTextFieldWide
+          id="smartphoneModel"
+          label="モデル"
+          value={model}
+          onChange={(event) => handleCardPlayerEditTabletModel(event, _id)}
+          helperText="モデル名、機種名などを入力してください"
           margin="normal"
           inputProps={{
-            maxLength: 20,
+            maxLength: 50,
           }}
         />
+        
+        
+        <TextareaBox>
+          <StyledTextareaAutosize
+            rows={5}
+            placeholder="コメントを入力してください"
+            value={comment}
+            onChange={(event) => handleCardPlayerEditTabletComment(event, _id)}
+            maxLength={3000}
+          />
+        </TextareaBox>
+        
         
         <SearchBox>
           <FormControlLabel
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditGamingExperienceSearch(event, _id)}
+                onChange={(event) => handleCardPlayerEditTabletSearch(event, _id)}
               />
             }
-            label="ゲーム歴で検索可能にする"
+            label="タブレットの情報で検索可能にする"
           />
         </SearchBox>
+        
         
       </React.Fragment>
     );

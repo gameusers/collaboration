@@ -157,6 +157,9 @@ export default class extends React.Component {
           onChange={(event) => handleCardPlayerEditSexAlternativeText(event, _id)}
           helperText="他の値を表示したい場合はこちらに入力してください"
           margin="normal"
+          inputProps={{
+            maxLength: 20,
+          }}
         />
         
         

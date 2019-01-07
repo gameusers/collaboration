@@ -49,7 +49,11 @@ import Sex from './sex';
 import Address from './address';
 import GamingExperience from './gaming-experience';
 import Hobby from './hobby';
-
+import SpecialSkill from './special-skill';
+import Smartphone from './smartphone';
+import Tablet from './tablet';
+import PC from './pc';
+import HardwareActive from './hardware-active';
 
 
 
@@ -98,31 +102,8 @@ const Description = styled.p`
 //   共通
 // ----------------------------------------
 
-const TextP = styled.p`
-  font-size: 14px;
-  line-height: 1.6em;
-`;
-
 const Box = styled.div`
   margin: 36px 0 0 0;
-`;
-
-
-
-const Title = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-  // color: rgba(0, 0, 0, 0.54);
-`;
-
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
-  }
-`;
-
-const SearchBox = styled.div`
-  margin: 0 0 0 0;
 `;
 
 
@@ -155,13 +136,14 @@ const ImageTitle = styled.div`
 
 const StyledCardActions = styled(CardActions)`
   && {
-    margin: 16px 0 0 0;
-    padding-top: 0;
-    padding-bottom: 16px;
+    margin: 6px;
+    // margin: 16px 0 0 0;
+    // padding-top: 0;
+    // padding-bottom: 16px;
     
-    @media screen and (max-width: 480px) {
-      padding: 0 10px 16px 10px;
-    }
+    // @media screen and (max-width: 480px) {
+    //   padding: 0 10px 16px 10px;
+    // }
   }
 `;
 
@@ -239,7 +221,13 @@ export default class extends React.Component {
       sexObj,
       addressObj,
       gamingExperienceObj,
-      hobbiesObj
+      hobbiesObj,
+      specialSkillsObj,
+      smartphoneObj,
+      tabletObj,
+      pcObj,
+      hardwareActiveArr,
+      hardwareInactiveArr,
       
     } = cardPlayerEditFormDataObj[cardPlayers_id];
     
@@ -273,8 +261,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- sexObj -----\n
-    //   ${util.inspect(sexObj, { colors: true, depth: null })}\n
+    //   ----- cardPlayerEditFormDataObj[cardPlayers_id].hardwareActiveArr -----\n
+    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id].hardwareActiveArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -394,6 +382,73 @@ export default class extends React.Component {
               search={hobbiesObj.search}
             />
           </Box>
+          
+          
+          {/* 特技 */}
+          <Box>
+            <SpecialSkill
+              _id={cardPlayers_id}
+              arr={specialSkillsObj.valueArr}
+              search={specialSkillsObj.search}
+            />
+          </Box>
+          
+          
+          {/* スマートフォン */}
+          <Box>
+            <Smartphone
+              _id={cardPlayers_id}
+              model={smartphoneObj.model}
+              comment={smartphoneObj.comment}
+              search={smartphoneObj.search}
+            />
+          </Box>
+          
+          
+          {/* タブレット */}
+          <Box>
+            <Tablet
+              _id={cardPlayers_id}
+              model={tabletObj.model}
+              comment={tabletObj.comment}
+              search={tabletObj.search}
+            />
+          </Box>
+          
+          
+          {/* PC */}
+          <Box>
+            <PC
+              _id={cardPlayers_id}
+              model={pcObj.model}
+              comment={pcObj.comment}
+              os={pcObj.specsObj.os}
+              cpu={pcObj.specsObj.cpu}
+              cpuCooler={pcObj.specsObj.cpuCooler}
+              motherboard={pcObj.specsObj.motherboard}
+              memory={pcObj.specsObj.memory}
+              storage={pcObj.specsObj.storage}
+              graphicsCard={pcObj.specsObj.graphicsCard}
+              opticalDrive={pcObj.specsObj.opticalDrive}
+              powerSupply={pcObj.specsObj.powerSupply}
+              pcCase={pcObj.specsObj.pcCase}
+              monitor={pcObj.specsObj.monitor}
+              mouse={pcObj.specsObj.mouse}
+              keyboard={pcObj.specsObj.keyboard}
+              search={pcObj.search}
+            />
+          </Box>
+          
+          
+          {/* 所有ハードウェア */}
+          <Box>
+            <HardwareActive
+              _id={cardPlayers_id}
+              // arr={hardwareActiveObj.valueArr}
+              // search={hardwareActiveObj.search}
+            />
+          </Box>
+          
           
           
         </StyledCardContent>

@@ -105,12 +105,13 @@ const StyledCardContent = styled(CardContent)`
 
 const StyledCardActions = styled(CardActions)`
   && {
-    padding-top: 0;
-    padding-bottom: 16px;
+    margin: 6px;
+    // padding-top: 0;
+    // padding-bottom: 16px;
     
-    @media screen and (max-width: 480px) {
-      padding: 0 10px 16px 10px;
-    }
+    // @media screen and (max-width: 480px) {
+    //   padding: 0 10px 16px 10px;
+    // }
   }
 `;
 

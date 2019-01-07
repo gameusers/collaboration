@@ -125,6 +125,9 @@ export default class extends React.Component {
           onChange={(event) => handleCardPlayerEditAddressAlternativeText(event, _id)}
           helperText=""
           margin="normal"
+          inputProps={{
+            maxLength: 20,
+          }}
         />
         
         

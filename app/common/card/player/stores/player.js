@@ -897,6 +897,7 @@ class Store {
   
   
   
+  
   /**
    * 特技の <TextField /> の数を増やす
    * @param {string} _id - DB card-players _id / DB card-games _id
@@ -1160,6 +1161,86 @@ class Store {
   @action.bound
   handleCardPlayerEditPCSearch(event, _id) {
     this.cardPlayerEditFormDataObj[_id].pcObj.search = event.target.checked;
+  };
+  
+  
+  
+  
+  /**
+   * 所有ハードウェアのサジェストデータを入れる配列
+   * @type {Array}
+   */
+  @observable cardPlayerEditFormHardwareActiveItemsArr = [
+    { hardwareID: 'P0UG-LHOQ', name: 'PC' },
+    { hardwareID: 'n3wYKZ_ao', name: 'Wii' },
+    { hardwareID: 'TdK3Oc-yV', name: 'PlayStation 4' },
+    { hardwareID: 'Zd_Ia4Hwm', name: 'Nintendo Switch' },
+    { hardwareID: 'qk9DiUwN-', name: 'ニンテンドー3DS' },
+    { hardwareID: 'SXybALV1f', name: 'Android' },
+    { hardwareID: 'YNZ6nb1Ki', name: 'PlayStation 3' },
+    { hardwareID: '8RERfeQQ9', name: 'PlayStation 2' },
+    { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },
+    { hardwareID: 'KyOSlwcLk', name: 'PCエンジン' },
+    { hardwareID: 'eKmDxi8lX', name: 'スーパーファミコン' },
+    { hardwareID: 'lBSGQeGmx', name: 'セガサターン' },
+    { hardwareID: '45syCFviA', name: 'NINTENDO64' },
+    { hardwareID: 'HATpnt7sl', name: 'ニンテンドーDS' }
+  ];
+  
+  
+  /**
+   * 所有ハードウェアの TextField の入力文字を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormHardwareActiveTextFieldObj = {};
+  
+  
+  /**
+   * 所有ハードウェアの TextField を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditHardwareActiveTextField(event, _id) {
+    this.cardPlayerEditFormHardwareActiveTextFieldObj[_id] = event.target.value;
+  };
+  
+  
+  /**
+   * 所有ハードウェアの TextField へのフォーカス状態を記録するオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormHardwareActiveTextFieldFocusObj = {};
+  
+  
+  /**
+   * 所有ハードウェアの TextField にフォーカス
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerHardwareActiveTextFieldOnFocus(_id) {
+    // console.log('focus');
+    this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = true;
+  };
+  
+  
+  /**
+   * 所有ハードウェアの TextField からフォーカスアウト
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerHardwareActiveTextFieldOnBlur(_id) {
+    // console.log('focusout');
+    this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = false;
+  };
+  
+  
+  /**
+   * 所有ハードウェアの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditHardwareActiveSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].hardwareActiveObj.search = event.target.checked;
   };
   
   

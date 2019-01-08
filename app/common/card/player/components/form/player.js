@@ -226,6 +226,8 @@ export default class extends React.Component {
       smartphoneObj,
       tabletObj,
       pcObj,
+      hardwareActiveObj,
+      hardwareInactiveObj,
       hardwareActiveArr,
       hardwareInactiveArr,
       
@@ -444,8 +446,8 @@ export default class extends React.Component {
           <Box>
             <HardwareActive
               _id={cardPlayers_id}
-              // arr={hardwareActiveObj.valueArr}
-              // search={hardwareActiveObj.search}
+              arr={hardwareActiveObj.valueArr}
+              search={hardwareActiveObj.search}
             />
           </Box>
           

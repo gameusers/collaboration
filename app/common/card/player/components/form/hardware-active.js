@@ -27,6 +27,9 @@ import Downshift from 'downshift';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Paper from '@material-ui/core/Paper';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
 
 
 
@@ -83,37 +86,151 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, model, comment, search } = this.props;
+    const { stores, _id, arr, search } = this.props;
     
     const {
       
-      handleCardPlayerEditSmartphoneModel,
-      handleCardPlayerEditSmartphoneComment,
-      handleCardPlayerEditSmartphoneSearch
+      cardPlayerEditFormHardwareActiveItemsArr,
+      cardPlayerEditFormHardwareActiveTextFieldObj,
+      handleCardPlayerEditHardwareActiveTextField,
+      cardPlayerEditFormHardwareActiveTextFieldFocusObj,
+      handleCardPlayerHardwareActiveTextFieldOnFocus,
+      handleCardPlayerHardwareActiveTextFieldOnBlur,
+      handleCardPlayerEditHardwareActiveSearch
       
     } = stores.cardPlayer;
     
     
-    const itemsArr = [
-      {value: 'apple'},
-      {value: 'pear'},
-      {value: 'orange'},
-      {value: 'grape'},
-      {value: 'banana'},
-    ];
     
     
     
+    // --------------------------------------------------
+    //   サジェスト
+    // --------------------------------------------------
     
-    const test = () => {
+    // const renderSuggestion = ({ getItemProps, inputValue, highlightedIndex, selectedItem }) => {
       
-      console.log(`
-        ----- birthdayObj -----\n
-        ${util.inspect(birthdayObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+    //   console.log(chalk`
+    //     inputValue: {green ${inputValue}}
+    //     highlightedIndex: {green ${highlightedIndex}}
+    //     selectedItem: {green ${selectedItem}}
+    //   `);
+      
+    //   console.log(`
+    //     ----- inputValue -----\n
+    //     ${util.inspect(inputValue, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+      
+    //   console.log(`
+    //     ----- getItemProps({ item: 'apple' }) -----\n
+    //     ${util.inspect(getItemProps({ item: 'apple' }), { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+      
+      
+    //   const componentItemsArr = [];
+      
+    //   for (const [index, valueObj] of itemsArr.entries()) {
+        
+    //     const value = valueObj.value;
+    //     const isHighlighted = highlightedIndex === index;
+    //     const isSelected = (selectedItem || '').indexOf(value) > -1;
+        
+    //     componentItemsArr.push(
+    //       <MenuItem
+    //         {...getItemProps({ item: value })}
+    //         key={value}
+    //         selected={isHighlighted}
+    //         component="div"
+    //         style={{
+    //           fontWeight: isSelected ? 500 : 400,
+    //         }}
+    //       >
+    //         {value}
+    //       </MenuItem>
+    //     );
+        
+    //   }
+      
+    //   return (
+    //     <Paper square>
+    //       <MenuList>
+    //         {componentItemsArr}
+    //       </MenuList>
+    //     </Paper>
+    //   );
+      
+    // };
+    
+    
+    // --------------------------------------------------
+    //   Text Field Input Value
+    // --------------------------------------------------
+    
+    let inputValue = '';
+    
+    if (_id in cardPlayerEditFormHardwareActiveTextFieldObj) {
+      inputValue = cardPlayerEditFormHardwareActiveTextFieldObj[_id];
+    }
+    
+    
+    // --------------------------------------------------
+    //   Text Field Focus
+    // --------------------------------------------------
+    
+    let onFocus = false;
+    
+    if (_id in cardPlayerEditFormHardwareActiveTextFieldFocusObj) {
+      onFocus = cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id];
+    }
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Suggestion
+    // --------------------------------------------------
+    
+    let componentSuggestionMenuItemsArr = [];
+    
+    for (const [index, valueObj] of cardPlayerEditFormHardwareActiveItemsArr.entries()) {
+      
+      if (onFocus && inputValue && valueObj.name.indexOf(inputValue) !== -1) {
+        
+        componentSuggestionMenuItemsArr.push(
+          <MenuItem
+            key={index}
+            // selected={isHighlighted}
+            component="div"
+            // style={{
+            //   fontWeight: isSelected ? 500 : 400,
+            // }}
+          >
+            {valueObj.name}
+          </MenuItem>
+        );
+        
+        // console.log(index, valueObj.name);
+      }
+      
       
     }
+    
+    let componentSuggestion = '';
+    
+    if (componentSuggestionMenuItemsArr.length > 0) {
+      
+      componentSuggestion = 
+        <Paper square>
+          <MenuList>
+            {componentSuggestionMenuItemsArr}
+          </MenuList>
+        </Paper>
+      ;
+      
+    }
+    
+    
     
     
     
@@ -135,6 +252,17 @@ export default class extends React.Component {
     // `);
     
     
+    // function handleInputChange(event) {
+      
+      
+    //   console.log(chalk`
+    //     event.target.value: {green ${event.target.value}}
+    //   `);
+      
+    //   // setInputValue(event.target.value);
+    // }
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -147,21 +275,88 @@ export default class extends React.Component {
         <Description>入力すると所有ハードウェアが表示されます。現在、所有しているハードウェアを入力してください。</Description>
         
         
-        {/*<StyledTextFieldWide
-          id="smartphoneModel"
-          label="モデル"
-          value={model}
-          onChange={(event) => handleCardPlayerEditSmartphoneModel(event, _id)}
-          helperText="モデル名、機種名などを入力してください"
+        <StyledTextFieldWide
+          id="hardwareActive"
+          label="ハードウェア名"
+          value={inputValue}
+          onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
+          onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus(_id)}
+          onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
+          // helperText="モデル名、機種名などを入力してください"
           margin="normal"
           inputProps={{
             maxLength: 50,
           }}
-        />*/}
+        />
+        
+        {componentSuggestion}
         
         
-        <Downshift
-          // onChange={selection => alert(`You selected ${selection.value}`)}
+        {/*<Downshift
+          onChange={selection => alert(`You selected ${selection.value}`)}
+          itemToString={item => (item ? item.value : '')}
+        >
+          {({
+            getInputProps,
+            getItemProps,
+            // getLabelProps,
+            // getMenuProps,
+            isOpen,
+            inputValue,
+            highlightedIndex,
+            selectedItem,
+          }) => (
+            <div>
+              <label {...getLabelProps()}>Enter a fruit</label>
+              <input {...getInputProps()} />
+              <StyledTextFieldWide
+                id="hardwareActive"
+                // label="ハードウェア名"
+                // placeholder='Select multiple countries'
+                // value={textFieldInputValue}
+                // onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
+                margin="normal"
+                inputProps={{
+                  maxLength: 50,
+                }}
+                InputProps={getInputProps({
+                  // startAdornment: selectedItem.map(item => (
+                  //   <Chip
+                  //     key={item}
+                  //     tabIndex={-1}
+                  //     label={item}
+                  //     className={classes.chip}
+                  //     onDelete={handleDelete(item)}
+                  //   />
+                  // )),
+                  // onChange: handleInputChange,
+                  onChange: (event) => handleCardPlayerEditHardwareActiveTextField(event, _id),
+                  // onKeyDown: handleKeyDown,
+                  placeholder: 'Select multiple countries',
+                })}
+              //   label: 'Label',
+              // })
+                // InputProps={{
+                //   inputRef: ref,
+                //   classes: {
+                //     root: classes.inputRoot,
+                //     input: classes.inputInput,
+                //   },
+                //   ...InputProps,
+                // }}
+                // {...other}
+              />
+              
+              {isOpen
+                ? renderSuggestion({inputValue, getItemProps})
+                : null}
+            </div>
+          )}
+        </Downshift>
+        */}
+        
+        {/*<Downshift
+          onChange={selection => alert(`You selected ${selection.value}`)}
           itemToString={item => (item ? item.value : '')}
         >
           {({
@@ -179,7 +374,7 @@ export default class extends React.Component {
               <input {...getInputProps()} />
               <ul {...getMenuProps()}>
                 {isOpen
-                  ? itemsArr
+                  ? items
                       .filter(item => !inputValue || item.value.includes(inputValue))
                       .map((item, index) => (
                         <li
@@ -201,7 +396,7 @@ export default class extends React.Component {
               </ul>
             </div>
           )}
-        </Downshift>
+        </Downshift>*/}
         
         
         <SearchBox>
@@ -209,7 +404,7 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditSmartphoneSearch(event, _id)}
+                onChange={(event) => handleCardPlayerEditHardwareActiveSearch(event, _id)}
               />
             }
             label="所有ハードウェアで検索可能にする"

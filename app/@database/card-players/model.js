@@ -939,8 +939,8 @@ const format = (argumentsObj) => {
     delete copiedObj.imageVideoArr;
     delete copiedObj.usersObj.followArr;
     delete copiedObj.usersObj.followedArr;
-    delete copiedObj.hardwareActiveObj;
-    delete copiedObj.hardwareInactiveObj;
+    // delete copiedObj.hardwareActiveObj;
+    // delete copiedObj.hardwareInactiveObj;
     delete copiedObj.hardwaresArr;
     
     

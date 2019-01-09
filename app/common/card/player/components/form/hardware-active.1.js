@@ -103,6 +103,67 @@ export default class extends React.Component {
     
     
     
+    
+    // --------------------------------------------------
+    //   サジェスト
+    // --------------------------------------------------
+    
+    // const renderSuggestion = ({ getItemProps, inputValue, highlightedIndex, selectedItem }) => {
+      
+    //   console.log(chalk`
+    //     inputValue: {green ${inputValue}}
+    //     highlightedIndex: {green ${highlightedIndex}}
+    //     selectedItem: {green ${selectedItem}}
+    //   `);
+      
+    //   console.log(`
+    //     ----- inputValue -----\n
+    //     ${util.inspect(inputValue, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+      
+    //   console.log(`
+    //     ----- getItemProps({ item: 'apple' }) -----\n
+    //     ${util.inspect(getItemProps({ item: 'apple' }), { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+      
+      
+    //   const componentItemsArr = [];
+      
+    //   for (const [index, valueObj] of itemsArr.entries()) {
+        
+    //     const value = valueObj.value;
+    //     const isHighlighted = highlightedIndex === index;
+    //     const isSelected = (selectedItem || '').indexOf(value) > -1;
+        
+    //     componentItemsArr.push(
+    //       <MenuItem
+    //         {...getItemProps({ item: value })}
+    //         key={value}
+    //         selected={isHighlighted}
+    //         component="div"
+    //         style={{
+    //           fontWeight: isSelected ? 500 : 400,
+    //         }}
+    //       >
+    //         {value}
+    //       </MenuItem>
+    //     );
+        
+    //   }
+      
+    //   return (
+    //     <Paper square>
+    //       <MenuList>
+    //         {componentItemsArr}
+    //       </MenuList>
+    //     </Paper>
+    //   );
+      
+    // };
+    
+    
     // --------------------------------------------------
     //   Text Field Input Value
     // --------------------------------------------------
@@ -126,16 +187,15 @@ export default class extends React.Component {
     
     
     
-    
     // --------------------------------------------------
     //   Component - Suggestion
     // --------------------------------------------------
     
     let componentSuggestionMenuItemsArr = [];
     
-    if (onFocus && inputValue && cardPlayerEditFormHardwareActiveItemsArr.length > 0) {
+    for (const [index, valueObj] of cardPlayerEditFormHardwareActiveItemsArr.entries()) {
       
-      for (const [index, valueObj] of cardPlayerEditFormHardwareActiveItemsArr.entries()) {
+      if (onFocus && inputValue && valueObj.name.indexOf(inputValue) !== -1) {
         
         componentSuggestionMenuItemsArr.push(
           <MenuItem
@@ -150,11 +210,11 @@ export default class extends React.Component {
           </MenuItem>
         );
         
+        // console.log(index, valueObj.name);
       }
       
+      
     }
-    
-    
     
     let componentSuggestion = '';
     
@@ -169,6 +229,7 @@ export default class extends React.Component {
       ;
       
     }
+    
     
     
     
@@ -191,6 +252,15 @@ export default class extends React.Component {
     // `);
     
     
+    // function handleInputChange(event) {
+      
+      
+    //   console.log(chalk`
+    //     event.target.value: {green ${event.target.value}}
+    //   `);
+      
+    //   // setInputValue(event.target.value);
+    // }
     
     
     // --------------------------------------------------
@@ -217,13 +287,119 @@ export default class extends React.Component {
           onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
           // helperText="ゲームのハードウェア名、Android、iOS、PCなども入力できます"
           margin="normal"
-          autoComplete="off"
           inputProps={{
             maxLength: 50,
           }}
         />
         
         {componentSuggestion}
+        
+        
+        {/*<Downshift
+          onChange={selection => alert(`You selected ${selection.value}`)}
+          itemToString={item => (item ? item.value : '')}
+        >
+          {({
+            getInputProps,
+            getItemProps,
+            // getLabelProps,
+            // getMenuProps,
+            isOpen,
+            inputValue,
+            highlightedIndex,
+            selectedItem,
+          }) => (
+            <div>
+              <label {...getLabelProps()}>Enter a fruit</label>
+              <input {...getInputProps()} />
+              <StyledTextFieldWide
+                id="hardwareActive"
+                // label="ハードウェア名"
+                // placeholder='Select multiple countries'
+                // value={textFieldInputValue}
+                // onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
+                margin="normal"
+                inputProps={{
+                  maxLength: 50,
+                }}
+                InputProps={getInputProps({
+                  // startAdornment: selectedItem.map(item => (
+                  //   <Chip
+                  //     key={item}
+                  //     tabIndex={-1}
+                  //     label={item}
+                  //     className={classes.chip}
+                  //     onDelete={handleDelete(item)}
+                  //   />
+                  // )),
+                  // onChange: handleInputChange,
+                  onChange: (event) => handleCardPlayerEditHardwareActiveTextField(event, _id),
+                  // onKeyDown: handleKeyDown,
+                  placeholder: 'Select multiple countries',
+                })}
+              //   label: 'Label',
+              // })
+                // InputProps={{
+                //   inputRef: ref,
+                //   classes: {
+                //     root: classes.inputRoot,
+                //     input: classes.inputInput,
+                //   },
+                //   ...InputProps,
+                // }}
+                // {...other}
+              />
+              
+              {isOpen
+                ? renderSuggestion({inputValue, getItemProps})
+                : null}
+            </div>
+          )}
+        </Downshift>
+        */}
+        
+        {/*<Downshift
+          onChange={selection => alert(`You selected ${selection.value}`)}
+          itemToString={item => (item ? item.value : '')}
+        >
+          {({
+            getInputProps,
+            getItemProps,
+            getLabelProps,
+            getMenuProps,
+            isOpen,
+            inputValue,
+            highlightedIndex,
+            selectedItem,
+          }) => (
+            <div>
+              <label {...getLabelProps()}>Enter a fruit</label>
+              <input {...getInputProps()} />
+              <ul {...getMenuProps()}>
+                {isOpen
+                  ? items
+                      .filter(item => !inputValue || item.value.includes(inputValue))
+                      .map((item, index) => (
+                        <li
+                          {...getItemProps({
+                            key: item.value,
+                            index,
+                            item,
+                            style: {
+                              backgroundColor:
+                                highlightedIndex === index ? 'lightgray' : 'white',
+                              fontWeight: selectedItem === item ? 'bold' : 'normal',
+                            },
+                          })}
+                        >
+                          {item.value}
+                        </li>
+                      ))
+                  : null}
+              </ul>
+            </div>
+          )}
+        </Downshift>*/}
         
         
         <SearchBox>

@@ -119,7 +119,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   GET 取得 & Validation
+    //   POST 取得 & Validation
     // --------------------------------------------------
     
     const { _id } = req.body;
@@ -261,7 +261,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
     
     
     // --------------------------------------------------
-    //   GET 取得 & Validation
+    //   POST 取得 & Validation
     // --------------------------------------------------
     
     const { _id } = req.body;

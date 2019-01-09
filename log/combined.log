@@ -261,3 +261,7 @@
 {"level":"error","message":"Tue Jan 08 2019 07:46:41 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
 {"level":"error","message":"Tue Jan 08 2019 09:08:23 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
 {"level":"error","message":"Tue Jan 08 2019 09:08:37 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Wed Jan 09 2019 01:54:07 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Wed Jan 09 2019 04:43:09 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Wed Jan 09 2019 04:46:01 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Wed Jan 09 2019 05:14:21 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@500000\nMessage: Cannot read property 'followed' of undefined\n"}

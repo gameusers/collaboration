@@ -549,7 +549,6 @@ class Store {
     
     // ダイアログを閉じる
     this.cardPlayerEditFormUndoDataDialogOpenObj[_id] = false;
-    
   };
   
   
@@ -709,34 +708,31 @@ class Store {
   
   /**
    * 名前を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditName(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].name = eventObj.target.value;
+  handleCardPlayerEditName(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].name = event.target.value;
   };
   
   
   /**
    * ステータスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditStatus(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].status = eventObj.target.value;
+  handleCardPlayerEditStatus(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].status = event.target.value;
   };
   
   
   /**
    * コメントを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditComment(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].comment = eventObj.target.value;
+  handleCardPlayerEditComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].comment = event.target.value;
   };
   
   
@@ -744,34 +740,31 @@ class Store {
   
   /**
    * 年齢（誕生日）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditBirthday(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].birthdayObj.value = eventObj.target.value;
+  handleCardPlayerEditBirthday(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].birthdayObj.value = event.target.value;
   };
   
   
   /**
    * 年齢（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditBirthdayAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].birthdayObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditBirthdayAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].birthdayObj.alternativeText = event.target.value;
   };
   
   
   /**
    * 年齢の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditBirthdaySearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].birthdayObj.search = eventObj.target.checked;
+  handleCardPlayerEditBirthdaySearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].birthdayObj.search = event.target.checked;
   };
   
   
@@ -779,34 +772,31 @@ class Store {
   
   /**
    * 性別を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSex(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.value = eventObj.target.value;
+  handleCardPlayerEditSex(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.value = event.target.value;
   };
   
   
   /**
    * 性別（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSexAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditSexAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.alternativeText = event.target.value;
   };
   
   
   /**
    * 性別の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSexSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.search = eventObj.target.checked;
+  handleCardPlayerEditSexSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.search = event.target.checked;
   };
   
   
@@ -814,23 +804,21 @@ class Store {
   
   /**
    * 住所（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditAddressAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].addressObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditAddressAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].addressObj.alternativeText = event.target.value;
   };
   
   
   /**
    * 住所の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditAddressSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].addressObj.search = eventObj.target.checked;
+  handleCardPlayerEditAddressSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].addressObj.search = event.target.checked;
   };
   
   
@@ -838,34 +826,31 @@ class Store {
   
   /**
    * ゲーム歴（ゲームを始めた日）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditGamingExperience(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.value = eventObj.target.value;
+  handleCardPlayerEditGamingExperience(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.value = event.target.value;
   };
   
   
   /**
    * ゲーム歴（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditGamingExperienceAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditGamingExperienceAlternativeText(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.alternativeText = event.target.value;
   };
   
   
   /**
    * ゲーム歴の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditGamingExperienceSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.search = eventObj.target.checked;
+  handleCardPlayerEditGamingExperienceSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.search = event.target.checked;
   };
   
   
@@ -884,7 +869,6 @@ class Store {
   /**
    * 趣味の <TextField /> の数を減らす
    * @param {string}  _id - DB card-players _id / DB card-games _id
-   * @param {string} index - 削除する配列のインデックス
    */
   @action.bound
   handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, index) {
@@ -894,24 +878,21 @@ class Store {
   
   /**
    * 趣味を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} index - 変更する配列のインデックス
    */
   @action.bound
-  handleCardPlayerEditHobby(eventObj, _id, index) {
-    this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr[index] = eventObj.target.value;
+  handleCardPlayerEditHobby(event, _id, index) {
+    this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr[index] = event.target.value;
   };
   
   
   /**
    * 趣味の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditHobbySearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].hobbiesObj.search = eventObj.target.checked;
+  handleCardPlayerEditHobbySearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].hobbiesObj.search = event.target.checked;
   };
   
   
@@ -930,7 +911,6 @@ class Store {
   /**
    * 特技の <TextField /> の数を減らす
    * @param {string}  _id - DB card-players _id / DB card-games _id
-   * @param {string} index - 削除する配列のインデックス
    */
   @action.bound
   handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement(_id, index) {
@@ -940,24 +920,21 @@ class Store {
   
   /**
    * 特技を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} index - 変更する配列のインデックス
    */
   @action.bound
-  handleCardPlayerEditSpecialSkill(eventObj, _id, index) {
-    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr[index] = eventObj.target.value;
+  handleCardPlayerEditSpecialSkill(event, _id, index) {
+    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr[index] = event.target.value;
   };
   
   
   /**
    * 特技の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSpecialSkillSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.search = eventObj.target.checked;
+  handleCardPlayerEditSpecialSkillSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.search = event.target.checked;
   };
   
   
@@ -965,34 +942,31 @@ class Store {
   
   /**
    * スマートフォンのモデルを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSmartphoneModel(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].smartphoneObj.model = eventObj.target.value;
+  handleCardPlayerEditSmartphoneModel(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].smartphoneObj.model = event.target.value;
   };
   
   
   /**
    * スマートフォンのコメントを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSmartphoneComment(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].smartphoneObj.comment = eventObj.target.value;
+  handleCardPlayerEditSmartphoneComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].smartphoneObj.comment = event.target.value;
   };
   
   
   /**
    * スマートフォンの検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditSmartphoneSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].smartphoneObj.search = eventObj.target.checked;
+  handleCardPlayerEditSmartphoneSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].smartphoneObj.search = event.target.checked;
   };
   
   
@@ -1000,34 +974,31 @@ class Store {
   
   /**
    * タブレットのモデルを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditTabletModel(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].tabletObj.model = eventObj.target.value;
+  handleCardPlayerEditTabletModel(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].tabletObj.model = event.target.value;
   };
   
   
   /**
    * タブレットのコメントを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditTabletComment(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].tabletObj.comment = eventObj.target.value;
+  handleCardPlayerEditTabletComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].tabletObj.comment = event.target.value;
   };
   
   
   /**
    * タブレットの検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditTabletSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].tabletObj.search = eventObj.target.checked;
+  handleCardPlayerEditTabletSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].tabletObj.search = event.target.checked;
   };
   
   
@@ -1035,177 +1006,161 @@ class Store {
   
   /**
    * PCのモデルを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCModel(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.model = eventObj.target.value;
+  handleCardPlayerEditPCModel(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.model = event.target.value;
   };
   
   
   /**
    * PCのコメントを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCComment(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.comment = eventObj.target.value;
+  handleCardPlayerEditPCComment(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.comment = event.target.value;
   };
   
   
   /**
    * PCスペックのOSを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecOS(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.os = eventObj.target.value;
+  handleCardPlayerEditPCSpecOS(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.os = event.target.value;
   };
   
   
   /**
    * PCスペックのCPUを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecCPU(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpu = eventObj.target.value;
+  handleCardPlayerEditPCSpecCPU(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpu = event.target.value;
   };
   
   
   /**
    * PCスペックのCPUクーラーを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecCPUCooler(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpuCooler = eventObj.target.value;
+  handleCardPlayerEditPCSpecCPUCooler(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpuCooler = event.target.value;
   };
   
   
   /**
    * PCスペックのマザーボードを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecMotherboard(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.motherboard = eventObj.target.value;
+  handleCardPlayerEditPCSpecMotherboard(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.motherboard = event.target.value;
   };
   
   
   /**
    * PCスペックのメモリーを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecMemory(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.memory = eventObj.target.value;
+  handleCardPlayerEditPCSpecMemory(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.memory = event.target.value;
   };
   
   
   /**
    * PCスペックのストレージを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecStorage(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.storage = eventObj.target.value;
+  handleCardPlayerEditPCSpecStorage(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.storage = event.target.value;
   };
   
   
   /**
    * PCスペックのグラフィックカードを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecGraphicsCard(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.graphicsCard = eventObj.target.value;
+  handleCardPlayerEditPCSpecGraphicsCard(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.graphicsCard = event.target.value;
   };
   
   
   /**
    * PCスペックの光学ドライブを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecOpticalDrive(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.opticalDrive = eventObj.target.value;
+  handleCardPlayerEditPCSpecOpticalDrive(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.opticalDrive = event.target.value;
   };
   
   
   /**
    * PCスペックの電源を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecPowerSupply(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.powerSupply = eventObj.target.value;
+  handleCardPlayerEditPCSpecPowerSupply(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.powerSupply = event.target.value;
   };
   
   
   /**
    * PCスペックのケースを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecPCCase(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.pcCase = eventObj.target.value;
+  handleCardPlayerEditPCSpecPCCase(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.pcCase = event.target.value;
   };
   
   
   /**
    * PCスペックのモニターを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecMonitor(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.monitor = eventObj.target.value;
+  handleCardPlayerEditPCSpecMonitor(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.monitor = event.target.value;
   };
   
   
   /**
    * PCスペックのマウスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecMouse(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.mouse = eventObj.target.value;
+  handleCardPlayerEditPCSpecMouse(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.mouse = event.target.value;
   };
   
   
   /**
    * PCスペックのキーボードを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSpecKeyboard(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.keyboard = eventObj.target.value;
+  handleCardPlayerEditPCSpecKeyboard(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.keyboard = event.target.value;
   };
   
   
   /**
    * PCの検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditPCSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.search = eventObj.target.checked;
+  handleCardPlayerEditPCSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].pcObj.search = event.target.checked;
   };
   
   
@@ -1215,23 +1170,22 @@ class Store {
    * 所有ハードウェアのサジェストデータを入れる配列
    * @type {Array}
    */
-  @observable cardPlayerEditFormHardwareActiveItemsArr = [];
-  // @observable cardPlayerEditFormHardwareActiveItemsArr = [
-  //   { hardwareID: 'P0UG-LHOQ', name: 'PC' },
-  //   { hardwareID: 'n3wYKZ_ao', name: 'Wii' },
-  //   { hardwareID: 'TdK3Oc-yV', name: 'PlayStation 4' },
-  //   { hardwareID: 'Zd_Ia4Hwm', name: 'Nintendo Switch' },
-  //   { hardwareID: 'qk9DiUwN-', name: 'ニンテンドー3DS' },
-  //   { hardwareID: 'SXybALV1f', name: 'Android' },
-  //   { hardwareID: 'YNZ6nb1Ki', name: 'PlayStation 3' },
-  //   { hardwareID: '8RERfeQQ9', name: 'PlayStation 2' },
-  //   { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },
-  //   { hardwareID: 'KyOSlwcLk', name: 'PCエンジン' },
-  //   { hardwareID: 'eKmDxi8lX', name: 'スーパーファミコン' },
-  //   { hardwareID: 'lBSGQeGmx', name: 'セガサターン' },
-  //   { hardwareID: '45syCFviA', name: 'NINTENDO64' },
-  //   { hardwareID: 'HATpnt7sl', name: 'ニンテンドーDS' }
-  // ];
+  @observable cardPlayerEditFormHardwareActiveItemsArr = [
+    { hardwareID: 'P0UG-LHOQ', name: 'PC' },
+    { hardwareID: 'n3wYKZ_ao', name: 'Wii' },
+    { hardwareID: 'TdK3Oc-yV', name: 'PlayStation 4' },
+    { hardwareID: 'Zd_Ia4Hwm', name: 'Nintendo Switch' },
+    { hardwareID: 'qk9DiUwN-', name: 'ニンテンドー3DS' },
+    { hardwareID: 'SXybALV1f', name: 'Android' },
+    { hardwareID: 'YNZ6nb1Ki', name: 'PlayStation 3' },
+    { hardwareID: '8RERfeQQ9', name: 'PlayStation 2' },
+    { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },
+    { hardwareID: 'KyOSlwcLk', name: 'PCエンジン' },
+    { hardwareID: 'eKmDxi8lX', name: 'スーパーファミコン' },
+    { hardwareID: 'lBSGQeGmx', name: 'セガサターン' },
+    { hardwareID: '45syCFviA', name: 'NINTENDO64' },
+    { hardwareID: 'HATpnt7sl', name: 'ニンテンドーDS' }
+  ];
   
   
   /**
@@ -1243,116 +1197,11 @@ class Store {
   
   /**
    * 所有ハードウェアの TextField を変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} cardPlayers_id - DB card-games _id
+   * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  async handleCardPlayerEditHardwareActiveTextField(eventObj, cardPlayers_id) {
-    
-    
-    // ---------------------------------------------
-    //   TextField の値変更
-    // ---------------------------------------------
-    
-    this.cardPlayerEditFormHardwareActiveTextFieldObj[cardPlayers_id] = eventObj.target.value;
-    
-    
-    // ---------------------------------------------
-    //   TextField が空の場合、処理停止
-    // ---------------------------------------------
-    
-    if (!eventObj.target.value) {
-      return;
-    }
-    
-    
-    // ---------------------------------------------
-    //   Fetch でサジェストデータを取得
-    // ---------------------------------------------
-    
-    try {
-      
-      
-      console.log('fetchWrapper / handleCardPlayerEditHardwareActiveTextField');
-       
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formData = new FormData();
-      
-      formData.append('keyword', eventObj.target.value);
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-name-for-suggestion`,
-        methodType: 'POST',
-        formData: formData
-      });
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
-      }
-      
-      
-      // ---------------------------------------------
-      //  Data 更新
-      // ---------------------------------------------
-      
-      this.cardPlayerEditFormHardwareActiveItemsArr = resultObj.data;
-      
-      
-      // ---------------------------------------------
-      //   編集フォーム表示
-      // ---------------------------------------------
-      
-      // this.cardPlayerEditFormOpenObj[cardPlayers_id] = true;
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- this.cardPlayerEditFormDataObj -----\n
-      //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj.data -----\n
-      //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-        
-      
-      
-    } catch (error) {
-      
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      // storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-editButton`, false);
-      
-      
-    }
-    
+  handleCardPlayerEditHardwareActiveTextField(event, _id) {
+    this.cardPlayerEditFormHardwareActiveTextFieldObj[_id] = event.target.value;
   };
   
   
@@ -1387,12 +1236,11 @@ class Store {
   
   /**
    * 所有ハードウェアの検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  handleCardPlayerEditHardwareActiveSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].hardwareActiveObj.search = eventObj.target.checked;
+  handleCardPlayerEditHardwareActiveSearch(event, _id) {
+    this.cardPlayerEditFormDataObj[_id].hardwareActiveObj.search = event.target.checked;
   };
   
   

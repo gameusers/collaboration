@@ -13,6 +13,7 @@ const plPlayer = require('../../pl/player/api/player');
 const users = require('../../@database/users/api');
 const cardPlayers = require('../../@database/card-players/api');
 const cardGames = require('../../@database/card-games/api');
+const hardwares = require('../../@database/hardwares/api');
 
 
 // --------------------------------------------------
@@ -33,5 +34,6 @@ router.use('/pl/player', plPlayer);
 router.use('/users', users);
 router.use('/card-players', cardPlayers);
 router.use('/card-games', cardGames);
+router.use('/hardwares', hardwares);
 
 module.exports = router;

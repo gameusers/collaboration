@@ -75,6 +75,67 @@ const find = async (argumentsObj) => {
 
 
 /**
+ * 取得する / サジェスト用のデータ
+ * @param {Object} argumentsObj - 引数
+ * @return {Object} 取得データ
+ */
+const findByNameForSuggestion = async ({ keyword, language, country }) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  // const {
+    
+  //   conditionObj
+    
+  // } = argumentsObj;
+  
+  // console.log(chalk`
+  //   keyword: {green ${keyword}}
+  //   language: {green ${language}}
+  //   country: {green ${country}}
+  // `);
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const pattern = new RegExp(`.*${keyword}.*`);
+    
+    return await Model.find(
+      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
+    ).select('hardwareID name').exec();
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    // return docArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 挿入 / 更新する
  * @param {Object} argumentsObj - 引数
  * @return {Object} 
@@ -241,6 +302,7 @@ const deleteMany = async (argumentsObj) => {
 
 module.exports = {
   find,
+  findByNameForSuggestion,
   upsert,
   insertMany,
   deleteMany

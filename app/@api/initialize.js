@@ -723,7 +723,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'en',
         country: 'US',
         hardwareID: 'I-iu-WmkO',
-        name: 'Nintendo Entertainment System'
+        name: 'Nintendo Entertainment System',
+        searchKeywordsArr: [
+          'Nintendo Entertainment System',
+          'NES',
+        ]
       },
       {
         _id: 'R6uD6BzZ5',
@@ -732,7 +736,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'I-iu-WmkO',
-        name: 'ファミリーコンピュータ'
+        name: 'ファミリーコンピュータ',
+        searchKeywordsArr: [
+          'ファミリーコンピュータ',
+          'ファミリーコンピューター',
+          'ファミコン',
+          'ふぁみりーこんぴゅーた',
+          'ふぁみりーこんぴゅーたー',
+          'ふぁみこん',
+          'Family Computer',
+          'Famicom',
+          'FC',
+        ]
       },
       
       
@@ -743,7 +758,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'KyOSlwcLk',
-        name: 'PCエンジン'
+        name: 'PCエンジン',
+        searchKeywordsArr: [
+          'PCエンジン',
+          'ピーシーエンジン',
+          'ぴーしーえんじん',
+          'PC Engine',
+          'PCE',
+        ]
       },
       
       
@@ -754,7 +776,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '2yKF4qXAw',
-        name: 'メガドライブ'
+        name: 'メガドライブ',
+        searchKeywordsArr: [
+          'メガドライブ',
+          'めがどらいぶ',
+          'MEGA DRIVE',
+          'MD',
+        ]
       },
       
       
@@ -765,7 +793,16 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'eKmDxi8lX',
-        name: 'スーパーファミコン'
+        name: 'スーパーファミコン',
+        searchKeywordsArr: [
+          'スーパーファミコン',
+          'スーファミ',
+          'すーぱーふぁみこん',
+          'すーふぁみ',
+          'SUPER Famicom',
+          'Super Family Computer',
+          'SFC',
+        ]
       },
       
       
@@ -776,7 +813,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'Z4R-SPN2-',
-        name: 'ネオジオ'
+        name: 'ネオジオ',
+        searchKeywordsArr: [
+          'ネオジオ',
+          'ねおじお',
+          'NEOGEO',
+          'NEO・GEO',
+          'NG',
+        ]
       },
       
       
@@ -787,7 +831,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'lBSGQeGmx',
-        name: 'セガサターン'
+        name: 'セガサターン',
+        searchKeywordsArr: [
+          'セガサターン',
+          'せがさたーん',
+          'SEGA SATURN',
+          'SS',
+        ]
       },
       
       
@@ -798,7 +848,17 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'zB4ivcsqM',
-        name: 'PlayStation'
+        name: 'PlayStation',
+        searchKeywordsArr: [
+          'プレイステーション',
+          'プレーステーション',
+          'プレステ',
+          'ぷれいすてーしょん',
+          'ぷれーすてーしょん',
+          'ぷれすて',
+          'PlayStation',
+          'PS',
+        ]
       },
       
       
@@ -809,7 +869,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'o9bdsq5af',
-        name: 'バーチャルボーイ'
+        name: 'バーチャルボーイ',
+        searchKeywordsArr: [
+          'バーチャルボーイ',
+          'ばーちゃるぼーい',
+          'VIRTUAL BOY',
+          'VB',
+        ]
       },
       
       
@@ -820,7 +886,34 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '45syCFviA',
-        name: 'NINTENDO64'
+        name: 'NINTENDO64',
+        searchKeywordsArr: [
+          '任天堂64',
+          '任天堂６４',
+          'ニンテンドー64',
+          'ニンテンドウ64',
+          'ニンテンドオ64',
+          'ニンテンドー６４',
+          'ニンテンドウ６４',
+          'ニンテンドオ６４',
+          'ニンテンドーロクジュウヨン',
+          'ニンテンドウロクジュウヨン',
+          'ニンテンドオロクジュウヨン',
+          'ロクヨン',
+          'にんてんどー64',
+          'にんてんどう64',
+          'にんてんどお64',
+          'にんてんどー６４',
+          'にんてんどう６４',
+          'にんてんどお６４',
+          'にんてんどーろくじゅうよん',
+          'にんてんどうろくじゅうよん',
+          'にんてんどおろくじゅうよん',
+          'ろくよん',
+          'NINTENDO64',
+          'NINTENDO 64',
+          'N64',
+        ]
       },
       
       
@@ -831,7 +924,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'Kj_Djheqt',
-        name: 'ドリームキャスト'
+        name: 'ドリームキャスト',
+        searchKeywordsArr: [
+          'ドリームキャスト',
+          'ドリキャス',
+          'どりーむきゃすと',
+          'どりきゃす',
+          'Dreamcast',
+          'DC',
+        ]
       },
       
       
@@ -842,7 +943,30 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '8RERfeQQ9',
-        name: 'PlayStation 2'
+        name: 'PlayStation 2',
+        searchKeywordsArr: [
+          'プレイステーション2',
+          'プレーステーション2',
+          'プレステ2',
+          'プレイステーション２',
+          'プレーステーション２',
+          'プレステ２',
+          'プレイステーションツー',
+          'プレーステーションツー',
+          'プレステツー',
+          'ぷれいすてーしょん2',
+          'ぷれーすてーしょん2',
+          'ぷれすて2',
+          'ぷれいすてーしょん２',
+          'ぷれーすてーしょん２',
+          'ぷれすて２',
+          'ぷれいすてーしょんつー',
+          'ぷれーすてーしょんつー',
+          'ぷれすてつー',
+          'PlayStation 2',
+          'PlayStation2',
+          'PS2',
+        ]
       },
       
       
@@ -853,7 +977,19 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'XLUt628gr',
-        name: 'ニンテンドーゲームキューブ'
+        name: 'ニンテンドーゲームキューブ',
+        searchKeywordsArr: [
+          '任天堂ゲームキューブ',
+          'ニンテンドーゲームキューブ',
+          'ニンテンドウゲームキューブ',
+          'ニンテンドオゲームキューブ',
+          'にんてんどーげーむきゅーぶ',
+          'にんてんどうげーむきゅーぶ',
+          'にんてんどおげーむきゅーぶ',
+          'NINTENDO GAMECUBE',
+          'NGC',
+          'GC',
+        ]
       },
       
       
@@ -864,7 +1000,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '78lc0hPjL',
-        name: 'Xbox'
+        name: 'Xbox',
+        searchKeywordsArr: [
+          'エックスボックス',
+          'えっくすぼっくす',
+          'Xbox',
+        ]
       },
       
       
@@ -875,7 +1016,20 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: '08Qp5KxPA',
-        name: 'Xbox 360'
+        name: 'Xbox 360',
+        searchKeywordsArr: [
+          'エックスボックス360',
+          'エックスボックス３６０',
+          'エックスボックスサンロクマル',
+          'エックスボックスサンビャクロクジュウ',
+          'えっくすぼっくす360',
+          'えっくすぼっくす３６０',
+          'えっくすぼっくすさんろくまる',
+          'えっくすぼっくすさんびゃくろくじゅう',
+          'Xbox 360',
+          'Xbox360',
+          'X360'
+        ]
       },
       
       
@@ -886,7 +1040,30 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'YNZ6nb1Ki',
-        name: 'PlayStation 3'
+        name: 'PlayStation 3',
+        searchKeywordsArr: [
+          'プレイステーション3',
+          'プレーステーション3',
+          'プレステ3',
+          'プレイステーション３',
+          'プレーステーション３',
+          'プレステ３',
+          'プレイステーションスリー',
+          'プレーステーションスリー',
+          'プレステスリー',
+          'ぷれいすてーしょん3',
+          'ぷれーすてーしょん3',
+          'ぷれすて3',
+          'ぷれいすてーしょん３',
+          'ぷれーすてーしょん３',
+          'ぷれすて３',
+          'ぷれいすてーしょんすりー',
+          'ぷれーすてーしょんすりー',
+          'ぷれすてすりー',
+          'PlayStation 3',
+          'PlayStation3',
+          'PS3',
+        ]
       },
       
       
@@ -897,7 +1074,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'n3wYKZ_ao',
-        name: 'Wii'
+        name: 'Wii',
+        searchKeywordsArr: [
+          'ウィー',
+          'ウイー',
+          'うぃー',
+          'ういー',
+          'Wii',
+          'We',
+        ]
       },
       
       
@@ -908,7 +1093,19 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'GTxWVd0z-',
-        name: 'Wii U'
+        name: 'Wii U',
+        searchKeywordsArr: [
+          'ウィーユー',
+          'ウイーユー',
+          'うぃーゆー',
+          'ういーゆー',
+          'Wii U',
+          'Wi U',
+          'We U',
+          'WiiU',
+          'WiU',
+          'WeU',
+        ]
       },
       
       
@@ -919,7 +1116,30 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'TdK3Oc-yV',
-        name: 'PlayStation 4'
+        name: 'PlayStation 4',
+        searchKeywordsArr: [
+          'プレイステーション4',
+          'プレーステーション4',
+          'プレステ4',
+          'プレイステーション４',
+          'プレーステーション４',
+          'プレステ４',
+          'プレイステーションフォー',
+          'プレーステーションフォー',
+          'プレステフォー',
+          'ぷれいすてーしょん4',
+          'ぷれーすてーしょん4',
+          'ぷれすて4',
+          'ぷれいすてーしょん４',
+          'ぷれーすてーしょん４',
+          'ぷれすて４',
+          'ぷれいすてーしょんふぉー',
+          'ぷれーすてーしょんふぉー',
+          'ぷれすてふぉー',
+          'PlayStation 4',
+          'PlayStation4',
+          'PS4',
+        ]
       },
       
       
@@ -930,7 +1150,18 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'uPqoiXA_8',
-        name: 'Xbox One'
+        name: 'Xbox One',
+        searchKeywordsArr: [
+          'エックスボックスワン',
+          'エックスボックスイチ',
+          'えっくすぼっくすわん',
+          'えっくすぼっくすいち',
+          'Xbox One',
+          'XboxOne',
+          'Xbox 1',
+          'Xbox1',
+          'XO'
+        ]
       },
       
       
@@ -941,151 +1172,170 @@ router.post('/db', upload.none(), async (req, res, next) => {
         language: 'ja',
         country: 'JP',
         hardwareID: 'Zd_Ia4Hwm',
-        name: 'Nintendo Switch'
+        name: 'Nintendo Switch',
+        searchKeywordsArr: [
+          '任天堂スイッチ',
+          '任天堂スウィッチ',
+          'ニンテンドースイッチ',
+          'ニンテンドースウィッチ',
+          'ニンテンドウスイッチ',
+          'ニンテンドウスウィッチ',
+          'ニンテンドオスイッチ',
+          'ニンテンドオスウィッチ',
+          'にんてんどーすいっち',
+          'にんてんどーすうぃっち',
+          'にんてんどうすいっち',
+          'にんてんどうすうぃっち',
+          'にんてんどおすいっち',
+          'にんてんどおすうぃっち',
+          'Nintendo Switch',
+          'NintendoSwitch',
+          'NS',
+        ]
       },
       
       
-      {
-        _id: '_z4DBLYNi',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'XBKalRRW7',
-        name: 'ゲームボーイ'
-      },
+      // {
+      //   _id: '_z4DBLYNi',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'XBKalRRW7',
+      //   name: 'ゲームボーイ'
+      // },
       
       
-      {
-        _id: '9Z6Wh_JJ2',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'sO2U2PzHl',
-        name: 'ゲームギア'
-      },
+      // {
+      //   _id: '9Z6Wh_JJ2',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'sO2U2PzHl',
+      //   name: 'ゲームギア'
+      // },
       
       
-      {
-        _id: 'QQtnx7FEN',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'qBsY8y0nO',
-        name: 'PCエンジンGT'
-      },
+      // {
+      //   _id: 'QQtnx7FEN',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'qBsY8y0nO',
+      //   name: 'PCエンジンGT'
+      // },
       
       
-      {
-        _id: 'IcH7HG2f7',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'u3SQqtJ-u',
-        name: 'ネオジオポケット'
-      },
+      // {
+      //   _id: 'IcH7HG2f7',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'u3SQqtJ-u',
+      //   name: 'ネオジオポケット'
+      // },
       
       
-      {
-        _id: 'S2Q_3MrBo',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'PYIE0rv_e',
-        name: 'ワンダースワン'
-      },
+      // {
+      //   _id: 'S2Q_3MrBo',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'PYIE0rv_e',
+      //   name: 'ワンダースワン'
+      // },
       
       
-      {
-        _id: '4OkTt-VSM',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'AIvzEgDCd',
-        name: 'ゲームボーイアドバンス'
-      },
+      // {
+      //   _id: '4OkTt-VSM',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'AIvzEgDCd',
+      //   name: 'ゲームボーイアドバンス'
+      // },
       
       
-      {
-        _id: 'Uem6UalMW',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'HATpnt7sl',
-        name: 'ニンテンドーDS'
-      },
+      // {
+      //   _id: 'Uem6UalMW',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'HATpnt7sl',
+      //   name: 'ニンテンドーDS'
+      // },
       
       
-      {
-        _id: 'nMhdlLGm6',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'efIOgWs3N',
-        name: 'PlayStation Portable'
-      },
+      // {
+      //   _id: 'nMhdlLGm6',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'efIOgWs3N',
+      //   name: 'PlayStation Portable'
+      // },
       
       
-      {
-        _id: 'YvgkE6inK',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'qk9DiUwN-',
-        name: 'ニンテンドー3DS'
-      },
+      // {
+      //   _id: 'YvgkE6inK',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'qk9DiUwN-',
+      //   name: 'ニンテンドー3DS'
+      // },
       
       
-      {
-        _id: '_3asC9ODV',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'mOpBZsQBm',
-        name: 'PlayStation Vita'
-      },
+      // {
+      //   _id: '_3asC9ODV',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'mOpBZsQBm',
+      //   name: 'PlayStation Vita'
+      // },
       
       
-      {
-        _id: 'pr6k8Jn6_',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'P0UG-LHOQ',
-        name: 'PC'
-      },
+      // {
+      //   _id: 'pr6k8Jn6_',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'P0UG-LHOQ',
+      //   name: 'PC'
+      // },
       
       
-      {
-        _id: 'KN9AMVKP7',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'SXybALV1f',
-        name: 'Android'
-      },
+      // {
+      //   _id: 'KN9AMVKP7',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'SXybALV1f',
+      //   name: 'Android'
+      // },
       
       
-      {
-        _id: 'M7YVRglvr',
-        createdDate: date,
-        updatedDate: date,
-        language: 'ja',
-        country: 'JP',
-        hardwareID: 'o-f3Zxd49',
-        name: 'iOS'
-      },
+      // {
+      //   _id: 'M7YVRglvr',
+      //   createdDate: date,
+      //   updatedDate: date,
+      //   language: 'ja',
+      //   country: 'JP',
+      //   hardwareID: 'o-f3Zxd49',
+      //   name: 'iOS'
+      // },
       
     ];
     

@@ -17,6 +17,7 @@ const schema = mongoose.Schema({
   country: { type: String, enum: ['US', 'JP'], required: true },
   hardwareID: { type: String, required: true },
   name: { type: String, required: true },
+  searchKeywordsArr: [ String ]
 });
 
 module.exports = mongoose.model('hardwares', schema);

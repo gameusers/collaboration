@@ -35,7 +35,7 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-const validation_id = require('../../@validations/_id');
+// const validation_id = require('../../@validations/_id');
 
 
 // ---------------------------------------------
@@ -95,8 +95,6 @@ router.post('/find-by-name-for-suggestion', upload.none(), async (req, res, next
   
   errorArgumentsObj.functionId = 'vIWWdmQAT';
   
-  let returnObj = {};
-  
   
   try {
     
@@ -122,24 +120,6 @@ router.post('/find-by-name-for-suggestion', upload.none(), async (req, res, next
     // --------------------------------------------------
     
     const { keyword } = req.body;
-    // const validationObj = validation_id(_id);
-    
-    // if (validationObj.error) {
-    //   statusCode = 400;
-    //   errorArgumentsObj.errorCodeArr = ['xXQ6zimji'];
-    //   throw new Error();
-    // }
-    
-    
-    // --------------------------------------------------
-    //   ログインしているユーザー情報
-    // --------------------------------------------------
-    
-    // let usersLogin_id = '';
-    
-    // if (req.user) {
-    //   usersLogin_id = req.user._id;
-    // }
     
     
     // --------------------------------------------------
@@ -162,28 +142,16 @@ router.post('/find-by-name-for-suggestion', upload.none(), async (req, res, next
     // `);
     
     // console.log(`
-    //   ----- validationObj -----\n
-    //   ${util.inspect(validationObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- localeObj -----\n
     //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
     
     // ---------------------------------------------

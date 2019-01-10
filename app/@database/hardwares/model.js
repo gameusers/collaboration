@@ -76,27 +76,12 @@ const find = async (argumentsObj) => {
 
 /**
  * 取得する / サジェスト用のデータ
- * @param {Object} argumentsObj - 引数
- * @return {Object} 取得データ
+ * @param {string} keyword - 検索キーワード
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @return {Array} 取得データ
  */
 const findByNameForSuggestion = async ({ keyword, language, country }) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  // const {
-    
-  //   conditionObj
-    
-  // } = argumentsObj;
-  
-  // console.log(chalk`
-  //   keyword: {green ${keyword}}
-  //   language: {green ${language}}
-  //   country: {green ${country}}
-  // `);
   
   
   // --------------------------------------------------
@@ -115,13 +100,6 @@ const findByNameForSuggestion = async ({ keyword, language, country }) => {
     return await Model.find(
       { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
     ).select('hardwareID name').exec();
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    // return docArr;
     
     
   } catch (err) {

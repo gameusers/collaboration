@@ -446,7 +446,7 @@ export default class extends React.Component {
           <Box>
             <HardwareActive
               _id={cardPlayers_id}
-              arr={hardwareActiveObj.valueArr}
+              arr={hardwareActiveArr}
               search={hardwareActiveObj.search}
             />
           </Box>

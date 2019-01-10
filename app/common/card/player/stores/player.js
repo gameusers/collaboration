@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import keycode from 'keycode';
 
 
 // ---------------------------------------------
@@ -1211,27 +1212,205 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   所有ハードウェア
+  // ---------------------------------------------
+  
   /**
-   * 所有ハードウェアのサジェストデータを入れる配列
-   * @type {Array}
+   * 所有ハードウェア追加する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} hardwareID - DB hardwares hardwareID
+   * @param {string} name - ハードウェア名
    */
-  @observable cardPlayerEditFormHardwareActiveItemsArr = [];
-  // @observable cardPlayerEditFormHardwareActiveItemsArr = [
-  //   { hardwareID: 'P0UG-LHOQ', name: 'PC' },
-  //   { hardwareID: 'n3wYKZ_ao', name: 'Wii' },
-  //   { hardwareID: 'TdK3Oc-yV', name: 'PlayStation 4' },
-  //   { hardwareID: 'Zd_Ia4Hwm', name: 'Nintendo Switch' },
-  //   { hardwareID: 'qk9DiUwN-', name: 'ニンテンドー3DS' },
-  //   { hardwareID: 'SXybALV1f', name: 'Android' },
-  //   { hardwareID: 'YNZ6nb1Ki', name: 'PlayStation 3' },
-  //   { hardwareID: '8RERfeQQ9', name: 'PlayStation 2' },
-  //   { hardwareID: 'I-iu-WmkO', name: 'ファミリーコンピュータ' },
-  //   { hardwareID: 'KyOSlwcLk', name: 'PCエンジン' },
-  //   { hardwareID: 'eKmDxi8lX', name: 'スーパーファミコン' },
-  //   { hardwareID: 'lBSGQeGmx', name: 'セガサターン' },
-  //   { hardwareID: '45syCFviA', name: 'NINTENDO64' },
-  //   { hardwareID: 'HATpnt7sl', name: 'ニンテンドーDS' }
-  // ];
+  @action.bound
+  handleCardPlayerAddHardwareActive(_id, hardwareID, name) {
+    
+    const index = this.cardPlayerEditFormDataObj[_id].hardwareActiveArr.findIndex((valueObj) => {
+      return valueObj.hardwareID === hardwareID;
+    });
+    
+    if (index === -1) {
+      this.cardPlayerEditFormDataObj[_id].hardwareActiveArr.push({
+        hardwareID,
+        name
+      });
+    }
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   hardwareID: {green ${hardwareID}}
+    //   name: {green ${name}}
+    //   index: {green ${index}}
+    // `);
+    
+  };
+  
+  
+  /**
+   * 所有ハードウェアを削除する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} hardwareID - DB hardwares hardwareID
+   */
+  @action.bound
+  handleCardPlayerDeleteHardwareActive(_id, hardwareID) {
+    
+    const index = this.cardPlayerEditFormDataObj[_id].hardwareActiveArr.findIndex((valueObj) => {
+      return valueObj.hardwareID === hardwareID;
+    });
+    
+    this.cardPlayerEditFormDataObj[_id].hardwareActiveArr.splice(index, 1);
+    
+  };
+  
+  
+  
+  
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  // @observable cardPlayerFormObj = {};
+  
+  // cardPlayerFormObj = {
+    
+  //   'zaoOWw89g': {
+  //     'hardwareSuggestionSelected': 5,
+  //   }
+    
+  // };
+  
+  
+  /**
+   * フォームオブジェクトに値を設定する
+   * @param {string} _id - _ID
+   * @param {string} property - オブジェクトのプロパティ
+   * @param _id - 設定する値
+   */
+  // @action.bound
+  // handleSetCardPlayerFormObj(_id, property, value) {
+    
+  //   // console.log(chalk`
+  //   //   handleSetCardPlayerFormObj
+  //   //   _id: {green ${_id}}
+  //   //   property: {green ${property}}
+  //   //   value: {green ${value}}
+  //   // `);
+    
+    
+  //   if (_id in this.cardPlayerFormObj === false) {
+  //     // console.log('CCC');
+  //     this.cardPlayerFormObj[_id] = {};
+  //     // this.cardPlayerFormObj[_id][property] = null;
+  //   }
+    
+  //   // console.log('DDD');
+  //   this.cardPlayerFormObj[_id][property] = value;
+    
+  //   // console.log(chalk`
+  //   //   handleSetCardPlayerFormObj
+  //   //   this.cardPlayerFormObj[_id][property]: {green ${this.cardPlayerFormObj[_id][property]}}
+  //   // `);
+    
+  // };
+  
+  
+  /**
+   * フォームオブジェクトの値を取得する
+   * @param {string} _id - _ID
+   * @param {string} property - オブジェクトのプロパティ
+   */
+  // @action.bound
+  // handleGetCardPlayerFormObj(_id, property) {
+    
+  //   if (_id in this.cardPlayerFormObj === false) {
+  //     return null;
+  //   } else if (property in this.cardPlayerFormObj[_id] === false) {
+  //     return null;
+  //   } else {
+  //     return this.cardPlayerFormObj[_id][property]
+  //   }
+    
+  // };
+  
+  
+  
+  
+  
+  /**
+   * 所有ハードウェアのサジェストデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerFormHardwareSuggestionObj = {};
+  
+  
+  /**
+   * 所有ハードウェアのサジェストの選択状態を保存するオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerFormHardwareSuggestionSelectedObj = {};
+  
+  
+  /**
+  * 所有ハードウェアのサジェストのキーボード操作
+  * ↓↑で現在の選択状態を変更する
+  * @param {string} _id - DB card-players _id / DB card-games _id
+  */
+  @action.bound
+  handleCardPlayerFormHardwareSuggestionOnKeyDown(eventObj, _id) {
+    
+    
+    console.log(chalk`
+      keycode(eventObj): {green ${keycode(eventObj)}}
+    `);
+    
+    
+    if (keycode(eventObj) === 'down') {
+      
+      if (_id in this.cardPlayerFormHardwareSuggestionSelectedObj) {
+        // console.log('AAA');
+        
+        if (this.cardPlayerFormHardwareSuggestionObj[_id].length - 1 > this.cardPlayerFormHardwareSuggestionSelectedObj[_id]) {
+          this.cardPlayerFormHardwareSuggestionSelectedObj[_id] += 1;
+        }
+        
+      } else {
+        // console.log('BBB');
+        this.cardPlayerFormHardwareSuggestionSelectedObj[_id] = 0;
+      }
+      
+    } else if (keycode(eventObj) === 'up') {
+      
+      if (_id in this.cardPlayerFormHardwareSuggestionSelectedObj && this.cardPlayerFormHardwareSuggestionSelectedObj[_id] !== 0) {
+        this.cardPlayerFormHardwareSuggestionSelectedObj[_id] -= 1;
+      } else {
+        this.cardPlayerFormHardwareSuggestionSelectedObj[_id] = 0;
+      }
+      
+    }
+    
+    // let suggestionSelected = this.handleGetCardPlayerFormObj(_id, 'hardwareSuggestionSelected');
+    
+    
+    // console.log(chalk`
+    //   handleCardPlayerFormHardwareSuggestionSelected
+    //   keycode(eventObj): {green ${keycode(eventObj)}}
+    //   _id: {green ${_id}}
+    //   suggestionSelected: {green ${suggestionSelected}}
+    // `);
+    
+    // if (keycode(eventObj) === 'down') {
+      
+    //   if (suggestionSelected !== null) {
+    //     // console.log('AAA');
+    //     this.handleSetCardPlayerFormObj(_id, 'hardwareSuggestionSelected', 1);
+    //   } else {
+    //     // console.log('BBB');
+    //     this.handleSetCardPlayerFormObj(_id, 'hardwareSuggestionSelected', 0);
+    //   }
+      
+    // }
+    
+  };
   
   
   /**
@@ -1273,9 +1452,6 @@ class Store {
     try {
       
       
-      console.log('fetchWrapper / handleCardPlayerEditHardwareActiveTextField');
-       
-      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
@@ -1309,27 +1485,9 @@ class Store {
       //  Data 更新
       // ---------------------------------------------
       
-      this.cardPlayerEditFormHardwareActiveItemsArr = resultObj.data;
+      delete this.cardPlayerFormHardwareSuggestionSelectedObj[cardPlayers_id];
+      this.cardPlayerFormHardwareSuggestionObj[cardPlayers_id] = resultObj.data;
       
-      
-      // ---------------------------------------------
-      //   編集フォーム表示
-      // ---------------------------------------------
-      
-      // this.cardPlayerEditFormOpenObj[cardPlayers_id] = true;
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- this.cardPlayerEditFormDataObj -----\n
-      //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       // console.log(`
       //   ----- resultObj.data -----\n
@@ -1338,20 +1496,9 @@ class Store {
       // `);
         
       
-      
     } catch (error) {
       
-    } finally {
-      
-      
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      // storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-editButton`, false);
-      
-      
-    }
+    } finally {}
     
   };
   
@@ -1369,7 +1516,7 @@ class Store {
    */
   @action.bound
   handleCardPlayerHardwareActiveTextFieldOnFocus(_id) {
-    // console.log('focus');
+    // console.log('onFocus');
     this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = true;
   };
   
@@ -1380,7 +1527,7 @@ class Store {
    */
   @action.bound
   handleCardPlayerHardwareActiveTextFieldOnBlur(_id) {
-    // console.log('focusout');
+    // console.log('onBlur');
     this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = false;
   };
   

@@ -17,7 +17,6 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
-import Downshift from 'downshift';
 
 
 // ---------------------------------------------
@@ -30,6 +29,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
+import Chip from '@material-ui/core/Chip';
 
 
 
@@ -47,6 +47,18 @@ const Heading = styled.div`
 const Description = styled.p`
   font-size: 14px;
   line-height: 1.6em;
+`;
+
+const HardwareBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 24px 0 0 0;
+`;
+
+const StyledChip = styled(Chip)`
+  && {
+    margin: 0 6px 6px 0;
+  }
 `;
 
 const StyledTextFieldWide = styled(TextField)`
@@ -90,7 +102,17 @@ export default class extends React.Component {
     
     const {
       
-      cardPlayerEditFormHardwareActiveItemsArr,
+      // cardPlayerFormObj,
+      // handleSetCardPlayerFormObj,
+      // handleGetCardPlayerFormObj,
+      
+      cardPlayerFormHardwareSuggestionSelectedObj,
+      handleCardPlayerFormHardwareSuggestionOnKeyDown,
+      
+      
+      handleCardPlayerAddHardwareActive,
+      handleCardPlayerDeleteHardwareActive,
+      cardPlayerFormHardwareSuggestionObj,
       cardPlayerEditFormHardwareActiveTextFieldObj,
       handleCardPlayerEditHardwareActiveTextField,
       cardPlayerEditFormHardwareActiveTextFieldFocusObj,
@@ -99,6 +121,39 @@ export default class extends React.Component {
       handleCardPlayerEditHardwareActiveSearch
       
     } = stores.cardPlayer;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Hardware
+    // --------------------------------------------------
+    
+    let componentHardware = '';
+    let componentHardwareArr = [];
+    
+    if (arr.length > 0) {
+      
+      for (const [index, valueObj] of arr.entries()) {
+        
+        componentHardwareArr.push(
+          <StyledChip
+            key={index}
+            label={valueObj.name}
+            color="primary"
+            onDelete={() => handleCardPlayerDeleteHardwareActive(_id, valueObj.hardwareID)}
+            variant="outlined"
+          />
+        );
+        
+      }
+      
+      
+      if (componentHardwareArr.length > 0) {
+        componentHardware = <HardwareBox>{componentHardwareArr}</HardwareBox>;
+      }
+      
+    }
     
     
     
@@ -131,20 +186,46 @@ export default class extends React.Component {
     //   Component - Suggestion
     // --------------------------------------------------
     
+    let suggestionArr = [];
+    
+    if (_id in cardPlayerFormHardwareSuggestionObj) {
+      suggestionArr = cardPlayerFormHardwareSuggestionObj[_id];
+    }
+    
+    
     let componentSuggestionMenuItemsArr = [];
     
-    if (onFocus && inputValue && cardPlayerEditFormHardwareActiveItemsArr.length > 0) {
+    if (onFocus && inputValue && suggestionArr.length > 0) {
       
-      for (const [index, valueObj] of cardPlayerEditFormHardwareActiveItemsArr.entries()) {
+      // キーボードの↓↑でハードウェアを選択するための番号
+      let suggestionSelected = 9999;
+      
+      if (_id in cardPlayerFormHardwareSuggestionSelectedObj) {
+        suggestionSelected = cardPlayerFormHardwareSuggestionSelectedObj[_id];
+      }
+      
+      
+      for (const [index, valueObj] of suggestionArr.entries()) {
+        
+        // すでに選択されているハードウェアを太字で表示するためのindex
+        const index2 = arr.findIndex((value2Obj) => {
+          return value2Obj.hardwareID === valueObj.hardwareID;
+        });
+        
+        // console.log(chalk`
+        //   suggestionSelected: {green ${suggestionSelected}}
+        // `);
+        
         
         componentSuggestionMenuItemsArr.push(
           <MenuItem
             key={index}
-            // selected={isHighlighted}
             component="div"
-            // style={{
-            //   fontWeight: isSelected ? 500 : 400,
-            // }}
+            selected={index === suggestionSelected}
+            onMouseDown={() => handleCardPlayerAddHardwareActive(_id, valueObj.hardwareID, valueObj.name)}
+            style={{
+              fontWeight: index2 !== -1 ? 'bold' : 'normal',
+            }}
           >
             {valueObj.name}
           </MenuItem>
@@ -153,7 +234,6 @@ export default class extends React.Component {
       }
       
     }
-    
     
     
     let componentSuggestion = '';
@@ -202,28 +282,36 @@ export default class extends React.Component {
         
         <Heading>所有ハードウェア</Heading>
         
-        <Description>入力すると所有ハードウェアが表示されます。ハードウェア名の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。<br /><br />
+        <Description>入力すると所有ハードウェアが表示されます。ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。<br /><br />
         
           ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
         </Description>
         
         
-        <StyledTextFieldWide
-          id="hardwareActive"
-          label="ハードウェア名"
-          value={inputValue}
-          onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
+        {componentHardware}
+        
+        
+        <div
           onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus(_id)}
           onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
-          // helperText="ゲームのハードウェア名、Android、iOS、PCなども入力できます"
-          margin="normal"
-          autoComplete="off"
-          inputProps={{
-            maxLength: 50,
-          }}
-        />
-        
-        {componentSuggestion}
+        >
+          
+          <StyledTextFieldWide
+            id="hardwareActive"
+            label="ハードウェア名"
+            value={inputValue}
+            onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
+            onKeyDown={(eventObj) => handleCardPlayerFormHardwareSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
+            margin="normal"
+            autoComplete="off"
+            inputProps={{
+              maxLength: 50,
+            }}
+          />
+          
+          {componentSuggestion}
+          
+        </div>
         
         
         <SearchBox>

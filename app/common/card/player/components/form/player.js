@@ -54,6 +54,8 @@ import Smartphone from './smartphone';
 import Tablet from './tablet';
 import PC from './pc';
 import HardwareActive from './hardware-active';
+import HardwareInactive from './hardware-inactive';
+
 
 
 
@@ -62,10 +64,10 @@ import HardwareActive from './hardware-active';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Container = styled.div`
-  // margin: 28px 0 0 0;
-  padding: 0;
-`;
+// const Container = styled.div`
+//   // margin: 28px 0 0 0;
+//   padding: 0;
+// `;
 
 
 // ---------------------------------------------
@@ -155,10 +157,6 @@ const ButtonBox = styled.div`
 const CloseButtonBox = styled.div`
   margin: 0 0 0 16px;
 `;
-
-
-
-
 
 
 
@@ -448,6 +446,16 @@ export default class extends React.Component {
               _id={cardPlayers_id}
               arr={hardwareActiveArr}
               search={hardwareActiveObj.search}
+            />
+          </Box>
+          
+          
+          {/* 昔、所有していたハードウェア */}
+          <Box>
+            <HardwareInactive
+              _id={cardPlayers_id}
+              arr={hardwareInactiveArr}
+              search={hardwareInactiveObj.search}
             />
           </Box>
           

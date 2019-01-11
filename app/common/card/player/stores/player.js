@@ -964,6 +964,10 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   スマートフォン
+  // ---------------------------------------------
+  
   /**
    * スマートフォンのモデルを変更する
    * @param {Object} eventObj - イベント
@@ -999,6 +1003,10 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   タブレット
+  // ---------------------------------------------
+  
   /**
    * タブレットのモデルを変更する
    * @param {Object} eventObj - イベント
@@ -1033,6 +1041,10 @@ class Store {
   
   
   
+  
+  // ---------------------------------------------
+  //   PC
+  // ---------------------------------------------
   
   /**
    * PCのモデルを変更する
@@ -1217,8 +1229,8 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 所有ハードウェア追加する
-   * @param {string} _id - DB card-players _id / DB card-games _id
+   * 所有ハードウェアを追加する
+   * @param {string} _id - DB card-players _id
    * @param {string} hardwareID - DB hardwares hardwareID
    * @param {string} name - ハードウェア名
    */
@@ -1236,19 +1248,12 @@ class Store {
       });
     }
     
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   hardwareID: {green ${hardwareID}}
-    //   name: {green ${name}}
-    //   index: {green ${index}}
-    // `);
-    
   };
   
   
   /**
    * 所有ハードウェアを削除する
-   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} _id - DB card-players _id
    * @param {string} hardwareID - DB hardwares hardwareID
    */
   @action.bound
@@ -1263,152 +1268,67 @@ class Store {
   };
   
   
-  
-  
-  /**
-   * フォームのデータを入れるオブジェクト
-   * @type {Object}
-   */
-  // @observable cardPlayerFormObj = {};
-  
-  // cardPlayerFormObj = {
-    
-  //   'zaoOWw89g': {
-  //     'hardwareSuggestionSelected': 5,
-  //   }
-    
-  // };
-  
-  
-  /**
-   * フォームオブジェクトに値を設定する
-   * @param {string} _id - _ID
-   * @param {string} property - オブジェクトのプロパティ
-   * @param _id - 設定する値
-   */
-  // @action.bound
-  // handleSetCardPlayerFormObj(_id, property, value) {
-    
-  //   // console.log(chalk`
-  //   //   handleSetCardPlayerFormObj
-  //   //   _id: {green ${_id}}
-  //   //   property: {green ${property}}
-  //   //   value: {green ${value}}
-  //   // `);
-    
-    
-  //   if (_id in this.cardPlayerFormObj === false) {
-  //     // console.log('CCC');
-  //     this.cardPlayerFormObj[_id] = {};
-  //     // this.cardPlayerFormObj[_id][property] = null;
-  //   }
-    
-  //   // console.log('DDD');
-  //   this.cardPlayerFormObj[_id][property] = value;
-    
-  //   // console.log(chalk`
-  //   //   handleSetCardPlayerFormObj
-  //   //   this.cardPlayerFormObj[_id][property]: {green ${this.cardPlayerFormObj[_id][property]}}
-  //   // `);
-    
-  // };
-  
-  
-  /**
-   * フォームオブジェクトの値を取得する
-   * @param {string} _id - _ID
-   * @param {string} property - オブジェクトのプロパティ
-   */
-  // @action.bound
-  // handleGetCardPlayerFormObj(_id, property) {
-    
-  //   if (_id in this.cardPlayerFormObj === false) {
-  //     return null;
-  //   } else if (property in this.cardPlayerFormObj[_id] === false) {
-  //     return null;
-  //   } else {
-  //     return this.cardPlayerFormObj[_id][property]
-  //   }
-    
-  // };
-  
-  
-  
-  
-  
   /**
    * 所有ハードウェアのサジェストデータを入れるオブジェクト
    * @type {Object}
    */
-  @observable cardPlayerFormHardwareSuggestionObj = {};
+  @observable cardPlayerFormHardwareActiveSuggestionObj = {};
   
   
   /**
    * 所有ハードウェアのサジェストの選択状態を保存するオブジェクト
    * @type {Object}
    */
-  @observable cardPlayerFormHardwareSuggestionSelectedObj = {};
+  @observable cardPlayerFormHardwareActiveSuggestionSelectedObj = {};
   
   
   /**
   * 所有ハードウェアのサジェストのキーボード操作
-  * ↓↑で現在の選択状態を変更する
-  * @param {string} _id - DB card-players _id / DB card-games _id
+  * ↓ ↑ で現在の選択状態を変更する
+  * Enter で現在選択されているハードウェアを登録する
+  * @param {string} _id - DB card-players _id
   */
   @action.bound
-  handleCardPlayerFormHardwareSuggestionOnKeyDown(eventObj, _id) {
+  handleCardPlayerFormHardwareActiveSuggestionOnKeyDown(eventObj, _id) {
     
     
-    console.log(chalk`
-      keycode(eventObj): {green ${keycode(eventObj)}}
-    `);
+    // console.log(chalk`
+    //   keycode(eventObj): {green ${keycode(eventObj)}}
+    // `);
+    
+    const selectedIndex = _id in this.cardPlayerFormHardwareActiveSuggestionSelectedObj ? this.cardPlayerFormHardwareActiveSuggestionSelectedObj[_id] : null;
+    
+    const dataArr = _id in this.cardPlayerFormHardwareActiveSuggestionObj ? this.cardPlayerFormHardwareActiveSuggestionObj[_id] : [];
+    
     
     
     if (keycode(eventObj) === 'down') {
       
-      if (_id in this.cardPlayerFormHardwareSuggestionSelectedObj) {
-        // console.log('AAA');
-        
-        if (this.cardPlayerFormHardwareSuggestionObj[_id].length - 1 > this.cardPlayerFormHardwareSuggestionSelectedObj[_id]) {
-          this.cardPlayerFormHardwareSuggestionSelectedObj[_id] += 1;
-        }
-        
-      } else {
-        // console.log('BBB');
-        this.cardPlayerFormHardwareSuggestionSelectedObj[_id] = 0;
+      if (selectedIndex === null) {
+        this.cardPlayerFormHardwareActiveSuggestionSelectedObj[_id] = 0;
+      } else if (selectedIndex < dataArr.length - 1) {
+        this.cardPlayerFormHardwareActiveSuggestionSelectedObj[_id] += 1;
       }
       
     } else if (keycode(eventObj) === 'up') {
       
-      if (_id in this.cardPlayerFormHardwareSuggestionSelectedObj && this.cardPlayerFormHardwareSuggestionSelectedObj[_id] !== 0) {
-        this.cardPlayerFormHardwareSuggestionSelectedObj[_id] -= 1;
-      } else {
-        this.cardPlayerFormHardwareSuggestionSelectedObj[_id] = 0;
+      if (selectedIndex !== null && selectedIndex > 0) {
+        this.cardPlayerFormHardwareActiveSuggestionSelectedObj[_id] -= 1;
       }
       
+    } else if (keycode(eventObj) === 'enter' && selectedIndex !== null) {
+      
+      
+      // console.log(chalk`
+      //   selectedIndex: {green ${selectedIndex}}
+      //   dataArr[selectedIndex].hardwareID: {green ${dataArr[selectedIndex].hardwareID}}
+      //   dataArr[selectedIndex].name: {green ${dataArr[selectedIndex].name}}
+      // `);
+      
+      
+      this.handleCardPlayerAddHardwareActive(_id, dataArr[selectedIndex].hardwareID, dataArr[selectedIndex].name);
+      
     }
-    
-    // let suggestionSelected = this.handleGetCardPlayerFormObj(_id, 'hardwareSuggestionSelected');
-    
-    
-    // console.log(chalk`
-    //   handleCardPlayerFormHardwareSuggestionSelected
-    //   keycode(eventObj): {green ${keycode(eventObj)}}
-    //   _id: {green ${_id}}
-    //   suggestionSelected: {green ${suggestionSelected}}
-    // `);
-    
-    // if (keycode(eventObj) === 'down') {
-      
-    //   if (suggestionSelected !== null) {
-    //     // console.log('AAA');
-    //     this.handleSetCardPlayerFormObj(_id, 'hardwareSuggestionSelected', 1);
-    //   } else {
-    //     // console.log('BBB');
-    //     this.handleSetCardPlayerFormObj(_id, 'hardwareSuggestionSelected', 0);
-    //   }
-      
-    // }
     
   };
   
@@ -1422,6 +1342,7 @@ class Store {
   
   /**
    * 所有ハードウェアの TextField を変更する
+   * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
    * @param {Object} eventObj - イベント
    * @param {string} cardPlayers_id - DB card-games _id
    */
@@ -1485,8 +1406,8 @@ class Store {
       //  Data 更新
       // ---------------------------------------------
       
-      delete this.cardPlayerFormHardwareSuggestionSelectedObj[cardPlayers_id];
-      this.cardPlayerFormHardwareSuggestionObj[cardPlayers_id] = resultObj.data;
+      delete this.cardPlayerFormHardwareActiveSuggestionSelectedObj[cardPlayers_id];
+      this.cardPlayerFormHardwareActiveSuggestionObj[cardPlayers_id] = resultObj.data;
       
       
       // console.log(`
@@ -1512,22 +1433,20 @@ class Store {
   
   /**
    * 所有ハードウェアの TextField にフォーカス
-   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} _id - DB card-players _id
    */
   @action.bound
   handleCardPlayerHardwareActiveTextFieldOnFocus(_id) {
-    // console.log('onFocus');
     this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = true;
   };
   
   
   /**
    * 所有ハードウェアの TextField からフォーカスアウト
-   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} _id - DB card-players _id
    */
   @action.bound
   handleCardPlayerHardwareActiveTextFieldOnBlur(_id) {
-    // console.log('onBlur');
     this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = false;
   };
   
@@ -1535,11 +1454,251 @@ class Store {
   /**
    * 所有ハードウェアの検索チェックボックスを変更する
    * @param {Object} eventObj - イベント
-   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} _id - DB card-players _id
    */
   @action.bound
   handleCardPlayerEditHardwareActiveSearch(eventObj, _id) {
     this.cardPlayerEditFormDataObj[_id].hardwareActiveObj.search = eventObj.target.checked;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   昔、所有していたハードウェア
+  // ---------------------------------------------
+  
+  /**
+   * 昔、所有していたハードウェアを追加する
+   * @param {string} _id - DB card-players _id
+   * @param {string} hardwareID - DB hardwares hardwareID
+   * @param {string} name - ハードウェア名
+   */
+  @action.bound
+  handleCardPlayerAddHardwareInactive(_id, hardwareID, name) {
+    
+    const index = this.cardPlayerEditFormDataObj[_id].hardwareInactiveArr.findIndex((valueObj) => {
+      return valueObj.hardwareID === hardwareID;
+    });
+    
+    if (index === -1) {
+      this.cardPlayerEditFormDataObj[_id].hardwareInactiveArr.push({
+        hardwareID,
+        name
+      });
+    }
+    
+  };
+  
+  
+  /**
+   * 昔、所有していたハードウェアを削除する
+   * @param {string} _id - DB card-players _id
+   * @param {string} hardwareID - DB hardwares hardwareID
+   */
+  @action.bound
+  handleCardPlayerDeleteHardwareInactive(_id, hardwareID) {
+    
+    const index = this.cardPlayerEditFormDataObj[_id].hardwareInactiveArr.findIndex((valueObj) => {
+      return valueObj.hardwareID === hardwareID;
+    });
+    
+    this.cardPlayerEditFormDataObj[_id].hardwareInactiveArr.splice(index, 1);
+    
+  };
+  
+  
+  /**
+   * 昔、所有していたハードウェアのサジェストデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerFormHardwareInactiveSuggestionObj = {};
+  
+  
+  /**
+   * 昔、所有していたハードウェアのサジェストの選択状態を保存するオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerFormHardwareInactiveSuggestionSelectedObj = {};
+  
+  
+  /**
+  * 昔、所有していたハードウェアのサジェストのキーボード操作
+  * ↓ ↑ で現在の選択状態を変更する
+  * Enter で現在選択されているハードウェアを登録する
+  * @param {string} _id - DB card-players _id
+  */
+  @action.bound
+  handleCardPlayerFormHardwareInactiveSuggestionOnKeyDown(eventObj, _id) {
+    
+    
+    // console.log(chalk`
+    //   keycode(eventObj): {green ${keycode(eventObj)}}
+    // `);
+    
+    const selectedIndex = _id in this.cardPlayerFormHardwareInactiveSuggestionSelectedObj ? this.cardPlayerFormHardwareInactiveSuggestionSelectedObj[_id] : null;
+    
+    const dataArr = _id in this.cardPlayerFormHardwareInactiveSuggestionObj ? this.cardPlayerFormHardwareInactiveSuggestionObj[_id] : [];
+    
+    
+    
+    if (keycode(eventObj) === 'down') {
+      
+      if (selectedIndex === null) {
+        this.cardPlayerFormHardwareInactiveSuggestionSelectedObj[_id] = 0;
+      } else if (selectedIndex < dataArr.length - 1) {
+        this.cardPlayerFormHardwareInactiveSuggestionSelectedObj[_id] += 1;
+      }
+      
+    } else if (keycode(eventObj) === 'up') {
+      
+      if (selectedIndex !== null && selectedIndex > 0) {
+        this.cardPlayerFormHardwareInactiveSuggestionSelectedObj[_id] -= 1;
+      }
+      
+    } else if (keycode(eventObj) === 'enter' && selectedIndex !== null) {
+      
+      
+      // console.log(chalk`
+      //   selectedIndex: {green ${selectedIndex}}
+      //   dataArr[selectedIndex].hardwareID: {green ${dataArr[selectedIndex].hardwareID}}
+      //   dataArr[selectedIndex].name: {green ${dataArr[selectedIndex].name}}
+      // `);
+      
+      
+      this.handleCardPlayerAddHardwareInactive(_id, dataArr[selectedIndex].hardwareID, dataArr[selectedIndex].name);
+      
+    }
+    
+  };
+  
+  
+  /**
+   * 昔、所有していたハードウェアの TextField の入力文字を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormHardwareInactiveTextFieldObj = {};
+  
+  
+  /**
+   * 昔、所有していたハードウェアの TextField を変更する
+   * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
+   * @param {Object} eventObj - イベント
+   * @param {string} cardPlayers_id - DB card-players _id
+   */
+  @action.bound
+  async handleCardPlayerEditHardwareInactiveTextField(eventObj, cardPlayers_id) {
+    
+    
+    // ---------------------------------------------
+    //   TextField の値変更
+    // ---------------------------------------------
+    
+    this.cardPlayerEditFormHardwareInactiveTextFieldObj[cardPlayers_id] = eventObj.target.value;
+    
+    
+    // ---------------------------------------------
+    //   TextField が空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (!eventObj.target.value) {
+      return;
+    }
+    
+    
+    // ---------------------------------------------
+    //   Fetch でサジェストデータを取得
+    // ---------------------------------------------
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('keyword', eventObj.target.value);
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-name-for-suggestion`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
+      
+      
+      // ---------------------------------------------
+      //  Data 更新
+      // ---------------------------------------------
+      
+      delete this.cardPlayerFormHardwareInactiveSuggestionSelectedObj[cardPlayers_id];
+      this.cardPlayerFormHardwareInactiveSuggestionObj[cardPlayers_id] = resultObj.data;
+      
+      
+      // console.log(`
+      //   ----- resultObj.data -----\n
+      //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+        
+      
+    } catch (error) {
+      
+    } finally {}
+    
+  };
+  
+  
+  /**
+   * 昔、所有していたハードウェアの TextField へのフォーカス状態を記録するオブジェクト
+   * @type {Object}
+   */
+  @observable cardPlayerEditFormHardwareInactiveTextFieldFocusObj = {};
+  
+  
+  /**
+   * 昔、所有していたハードウェアの TextField にフォーカス
+   * @param {string} _id - DB card-players _id
+   */
+  @action.bound
+  handleCardPlayerHardwareInactiveTextFieldOnFocus(_id) {
+    this.cardPlayerEditFormHardwareInactiveTextFieldFocusObj[_id] = true;
+  };
+  
+  
+  /**
+   * 昔、所有していたハードウェアの TextField からフォーカスアウト
+   * @param {string} _id - DB card-players _id
+   */
+  @action.bound
+  handleCardPlayerHardwareInactiveTextFieldOnBlur(_id) {
+    this.cardPlayerEditFormHardwareInactiveTextFieldFocusObj[_id] = false;
+  };
+  
+  
+  /**
+   * 昔、所有していたハードウェアの検索チェックボックスを変更する
+   * @param {Object} eventObj - イベント
+   * @param {string} _id - DB card-players _id
+   */
+  @action.bound
+  handleCardPlayerEditHardwareInactiveSearch(eventObj, _id) {
+    this.cardPlayerEditFormDataObj[_id].hardwareInactiveObj.search = eventObj.target.checked;
   };
   
   

@@ -103,17 +103,17 @@ export default class extends React.Component {
     const {
       
       
-      handleCardPlayerAddHardwareActive,
-      handleCardPlayerDeleteHardwareActive,
-      cardPlayerFormHardwareActiveSuggestionObj,
-      cardPlayerFormHardwareActiveSuggestionSelectedObj,
-      handleCardPlayerFormHardwareActiveSuggestionOnKeyDown,
-      cardPlayerEditFormHardwareActiveTextFieldObj,
-      handleCardPlayerEditHardwareActiveTextField,
-      cardPlayerEditFormHardwareActiveTextFieldFocusObj,
-      handleCardPlayerHardwareActiveTextFieldOnFocus,
-      handleCardPlayerHardwareActiveTextFieldOnBlur,
-      handleCardPlayerEditHardwareActiveSearch
+      handleCardPlayerAddHardwareInactive,
+      handleCardPlayerDeleteHardwareInactive,
+      cardPlayerFormHardwareInactiveSuggestionObj,
+      cardPlayerFormHardwareInactiveSuggestionSelectedObj,
+      handleCardPlayerFormHardwareInactiveSuggestionOnKeyDown,
+      cardPlayerEditFormHardwareInactiveTextFieldObj,
+      handleCardPlayerEditHardwareInactiveTextField,
+      cardPlayerEditFormHardwareInactiveTextFieldFocusObj,
+      handleCardPlayerHardwareInactiveTextFieldOnFocus,
+      handleCardPlayerHardwareInactiveTextFieldOnBlur,
+      handleCardPlayerEditHardwareInactiveSearch
       
     } = stores.cardPlayer;
     
@@ -136,7 +136,7 @@ export default class extends React.Component {
             key={index}
             label={valueObj.name}
             color="primary"
-            onDelete={() => handleCardPlayerDeleteHardwareActive(_id, valueObj.hardwareID)}
+            onDelete={() => handleCardPlayerDeleteHardwareInactive(_id, valueObj.hardwareID)}
             variant="outlined"
           />
         );
@@ -159,8 +159,8 @@ export default class extends React.Component {
     
     let inputValue = '';
     
-    if (_id in cardPlayerEditFormHardwareActiveTextFieldObj) {
-      inputValue = cardPlayerEditFormHardwareActiveTextFieldObj[_id];
+    if (_id in cardPlayerEditFormHardwareInactiveTextFieldObj) {
+      inputValue = cardPlayerEditFormHardwareInactiveTextFieldObj[_id];
     }
     
     
@@ -170,8 +170,8 @@ export default class extends React.Component {
     
     let onFocus = false;
     
-    if (_id in cardPlayerEditFormHardwareActiveTextFieldFocusObj) {
-      onFocus = cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id];
+    if (_id in cardPlayerEditFormHardwareInactiveTextFieldFocusObj) {
+      onFocus = cardPlayerEditFormHardwareInactiveTextFieldFocusObj[_id];
     }
     
     
@@ -183,8 +183,8 @@ export default class extends React.Component {
     
     let suggestionArr = [];
     
-    if (_id in cardPlayerFormHardwareActiveSuggestionObj) {
-      suggestionArr = cardPlayerFormHardwareActiveSuggestionObj[_id];
+    if (_id in cardPlayerFormHardwareInactiveSuggestionObj) {
+      suggestionArr = cardPlayerFormHardwareInactiveSuggestionObj[_id];
     }
     
     
@@ -195,8 +195,8 @@ export default class extends React.Component {
       // キーボードの↓↑でハードウェアを選択するための番号
       let suggestionSelected = 9999;
       
-      if (_id in cardPlayerFormHardwareActiveSuggestionSelectedObj) {
-        suggestionSelected = cardPlayerFormHardwareActiveSuggestionSelectedObj[_id];
+      if (_id in cardPlayerFormHardwareInactiveSuggestionSelectedObj) {
+        suggestionSelected = cardPlayerFormHardwareInactiveSuggestionSelectedObj[_id];
       }
       
       
@@ -213,7 +213,7 @@ export default class extends React.Component {
             key={index}
             component="div"
             selected={index === suggestionSelected}
-            onMouseDown={() => handleCardPlayerAddHardwareActive(_id, valueObj.hardwareID, valueObj.name)}
+            onMouseDown={() => handleCardPlayerAddHardwareInactive(_id, valueObj.hardwareID, valueObj.name)}
             style={{
               fontWeight: index2 !== -1 ? 'bold' : 'normal',
             }}
@@ -271,9 +271,9 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>所有ハードウェア</Heading>
+        <Heading>昔、所有していたハードウェア</Heading>
         
-        <Description>入力すると所有ハードウェアが表示されます。ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。<br /><br />
+        <Description>入力すると昔、所有していたハードウェアが表示されます。ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。<br /><br />
         
           ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
         </Description>
@@ -283,16 +283,16 @@ export default class extends React.Component {
         
         
         <div
-          onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus(_id)}
-          onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
+          onFocus={()=> handleCardPlayerHardwareInactiveTextFieldOnFocus(_id)}
+          onBlur={()=> handleCardPlayerHardwareInactiveTextFieldOnBlur(_id)}
         >
           
           <StyledTextFieldWide
-            id="hardwareActive"
+            id="hardwareInactive"
             label="ハードウェア名"
             value={inputValue}
-            onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
-            onKeyDown={(eventObj) => handleCardPlayerFormHardwareActiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
+            onChange={(event) => handleCardPlayerEditHardwareInactiveTextField(event, _id)}
+            onKeyDown={(eventObj) => handleCardPlayerFormHardwareInactiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
             margin="normal"
             autoComplete="off"
             inputProps={{
@@ -310,10 +310,10 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditHardwareActiveSearch(event, _id)}
+                onChange={(event) => handleCardPlayerEditHardwareInactiveSearch(event, _id)}
               />
             }
-            label="所有ハードウェアで検索可能にする"
+            label="昔、所有していたハードウェアで検索可能にする"
           />
         </SearchBox>
         

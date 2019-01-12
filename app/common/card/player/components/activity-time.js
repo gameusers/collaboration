@@ -23,15 +23,7 @@ import styled from 'styled-components';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/PhoneIphone';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import Paragraph from '../../../layout/components/paragraph';
-
+import Icon from '@material-ui/icons/Alarm';
 
 
 
@@ -46,6 +38,11 @@ const Container = styled.div`
   padding: 0;
 `;
 
+
+// ---------------------------------------------
+//   見出し
+// ---------------------------------------------
+
 const HeadingBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
@@ -59,14 +56,34 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Heading = styled.h3`
-  margin: 0 0 0 4px;
+  margin: 2px 0 0 4px;
 `;
 
-const CommentBox = styled.div`
-  margin: 6px 0 0 0;
+
+// ---------------------------------------------
+//   活動時間
+// ---------------------------------------------
+
+const Box = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  line-height: 1.8em;
+  margin: 4px 0 0 0;
   padding: 0;
+  
+  @media screen and (max-width: 480px) {
+    flex-flow: column wrap;
+  }
 `;
 
+const ActivityTime = styled.div`
+  margin: 0 20px 0 0;
+  padding: 0;
+  
+  @media screen and (max-width: 480px) {
+    margin: 0;
+  }
+`;
 
 
 
@@ -91,41 +108,71 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { smartphoneModel, smartphoneComment } = this.props;
+    const { arr } = this.props;
+    
+    
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (
-      !smartphoneModel &&
-      !smartphoneComment
-    ) {
+    if (!Array.isArray(arr) || arr.length === 0) {
       return null;
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   コンポーネント作成 - モデル
+    //   Component
     // --------------------------------------------------
     
-    let componentModel = 'スマートフォン';
+    const componentsArr = [];
     
-    if (smartphoneModel) {
-      componentModel = `スマートフォン: ${smartphoneModel}`;
+    for (const [index, value] of arr.entries()) {
+      
+      const weekTextArr = ['月', '火', '水', '木', '金', '土', '日'];
+      
+      
+      let week = '';
+      
+      if (value.weekArr.length > 0) {
+        
+        const tempArr = [];
+        
+        for (let value of value.weekArr.values()) {
+          tempArr.push(weekTextArr[value]);
+        }
+        
+        week = ` (${tempArr.join(' / ')})`;
+      }
+      
+      
+      componentsArr.push(
+        <ActivityTime key={`activityTime${index}`}>
+          {value.beginTime} ～ {value.endTime}{week}
+        </ActivityTime>
+      );
+      
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   コンポーネント作成 - コメント
+    //   Console 出力
     // --------------------------------------------------
     
-    let componentComment = '';
+    // console.log(chalk`
+    //   cardPlayers_id: {green ${cardPlayers_id}}
+    // `);
     
-    if (smartphoneComment) {
-      componentComment = <CommentBox><Paragraph text={smartphoneComment} /></CommentBox>;
-    }
+    // console.log(`
+    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -134,16 +181,14 @@ export default class extends React.Component {
     
     return (
       <Container>
-          
-        {/* 見出し */}
+        
         <HeadingBox>
           <StyledIcon />
-          <Heading>{componentModel}</Heading>
+          <Heading>活動時間</Heading>
         </HeadingBox>
         
-        {/* コメント */}
-        {componentComment}
-          
+        <Box>{componentsArr}</Box>
+        
       </Container>
     );
     

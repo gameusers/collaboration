@@ -1537,8 +1537,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: date,
         users_id: 'jun-deE4J',
         language: 'ja',
-        name: 'マリオ',
-        status: 'ビルダー',
+        nameObj: {
+          value: 'マリオ',
+          search: true,
+        },
+        statusObj: {
+          value: 'ビルダー',
+          search: true,
+        },
         thumbnail: true,
         imageVideoArr: [
           {
@@ -1580,9 +1586,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
             ],
           },
         ],
-        comment: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
+        commentObj: {
+          value: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
   それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
+          search: true,
+        },
         birthdayObj: {
           value: '2002-10-19T00:00:00Z',
           alternativeText: '',
@@ -1720,11 +1729,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         lookingForFriendsObj: {
           icon: 'emoji_u1f61c',
-          comment: '社会人の方よろしく！',
+          comment: 'ゲーム配信をしているので、その際に一緒に遊べる人がいればいいなと思ってます。学生から社会人の方まで、誰でもフレンド申請してもらってOKです。ただ配信外ではひとりで遊ぶのが好きなので、招待をもらっても応えられないのですが、それでもいい方はぜひフレンドになってください。',
           search: true,
         },
         voiceChatObj: {
-          comment: '夜21時まで',
+          comment: 'ボイスチャットはゲーム配信のときにどうしても必要になったら使いますが、基本的には使っていません。',
           search: true,
         },
         linkArr: [
@@ -1794,13 +1803,22 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: date,
         users_id: 'P7UJMuUnx',
         language: 'ja',
-        name: 'ジョナサン・ジョースター',
-        status: 'オーバードライブ',
+        nameObj: {
+          value: 'ジョナサン・ジョースター',
+          search: true,
+        },
+        statusObj: {
+          value: 'オーバードライブ',
+          search: true,
+        },
         thumbnail: false,
         imageVideoArr: [],
-        comment: `サブタイトルというのは例えば、ドラゴンクエストIII そして伝説へ… 「そして伝説へ…」の部分になります。未記入でも問題ありません。
+        commentObj: {
+          value: `サブタイトルというのは例えば、ドラゴンクエストIII そして伝説へ… 「そして伝説へ…」の部分になります。未記入でも問題ありません。
 
 ゲームを登録するとゲームページが同時に作成されます。登録直後はゲームページのURLは以下のようにランダムな文字列に設定され、運営が確認後、正式なURLに置き換わります。URLをブラウザのお気に入りに入れたり、ブログなどに掲載する場合は気をつけてください。`,
+          search: true,
+        },
         birthdayObj: {
           value: '1868-04-04T00:00:00Z',
           alternativeText: '',
@@ -1948,8 +1966,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         gameID: 'Jk92aglWl',
         language: 'ja',
         theme: '',
-        name: 'AZ-1979',
-        status: 'トラッパー',
+        nameObj: {
+          value: 'AZ-1979',
+          search: true,
+        },
+        statusObj: {
+          value: 'トラッパー',
+          search: true,
+        },
         thumbnail: false,
         imageVideoArr: [
           {
@@ -1992,7 +2016,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
           },
         ],
         itemArr: [],
-        comment: `楽しかった時間が終わってしまいました。
+        commentObj: {
+          value: `楽しかった時間が終わってしまいました。
   いいゲームをプレイしたときの独特の余韻を味わえました。
   今までゼルダの伝説でこんなに余韻が残ることはなかったのですが
   やり遂げた嬉しさに少しの寂しさが混じったような、ビターな味わいです。
@@ -2005,6 +2030,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
   僕の場合、オープンワールドゲームはやり込みすぎて
   いつも最後は嫌になってクリアする感じなのですが
   BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
+          search: true,
+        },
         hardwarePlayingObj: {
           valueArr: ['TdK3Oc-yV'],
           search: true,
@@ -2126,8 +2153,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         gameID: 'lxdubg6IY',
         language: 'ja',
         theme: '',
-        name: 'パックンフラワー',
-        status: '人喰い植物',
+        nameObj: {
+          value: 'パックンフラワー',
+          search: true,
+        },
+        statusObj: {
+          value: '人喰い植物',
+          search: true,
+        },
         thumbnail: false,
         imageVideoArr: [
           {
@@ -2170,7 +2203,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
           },
         ],
         itemArr: [],
-        comment: `ドラゴンクエストビルダーズ2 #2～5
+        commentObj: {
+          value: `ドラゴンクエストビルダーズ2 #2～5
 
 序盤のモンゾーラ島でめちゃくちゃ気合を入れて
 街を作ってしまいました。
@@ -2184,6 +2218,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
 広大で整地もされていない土地をどう開拓していくのか
 まったくビジョンが見えないので、ちゃんとやっていけるか心配です。
 はたして最初の街のように綺麗な場所にできるんでしょうか？`,
+          search: true,
+        },
         hardwarePlayingObj: {
           valueArr: ['TdK3Oc-yV'],
           search: true,

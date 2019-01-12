@@ -15,8 +15,14 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
-  name: String,
-  status: String,
+  nameObj: {
+    value: String,
+    search: { type: Boolean, required: true },
+  },
+  statusObj: {
+    value: String,
+    search: { type: Boolean, required: true },
+  },
   thumbnail: { type: Boolean, required: true },
   imageVideoArr: [
     {
@@ -34,7 +40,10 @@ const schema = mongoose.Schema({
       ],
     },
   ],
-  comment: String,
+  commentObj: {
+    value: String,
+    search: { type: Boolean, required: true },
+  },
   birthdayObj: {
     value: Date,
     alternativeText: String,

@@ -63,7 +63,7 @@ const Heading = styled.h3`
 `;
 
 const CommentBox = styled.div`
-  margin: 3px 0 0 0;
+  margin: 6px 0 0 0;
   padding: 0;
 `;
 

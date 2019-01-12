@@ -20,23 +20,10 @@ import styled from 'styled-components';
 
 
 // ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-import Button from '@material-ui/core/Button';
-
-
-// ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/Public';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
+import Icon from '@material-ui/icons/Style';
 
 
 
@@ -74,35 +61,27 @@ const Heading = styled.h3`
 
 
 // ---------------------------------------------
-//   リンク
+//   ID
 // ---------------------------------------------
 
-const LinkBox = styled.div`
+const Box = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
+  line-height: 1.8em;
+  margin: 4px 0 0 0;
+  padding: 0;
+  
+  @media screen and (max-width: 480px) {
+    flex-flow: column wrap;
+  }
 `;
 
-const LinkItem = styled.div`
-  margin: 10px 14px 0 0;
-`;
-
-const LinkOtherBox = styled.div`
-  margin: 10px 12px 0 0;
-`;
-
-const LinkOtherA = styled.a`
-  text-decoration: none;
-`;
-
-const LinkOtherButton = styled(Button)`
-  && {
+const Id = styled.div`
+  margin: 0 20px 0 0;
+  padding: 0;
+  
+  @media screen and (max-width: 480px) {
     margin: 0;
-    padding: 0 6px;
-    font-size: 14px;
-    min-width: 36px;
-    min-height: 26px
   }
 `;
 
@@ -129,62 +108,97 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { linkArr } = this.props;
+    const { arr } = this.props;
+    
+    
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (!Array.isArray(linkArr) || linkArr.length === 0) {
+    if (!Array.isArray(arr) || arr.length === 0) {
       return null;
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   コンポーネント作成 - リンク
+    //   Component
     // --------------------------------------------------
     
-    const componentLinkArr = [];
+    const componentsArr = [];
     
-    for (const [index, value] of linkArr.entries()) {
+    for (const [index, value] of arr.entries()) {
+      
+      
+      // ---------------------------------------------
+      //   PlayStation
+      // ---------------------------------------------
+      
+      if (value.type === 'PlayStation') {
+        
+        componentsArr.push(
+          <Id key={`id${index}`}><strong>PlayStation ID: </strong>{value.value}</Id>
+        );
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Xbox
+      // ---------------------------------------------
+      
+      if (value.type === 'Xbox') {
+        
+        componentsArr.push(
+          <Id key={`id${index}`}><strong>Xbox ID: </strong>{value.value}</Id>
+        );
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Nintendo
+      // ---------------------------------------------
+      
+      if (value.type === 'Nintendo') {
+        
+        componentsArr.push(
+          <Id key={`id${index}`}><strong>Nintendo ID: </strong>{value.value}</Id>
+        );
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Steam
+      // ---------------------------------------------
+      
+      if (value.type === 'Steam') {
+        
+        componentsArr.push(
+          <Id key={`id${index}`}><strong>Steam ID: </strong>{value.value}</Id>
+        );
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Other
+      // ---------------------------------------------
       
       if (value.type === 'Other') {
         
-        componentLinkArr.push(
-          <LinkOtherBox key={index}>
-            <LinkOtherA href={value.url} target="_blank">
-              <LinkOtherButton
-                variant="contained"
-                color="secondary"
-              >
-                {value.label}
-              </LinkOtherButton>
-            </LinkOtherA>
-          </LinkOtherBox>
-        );
-        
-      } else if (value.url) {
-        
-        componentLinkArr.push(
-          <LinkItem key={`link${index}`}>
-            <a href={value.url} target="_blank">
-              <img src={`/static/img/common/social/card/${value.type.toLowerCase()}.png`} width="26" height="26" />
-            </a>
-          </LinkItem>
+        componentsArr.push(
+          <Id key={`id${index}`}><strong>{value.label}: </strong>{value.value}</Id>
         );
         
       }
       
     }
     
-    let componentLinkBox = '';
-    
-    if (componentLinkArr.length > 0) {
-       componentLinkBox = <LinkBox>{componentLinkArr}</LinkBox>;
-    } else {
-      return null;
-    }
     
     
     
@@ -202,6 +216,7 @@ export default class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -211,10 +226,10 @@ export default class extends React.Component {
         
         <HeadingBox>
           <StyledIcon />
-          <Heading>リンク</Heading>
+          <Heading>ID</Heading>
         </HeadingBox>
         
-        {componentLinkBox}
+        <Box>{componentsArr}</Box>
         
       </Container>
     );

@@ -49,7 +49,10 @@ import Smartphone from './smartphone';
 import Tablet from './tablet';
 import Pc from './pc';
 import Hardware from './hardware';
-import IdFriend from './id-friend';
+import Id from './id';
+import ActivityTime from './activity-time';
+import Friend from './friend';
+import VoiceChat from './voice-chat';
 import Link from './link';
 import FollowButton from './follow-button';
 import EditButton from './edit-button';
@@ -105,13 +108,8 @@ const StyledCardContent = styled(CardContent)`
 
 const StyledCardActions = styled(CardActions)`
   && {
-    margin: 6px;
-    // padding-top: 0;
-    // padding-bottom: 16px;
-    
-    // @media screen and (max-width: 480px) {
-    //   padding: 0 10px 16px 10px;
-    // }
+    margin: 0 6px 6px 6px;
+    padding-top: 0;
   }
 `;
 
@@ -140,7 +138,7 @@ export default class extends React.Component {
     this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-panelButton`, false);
     
     // フォームを表示する、あとで消すように
-    this.props.stores.cardPlayer.handleCardPlayerEditFormOpen('zaoOWw89g');
+    // this.props.stores.cardPlayer.handleCardPlayerEditFormOpen('zaoOWw89g');
   }
   
   
@@ -160,6 +158,8 @@ export default class extends React.Component {
       showFollow
       
     } = this.props;
+    
+    
     
     
     // --------------------------------------------------
@@ -229,17 +229,13 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   Name & Status & Thumbnail
+    //   Name & Status & Thumbnail & Comment
     // ---------------------------------------------
     
-    const {
-      
-      name,
-      status,
-      thumbnail,
-      comment
-      
-    } = cardPlayersObj;
+    const name = cardPlayersObj.nameObj.value;
+    const status = cardPlayersObj.statusObj.value;
+    const thumbnail = cardPlayersObj.thumbnail;
+    const comment = cardPlayersObj.commentObj.value;
     
     
     let thumbnailSrc = '';
@@ -527,14 +523,30 @@ export default class extends React.Component {
                 />
                 
                 
-                {/* ID & Friend */}
-                <IdFriend
-                  idArr={idArr}
-                  activityTimeArr={activityTimeArr}
-                  lookingForFriendsIcon={lookingForFriendsIcon}
-                  lookingForFriendsComment={lookingForFriendsComment}
-                  voiceChatComment={voiceChatComment}
+                {/* ID */}
+                <Id
+                  arr={idArr}
                 />
+                
+                
+                {/* 活動時間 */}
+                <ActivityTime
+                  arr={activityTimeArr}
+                />
+                
+                
+                {/* フレンド募集 */}
+                <Friend
+                  icon={lookingForFriendsIcon}
+                  comment={lookingForFriendsComment}
+                />
+                
+                
+                {/* ボイスチャット */}
+                <VoiceChat
+                  comment={voiceChatComment}
+                />
+                
                 
               </StyledCardContent>
               

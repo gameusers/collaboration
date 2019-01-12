@@ -44,10 +44,11 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 import Paragraph from '../../../layout/components/paragraph';
 import User from '../../../user/components/user';
-import UserThumbnail from '../../../user/components/thumbnail';
-import UserName from '../../../user/components/name';
 import Hardware from './hardware';
-import IdFriend from './id-friend';
+import Id from './id';
+import ActivityTime from './activity-time';
+import Friend from './friend';
+import VoiceChat from './voice-chat';
 import FollowButton from './follow-button';
 import Link from './link';
 
@@ -101,12 +102,8 @@ const StyledCardContent = styled(CardContent)`
 
 const StyledCardActions = styled(CardActions)`
   && {
+    margin: 0 6px 6px 6px;
     padding-top: 0;
-    padding-bottom: 16px;
-    
-    @media screen and (max-width: 480px) {
-      padding: 0 10px 16px 10px;
-    }
   }
 `;
 
@@ -153,6 +150,8 @@ export default class extends React.Component {
     } = this.props;
     
     
+    
+    
     // --------------------------------------------------
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
@@ -160,6 +159,8 @@ export default class extends React.Component {
     if (cardGames_id in stores.data.cardGamesObj === false) {
       return null;
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -201,16 +202,6 @@ export default class extends React.Component {
       
     } = stores.data.usersObj[users_id];
     
-    // const {
-      
-    //   accessDate,
-    //   level,
-    //   playerID,
-    //   followedCount,
-    //   followed
-      
-    // } = cardGamesObj.usersObj;
-    
     
     // ---------------------------------------------
     //   Games
@@ -223,17 +214,13 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   Name & Status & Thumbnail
+    //   Name & Status & Thumbnail & Comment
     // ---------------------------------------------
     
-    const {
-      
-      name,
-      status,
-      thumbnail,
-      comment
-      
-    } = cardGamesObj;
+    const name = cardGamesObj.nameObj.value;
+    const status = cardGamesObj.statusObj.value;
+    const thumbnail = cardGamesObj.thumbnail;
+    const comment = cardGamesObj.commentObj.value;
     
     
     let thumbnailSrc = '';
@@ -400,14 +387,30 @@ export default class extends React.Component {
             <Hardware hardwarePlayingArr={hardwarePlayingArr} />
             
             
-            {/* ID & Friend */}
-            <IdFriend
-              idArr={idArr}
-              activityTimeArr={activityTimeArr}
-              lookingForFriendsIcon={lookingForFriendsIcon}
-              lookingForFriendsComment={lookingForFriendsComment}
-              voiceChatComment={voiceChatComment}
+            {/* ID */}
+            <Id
+              arr={idArr}
             />
+            
+            
+            {/* 活動時間 */}
+            <ActivityTime
+              arr={activityTimeArr}
+            />
+            
+            
+            {/* フレンド募集 */}
+            <Friend
+              icon={lookingForFriendsIcon}
+              comment={lookingForFriendsComment}
+            />
+            
+            
+            {/* ボイスチャット */}
+            <VoiceChat
+              comment={voiceChatComment}
+            />
+            
             
           </StyledCardContent>
           

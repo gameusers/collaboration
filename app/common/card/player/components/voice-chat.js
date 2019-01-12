@@ -23,7 +23,7 @@ import styled from 'styled-components';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/PhoneIphone';
+import Icon from '@material-ui/icons/HeadsetMic';
 
 
 // ---------------------------------------------
@@ -91,41 +91,20 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { smartphoneModel, smartphoneComment } = this.props;
+    const { comment } = this.props;
+    
+    
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (
-      !smartphoneModel &&
-      !smartphoneComment
-    ) {
+    if (!comment) {
       return null;
     }
     
     
-    // --------------------------------------------------
-    //   コンポーネント作成 - モデル
-    // --------------------------------------------------
-    
-    let componentModel = 'スマートフォン';
-    
-    if (smartphoneModel) {
-      componentModel = `スマートフォン: ${smartphoneModel}`;
-    }
-    
-    
-    // --------------------------------------------------
-    //   コンポーネント作成 - コメント
-    // --------------------------------------------------
-    
-    let componentComment = '';
-    
-    if (smartphoneComment) {
-      componentComment = <CommentBox><Paragraph text={smartphoneComment} /></CommentBox>;
-    }
     
     
     // --------------------------------------------------
@@ -138,11 +117,11 @@ export default class extends React.Component {
         {/* 見出し */}
         <HeadingBox>
           <StyledIcon />
-          <Heading>{componentModel}</Heading>
+          <Heading>ボイスチャット</Heading>
         </HeadingBox>
         
         {/* コメント */}
-        {componentComment}
+        <CommentBox><Paragraph text={comment} /></CommentBox>
           
       </Container>
     );

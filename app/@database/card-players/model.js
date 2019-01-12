@@ -34,7 +34,6 @@ const { srcset } = require('../../@format/image');
 
 
 
-
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
@@ -170,6 +169,9 @@ const find = async (argumentsObj) => {
           __v: 0,
           createdDate: 0,
           language: 0,
+          nameObj: { search: 0 },
+          statusObj: { search: 0 },
+          commentObj: { search: 0 },
           birthdayObj: { search: 0 },
           sexObj: { search: 0 },
           addressObj: { search: 0 },

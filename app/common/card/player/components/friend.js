@@ -20,18 +20,10 @@ import styled from 'styled-components';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import Icon from '@material-ui/icons/PhoneIphone';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
 import Paragraph from '../../../layout/components/paragraph';
-
 
 
 
@@ -52,21 +44,18 @@ const HeadingBox = styled.div`
   align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
+const Heading = styled.h3`
+  margin: 2px 0 0 4px;
 `;
 
-const Heading = styled.h3`
-  margin: 0 0 0 4px;
+const FriendIcon = styled.div`
+  margin: 0;
 `;
 
 const CommentBox = styled.div`
   margin: 6px 0 0 0;
   padding: 0;
 `;
-
 
 
 
@@ -91,41 +80,35 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { smartphoneModel, smartphoneComment } = this.props;
+    const { icon, comment } = this.props;
+    
+    
     
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (
-      !smartphoneModel &&
-      !smartphoneComment
-    ) {
+    if (!icon || !comment) {
       return null;
     }
     
     
-    // --------------------------------------------------
-    //   コンポーネント作成 - モデル
-    // --------------------------------------------------
-    
-    let componentModel = 'スマートフォン';
-    
-    if (smartphoneModel) {
-      componentModel = `スマートフォン: ${smartphoneModel}`;
-    }
     
     
     // --------------------------------------------------
-    //   コンポーネント作成 - コメント
+    //   Console 出力
     // --------------------------------------------------
     
-    let componentComment = '';
+    // console.log(chalk`
+    //   cardPlayers_id: {green ${cardPlayers_id}}
+    // `);
     
-    if (smartphoneComment) {
-      componentComment = <CommentBox><Paragraph text={smartphoneComment} /></CommentBox>;
-    }
+    // console.log(`
+    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -134,16 +117,20 @@ export default class extends React.Component {
     
     return (
       <Container>
-          
-        {/* 見出し */}
+        
         <HeadingBox>
-          <StyledIcon />
-          <Heading>{componentModel}</Heading>
+          <FriendIcon>
+            <img
+              src={`/static/img/common/blob-emoji/${icon}.png`}
+              width="26"
+              height="26"
+            />
+          </FriendIcon>
+          <Heading>フレンド募集</Heading>
         </HeadingBox>
         
-        {/* コメント */}
-        {componentComment}
-          
+        <CommentBox><Paragraph text={comment} /></CommentBox>
+        
       </Container>
     );
     

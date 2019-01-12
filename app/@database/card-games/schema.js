@@ -17,8 +17,14 @@ const schema = mongoose.Schema({
   gameID: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
   theme: String,
-  name: String,
-  status: String,
+  nameObj: {
+    value: String,
+    search: { type: Boolean, required: true },
+  },
+  statusObj: {
+    value: String,
+    search: { type: Boolean, required: true },
+  },
   thumbnail: { type: Boolean, required: true },
   imageVideoArr: [
     {
@@ -37,7 +43,10 @@ const schema = mongoose.Schema({
     },
   ],
   itemArr: mongoose.Schema.Types.Mixed,
-  comment: String,
+  commentObj: {
+    value: String,
+    search: { type: Boolean, required: true },
+  },
   hardwarePlayingObj: {
     valueArr: [String],
     search: { type: Boolean, required: true },

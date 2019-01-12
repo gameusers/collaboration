@@ -158,6 +158,19 @@ class Component extends React.Component {
         <p>プレイヤー（現在はこのページを作成中）<br />
         <a href={`${this.urlBase}pl/user1`} target="_blank">{`${this.urlBase}pl/user1`}</a></p>
         
+        
+        <br /><br />
+        
+        
+        <h1>ログイン情報</h1>
+        <p>1. ログインID：8OM0dhDak　パスワード：8OM0dhDak0</p>
+        <p>2. ログインID：enPLLYBBEg3y　パスワード：enPLLYBBEg3y0</p>
+        <p>3. ログインID：nzPR7R9GO　パスワード：nzPR7R9GO0</p>
+        
+        
+        <br />
+        
+        
       </div>
     );
   }

@@ -5,7 +5,7 @@
 import initStoreLayout from '../common/layout/stores/layout';
 import initStoreData from './data';
 
-import initStoreCardPlayer from '../common/card/player/stores/player';
+// import initStoreCardPlayer from '../common/card/player/stores/player';
 
 
 // --------------------------------------------------
@@ -19,7 +19,7 @@ export default function(argumentsObj) {
     data: new initStoreData(argumentsObj),
   };
   
-  storeInstanceObj.cardPlayer = new initStoreCardPlayer(argumentsObj, storeInstanceObj);
+  // storeInstanceObj.cardPlayer = new initStoreCardPlayer(argumentsObj, storeInstanceObj);
   
   return storeInstanceObj;
   

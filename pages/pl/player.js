@@ -76,6 +76,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 import initStoreIndex from '../../app/@stores/index';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../app/pl/player/stores/store';
+import initStoreFormID from '../../app/common/form/stores/id';
 
 
 // ---------------------------------------------
@@ -85,6 +86,7 @@ import initStorePlayerPlayer from '../../app/pl/player/stores/store';
 import Layout from '../../app/common/layout/components/layout';
 import CardPlayer from '../../app/common/card/player/components/player';
 import CardGame from '../../app/common/card/player/components/game';
+import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 // import DialogTest from '../../app/common/user/components/dialog';
 import User from '../../app/common/user/components/user';
@@ -245,8 +247,9 @@ class Component extends React.Component {
       };
       
       this.stores = initStoreIndex(argumentsObj);
-      // this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
+      this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
+      this.stores.formID = initStoreFormID(argumentsObj, this.stores);
       
       
       // --------------------------------------------------
@@ -395,6 +398,7 @@ class Component extends React.Component {
               />*/}
               {/*<DialogTest />*/}
               
+              {/* カードダイアログテスト用 */}
               <div style={{ margin: '0 0 20px 0', padding: '10px', backgroundColor: 'white' }}>
                 <User
                   thumbnailSrc={'http://35.203.143.160:8080/static/img/card/players/zaoOWw89g/thumbnail/image.jpg'}
@@ -412,6 +416,10 @@ class Component extends React.Component {
               
               
               {componentCardsArr}
+              
+              
+              {/* プレイヤーカードを表示するダイアログ */}
+              <CardPlayerDialog />
               
             </Container>
             

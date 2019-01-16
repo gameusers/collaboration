@@ -39,6 +39,7 @@ const { errorCodeIntoErrorObj } = require('../@modules/error/error-obj');
 
 const ModelUsers = require('../@database/users/model');
 const ModelGames = require('../@database/games/model');
+const ModelIDs = require('../@database/ids/model');
 const ModelCardPlayers = require('../@database/card-players/model');
 const ModelCardGames = require('../@database/card-games/model');
 const ModelGameGenres = require('../@database/game-genres/model');
@@ -1514,17 +1515,91 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     
+    // --------------------------------------------------
+    //   DB / ID
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'GcymNACvc',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        type: 'PlayStation',
+        label: '',
+        value: 'PSN-ID',
+        showType: 1,
+        search: true,
+      },
+      {
+        _id: 'mDuSVm6S7',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        type: 'Xbox',// ゲーマータグ
+        label: '',
+        value: 'Xbox-ID',
+        showType: 1,
+        search: true,
+      },
+      {
+        _id: 'n4I1BDtxH',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        type: 'Nintendo',// フレンドコード
+        label: '',
+        value: 'Nintendo-ID',
+        showType: 2,
+        search: true,
+      },
+      {
+        _id: 'L00bEpD46',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        type: 'Steam',
+        label: '',
+        value: 'Steam-ID',
+        showType: 3,
+        search: true,
+      },
+      {
+        _id: '8bJV9G6MU',
+        users_id: 'jun-deE4J',
+        gameID: 'Jk92aglWl',
+        type: 'Other',
+        label: 'DbD',
+        value: 'DbD-ID',
+        showType: 4,
+        search: true,
+      },
+      {
+        _id: 'UVOFSNbXR',
+        users_id: 'jun-deE4J',
+        gameID: 'lxdubg6IY',
+        type: 'Other',
+        label: '大乱闘スマッシュブラザーズ SPECIAL',
+        value: 'Super-Smash-Bros-SPECIAL-ID',
+        showType: 5,
+        search: true,
+      }
+    ];
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    await ModelIDs.deleteMany({});
+    returnObj = await ModelIDs.insertMany({ saveArr });
+    
+    
+    
     
     // --------------------------------------------------
     //   DB / Card Players
     // --------------------------------------------------
-    
-    // ---------------------------------------------
-    //   Condition Object
-    // ---------------------------------------------
-    
-    // conditionObj = { _id: 'zaoOWw89g' || shortid.generate() };
-    
     
     // ---------------------------------------------
     //   Save Object
@@ -1660,56 +1735,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
           search: true,
         },
-        idArr: [
-          {
-            _id: 'au1gnYf6b',
-            type: 'PlayStation',
-            label: '',
-            value: 'AZ-1979',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: 'OXNtQjxgF',
-            type: 'Xbox',// ゲーマータグ
-            label: '',
-            value: 'AZ-1979-Xbox',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: 'VY9aFMoVh',
-            type: 'Nintendo',// フレンドコード
-            label: '',
-            value: 'AZ-1979',
-            showType: 2,
-            search: true,
-          },
-          {
-            _id: 'BNJPgqtoR',
-            type: 'Steam',
-            label: '',
-            value: 'Azumi1979',
-            showType: 3,
-            search: true,
-          },
-          {
-            _id: 'ndQgliRHK',
-            type: 'Other',
-            label: 'LoL ID',
-            value: 'lol-id',
-            showType: 4,
-            search: true,
-          },
-          {
-            _id: 'pJxHh8ZaR',
-            type: 'Other',
-            label: 'MHW ID',
-            value: 'mhw-id',
-            showType: 5,
-            search: true,
-          }
-        ],
+        idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
         activityTimeObj: {
           valueArr: [
             {
@@ -1885,16 +1911,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['I-iu-WmkO', 'KyOSlwcLk', 'eKmDxi8lX', 'lBSGQeGmx', '45syCFviA', '_z4DBLYNi', 'HATpnt7sl', 'M7YVRglvr'],
           search: true,
         },
-        idArr: [
-          {
-            _id: '04pfAfsMn',
-            type: 'PlayStation',
-            label: '',
-            value: 'PlayStation-ID',
-            showType: 1,
-            search: true,
-          }
-        ],
+        idArr: [],
         activityTimeObj: {
           valueArr: [
             {
@@ -1940,11 +1957,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     await ModelCardPlayers.deleteMany({});
     returnObj = await ModelCardPlayers.insertMany({ saveArr });
-    
-    // returnObj = await ModelCardPlayers.upsert({
-    //   conditionObj,
-    //   saveObj
-    // });
     
     
     

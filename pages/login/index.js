@@ -3,6 +3,14 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
@@ -14,14 +22,6 @@ import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import ReCAPTCHA from "react-google-recaptcha";
 import fetch from 'isomorphic-unfetch';
-
-
-// ---------------------------------------------
-//   Console 出力用
-// ---------------------------------------------
-
-const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------

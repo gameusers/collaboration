@@ -23,7 +23,7 @@ import Footer from './footer';
 import Snackbar from './snackbar';
 import Loading from './loading';
 
-import CardPlayerDialog from '../../card/player/components/dialog';
+// import CardPlayerDialog from '../../card/player/components/dialog';
 
 
 // ---------------------------------------------
@@ -115,7 +115,7 @@ export default class extends React.Component {
         <Snackbar />
         
         {/* プレイヤーカードを表示するダイアログ */}
-        <CardPlayerDialog />
+        {/*<CardPlayerDialog />*/}
         
         {/* Loading */}
         <Loading />

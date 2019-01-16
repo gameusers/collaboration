@@ -23,6 +23,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const Model = require('./schema');
+const ModelIDs = require('../ids/model');
 
 
 // ---------------------------------------------
@@ -75,10 +76,10 @@ const find = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Aggregate
+    //   Card Players のデータを取得
     // --------------------------------------------------
     
-    let cardPlayersArr = await Model.aggregate([
+    let resultCardPlayersArr = await Model.aggregate([
       
       {
         $match : { users_id }
@@ -158,10 +159,6 @@ const find = async (argumentsObj) => {
             as: 'hardwaresArr'
           }
       },
-      // {
-      //   $unwind: '$hardwaresObj'
-      // },
-     
       
       
       {
@@ -189,172 +186,51 @@ const find = async (argumentsObj) => {
           voiceChatObj: { search: 0 },
           idArr: { _id: 0, search: 0 },
           linkArr: { _id: 0, search: 0 },
-          
-          
-          
-          // updatedDate: 1,
-          // users_id: 1,
-          // name: 1,
-          // status: 1,
-          // thumbnail: 1,
-          // imageVideoArr: 1,
-          // comment: 1,
-          // birthdayObj: { value: 1, alternativeText: 1 },
-          // sexObj: { value: 1, alternativeText: 1 },
-          // addressObj: { value: 1, alternativeText: 1 },
-          // gamingExperienceObj: { value: 1, alternativeText: 1 },
-          // hobbiesArr: '$hobbiesObj.valueArr',
-          // specialSkillsArr: '$specialSkillsObj.valueArr',
-          // smartphoneObj: { model: 1, comment: 1 },
-          // tabletObj: { model: 1, comment: 1 },
-          // pcObj: { model: 1, comment: 1, specsObj: 1 },
-          // hardwareActiveArr: '$hardwareActiveObj.valueArr',
-          // hardwareInactiveArr: '$hardwareInactiveObj.valueArr',
-          // idArr: 1,
-          // activityTimeArr: '$activityTimeObj.valueArr',
-          // lookingForFriendsObj: { icon: 1, comment: 1 },
-          // voiceChat: '$voiceChatObj.comment',
-          // linkArr: 1,
-          // usersObj: 1,
-          // hardwaresArr: 1,
         }
       },
     ]).exec();
     
     
+    
+    
     // --------------------------------------------------
-    //   カードデータのフォーマット
+    //   ID データを取得
+    // --------------------------------------------------
+    
+    let ids_idArr = [];
+    
+    for (let valueObj of resultCardPlayersArr.values()) {
+      ids_idArr = ids_idArr.concat(valueObj.idArr);
+      // console.log(valueObj.idArr);
+    }
+    
+    // console.log(tempArr);
+    
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    const resultIDsArr = await ModelIDs.findBy_id({
+      language,
+      country,
+      usersLogin_id,
+      arr: ids_idArr,
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   フォーマット
     // --------------------------------------------------
     
     returnObj = format({
-      arr: cardPlayersArr,
+      arr: resultCardPlayersArr,
       usersLogin_id
     });
-    
-    // for (let valueObj of cardPlayersArr) {
-      
-      
-    //   // --------------------------------------------------
-    //   //   コピー
-    //   // --------------------------------------------------
-      
-    //   const copiedObj = JSON.parse(JSON.stringify(valueObj));
-      
-      
-    //   // --------------------------------------------------
-    //   //   画像の処理
-    //   // --------------------------------------------------
-      
-    //   copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
-      
-      
-    //   // --------------------------------------------------
-    //   //   hardwareActive
-    //   // --------------------------------------------------
-      
-    //   copiedObj.hardwareActiveArr = [];
-      
-    //   for (let value of valueObj.hardwareActiveObj.valueArr) {
-        
-    //     const obj = valueObj.hardwaresArr.find((value2) => {
-    //       return value2.hardwareID === value;
-    //     });
-        
-    //     if (obj && 'name' in obj) {
-    //       copiedObj.hardwareActiveArr.push({
-    //         name: obj.name
-    //       });
-    //     }
-        
-    //   }
-      
-      
-    //   // --------------------------------------------------
-    //   //   hardwareInactive
-    //   // --------------------------------------------------
-      
-    //   copiedObj.hardwareInactiveArr = [];
-      
-    //   for (let value of valueObj.hardwareInactiveObj.valueArr) {
-        
-    //     const obj = valueObj.hardwaresArr.find((value2) => {
-    //       return value2.hardwareID === value;
-    //     });
-        
-    //     if (obj && 'name' in obj) {
-    //       copiedObj.hardwareInactiveArr.push({
-    //         name: obj.name
-    //       });
-    //     }
-        
-    //   }
-      
-      
-    //   // --------------------------------------------------
-    //   //   Follow の処理
-    //   // --------------------------------------------------
-      
-    //   copiedObj.usersObj.follow = false;
-    //   copiedObj.usersObj.followed = false;
-      
-    //   if (usersLogin_id) {
-        
-    //     if (copiedObj.users_id !== usersLogin_id) {
-          
-    //       if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
-    //         copiedObj.usersObj.follow = true;
-    //       }
-          
-    //       if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
-    //         copiedObj.usersObj.followed = true;
-    //       }
-          
-    //     }
-        
-    //   }
-      
-      
-    //   // --------------------------------------------------
-    //   //   ID
-    //   // --------------------------------------------------
-      
-    //   copiedObj.idArr = [];
-      
-    //   for (let tempObj of valueObj.idArr) {
-        
-    //     if (
-    //       tempObj.showType === 1 ||
-    //       tempObj.showType === 2 && copiedObj.usersObj.followed ||
-    //       tempObj.showType === 3 && copiedObj.usersObj.follow ||
-    //       tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
-    //       tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
-    //     ) {
-    //       copiedObj.idArr.push({
-    //         type: tempObj.type,
-    //         label: tempObj.label,
-    //         value: tempObj.value
-    //       });
-    //     }
-        
-    //   }
-      
-      
-    //   // --------------------------------------------------
-    //   //   不要な項目を削除する
-    //   // --------------------------------------------------
-      
-    //   delete copiedObj._id;
-    //   delete copiedObj.imageVideoArr;
-    //   delete copiedObj.usersObj.followArr;
-    //   delete copiedObj.usersObj.followedArr;
-    //   delete copiedObj.hardwareActiveObj;
-    //   delete copiedObj.hardwareInactiveObj;
-    //   delete copiedObj.hardwaresArr;
-      
-      
-    //   returnObj[valueObj._id] = copiedObj;
-      
-    // }
     
     
     
@@ -364,8 +240,8 @@ const find = async (argumentsObj) => {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- cardPlayersArr -----\n
-    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
+    //   ----- resultCardPlayersArr -----\n
+    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -914,23 +790,23 @@ const format = (argumentsObj) => {
     
     copiedObj.idArr = [];
     
-    for (let tempObj of valueObj.idArr) {
+    // for (let tempObj of valueObj.idArr) {
       
-      if (
-        tempObj.showType === 1 ||
-        tempObj.showType === 2 && copiedObj.usersObj.followed ||
-        tempObj.showType === 3 && copiedObj.usersObj.follow ||
-        tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
-        tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
-      ) {
-        copiedObj.idArr.push({
-          type: tempObj.type,
-          label: tempObj.label,
-          value: tempObj.value
-        });
-      }
+    //   if (
+    //     tempObj.showType === 1 ||
+    //     tempObj.showType === 2 && copiedObj.usersObj.followed ||
+    //     tempObj.showType === 3 && copiedObj.usersObj.follow ||
+    //     tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
+    //     tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
+    //   ) {
+    //     copiedObj.idArr.push({
+    //       type: tempObj.type,
+    //       label: tempObj.label,
+    //       value: tempObj.value
+    //     });
+    //   }
       
-    }
+    // }
     
     
     // --------------------------------------------------

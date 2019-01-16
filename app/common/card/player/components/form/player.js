@@ -55,6 +55,7 @@ import Tablet from './tablet';
 import PC from './pc';
 import HardwareActive from './hardware-active';
 import HardwareInactive from './hardware-inactive';
+import FormID from '../../../../form/components/id';
 
 
 
@@ -244,7 +245,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Button
+    //   Button - Disabled
     // --------------------------------------------------
     
     let buttonDisabled = true;
@@ -456,6 +457,16 @@ export default class extends React.Component {
               _id={cardPlayers_id}
               arr={hardwareInactiveArr}
               search={hardwareInactiveObj.search}
+            />
+          </Box>
+          
+          
+          {/* ID */}
+          <Box>
+            <FormID
+              _id={cardPlayers_id}
+              // arr={hardwareInactiveArr}
+              // search={hardwareInactiveObj.search}
             />
           </Box>
           

@@ -29,9 +29,6 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-
 
 // ---------------------------------------------
 //   Material UI / Icons
@@ -469,19 +466,6 @@ export default class extends React.Component {
                 
                 {/* コメント */}
                 <Paragraph text={comment} />
-                
-                
-                <Chip
-                  avatar={<Avatar alt="Natacha" src="/static/img/games/w_zkqpr3R/thumbnail/image.jpg" />}
-                  label="Dead by Daylight: AZ-1979 / 本アカウントaaaaaaaaあ"
-                  color="primary"
-                  variant="outlined"
-                />
-                
-                
-                <Avatar alt="Natacha" src="/static/img/games/w_zkqpr3R/thumbnail/image.jpg" />
-                
-                
                 
                 
                 {/* 年齢・性別などのプロフィール */}

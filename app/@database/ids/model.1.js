@@ -24,12 +24,11 @@ const Model = require('./schema');
 // --------------------------------------------------
 
 /**
- * _id が入った配列を利用して、まとめてデータを取得し
- * 利用しやすくフォーマットされたオブジェクトを返す
+ * 取得する
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async (argumentsObj) => {
+const findBy_id = async (argumentsObj) => {
   
   
   // --------------------------------------------------
@@ -41,247 +40,6 @@ const findForCardPlayer = async (argumentsObj) => {
     language,
     country,
     usersLogin_id,
-    arr,
-    
-  } = argumentsObj;
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   ID データを取得
-    // --------------------------------------------------
-    
-    const resultIDsArr = await findBy_idsArr({
-      language,
-      country,
-      arr,
-    });
-    
-    
-    // --------------------------------------------------
-    //   フォーマット
-    // --------------------------------------------------
-    
-    const returnObj = formatToObject({
-      arr: resultIDsArr,
-      usersLogin_id
-    });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   language: {green ${language}}
-    //   country: {green ${country}}
-    //   usersLogin_id: {green ${usersLogin_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(arr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- resultIDsArr -----\n
-    //   ${util.inspect(resultIDsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * DBから取得した情報をオブジェクトにフォーマットする
- * @param {Object} argumentsObj - 引数
- * @return {Object} フォーマット後のデータ
- */
-const formatToObject = (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    // ids_idsArr,
-    arr,
-    usersLogin_id
-    
-  } = argumentsObj;
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Format
-  // --------------------------------------------------
-  
-  let formattedObj = {};
-  
-  for (let valueObj of arr) {
-    
-    
-    // --------------------------------------------------
-    //   コピー
-    // --------------------------------------------------
-    
-    const copiedObj = JSON.parse(JSON.stringify(valueObj));
-    
-    
-    // --------------------------------------------------
-    //   Follow の処理
-    //   follow 自分が相手をフォローしている場合、true
-    //   followed 自分が相手にフォローされている場合、true
-    // --------------------------------------------------
-    
-    copiedObj.usersObj.follow = false;
-    copiedObj.usersObj.followed = false;
-    
-    if (usersLogin_id) {
-      
-      if (copiedObj.users_id !== usersLogin_id) {
-        
-        if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
-          copiedObj.usersObj.follow = true;
-        }
-        
-        if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
-          copiedObj.usersObj.followed = true;
-        }
-        
-      }
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   表示する ID を選択する
-    //   showType の番号で ID の表示方法を指定している
-    //   
-    //   1.誰にでも表示する
-    //   2.自分をフォローしているユーザーに表示する
-    //   3.自分がフォローしているユーザーに表示する
-    //   4.相互フォローで表示する
-    //   5.自分以外には表示しない
-    // --------------------------------------------------
-    
-    if (
-      copiedObj.users_id === usersLogin_id ||
-      valueObj.showType === 1 ||
-      valueObj.showType === 2 && copiedObj.usersObj.followed ||
-      valueObj.showType === 3 && copiedObj.usersObj.follow ||
-      valueObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed
-      // valueObj.showType === 5 && copiedObj.users_id === usersLogin_id
-    ) {
-      
-      let tempObj = {
-        type: valueObj.type,
-        label: valueObj.label,
-        value: valueObj.value
-      };
-      
-      if ('gamesObj' in valueObj) {
-        tempObj.games_id = valueObj.gamesObj._id;
-        tempObj.gamesThumbnail = valueObj.gamesObj.thumbnail;
-        tempObj.gamesName = valueObj.gamesObj.name;
-      }
-      
-      formattedObj[valueObj._id] = tempObj;
-      
-    }
-    
-    
-  }
-  
-  
-  
-  // console.log(`
-  //   ----- formattedObj -----\n
-  //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  
-  // --------------------------------------------------
-  //   元の配列の順番通りに並べなおす
-  // --------------------------------------------------
-  
-  // let returnArr = [];
-  
-  // for (let value of ids_idArr) {
-  //   if (value in formattedObj) {
-  //     returnArr.push(formattedObj[value]);
-  //   }
-  // }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
-  
-  return formattedObj;
-  
-  
-};
-
-
-
-
-/**
- * 取得する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 取得データ
- */
-const findBy_idsArr = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    language,
-    country,
     arr,
     
   } = argumentsObj;
@@ -305,7 +63,7 @@ const findBy_idsArr = async (argumentsObj) => {
     //   Aggregate
     // --------------------------------------------------
     
-    let resultArr = await Model.aggregate([
+    let resultIDsArr = await Model.aggregate([
       
       {
         $match : { _id: { $in: removedDuplicatesArr } }
@@ -362,7 +120,7 @@ const findBy_idsArr = async (argumentsObj) => {
               },
               { $project:
                 {
-                  _id: 1,
+                  _id: 0,
                   thumbnail: 1,
                   name: 1,
                 }
@@ -385,10 +143,60 @@ const findBy_idsArr = async (argumentsObj) => {
     
     
     // --------------------------------------------------
+    //   フォーマット
+    // --------------------------------------------------
+    
+    const returnObj = format({
+      ids_idArr: arr,
+      arr: resultIDsArr,
+      usersLogin_id
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    //   usersLogin_id: {green ${usersLogin_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(arr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- removedDuplicatesArr -----\n
+    //   ${util.inspect(removedDuplicatesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- resultIDsArr -----\n
+    //   ${util.inspect(resultIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return resultArr;
+    return returnObj;
     
     
   } catch (err) {
@@ -402,7 +210,133 @@ const findBy_idsArr = async (argumentsObj) => {
 
 
 
-
+/**
+ * DBから取得した情報をフォーマットする
+ * @param {Object} argumentsObj - 引数
+ * @return {Array} フォーマット後のデータ
+ */
+const format = (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    ids_idArr,
+    arr,
+    usersLogin_id
+    
+  } = argumentsObj;
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Format
+  // --------------------------------------------------
+  
+  let formattedObj = {};
+  
+  for (let valueObj of arr) {
+    
+    
+    // --------------------------------------------------
+    //   コピー
+    // --------------------------------------------------
+    
+    const copiedObj = JSON.parse(JSON.stringify(valueObj));
+    
+    
+    // --------------------------------------------------
+    //   Follow の処理
+    // --------------------------------------------------
+    
+    copiedObj.usersObj.follow = false;
+    copiedObj.usersObj.followed = false;
+    
+    if (usersLogin_id) {
+      
+      if (copiedObj.users_id !== usersLogin_id) {
+        
+        if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
+          copiedObj.usersObj.follow = true;
+        }
+        
+        if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
+          copiedObj.usersObj.followed = true;
+        }
+        
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   表示する ID を選択する
+    // --------------------------------------------------
+    
+    if (
+      copiedObj.users_id === usersLogin_id ||
+      valueObj.showType === 1 ||
+      valueObj.showType === 2 && copiedObj.usersObj.followed ||
+      valueObj.showType === 3 && copiedObj.usersObj.follow ||
+      valueObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed
+      // valueObj.showType === 5 && copiedObj.users_id === usersLogin_id
+    ) {
+      
+      let tempObj = {
+        type: valueObj.type,
+        label: valueObj.label,
+        value: valueObj.value
+      };
+      
+      if ('gamesObj' in valueObj) {
+        tempObj.gameThumbnail = valueObj.gamesObj.thumbnail;
+        tempObj.gameName = valueObj.gamesObj.name;
+      }
+      
+      formattedObj[valueObj._id] = tempObj;
+      
+    }
+    
+    
+  }
+  
+  
+  
+  console.log(`
+    ----- formattedObj -----\n
+    ${util.inspect(formattedObj, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+  
+  
+  
+  // --------------------------------------------------
+  //   元の配列の順番通りに並べなおす
+  // --------------------------------------------------
+  
+  let returnArr = [];
+  
+  for (let value of ids_idArr) {
+    if (value in formattedObj) {
+      returnArr.push(formattedObj[value]);
+    }
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return returnArr;
+  
+  
+};
 
 
 
@@ -625,7 +559,7 @@ const deleteMany = async (argumentsObj) => {
 // --------------------------------------------------
 
 module.exports = {
-  findForCardPlayer,
+  findBy_id,
   find,
   upsert,
   insertMany,

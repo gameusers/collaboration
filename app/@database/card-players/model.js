@@ -11,14 +11,6 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
-// ---------------------------------------------
-
-// const shortid = require('shortid');
-// const moment = require('moment');
-
-
-// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
@@ -44,7 +36,7 @@ const { srcset } = require('../../@format/image');
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const find = async (argumentsObj) => {
+const findForCardPlayer = async (argumentsObj) => {
   
   
   // --------------------------------------------------
@@ -194,26 +186,16 @@ const find = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   ID データを取得
+    //   ID データをまとめて取得
     // --------------------------------------------------
     
     let ids_idArr = [];
     
     for (let valueObj of resultCardPlayersArr.values()) {
       ids_idArr = ids_idArr.concat(valueObj.idArr);
-      // console.log(valueObj.idArr);
     }
     
-    // console.log(tempArr);
-    
-    // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    const resultIDsArr = await ModelIDs.findBy_id({
+    const resultIDsObj = await ModelIDs.findForCardPlayer({
       language,
       country,
       usersLogin_id,
@@ -228,8 +210,9 @@ const find = async (argumentsObj) => {
     // --------------------------------------------------
     
     returnObj = format({
-      arr: resultCardPlayersArr,
-      usersLogin_id
+      usersLogin_id,
+      cardPlayersArr: resultCardPlayersArr,
+      idsObj: resultIDsObj
     });
     
     
@@ -245,11 +228,11 @@ const find = async (argumentsObj) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -682,8 +665,9 @@ const format = (argumentsObj) => {
   
   const {
     
-    arr,
-    usersLogin_id
+    usersLogin_id,
+    cardPlayersArr,
+    idsObj
     
   } = argumentsObj;
   
@@ -699,7 +683,7 @@ const format = (argumentsObj) => {
   //   Loop
   // --------------------------------------------------
   
-  for (let valueObj of arr) {
+  for (let valueObj of cardPlayersArr) {
     
     
     // --------------------------------------------------
@@ -730,7 +714,6 @@ const format = (argumentsObj) => {
       
       if (obj && 'name' in obj) {
         copiedObj.hardwareActiveArr.push({
-          // hardwareID: value,
           name: obj.name
         });
       }
@@ -752,7 +735,6 @@ const format = (argumentsObj) => {
       
       if (obj && 'name' in obj) {
         copiedObj.hardwareInactiveArr.push({
-          // hardwareID: value,
           name: obj.name
         });
       }
@@ -790,23 +772,13 @@ const format = (argumentsObj) => {
     
     copiedObj.idArr = [];
     
-    // for (let tempObj of valueObj.idArr) {
+    for (let value of valueObj.idArr) {
       
-    //   if (
-    //     tempObj.showType === 1 ||
-    //     tempObj.showType === 2 && copiedObj.usersObj.followed ||
-    //     tempObj.showType === 3 && copiedObj.usersObj.follow ||
-    //     tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
-    //     tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
-    //   ) {
-    //     copiedObj.idArr.push({
-    //       type: tempObj.type,
-    //       label: tempObj.label,
-    //       value: tempObj.value
-    //     });
-    //   }
+      if (value in idsObj) {
+        copiedObj.idArr.push(idsObj[value]);
+      }
       
-    // }
+    }
     
     
     // --------------------------------------------------
@@ -1268,8 +1240,7 @@ const deleteMany = async (argumentsObj) => {
 // --------------------------------------------------
 
 module.exports = {
-  // findTest,
-  find,
+  findForCardPlayer,
   findOneBy_id,
   findOneBy_idForEditForm,
   upsert,

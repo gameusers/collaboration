@@ -179,7 +179,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    const cardPlayersObj = await ModelCardPlayers.find({
+    const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
       users_id,
       language: localeObj.language,
       country: localeObj.country,

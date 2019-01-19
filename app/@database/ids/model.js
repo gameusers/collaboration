@@ -126,6 +126,199 @@ const findForCardPlayer = async (argumentsObj) => {
 
 
 /**
+ * users_id を利用して、まとめてデータを取得し
+ * 利用しやすくフォーマットされたオブジェクトを返す
+ * @param {Object} argumentsObj - 引数
+ * @return {Object} 取得データ
+ */
+const findBy_Users_idForForm = async (argumentsObj) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const {
+    
+    language,
+    country,
+    usersLogin_id
+    
+  } = argumentsObj;
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   ID データを取得
+    // --------------------------------------------------
+    
+    let resultIDsArr = await Model.aggregate([
+      
+      {
+        $match : { users_id: usersLogin_id }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'users',
+            let: { idsUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$idsUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  accessDate: 1,
+                  level: 1,
+                  playerID: 1,
+                  followArr: 1,
+                  followedArr: 1,
+                  followedCount: 1,
+                }
+              }
+            ],
+            as: 'usersObj'
+          }
+      },
+      {
+        $unwind: '$usersObj'
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'games',
+            let: { idsGameID: '$gameID' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $eq: ['$gameID', '$$idsGameID'] }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 1,
+                  thumbnail: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'gamesObj'
+          }
+      },
+      {
+        $unwind:
+          {
+            path: '$gamesObj',
+            preserveNullAndEmptyArrays: true
+          }
+      },
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   フォーマット
+    // --------------------------------------------------
+    
+    let formattedArr = [];
+    
+    for (let valueObj of resultIDsArr) {
+      
+      let tempObj = {
+        type: valueObj.type,
+        label: valueObj.label,
+        value: valueObj.value
+      };
+      
+      if ('gamesObj' in valueObj) {
+        tempObj.games_id = valueObj.gamesObj._id;
+        tempObj.gamesThumbnail = valueObj.gamesObj.thumbnail;
+        tempObj.gamesName = valueObj.gamesObj.name;
+      }
+      
+      formattedArr.push(tempObj);
+      
+    }
+    
+    // const returnObj = formatToObject({
+    //   arr: resultIDsArr,
+    //   usersLogin_id
+    // });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    //   usersLogin_id: {green ${usersLogin_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultIDsArr -----\n
+    //   ${util.inspect(resultIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedArr -----\n
+    //   ${util.inspect(formattedArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return formattedArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * DBから取得した情報をオブジェクトにフォーマットする
  * @param {Object} argumentsObj - 引数
  * @return {Object} フォーマット後のデータ
@@ -626,6 +819,7 @@ const deleteMany = async (argumentsObj) => {
 
 module.exports = {
   findForCardPlayer,
+  findBy_Users_idForForm,
   find,
   upsert,
   insertMany,

@@ -147,7 +147,7 @@ const StyledCardContent = styled(CardContent)`
 
 const CardTitle = styled.h3`
   font-size: 14px;
-  line-height: 1.6em;
+  // line-height: 1.6em;
   margin: 0 0 8px 0;
   padding: 2px 0 6px 0;
   border-bottom: 1px solid #6E6E6E;
@@ -155,7 +155,7 @@ const CardTitle = styled.h3`
 
 const CardDescriptionBox = styled.div`
   font-size: 14px;
-  line-height: 1.6em;
+  // line-height: 1.6em;
   margin: 0 0 10px 0;
   padding: 0;
 `;

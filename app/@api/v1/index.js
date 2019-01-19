@@ -14,6 +14,7 @@ const users = require('../../@database/users/api');
 const cardPlayers = require('../../@database/card-players/api');
 const cardGames = require('../../@database/card-games/api');
 const hardwares = require('../../@database/hardwares/api');
+const ids = require('../../@database/ids/api');
 
 
 // --------------------------------------------------
@@ -35,5 +36,6 @@ router.use('/users', users);
 router.use('/card-players', cardPlayers);
 router.use('/card-games', cardGames);
 router.use('/hardwares', hardwares);
+router.use('/ids', ids);
 
 module.exports = router;

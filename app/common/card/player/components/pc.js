@@ -93,7 +93,7 @@ const SpecsTitle = styled.p`
 
 const SpecsUl = styled.ul`
   list-style-type: disc;
-  line-height: 1.8em;
+  // line-height: 1.8em;
   margin: 3px 0 0 20px;
   padding: 0 0 0 0;
 `;

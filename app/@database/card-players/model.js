@@ -228,11 +228,11 @@ const findForCardPlayer = async (argumentsObj) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -295,7 +295,7 @@ const findOneBy_id = async (argumentsObj) => {
     //   Aggregate
     // --------------------------------------------------
     
-    let cardPlayersArr = await Model.aggregate([
+    let resultCardPlayersArr = await Model.aggregate([
       
       {
         $match : { _id }
@@ -404,13 +404,42 @@ const findOneBy_id = async (argumentsObj) => {
     ]).exec();
     
     
+    
+    
+    // --------------------------------------------------
+    //   ID データをまとめて取得
+    // --------------------------------------------------
+    
+    let ids_idArr = [];
+    
+    for (let valueObj of resultCardPlayersArr.values()) {
+      ids_idArr = ids_idArr.concat(valueObj.idArr);
+    }
+    
+    const resultIDsObj = await ModelIDs.findForCardPlayer({
+      language,
+      country,
+      usersLogin_id,
+      arr: ids_idArr,
+    });
+    
+    // console.log(`
+    //   ----- resultCardPlayersArr -----\n
+    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
     // --------------------------------------------------
     //   カードデータのフォーマット
     // --------------------------------------------------
     
     returnObj = format({
-      arr: cardPlayersArr,
-      usersLogin_id
+      usersLogin_id,
+      cardPlayersArr: resultCardPlayersArr,
+      idsObj: resultIDsObj
     });
     
     
@@ -419,8 +448,8 @@ const findOneBy_id = async (argumentsObj) => {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- cardPlayersArr -----\n
-    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
+    //   ----- resultCardPlayersArr -----\n
+    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -624,11 +653,11 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

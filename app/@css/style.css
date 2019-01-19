@@ -12,7 +12,7 @@ body {
   background-color: #ecf0f1;
   word-wrap: break-word;
   font-family: -apple-system, BlinkMacSystemFont, "メイリオ", Meiryo, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", sans-serif;
-  line-height: 1.8em;
+  line-height: 1.8;
 }
 
 a {

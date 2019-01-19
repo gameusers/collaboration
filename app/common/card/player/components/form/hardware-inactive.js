@@ -46,7 +46,6 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  line-height: 1.6em;
 `;
 
 const HardwareBox = styled.div`

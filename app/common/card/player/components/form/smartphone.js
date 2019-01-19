@@ -43,7 +43,6 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  line-height: 1.6em;
 `;
 
 const StyledTextFieldWide = styled(TextField)`
@@ -67,7 +66,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     border-radius: 4px;
     box-sizing: border-box;
     padding: 8px 12px;
-    line-height: 1.6em;
+    line-height: 1.8;
     
     &:focus {
       outline: 1px #A9F5F2 solid;

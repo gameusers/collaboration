@@ -90,7 +90,7 @@ const ExpandMoreBox = styled.div`
 const StyledCardContent = styled(CardContent)`
   && {
     font-size: 14px;
-    line-height: 1.6em;
+    // line-height: 1.6em;
     padding-bottom: 0;
   }
 `;

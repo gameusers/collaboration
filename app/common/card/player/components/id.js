@@ -23,15 +23,19 @@ import styled from 'styled-components';
 //   Material UI
 // ---------------------------------------------
 
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/Grade';
+import IconStyle from '@material-ui/icons/Style';
+
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import ID from '../../../id/components/id';
 
 
 
@@ -57,7 +61,7 @@ const HeadingBox = styled.div`
   align-items: center;
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(IconStyle)`
   && {
     font-size: 24px;
   }
@@ -75,8 +79,6 @@ const Heading = styled.h3`
 const Box = styled.div`
   display: flex;
   flex-flow: row wrap;
-  // align-items: center;
-  // line-height: 1.8em;
   margin: 4px 0 0 0;
   padding: 0;
   
@@ -84,74 +86,6 @@ const Box = styled.div`
     flex-flow: column wrap;
   }
 `;
-
-const Id = styled.div`
-  margin: 0 20px 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    margin: 0;
-  }
-`;
-
-
-
-
-
-const IDBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  
-  // width: auto;
-  
-  // line-height: 1.8em;
-  // font-size: 14px;
-  color: #3f51b5;
-  border: 1px solid #3f51b5;
-  // box-sizing: border-box;
-  border-radius: 18px;
-  margin: 8px 8px 0 0;
-  // padding: 0;
-  // background-color: pink;
-`;
-
-const LeftBox = styled.div`
-  // background-color: pink;
-  // flex-shrink: 1;
-  // min-width: 32px;
-  // min-height: 32px;
-  // max-width: 32px;
-  // max-height: 32px;
-  
-`;
-
-const StyledAvatar = styled(Avatar)`
-  && {
-    width: 32px;
-    height: 32px;
-    background-color: #3f51b5;
-  }
-`;
-
-const RightBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  // flex-grow: 3;
-  padding: 4px 14px 4px 8px;
-  // background-color: pink;
-`;
-
-const Label = styled.span`
-  // font-weight: bold;
-  padding: 0 4px 0 0;
-`;
-
-const ID = styled.span`
-  // padding: 0 12px 0 8px;
-`;
-
-
 
 
 
@@ -200,109 +134,21 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of arr.entries()) {
       
+      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
+      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
+      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   PlayStation
-      // ---------------------------------------------
-      
-      if (valueObj.type === 'PlayStation') {
-        
-        componentsArr.push(
-          <Id key={`id${index}`}><strong>PlayStation ID: </strong>{valueObj.value}</Id>
-        );
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   Xbox
-      // ---------------------------------------------
-      
-      if (valueObj.type === 'Xbox') {
-        
-        componentsArr.push(
-          <Id key={`id${index}`}><strong>Xbox ID: </strong>{valueObj.value}</Id>
-        );
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   Nintendo
-      // ---------------------------------------------
-      
-      if (valueObj.type === 'Nintendo') {
-        
-        componentsArr.push(
-          <Id key={`id${index}`}><strong>Nintendo ID: </strong>{valueObj.value}</Id>
-        );
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   Steam
-      // ---------------------------------------------
-      
-      if (valueObj.type === 'Steam') {
-        
-        componentsArr.push(
-          <Id key={`id${index}`}><strong>Steam ID: </strong>{valueObj.value}</Id>
-        );
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   Other
-      // ---------------------------------------------
-      
-      if (valueObj.type === 'Other') {
-        
-        
-        // ---------------------------------------------
-        //   Avatar
-        // ---------------------------------------------
-        
-        let componentAvatar =
-          <StyledAvatar>
-            <Icon />
-          </StyledAvatar>
-        ;
-        
-        if (valueObj.gamesThumbnail && valueObj.games_id) {
-          componentAvatar = <StyledAvatar alt={valueObj.gamesName} src={`/static/img/games/${valueObj.games_id}/thumbnail/image.jpg`} />;
-        }
-        
-        
-        // ---------------------------------------------
-        //   Label
-        // ---------------------------------------------
-        
-        let label = valueObj.label;
-        
-        if (!valueObj.label) {
-          label = valueObj.gamesName;
-        }
-        
-        
-        componentsArr.push(
-          <IDBox key={`id${index}`}>
-            <LeftBox>
-              {componentAvatar}
-            </LeftBox>
-            <RightBox>
-              <Label>{label}:</Label>
-              <ID>{valueObj.value}</ID>
-            </RightBox>
-          </IDBox>
-        );
-        
-      }
+      componentsArr.push(
+        <ID
+          key={index}
+          type={valueObj.type}
+          label={valueObj.label}
+          id={valueObj.value}
+          games_id={games_id}
+          gamesThumbnail={gamesThumbnail}
+          gamesName={gamesName}
+        />
+      );
       
     }
     
@@ -337,41 +183,6 @@ export default class extends React.Component {
         </HeadingBox>
         
         <Box>{componentsArr}</Box>
-        
-        
-        {/*<br /><br />
-        <Chip
-          avatar={<Avatar alt="Natacha" src="/static/img/games/w_zkqpr3R/thumbnail/image.jpg" />}
-          label="Dead by Daylight: AZ-1979 / 本アカウントaaaaaaaaあ"
-          color="primary"
-          variant="outlined"
-        />
-        
-        
-        <Box>
-        
-        <IDBox>
-          <LeftBox>
-            <StyledAvatar alt="Natacha" src="/static/img/games/w_zkqpr3R/thumbnail/image.jpg" />
-          </LeftBox>
-          <RightBox>
-            <Label>Dead by Daylight:</Label>
-            <ID>AZ-1979 / 本アカウントaaaaaaaaあ2</ID>
-          </RightBox>
-        </IDBox>
-        
-        
-        <IDBox>
-          <LeftBox>
-            <StyledAvatar alt="Natacha" src="/static/img/games/w_zkqpr3R/thumbnail/image.jpg" />
-          </LeftBox>
-          <RightBox>
-            <Label>Dead by Daylight:</Label>
-            <ID>AZ-1979</ID>
-          </RightBox>
-        </IDBox>
-        
-        </Box>*/}
         
       </Container>
     );

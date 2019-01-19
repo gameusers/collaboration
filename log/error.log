@@ -337,3 +337,24 @@
 {"level":"error","message":"Thu Jan 17 2019 07:30:34 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: arr is not iterable\n"}
 {"level":"error","message":"Thu Jan 17 2019 07:35:16 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: ModelCardPlayers.findForCardPlayer is not a function\n"}
 {"level":"error","message":"Thu Jan 17 2019 07:35:17 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@500000\nMessage: ModelCardPlayers.findForCardPlayer is not a function\n"}
+{"level":"error","message":"Fri Jan 18 2019 17:57:26 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:07:46 GMT+0000\nCode: QOVB4jVBQ@A8rggT8XW@500000\nMessage: cardPlayersArr is not iterable\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:07:52 GMT+0000\nCode: QOVB4jVBQ@A8rggT8XW@500000\nMessage: cardPlayersArr is not iterable\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:10:05 GMT+0000\nCode: QOVB4jVBQ@A8rggT8XW@500000\nMessage: cardPlayersArr is not iterable\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:37:01 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:37:22 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:42:21 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 02:47:57 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 04:09:26 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 05:35:23 GMT+0000\nCode: 4tT2vx700@P3ut9x3Fj@503001\nMessage: DB / users / usersObj が空です。\n"}
+{"level":"error","message":"Sat Jan 19 2019 06:09:52 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:24:33 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:26:52 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:28:09 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:28:26 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:30:26 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:34:45 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:50:16 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:55:37 GMT+0000\nCode: 3bPnmJsoD@XwchAk4yT@xXQ6zimji\nMessage: \n"}
+{"level":"error","message":"Sat Jan 19 2019 06:58:59 GMT+0000\nCode: 3bPnmJsoD@XwchAk4yT@500000\nMessage: $in needs an array\n"}
+{"level":"error","message":"Sat Jan 19 2019 13:08:31 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}

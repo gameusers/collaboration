@@ -40,7 +40,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     box-sizing: border-box;
     margin: 6px 0 10px 0;
     padding: 8px 12px;
-    line-height: 1.6em;
+    // line-height: 1.6em;
     
     &:focus {
       outline: 1px #A9F5F2 solid;

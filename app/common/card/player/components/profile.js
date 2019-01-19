@@ -81,7 +81,7 @@ const Heading = styled.h3`
 const ItemBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  line-height: 2.0em;
+  // line-height: 2.0em;
   margin: 4px 0 0 0;
   padding: 0;
   

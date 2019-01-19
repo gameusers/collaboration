@@ -23,18 +23,14 @@ import styled from 'styled-components';
 //   Material UI
 // ---------------------------------------------
 
-// import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
-// import InputAdornment from '@material-ui/core/InputAdornment';
+// import TextField from '@material-ui/core/TextField';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+// import DialogActions from '@material-ui/core/DialogActions';
+// import DialogContent from '@material-ui/core/DialogContent';
+// import DialogContentText from '@material-ui/core/DialogContentText';
+// import DialogTitle from '@material-ui/core/DialogTitle';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -42,21 +38,18 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 
 
-
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-// import IconAddCircle from '@material-ui/icons/AddCircle';
-// import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 import IconClose from '@material-ui/icons/Close';
 
 
 // ---------------------------------------------
-//   Stores
+//   Components
 // ---------------------------------------------
 
-// import initStoreFormID from '../stores/id';
+import Id from '../../card/player/components/id';
 
 
 
@@ -73,24 +66,25 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  line-height: 1.6em;
+  margin: 0 0 12px 0;
 `;
 
-const TextFieldBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
+const ButtonBox = styled.div`
+  // display: flex;
+  // flex-flow: row wrap;
+  // align-items: center;
+  margin: 90px 0 0 12px;
 `;
 
-const StyledTextField = styled(TextField)`
+const SelectFormTypeButton = styled(Button)`
   && {
-    margin-right: 16px;
+    margin: 0 16px 0 0;
   }
 `;
 
-const SearchBox = styled.div`
-  margin: 0;
-`;
+// const SearchBox = styled.div`
+//   margin: 0;
+// `;
 
 
 
@@ -105,9 +99,6 @@ export default class extends React.Component {
   
   constructor(props) {
     super(props);
-    
-    
-    // initStoreFormID
   }
   
   
@@ -136,6 +127,8 @@ export default class extends React.Component {
     
     const {
       
+      formIDFormDataSelectedArr,
+      formIDFormDataUnselectedArr,
       formIDDialogObj,
       handleFormIDDialogClose,
       handleFormIDDialogOpen
@@ -213,8 +206,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(arr, { colors: true, depth: null })}\n
+    //   ----- stores.data.usersLoginObj -----\n
+    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -241,10 +234,13 @@ export default class extends React.Component {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleFormIDDialogOpen(_id)}
+          onClick={() => handleFormIDDialogOpen({
+            _id,
+            usersLogin_id: stores.data.usersLoginObj._id
+          })}
           disabled={buttonDisabled}
         >
-          IDを編集する
+          IDを選択する
         </Button>
         
         
@@ -266,26 +262,43 @@ export default class extends React.Component {
                 <IconClose />
               </IconButton>
               <Typography variant="h6" color="inherit" >
-                Sound
+                ID 選択＆登録フォーム
               </Typography>
-              {/*<Button
-                color="inherit"
-                // onClick={handleClose}
-              >
-                save
-              </Button>*/}
             </Toolbar>
           </AppBar>
-          AAA
-          {/*<DialogTitle id="alert-dialog-title">元に戻す</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              編集フォームの状態をフォームが最初に表示されたときの状態に戻します。よろしいですか？
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            AAA
-          </DialogActions>*/}
+          
+          
+          <ButtonBox>
+            
+            <SelectFormTypeButton
+              variant="outlined"
+              color="primary"
+            >
+              ID選択
+            </SelectFormTypeButton>
+            
+            <SelectFormTypeButton
+              variant="outlined"
+              color="secondary"
+            >
+              ID登録
+            </SelectFormTypeButton>
+            
+          </ButtonBox>
+          
+          
+          
+          選択ID
+          
+          {/* ID */}
+          <Id
+            arr={formIDFormDataUnselectedArr}
+          />
+          
+          
+          未選択ID
+          
+          
         </Dialog>
         
         

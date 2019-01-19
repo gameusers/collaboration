@@ -55,7 +55,7 @@ import Tablet from './tablet';
 import PC from './pc';
 import HardwareActive from './hardware-active';
 import HardwareInactive from './hardware-inactive';
-import FormID from '../../../../form/components/id';
+import IDForm from '../../../../id/components/form';
 
 
 
@@ -96,7 +96,6 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  line-height: 1.6em;
   margin: 0 0 24px 0;
 `;
 
@@ -463,10 +462,8 @@ export default class extends React.Component {
           
           {/* ID */}
           <Box>
-            <FormID
+            <IDForm
               _id={cardPlayers_id}
-              // arr={hardwareInactiveArr}
-              // search={hardwareInactiveObj.search}
             />
           </Box>
           

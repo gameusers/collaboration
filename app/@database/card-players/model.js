@@ -520,7 +520,7 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     //   Aggregate
     // --------------------------------------------------
     
-    let cardPlayersArr = await Model.aggregate([
+    let resultCardPlayersArr = await Model.aggregate([
       
       {
         $match:
@@ -529,37 +529,6 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
             users_id: usersLogin_id
           }
       },
-      
-      
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'users',
-      //       let: { cardPlayersUsers_id: '$users_id' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $eq: ['$_id', '$$cardPlayersUsers_id'] },
-      //           }
-      //         },
-      //         { $project:
-      //           {
-      //             _id: 0,
-      //             accessDate: 1,
-      //             level: 1,
-      //             playerID: 1,
-      //             followArr: 1,
-      //             followedArr: 1,
-      //             followedCount: 1,
-      //           }
-      //         }
-      //       ],
-      //       as: 'usersObj'
-      //     }
-      // },
-      // {
-      //   $unwind: '$usersObj'
-      // },
       
       
       {
@@ -633,14 +602,38 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     ]).exec();
     
     
+    
+    
+    // --------------------------------------------------
+    //   ID データをまとめて取得
+    // --------------------------------------------------
+    
+    let ids_idArr = [];
+    
+    for (let valueObj of resultCardPlayersArr.values()) {
+      ids_idArr = ids_idArr.concat(valueObj.idArr);
+    }
+    
+    const resultIDsObj = await ModelIDs.findForCardPlayer({
+      language,
+      country,
+      usersLogin_id,
+      arr: ids_idArr,
+    });
+    
+    
+    
+    
     // --------------------------------------------------
     //   カードデータのフォーマット
     // --------------------------------------------------
     
     returnObj = formatForEditForm({
-      arr: cardPlayersArr,
-      // usersLogin_id
+      cardPlayersArr: resultCardPlayersArr,
+      idsObj: resultIDsObj
     });
+    
+    
     
     
     // --------------------------------------------------
@@ -648,16 +641,22 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- cardPlayersArr -----\n
-    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
+    //   ----- resultCardPlayersArr -----\n
+    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultIDsObj -----\n
+      ${util.inspect(resultIDsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -854,8 +853,8 @@ const formatForEditForm = (argumentsObj) => {
   
   const {
     
-    arr,
-    // usersLogin_id
+    cardPlayersArr,
+    idsObj
     
   } = argumentsObj;
   
@@ -871,7 +870,7 @@ const formatForEditForm = (argumentsObj) => {
   //   Loop
   // --------------------------------------------------
   
-  for (let valueObj of arr) {
+  for (let valueObj of cardPlayersArr) {
     
     
     // --------------------------------------------------
@@ -933,52 +932,18 @@ const formatForEditForm = (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Follow の処理
-    // --------------------------------------------------
-    
-    // copiedObj.usersObj.follow = false;
-    // copiedObj.usersObj.followed = false;
-    
-    // if (usersLogin_id) {
-      
-    //   if (copiedObj.users_id !== usersLogin_id) {
-        
-    //     if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
-    //       copiedObj.usersObj.follow = true;
-    //     }
-        
-    //     if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
-    //       copiedObj.usersObj.followed = true;
-    //     }
-        
-    //   }
-      
-    // }
-    
-    
-    // --------------------------------------------------
     //   ID
     // --------------------------------------------------
     
-    // copiedObj.idArr = [];
+    copiedObj.idArr = [];
     
-    // for (let tempObj of valueObj.idArr) {
+    for (let value of valueObj.idArr) {
       
-    //   if (
-    //     tempObj.showType === 1 ||
-    //     tempObj.showType === 2 && copiedObj.usersObj.followed ||
-    //     tempObj.showType === 3 && copiedObj.usersObj.follow ||
-    //     tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
-    //     tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
-    //   ) {
-    //     copiedObj.idArr.push({
-    //       type: tempObj.type,
-    //       label: tempObj.label,
-    //       value: tempObj.value
-    //     });
-    //   }
+      if (value in idsObj) {
+        copiedObj.idArr.push(idsObj[value]);
+      }
       
-    // }
+    }
     
     
     // --------------------------------------------------
@@ -987,10 +952,6 @@ const formatForEditForm = (argumentsObj) => {
     
     delete copiedObj._id;
     delete copiedObj.imageVideoArr;
-    // delete copiedObj.usersObj.followArr;
-    // delete copiedObj.usersObj.followedArr;
-    // delete copiedObj.hardwareActiveObj;
-    // delete copiedObj.hardwareInactiveObj;
     delete copiedObj.hardwaresArr;
     
     
@@ -1007,105 +968,6 @@ const formatForEditForm = (argumentsObj) => {
   
   
 };
-
-
-
-
-/**
- * 取得する
- * @param {Object} argumentsObj - 引数
- * @return {Object} 取得データ
- */
-// const find2 = async (argumentsObj) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Property
-//   // --------------------------------------------------
-  
-//   const {
-    
-//     conditionObj
-    
-//   } = argumentsObj;
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Find
-//     // --------------------------------------------------
-    
-//     const docArr = await Model.find(conditionObj).exec();
-    
-//     // const docArr = await Model.find(conditionObj).select(
-//     //   '_id updatedDate users_id name status thumbnail imageVideoArr dataArr'
-//     // ).exec();
-    
-    
-//     // --------------------------------------------------
-//     //   画像配列を<img>タグで出力するためにフォーマット
-//     // --------------------------------------------------
-    
-//     for (let valueObj of docArr.values()) {
-      
-      
-//       // --------------------------------------------------
-//       //   コピー
-//       // --------------------------------------------------
-      
-//       const copiedObj = JSON.parse(JSON.stringify(valueObj));
-      
-      
-//       // --------------------------------------------------
-//       //   画像の処理
-//       // --------------------------------------------------
-      
-//       copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
-      
-      
-//       // --------------------------------------------------
-//       //   不要な項目を削除する
-//       // --------------------------------------------------
-      
-//       delete copiedObj.imageVideoArr;
-      
-      
-//       // --------------------------------------------------
-//       //   Return Value 設定
-//       // --------------------------------------------------
-      
-//       returnObj[valueObj._id] = copiedObj;
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-// };
 
 
 

@@ -59,16 +59,6 @@ import ID from '../../id/components/id';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
-  font-size: 14px;
-  margin: 0 0 12px 0;
-`;
-
 const ButtonBox = styled.div`
   // display: flex;
   // flex-flow: row wrap;
@@ -120,8 +110,10 @@ export default class extends React.Component {
   }
   
   
-  componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idForm`, false);
+  componentDidMount() {
+    // console.log(this.props.stores.data.usersLoginObj._id);
+    
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props.stores.data.usersLoginObj._id}-idForm`, false);
   }
   
   
@@ -132,16 +124,11 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr, search } = this.props;
+    const { stores, selectedArr } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
-    
-    // console.log(`
-    //   ----- stores -----\n
-    //   ${util.inspect(stores, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    const usersLogin_id = stores.data.usersLoginObj._id;
     
     const {
       
@@ -162,8 +149,8 @@ export default class extends React.Component {
     
     let dialogOpen = false;
     
-    if (_id in idFormDialogObj) {
-      dialogOpen = idFormDialogObj[_id];
+    if (usersLogin_id in idFormDialogObj) {
+      dialogOpen = idFormDialogObj[usersLogin_id];
     }
     
     
@@ -173,18 +160,47 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${_id}-idForm` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-idForm`];
+    if (`${usersLogin_id}-idForm` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${usersLogin_id}-idForm`];
     }
     
     
     
     
     // --------------------------------------------------
-    //   Component
+    //   Component - 選択済み
     // --------------------------------------------------
     
-    const componentsUnelectedArr = [];
+    const componentsFormSelectedArr = [];
+    
+    for (const [index, valueObj] of idFormDataSelectedArr.entries()) {
+      
+      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
+      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
+      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
+      
+      componentsFormSelectedArr.push(
+        <ID
+          key={index}
+          type={valueObj.type}
+          label={valueObj.label}
+          id={valueObj.value}
+          games_id={games_id}
+          gamesThumbnail={gamesThumbnail}
+          gamesName={gamesName}
+        />
+      );
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - フォーム 未選択
+    // --------------------------------------------------
+    
+    const componentsFormUnselectedArr = [];
     
     for (const [index, valueObj] of idFormDataUnselectedArr.entries()) {
       
@@ -192,7 +208,7 @@ export default class extends React.Component {
       let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
       let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
-      componentsUnelectedArr.push(
+      componentsFormUnselectedArr.push(
         <ID
           key={index}
           type={valueObj.type}
@@ -219,6 +235,13 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- selectedArr -----\n
+    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     // console.log(chalk`
     //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
     // `);
@@ -233,29 +256,26 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>ID</Heading>
-        <Description>表示したいIDを選択してください。</Description>
-        
-        
         
         {/* ダイアログ表示ボタン */}
         <Button
           variant="outlined"
           color="primary"
           onClick={() => handleIDFormDialogOpen({
-            _id,
-            usersLogin_id: stores.data.usersLoginObj._id
+            selectedArr
           })}
           disabled={buttonDisabled}
         >
-          IDを選択する
+          IDを編集する
         </Button>
         
         
-        {/* ダイアログ */}
+        
+        
+        {/* ダイアログ - ID選択＆登録フォーム */}
         <Dialog
           open={dialogOpen}
-          onClose={() => handleIDFormDialogClose(_id)}
+          onClose={() => handleIDFormDialogClose()}
           fullScreen
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -267,7 +287,7 @@ export default class extends React.Component {
             <Toolbar>
               <IconButton
                 color="inherit"
-                onClick={() => handleIDFormDialogClose(_id)}
+                onClick={() => handleIDFormDialogClose()}
                 aria-label="Close"
               >
                 <IconClose />
@@ -302,15 +322,20 @@ export default class extends React.Component {
           {/*  */}
           <SelectBox>
             
+            
+            {/* 選択ID */}
             <SelectedHeading>[ 選択ID ]</SelectedHeading>
             
+            <UnselectedBox>
+              {componentsFormSelectedArr}
+            </UnselectedBox>
             
             
+            {/* 未選択ID */}
             <UnselectedHeading>[ 未選択ID ]</UnselectedHeading>
             
-            {/* ID */}
             <UnselectedBox>
-              {componentsUnelectedArr}
+              {componentsFormUnselectedArr}
             </UnselectedBox>
             
             

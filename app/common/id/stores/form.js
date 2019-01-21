@@ -66,10 +66,18 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * フォームのデータを入れる配列
+   * @type {Array}
+   */
+  @observable idFormDataArr = [];
+  
+  
+  /**
    * フォームの選択されたデータを入れる配列
    * @type {Array}
    */
   @observable idFormDataSelectedArr = [];
+  
   
   /**
    * フォームの未選択のデータを入れる配列
@@ -95,8 +103,9 @@ class Store {
    * ダイアログを閉じる
    */
   @action.bound
-  handleIDFormDialogClose(_id) {
-    this.idFormDialogObj[_id] = false;
+  handleIDFormDialogClose() {
+    const usersLogin_id = storeData.usersLoginObj._id;
+    this.idFormDialogObj[usersLogin_id] = false;
   };
   
   
@@ -106,7 +115,15 @@ class Store {
    * @param {string} usersLogin_id - ログインユーザーID
    */
   @action.bound
-  async handleIDFormDialogOpen({_id, usersLogin_id}) {
+  async handleIDFormDialogOpen({selectedArr}) {
+    
+    
+    // ---------------------------------------------
+    //   ログインユーザーID
+    // ---------------------------------------------
+    
+    const usersLogin_id = storeData.usersLoginObj._id;
+    
     
     
     try {
@@ -119,7 +136,7 @@ class Store {
       
       if (this.idFormDataSelectedArr.length > 0 || this.idFormDataUnselectedArr.length > 0) {
         
-        this.idFormDialogObj[_id] = true;
+        this.idFormDialogObj[usersLogin_id] = true;
         
         
       // ---------------------------------------------
@@ -145,7 +162,7 @@ class Store {
         //   Button Disabled
         // ---------------------------------------------
         
-        storeLayout.handleButtonDisabledObj(`${_id}-idForm`, true);
+        storeLayout.handleButtonDisabledObj(`${usersLogin_id}-idForm`, true);
         
         
         // ---------------------------------------------
@@ -172,14 +189,50 @@ class Store {
         //  Data 更新
         // ---------------------------------------------
         
-        this.idFormDataUnselectedArr = resultObj.data;
+        const idFormDataArr = resultObj.data;
+        const idFormDataSelectedArr = [];
+        const idFormDataUnselectedArr = [];
+        
+        // 選択ID
+        for (let valueObj of selectedArr.values()) {
+          
+          const index = idFormDataArr.findIndex((value2Obj) => {
+            return value2Obj._id === valueObj._id;
+          });
+          
+          if (index !== -1) {
+            idFormDataSelectedArr.push(valueObj);
+          }
+          
+        }
+        
+        // 未選択ID
+        for (let valueObj of idFormDataArr.values()) {
+          
+          const index = selectedArr.findIndex((value2Obj) => {
+            return value2Obj._id === valueObj._id;
+          });
+          
+          if (index === -1) {
+            idFormDataUnselectedArr.push(valueObj);
+          }
+          
+        }
+        
+        this.idFormDataSelectedArr = idFormDataSelectedArr;
+        this.idFormDataUnselectedArr = idFormDataUnselectedArr;
+        this.idFormDataArr = resultObj.data;
+        
+        
+        
+        
         
         
         // ---------------------------------------------
         //   編集フォーム表示
         // ---------------------------------------------
         
-        this.idFormDialogObj[_id] = true;
+        this.idFormDialogObj[usersLogin_id] = true;
         
         
         // console.log(`
@@ -207,7 +260,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idForm`, false);
+      storeLayout.handleButtonDisabledObj(`${usersLogin_id}-idForm`, false);
       
       
     }

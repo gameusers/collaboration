@@ -246,6 +246,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     for (let valueObj of resultIDsArr) {
       
       let tempObj = {
+        _id: valueObj._id,
         type: valueObj.type,
         label: valueObj.label,
         value: valueObj.value
@@ -404,6 +405,7 @@ const formatToObject = (argumentsObj) => {
     ) {
       
       let tempObj = {
+        _id: valueObj._id,
         type: valueObj.type,
         label: valueObj.label,
         value: valueObj.value

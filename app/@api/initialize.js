@@ -1583,6 +1583,16 @@ router.post('/db', upload.none(), async (req, res, next) => {
         value: 'Super-Smash-Bros-SPECIAL-ID',
         showType: 5,
         search: true,
+      },
+      {
+        _id: 'ixVVi-MyF',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        type: 'Other',
+        label: '未選択',
+        value: 'Unselected-ID',
+        showType: 1,
+        search: true,
       }
     ];
     

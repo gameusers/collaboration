@@ -26,9 +26,9 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+// import TextField from '@material-ui/core/TextField';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -55,7 +55,8 @@ import Tablet from './tablet';
 import PC from './pc';
 import HardwareActive from './hardware-active';
 import HardwareInactive from './hardware-inactive';
-import IDForm from '../../../../id/components/form';
+import ID from './id';
+// import IDForm from '../../../../id/components/form';
 
 
 
@@ -119,7 +120,6 @@ const ThumbnailBox = styled.div`
 
 const ThumbnailTitle = styled.div`
   color: rgba(0, 0, 0, 0.54);
-  // margin: 16px 0 0 0;
 `;
 
 const ImageBox = styled.div`
@@ -128,7 +128,6 @@ const ImageBox = styled.div`
 
 const ImageTitle = styled.div`
   color: rgba(0, 0, 0, 0.54);
-  // margin: 16px 0 0 0;
 `;
 
 
@@ -186,11 +185,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id, users_id } = this.props;
+    const { stores, cardPlayers_id } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
-    
-    // const { usersLoginObj } = stores.data;
     
     const {
       
@@ -203,6 +200,7 @@ export default class extends React.Component {
       
     } = stores.cardPlayer;
     
+    // const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
     
     
     
@@ -228,6 +226,7 @@ export default class extends React.Component {
       hardwareInactiveObj,
       hardwareActiveArr,
       hardwareInactiveArr,
+      idArr,
       
     } = cardPlayerEditFormDataObj[cardPlayers_id];
     
@@ -261,10 +260,17 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- cardPlayerEditFormDataObj[cardPlayers_id].hardwareActiveArr -----\n
-    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id].hardwareActiveArr, { colors: true, depth: null })}\n
+    //   ----- cardPlayerEditFormDataObj[cardPlayers_id].idArr -----\n
+    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id].idArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    // console.log(`
+    //   ----- cardPlayersObj.idArr -----\n
+    //   ${util.inspect(cardPlayersObj.idArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // console.log(chalk`
     //   sexObj.value: {green ${sexObj.value}}
@@ -462,8 +468,9 @@ export default class extends React.Component {
           
           {/* ID */}
           <Box>
-            <IDForm
+            <ID
               _id={cardPlayers_id}
+              selectedArr={idArr}
             />
           </Box>
           
@@ -512,6 +519,7 @@ export default class extends React.Component {
         </StyledCardActions>
         
         
+        {/* フォームの内容を元に戻すか尋ねるダイアログ */}
         <Dialog
           open={dialogOpen}
           onClose={() => handleCardPlayerEditFormUndoDataDialogClose(cardPlayers_id)}

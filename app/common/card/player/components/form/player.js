@@ -196,11 +196,11 @@ export default class extends React.Component {
       handleCardPlayerEditFormUndoDataDialogOpen,
       handleCardPlayerEditFormUndoDataDialogClose,
       handleCardPlayerEditFormUndoData,
-      handleCardPlayerEditFormClose
+      handleCardPlayerEditFormClose,
+      handleCardPlayerEditID
       
     } = stores.cardPlayer;
     
-    // const cardPlayersObj = stores.data.cardPlayersObj[cardPlayers_id];
     
     
     
@@ -229,6 +229,8 @@ export default class extends React.Component {
       idArr,
       
     } = cardPlayerEditFormDataObj[cardPlayers_id];
+    
+    
     
     
     // --------------------------------------------------
@@ -269,13 +271,6 @@ export default class extends React.Component {
     //   ----- cardPlayersObj.idArr -----\n
     //   ${util.inspect(cardPlayersObj.idArr, { colors: true, depth: null })}\n
     //   --------------------\n
-    // `);
-    
-    
-    // console.log(chalk`
-    //   sexObj.value: {green ${sexObj.value}}
-    //   sexObj.alternativeText: {green ${sexObj.alternativeText}}
-    //   sexObj.search: {green ${sexObj.search}}
     // `);
     
     // console.log(chalk`
@@ -471,6 +466,7 @@ export default class extends React.Component {
             <ID
               _id={cardPlayers_id}
               selectedArr={idArr}
+              func={handleCardPlayerEditID}
             />
           </Box>
           

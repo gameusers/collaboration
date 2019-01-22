@@ -45,11 +45,12 @@ const schema = mongoose.Schema({
   hardwareArr: [
     {
       _id: { type: String, required: true },
-      hardware_id: { type: String, required: true },
+      hardwareID: { type: String, required: true },
       releaseData: Date,
-      players: { type: Number, required: true },
-      publisher_id: String,
-      developer_id: String,
+      playersMin: { type: Number, required: true },
+      playersMax: { type: Number, required: true },
+      publisherID: String,
+      developerID: String,
     }
   ],
   linkArr: [

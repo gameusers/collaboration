@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-// import keycode from 'keycode';
 
 
 // ---------------------------------------------
@@ -66,24 +65,24 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * フォームのデータを入れる配列
-   * @type {Array}
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
    */
-  @observable idFormDataArr = [];
+  @observable idFormDataObj = {};
   
   
   /**
-   * フォームの選択されたデータを入れる配列
-   * @type {Array}
+   * フォームの選択されたデータを入れるオブジェクト
+   * @type {Object}
    */
-  @observable idFormDataSelectedArr = [];
+  @observable idFormDataSelectedObj = {};
   
   
   /**
-   * フォームの未選択のデータを入れる配列
-   * @type {Array}
+   * フォームの未選択のデータを入れるオブジェクト
+   * @type {Object}
    */
-  @observable idFormDataUnselectedArr = [];
+  @observable idFormDataUnselectedObj = {};
   
   
   
@@ -103,9 +102,9 @@ class Store {
    * ダイアログを閉じる
    */
   @action.bound
-  handleIDFormDialogClose() {
-    const usersLogin_id = storeData.usersLoginObj._id;
-    this.idFormDialogObj[usersLogin_id] = false;
+  handleIDFormDialogClose({ _id }) {
+    // const usersLogin_id = storeData.usersLoginObj._id;
+    this.idFormDialogObj[_id] = false;
   };
   
   
@@ -115,15 +114,7 @@ class Store {
    * @param {string} usersLogin_id - ログインユーザーID
    */
   @action.bound
-  async handleIDFormDialogOpen({selectedArr}) {
-    
-    
-    // ---------------------------------------------
-    //   ログインユーザーID
-    // ---------------------------------------------
-    
-    const usersLogin_id = storeData.usersLoginObj._id;
-    
+  async handleIDFormDialogOpen({ _id, selectedArr }) {
     
     
     try {
@@ -134,9 +125,9 @@ class Store {
       //   編集フォームをすぐに表示する
       // ---------------------------------------------
       
-      if (this.idFormDataSelectedArr.length > 0 || this.idFormDataUnselectedArr.length > 0) {
+      if (_id in this.idFormDataObj) {
         
-        this.idFormDialogObj[usersLogin_id] = true;
+        this.idFormDialogObj[_id] = true;
         
         
       // ---------------------------------------------
@@ -146,7 +137,7 @@ class Store {
       
       } else {
         
-        console.log('fetchWrapper');
+        // console.log('fetchWrapper');
          
         
         // ---------------------------------------------
@@ -155,14 +146,12 @@ class Store {
         
         const formData = new FormData();
         
-        // formData.append('_id', usersLogin_id);
-        
         
         // ---------------------------------------------
         //   Button Disabled
         // ---------------------------------------------
         
-        storeLayout.handleButtonDisabledObj(`${usersLogin_id}-idForm`, true);
+        storeLayout.handleButtonDisabledObj(`${_id}-idForm`, true);
         
         
         // ---------------------------------------------
@@ -219,9 +208,9 @@ class Store {
           
         }
         
-        this.idFormDataSelectedArr = idFormDataSelectedArr;
-        this.idFormDataUnselectedArr = idFormDataUnselectedArr;
-        this.idFormDataArr = resultObj.data;
+        this.idFormDataSelectedObj[_id] = idFormDataSelectedArr;
+        this.idFormDataUnselectedObj[_id] = idFormDataUnselectedArr;
+        this.idFormDataObj[_id] = resultObj.data;
         
         
         
@@ -232,7 +221,7 @@ class Store {
         //   編集フォーム表示
         // ---------------------------------------------
         
-        this.idFormDialogObj[usersLogin_id] = true;
+        this.idFormDialogObj[_id] = true;
         
         
         // console.log(`
@@ -260,12 +249,59 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${usersLogin_id}-idForm`, false);
+      storeLayout.handleButtonDisabledObj(`${_id}-idForm`, false);
       
       
     }
     
     
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   選択
+  // ---------------------------------------------
+  
+  /**
+   * 選択IDから未選択IDに移動する
+   * @param {string} _id - ID
+   * @param {number} index - 移動するIDの配列index
+   */
+  @action.bound
+  handleIDFormMoveFromSelectedToUnselected({ _id, index }) {
+    this.idFormDataUnselectedObj[_id].push(this.idFormDataSelectedObj[_id][index]);
+    this.idFormDataSelectedObj[_id].splice(index, 1);
+  };
+  
+  
+  /**
+   * 未選択IDから選択IDに移動する
+   * @param {string} _id - ID
+   * @param {number} index - 移動するIDの配列index
+   */
+  @action.bound
+  handleIDFormMoveFromUnselectedToSelected({ _id, index }) {
+    this.idFormDataSelectedObj[_id].push(this.idFormDataUnselectedObj[_id][index]);
+    this.idFormDataUnselectedObj[_id].splice(index, 1);
+  };
+  
+  
+  /**
+   * 選択を確定するボタンを押したときに実行される
+   * @param {string} _id - ID
+   * @param {number} idArr - IDの配列
+   * @param {function} func - ボタンを押したときに実行する関数
+   */
+  @action.bound
+  handleIDFormSelectButton({ _id, idArr, func }) {
+    
+    // 渡された関数を実行する
+    func({ _id, idArr });
+    
+    // ダイアログを閉じる
+    this.idFormDialogObj[_id] = false;
     
   };
   

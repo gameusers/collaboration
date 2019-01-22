@@ -94,7 +94,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, selectedArr } = this.props;
+    const { stores, _id, selectedArr, func } = this.props;
     
     
     
@@ -114,9 +114,9 @@ export default class extends React.Component {
       componentsSelectedArr.push(
         <ID
           key={index}
-          type={valueObj.type}
+          platform={valueObj.platform}
           label={valueObj.label}
-          id={valueObj.value}
+          id={valueObj.id}
           games_id={games_id}
           gamesThumbnail={gamesThumbnail}
           gamesName={gamesName}
@@ -168,7 +168,9 @@ export default class extends React.Component {
         {/* ID選択フォーム */}
         <OpenDialogButtonBox>
           <IDForm
+            _id={_id}
             selectedArr={selectedArr}
+            func={func}
           />
         </OpenDialogButtonBox>
         

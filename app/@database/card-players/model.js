@@ -646,15 +646,21 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- resultIDsObj -----\n
-      ${util.inspect(resultIDsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultIDsObj -----\n
+    //   ${util.inspect(resultIDsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      ----- returnObj['zaoOWw89g'].idArr -----\n
+      ${util.inspect(returnObj['zaoOWw89g'].idArr, { colors: true, depth: null })}\n
       --------------------\n
     `);
     

@@ -141,9 +141,9 @@ export default class extends React.Component {
       componentsArr.push(
         <ID
           key={index}
-          type={valueObj.type}
+          platform={valueObj.platform}
           label={valueObj.label}
-          id={valueObj.value}
+          id={valueObj.id}
           games_id={games_id}
           gamesThumbnail={gamesThumbnail}
           gamesName={gamesName}

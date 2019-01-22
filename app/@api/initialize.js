@@ -238,11 +238,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         hardwareArr: [
           {
             _id: 'pIcOj6-43',
-            hardware_id: '60TVB7_if',
+            hardwareID: 'TdK3Oc-yV',
             releaseData: '2016-06-14T00:00:00.000Z',
-            players: 5,
-            publisher_id: 'fa_jpSg5L',
-            developer_id: '_sCyO1JV1',
+            playersMin: 1,
+            playersMax: 5,
+            publisherID: '',
+            developerID: '',
           }
         ],
         linkArr: [
@@ -303,11 +304,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         hardwareArr: [
           {
             _id: '7kDhzjxI9',
-            hardware_id: '60TVB7_if',
+            hardwareID: 'TdK3Oc-yV',
             releaseData: '2016-06-14T00:00:00.000Z',
-            players: 5,
-            publisher_id: 'fa_jpSg5L',
-            developer_id: '_sCyO1JV1',
+            playersMin: 1,
+            playersMax: 5,
+            publisherID: '',
+            developerID: '',
           }
         ],
         linkArr: [
@@ -344,11 +346,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         hardwareArr: [
           {
             _id: '4q7tQG2I8',
-            hardware_id: '60TVB7_if',
+            hardwareID: 'Zd_Ia4Hwm',
             releaseData: '2018-12-07T00:00:00.000Z',
-            players: 8,
-            publisher_id: 'fa_jpSg5L',
-            developer_id: '_sCyO1JV1',
+            playersMin: 1,
+            playersMax: 8,
+            publisherID: '',
+            developerID: '',
           }
         ],
         linkArr: [
@@ -391,25 +394,74 @@ router.post('/db', upload.none(), async (req, res, next) => {
         hardwareArr: [
           {
             _id: '4q7tQG2I8',
-            hardware_id: '60TVB7_if',
+            hardwareID: 'Zd_Ia4Hwm',
             releaseData: '2018-12-07T00:00:00.000Z',
-            players: 8,
-            publisher_id: 'fa_jpSg5L',
-            developer_id: '_sCyO1JV1',
+            playersMin: 1,
+            playersMax: 8,
+            publisherID: '',
+            developerID: '',
           }
         ],
         linkArr: [
           {
-            _id: 'VZ2G-g2a4',
+            _id: 'Tqogz4MEv',
             type: 'Official',
             label: '',
             url: 'https://www.smashbros.com/en_US/',
           },
           {
-            _id: 'l0oy9ei0f',
+            _id: 'fH-Ttr3wh',
             type: 'Twitter',
             label: '',
             url: 'https://twitter.com/NintendoVS',
+          },
+        ],
+      },
+      
+      
+      {
+        _id: 'PdWVRzkoW',
+        createdDate: date,
+        updatedDate: date,
+        gameID: 'YcIvt9hf7',
+        urlID: 'Dragon-Quest-Builders2',
+        language: 'ja',
+        country: 'JP',
+        thumbnail: true,
+        imageVideoArr: [],
+        name: 'ドラゴンクエストビルダーズ2',
+        subtitle: '',
+        similarityArr: [
+          'ドラクエビルダーズ2'
+        ],
+        forSort: 'ドラゴンクエストビルダーズ2',
+        twitterHashtag: 'DQB2',
+        genreArr: ['sU94RUPS7'],
+        genreSubArr: [],
+        genreTagArr: [],
+        hardwareArr: [
+          {
+            _id: 'loHJZngJ2',
+            hardwareID: 'TdK3Oc-yV',
+            releaseData: '2018-12-20T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 4,
+            publisherID: '',
+            developerID: '',
+          }
+        ],
+        linkArr: [
+          {
+            _id: 'uW1gkb8B6',
+            type: 'Official',
+            label: '',
+            url: 'http://www.dragonquest.jp/builders2/',
+          },
+          {
+            _id: 'frOx6A5WQ',
+            type: 'Twitter',
+            label: '',
+            url: 'https://twitter.com/DQ_BUILDERS2',
           },
         ],
       },
@@ -1528,9 +1580,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'GcymNACvc',
         users_id: 'jun-deE4J',
         gameID: '',
-        type: 'PlayStation',
+        platform: 'PlayStation',
         label: '',
-        value: 'PSN-ID',
+        id: 'PSN-ID',
         showType: 1,
         search: true,
       },
@@ -1538,9 +1590,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'mDuSVm6S7',
         users_id: 'jun-deE4J',
         gameID: '',
-        type: 'Xbox',// ゲーマータグ
+        platform: 'Xbox',// ゲーマータグ
         label: '',
-        value: 'Xbox-ID',
+        id: 'Xbox-ID',
         showType: 1,
         search: true,
       },
@@ -1548,9 +1600,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'n4I1BDtxH',
         users_id: 'jun-deE4J',
         gameID: '',
-        type: 'Nintendo',// フレンドコード
+        platform: 'Nintendo',// フレンドコード
         label: '',
-        value: 'Nintendo-ID',
+        id: 'Nintendo-ID',
         showType: 2,
         search: true,
       },
@@ -1558,9 +1610,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'L00bEpD46',
         users_id: 'jun-deE4J',
         gameID: '',
-        type: 'Steam',
+        platform: 'Steam',
         label: '',
-        value: 'Steam-ID',
+        id: 'Steam-ID',
         showType: 3,
         search: true,
       },
@@ -1568,9 +1620,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: '8bJV9G6MU',
         users_id: 'jun-deE4J',
         gameID: 'Jk92aglWl',
-        type: 'Other',
+        platform: 'PC',
         label: '',
-        value: 'DbD-ID',
+        id: 'DbD-ID',
         showType: 4,
         search: true,
       },
@@ -1578,9 +1630,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'UVOFSNbXR',
         users_id: 'jun-deE4J',
         gameID: 'lxdubg6IY',
-        type: 'Other',
+        platform: 'Other',
         label: 'スマブラSP',
-        value: 'Super-Smash-Bros-SPECIAL-ID',
+        id: 'Super-Smash-Bros-SPECIAL-ID',
         showType: 5,
         search: true,
       },
@@ -1588,9 +1640,49 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'ixVVi-MyF',
         users_id: 'jun-deE4J',
         gameID: '',
-        type: 'Other',
+        platform: 'Other',
         label: '未選択',
-        value: 'Unselected-ID',
+        id: 'Unselected-ID',
+        showType: 1,
+        search: true,
+      },
+      {
+        _id: '6tzEJLtel',
+        users_id: 'jun-deE4J',
+        gameID: 'YcIvt9hf7',
+        platform: 'PC',
+        label: '',
+        id: 'PC-ID',
+        showType: 1,
+        search: true,
+      },
+      {
+        _id: 'lgOWOBejs',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        platform: 'Android',
+        label: '',
+        id: 'Android-ID',
+        showType: 1,
+        search: true,
+      },
+      {
+        _id: 'QyAZzwSod',
+        users_id: 'jun-deE4J',
+        gameID: '',
+        platform: 'iOS',
+        label: '',
+        id: 'iOS-ID',
+        showType: 1,
+        search: true,
+      },
+      {
+        _id: 'VambZTyDP',
+        users_id: 'P7UJMuUnx',
+        gameID: '',
+        platform: 'PlayStation',
+        label: '',
+        id: 'User2-PlayStation-ID',
         showType: 1,
         search: true,
       }
@@ -2058,56 +2150,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['TdK3Oc-yV'],
           search: true,
         },
-        idArr: [
-          {
-            _id: '9_-NXN6rQ',
-            type: 'PlayStation',
-            label: '',
-            value: 'User2',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: '-9hC-izPG',
-            type: 'Xbox',// ゲーマータグ
-            label: '',
-            value: 'User2-Xbox',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: 'QbkY_-AjW',
-            type: 'Other',
-            label: '',
-            value: 'User2',
-            showType: 5,
-            search: true,
-          },
-          {
-            _id: 'qMsL_dgHW',
-            type: 'Steam',
-            label: '',
-            value: 'User2',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: 'quLSl_A90',
-            type: 'Other',
-            label: 'LoL ID',
-            value: 'lol-id',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: '19bLgUTWU',
-            type: 'Other',
-            label: 'MHW ID',
-            value: 'mhw-id',
-            showType: 1,
-            search: true,
-          }
-        ],
+        idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
         activityTimeObj: {
           valueArr: [
             {
@@ -2246,24 +2289,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           valueArr: ['TdK3Oc-yV'],
           search: true,
         },
-        idArr: [
-          {
-            _id: 'IaxG9Svs-',
-            type: 'PlayStation',
-            label: '',
-            value: 'PlayStation',
-            showType: 1,
-            search: true,
-          },
-          {
-            _id: 'NuIHKif7T',
-            type: 'Xbox',
-            label: '',
-            value: 'Xbox',
-            showType: 1,
-            search: true,
-          },
-        ],
+        idArr: [],
         activityTimeObj: {
           valueArr: [
             {

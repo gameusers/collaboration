@@ -51,17 +51,18 @@ const schema = mongoose.Schema({
     valueArr: [String],
     search: { type: Boolean, required: true },
   },
-  idArr: [
-    {
-      _id: { type: String, required: true },
-      quotation_id: String,
-      type: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
-      label: String,
-      value: { type: String, required: true },
-      showType: { type: Number, min: 1, max: 5 },
-      search: { type: Boolean, required: true },
-    },
-  ],
+  idArr: [String],
+  // idArr: [
+  //   {
+  //     _id: { type: String, required: true },
+  //     quotation_id: String,
+  //     type: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
+  //     label: String,
+  //     value: { type: String, required: true },
+  //     showType: { type: Number, min: 1, max: 5 },
+  //     search: { type: Boolean, required: true },
+  //   },
+  // ],
   activityTimeObj: {
     valueArr: [
       {

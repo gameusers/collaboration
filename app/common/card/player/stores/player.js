@@ -1702,6 +1702,35 @@ class Store {
   };
   
   
+  
+  
+  // ---------------------------------------------
+  //   ID
+  // ---------------------------------------------
+  
+  /**
+   * IDを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {Array} idArr - IDデータの入った配列
+   */
+  @action.bound
+  handleCardPlayerEditID({_id, idArr}) {
+    
+    console.log(chalk`
+      _id: {green ${_id}}
+    `);
+    
+    console.log(`
+      ----- idArr -----\n
+      ${util.inspect(idArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    this.cardPlayerEditFormDataObj[_id].idArr = idArr;
+  };
+  
+  
 }
 
 

@@ -247,9 +247,9 @@ const findBy_Users_idForForm = async (argumentsObj) => {
       
       let tempObj = {
         _id: valueObj._id,
-        type: valueObj.type,
+        platform: valueObj.platform,
         label: valueObj.label,
-        value: valueObj.value
+        id: valueObj.id
       };
       
       if ('gamesObj' in valueObj) {
@@ -406,9 +406,9 @@ const formatToObject = (argumentsObj) => {
       
       let tempObj = {
         _id: valueObj._id,
-        type: valueObj.type,
+        platform: valueObj.platform,
         label: valueObj.label,
-        value: valueObj.value
+        id: valueObj.id
       };
       
       if ('gamesObj' in valueObj) {

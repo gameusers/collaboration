@@ -48,11 +48,16 @@ const IDBox = styled.div`
   border: 1px solid #3f51b5;
   border-radius: 18px;
   margin: 8px 8px 0 0;
-  box-sizing: border-box;
+  // box-sizing: border-box;
+  // cursor: pointer;
 `;
 
-const LeftBox = styled.div`
+const AvatarMainBox = styled.div`
   
+`;
+
+const AvatarSubBox = styled.div`
+  margin-left: auto;
 `;
 
 const StyledAvatar = styled(Avatar)`
@@ -71,16 +76,16 @@ const StyledAvatarNoImage = styled(Avatar)`
   }
 `;
 
-const RightBox = styled.div`
+const TextBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   font-size: 14px;
   line-height: 1.4;
-  padding: 4px 14px 4px 8px;
+  padding: 4px 14px 4px 6px;
 `;
 
 const Label = styled.span`
-  // font-weight: bold;
+  font-weight: bold;
   padding: 0 4px 0 0;
 `;
 
@@ -111,7 +116,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { type, label, id, games_id, gamesThumbnail, gamesName } = this.props;
+    const { platform, label, id, games_id, gamesThumbnail, gamesName } = this.props;
     
     
     
@@ -120,7 +125,7 @@ export default class extends React.Component {
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (!type && !id) {
+    if (!platform && !id) {
       return null;
     }
     
@@ -128,7 +133,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component
+    //   Component - Avatar & Label
     // --------------------------------------------------
     
     let componentAvatar = '';
@@ -139,7 +144,7 @@ export default class extends React.Component {
     //   PlayStation
     // ---------------------------------------------
     
-    if (type === 'PlayStation') {
+    if (platform === 'PlayStation') {
       
       componentAvatar = <StyledAvatar alt="PlayStation" src={`/static/img/platform/playstation-256.jpg`} />;
       labelValue = 'PlayStation';
@@ -149,7 +154,7 @@ export default class extends React.Component {
     //   Xbox
     // ---------------------------------------------
       
-    } else if (type === 'Xbox') {
+    } else if (platform === 'Xbox') {
       
       componentAvatar = <StyledAvatar alt="Xbox" src={`/static/img/platform/xbox-256.jpg`} />;
       labelValue = 'Xbox';
@@ -159,7 +164,7 @@ export default class extends React.Component {
     //   Nintendo
     // ---------------------------------------------
       
-    } else if (type === 'Nintendo') {
+    } else if (platform === 'Nintendo') {
       
       componentAvatar = <StyledAvatar alt="Nintendo" src={`/static/img/platform/nintendo-256.jpg`} />;
       labelValue = 'Nintendo';
@@ -169,22 +174,47 @@ export default class extends React.Component {
     //   Steam
     // ---------------------------------------------
       
-    } else if (type === 'Steam') {
+    } else if (platform === 'Steam') {
       
       componentAvatar = <StyledAvatar alt="Steam" src={`/static/img/platform/steam-256.jpg`} />;
       labelValue = 'Steam';
       
       
     // ---------------------------------------------
+    //   PC
+    // ---------------------------------------------
+      
+    } else if (platform === 'PC') {
+      
+      componentAvatar = <StyledAvatar alt="PC" src={`/static/img/platform/pc-256.jpg`} />;
+      labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
+      
+    
+    // ---------------------------------------------
+    //   Android
+    // ---------------------------------------------
+      
+    } else if (platform === 'Android') {
+      
+      componentAvatar = <StyledAvatar alt="Android" src={`/static/img/platform/android-256.jpg`} />;
+      labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
+      
+      
+    // ---------------------------------------------
+    //   iOS
+    // ---------------------------------------------
+      
+    } else if (platform === 'iOS') {
+      
+      componentAvatar = <StyledAvatar alt="iOS" src={`/static/img/platform/ios-256.jpg`} />;
+      labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
+      
+      
+    // ---------------------------------------------
     //   Other
     // ---------------------------------------------
       
-    } else if (type === 'Other') {
-      
-      
-      // ---------------------------------------------
-      //   Avatar
-      // ---------------------------------------------
+    } else if (platform === 'Other') {
       
       componentAvatar =
         <StyledAvatarNoImage>
@@ -192,23 +222,33 @@ export default class extends React.Component {
         </StyledAvatarNoImage>
       ;
       
-      if (gamesThumbnail && games_id) {
-        componentAvatar = <StyledAvatarNoImage alt={gamesName} src={`/static/img/games/${games_id}/thumbnail/image.jpg`} />;
-      }
-      
-      
-      // ---------------------------------------------
-      //   Label
-      // ---------------------------------------------
-      
-      labelValue = label;
-      
-      if (!label) {
-        labelValue = gamesName;
-      }
-      
-      
     }
+    
+    
+    // --------------------------------------------------
+    //   Label
+    // --------------------------------------------------
+    
+    if (label) {
+      labelValue = label;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Component - Sub Avatar
+    // --------------------------------------------------
+    
+    let componentSubAvatar = '';
+    
+    if (games_id && gamesThumbnail && gamesName) {
+      
+      componentSubAvatar =
+        <AvatarSubBox>
+          <StyledAvatar alt={gamesName} src={`/static/img/games/${games_id}/thumbnail/image.jpg`} />
+        </AvatarSubBox>
+      ;
+    }
+    
     
     
     
@@ -234,13 +274,20 @@ export default class extends React.Component {
     
     return (
       <IDBox>
-        <LeftBox>
+        
+        <AvatarMainBox>
           {componentAvatar}
-        </LeftBox>
-        <RightBox>
+        </AvatarMainBox>
+        
+        <TextBox
+          style={{ paddingRight: componentSubAvatar ? 6 : 14 }}
+        >
           <Label>{labelValue}:</Label>
           <ID>{id}</ID>
-        </RightBox>
+        </TextBox>
+        
+        {componentSubAvatar}
+        
       </IDBox>
     );
     

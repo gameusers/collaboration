@@ -227,8 +227,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',
-        similarityArr: [
-          'DbD'
+        searchKeywordsArr: [
+          'デッドバイデイライト',
+          'でっどばいでいらいと',
+          'Dead by Daylight',
+          'DbD',
         ],
         forSort: 'デッドバイデイライト',
         twitterHashtag: 'DeadbyDaylight',
@@ -293,8 +296,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',
-        similarityArr: [
-          'DbD'
+        searchKeywordsArr: [
+          'Dead by Daylight',
+          'DbD',
         ],
         forSort: 'Dead by Daylight',
         twitterHashtag: 'DeadbyDaylight',
@@ -335,8 +339,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imageVideoArr: [],
         name: '大乱闘スマッシュブラザーズ SPECIAL',
         subtitle: '',
-        similarityArr: [
-          'スマブラSP'
+        searchKeywordsArr: [
+          '大乱闘スマッシュブラザーズ SPECIAL',
+          '大乱闘スマッシュブラザーズSPECIAL',
+          '大乱闘スマッシュブラザーズスペシャル',
+          'スマブラSP',
         ],
         forSort: 'ダイラントウスマッシュブラザーズスペシャル',
         twitterHashtag: 'スマブラSP',
@@ -383,8 +390,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imageVideoArr: [],
         name: 'Super Smash Bros. Ultimate',
         subtitle: '',
-        similarityArr: [
-          ''
+        searchKeywordsArr: [
+          'Super Smash Bros. Ultimate',
         ],
         forSort: 'Super Smash Bros. Ultimate',
         twitterHashtag: '',
@@ -431,8 +438,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imageVideoArr: [],
         name: 'ドラゴンクエストビルダーズ2',
         subtitle: '',
-        similarityArr: [
-          'ドラクエビルダーズ2'
+        searchKeywordsArr: [
+          'ドラゴンクエストビルダーズ2',
+          'ドラクエビルダーズ2',
+          'DQB2'
         ],
         forSort: 'ドラゴンクエストビルダーズ2',
         twitterHashtag: 'DQB2',

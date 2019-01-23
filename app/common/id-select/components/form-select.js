@@ -23,29 +23,14 @@ import styled from 'styled-components';
 //   Material UI
 // ---------------------------------------------
 
-// import TextField from '@material-ui/core/TextField';
-
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import IconClose from '@material-ui/icons/Close';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import ID from '../../id/components/id';
+import IDSelectChip from './chip';
 
 
 
@@ -55,27 +40,17 @@ import ID from '../../id/components/id';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const ButtonBox = styled.div`
-  // display: flex;
-  // flex-flow: row wrap;
-  margin: 90px 0 0 12px;
+const Container = styled.div`
+  padding: 8px 14px 16px 14px;
 `;
 
-const SelectFormTypeButton = styled(Button)`
-  && {
-    margin: 0 16px 0 0;
-  }
+const Description = styled.p`
+  font-size: 14px;
+  margin: 12px 0 0 0;
 `;
 
-const ContentsSelectBox = styled.div`
-  padding: 8px 14px;
-`;
-
-const SelectedHeading = styled.div`
-  margin: 24px 0 0 0;
-`;
-
-const UnselectedHeading = styled.div`
+const Heading = styled.div`
+  font-weight: bold;
   margin: 24px 0 0 0;
 `;
 
@@ -103,7 +78,6 @@ const FuncButton = styled(Button)`
 
 
 
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -118,11 +92,7 @@ export default class extends React.Component {
   
   
   componentDidMount() {
-    // console.log(this.props.stores.data.usersLoginObj._id);
-    
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idForm`, false);
-    
-    // this.props.stores.layout.handleButtonDisabledObj(`${this.props.stores.data.usersLoginObj._id}-idForm`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormSelect`, false);
   }
   
   
@@ -133,7 +103,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, selectedArr, func } = this.props;
+    const { stores, _id, func } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -141,27 +111,13 @@ export default class extends React.Component {
       
       idFormDataSelectedObj,
       idFormDataUnselectedObj,
-      idFormDialogObj,
-      handleIDFormDialogClose,
-      handleIDFormDialogOpen,
       handleIDFormMoveFromSelectedToUnselected,
       handleIDFormMoveFromUnselectedToSelected,
       handleIDFormSelectButton
       
-    } = stores.idForm;
+    } = stores.idSelectForm;
     
     
-    
-    
-    // --------------------------------------------------
-    //   Dialog
-    // --------------------------------------------------
-    
-    let dialogOpen = false;
-    
-    if (_id in idFormDialogObj) {
-      dialogOpen = idFormDialogObj[_id];
-    }
     
     
     // --------------------------------------------------
@@ -170,8 +126,8 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${_id}-idForm` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-idForm`];
+    if (`${_id}-idFormSelect` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${_id}-idFormSelect`];
     }
     
     
@@ -181,7 +137,7 @@ export default class extends React.Component {
     //   Component - 選択ID
     // --------------------------------------------------
     
-    const componentsFormSelectedArr = [];
+    const componentsSelectedArr = [];
     const dataSelectedArr = _id in idFormDataSelectedObj ? idFormDataSelectedObj[_id] : [];
     
     for (const [index, valueObj] of dataSelectedArr.entries()) {
@@ -190,20 +146,18 @@ export default class extends React.Component {
       let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
       let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
-      componentsFormSelectedArr.push(
+      componentsSelectedArr.push(
         <IDBox
           key={index}
           onClick={() => handleIDFormMoveFromSelectedToUnselected({ _id, index })}
         >
-          <ID
-            // key={index}
+          <IDSelectChip
             platform={valueObj.platform}
             label={valueObj.label}
             id={valueObj.id}
             games_id={games_id}
             gamesThumbnail={gamesThumbnail}
             gamesName={gamesName}
-            onClick={() => handleIDFormMoveFromSelectedToUnselected({ _id: valueObj.id })}
           />
         </IDBox>
       );
@@ -217,7 +171,7 @@ export default class extends React.Component {
     //   Component - 未選択ID
     // --------------------------------------------------
     
-    const componentsFormUnselectedArr = [];
+    const componentsUnselectedArr = [];
     const dataUnselectedArr = _id in idFormDataUnselectedObj ? idFormDataUnselectedObj[_id] : [];
     
     for (const [index, valueObj] of dataUnselectedArr.entries()) {
@@ -226,13 +180,12 @@ export default class extends React.Component {
       let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
       let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
-      componentsFormUnselectedArr.push(
+      componentsUnselectedArr.push(
         <IDBox
           key={index}
           onClick={() => handleIDFormMoveFromUnselectedToSelected({ _id, index })}
         >
-          <ID
-            // key={index}
+          <IDSelectChip
             platform={valueObj.platform}
             label={valueObj.label}
             id={valueObj.id}
@@ -276,117 +229,44 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Container>
         
         
-        {/* ダイアログ表示ボタン */}
-        <Button
+        <Description>選択したいIDをクリック（タップ）して、[ 選択ID ] の欄に入れてください。次に「選択を確定する」ボタンを押すと、IDの選択が完了します。</Description>
+        
+        
+        {/* 選択ID */}
+        <Heading>[ 選択ID ]</Heading>
+        
+        <SelectedBox>
+          {componentsSelectedArr}
+        </SelectedBox>
+        
+        
+        {/* 未選択ID */}
+        <Heading>[ 未選択ID ]</Heading>
+        
+        <SelectedBox>
+          {componentsUnselectedArr}
+        </SelectedBox>
+        
+        
+        {/* 「選択を確定する」ボタン */}
+        <FuncButton
           variant="outlined"
           color="primary"
-          onClick={() => handleIDFormDialogOpen({
+          onClick={() => handleIDFormSelectButton({
             _id,
-            selectedArr
+            idArr: idFormDataSelectedObj[_id],
+            func
           })}
           disabled={buttonDisabled}
         >
-          IDを編集する
-        </Button>
+          選択を確定する
+        </FuncButton>
         
         
-        
-        
-        {/* ダイアログ - ID選択＆登録フォーム */}
-        <Dialog
-          open={dialogOpen}
-          onClose={() => handleIDFormDialogClose({_id})}
-          fullScreen
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          
-          
-          {/* 上部メニュー */}
-          <AppBar>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                onClick={() => handleIDFormDialogClose({_id})}
-                aria-label="Close"
-              >
-                <IconClose />
-              </IconButton>
-              <Typography variant="h6" color="inherit" >
-                ID 選択＆登録フォーム
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          
-          
-          {/* ボタン */}
-          <ButtonBox>
-            
-            <SelectFormTypeButton
-              variant="outlined"
-              color="primary"
-            >
-              ID選択
-            </SelectFormTypeButton>
-            
-            <SelectFormTypeButton
-              variant="outlined"
-              color="primary"
-            >
-              ID登録・編集
-            </SelectFormTypeButton>
-            
-          </ButtonBox>
-          
-          
-          {/* コンテンツ - ID選択 */}
-          <ContentsSelectBox>
-            
-            
-            {/* 選択ID */}
-            <SelectedHeading>[ 選択ID ]</SelectedHeading>
-            
-            <SelectedBox>
-              {componentsFormSelectedArr}
-            </SelectedBox>
-            
-            
-            {/* 未選択ID */}
-            <UnselectedHeading>[ 未選択ID ]</UnselectedHeading>
-            
-            <SelectedBox>
-              {componentsFormUnselectedArr}
-            </SelectedBox>
-            
-            
-            {/* 「選択を確定する」ボタン */}
-            <FuncButton
-              variant="outlined"
-              color="primary"
-              onClick={() => handleIDFormSelectButton({
-                _id,
-                idArr: idFormDataSelectedObj[_id],
-                func
-              })}
-              // onClick={() =>func({
-              //   _id,
-              //   idArr: idFormDataSelectedObj[_id]
-              // })}
-            >
-              選択を確定する
-            </FuncButton>
-            
-            
-          </ContentsSelectBox>
-          
-          
-        </Dialog>
-        
-        
-      </React.Fragment>
+      </Container>
     );
     
   }

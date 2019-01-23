@@ -27,10 +27,6 @@ import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-// import DialogActions from '@material-ui/core/DialogActions';
-// import DialogContent from '@material-ui/core/DialogContent';
-// import DialogContentText from '@material-ui/core/DialogContentText';
-// import DialogTitle from '@material-ui/core/DialogTitle';
 
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -49,7 +45,8 @@ import IconClose from '@material-ui/icons/Close';
 //   Components
 // ---------------------------------------------
 
-import Id from '../../card/player/components/id';
+import FormSelect from './form-select';
+import FormEdit from './form-edit';
 
 
 
@@ -59,21 +56,15 @@ import Id from '../../card/player/components/id';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
-  font-size: 14px;
-  margin: 0 0 12px 0;
-`;
-
 const ButtonBox = styled.div`
   // display: flex;
   // flex-flow: row wrap;
-  // align-items: center;
-  margin: 90px 0 0 12px;
+  margin: 88px 0 0 12px;
+  
+  @media screen and (max-width: 480px) {
+    margin: 76px 0 0 12px;
+  }
+  
 `;
 
 const SelectFormTypeButton = styled(Button)`
@@ -81,10 +72,6 @@ const SelectFormTypeButton = styled(Button)`
     margin: 0 16px 0 0;
   }
 `;
-
-// const SearchBox = styled.div`
-//   margin: 0;
-// `;
 
 
 
@@ -102,8 +89,8 @@ export default class extends React.Component {
   }
   
   
-  componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-formID`, false);
+  componentDidMount() {
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idSelectForm`, false);
   }
   
   
@@ -114,26 +101,20 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr, search } = this.props;
+    const { stores, _id, selectedArr, func } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
-    
-    // console.log(`
-    //   ----- stores -----\n
-    //   ${util.inspect(stores, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     const {
       
-      formIDFormDataSelectedArr,
-      formIDFormDataUnselectedArr,
-      formIDDialogObj,
-      handleFormIDDialogClose,
-      handleFormIDDialogOpen
+      idFormDialogObj,
+      handleIDFormDialogClose,
+      handleIDFormDialogOpen,
       
-    } = stores.formID;
+      idFormContentsTypeObj,
+      handleIDFormContentsType,
+      
+    } = stores.idSelectForm;
     
     
     
@@ -144,8 +125,8 @@ export default class extends React.Component {
     
     let dialogOpen = false;
     
-    if (_id in formIDDialogObj) {
-      dialogOpen = formIDDialogObj[_id];
+    if (_id in idFormDialogObj) {
+      dialogOpen = idFormDialogObj[_id];
     }
     
     
@@ -155,48 +136,23 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${_id}-formID` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-formID`];
+    if (`${_id}-idSelectForm` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${_id}-idSelectForm`];
     }
     
     
     
     
     // --------------------------------------------------
-    //   Component
+    //   コンテンツを切り替える
     // --------------------------------------------------
     
-    const componentsArr = [];
+    let contentsType = 'select';
     
-    // for (let i = 0; i < arr.length; i++) {
-      
-    //   componentsArr.push(
-    //     <StyledTextField
-    //       id={`hobby-${i}`}
-    //       value={arr[i]}
-    //       onChange={(event) => handleCardPlayerEditHobby(event, _id, i)}
-    //       margin="dense"
-    //       variant="outlined"
-    //       key={i}
-    //       inputProps={{
-    //         maxLength: 20,
-    //       }}
-    //       InputProps={{
-    //         endAdornment: (
-    //           <InputAdornment position="end">
-    //             <IconButton
-    //               onClick={() => handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, i)}
-    //               disabled={buttonDisabled}
-    //             >
-    //               <IconRemoveCircle />
-    //             </IconButton>
-    //           </InputAdornment>
-    //         ),
-    //       }}
-    //     />
-    //   );
-      
-    // }
+    if (_id in idFormContentsTypeObj) {
+      contentsType = idFormContentsTypeObj[_id];
+    }
+    
     
     
     
@@ -208,6 +164,12 @@ export default class extends React.Component {
     // console.log(`
     //   ----- stores.data.usersLoginObj -----\n
     //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- selectedArr -----\n
+    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -225,78 +187,94 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>ID</Heading>
-        <Description>入力すると趣味が表示されます。</Description>
-        
-        
         
         {/* ダイアログ表示ボタン */}
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleFormIDDialogOpen({
+          onClick={() => handleIDFormDialogOpen({
             _id,
-            usersLogin_id: stores.data.usersLoginObj._id
+            selectedArr
           })}
           disabled={buttonDisabled}
         >
-          IDを選択する
+          IDを編集する
         </Button>
         
         
-        {/* ダイアログ */}
+        
+        
+        {/* ダイアログ - ID選択＆登録フォーム */}
         <Dialog
           open={dialogOpen}
-          onClose={() => handleFormIDDialogClose(_id)}
+          onClose={() => handleIDFormDialogClose({_id})}
           fullScreen
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
+          
+          
+          {/* 上部メニュー */}
           <AppBar>
             <Toolbar>
               <IconButton
                 color="inherit"
-                onClick={() => handleFormIDDialogClose(_id)}
+                onClick={() => handleIDFormDialogClose({_id})}
                 aria-label="Close"
               >
                 <IconClose />
               </IconButton>
               <Typography variant="h6" color="inherit" >
-                ID 選択＆登録フォーム
+                ID 入力フォーム
               </Typography>
             </Toolbar>
           </AppBar>
           
           
+          {/* ボタン */}
           <ButtonBox>
             
             <SelectFormTypeButton
               variant="outlined"
               color="primary"
+              onClick={() => handleIDFormContentsType({ _id, type: 'select' })}
+              disabled={buttonDisabled}
             >
-              ID選択
+              選択
             </SelectFormTypeButton>
             
             <SelectFormTypeButton
               variant="outlined"
-              color="secondary"
+              color="primary"
+              onClick={() => handleIDFormContentsType({ _id, type: 'edit' })}
+              disabled={buttonDisabled}
             >
-              ID登録
+              編集
+            </SelectFormTypeButton>
+            
+            <SelectFormTypeButton
+              variant="outlined"
+              color="primary"
+              onClick={() => handleIDFormContentsType({ _id, type: 'register' })}
+              disabled={buttonDisabled}
+            >
+              登録
             </SelectFormTypeButton>
             
           </ButtonBox>
           
           
-          
-          選択ID
-          
-          {/* ID */}
-          <Id
-            arr={formIDFormDataUnselectedArr}
-          />
-          
-          
-          未選択ID
+          {/* コンテンツ */}
+          {contentsType === 'select' ? (
+            <FormSelect
+              _id={_id}
+              func={func}
+            />
+          ) : (
+            <FormEdit
+              _id={_id}
+            />
+          )}
           
           
         </Dialog>

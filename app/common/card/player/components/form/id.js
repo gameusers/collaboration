@@ -20,24 +20,11 @@ import styled from 'styled-components';
 
 
 // ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-// import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
-// import Paper from '@material-ui/core/Paper';
-// import MenuList from '@material-ui/core/MenuList';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import Chip from '@material-ui/core/Chip';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import ID from '../../../../id/components/id';
-import IDForm from '../../../../id/components/form';
+import IDSelectChip from '../../../../id-select/components/chip';
+import IDSelectForm from '../../../../id-select/components/form';
 
 
 
@@ -94,7 +81,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, selectedArr, func } = this.props;
+    const { _id, selectedArr, func } = this.props;
     
     
     
@@ -112,7 +99,7 @@ export default class extends React.Component {
       let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
       componentsSelectedArr.push(
-        <ID
+        <IDSelectChip
           key={index}
           platform={valueObj.platform}
           label={valueObj.label}
@@ -124,6 +111,8 @@ export default class extends React.Component {
       );
       
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -155,7 +144,8 @@ export default class extends React.Component {
         
         <Heading>ID</Heading>
         
-        <Description>ゲームのIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。
+        <Description>
+          ゲームのIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。
         </Description>
         
         
@@ -165,9 +155,9 @@ export default class extends React.Component {
         </Box>
         
         
-        {/* ID選択フォーム */}
+        {/* ID選択・編集フォーム */}
         <OpenDialogButtonBox>
-          <IDForm
+          <IDSelectForm
             _id={_id}
             selectedArr={selectedArr}
             func={func}

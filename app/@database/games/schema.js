@@ -36,7 +36,7 @@ const schema = mongoose.Schema({
   ],
   name: { type: String, required: true },
   subtitle: String,
-  similarityArr: [String],
+  searchKeywordsArr: [String],
   forSort: { type: String, required: true },
   twitterHashtag: String,
   genreArr: [String],

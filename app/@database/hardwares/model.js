@@ -24,6 +24,45 @@ const Model = require('./schema');
 // --------------------------------------------------
 
 /**
+ * 取得する / サジェスト用のデータ
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @param {string} keyword - 検索キーワード
+ * @return {Array} 取得データ
+ */
+const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const pattern = new RegExp(`.*${keyword}.*`);
+    
+    return await Model.find(
+      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
+    ).select('hardwareID name').exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 取得する
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
@@ -61,45 +100,6 @@ const find = async (argumentsObj) => {
     // --------------------------------------------------
     
     return docArr;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * 取得する / サジェスト用のデータ
- * @param {string} keyword - 検索キーワード
- * @param {string} language - 言語
- * @param {string} country - 国
- * @return {Array} 取得データ
- */
-const findByNameForSuggestion = async ({ keyword, language, country }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    const pattern = new RegExp(`.*${keyword}.*`);
-    
-    return await Model.find(
-      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    ).select('hardwareID name').exec();
     
     
   } catch (err) {
@@ -279,8 +279,8 @@ const deleteMany = async (argumentsObj) => {
 // --------------------------------------------------
 
 module.exports = {
+  findBySearchKeywordsArrForSuggestion,
   find,
-  findByNameForSuggestion,
   upsert,
   insertMany,
   deleteMany

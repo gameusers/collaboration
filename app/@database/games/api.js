@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   File ID: QOVB4jVBQ
+//   File ID: XSntgt4Xq
 // --------------------------------------------------
 
 // --------------------------------------------------
@@ -32,32 +32,29 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { errorCodeIntoErrorObj } = require('../../@format/error');
-
-
-// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const validation_id = require('../../@validations/_id');
+// const validation_id = require('../../@validations/_id');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../users/model');
-const ModelCardPlayers = require('./model');
+const ModelGames = require('./model');
 
 
 // ---------------------------------------------
-//   Logger
+//   Locales
 // ---------------------------------------------
 
-const logger = require('../../@modules/logger');
+const { addLocaleData } = require('react-intl');
+const en = require('react-intl/locale-data/en');
+const ja = require('react-intl/locale-data/ja');
+addLocaleData([...en, ...ja]);
+
+const { locale } = require('../../@locales/locale');
 
 
 // --------------------------------------------------
@@ -69,27 +66,34 @@ const router = express.Router();
 
 
 
+// --------------------------------------------------
+//   Status Code & Error Arguments Object
+// --------------------------------------------------
+
+let statusCode = 400;
+
+let errorArgumentsObj = {
+  fileId: 'XSntgt4Xq',
+  functionId: '',
+  errorCodeArr: [],
+  errorObj: {},
+};
+
+
+
 
 // --------------------------------------------------
-//   Initial Props / Function ID: hlc3gh0aL
+//   サジェスト用のデータを取得 / Function ID: Bk8IioexW
 // --------------------------------------------------
 
-router.post('/follow', upload.none(), async (req, res, next) => {
+router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
-  let statusCode = 400;
-  
-  let errorArgumentsObj = {
-    fileId: 'QOVB4jVBQ',
-    functionId: 'hlc3gh0aL',
-    errorCodeArr: [500000],
-    errorObj: {},
-  };
+  errorArgumentsObj.functionId = 'Bk8IioexW';
   
   
   try {
@@ -103,52 +107,30 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Login Check
+    //   Locale
     // --------------------------------------------------
     
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      errorArgumentsObj.errorCodeArr = [101001];
-      throw new Error();
-    }
+    const localeObj = locale({
+      acceptLanguage: req.headers['accept-language']
+    });
     
     
     // --------------------------------------------------
-    //   POST 取得 & Property
+    //   POST 取得 & Validation
     // --------------------------------------------------
     
-    const { users_id } = req.body;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validation_idObj = validation_id(users_id);
-    
-    if (validation_idObj.error) {
-      statusCode = 400;
-      errorArgumentsObj.errorCodeArr = [502001];
-      throw new Error();
-    }
+    const { keyword } = req.body;
     
     
     // --------------------------------------------------
-    //   ログインしているユーザーの _id
+    //   サジェスト用のデータを取得
     // --------------------------------------------------
     
-    let usersLogin_id = '';
-    
-    if (req.user) {
-      usersLogin_id = req.user._id;
-    }
-    
-    
-    // --------------------------------------------------
-    //   Model / Users / Follow
-    // --------------------------------------------------
-    
-    returnObj = await ModelUsers.updateForFollow(usersLogin_id, users_id);
+    const returnObj = await ModelGames.findBySearchKeywordsArrForSuggestion({
+      language: localeObj.language,
+      country: localeObj.country,
+      keyword,
+    });
     
     
     // --------------------------------------------------
@@ -156,17 +138,12 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   users_id: {green ${users_id}}
+    //   _id: {green ${_id}}
     // `);
     
     // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   ----- validation_idObj -----\n
-    //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -205,6 +182,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
   }
   
 });
+
 
 
 

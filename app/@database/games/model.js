@@ -14,8 +14,8 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
+// const shortid = require('shortid');
+// const moment = require('moment');
 
 
 // ---------------------------------------------
@@ -29,7 +29,7 @@ const Model = require('./schema');
 //   Format
 // ---------------------------------------------
 
-const { srcset } = require('../../@format/image');
+// const { srcset } = require('../../@format/image');
 
 
 
@@ -37,6 +37,45 @@ const { srcset } = require('../../@format/image');
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
+
+/**
+ * 取得する / サジェスト用のデータ
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @param {string} keyword - 検索キーワード
+ * @return {Array} 取得データ
+ */
+const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const pattern = new RegExp(`.*${keyword}.*`);
+    
+    return await Model.find(
+      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
+    ).select('gameID name').exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
 
 /**
  * 取得する
@@ -265,6 +304,7 @@ const deleteMany = async (argumentsObj) => {
 // --------------------------------------------------
 
 module.exports = {
+  findBySearchKeywordsArrForSuggestion,
   find,
   upsert,
   insertMany,

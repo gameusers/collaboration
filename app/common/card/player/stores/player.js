@@ -1286,6 +1286,7 @@ class Store {
   * 所有ハードウェアのサジェストのキーボード操作
   * ↓ ↑ で現在の選択状態を変更する
   * Enter で現在選択されているハードウェアを登録する
+  * @param {Object} eventObj - イベント
   * @param {string} _id - DB card-players _id
   */
   @action.bound
@@ -1387,7 +1388,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-name-for-suggestion`,
+        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
         methodType: 'POST',
         formData: formData
       });
@@ -1627,7 +1628,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-name-for-suggestion`,
+        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
         methodType: 'POST',
         formData: formData
       });
@@ -1716,18 +1717,18 @@ class Store {
   @action.bound
   handleCardPlayerEditID({_id, idArr}) {
     
-    console.log(chalk`
-      _id: {green ${_id}}
-    `);
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
     
-    console.log(`
-      ----- idArr -----\n
-      ${util.inspect(idArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- idArr -----\n
+    //   ${util.inspect(idArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    
-    this.cardPlayerEditFormDataObj[_id].idArr = idArr;
+    const copiedArr = JSON.parse(JSON.stringify(idArr));
+    this.cardPlayerEditFormDataObj[_id].idArr = copiedArr;
   };
   
   

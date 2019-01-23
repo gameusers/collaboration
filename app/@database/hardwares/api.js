@@ -86,7 +86,7 @@ let errorArgumentsObj = {
 //   サジェスト用のデータを取得 / Function ID: vIWWdmQAT
 // --------------------------------------------------
 
-router.post('/find-by-name-for-suggestion', upload.none(), async (req, res, next) => {
+router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -126,7 +126,7 @@ router.post('/find-by-name-for-suggestion', upload.none(), async (req, res, next
     //   サジェスト用のデータを取得
     // --------------------------------------------------
     
-    const returnObj = await ModelHardwares.findByNameForSuggestion({
+    const returnObj = await ModelHardwares.findBySearchKeywordsArrForSuggestion({
       keyword,
       language: localeObj.language,
       country: localeObj.country,

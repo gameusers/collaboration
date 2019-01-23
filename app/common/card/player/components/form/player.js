@@ -56,7 +56,6 @@ import PC from './pc';
 import HardwareActive from './hardware-active';
 import HardwareInactive from './hardware-inactive';
 import ID from './id';
-// import IDForm from '../../../../id/components/form';
 
 
 

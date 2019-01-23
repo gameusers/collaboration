@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import keycode from 'keycode';
 
 
 // ---------------------------------------------
@@ -61,33 +62,6 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Data
-  // ---------------------------------------------
-  
-  /**
-   * フォームのデータを入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDataObj = {};
-  
-  
-  /**
-   * フォームの選択されたデータを入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDataSelectedObj = {};
-  
-  
-  /**
-   * フォームの未選択のデータを入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDataUnselectedObj = {};
-  
-  
-  
-  
-  // ---------------------------------------------
   //   Dialog
   // ---------------------------------------------
   
@@ -100,10 +74,10 @@ class Store {
   
   /**
    * ダイアログを閉じる
+   * @param {string} _id - ID
    */
   @action.bound
   handleIDFormDialogClose({ _id }) {
-    // const usersLogin_id = storeData.usersLoginObj._id;
     this.idFormDialogObj[_id] = false;
   };
   
@@ -111,7 +85,7 @@ class Store {
   /**
    * ダイアログを開く
    * @param {string} _id - ID
-   * @param {string} usersLogin_id - ログインユーザーID
+   * @param {Array} selectedArr - 選択されているIDが入っている配列
    */
   @action.bound
   async handleIDFormDialogOpen({ _id, selectedArr }) {
@@ -213,10 +187,6 @@ class Store {
         this.idFormDataObj[_id] = resultObj.data;
         
         
-        
-        
-        
-        
         // ---------------------------------------------
         //   編集フォーム表示
         // ---------------------------------------------
@@ -261,8 +231,53 @@ class Store {
   
   
   // ---------------------------------------------
+  //   フォームのコンテンツを切り替える
+  // ---------------------------------------------
+  
+  /**
+   * 表示するフォームのコンテンツを決める変数を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormContentsTypeObj = {};
+  
+  
+  /**
+   * フォームのコンテンツを切り替える
+   * @param {string} _id - ID
+   * @param {string} type - 表示するコンテンツ select / edit
+   */
+  @action.bound
+  handleIDFormContentsType({ _id, type }) {
+    this.idFormContentsTypeObj[_id] = type;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   選択
   // ---------------------------------------------
+  
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormDataObj = {};
+  
+  
+  /**
+   * フォームの選択データを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormDataSelectedObj = {};
+  
+  
+  /**
+   * フォームの未選択データを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormDataUnselectedObj = {};
+  
   
   /**
    * 選択IDから未選択IDに移動する
@@ -306,6 +321,67 @@ class Store {
   };
   
   
+  
+  
+  // ---------------------------------------------
+  //   編集・登録
+  // ---------------------------------------------
+  
+  /**
+   * プラットフォーム選択フォームの選択値を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormDataPlatformObj = {};
+  
+  
+  /**
+   * プラットフォームを変更する
+   * @param {Object} eventObj - イベント
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleIDFormDataPlatform({ eventObj, _id }) {
+    this.idFormDataPlatformObj[_id] = eventObj.target.value;
+  };
+  
+  
+  /**
+   * ラベル入力フォームの入力値を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormDataLabelObj = {};
+  
+  
+  /**
+   * ラベルを変更する
+   * @param {Object} eventObj - イベント
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleIDFormDataLabel({ eventObj, _id }) {
+    this.idFormDataLabelObj[_id] = eventObj.target.value;
+  };
+  
+  
+  /**
+   * ID入力フォームの入力値を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable idFormDataIDObj = {};
+  
+  
+  /**
+   * IDを変更する
+   * @param {Object} eventObj - イベント
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleIDFormDataID({ eventObj, _id }) {
+    this.idFormDataIDObj[_id] = eventObj.target.value;
+  };
+  
+  
+  
 }
 
 
@@ -315,7 +391,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreIDForm(argumentsObj, storeInstanceObj) {
+export default function initStoreIDSelectForm(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
   

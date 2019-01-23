@@ -76,7 +76,8 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 import initStoreIndex from '../../app/@stores/index';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../app/pl/player/stores/store';
-import initStoreIDForm from '../../app/common/id/stores/form';
+import initStoreIDSelectForm from '../../app/common/id-select/stores/form';
+import initStoreGameSelectSuggestion from '../../app/common/game-select/stores/suggestion';
 
 
 // ---------------------------------------------
@@ -249,7 +250,8 @@ class Component extends React.Component {
       this.stores = initStoreIndex(argumentsObj);
       this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
-      this.stores.idForm = initStoreIDForm(argumentsObj, this.stores);
+      this.stores.idSelectForm = initStoreIDSelectForm(argumentsObj, this.stores);
+      this.stores.gameSelectSuggestion = initStoreGameSelectSuggestion(argumentsObj, this.stores);
       
       
       // --------------------------------------------------

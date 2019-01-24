@@ -715,7 +715,7 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditName(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].name = eventObj.target.value;
+    this.cardPlayerEditFormDataObj[_id].nameObj.value = eventObj.target.value;
   };
   
   
@@ -726,7 +726,7 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditStatus(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].status = eventObj.target.value;
+    this.cardPlayerEditFormDataObj[_id].statusObj.value = eventObj.target.value;
   };
   
   
@@ -737,7 +737,7 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditComment(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].comment = eventObj.target.value;
+    this.cardPlayerEditFormDataObj[_id].commentObj.value = eventObj.target.value;
   };
   
   

@@ -216,6 +216,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
               { $project:
                 {
                   _id: 1,
+                  gameID: 1,
                   thumbnail: 1,
                   name: 1,
                 }
@@ -254,6 +255,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
       
       if ('gamesObj' in valueObj) {
         tempObj.games_id = valueObj.gamesObj._id;
+        tempObj.gamesGameID = valueObj.gamesObj.gameID;
         tempObj.gamesThumbnail = valueObj.gamesObj.thumbnail;
         tempObj.gamesName = valueObj.gamesObj.name;
       }

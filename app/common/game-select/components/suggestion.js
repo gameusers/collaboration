@@ -24,24 +24,23 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import TextField from '@material-ui/core/TextField';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
+import Paper from '@material-ui/core/Paper';
+import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconClose from '@material-ui/icons/Close';
+// import IconClose from '@material-ui/icons/Close';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-// import IDSelectChip from '../../id-select/components/chip';
+import GameSelectChip from '../../game-select/components/chip';
 
 
 
@@ -51,6 +50,17 @@ import IconClose from '@material-ui/icons/Close';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
+const SelectedGamesBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 12px 0 0 0;
+  padding: 0;
+  
+  @media screen and (max-width: 480px) {
+    flex-flow: column wrap;
+  }
+`;
+
 const StyledTextFieldWide = styled(TextField)`
   && {
     width: 400px;
@@ -58,6 +68,12 @@ const StyledTextFieldWide = styled(TextField)`
     @media screen and (max-width: 480px) {
       width: 100%;
     }
+  }
+`;
+
+const StyledPaper = styled(Paper)`
+  && {
+    margin: 12px 0 0 0;
   }
 `;
 
@@ -95,8 +111,19 @@ export default class extends React.Component {
     
     const {
       
+      gameSelectSuggestionSelectedObj,
+      handleGameSelectSuggestionAdd,
+      handleGameSelectSuggestionDelete,
+      
       gameSelectSuggestionTextFieldObj,
-      handleGameSelectSuggestionTextField
+      handleGameSelectSuggestionTextField,
+      
+      gameSelectSuggestionDataObj,
+      gameSelectSuggestionKeyboardSelectedObj,
+      
+      gameSelectSuggestionTextFieldFocusObj,
+      handleGameSelectSuggestionTextFieldOnFocus,
+      handleGameSelectSuggestionTextFieldOnBlur
       
     } = stores.gameSelectSuggestion;
     
@@ -128,34 +155,45 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Hardware
+    //   Component - Selected Game
     // --------------------------------------------------
     
-    // let componentHardware = '';
-    // let componentHardwareArr = [];
+    let componentSelected = '';
+    let componentSelectedArr = [];
     
-    // if (arr.length > 0) {
+    let selectedGamesArr = [];
+    
+    if (_id in gameSelectSuggestionSelectedObj) {
+      selectedGamesArr = gameSelectSuggestionSelectedObj[_id];
+    }
+    
+    if (selectedGamesArr.length > 0) {
       
-    //   for (const [index, valueObj] of arr.entries()) {
+      for (const [index, valueObj] of selectedGamesArr.entries()) {
         
-    //     componentHardwareArr.push(
-    //       <StyledChip
-    //         key={index}
-    //         label={valueObj.name}
-    //         color="primary"
-    //         onDelete={() => handleCardPlayerDeleteHardwareActive(_id, valueObj.hardwareID)}
-    //         variant="outlined"
-    //       />
-    //     );
+        // console.log(`
+        //   ----- valueObj -----\n
+        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
-    //   }
+        componentSelectedArr.push(
+          <GameSelectChip
+            _id={valueObj.games_id}
+            gameID={valueObj.gameID}
+            thumbnail={valueObj.thumbnail}
+            name={valueObj.name}
+            // funcDelete={() => handleGameSelectSuggestionDelete({ _id, games_id: valueObj.games_id })}
+            funcDelete={handleGameSelectSuggestionDelete}
+            key={index}
+          />
+        );
+        
+      }
       
+      componentSelected = <SelectedGamesBox>{componentSelectedArr}</SelectedGamesBox>;
       
-    //   if (componentHardwareArr.length > 0) {
-    //     componentHardware = <HardwareBox>{componentHardwareArr}</HardwareBox>;
-    //   }
-      
-    // }
+    }
     
     
     
@@ -171,82 +209,96 @@ export default class extends React.Component {
     }
     
     
-    // // --------------------------------------------------
-    // //   Text Field Focus
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Text Field Focus
+    // --------------------------------------------------
     
-    // let onFocus = false;
+    let onFocus = false;
     
-    // if (_id in cardPlayerEditFormHardwareActiveTextFieldFocusObj) {
-    //   onFocus = cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id];
-    // }
-    
-    
+    if (_id in gameSelectSuggestionTextFieldFocusObj) {
+      onFocus = gameSelectSuggestionTextFieldFocusObj[_id];
+    }
     
     
-    // // --------------------------------------------------
-    // //   Component - Suggestion
-    // // --------------------------------------------------
-    
-    // let suggestionArr = [];
-    
-    // if (_id in cardPlayerFormHardwareActiveSuggestionObj) {
-    //   suggestionArr = cardPlayerFormHardwareActiveSuggestionObj[_id];
-    // }
     
     
-    // let componentSuggestionMenuItemsArr = [];
+    // --------------------------------------------------
+    //   Component - Suggestion
+    // --------------------------------------------------
     
-    // if (onFocus && inputValue && suggestionArr.length > 0) {
-      
-    //   // キーボードの↓↑でハードウェアを選択するための番号
-    //   let suggestionSelected = 9999;
-      
-    //   if (_id in cardPlayerFormHardwareActiveSuggestionSelectedObj) {
-    //     suggestionSelected = cardPlayerFormHardwareActiveSuggestionSelectedObj[_id];
-    //   }
+    // サジェストのデータ配列
+    let suggestionDataArr = [];
+    
+    if (_id in gameSelectSuggestionDataObj) {
+      suggestionDataArr = gameSelectSuggestionDataObj[_id];
+    }
+    
+    
+    // サジェストのメニューを作成
+    let componentSuggestionMenuItemsArr = [];
+    
+    if (onFocus && textFieldValue && suggestionDataArr.length > 0) {
       
       
-    //   for (const [index, valueObj] of suggestionArr.entries()) {
+      // キーボードの↓↑でハードウェアを選択するための番号、初期値は影響のない9999にしておく
+      let suggestionSelected = 9999;
+      
+      if (_id in gameSelectSuggestionKeyboardSelectedObj) {
+        suggestionSelected = gameSelectSuggestionKeyboardSelectedObj[_id];
+      }
+      
+      
+      for (const [index, valueObj] of suggestionDataArr.entries()) {
         
-    //     // すでに選択されているハードウェアを太字で表示するためのindex
-    //     const index2 = arr.findIndex((value2Obj) => {
-    //       return value2Obj.hardwareID === valueObj.hardwareID;
-    //     });
+        // すでに選択されているハードウェアを太字で表示するためのindex
+        const index2 = selectedArr.findIndex((value2Obj) => {
+          return value2Obj.hardwareID === valueObj.hardwareID;
+        });
         
+        // console.log(`
+        //   ----- valueObj -----\n
+        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
-    //     componentSuggestionMenuItemsArr.push(
-    //       <MenuItem
-    //         key={index}
-    //         component="div"
-    //         selected={index === suggestionSelected}
-    //         onMouseDown={() => handleCardPlayerAddHardwareActive(_id, valueObj.hardwareID, valueObj.name)}
-    //         style={{
-    //           fontWeight: index2 !== -1 ? 'bold' : 'normal',
-    //         }}
-    //       >
-    //         {valueObj.name}
-    //       </MenuItem>
-    //     );
+        componentSuggestionMenuItemsArr.push(
+          <MenuItem
+            key={index}
+            component="div"
+            selected={index === suggestionSelected}
+            onMouseDown={() => handleGameSelectSuggestionAdd({
+              _id,
+              games_id: valueObj._id,
+              gameID: valueObj.gameID,
+              thumbnail: valueObj.thumbnail,
+              name: valueObj.name
+            })}
+            style={{
+              fontWeight: index2 !== -1 ? 'bold' : 'normal',
+            }}
+          >
+            {valueObj.name}
+          </MenuItem>
+        );
         
-    //   }
+      }
       
-    // }
+    }
     
     
-    // let componentSuggestion = '';
+    let componentSuggestion = '';
     
-    // if (componentSuggestionMenuItemsArr.length > 0) {
+    if (componentSuggestionMenuItemsArr.length > 0) {
       
-    //   componentSuggestion = 
-    //     <Paper square>
-    //       <MenuList>
-    //         {componentSuggestionMenuItemsArr}
-    //       </MenuList>
-    //     </Paper>
-    //   ;
+      componentSuggestion = 
+        <Paper square>
+          <MenuList>
+            {componentSuggestionMenuItemsArr}
+          </MenuList>
+        </Paper>
+      ;
       
-    // }
+    }
     
     
     
@@ -284,12 +336,12 @@ export default class extends React.Component {
         
         
         {/* 選択されたゲーム */}
-        {/* componentHardware*/}
+        {componentSelected}
         
         
         <div
-          // onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus(_id)}
-          // onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
+          onFocus={()=> handleGameSelectSuggestionTextFieldOnFocus(_id)}
+          onBlur={()=> handleGameSelectSuggestionTextFieldOnBlur(_id)}
         >
           
           <StyledTextFieldWide
@@ -298,7 +350,7 @@ export default class extends React.Component {
             value={textFieldValue}
             onChange={(eventObj) => handleGameSelectSuggestionTextField({ eventObj, _id })}
             // onKeyDown={(eventObj) => handleCardPlayerFormHardwareActiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
-            helperText="IDに関係するゲームの名前を入力してください"
+            helperText="ゲーム名の一部を入力して、検索結果から選んでください"
             margin="normal"
             autoComplete="off"
             inputProps={{
@@ -306,7 +358,7 @@ export default class extends React.Component {
             }}
           />
           
-          {/* componentSuggestion*/}
+          {componentSuggestion}
           
         </div>
         

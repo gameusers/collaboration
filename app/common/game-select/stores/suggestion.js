@@ -75,23 +75,35 @@ class Store {
   /**
    * ゲームを選択する
    * @param {string} _id - ID
+   * @param {string} games_id - DB games games_id
    * @param {string} gameID - DB games gameID
+   * @param {boolean} thumbnail - サムネイルが表示できるか
    * @param {string} name - ゲーム名
    */
   @action.bound
-  handleGameSelectSuggestionAdd({ _id, gameID, name }) {
+  handleGameSelectSuggestionAdd({ _id, games_id, gameID, thumbnail, name }) {
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   games_id: {green ${games_id}}
+    //   gameID: {green ${gameID}}
+    //   thumbnail: {green ${thumbnail}}
+    //   name: {green ${name}}
+    // `);
     
     const arr = _id in this.gameSelectSuggestionSelectedObj ? this.gameSelectSuggestionSelectedObj[_id] : [];
     
     // 配列内にすでに存在しているかチェックする
     const index = arr.findIndex((valueObj) => {
-      return valueObj.gameID === gameID;
+      return valueObj.games_id === games_id;
     });
     
     // 存在していない場合は配列に追加する
     if (index === -1) {
       arr.push({
+        games_id,
         gameID,
+        thumbnail,
         name
       });
       
@@ -102,34 +114,41 @@ class Store {
   
   
   /**
-   * 所有ハードウェアを削除する
-   * @param {string} _id - DB card-players _id
-   * @param {string} hardwareID - DB hardwares hardwareID
+   * ゲームを削除する
+   * @param {string} _id - ID
+   * @param {string} games_id - DB games games_id
    */
-  // @action.bound
-  // handleCardPlayerDeleteHardwareActive(_id, hardwareID) {
+  @action.bound
+  handleGameSelectSuggestionDelete({ _id, games_id }) {
     
-  //   const index = this.cardPlayerEditFormDataObj[_id].hardwareActiveArr.findIndex((valueObj) => {
-  //     return valueObj.hardwareID === hardwareID;
-  //   });
+    console.log('handleGameSelectSuggestionDelete');
     
-  //   this.cardPlayerEditFormDataObj[_id].hardwareActiveArr.splice(index, 1);
+    console.log(chalk`
+      _id: {green ${_id}}
+      games_id: {green ${games_id}}
+    `);
     
-  // };
+    // const index = this.gameSelectSuggestionSelectedObj[_id].findIndex((valueObj) => {
+    //   return valueObj.games_id === games_id;
+    // });
+    
+    // this.gameSelectSuggestionSelectedObj[_id].splice(index, 1);
+    
+  };
   
   
   /**
    * サジェストデータを入れるオブジェクト
    * @type {Object}
    */
-  // @observable gameSelectSuggestionObj = {};
+  @observable gameSelectSuggestionDataObj = {};
   
   
   /**
-   * 所有ハードウェアのサジェストの選択状態を保存するオブジェクト
+   * サジェストのキーボードでの選択状態を保存するオブジェクト
    * @type {Object}
    */
-  // @observable cardPlayerFormHardwareActiveSuggestionSelectedObj = {};
+  @observable gameSelectSuggestionKeyboardSelectedObj = {};
   
   
   /**
@@ -206,7 +225,7 @@ class Store {
     // ---------------------------------------------
     
     this.gameSelectSuggestionTextFieldObj[_id] = eventObj.target.value;
-    // return;
+    
     
     // ---------------------------------------------
     //   TextField が空の場合、処理停止
@@ -257,15 +276,18 @@ class Store {
       //  Data 更新
       // ---------------------------------------------
       
-      // delete this.cardPlayerFormHardwareActiveSuggestionSelectedObj[_id];
-      // this.cardPlayerFormHardwareActiveSuggestionObj[_id] = resultObj.data;
+      // サジェストのキーボードでの選択状態をクリア
+      delete this.gameSelectSuggestionKeyboardSelectedObj[_id];
+      
+      // サジェストのデータを更新
+      this.gameSelectSuggestionDataObj[_id] = resultObj.data;
       
       
-      console.log(`
-        ----- resultObj.data -----\n
-        ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj.data -----\n
+      //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
         
       
     } catch (error) {
@@ -276,40 +298,29 @@ class Store {
   
   
   /**
-   * 所有ハードウェアの TextField へのフォーカス状態を記録するオブジェクト
+   * TextField へのフォーカス状態を記録するオブジェクト
    * @type {Object}
    */
-  @observable cardPlayerEditFormHardwareActiveTextFieldFocusObj = {};
+  @observable gameSelectSuggestionTextFieldFocusObj = {};
   
   
   /**
-   * 所有ハードウェアの TextField にフォーカス
-   * @param {string} _id - DB card-players _id
+   * TextField にフォーカス
+   * @param {string} _id - ID
    */
   @action.bound
-  handleCardPlayerHardwareActiveTextFieldOnFocus(_id) {
-    this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = true;
+  handleGameSelectSuggestionTextFieldOnFocus(_id) {
+    this.gameSelectSuggestionTextFieldFocusObj[_id] = true;
   };
   
   
   /**
-   * 所有ハードウェアの TextField からフォーカスアウト
-   * @param {string} _id - DB card-players _id
+   * TextField からフォーカスアウト
+   * @param {string} _id - ID
    */
   @action.bound
-  handleCardPlayerHardwareActiveTextFieldOnBlur(_id) {
-    this.cardPlayerEditFormHardwareActiveTextFieldFocusObj[_id] = false;
-  };
-  
-  
-  /**
-   * 所有ハードウェアの検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} _id - DB card-players _id
-   */
-  @action.bound
-  handleCardPlayerEditHardwareActiveSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].hardwareActiveObj.search = eventObj.target.checked;
+  handleGameSelectSuggestionTextFieldOnBlur(_id) {
+    this.gameSelectSuggestionTextFieldFocusObj[_id] = false;
   };
   
   

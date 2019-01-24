@@ -140,13 +140,15 @@ export default class extends React.Component {
       
       idFormDataObj,
       
-      idFormDataPlatformObj,
-      handleIDFormDataPlatform,
+      handleIDFormSetEditForm,
       
-      idFormDataLabelObj,
+      idFormPlatformObj,
+      handleIDFormPlatform,
+      
+      idFormLabelObj,
       handleIDFormDataLabel,
       
-      idFormDataIDObj,
+      idFormIDObj,
       handleIDFormDataID
       
     } = stores.idSelectForm;
@@ -168,7 +170,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - 登録済みのID
+    //   Component - 編集可能なID
     // --------------------------------------------------
     
     const componentsIDArr = [];
@@ -183,7 +185,7 @@ export default class extends React.Component {
       componentsIDArr.push(
         <IDBox
           key={index}
-          // onClick={() => handleIDFormMoveFromSelectedToUnselected({ _id, index })}
+          onClick={() => handleIDFormSetEditForm({ _id, ids_id: valueObj._id })}
         >
           <IDSelectChip
             platform={valueObj.platform}
@@ -207,8 +209,8 @@ export default class extends React.Component {
     
     let formPlatform = '';
     
-    if (_id in idFormDataPlatformObj) {
-      formPlatform = idFormDataPlatformObj[_id];
+    if (_id in idFormPlatformObj) {
+      formPlatform = idFormPlatformObj[_id];
     }
     
     
@@ -218,8 +220,8 @@ export default class extends React.Component {
     
     let formLabel = '';
     
-    if (_id in idFormDataLabelObj) {
-      formLabel = idFormDataLabelObj[_id];
+    if (_id in idFormLabelObj) {
+      formLabel = idFormLabelObj[_id];
     }
     
     
@@ -229,8 +231,8 @@ export default class extends React.Component {
     
     let formID = '';
     
-    if (_id in idFormDataIDObj) {
-      formID = idFormDataIDObj[_id];
+    if (_id in idFormIDObj) {
+      formID = idFormIDObj[_id];
     }
     
     
@@ -268,16 +270,16 @@ export default class extends React.Component {
         
         
         <Description>
-          編集したいIDをクリック（タップ）して、フォームに必要なデータを入力してください。次に「保存する」ボタンを押すと、IDの編集が完了します。<br /><br />
+          編集したいIDを押して、下にあるフォームに必要なデータを入力してください。「編集する」ボタンを押すとIDの編集は完了します。<br /><br />
           
-          IDは「<strong>ラベル:</strong> ID」という並びで表示されます。プラットフォームに「その他」以外を選んだ場合、ゲームを選択した場合は、ラベルのフォームは未入力で問題ありません。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前、またはその両方が自動的に表示されます。
+          IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
         </Description>
         
         
         
         
-        {/* 登録済みのID */}
-        <Heading>[ 登録済みのID ]</Heading>
+        {/* 編集可能なID */}
+        <Heading>[ 編集可能なID ]</Heading>
         
         <IDsBox>
           {componentsIDArr}
@@ -292,11 +294,11 @@ export default class extends React.Component {
         
         {/* プラットフォーム */}
         <PlatformBox>
-          <FormControl style={{minWidth: 300}}>
+          <FormControl style={{ minWidth: 300 }}>
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
             <Select
               value={formPlatform}
-              onChange={(eventObj) => handleIDFormDataPlatform({ eventObj, _id })}
+              onChange={(eventObj) => handleIDFormPlatform({ eventObj, _id })}
               inputProps={{
                 name: 'platform',
                 id: 'platform',
@@ -316,28 +318,10 @@ export default class extends React.Component {
         
         
         {/* ゲーム選択 */}
-        <GameSelectSuggestion />
-        {/*<div
-          onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus(_id)}
-          onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
-        >
-          
-          <StyledTextFieldWide
-            id="hardwareActive"
-            label="ハードウェア名"
-            value={inputValue}
-            onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
-            onKeyDown={(eventObj) => handleCardPlayerFormHardwareActiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
-            margin="normal"
-            autoComplete="off"
-            inputProps={{
-              maxLength: 50,
-            }}
-          />
-          
-          {componentSuggestion}
-          
-        </div>*/}
+        <GameSelectSuggestion
+          _id={_id}
+          selectedArr={[]}
+        />
         
         
         {/* ラベル */}

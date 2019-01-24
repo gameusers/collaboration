@@ -24,6 +24,7 @@ import styled from 'styled-components';
 // ---------------------------------------------
 
 import Avatar from '@material-ui/core/Avatar';
+import IconButton from '@material-ui/core/IconButton';
 
 
 // ---------------------------------------------
@@ -31,6 +32,7 @@ import Avatar from '@material-ui/core/Avatar';
 // ---------------------------------------------
 
 import IconGrade from '@material-ui/icons/Grade';
+import IconClose from '@material-ui/icons/Close';
 
 
 
@@ -40,7 +42,7 @@ import IconGrade from '@material-ui/icons/Grade';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const IDBox = styled.div`
+const Container = styled.div`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -48,16 +50,14 @@ const IDBox = styled.div`
   border: 1px solid #3f51b5;
   border-radius: 18px;
   margin: 8px 8px 0 0;
+  
+  // min-width: 20px;
   // box-sizing: border-box;
   // cursor: pointer;
 `;
 
 const AvatarMainBox = styled.div`
   
-`;
-
-const AvatarSubBox = styled.div`
-  margin-left: auto;
 `;
 
 const StyledAvatar = styled(Avatar)`
@@ -76,22 +76,58 @@ const StyledAvatarNoImage = styled(Avatar)`
   }
 `;
 
+// const StyledAvatarClose = styled(Avatar)`
+//   && {
+//     width: 32px;
+//     height: 32px;
+//     background-color: rgba(63, 81, 181, 0.7);
+//     cursor: pointer;
+//   }
+// `;
+
+
+
 const TextBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   font-size: 14px;
   line-height: 1.4;
-  padding: 4px 14px 4px 6px;
+  padding: 4px 6px 4px 6px;
 `;
 
-const Label = styled.span`
+const Name = styled.span`
   font-weight: bold;
-  padding: 0 4px 0 0;
+  // word-wrap: break-word;
+  // width : 100%;
+  // padding: 0 4px 0 0;
 `;
 
-const ID = styled.span`
-  
+
+const AvatarSubBox = styled.div`
+  margin-left: auto;
 `;
+
+const StyledIconButton = styled(IconButton)`
+  && {
+    width: 22px;
+    height: 22px;
+    // font-size: 12px;
+    
+    margin: 0 6px 2px 0;
+    padding: 0;
+    // background-color: rgba(63, 81, 181, 0.7);
+    background-color: #3f51b5;
+  }
+`;
+
+const StyledIconClose = styled(IconClose)`
+  && {
+    width: 20px;
+    height: 20px;
+    color: white;
+  }
+`;
+
 
 
 
@@ -116,7 +152,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { platform, label, id, games_id, gamesThumbnail, gamesName } = this.props;
+    const { _id, gameID, thumbnail, name, funcDelete } = this.props;
     
     
     
@@ -125,96 +161,27 @@ export default class extends React.Component {
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (!platform && !id) {
+    if (!_id || !gameID || !name) {
       return null;
     }
     
-    
+    // console.log(funcDelete);
+    funcDelete({ id: 'id', gameID: 'gameID'});
     
     
     // --------------------------------------------------
-    //   Component - Avatar & Label
+    //   Component - Avatar
     // --------------------------------------------------
     
     let componentAvatar = '';
-    let labelValue = '';
     
-    
-    // ---------------------------------------------
-    //   PlayStation
-    // ---------------------------------------------
-    
-    if (platform === 'PlayStation') {
+    if (thumbnail) {
       
-      componentAvatar = <StyledAvatar alt="PlayStation" src={`/static/img/platform/playstation-256.jpg`} />;
-      labelValue = 'PlayStation';
+      componentAvatar =
+        <StyledAvatar alt={name} src={`/static/img/games/${_id}/thumbnail/image.jpg`} />
+      ;
       
-      
-    // ---------------------------------------------
-    //   Xbox
-    // ---------------------------------------------
-      
-    } else if (platform === 'Xbox') {
-      
-      componentAvatar = <StyledAvatar alt="Xbox" src={`/static/img/platform/xbox-256.jpg`} />;
-      labelValue = 'Xbox';
-      
-      
-    // ---------------------------------------------
-    //   Nintendo
-    // ---------------------------------------------
-      
-    } else if (platform === 'Nintendo') {
-      
-      componentAvatar = <StyledAvatar alt="Nintendo" src={`/static/img/platform/nintendo-256.jpg`} />;
-      labelValue = 'Nintendo';
-      
-      
-    // ---------------------------------------------
-    //   Steam
-    // ---------------------------------------------
-      
-    } else if (platform === 'Steam') {
-      
-      componentAvatar = <StyledAvatar alt="Steam" src={`/static/img/platform/steam-256.jpg`} />;
-      labelValue = 'Steam';
-      
-      
-    // ---------------------------------------------
-    //   PC
-    // ---------------------------------------------
-      
-    } else if (platform === 'PC') {
-      
-      componentAvatar = <StyledAvatar alt="PC" src={`/static/img/platform/pc-256.jpg`} />;
-      labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
-      
-    
-    // ---------------------------------------------
-    //   Android
-    // ---------------------------------------------
-      
-    } else if (platform === 'Android') {
-      
-      componentAvatar = <StyledAvatar alt="Android" src={`/static/img/platform/android-256.jpg`} />;
-      labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
-      
-      
-    // ---------------------------------------------
-    //   iOS
-    // ---------------------------------------------
-      
-    } else if (platform === 'iOS') {
-      
-      componentAvatar = <StyledAvatar alt="iOS" src={`/static/img/platform/ios-256.jpg`} />;
-      labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
-      
-      
-    // ---------------------------------------------
-    //   Other
-    // ---------------------------------------------
-      
-    } else if (platform === 'Other') {
+    } else {
       
       componentAvatar =
         <StyledAvatarNoImage>
@@ -223,32 +190,6 @@ export default class extends React.Component {
       ;
       
     }
-    
-    
-    // --------------------------------------------------
-    //   Label
-    // --------------------------------------------------
-    
-    if (label) {
-      labelValue = label;
-    }
-    
-    
-    // --------------------------------------------------
-    //   Component - Sub Avatar
-    // --------------------------------------------------
-    
-    let componentSubAvatar = '';
-    
-    if (games_id && gamesThumbnail && gamesName) {
-      
-      componentSubAvatar =
-        <AvatarSubBox>
-          <StyledAvatar alt={gamesName} src={`/static/img/games/${games_id}/thumbnail/image.jpg`} />
-        </AvatarSubBox>
-      ;
-    }
-    
     
     
     
@@ -273,22 +214,32 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <IDBox>
+      <Container>
         
         <AvatarMainBox>
           {componentAvatar}
         </AvatarMainBox>
         
-        <TextBox
-          style={{ paddingRight: componentSubAvatar ? 6 : 14 }}
-        >
-          <Label>{labelValue}:</Label>
-          <ID>{id}</ID>
+        <TextBox>
+          <Name>{name}</Name>
         </TextBox>
         
-        {componentSubAvatar}
+        <AvatarSubBox>
+          <StyledIconButton
+            // onClick={() => funcDelete()}
+            onClick={() => funcDelete({ _id, gameID })}
+          >
+            <StyledIconClose />
+          </StyledIconButton>
+        </AvatarSubBox>
         
-      </IDBox>
+        {/*<AvatarSubBox>
+          <StyledAvatarClose>
+            <IconClose />
+          </StyledAvatarClose>
+        </AvatarSubBox>*/}
+        
+      </Container>
     );
     
   }

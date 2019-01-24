@@ -232,7 +232,7 @@ export default class extends React.Component {
       <Container>
         
         
-        <Description>選択したいIDをクリック（タップ）して、[ 選択ID ] の欄に入れてください。次に「選択を確定する」ボタンを押すと、IDの選択が完了します。</Description>
+        <Description>選択したいIDをクリック（タップ）して、[ 選択ID ] の欄に入れてください。「選択を確定する」ボタンを押すと、IDの選択は完了します。</Description>
         
         
         {/* 選択ID */}

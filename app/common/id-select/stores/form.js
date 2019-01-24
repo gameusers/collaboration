@@ -328,10 +328,46 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * フォームの値を設定する（編集用）
+   * @param {Object} eventObj - イベント
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleIDFormSetEditForm({ _id, ids_id }) {
+    
+    const searchObj = this.idFormDataObj[_id].find((valueObj) => {
+      return valueObj._id === ids_id;
+    });
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   ids_id: {green ${ids_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- this.idFormDataObj[_id] -----\n
+    //   ${util.inspect(this.idFormDataObj[_id], { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- searchObj -----\n
+    //   ${util.inspect(searchObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    this.idFormPlatformObj[_id] = searchObj.platform;
+    this.idFormLabelObj[_id] = searchObj.label;
+    this.idFormIDObj[_id] = searchObj.id;
+    
+  };
+  
+  
+  /**
    * プラットフォーム選択フォームの選択値を入れるオブジェクト
    * @type {Object}
    */
-  @observable idFormDataPlatformObj = {};
+  @observable idFormPlatformObj = {};
   
   
   /**
@@ -340,8 +376,8 @@ class Store {
    * @param {string} _id - ID
    */
   @action.bound
-  handleIDFormDataPlatform({ eventObj, _id }) {
-    this.idFormDataPlatformObj[_id] = eventObj.target.value;
+  handleIDFormPlatform({ eventObj, _id }) {
+    this.idFormPlatformObj[_id] = eventObj.target.value;
   };
   
   
@@ -349,7 +385,7 @@ class Store {
    * ラベル入力フォームの入力値を入れるオブジェクト
    * @type {Object}
    */
-  @observable idFormDataLabelObj = {};
+  @observable idFormLabelObj = {};
   
   
   /**
@@ -359,7 +395,7 @@ class Store {
    */
   @action.bound
   handleIDFormDataLabel({ eventObj, _id }) {
-    this.idFormDataLabelObj[_id] = eventObj.target.value;
+    this.idFormLabelObj[_id] = eventObj.target.value;
   };
   
   
@@ -367,7 +403,7 @@ class Store {
    * ID入力フォームの入力値を入れるオブジェクト
    * @type {Object}
    */
-  @observable idFormDataIDObj = {};
+  @observable idFormIDObj = {};
   
   
   /**
@@ -377,7 +413,7 @@ class Store {
    */
   @action.bound
   handleIDFormDataID({ eventObj, _id }) {
-    this.idFormDataIDObj[_id] = eventObj.target.value;
+    this.idFormIDObj[_id] = eventObj.target.value;
   };
   
   

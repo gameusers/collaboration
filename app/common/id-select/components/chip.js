@@ -40,7 +40,7 @@ import IconGrade from '@material-ui/icons/Grade';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const IDBox = styled.div`
+const Container = styled.div`
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
@@ -273,7 +273,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <IDBox>
+      <Container>
         
         <AvatarMainBox>
           {componentAvatar}
@@ -288,7 +288,7 @@ export default class extends React.Component {
         
         {componentSubAvatar}
         
-      </IDBox>
+      </Container>
     );
     
   }

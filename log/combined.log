@@ -363,3 +363,6 @@
 {"level":"error","message":"Mon Jan 21 2019 07:35:54 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@500000\nMessage: cardPlayersArr is not iterable\n"}
 {"level":"error","message":"Tue Jan 22 2019 02:14:03 GMT+0000\nCode: Mv7RFeKQ1@gUwZx1hDG@500000\nMessage: card-games validation failed: idArr: Cast to Array failed for value \"[ 'GcymNACvc',\n  'mDuSVm6S7',\n  'n4I1BDtxH',\n  'L00bEpD46',\n  '8bJV9G6MU',\n  'UVOFSNbXR' ]\" at path \"idArr\"\n"}
 {"level":"error","message":"Wed Jan 23 2019 03:31:21 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Thu Jan 24 2019 04:39:56 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Thu Jan 24 2019 04:42:11 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}
+{"level":"error","message":"Thu Jan 24 2019 12:45:12 GMT+0000\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nMessage: \n"}

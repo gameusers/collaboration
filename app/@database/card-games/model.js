@@ -639,11 +639,11 @@ const format = (argumentsObj) => {
     for (let tempObj of valueObj.idArr) {
       
       if (
-        tempObj.showType === 1 ||
-        tempObj.showType === 2 && copiedObj.usersObj.followed ||
-        tempObj.showType === 3 && copiedObj.usersObj.follow ||
-        tempObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
-        tempObj.showType === 5 && copiedObj.users_id === usersLogin_id
+        tempObj.publicSetting === 1 ||
+        tempObj.publicSetting === 2 && copiedObj.usersObj.followed ||
+        tempObj.publicSetting === 3 && copiedObj.usersObj.follow ||
+        tempObj.publicSetting === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
+        tempObj.publicSetting === 5 && copiedObj.users_id === usersLogin_id
       ) {
         copiedObj.idArr.push({
           type: tempObj.type,

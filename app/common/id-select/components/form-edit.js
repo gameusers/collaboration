@@ -26,6 +26,8 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
@@ -98,10 +100,8 @@ const SendButtonBox = styled.div`
   margin: 24px 0 0 0;
 `;
 
-const SendButton = styled(Button)`
-  && {
-    // margin: 24px 0 0 0;
-  }
+const SearchBox = styled.div`
+  margin: 12px 0 0 0;
 `;
 
 
@@ -121,7 +121,7 @@ export default class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormEdit`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormEditSubmit`, false);
   }
   
   
@@ -145,11 +145,21 @@ export default class extends React.Component {
       idFormPlatformObj,
       handleIDFormPlatform,
       
+      idFormGameObj,
+      handleIDFormGame,
+      handleIDFormGameDelete,
+      
       idFormLabelObj,
-      handleIDFormDataLabel,
+      handleIDFormLabel,
       
       idFormIDObj,
-      handleIDFormDataID
+      handleIDFormID,
+      
+      idFormPublicSettingObj,
+      handleIDFormPublicSetting,
+      
+      idFormSearchObj,
+      handleIDFormSearch
       
     } = stores.idSelectForm;
     
@@ -162,8 +172,8 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${_id}-idFormEdit` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-idFormEdit`];
+    if (`${_id}-idFormEditSubmit` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${_id}-idFormEditSubmit`];
     }
     
     
@@ -215,6 +225,17 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   フォーム - ゲーム
+    // --------------------------------------------------
+    
+    let formGameArr = [];
+    
+    if (_id in idFormGameObj) {
+      formGameArr = idFormGameObj[_id];
+    }
+    
+    
+    // --------------------------------------------------
     //   フォーム - ラベル
     // --------------------------------------------------
     
@@ -235,6 +256,27 @@ export default class extends React.Component {
       formID = idFormIDObj[_id];
     }
     
+    
+    // --------------------------------------------------
+    //   フォーム - 公開設定
+    // --------------------------------------------------
+    
+    let formPublicSetting = '';
+    
+    if (_id in idFormPublicSettingObj) {
+      formPublicSetting = idFormPublicSettingObj[_id];
+    }
+    
+    
+    // --------------------------------------------------
+    //   フォーム - 検索
+    // --------------------------------------------------
+    
+    let formSearch = '';
+    
+    if (_id in idFormSearchObj) {
+      formSearch = idFormSearchObj[_id];
+    }
     
     
     
@@ -320,7 +362,9 @@ export default class extends React.Component {
         {/* ゲーム選択 */}
         <GameSelectSuggestion
           _id={_id}
-          selectedArr={[]}
+          selectedArr={formGameArr}
+          func={handleIDFormGame}
+          funcDelete={handleIDFormGameDelete}
         />
         
         
@@ -329,7 +373,7 @@ export default class extends React.Component {
           id="label"
           label="ラベル"
           value={formLabel}
-          onChange={(eventObj) => handleIDFormDataLabel({ eventObj, _id })}
+          onChange={(eventObj) => handleIDFormLabel({ eventObj, _id })}
           helperText="IDの左側に太字で表示されます"
           margin="normal"
           inputProps={{
@@ -343,7 +387,7 @@ export default class extends React.Component {
           id="label"
           label="ID"
           value={formID}
-          onChange={(eventObj) => handleIDFormDataID({ eventObj, _id })}
+          onChange={(eventObj) => handleIDFormID({ eventObj, _id })}
           helperText="IDを入力してください"
           margin="normal"
           inputProps={{
@@ -351,6 +395,41 @@ export default class extends React.Component {
           }}
         />
         
+        
+        {/* 公開設定 */}
+        <PlatformBox>
+          <FormControl style={{ minWidth: 300 }}>
+            <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
+            <Select
+              value={formPublicSetting}
+              onChange={(eventObj) => handleIDFormPublicSetting({ eventObj, _id })}
+              inputProps={{
+                name: 'publicSetting',
+                id: 'publicSetting',
+              }}
+            >
+              <MenuItem value={1}>誰にでも公開</MenuItem>
+              <MenuItem value={2}>自分をフォローしているユーザーに公開</MenuItem>
+              <MenuItem value={3}>自分がフォローしているユーザーに公開</MenuItem>
+              <MenuItem value={4}>相互フォローで公開</MenuItem>
+              <MenuItem value={5}>自分以外には公開しない</MenuItem>
+            </Select>
+          </FormControl>
+        </PlatformBox>
+        
+        
+        {/* 検索可能 */}
+        <SearchBox>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={formSearch}
+                onChange={(eventObj) => handleIDFormSearch({ eventObj, _id })}
+              />
+            }
+            label="このIDを検索可能にする"
+          />
+        </SearchBox>
         
         
         

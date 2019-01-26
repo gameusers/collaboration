@@ -165,35 +165,35 @@ const findBy_Users_idForForm = async (argumentsObj) => {
       },
       
       
-      {
-        $lookup:
-          {
-            from: 'users',
-            let: { idsUsers_id: '$users_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$idsUsers_id'] },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  accessDate: 1,
-                  level: 1,
-                  playerID: 1,
-                  followArr: 1,
-                  followedArr: 1,
-                  followedCount: 1,
-                }
-              }
-            ],
-            as: 'usersObj'
-          }
-      },
-      {
-        $unwind: '$usersObj'
-      },
+      // {
+      //   $lookup:
+      //     {
+      //       from: 'users',
+      //       let: { idsUsers_id: '$users_id' },
+      //       pipeline: [
+      //         { $match:
+      //           { $expr:
+      //             { $eq: ['$_id', '$$idsUsers_id'] },
+      //           }
+      //         },
+      //         { $project:
+      //           {
+      //             _id: 0,
+      //             accessDate: 1,
+      //             level: 1,
+      //             playerID: 1,
+      //             followArr: 1,
+      //             followedArr: 1,
+      //             followedCount: 1,
+      //           }
+      //         }
+      //       ],
+      //       as: 'usersObj'
+      //     }
+      // },
+      // {
+      //   $unwind: '$usersObj'
+      // },
       
       
       {
@@ -250,7 +250,9 @@ const findBy_Users_idForForm = async (argumentsObj) => {
         _id: valueObj._id,
         platform: valueObj.platform,
         label: valueObj.label,
-        id: valueObj.id
+        id: valueObj.id,
+        publicSetting: valueObj.publicSetting,
+        search: valueObj.search
       };
       
       if ('gamesObj' in valueObj) {
@@ -388,7 +390,7 @@ const formatToObject = (argumentsObj) => {
     
     // --------------------------------------------------
     //   表示する ID を選択する
-    //   showType の番号で ID の表示方法を指定している
+    //   publicSetting の番号で ID の表示方法を指定している
     //   
     //   1.誰にでも表示する
     //   2.自分をフォローしているユーザーに表示する
@@ -399,11 +401,11 @@ const formatToObject = (argumentsObj) => {
     
     if (
       copiedObj.users_id === usersLogin_id ||
-      valueObj.showType === 1 ||
-      valueObj.showType === 2 && copiedObj.usersObj.followed ||
-      valueObj.showType === 3 && copiedObj.usersObj.follow ||
-      valueObj.showType === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed
-      // valueObj.showType === 5 && copiedObj.users_id === usersLogin_id
+      valueObj.publicSetting === 1 ||
+      valueObj.publicSetting === 2 && copiedObj.usersObj.followed ||
+      valueObj.publicSetting === 3 && copiedObj.usersObj.follow ||
+      valueObj.publicSetting === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed
+      // valueObj.publicSetting === 5 && copiedObj.users_id === usersLogin_id
     ) {
       
       let tempObj = {
@@ -661,26 +663,7 @@ const find = async (argumentsObj) => {
  * @param {Object} argumentsObj - 引数
  * @return {Object} 
  */
-const upsert = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj,
-    saveObj
-    
-  } = argumentsObj;
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
+const upsert = async ({ conditionObj, saveObj }) => {
   
   
   // --------------------------------------------------
@@ -694,14 +677,7 @@ const upsert = async (argumentsObj) => {
     //   Upsert
     // --------------------------------------------------
     
-    const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
+    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {

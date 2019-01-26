@@ -1715,7 +1715,7 @@ class Store {
    * @param {Array} idArr - IDデータの入った配列
    */
   @action.bound
-  handleCardPlayerEditID({_id, idArr}) {
+  handleCardPlayerEditID({ _id, idArr }) {
     
     // console.log(chalk`
     //   _id: {green ${_id}}

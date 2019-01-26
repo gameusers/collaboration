@@ -1273,7 +1273,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'PlayStation',
           label: '',
           value: 'AZ-1979',
-          showType: 1,
+          publicSetting: 1,
           search: true,
           // 1.表示する
           // 2.自分をフォローしているユーザーに表示する
@@ -1286,7 +1286,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'Xbox',// ゲーマータグ
           label: '',
           value: 'AZ-1979-Xbox',
-          showType: 1,
+          publicSetting: 1,
           search: true,
         },
         {
@@ -1294,7 +1294,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'nintendo',// フレンドコード
           label: '',
           value: 'AZ-1979',
-          showType: 2,
+          publicSetting: 2,
           search: true,
         },
         {
@@ -1302,7 +1302,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'Steam',
           label: '',
           value: 'Azumi1979',
-          showType: 3,
+          publicSetting: 3,
           search: true,
         },
         {
@@ -1310,7 +1310,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'Other',
           label: 'LoL ID',
           value: 'lol-id',
-          showType: 4,
+          publicSetting: 4,
           search: true,
         },
         {
@@ -1318,7 +1318,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
           type: 'Other',
           label: 'MHW ID',
           value: 'mhw-id',
-          showType: 5,
+          publicSetting: 5,
           search: true,
         }
       ],
@@ -1512,7 +1512,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           type: 'PlayStation',
           label: '',
           value: 'AZ-1979-Game',
-          showType: 1,
+          publicSetting: 1,
           search: true,
         },
         {
@@ -1521,7 +1521,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           type: 'Xbox',// ゲーマータグ
           label: '',
           value: 'AZ-1979-Xbox-Game',
-          showType: 1,
+          publicSetting: 1,
           search: true,
         },
         {
@@ -1530,7 +1530,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           type: 'Other',
           label: '',
           value: '',
-          showType: 5,
+          publicSetting: 5,
           search: true,
         },
         {
@@ -1539,7 +1539,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           type: 'Steam',
           label: '',
           value: 'Azumi1979',
-          showType: 1,
+          publicSetting: 1,
           search: true,
         },
         {
@@ -1548,7 +1548,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           type: 'Other',
           label: 'LoL ID',
           value: 'lol-id',
-          showType: 1,
+          publicSetting: 1,
           search: true,
         },
         {
@@ -1557,7 +1557,7 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
           type: 'Other',
           label: 'MHW ID',
           value: 'mhw-id',
-          showType: 1,
+          publicSetting: 1,
           search: true,
         }
       ],

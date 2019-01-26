@@ -71,11 +71,11 @@ const StyledTextFieldWide = styled(TextField)`
   }
 `;
 
-const StyledPaper = styled(Paper)`
-  && {
-    margin: 12px 0 0 0;
-  }
-`;
+// const StyledPaper = styled(Paper)`
+//   && {
+//     margin: 12px 0 0 0;
+//   }
+// `;
 
 
 
@@ -94,7 +94,7 @@ export default class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-gameSelectSuggestion`, false);
+    // this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-gameSelectSuggestion`, false);
   }
   
   
@@ -105,9 +105,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, selectedArr, func } = this.props;
+    const { stores, _id, selectedArr, func, funcDelete } = this.props;
     
-    const { buttonDisabledObj } = stores.layout;
+    // const { buttonDisabledObj } = stores.layout;
     
     const {
       
@@ -120,6 +120,7 @@ export default class extends React.Component {
       
       gameSelectSuggestionDataObj,
       gameSelectSuggestionKeyboardSelectedObj,
+      handleGameSelectSuggestionOnKeyDown,
       
       gameSelectSuggestionTextFieldFocusObj,
       handleGameSelectSuggestionTextFieldOnFocus,
@@ -131,25 +132,14 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Dialog
-    // --------------------------------------------------
-    
-    // let dialogOpen = false;
-    
-    // if (_id in idFormDialogObj) {
-    //   dialogOpen = idFormDialogObj[_id];
-    // }
-    
-    
-    // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
+    // let buttonDisabled = true;
     
-    if (`${_id}-gameSelectSuggestion` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-gameSelectSuggestion`];
-    }
+    // if (`${_id}-gameSelectSuggestion` in buttonDisabledObj) {
+    //   buttonDisabled = buttonDisabledObj[`${_id}-gameSelectSuggestion`];
+    // }
     
     
     
@@ -161,15 +151,15 @@ export default class extends React.Component {
     let componentSelected = '';
     let componentSelectedArr = [];
     
-    let selectedGamesArr = [];
+    // let selectedGamesArr = selectedArr;
     
     if (_id in gameSelectSuggestionSelectedObj) {
-      selectedGamesArr = gameSelectSuggestionSelectedObj[_id];
+      selectedArr = gameSelectSuggestionSelectedObj[_id];
     }
     
-    if (selectedGamesArr.length > 0) {
+    if (selectedArr.length > 0) {
       
-      for (const [index, valueObj] of selectedGamesArr.entries()) {
+      for (const [index, valueObj] of selectedArr.entries()) {
         
         // console.log(`
         //   ----- valueObj -----\n
@@ -183,8 +173,15 @@ export default class extends React.Component {
             gameID={valueObj.gameID}
             thumbnail={valueObj.thumbnail}
             name={valueObj.name}
-            // funcDelete={() => handleGameSelectSuggestionDelete({ _id, games_id: valueObj.games_id })}
-            funcDelete={handleGameSelectSuggestionDelete}
+            funcDelete={() => handleGameSelectSuggestionDelete({
+              _id,
+              games_id: valueObj._id,
+              gameID: valueObj.gameID,
+              thumbnail: valueObj.thumbnail,
+              name: valueObj.name,
+              funcDelete
+            })}
+            // funcDeleteArgumentsObj={{ _id, games_id: valueObj.games_id }}
             key={index}
           />
         );
@@ -194,6 +191,40 @@ export default class extends React.Component {
       componentSelected = <SelectedGamesBox>{componentSelectedArr}</SelectedGamesBox>;
       
     }
+    
+    // let selectedGamesArr = selectedArr;
+    
+    // if (_id in gameSelectSuggestionSelectedObj) {
+    //   selectedGamesArr = gameSelectSuggestionSelectedObj[_id];
+    // }
+    
+    // if (selectedGamesArr.length > 0) {
+      
+    //   for (const [index, valueObj] of selectedGamesArr.entries()) {
+        
+    //     // console.log(`
+    //     //   ----- valueObj -----\n
+    //     //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //     //   --------------------\n
+    //     // `);
+        
+    //     componentSelectedArr.push(
+    //       <GameSelectChip
+    //         _id={valueObj.games_id}
+    //         gameID={valueObj.gameID}
+    //         thumbnail={valueObj.thumbnail}
+    //         name={valueObj.name}
+    //         funcDelete={handleGameSelectSuggestionDelete}
+    //         funcDeleteArgumentsObj={{ _id, games_id: valueObj.games_id }}
+    //         key={index}
+    //       />
+    //     );
+        
+    //   }
+      
+    //   componentSelected = <SelectedGamesBox>{componentSelectedArr}</SelectedGamesBox>;
+      
+    // }
     
     
     
@@ -248,12 +279,30 @@ export default class extends React.Component {
       }
       
       
+      // すでに選択されているハードウェアを太字で表示するための配列
+      let selectedGamesArr = selectedArr;
+      
+      if (_id in gameSelectSuggestionSelectedObj) {
+        selectedGamesArr = gameSelectSuggestionSelectedObj[_id];
+      }
+      
+      
       for (const [index, valueObj] of suggestionDataArr.entries()) {
         
         // すでに選択されているハードウェアを太字で表示するためのindex
-        const index2 = selectedArr.findIndex((value2Obj) => {
-          return value2Obj.hardwareID === valueObj.hardwareID;
+        const index2 = selectedGamesArr.findIndex((value2Obj) => {
+          return value2Obj.games_id === valueObj._id;
         });
+        
+        // console.log(chalk`
+        //   index2: {green ${index2}}
+        // `);
+        
+        // console.log(`
+        //   ----- selectedGamesArr -----\n
+        //   ${util.inspect(selectedGamesArr, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         // console.log(`
         //   ----- valueObj -----\n
@@ -271,7 +320,8 @@ export default class extends React.Component {
               games_id: valueObj._id,
               gameID: valueObj.gameID,
               thumbnail: valueObj.thumbnail,
-              name: valueObj.name
+              name: valueObj.name,
+              func
             })}
             style={{
               fontWeight: index2 !== -1 ? 'bold' : 'normal',
@@ -349,7 +399,7 @@ export default class extends React.Component {
             label="ゲーム"
             value={textFieldValue}
             onChange={(eventObj) => handleGameSelectSuggestionTextField({ eventObj, _id })}
-            // onKeyDown={(eventObj) => handleCardPlayerFormHardwareActiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
+            onKeyDown={(eventObj) => handleGameSelectSuggestionOnKeyDown({ eventObj, _id })}
             helperText="ゲーム名の一部を入力して、検索結果から選んでください"
             margin="normal"
             autoComplete="off"

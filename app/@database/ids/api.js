@@ -216,4 +216,132 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
 
 
 
+
+// --------------------------------------------------
+//   更新 / Function ID: YTP9v6kk_
+// --------------------------------------------------
+
+router.post('/upsert', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionId = 'YTP9v6kk_';
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   CSRF
+    // --------------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+    
+    if (!req.isAuthenticated()) {
+      statusCode = 401;
+      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
+    
+    const localeObj = locale({
+      acceptLanguage: req.headers['accept-language']
+    });
+    
+    
+    // --------------------------------------------------
+    //   ログインしているユーザーの _id
+    // --------------------------------------------------
+    
+    const usersLogin_id = req.user._id;
+    
+    
+    // --------------------------------------------------
+    //   POST 取得 & Validation
+    // --------------------------------------------------
+    
+    const { _id, platform, label, id, publicSetting, search } = req.body;
+    
+    
+    // --------------------------------------------------
+    //   サジェスト用のデータを取得
+    // --------------------------------------------------
+    
+    // const returnObj = await ModelHardwares.findBySearchKeywordsArrForSuggestion({
+    //   keyword,
+    //   language: localeObj.language,
+    //   country: localeObj.country,
+    // });
+    
+    
+    // --------------------------------------------------
+    //   Console 出力
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      _id: {green ${_id}}
+      platform: {green ${platform}}
+      label: {green ${label}}
+      id: {green ${id}}
+      publicSetting: {green ${publicSetting}}
+      search: {green ${search}}
+    `);
+    
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Return Json Object / Success
+    // ---------------------------------------------
+    
+    // return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
+    
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+});
+
+
+
+
 module.exports = router;

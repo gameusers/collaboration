@@ -11,12 +11,14 @@ const mongoose = require('mongoose');
 
 const schema = mongoose.Schema({
   _id: { type: String, required: true },
+  createdDate: { type: Date, default: Date.now, required: true },
+  updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
   gameID: String,
   platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'], required: true },
   label: String,
   id: { type: String, required: true },
-  showType: { type: Number, min: 1, max: 5, required: true },
+  publicSetting: { type: Number, min: 1, max: 5, required: true },
   search: { type: Boolean, required: true },
 });
 

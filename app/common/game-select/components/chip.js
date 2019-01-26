@@ -50,10 +50,6 @@ const Container = styled.div`
   border: 1px solid #3f51b5;
   border-radius: 18px;
   margin: 8px 8px 0 0;
-  
-  // min-width: 20px;
-  // box-sizing: border-box;
-  // cursor: pointer;
 `;
 
 const AvatarMainBox = styled.div`
@@ -76,16 +72,6 @@ const StyledAvatarNoImage = styled(Avatar)`
   }
 `;
 
-// const StyledAvatarClose = styled(Avatar)`
-//   && {
-//     width: 32px;
-//     height: 32px;
-//     background-color: rgba(63, 81, 181, 0.7);
-//     cursor: pointer;
-//   }
-// `;
-
-
 
 const TextBox = styled.div`
   display: flex;
@@ -97,9 +83,6 @@ const TextBox = styled.div`
 
 const Name = styled.span`
   font-weight: bold;
-  // word-wrap: break-word;
-  // width : 100%;
-  // padding: 0 4px 0 0;
 `;
 
 
@@ -131,7 +114,6 @@ const StyledIconClose = styled(IconClose)`
 
 
 
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -152,7 +134,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { _id, gameID, thumbnail, name, funcDelete } = this.props;
+    const { _id, gameID, thumbnail, name, funcDelete, funcDeleteArgumentsObj } = this.props;
     
     
     
@@ -165,8 +147,7 @@ export default class extends React.Component {
       return null;
     }
     
-    // console.log(funcDelete);
-    funcDelete({ id: 'id', gameID: 'gameID'});
+    
     
     
     // --------------------------------------------------
@@ -226,18 +207,11 @@ export default class extends React.Component {
         
         <AvatarSubBox>
           <StyledIconButton
-            // onClick={() => funcDelete()}
-            onClick={() => funcDelete({ _id, gameID })}
+            onClick={() => funcDelete(funcDeleteArgumentsObj)}
           >
             <StyledIconClose />
           </StyledIconButton>
         </AvatarSubBox>
-        
-        {/*<AvatarSubBox>
-          <StyledAvatarClose>
-            <IconClose />
-          </StyledAvatarClose>
-        </AvatarSubBox>*/}
         
       </Container>
     );

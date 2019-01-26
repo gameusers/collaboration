@@ -118,7 +118,7 @@ const schema = mongoose.Schema({
   //     // type: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
   //     // label: String,
   //     // value: { type: String, required: true },
-  //     // showType: { type: Number, min: 1, max: 5 },
+  //     // publicSetting: { type: Number, min: 1, max: 5 },
   //     // search: { type: Boolean, required: true },
   //   },
   // ],

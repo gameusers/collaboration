@@ -89,8 +89,8 @@ router.post('/insert', upload.none(), async (req, res, next) => {
   let statusCode = 400;
   
   let errorArgumentsObj = {
-    fileId: 'SInn-saE6',
-    functionId: 'zenm51Io4',
+    fileID: 'SInn-saE6',
+    functionID: 'zenm51Io4',
     errorCodeArr: [500000],
     errorObj: {},
   };

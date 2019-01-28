@@ -74,8 +74,8 @@ const router = express.Router();
 let statusCode = 400;
 
 let errorArgumentsObj = {
-  fileId: 'QOVB4jVBQ',
-  functionId: '',
+  fileID: 'QOVB4jVBQ',
+  functionID: '',
   errorCodeArr: [500000],
   errorObj: {},
 };
@@ -94,7 +94,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = 'A8rggT8XW';
+  errorArgumentsObj.functionID = 'A8rggT8XW';
   
   let returnObj = {};
   
@@ -234,7 +234,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = '34KBpPcqT';
+  errorArgumentsObj.functionID = '34KBpPcqT';
   
   let returnObj = {};
   

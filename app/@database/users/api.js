@@ -74,8 +74,8 @@ const router = express.Router();
 let statusCode = 400;
 
 let errorArgumentsObj = {
-  fileId: 'EOnyUrk82',
-  functionId: '',
+  fileID: 'EOnyUrk82',
+  functionID: '',
   errorCodeArr: [500000],
   errorObj: {},
 };
@@ -94,7 +94,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = 'uXe64jfMh';
+  errorArgumentsObj.functionID = 'uXe64jfMh';
   
   let returnObj = {};
   
@@ -115,9 +115,11 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = [101001];
+      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
       throw new Error();
     }
+    
+    const usersLogin_id = req.user._id;
     
     
     // --------------------------------------------------
@@ -135,19 +137,8 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     if (validation_idObj.error) {
       statusCode = 400;
-      errorArgumentsObj.errorCodeArr = [502001];
+      errorArgumentsObj.errorCodeArr = [0];
       throw new Error();
-    }
-    
-    
-    // --------------------------------------------------
-    //   ログインしているユーザーの _id
-    // --------------------------------------------------
-    
-    let usersLogin_id = '';
-    
-    if (req.user) {
-      usersLogin_id = req.user._id;
     }
     
     

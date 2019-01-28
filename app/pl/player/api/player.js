@@ -75,8 +75,8 @@ const router = express.Router();
 let statusCode = 400;
 
 let errorArgumentsObj = {
-  fileId: '4tT2vx700',
-  functionId: '',
+  fileID: '4tT2vx700',
+  functionID: '',
   errorCodeArr: [500000],
   errorObj: {},
 };
@@ -95,7 +95,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = 'P3ut9x3Fj';
+  errorArgumentsObj.functionID = 'P3ut9x3Fj';
   
   let returnObj = {
     usersObj: {},

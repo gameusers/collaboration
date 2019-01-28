@@ -6,8 +6,8 @@
 //   Console 出力用
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+// const chalk = require('chalk');
+// const util = require('util');
 
 
 // ---------------------------------------------
@@ -15,21 +15,6 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-const { IntlProvider } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
-
-// const { locale } = require('../../@locales/locale');
-
-// const intlProvider = new IntlProvider({ locale, localeObj.dataObj }, {});
-// const { intl } = intlProvider.getChildContext();
 
 
 // ---------------------------------------------
@@ -53,48 +38,74 @@ const logger = require('../logger');
  * @param {number} errorCode - エラーコード
  * @return {Object} エラーオブジェクト
  */
-const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, errorObj }) => {
-  
-  
-  // ---------------------------------------------
-  //   I18n
-  // ---------------------------------------------
-  
-  const intlProvider = new IntlProvider({
-     locale: localeObj.languageArr[0],
-     messages: localeObj.dataObj
-  }, {});
-  
-  const { intl } = intlProvider.getChildContext();
+// const errorCodeIntoErrorObj = (errorObj, errorCodeArr, logPath) => {
+const errorCodeIntoErrorObj = (errorArgumentsObj) => {
   
   
   // ---------------------------------------------
   //   Property
   // ---------------------------------------------
   
+  const fileID = errorArgumentsObj.fileID;
+  const functionID = errorArgumentsObj.functionID;
+  const errorCodeArr = errorArgumentsObj.errorCodeArr;
+  const errorObj = errorArgumentsObj.errorObj;
+  
   let errorsArr = [];
   let logArr = [];
   
   
   // ---------------------------------------------
-  //   Errors Arr & Log Array
+  //   Message
   // ---------------------------------------------
   
-  // const code = `${fileID}@${functionID}@${errorCodeArr.join('/')}`;
-  
-  
+  // for (let value of errorCodeArr.values()) {
   for (let value of errorCodeArr) {
     
     let tempObj = {
       code: `${fileID}@${functionID}@${value}`,
-      message: intl.formatMessage({ id: value }),
+      message: ''
     };
     
-    // console.log(intl.formatMessage({ id: value }));
-    
+    if (value === 101001) {
+      
+      tempObj.message = 'ログインする必要があります。';
+      
+    } else if (process.env.NODE_ENV === 'production') {
+      
+      tempObj.message = 'Error';
+      
+    } else if (value === 502001) {
+      
+      tempObj.message = 'Validation / locale';
+      
+    } else if (value === 502101) {
+      
+      tempObj.message = 'Validation / users / users_id';
+      
+    } else if (value === 502102) {
+      
+      tempObj.message = 'Validation / users / Player ID';
+      
+    } else if (502000 <= value && value <= 502999) {
+      
+      tempObj.message = 'Validation';
+      
+    } else if (value === 503001) {
+      
+      tempObj.message = 'DB / users / usersObj が空です。';
+      
+    } else if (503000 <= value && value <= 503999) {
+      
+      tempObj.message = 'Database';
+      
+    } else {
+      
+      tempObj.message = errorObj.message;
+      
+    }
     
     errorsArr.push(tempObj);
-    
     logArr.push(`${moment().utcOffset(0)}\nCode: ${tempObj.code}\nMessage: ${tempObj.message}\n`);
     
   }
@@ -104,7 +115,6 @@ const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, er
   //   Log
   // ---------------------------------------------
   
-  // const log = `${moment().utcOffset(0)}\nCode: ${code}\n`;
   logger.log('error', `${logArr.join(' / ')}`);
   
   
@@ -116,9 +126,7 @@ const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, er
     errorsArr
   };
   
-  
 };
-
 
 
 

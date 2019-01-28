@@ -21,6 +21,8 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
+const shortid = require('shortid');
+const moment = require('moment');
 
 
 // ---------------------------------------------
@@ -35,7 +37,11 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-// const validation_id = require('../../@validations/_id');
+const validation_id = require('./validations/_id');
+const validationPlatform = require('./validations/platform');
+const validationLabel = require('./validations/label');
+const validationID = require('./validations/id');
+const validationPublicSetting = require('./validations/public-setting');
 
 
 // ---------------------------------------------
@@ -73,9 +79,9 @@ const router = express.Router();
 let statusCode = 400;
 
 let errorArgumentsObj = {
-  fileId: '3bPnmJsoD',
-  functionId: '',
-  errorCodeArr: [500000],
+  fileID: '3bPnmJsoD',
+  functionID: '',
+  errorCodeArr: [],
   errorObj: {},
 };
 
@@ -93,7 +99,7 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = 'XwchAk4yT';
+  errorArgumentsObj.functionID = 'XwchAk4yT';
   
   let returnObj = {};
   
@@ -216,7 +222,6 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
 
 
 
-
 // --------------------------------------------------
 //   更新 / Function ID: YTP9v6kk_
 // --------------------------------------------------
@@ -225,10 +230,19 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = 'YTP9v6kk_';
+  errorArgumentsObj.functionID = 'YTP9v6kk_';
   
   
   try {
@@ -251,21 +265,16 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
       throw new Error();
     }
     
+    const usersLogin_id = req.user._id;
+    
     
     // --------------------------------------------------
     //   Locale
     // --------------------------------------------------
     
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
-    
-    
-    // --------------------------------------------------
-    //   ログインしているユーザーの _id
-    // --------------------------------------------------
-    
-    const usersLogin_id = req.user._id;
+    // const localeObj = locale({
+    //   acceptLanguage: req.headers['accept-language']
+    // });
     
     
     // --------------------------------------------------
@@ -276,14 +285,156 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   サジェスト用のデータを取得
+    //   Validation
     // --------------------------------------------------
     
-    // const returnObj = await ModelHardwares.findBySearchKeywordsArrForSuggestion({
-    //   keyword,
+    if (_id) {
+      
+      const validation_idObj = await validation_id({ usersLogin_id, _id });
+      
+      if (validation_idObj.errorCodeArr.length > 0) {
+        errorArgumentsObj.errorCodeArr = errorArgumentsObj.errorCodeArr.concat(validation_idObj.errorCodeArr);
+        throw new Error();
+      }
+      
+      // console.log(`
+      //   ----- validation_idObj -----\n
+      //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    // const validationPlatformObj = validationPlatform({ platform });
+    
+    // if (validationPlatformObj.error) {
+    //   statusCode = 400;
+    //   errorArgumentsObj.errorCodeArr = ['mZhszz8Zk'];
+    //   throw new Error();
+    // }
+    
+    
+    // const validationLabelObj = validationLabel({ platform });
+    
+    // if (validationLabelObj.error) {
+    //   statusCode = 400;
+    //   errorArgumentsObj.errorCodeArr = ['81AXnuQgg'];
+    //   throw new Error();
+    // }
+    
+    
+    // const validationIDObj = validationID({ id });
+    
+    // if (validationIDObj.error) {
+    //   statusCode = 400;
+    //   errorArgumentsObj.errorCodeArr = ['J7YynFXAh'];
+    //   throw new Error();
+    // }
+    
+    
+    // const validationPublicSettingObj = validationPublicSetting({ publicSetting });
+    
+    // if (validationPublicSettingObj.error) {
+    //   statusCode = 400;
+    //   errorArgumentsObj.errorCodeArr = ['PWhTr4oUh'];
+    //   throw new Error();
+    // }
+    
+    
+    // ---------------------------------------------
+    //   保存可能件数のチェック
+    //   オーバーしている場合は処理停止
+    // ---------------------------------------------
+    
+    const count = await ModelIDs.count({
+      conditionObj: {
+        users_id: usersLogin_id,
+      },
+    });
+    
+    if (count > process.env.ID_INSERT_LIMIT) {
+      statusCode = 400;
+      errorArgumentsObj.errorCodeArr = ['NRO3Y1hnC'];
+      throw new Error();
+    }
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   データ更新
+    // // --------------------------------------------------
+    
+    // // ---------------------------------------------
+    // //   Condition Object & Save Object
+    // // ---------------------------------------------
+    
+    // let conditionObj = {};
+    // let saveObj = {};
+    // const date = moment().utcOffset(0);
+    
+    // if (_id) {
+      
+    //   conditionObj = {
+    //     _id
+    //   };
+      
+    //   saveObj = {
+    //     $set: {
+    //       updatedDate: date,
+    //       platform,
+    //       label,
+    //       id,
+    //       publicSetting: parseInt(publicSetting, 10),
+    //       search: search ? true : false
+    //     }
+    //   };
+      
+    // } else {
+      
+    //   conditionObj = {
+    //     _id: shortid.generate()
+    //   };
+      
+    //   saveObj = {
+    //     createdDate: date,
+    //     updatedDate: date,
+    //     users_id: usersLogin_id,
+    //     platform,
+    //     label,
+    //     id,
+    //     publicSetting: parseInt(publicSetting, 10),
+    //     search: search ? true : false
+    //   };
+      
+    // }
+    
+    
+    // // --------------------------------------------------
+    // //   Upsert
+    // // --------------------------------------------------
+    
+    // await ModelIDs.upsert({
+    //   conditionObj,
+    //   saveObj,
+    // });
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   データ取得 / IDs
+    // //   ログインしているユーザーの登録IDデータ
+    // // --------------------------------------------------
+    
+    // const returnObj = await ModelIDs.findBy_Users_idForForm({
     //   language: localeObj.language,
     //   country: localeObj.country,
+    //   usersLogin_id
     // });
+    
+    // returnObj = resultIDsObj;
+    
     
     
     // --------------------------------------------------
@@ -297,13 +448,11 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
       id: {green ${id}}
       publicSetting: {green ${publicSetting}}
       search: {green ${search}}
+      count: {green ${count}}
+      process.env.ID_INSERT_LIMIT: {green ${process.env.ID_INSERT_LIMIT}}
     `);
     
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -316,18 +465,23 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   Return Json Object / Success
     // ---------------------------------------------
     
+    return res.status(200).json({});
     // return res.status(200).json(returnObj);
     
     
   } catch (errorObj) {
     
-    
+    console.log(`
+      ----- errorArgumentsObj -----\n
+      ${util.inspect(errorArgumentsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     // ---------------------------------------------
     //   Error Object
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------

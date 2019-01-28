@@ -73,8 +73,8 @@ const router = express.Router();
 let statusCode = 400;
 
 let errorArgumentsObj = {
-  fileId: 'scrbYSDh9',
-  functionId: '',
+  fileID: 'scrbYSDh9',
+  functionID: '',
   errorCodeArr: [500000],
   errorObj: {},
 };
@@ -93,7 +93,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = '-3d4En1t6';
+  errorArgumentsObj.functionID = '-3d4En1t6';
   
   let returnObj = {};
   

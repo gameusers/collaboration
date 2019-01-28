@@ -82,8 +82,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
   let statusCode = 400;
   
   let errorArgumentsObj = {
-    fileId: 'Mv7RFeKQ1',
-    functionId: 'gUwZx1hDG',
+    fileID: 'Mv7RFeKQ1',
+    functionID: 'gUwZx1hDG',
     errorCodeArr: [500000],
     errorObj: {},
   };

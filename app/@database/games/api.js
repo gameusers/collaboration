@@ -73,8 +73,8 @@ const router = express.Router();
 let statusCode = 400;
 
 let errorArgumentsObj = {
-  fileId: 'XSntgt4Xq',
-  functionId: '',
+  fileID: 'XSntgt4Xq',
+  functionID: '',
   errorCodeArr: [],
   errorObj: {},
 };
@@ -93,7 +93,7 @@ router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async 
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionId = 'Bk8IioexW';
+  errorArgumentsObj.functionID = 'Bk8IioexW';
   
   
   try {

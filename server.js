@@ -98,7 +98,8 @@ app.prepare().then(() => {
   
   mongoose.connect('mongodb://localhost:27017/gameusers', {
     useCreateIndex: true,
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useFindAndModify: false,
   });
   
   const db = mongoose.connection;

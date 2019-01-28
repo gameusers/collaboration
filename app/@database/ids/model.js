@@ -609,21 +609,10 @@ const findBy_idsArr = async (argumentsObj) => {
 
 /**
  * 取得する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
  * @return {Object} 取得データ
  */
-const find = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj
-    
-  } = argumentsObj;
+const find = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
@@ -637,14 +626,41 @@ const find = async (argumentsObj) => {
     //   Find
     // --------------------------------------------------
     
-    const docArr = await Model.find(conditionObj).exec();
+    return await Model.find(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * カウントを取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {number} カウント数
+ */
+const count = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
     
     
     // --------------------------------------------------
-    //   Return
+    //   Find
     // --------------------------------------------------
     
-    return docArr;
+    // return await Model.find(conditionObj).count().exec();
+    return await Model.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -677,7 +693,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
+    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -801,6 +817,7 @@ module.exports = {
   findForCardPlayer,
   findBy_Users_idForForm,
   find,
+  count,
   upsert,
   insertMany,
   deleteMany

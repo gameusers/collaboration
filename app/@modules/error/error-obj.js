@@ -22,14 +22,6 @@ const moment = require('moment');
 // ---------------------------------------------
 
 const { IntlProvider } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
-
-// const { locale } = require('../../@locales/locale');
-
-// const intlProvider = new IntlProvider({ locale, localeObj.dataObj }, {});
-// const { intl } = intlProvider.getChildContext();
 
 
 // ---------------------------------------------
@@ -47,10 +39,11 @@ const logger = require('../logger');
 
 /**
  * Error 情報の入ったオブジェクトを返す
- * ユーザーに通知するエラー（100000～499999）
- * 通知しないエラー（500000～）
- * @param {Object} error - エラー
- * @param {number} errorCode - エラーコード
+ * @param {Object} localeObj - ロケール
+ * @param {string} fileID - ファイル固有のID
+ * @param {string} functionID - 関数固有のID
+ * @param {Array} errorCodeArr - エラーコードが入っている配列
+ * @param {Object} errorObj - catchで取得したエラーオブジェクト
  * @return {Object} エラーオブジェクト
  */
 const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, errorObj }) => {
@@ -80,18 +73,12 @@ const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, er
   //   Errors Arr & Log Array
   // ---------------------------------------------
   
-  // const code = `${fileID}@${functionID}@${errorCodeArr.join('/')}`;
-  
-  
   for (let value of errorCodeArr) {
     
     let tempObj = {
       code: `${fileID}@${functionID}@${value}`,
       message: intl.formatMessage({ id: value }),
     };
-    
-    // console.log(intl.formatMessage({ id: value }));
-    
     
     errorsArr.push(tempObj);
     
@@ -104,7 +91,6 @@ const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, er
   //   Log
   // ---------------------------------------------
   
-  // const log = `${moment().utcOffset(0)}\nCode: ${code}\n`;
   logger.log('error', `${logArr.join(' / ')}`);
   
   

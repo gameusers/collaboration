@@ -86,8 +86,11 @@ const validation_id = async ({ usersLogin_id, _id }) => {
   }
   
   
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
+  
   // console.log(chalk`
-  //   afterValue: {green ${afterValue}}
   //   usersLogin_id: {green ${usersLogin_id}}
   //   _id: {green ${_id}}
   // `);

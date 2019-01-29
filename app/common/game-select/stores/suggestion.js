@@ -110,6 +110,7 @@ class Store {
     //   this.gameSelectSuggestionSelectedObj[_id] = arr;
     // }
     
+    
     // 受け渡された関数を実行する
     func({ _id, games_id, gameID, thumbnail, name });
     

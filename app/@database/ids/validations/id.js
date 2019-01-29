@@ -10,20 +10,13 @@ const chalk = require('chalk');
 const util = require('util');
 
 
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-// const ModelIDs = require('../model');
-
-
 
 
 /**
  * id
- * @param {string} id - ラベル
+ * @param {string} id - ID
  */
-const validationID = async ({ id }) => {
+const validationID = ({ id }) => {
   
   
   // ---------------------------------------------
@@ -49,8 +42,7 @@ const validationID = async ({ id }) => {
     beforeNumberOfCharacters,
     afterValue,
     afterNumberOfCharacters,
-    error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
@@ -58,21 +50,23 @@ const validationID = async ({ id }) => {
   //   Validation
   // ---------------------------------------------
   
+  // 存在チェック
   if (beforeValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('IDを入力してください。');
+    resultObj.errorCodeArr.push('FsjP5Xb5h');
   }
   
-  
+  // 文字数チェック
   if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`IDは${minLength}文字以上、${maxLength}文字以内です。`);
+    resultObj.errorCodeArr.push('RheyjmgKo');
   }
   
+  
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
   
   // console.log(chalk`
   //   id: {green ${id}}
-  //   slicedValue: {green ${slicedValue}}
   // `);
   
   // console.log(`

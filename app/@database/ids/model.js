@@ -610,7 +610,7 @@ const findBy_idsArr = async (argumentsObj) => {
 /**
  * 取得する
  * @param {Object} conditionObj - 検索条件
- * @return {Object} 取得データ
+ * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
   
@@ -677,7 +677,7 @@ const count = async ({ conditionObj }) => {
 /**
  * 挿入 / 更新する
  * @param {Object} argumentsObj - 引数
- * @return {Object} 
+ * @return {Array} 
  */
 const upsert = async ({ conditionObj, saveObj }) => {
   
@@ -760,21 +760,10 @@ const insertMany = async (argumentsObj) => {
 
 /**
  * 削除する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
  * @return {Array} 
  */
-const deleteMany = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj
-    
-  } = argumentsObj;
+const deleteMany = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
@@ -785,17 +774,10 @@ const deleteMany = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Remove
+    //   Delete
     // --------------------------------------------------
     
-    const docArr = await Model.deleteMany(conditionObj);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.deleteMany(conditionObj);
     
     
   } catch (err) {

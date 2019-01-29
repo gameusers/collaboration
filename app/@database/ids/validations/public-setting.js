@@ -10,25 +10,21 @@ const chalk = require('chalk');
 const util = require('util');
 
 
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-// const ModelIDs = require('../model');
-
-
 
 
 /**
  * publicSetting
  * @param {string} publicSetting - 公開設定
  */
-const validationPublicSetting = async ({ publicSetting }) => {
+const validationPublicSetting = ({ publicSetting }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
+  
+  const minNumber = 1;
+  const maxNumber = 5;
   
   
   // ---------------------------------------------
@@ -38,16 +34,16 @@ const validationPublicSetting = async ({ publicSetting }) => {
   const beforeValue = publicSetting;
   const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
   
-  const afterValue = beforeValue ? parseInt(beforeValue, 10) : 0;
-  const afterNumberOfCharacters = afterValue ? afterValue.length : 0;
+  // const afterValue = beforeValue ? parseInt(beforeValue, 10) : 0;
+  const afterValue = beforeValue ? beforeValue : 0;
+  const afterNumberOfCharacters = afterValue ? String(afterValue).length : 0;
   
   let resultObj = {
     beforeValue,
     beforeNumberOfCharacters,
     afterValue,
     afterNumberOfCharacters,
-    error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
@@ -55,22 +51,32 @@ const validationPublicSetting = async ({ publicSetting }) => {
   //   Validation
   // ---------------------------------------------
   
+  // 存在チェック
   if (beforeValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('公開設定を入力してください。');
+    resultObj.errorCodeArr.push('Fafdlkugx');
   }
   
+  // 適切な値が選択されているかチェック
+  const pattern = new RegExp(`^[${minNumber}-${maxNumber}]$`);
   
-  if (afterValue < 1 || afterValue > 5) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`公開設定に適切な値が選ばれていません。`);
+  if (beforeValue.match(pattern) === null) {
+    resultObj.errorCodeArr.push('1wG57OGCe');
   }
+  // if (afterValue < minNumber || afterValue > maxNumber) {
+  //   resultObj.errorCodeArr.push('1wG57OGCe');
+  // }
   
   
   // console.log(chalk`
+  //   beforeValue.match(/^[1-5]$/): {green ${beforeValue.match(pattern)}}
+  // `);
+  
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
+  
+  // console.log(chalk`
   //   publicSetting: {green ${publicSetting}}
-  //   slicedValue: {green ${slicedValue}}
-  //   int: {green ${int}}
   // `);
   
   // console.log(`

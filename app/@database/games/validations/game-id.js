@@ -14,17 +14,16 @@ const util = require('util');
 //   Model
 // ---------------------------------------------
 
-const ModelIDs = require('../model');
+const ModelGames = require('../model');
 
 
 
 
 /**
- * _id
- * @param {string} usersLogin_id - db users _id
- * @param {string} _id - db ids _id
+ * gameID
+ * @param {string} gameID - db games gameID
  */
-const validation_id = async ({ usersLogin_id, _id }) => {
+const validationGameID = async ({ language, country, gameID }) => {
   
   
   // ---------------------------------------------
@@ -39,7 +38,7 @@ const validation_id = async ({ usersLogin_id, _id }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const beforeValue = _id;
+  const beforeValue = gameID;
   const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
   
   const afterValue = beforeValue ? beforeValue.slice(0, maxLength) : '';
@@ -50,8 +49,7 @@ const validation_id = async ({ usersLogin_id, _id }) => {
     beforeNumberOfCharacters,
     afterValue,
     afterNumberOfCharacters,
-    error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
@@ -59,41 +57,43 @@ const validation_id = async ({ usersLogin_id, _id }) => {
   //   Validation
   // ---------------------------------------------
   
+  // 存在チェック
   if (beforeValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('_idを入力してください。');
+    resultObj.errorCodeArr.push('5Ig82NHic');
   }
   
-  
+  // 英数と -_ のみ
   if (afterValue.match(/^[\w\-]+$/) === null) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('_idに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。');
+    resultObj.errorCodeArr.push('uj4asy4EI');
   }
   
-  
+  // 文字数チェック
   if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`_idは${minLength}文字以上、${maxLength}文字以内です。`);
+    resultObj.errorCodeArr.push('61osZ7Z99');
   }
   
-  
-  const docArr = await ModelIDs.find({
+  // データベースに存在しているかチェック
+  const docArr = await ModelGames.find({
     conditionObj: {
-      _id,
-      users_id: usersLogin_id,
+      language,
+      country,
+      gameID,
     }
   });
   
   if (docArr.length === 0) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`入力した_idはデータベースに存在しない、または編集権限がありません。`);
+    resultObj.errorCodeArr.push('Zg03IN2R8');
   }
   
   
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
+  
   // console.log(chalk`
-  //   afterValue: {green ${afterValue}}
-  //   usersLogin_id: {green ${usersLogin_id}}
-  //   _id: {green ${_id}}
+  //   language: {green ${language}}
+  //   country: {green ${country}}
+  //   gameID: {green ${gameID}}
   // `);
   
   // console.log(`
@@ -120,4 +120,4 @@ const validation_id = async ({ usersLogin_id, _id }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validation_id;
+module.exports = validationGameID;

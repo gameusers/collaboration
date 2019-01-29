@@ -27,6 +27,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -77,9 +78,9 @@ const IDBox = styled.div`
   cursor: pointer;
 `;
 
-const RegistrationButtonBox = styled.div`
-  margin: 16px 0 0 0;
-`;
+// const RegistrationButtonBox = styled.div`
+//   margin: 16px 0 0 0;
+// `;
 
 const PlatformBox = styled.div`
   margin: 12px 0 0 0;
@@ -101,7 +102,7 @@ const SendButtonBox = styled.div`
 `;
 
 const SearchBox = styled.div`
-  margin: 12px 0 0 0;
+  margin: 24px 0 0 0;
 `;
 
 
@@ -159,7 +160,9 @@ export default class extends React.Component {
       handleIDFormPublicSetting,
       
       idFormSearchObj,
-      handleIDFormSearch
+      handleIDFormSearch,
+      
+      handleIDFormSubmit
       
     } = stores.idSelectForm;
     
@@ -170,13 +173,7 @@ export default class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
-    
-    if (`${_id}-idFormEditSubmit` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-idFormEditSubmit`];
-    }
-    
-    
+    const buttonDisabled = `${_id}-idFormEditSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormEditSubmit`] : true;
     
     
     // --------------------------------------------------
@@ -211,77 +208,28 @@ export default class extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   フォームの値
+    // --------------------------------------------------
+    
+    const formPlatform = _id in idFormPlatformObj ? idFormPlatformObj[_id] : '';
+    const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
+    const formLabel = _id in idFormLabelObj ? idFormLabelObj[_id] : '';
+    const formID = _id in idFormIDObj ? idFormIDObj[_id] : '';
+    const formPublicSetting = _id in idFormPublicSettingObj ? idFormPublicSettingObj[_id] : '';
+    const formSearch = _id in idFormSearchObj ? idFormSearchObj[_id] : '';
     
     
     // --------------------------------------------------
-    //   フォーム - プラットフォーム
+    //   Game 選択フォームを表示しないプラットフォーム
     // --------------------------------------------------
     
-    let formPlatform = '';
-    
-    if (_id in idFormPlatformObj) {
-      formPlatform = idFormPlatformObj[_id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォーム - ゲーム
-    // --------------------------------------------------
-    
-    let formGameArr = [];
-    
-    if (_id in idFormGameObj) {
-      formGameArr = idFormGameObj[_id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォーム - ラベル
-    // --------------------------------------------------
-    
-    let formLabel = '';
-    
-    if (_id in idFormLabelObj) {
-      formLabel = idFormLabelObj[_id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォーム - ID
-    // --------------------------------------------------
-    
-    let formID = '';
-    
-    if (_id in idFormIDObj) {
-      formID = idFormIDObj[_id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォーム - 公開設定
-    // --------------------------------------------------
-    
-    let formPublicSetting = '';
-    
-    if (_id in idFormPublicSettingObj) {
-      formPublicSetting = idFormPublicSettingObj[_id];
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォーム - 検索
-    // --------------------------------------------------
-    
-    let formSearch = '';
-    
-    if (_id in idFormSearchObj) {
-      formSearch = idFormSearchObj[_id];
-    }
+    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
     
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -346,7 +294,6 @@ export default class extends React.Component {
                 id: 'platform',
               }}
             >
-              <MenuItem value={'Other'}>その他</MenuItem>
               <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
               <MenuItem value={'Xbox'}>Xbox</MenuItem>
               <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
@@ -354,18 +301,22 @@ export default class extends React.Component {
               <MenuItem value={'PC'}>PC</MenuItem>
               <MenuItem value={'Android'}>Android</MenuItem>
               <MenuItem value={'iOS'}>iOS</MenuItem>
+              <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
+            <FormHelperText>IDに関係のあるプラットフォームを選んでください</FormHelperText>
           </FormControl>
         </PlatformBox>
         
         
         {/* ゲーム選択 */}
-        <GameSelectSuggestion
-          _id={_id}
-          selectedArr={formGameArr}
-          func={handleIDFormGame}
-          funcDelete={handleIDFormGameDelete}
-        />
+        {noGameIDPlatformArr.indexOf(formPlatform) === -1 &&
+          <GameSelectSuggestion
+            _id={_id}
+            selectedArr={formGameArr}
+            func={handleIDFormGame}
+            funcDelete={handleIDFormGameDelete}
+          />
+        }
         
         
         {/* ラベル */}
@@ -414,6 +365,7 @@ export default class extends React.Component {
               <MenuItem value={4}>相互フォローで公開</MenuItem>
               <MenuItem value={5}>自分以外には公開しない</MenuItem>
             </Select>
+            <FormHelperText>IDを公開する相手を選べます</FormHelperText>
           </FormControl>
         </PlatformBox>
         
@@ -438,11 +390,9 @@ export default class extends React.Component {
           <Button
             variant="outlined"
             color="primary"
-            // onClick={() => handleIDFormSelectButton({
-            //   _id,
-            //   idArr: idFormDataSelectedObj[_id],
-            //   func
-            // })}
+            onClick={() => handleIDFormSubmit({
+              _id,
+            })}
             disabled={buttonDisabled}
           >
             編集する

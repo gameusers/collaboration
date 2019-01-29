@@ -79,21 +79,10 @@ const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword
 
 /**
  * 取得する
- * @param {Object} argumentsObj - 引数
- * @return {Object} 取得データ
+ * @param {Object} conditionObj - 検索条件
+ * @return {Array} 取得データ
  */
-const find = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj
-    
-  } = argumentsObj;
+const find = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
@@ -107,14 +96,7 @@ const find = async (argumentsObj) => {
     //   Find
     // --------------------------------------------------
     
-    const docArr = await Model.find(conditionObj).exec();
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.find(conditionObj).exec();
     
     
   } catch (err) {

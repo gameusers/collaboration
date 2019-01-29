@@ -534,8 +534,23 @@ class Store {
       
       const formData = new FormData();
       
+      const gameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
+      
+      // console.log(chalk`
+      //   this.idForm_idObj[_id]: {green ${this.idForm_idObj[_id]}}
+      //   gameID: {green ${gameID}}
+      // `);
+      
+      // console.log(`
+      //   ----- this.idFormGameObj[_id] -----\n
+      //   ${util.inspect(this.idFormGameObj[_id], { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
       formData.append('_id', this.idForm_idObj[_id]);
       formData.append('platform', this.idFormPlatformObj[_id]);
+      formData.append('gameID', gameID);
       formData.append('label',  this.idFormLabelObj[_id]);
       formData.append('id', this.idFormIDObj[_id]);
       formData.append('publicSetting', this.idFormPublicSettingObj[_id]);
@@ -554,7 +569,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/ids/find-by-users-id-for-form`,
+        urlApi: `${storeData.urlApi}/v1/ids/upsert`,
         methodType: 'POST',
         formData: formData
       });
@@ -576,9 +591,34 @@ class Store {
       this.idFormDataObj[_id] = resultObj.data;
       
       
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('success', '編集しました。');
+      
+      // if (type === 'follow') {
+        
+      // } else {
+      //   storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
+      // }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- this.idFormGameObj[_id] -----\n
+      //   ${util.inspect(this.idFormGameObj[_id], { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -590,7 +630,7 @@ class Store {
         
       
       
-    } catch (error) {
+    } catch (errorObj) {
       
     } finally {
       

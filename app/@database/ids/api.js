@@ -42,6 +42,7 @@ const validationPlatform = require('./validations/platform');
 const validationLabel = require('./validations/label');
 const validationID = require('./validations/id');
 const validationPublicSetting = require('./validations/public-setting');
+const validationGameID = require('../games/validations/game-id');
 
 
 // ---------------------------------------------
@@ -268,24 +269,40 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     const usersLogin_id = req.user._id;
     
     
-    // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
-    
-    // const localeObj = locale({
-    //   acceptLanguage: req.headers['accept-language']
-    // });
     
     
     // --------------------------------------------------
-    //   POST 取得 & Validation
+    //   POST 取得
     // --------------------------------------------------
     
-    const { _id, platform, label, id, publicSetting, search } = req.body;
+    const { _id, platform, gameID, label, id, publicSetting, search } = req.body;
+    
+    
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Save Object
+    // --------------------------------------------------
+    
+    const date = moment().utcOffset(0);
+    
+    let saveObj = {
+      createdDate: date,
+      updatedDate: date,
+      users_id: usersLogin_id,
+      platform: 'Other',
+      gameID: '',
+      label: '',
+      id: '',
+      publicSetting: 5,
+      search: search ? true : false
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Validation - _id
     // --------------------------------------------------
     
     if (_id) {
@@ -293,52 +310,93 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
       const validation_idObj = await validation_id({ usersLogin_id, _id });
       
       if (validation_idObj.errorCodeArr.length > 0) {
-        errorArgumentsObj.errorCodeArr = errorArgumentsObj.errorCodeArr.concat(validation_idObj.errorCodeArr);
+        errorArgumentsObj.errorCodeArr = validation_idObj.errorCodeArr;
         throw new Error();
       }
       
-      // console.log(`
-      //   ----- validation_idObj -----\n
-      //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Validation - platform
+    // --------------------------------------------------
+    
+    const validationPlatformObj = validationPlatform({ platform });
+    
+    if (validationPlatformObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationPlatformObj.errorCodeArr;
+      throw new Error();
+    }
+    
+    saveObj.platform = validationPlatformObj.afterValue;
+    
+    
+    // --------------------------------------------------
+    //   Validation - Game ID
+    // --------------------------------------------------
+    
+    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
+    
+    if (gameID && noGameIDPlatformArr.indexOf(platform) === -1) {
+      
+      const validationGameIDObj = await validationGameID({
+        language: localeObj.language,
+        country: localeObj.country,
+        gameID
+      });
+      
+      if (validationGameIDObj.errorCodeArr.length > 0) {
+        errorArgumentsObj.errorCodeArr = validationGameIDObj.errorCodeArr;
+        throw new Error();
+      }
+      
+      saveObj.gameID = validationGameIDObj.afterValue;
       
     }
     
-    // const validationPlatformObj = validationPlatform({ platform });
     
-    // if (validationPlatformObj.error) {
-    //   statusCode = 400;
-    //   errorArgumentsObj.errorCodeArr = ['mZhszz8Zk'];
-    //   throw new Error();
-    // }
+    // --------------------------------------------------
+    //   Validation - label
+    // --------------------------------------------------
     
+    const validationLabelObj = validationLabel({ label });
     
-    // const validationLabelObj = validationLabel({ platform });
+    if (validationLabelObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationLabelObj.errorCodeArr;
+      throw new Error();
+    }
     
-    // if (validationLabelObj.error) {
-    //   statusCode = 400;
-    //   errorArgumentsObj.errorCodeArr = ['81AXnuQgg'];
-    //   throw new Error();
-    // }
+    saveObj.label = validationLabelObj.afterValue;
     
     
-    // const validationIDObj = validationID({ id });
+    // --------------------------------------------------
+    //   Validation - id
+    // --------------------------------------------------
     
-    // if (validationIDObj.error) {
-    //   statusCode = 400;
-    //   errorArgumentsObj.errorCodeArr = ['J7YynFXAh'];
-    //   throw new Error();
-    // }
+    const validationIDObj = validationID({ id });
+    
+    if (validationIDObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationIDObj.errorCodeArr;
+      throw new Error();
+    }
+    
+    saveObj.id = validationIDObj.afterValue;
     
     
-    // const validationPublicSettingObj = validationPublicSetting({ publicSetting });
+    // --------------------------------------------------
+    //   Validation - publicSetting
+    // --------------------------------------------------
     
-    // if (validationPublicSettingObj.error) {
-    //   statusCode = 400;
-    //   errorArgumentsObj.errorCodeArr = ['PWhTr4oUh'];
-    //   throw new Error();
-    // }
+    const validationPublicSettingObj = validationPublicSetting({ publicSetting });
+    
+    if (validationPublicSettingObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationPublicSettingObj.errorCodeArr;
+      throw new Error();
+    }
+    
+    saveObj.publicSetting = validationPublicSettingObj.afterValue;
+    
+    
     
     
     // ---------------------------------------------
@@ -353,7 +411,6 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     });
     
     if (count > process.env.ID_INSERT_LIMIT) {
-      statusCode = 400;
       errorArgumentsObj.errorCodeArr = ['NRO3Y1hnC'];
       throw new Error();
     }
@@ -361,98 +418,85 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     
     
-    // // --------------------------------------------------
-    // //   データ更新
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   データ更新
+    // --------------------------------------------------
     
-    // // ---------------------------------------------
-    // //   Condition Object & Save Object
-    // // ---------------------------------------------
+    let conditionObj = {};
     
-    // let conditionObj = {};
-    // let saveObj = {};
-    // const date = moment().utcOffset(0);
     
-    // if (_id) {
+    // ---------------------------------------------
+    //   Update
+    // ---------------------------------------------
+    
+    if (_id) {
       
-    //   conditionObj = {
-    //     _id
-    //   };
+      conditionObj = {
+        _id
+      };
       
-    //   saveObj = {
-    //     $set: {
-    //       updatedDate: date,
-    //       platform,
-    //       label,
-    //       id,
-    //       publicSetting: parseInt(publicSetting, 10),
-    //       search: search ? true : false
-    //     }
-    //   };
+      delete saveObj.createdDate;
+      delete saveObj.users_id;
       
-    // } else {
+      saveObj = {
+        $set: saveObj
+      }
       
-    //   conditionObj = {
-    //     _id: shortid.generate()
-    //   };
       
-    //   saveObj = {
-    //     createdDate: date,
-    //     updatedDate: date,
-    //     users_id: usersLogin_id,
-    //     platform,
-    //     label,
-    //     id,
-    //     publicSetting: parseInt(publicSetting, 10),
-    //     search: search ? true : false
-    //   };
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
       
-    // }
+    } else {
+      
+      conditionObj = {
+        _id: shortid.generate()
+      };
+      
+    }
     
+    await ModelIDs.upsert({
+      conditionObj,
+      saveObj,
+    });
     
-    // // --------------------------------------------------
-    // //   Upsert
-    // // --------------------------------------------------
-    
-    // await ModelIDs.upsert({
-    //   conditionObj,
-    //   saveObj,
-    // });
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   データ取得 / IDs
-    // //   ログインしているユーザーの登録IDデータ
-    // // --------------------------------------------------
-    
-    // const returnObj = await ModelIDs.findBy_Users_idForForm({
-    //   language: localeObj.language,
-    //   country: localeObj.country,
-    //   usersLogin_id
-    // });
-    
-    // returnObj = resultIDsObj;
     
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   データ取得 / IDs
+    //   ログインしているユーザーの登録IDデータ
     // --------------------------------------------------
     
-    console.log(chalk`
-      _id: {green ${_id}}
-      platform: {green ${platform}}
-      label: {green ${label}}
-      id: {green ${id}}
-      publicSetting: {green ${publicSetting}}
-      search: {green ${search}}
-      count: {green ${count}}
-      process.env.ID_INSERT_LIMIT: {green ${process.env.ID_INSERT_LIMIT}}
-    `);
+    const returnObj = await ModelIDs.findBy_Users_idForForm({
+      language: localeObj.language,
+      country: localeObj.country,
+      usersLogin_id
+    });
     
     
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   platform: {green ${platform}}
+    //   label: {green ${label}}
+    //   id: {green ${id}}
+    //   publicSetting: {green ${publicSetting}}
+    //   search: {green ${search}}
+    //   count: {green ${count}}
+    //   process.env.ID_INSERT_LIMIT: {green ${process.env.ID_INSERT_LIMIT}}
+    // `);
+    
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -465,17 +509,173 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   Return Json Object / Success
     // ---------------------------------------------
     
-    return res.status(200).json({});
-    // return res.status(200).json(returnObj);
+    return res.status(200).json(returnObj);
     
     
   } catch (errorObj) {
     
-    console.log(`
-      ----- errorArgumentsObj -----\n
-      ${util.inspect(errorArgumentsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- errorArgumentsObj -----\n
+    //   ${util.inspect(errorArgumentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
+    
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   削除 / Function ID: xE5KudSUz
+// --------------------------------------------------
+
+router.post('/delete', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionID = 'xE5KudSUz';
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   CSRF
+    // --------------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+    
+    if (!req.isAuthenticated()) {
+      statusCode = 401;
+      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+      throw new Error();
+    }
+    
+    const usersLogin_id = req.user._id;
+    
+    
+    // --------------------------------------------------
+    //   POST 取得
+    // --------------------------------------------------
+    
+    const { _id } = req.body;
+    
+    
+    // --------------------------------------------------
+    //   Validation - _id
+    // --------------------------------------------------
+    
+    const validation_idObj = await validation_id({ usersLogin_id, _id });
+    
+    if (validation_idObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validation_idObj.errorCodeArr;
+      throw new Error();
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ削除
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Condition Object
+    // ---------------------------------------------
+    
+    const conditionObj = {
+      _id,
+      users_id: usersLogin_id
+    };
+    
+    
+    // --------------------------------------------------
+    //   Delete
+    // --------------------------------------------------
+    
+    await ModelIDs.deleteMany({
+      conditionObj,
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / IDs
+    //   ログインしているユーザーの登録IDデータ
+    // --------------------------------------------------
+    
+    const returnObj = await ModelIDs.findBy_Users_idForForm({
+      language: localeObj.language,
+      country: localeObj.country,
+      usersLogin_id
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Return Json Object / Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorArgumentsObj -----\n
+    //   ${util.inspect(errorArgumentsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     // ---------------------------------------------
     //   Error Object
     // ---------------------------------------------

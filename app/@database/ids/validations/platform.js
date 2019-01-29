@@ -10,27 +10,20 @@ const chalk = require('chalk');
 const util = require('util');
 
 
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-// const ModelIDs = require('../model');
-
-
 
 
 /**
  * platform
  * @param {string} platform - プラットフォーム
  */
-const validationPlatform = async ({ platform }) => {
+const validationPlatform = ({ platform }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 3;
+  const minLength = 2;
   const maxLength = 20;
   
   
@@ -49,8 +42,7 @@ const validationPlatform = async ({ platform }) => {
     beforeNumberOfCharacters,
     afterValue,
     afterNumberOfCharacters,
-    error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
@@ -58,29 +50,30 @@ const validationPlatform = async ({ platform }) => {
   //   Validation
   // ---------------------------------------------
   
+  // 存在チェック
   if (beforeValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('プラットフォームを入力してください。');
+    resultObj.errorCodeArr.push('dJzAwAva3');
   }
   
-  
+  // 文字数チェック
   if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`プラットフォームは${minLength}文字以上、${maxLength}文字以内です。`);
+    resultObj.errorCodeArr.push('k6cF97QOd');
   }
   
-  
+  // 適切な値が選択されているかチェック
   const arr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'];
   
   if (arr.indexOf(afterValue) === -1) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`プラットフォームに適切な値が選ばれていません。`);
+    resultObj.errorCodeArr.push('kopWIEmo4');
   }
   
   
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
+  
   // console.log(chalk`
   //   platform: {green ${platform}}
-  //   slicedValue: {green ${slicedValue}}
   // `);
   
   // console.log(`

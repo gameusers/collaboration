@@ -10,20 +10,13 @@ const chalk = require('chalk');
 const util = require('util');
 
 
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-// const ModelIDs = require('../model');
-
-
 
 
 /**
  * label
  * @param {string} label - ラベル
  */
-const validationLabel = async ({ label }) => {
+const validationLabel = ({ label }) => {
   
   
   // ---------------------------------------------
@@ -49,8 +42,7 @@ const validationLabel = async ({ label }) => {
     beforeNumberOfCharacters,
     afterValue,
     afterNumberOfCharacters,
-    error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
@@ -58,21 +50,23 @@ const validationLabel = async ({ label }) => {
   //   Validation
   // ---------------------------------------------
   
+  // 空の場合、処理停止
   if (beforeValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('ラベルを入力してください。');
+    return resultObj;
   }
   
-  
+  // 文字数チェック
   if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`ラベルは${minLength}文字以上、${maxLength}文字以内です。`);
+    resultObj.errorCodeArr.push('SRiWEDTEA');
   }
   
+  
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
   
   // console.log(chalk`
   //   label: {green ${label}}
-  //   slicedValue: {green ${slicedValue}}
   // `);
   
   // console.log(`

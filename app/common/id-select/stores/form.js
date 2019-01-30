@@ -32,6 +32,13 @@ import { fetchWrapper } from '../../../@modules/fetch';
 import { errorsArrIntoErrorMessage } from '../../../@format/error';
 
 
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationID = require('../../../@database/ids/validations/id');
+
+
 
 
 // --------------------------------------------------
@@ -474,7 +481,29 @@ class Store {
    */
   @action.bound
   handleIDFormID({ eventObj, _id }) {
-    this.idFormIDObj[_id] = eventObj.target.value;
+    
+    const validationObj = validationID({ id: eventObj.target.value });
+    
+    this.idFormIDObj[_id] = {
+      value: eventObj.target.value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.afterNumberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.idFormIDObj[_id].error = true;
+      this.idFormIDObj[_id].messageID = validationObj.errorCodeArr[0];
+    }
+    
+    
+    // console.log(`
+    //   ----- validationObj -----\n
+    //   ${util.inspect(validationObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // this.idFormIDObj[_id] = eventObj.target.value;
   };
   
   

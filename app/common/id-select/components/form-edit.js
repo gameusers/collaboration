@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import {injectIntl, FormattedMessage} from 'react-intl';
 
 
 // ---------------------------------------------
@@ -114,7 +115,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -134,7 +135,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, _id } = this.props;
-    
+    const { formatMessage } = this.props.intl;
     const { buttonDisabledObj } = stores.layout;
     
     const {
@@ -215,9 +216,36 @@ export default class extends React.Component {
     const formPlatform = _id in idFormPlatformObj ? idFormPlatformObj[_id] : '';
     const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
     const formLabel = _id in idFormLabelObj ? idFormLabelObj[_id] : '';
-    const formID = _id in idFormIDObj ? idFormIDObj[_id] : '';
+    
+    
+    // --------------------------------------------------
+    //  Form - ID
+    // --------------------------------------------------
+    
+    let formIDValue = '';
+    let formIDError = false;
+    let formIDMessageID = 'oWwTCtWxC';
+    let formIDNumberOfCharacters = 0;
+    
+    if (_id in idFormIDObj) {
+      
+      formIDValue = idFormIDObj[_id].value;
+      formIDError = idFormIDObj[_id].error;
+      
+      if (idFormIDObj[_id].messageID) {
+        formIDMessageID = idFormIDObj[_id].messageID;
+      }
+      
+      formIDNumberOfCharacters = idFormIDObj[_id].numberOfCharacters;
+      
+    }
+    
+    
+    // const formID = _id in idFormIDObj ? idFormIDObj[_id] : '';
     const formPublicSetting = _id in idFormPublicSettingObj ? idFormPublicSettingObj[_id] : '';
     const formSearch = _id in idFormSearchObj ? idFormSearchObj[_id] : '';
+    
+    
     
     
     // --------------------------------------------------
@@ -225,6 +253,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
+    
     
     
     
@@ -245,7 +274,10 @@ export default class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
+    //   formIDValue: {green ${formIDValue}}
+    //   formIDError: {green ${formIDError}}
+    //   formIDMessageID: {green ${formIDMessageID}}
+    //   formIDNumberOfCharacters: {green ${formIDNumberOfCharacters}}
     // `);
     
     
@@ -328,13 +360,27 @@ export default class extends React.Component {
           helperText="IDの左側に太字で表示されます"
           margin="normal"
           inputProps={{
-            maxLength: 50,
+            maxLength: 30,
           }}
         />
         
         
         {/* ID */}
         <StyledTextFieldWide
+          id="label"
+          label="ID"
+          value={formIDValue}
+          onChange={(eventObj) => handleIDFormID({ eventObj, _id })}
+          error={formIDError}
+          helperText={formatMessage({ id: formIDMessageID }, { numberOfCharacters: formIDNumberOfCharacters })}
+          margin="normal"
+          inputProps={{
+            maxLength: 12,
+          }}
+          
+        />
+        
+        {/*i18n<StyledTextFieldWide
           id="label"
           label="ID"
           value={formID}
@@ -344,7 +390,16 @@ export default class extends React.Component {
           inputProps={{
             maxLength: 50,
           }}
+          error={true}
         />
+        
+        formatMessage: {formatMessage({ id: 'xLLNIpo6a' })}
+        
+        <FormattedMessage
+          id="welcome"
+          defaultMessage={`Hello {_id}, you have 1000`}
+          values={{_id: <b>{_id}</b>}}
+        />*/}
         
         
         {/* 公開設定 */}
@@ -405,4 +460,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

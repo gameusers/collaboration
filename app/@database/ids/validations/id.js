@@ -16,7 +16,7 @@ const util = require('util');
  * id
  * @param {string} id - ID
  */
-const validationID = ({ id }) => {
+const validationID = ({ required, id }) => {
   
   
   // ---------------------------------------------
@@ -24,7 +24,7 @@ const validationID = ({ id }) => {
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 32;
+  const maxLength = 12;
   
   
   // ---------------------------------------------
@@ -50,6 +50,11 @@ const validationID = ({ id }) => {
   //   Validation
   // ---------------------------------------------
   
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && beforeValue === '') {
+    return resultObj;
+  }
+  
   // 存在チェック
   if (beforeValue === '') {
     resultObj.errorCodeArr.push('FsjP5Xb5h');
@@ -59,6 +64,18 @@ const validationID = ({ id }) => {
   if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
     resultObj.errorCodeArr.push('RheyjmgKo');
   }
+  
+  
+  //const ModelGames = require('../model');
+  
+  // データベースに存在しているかチェック
+  // const docArr = ModelGames.find({
+  //   conditionObj: {}
+  // });
+  
+  // if (docArr.length === 0) {
+  //   resultObj.errorCodeArr.push('Zg03IN2R8');
+  // }
   
   
   // ---------------------------------------------

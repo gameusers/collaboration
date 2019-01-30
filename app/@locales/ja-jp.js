@@ -3,6 +3,16 @@ const ja_JP = {
   hello: 'こんにちは',
   
   
+  
+  
+  // ---------------------------------------------
+  //   Common / ID Select / Components
+  // ---------------------------------------------
+  
+  // /app/common/id-select/components/form-edit.js
+  'oWwTCtWxC': 'IDを入力してください。({ numberOfCharacters }文字)',
+  
+  
   // ---------------------------------------------
   //   Error / Login
   // ---------------------------------------------
@@ -42,7 +52,7 @@ const ja_JP = {
   
   // /app/@database/ids/validations/id.js
   'FsjP5Xb5h': 'IDを入力してください。',
-  'RheyjmgKo': 'IDは1文字以上、32文字以内です。',
+  'RheyjmgKo': 'IDは1文字以上、128文字以内です。',
   
   // /app/@database/ids/validations/public-setting.js
   'Fafdlkugx': '公開設定を入力してください。',

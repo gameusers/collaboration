@@ -36,7 +36,10 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 //   Validations
 // ---------------------------------------------
 
+const validationPlatform = require('../../../@database/ids/validations/platform');
+const validationLabel = require('../../../@database/ids/validations/label');
 const validationID = require('../../../@database/ids/validations/id');
+const validationPublicSetting = require('../../../@database/ids/validations/public-setting');
 
 
 
@@ -404,7 +407,21 @@ class Store {
    */
   @action.bound
   handleIDFormPlatform({ eventObj, _id }) {
-    this.idFormPlatformObj[_id] = eventObj.target.value;
+    
+    const validationObj = validationPlatform({ required: true, platform: eventObj.target.value });
+    
+    this.idFormPlatformObj[_id] = {
+      value: eventObj.target.value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.idFormPlatformObj[_id].error = true;
+      this.idFormPlatformObj[_id].messageID = validationObj.errorCodeArr[0];
+    }
+    
   };
   
   
@@ -463,7 +480,21 @@ class Store {
    */
   @action.bound
   handleIDFormLabel({ eventObj, _id }) {
-    this.idFormLabelObj[_id] = eventObj.target.value;
+    
+    const validationObj = validationLabel({ required: false, label: eventObj.target.value });
+    
+    this.idFormLabelObj[_id] = {
+      value: eventObj.target.value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.idFormLabelObj[_id].error = true;
+      this.idFormLabelObj[_id].messageID = validationObj.errorCodeArr[0];
+    }
+    
   };
   
   
@@ -482,13 +513,13 @@ class Store {
   @action.bound
   handleIDFormID({ eventObj, _id }) {
     
-    const validationObj = validationID({ id: eventObj.target.value });
+    const validationObj = validationID({ required: true, id: eventObj.target.value });
     
     this.idFormIDObj[_id] = {
       value: eventObj.target.value,
       error: false,
       messageID: '',
-      numberOfCharacters: validationObj.afterNumberOfCharacters,
+      numberOfCharacters: validationObj.numberOfCharacters,
     };
     
     if (validationObj.errorCodeArr.length > 0) {
@@ -496,14 +527,6 @@ class Store {
       this.idFormIDObj[_id].messageID = validationObj.errorCodeArr[0];
     }
     
-    
-    // console.log(`
-    //   ----- validationObj -----\n
-    //   ${util.inspect(validationObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // this.idFormIDObj[_id] = eventObj.target.value;
   };
   
   
@@ -521,7 +544,22 @@ class Store {
    */
   @action.bound
   handleIDFormPublicSetting({ eventObj, _id }) {
-    this.idFormPublicSettingObj[_id] = eventObj.target.value;
+    
+    const validationObj = validationPublicSetting({ required: true, publicSetting: eventObj.target.value });
+    
+    this.idFormPublicSettingObj[_id] = {
+      value: eventObj.target.value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.idFormPublicSettingObj[_id].error = true;
+      this.idFormPublicSettingObj[_id].messageID = validationObj.errorCodeArr[0];
+    }
+    
+    // this.idFormPublicSettingObj[_id] = eventObj.target.value;
   };
   
   

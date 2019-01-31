@@ -14,9 +14,10 @@ const util = require('util');
 
 /**
  * platform
+ * @param {boolean} required - Required
  * @param {string} platform - プラットフォーム
  */
-const validationPlatform = ({ platform }) => {
+const validationPlatform = ({ required, platform }) => {
   
   
   // ---------------------------------------------
@@ -31,17 +32,12 @@ const validationPlatform = ({ platform }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const beforeValue = platform;
-  const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
-  
-  const afterValue = beforeValue ? beforeValue.slice(0, maxLength) : '';
-  const afterNumberOfCharacters = afterValue ? afterValue.length : 0;
+  const value = platform;
+  const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
-    beforeValue,
-    beforeNumberOfCharacters,
-    afterValue,
-    afterNumberOfCharacters,
+    value,
+    numberOfCharacters,
     errorCodeArr: []
   };
   
@@ -50,20 +46,25 @@ const validationPlatform = ({ platform }) => {
   //   Validation
   // ---------------------------------------------
   
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && value === '') {
+    return resultObj;
+  }
+  
   // 存在チェック
-  if (beforeValue === '') {
+  if (value === '') {
     resultObj.errorCodeArr.push('dJzAwAva3');
   }
   
   // 文字数チェック
-  if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
+  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
     resultObj.errorCodeArr.push('k6cF97QOd');
   }
   
   // 適切な値が選択されているかチェック
   const arr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'];
   
-  if (arr.indexOf(afterValue) === -1) {
+  if (arr.indexOf(value) === -1) {
     resultObj.errorCodeArr.push('kopWIEmo4');
   }
   

@@ -21,10 +21,11 @@ const ModelIDs = require('../model');
 
 /**
  * _id
- * @param {string} usersLogin_id - db users _id
+ * @param {boolean} required - Required
  * @param {string} _id - db ids _id
+ * @param {Object} conditionObj - 検索条件
  */
-const validation_id = async ({ usersLogin_id, _id }) => {
+const validation_idServer = async ({ required, _id, conditionObj }) => {
   
   
   // ---------------------------------------------
@@ -39,17 +40,12 @@ const validation_id = async ({ usersLogin_id, _id }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const beforeValue = _id;
-  const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
-  
-  const afterValue = beforeValue ? beforeValue.slice(0, maxLength) : '';
-  const afterNumberOfCharacters = afterValue ? afterValue.length : 0;
+  const value = _id;
+  const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
-    beforeValue,
-    beforeNumberOfCharacters,
-    afterValue,
-    afterNumberOfCharacters,
+    value,
+    numberOfCharacters,
     errorCodeArr: []
   };
   
@@ -58,30 +54,30 @@ const validation_id = async ({ usersLogin_id, _id }) => {
   //   Validation
   // ---------------------------------------------
   
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && value === '') {
+    return resultObj;
+  }
+  
   // 存在チェック
-  if (beforeValue === '') {
+  if (value === '') {
     resultObj.errorCodeArr.push('fKnyEX5Px');
   }
   
   // 英数と -_ のみ
-  if (afterValue.match(/^[\w\-]+$/) === null) {
+  if (value.match(/^[\w\-]+$/) === null) {
     resultObj.errorCodeArr.push('0Nm7pQeYW');
   }
   
   // 文字数チェック
-  if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
+  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
     resultObj.errorCodeArr.push('Vg08kFRAe');
   }
   
   // データベースに存在しているか＆編集権限チェック
-  const docArr = await ModelIDs.find({
-    conditionObj: {
-      _id,
-      users_id: usersLogin_id,
-    }
-  });
+  const count = await ModelIDs.count(conditionObj);
   
-  if (docArr.length === 0) {
+  if (count === 0) {
     resultObj.errorCodeArr.push('uhe5ZzGvK');
   }
   
@@ -119,4 +115,4 @@ const validation_id = async ({ usersLogin_id, _id }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validation_id;
+module.exports = validation_idServer;

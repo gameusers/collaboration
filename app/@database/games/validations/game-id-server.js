@@ -10,29 +10,39 @@ const chalk = require('chalk');
 const util = require('util');
 
 
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelGames = require('../model');
+
+
 
 
 /**
- * id
+ * gameID
  * @param {boolean} required - Required
- * @param {string} id - ID
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @param {string} gameID - db games gameID
+ * @param {Object} conditionObj - 検索条件
  */
-const validationID = ({ required, id }) => {
+const validationGameIDServer = async ({ required, gameID, conditionObj }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 1;
-  const maxLength = 128;
+  const minLength = 7;
+  const maxLength = 14;
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  const value = id;
+  const value = gameID;
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -53,12 +63,24 @@ const validationID = ({ required, id }) => {
   
   // 存在チェック
   if (value === '') {
-    resultObj.errorCodeArr.push('FsjP5Xb5h');
+    resultObj.errorCodeArr.push('5Ig82NHic');
+  }
+  
+  // 英数と -_ のみ
+  if (value.match(/^[\w\-]+$/) === null) {
+    resultObj.errorCodeArr.push('uj4asy4EI');
   }
   
   // 文字数チェック
   if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
-    resultObj.errorCodeArr.push('RheyjmgKo');
+    resultObj.errorCodeArr.push('61osZ7Z99');
+  }
+  
+  // データベースに存在しているかチェック
+  const count = await ModelGames.count(conditionObj);
+  
+  if (count === 0) {
+    resultObj.errorCodeArr.push('Zg03IN2R8');
   }
   
   
@@ -67,7 +89,15 @@ const validationID = ({ required, id }) => {
   // ---------------------------------------------
   
   // console.log(chalk`
-  //   id: {green ${id}}
+  //   language: {green ${language}}
+  //   country: {green ${country}}
+  //   gameID: {green ${gameID}}
+  // `);
+  
+  // console.log(`
+  //   ----- docArr -----\n
+  //   ${util.inspect(docArr, { colors: true, depth: null })}\n
+  //   --------------------\n
   // `);
   
   // console.log(`
@@ -88,4 +118,4 @@ const validationID = ({ required, id }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationID;
+module.exports = validationGameIDServer;

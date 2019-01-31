@@ -42,8 +42,8 @@ const validation_id = require('../../@validations/_id');
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../users/model');
-const ModelCardPlayers = require('./model');
+// const ModelUsers = require('../users/model');
+const ModelUsers = require('./model');
 
 
 // ---------------------------------------------
@@ -88,6 +88,15 @@ let errorArgumentsObj = {
 // --------------------------------------------------
 
 router.post('/follow', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
   
   
   // --------------------------------------------------
@@ -190,7 +199,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------

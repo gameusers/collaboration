@@ -90,6 +90,15 @@ router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async 
   
   
   // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -104,15 +113,6 @@ router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async 
     // --------------------------------------------------
     
     verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
-    
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
     
     
     // --------------------------------------------------
@@ -169,7 +169,7 @@ router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async 
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------

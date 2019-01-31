@@ -42,7 +42,6 @@ const validation_id = require('../../@validations/_id');
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../users/model');
 const ModelCardPlayers = require('./model');
 
 
@@ -91,6 +90,15 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -107,15 +115,6 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
-    
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
     
     
     // --------------------------------------------------
@@ -206,7 +205,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------
@@ -228,6 +227,15 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
 // --------------------------------------------------
 
 router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
   
   
   // --------------------------------------------------
@@ -259,6 +267,8 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
       throw new Error();
     }
     
+    const usersLogin_id = req.user._id;
+    
     
     // --------------------------------------------------
     //   POST 取得 & Validation
@@ -272,22 +282,6 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
       errorArgumentsObj.errorCodeArr = ['xXQ6zimji'];
       throw new Error();
     }
-    
-    
-    // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
-    
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
-    
-    
-    // --------------------------------------------------
-    //   ログインしているユーザー情報
-    // --------------------------------------------------
-    
-    const usersLogin_id = req.user._id;
     
     
     // --------------------------------------------------
@@ -306,7 +300,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -353,7 +347,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------

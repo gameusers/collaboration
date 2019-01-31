@@ -14,9 +14,10 @@ const util = require('util');
 
 /**
  * label
+ * @param {boolean} required - Required
  * @param {string} label - ラベル
  */
-const validationLabel = ({ label }) => {
+const validationLabel = ({ required, label }) => {
   
   
   // ---------------------------------------------
@@ -31,17 +32,12 @@ const validationLabel = ({ label }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const beforeValue = label;
-  const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
-  
-  const afterValue = beforeValue ? beforeValue.slice(0, maxLength) : '';
-  const afterNumberOfCharacters = afterValue ? afterValue.length : 0;
+  const value = label;
+  const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
-    beforeValue,
-    beforeNumberOfCharacters,
-    afterValue,
-    afterNumberOfCharacters,
+    value,
+    numberOfCharacters,
     errorCodeArr: []
   };
   
@@ -50,13 +46,13 @@ const validationLabel = ({ label }) => {
   //   Validation
   // ---------------------------------------------
   
-  // 空の場合、処理停止
-  if (beforeValue === '') {
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && value === '') {
     return resultObj;
   }
   
   // 文字数チェック
-  if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
+  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
     resultObj.errorCodeArr.push('SRiWEDTEA');
   }
   

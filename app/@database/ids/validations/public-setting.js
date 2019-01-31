@@ -14,9 +14,10 @@ const util = require('util');
 
 /**
  * publicSetting
+ * @param {boolean} required - Required
  * @param {string} publicSetting - 公開設定
  */
-const validationPublicSetting = ({ publicSetting }) => {
+const validationPublicSetting = ({ required, publicSetting }) => {
   
   
   // ---------------------------------------------
@@ -31,18 +32,12 @@ const validationPublicSetting = ({ publicSetting }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const beforeValue = publicSetting;
-  const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
-  
-  // const afterValue = beforeValue ? parseInt(beforeValue, 10) : 0;
-  const afterValue = beforeValue ? beforeValue : 0;
-  const afterNumberOfCharacters = afterValue ? String(afterValue).length : 0;
+  const value = publicSetting;
+  const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
-    beforeValue,
-    beforeNumberOfCharacters,
-    afterValue,
-    afterNumberOfCharacters,
+    value,
+    numberOfCharacters,
     errorCodeArr: []
   };
   
@@ -51,25 +46,23 @@ const validationPublicSetting = ({ publicSetting }) => {
   //   Validation
   // ---------------------------------------------
   
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && value === '') {
+    return resultObj;
+  }
+  
   // 存在チェック
-  if (beforeValue === '') {
+  if (value === '') {
     resultObj.errorCodeArr.push('Fafdlkugx');
   }
   
   // 適切な値が選択されているかチェック
   const pattern = new RegExp(`^[${minNumber}-${maxNumber}]$`);
   
-  if (beforeValue.match(pattern) === null) {
+  if (String(value).match(pattern) === null) {
     resultObj.errorCodeArr.push('1wG57OGCe');
   }
-  // if (afterValue < minNumber || afterValue > maxNumber) {
-  //   resultObj.errorCodeArr.push('1wG57OGCe');
-  // }
   
-  
-  // console.log(chalk`
-  //   beforeValue.match(/^[1-5]$/): {green ${beforeValue.match(pattern)}}
-  // `);
   
   // ---------------------------------------------
   //   console.log
@@ -77,6 +70,7 @@ const validationPublicSetting = ({ publicSetting }) => {
   
   // console.log(chalk`
   //   publicSetting: {green ${publicSetting}}
+  //   String(value): {green ${String(value)}}
   // `);
   
   // console.log(`

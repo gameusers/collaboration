@@ -10,35 +10,28 @@ const chalk = require('chalk');
 const util = require('util');
 
 
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-const ModelGames = require('../model');
-
-
 
 
 /**
- * gameID
- * @param {string} gameID - db games gameID
+ * id
+ * @param {string} id - ID
  */
-const validationGameID = async ({ language, country, gameID }) => {
+const validationID = ({ required, id }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 7;
-  const maxLength = 14;
+  const minLength = 1;
+  const maxLength = 12;
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  const beforeValue = gameID;
+  const beforeValue = id;
   const beforeNumberOfCharacters = beforeValue ? beforeValue.length : 0;
   
   const afterValue = beforeValue ? beforeValue.slice(0, maxLength) : '';
@@ -57,33 +50,32 @@ const validationGameID = async ({ language, country, gameID }) => {
   //   Validation
   // ---------------------------------------------
   
-  // 存在チェック
-  if (beforeValue === '') {
-    resultObj.errorCodeArr.push('5Ig82NHic');
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && beforeValue === '') {
+    return resultObj;
   }
   
-  // 英数と -_ のみ
-  if (afterValue.match(/^[\w\-]+$/) === null) {
-    resultObj.errorCodeArr.push('uj4asy4EI');
+  // 存在チェック
+  if (beforeValue === '') {
+    resultObj.errorCodeArr.push('FsjP5Xb5h');
   }
   
   // 文字数チェック
   if (afterNumberOfCharacters < minLength || afterNumberOfCharacters > maxLength) {
-    resultObj.errorCodeArr.push('61osZ7Z99');
+    resultObj.errorCodeArr.push('RheyjmgKo');
   }
+  
+  
+  //const ModelGames = require('../model');
   
   // データベースに存在しているかチェック
-  const docArr = await ModelGames.find({
-    conditionObj: {
-      language,
-      country,
-      gameID,
-    }
-  });
+  // const docArr = ModelGames.find({
+  //   conditionObj: {}
+  // });
   
-  if (docArr.length === 0) {
-    resultObj.errorCodeArr.push('Zg03IN2R8');
-  }
+  // if (docArr.length === 0) {
+  //   resultObj.errorCodeArr.push('Zg03IN2R8');
+  // }
   
   
   // ---------------------------------------------
@@ -91,15 +83,7 @@ const validationGameID = async ({ language, country, gameID }) => {
   // ---------------------------------------------
   
   // console.log(chalk`
-  //   language: {green ${language}}
-  //   country: {green ${country}}
-  //   gameID: {green ${gameID}}
-  // `);
-  
-  // console.log(`
-  //   ----- docArr -----\n
-  //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-  //   --------------------\n
+  //   id: {green ${id}}
   // `);
   
   // console.log(`
@@ -120,4 +104,4 @@ const validationGameID = async ({ language, country, gameID }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationGameID;
+module.exports = validationID;

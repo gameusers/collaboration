@@ -79,10 +79,6 @@ const IDBox = styled.div`
   cursor: pointer;
 `;
 
-// const RegistrationButtonBox = styled.div`
-//   margin: 16px 0 0 0;
-// `;
-
 const PlatformBox = styled.div`
   margin: 12px 0 0 0;
 `;
@@ -209,17 +205,63 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   フォームの値
+    //   フォームの値 - プラットフォーム
     // --------------------------------------------------
     
-    const formPlatform = _id in idFormPlatformObj ? idFormPlatformObj[_id] : '';
+    let formPlatformValue = '';
+    let formPlatformError = false;
+    let formPlatformMessageID = 'GHXngbv4G';
+    let formPlatformNumberOfCharacters = 0;
+    
+    if (_id in idFormPlatformObj) {
+      
+      formPlatformValue = idFormPlatformObj[_id].value;
+      formPlatformError = idFormPlatformObj[_id].error;
+      
+      if (idFormPlatformObj[_id].messageID) {
+        formPlatformMessageID = idFormPlatformObj[_id].messageID;
+      }
+      
+      formPlatformNumberOfCharacters = idFormPlatformObj[_id].numberOfCharacters;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   フォームの値 - Game
+    // --------------------------------------------------
+    
     const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
-    const formLabel = _id in idFormLabelObj ? idFormLabelObj[_id] : '';
     
     
     // --------------------------------------------------
-    //  Form - ID
+    //   フォームの値 - ラベル
+    // --------------------------------------------------
+    
+    let formLabelValue = '';
+    let formLabelError = false;
+    let formLabelMessageID = 'ZlyG1tegW';
+    let formLabelNumberOfCharacters = 0;
+    
+    if (_id in idFormLabelObj) {
+      
+      formLabelValue = idFormLabelObj[_id].value;
+      formLabelError = idFormLabelObj[_id].error;
+      
+      if (idFormLabelObj[_id].messageID) {
+        formLabelMessageID = idFormLabelObj[_id].messageID;
+      }
+      
+      formLabelNumberOfCharacters = idFormLabelObj[_id].numberOfCharacters;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   フォームの値 - ID
     // --------------------------------------------------
     
     let formIDValue = '';
@@ -241,8 +283,33 @@ export default injectIntl(class extends React.Component {
     }
     
     
-    // const formID = _id in idFormIDObj ? idFormIDObj[_id] : '';
-    const formPublicSetting = _id in idFormPublicSettingObj ? idFormPublicSettingObj[_id] : '';
+    // --------------------------------------------------
+    //   フォームの値 - 公開設定
+    // --------------------------------------------------
+    
+    let formPublicSettingValue = 0;
+    let formPublicSettingError = false;
+    let formPublicSettingMessageID = 'TogSfI8lD';
+    let formPublicSettingNumberOfCharacters = 0;
+    
+    if (_id in idFormPublicSettingObj) {
+      
+      formPublicSettingValue = idFormPublicSettingObj[_id].value;
+      formPublicSettingError = idFormPublicSettingObj[_id].error;
+      
+      if (idFormPublicSettingObj[_id].messageID) {
+        formPublicSettingMessageID = idFormPublicSettingObj[_id].messageID;
+      }
+      
+      formPublicSettingNumberOfCharacters = idFormPublicSettingObj[_id].numberOfCharacters;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   フォームの値 - Search
+    // --------------------------------------------------
+    
     const formSearch = _id in idFormSearchObj ? idFormSearchObj[_id] : '';
     
     
@@ -316,10 +383,13 @@ export default injectIntl(class extends React.Component {
         
         {/* プラットフォーム */}
         <PlatformBox>
-          <FormControl style={{ minWidth: 300 }}>
+          <FormControl
+            style={{ minWidth: 300 }}
+            error={formPlatformError}
+          >
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
             <Select
-              value={formPlatform}
+              value={formPlatformValue}
               onChange={(eventObj) => handleIDFormPlatform({ eventObj, _id })}
               inputProps={{
                 name: 'platform',
@@ -335,13 +405,13 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'iOS'}>iOS</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
-            <FormHelperText>IDに関係のあるプラットフォームを選んでください</FormHelperText>
+            <FormHelperText>{formatMessage({ id: formPlatformMessageID }, { numberOfCharacters: formPlatformNumberOfCharacters })}</FormHelperText>
           </FormControl>
         </PlatformBox>
         
         
         {/* ゲーム選択 */}
-        {noGameIDPlatformArr.indexOf(formPlatform) === -1 &&
+        {noGameIDPlatformArr.indexOf(formPlatformValue) === -1 &&
           <GameSelectSuggestion
             _id={_id}
             selectedArr={formGameArr}
@@ -352,62 +422,55 @@ export default injectIntl(class extends React.Component {
         
         
         {/* ラベル */}
-        <StyledTextFieldWide
-          id="label"
-          label="ラベル"
-          value={formLabel}
-          onChange={(eventObj) => handleIDFormLabel({ eventObj, _id })}
-          helperText="IDの左側に太字で表示されます"
-          margin="normal"
-          inputProps={{
-            maxLength: 30,
-          }}
-        />
+        <div>
+          <StyledTextFieldWide
+            id="label"
+            label="ラベル"
+            value={formLabelValue}
+            onChange={(eventObj) => handleIDFormLabel({ eventObj, _id })}
+            error={formLabelError}
+            helperText={formatMessage({ id: formLabelMessageID }, { numberOfCharacters: formLabelNumberOfCharacters })}
+            margin="normal"
+            inputProps={{
+              maxLength: 30,
+            }}
+          />
+        </div>
         
         
         {/* ID */}
-        <StyledTextFieldWide
-          id="label"
-          label="ID"
-          value={formIDValue}
-          onChange={(eventObj) => handleIDFormID({ eventObj, _id })}
-          error={formIDError}
-          helperText={formatMessage({ id: formIDMessageID }, { numberOfCharacters: formIDNumberOfCharacters })}
-          margin="normal"
-          inputProps={{
-            maxLength: 12,
-          }}
-          
-        />
+        <div>
+          <StyledTextFieldWide
+            id="label"
+            label="ID"
+            value={formIDValue}
+            onChange={(eventObj) => handleIDFormID({ eventObj, _id })}
+            error={formIDError}
+            helperText={formatMessage({ id: formIDMessageID }, { numberOfCharacters: formIDNumberOfCharacters })}
+            margin="normal"
+            inputProps={{
+              maxLength: 128,
+            }}
+          />
+        </div>
         
-        {/*i18n<StyledTextFieldWide
-          id="label"
-          label="ID"
-          value={formID}
-          onChange={(eventObj) => handleIDFormID({ eventObj, _id })}
-          helperText="IDを入力してください"
-          margin="normal"
-          inputProps={{
-            maxLength: 50,
-          }}
-          error={true}
-        />
-        
-        formatMessage: {formatMessage({ id: 'xLLNIpo6a' })}
-        
-        <FormattedMessage
+        {/*<FormattedMessage
           id="welcome"
           defaultMessage={`Hello {_id}, you have 1000`}
           values={{_id: <b>{_id}</b>}}
         />*/}
         
         
+        
         {/* 公開設定 */}
         <PlatformBox>
-          <FormControl style={{ minWidth: 300 }}>
+          <FormControl
+            style={{ minWidth: 300 }}
+            error={formPublicSettingError}
+          >
             <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
             <Select
-              value={formPublicSetting}
+              value={formPublicSettingValue}
               onChange={(eventObj) => handleIDFormPublicSetting({ eventObj, _id })}
               inputProps={{
                 name: 'publicSetting',
@@ -420,7 +483,7 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={4}>相互フォローで公開</MenuItem>
               <MenuItem value={5}>自分以外には公開しない</MenuItem>
             </Select>
-            <FormHelperText>IDを公開する相手を選べます</FormHelperText>
+            <FormHelperText>{formatMessage({ id: formPublicSettingMessageID }, { numberOfCharacters: formPublicSettingNumberOfCharacters })}</FormHelperText>
           </FormControl>
         </PlatformBox>
         

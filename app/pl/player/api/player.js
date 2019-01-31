@@ -92,6 +92,15 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -114,15 +123,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
-    
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
     
     
     // --------------------------------------------------
@@ -295,7 +295,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj(errorArgumentsObj);
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------

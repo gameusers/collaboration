@@ -27,7 +27,7 @@ const ModelGames = require('../model');
  * @param {string} gameID - db games gameID
  * @param {Object} conditionObj - 検索条件
  */
-const validationGameIDServer = async ({ required, gameID, conditionObj }) => {
+const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) => {
   
   
   // ---------------------------------------------
@@ -118,4 +118,4 @@ const validationGameIDServer = async ({ required, gameID, conditionObj }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationGameIDServer;
+module.exports = validationGamesGameIDServer;

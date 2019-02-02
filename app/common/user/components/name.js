@@ -370,7 +370,7 @@ export default class extends React.Component {
         
         
         // --------------------------------------------------
-        //   Button Disabled - ロードが終わるまで使用禁止
+        //   Button Disable - ロードが終わるまで使用禁止
         // --------------------------------------------------
         
         let buttonDisabledCardPlayer = true;
@@ -407,7 +407,7 @@ export default class extends React.Component {
         
         
         // --------------------------------------------------
-        //   Button Disabled - ロードが終わるまで使用禁止
+        //   Button Disable - ロードが終わるまで使用禁止
         // --------------------------------------------------
         
         let buttonDisabledCardGame = true;

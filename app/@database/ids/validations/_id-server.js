@@ -25,7 +25,7 @@ const ModelIDs = require('../model');
  * @param {string} _id - db ids _id
  * @param {Object} conditionObj - 検索条件
  */
-const validation_idServer = async ({ required, _id, conditionObj }) => {
+const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
   
   
   // ---------------------------------------------
@@ -115,4 +115,4 @@ const validation_idServer = async ({ required, _id, conditionObj }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validation_idServer;
+module.exports = validationIDs_idServer;

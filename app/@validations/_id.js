@@ -1,16 +1,23 @@
 // --------------------------------------------------
-//   Import
+//   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
 
 
 
 
 /**
  * _id
- * @param {string} value - shortidパッケージで作成された _id
+ * @param {boolean} required - Required
+ * @param {string} _id - _id
  */
-const validation_id = (value) => {
+const validation_id = ({ required, _id }) => {
   
   
   // ---------------------------------------------
@@ -25,14 +32,13 @@ const validation_id = (value) => {
   //   Result Object
   // ---------------------------------------------
   
-  const slicedValue = value ? value.slice(0, maxLength) : '';
-  const numberOfCharacters = slicedValue ? slicedValue.length : 0;
+  const value = _id;
+  const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
-    value: slicedValue,
+    value,
     numberOfCharacters,
-    error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
@@ -40,17 +46,41 @@ const validation_id = (value) => {
   //   Validation
   // ---------------------------------------------
   
-  if (slicedValue === '') {
-    resultObj.error = true;
+  // Not Required で入力値が空の場合、処理停止
+  if (!required && value === '') {
+    return resultObj;
   }
   
-  if (slicedValue.match(/^[\w\-]+$/) === null) {
-    resultObj.error = true;
+  // 存在チェック
+  if (value === '') {
+    resultObj.errorCodeArr.push('pE9jBkXXP');
   }
   
+  // 英数と -_ のみ
+  if (value.match(/^[\w\-]+$/) === null) {
+    resultObj.errorCodeArr.push('8oyLhJOlh');
+  }
+  
+  // 文字数チェック
   if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
-    resultObj.error = true;
+    resultObj.errorCodeArr.push('N48T3XvnC');
   }
+  
+  
+  // ---------------------------------------------
+  //   console.log
+  // ---------------------------------------------
+  
+  // console.log(chalk`
+  //   required: {green ${required}}
+  //   _id: {green ${_id}}
+  // `);
+  
+  // console.log(`
+  //   ----- resultObj -----\n
+  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   return resultObj;

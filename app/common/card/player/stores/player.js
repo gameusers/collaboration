@@ -132,7 +132,7 @@ class Store {
           
           
           // ---------------------------------------------
-          //   Button Disabled
+          //   Button Disable
           // ---------------------------------------------
           
           storeLayout.handleButtonDisabledObj(`${_id}-card-player`, true);
@@ -231,7 +231,7 @@ class Store {
           
           
           // ---------------------------------------------
-          //   Button Disabled
+          //   Button Disable
           // ---------------------------------------------
           
           storeLayout.handleButtonDisabledObj(`${_id}-card-game`, true);
@@ -373,7 +373,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Button Disabled
+      //   Button Disable
       // ---------------------------------------------
       
       storeLayout.handleButtonDisabledObj(`${users_id}-follow`, true);
@@ -621,7 +621,7 @@ class Store {
         
         
         // ---------------------------------------------
-        //   Button Disabled
+        //   Button Disable
         // ---------------------------------------------
         
         storeLayout.handleButtonDisabledObj(`${cardPlayers_id}-editButton`, true);

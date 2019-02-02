@@ -17,7 +17,7 @@ const util = require('util');
  * @param {boolean} required - Required
  * @param {string} publicSetting - 公開設定
  */
-const validationPublicSetting = ({ required, publicSetting }) => {
+const validationIDsPublicSetting = ({ required, publicSetting }) => {
   
   
   // ---------------------------------------------
@@ -91,4 +91,4 @@ const validationPublicSetting = ({ required, publicSetting }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationPublicSetting;
+module.exports = validationIDsPublicSetting;

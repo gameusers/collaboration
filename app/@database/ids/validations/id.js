@@ -17,7 +17,7 @@ const util = require('util');
  * @param {boolean} required - Required
  * @param {string} id - ID
  */
-const validationID = ({ required, id }) => {
+const validationIDsID = ({ required, id }) => {
   
   
   // ---------------------------------------------
@@ -88,4 +88,4 @@ const validationID = ({ required, id }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationID;
+module.exports = validationIDsID;

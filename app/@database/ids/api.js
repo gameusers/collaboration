@@ -37,13 +37,13 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-const validation_idServer = require('./validations/_id-server');
-const validationPlatform = require('./validations/platform');
-const validationLabel = require('./validations/label');
-const validationID = require('./validations/id');
-const validationPublicSetting = require('./validations/public-setting');
+const validationIDs_idServer = require('./validations/_id-server');
+const validationIDsPlatform = require('./validations/platform');
+const validationIDsLabel = require('./validations/label');
+const validationIDsID = require('./validations/id');
+const validationIDsPublicSetting = require('./validations/public-setting');
 
-const validationGameIDServer = require('../games/validations/game-id-server');
+const validationGamesGameIDServer = require('../games/validations/game-id-server');
 
 
 // ---------------------------------------------
@@ -136,20 +136,6 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
     }
     
     const usersLogin_id = req.user._id;
-    
-    
-    // --------------------------------------------------
-    //   POST 取得 & Validation
-    // --------------------------------------------------
-    
-    // const { users_id } = req.body;
-    // const validationObj = validation_idServer(users_id);
-    
-    // if (validationObj.error) {
-    //   statusCode = 400;
-    //   errorArgumentsObj.errorCodeArr = ['xXQ6zimji'];
-    //   throw new Error();
-    // }
     
     
     // --------------------------------------------------
@@ -303,7 +289,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     if (_id) {
       
-      const validation_idServerObj = await validation_idServer({
+      const validationIDs_idServerObj = await validationIDs_idServer({
         required: true,
         _id,
         conditionObj: {
@@ -312,8 +298,8 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
         }
       });
       
-      if (validation_idServerObj.errorCodeArr.length > 0) {
-        errorArgumentsObj.errorCodeArr = validation_idServerObj.errorCodeArr;
+      if (validationIDs_idServerObj.errorCodeArr.length > 0) {
+        errorArgumentsObj.errorCodeArr = validationIDs_idServerObj.errorCodeArr;
         throw new Error();
       }
       
@@ -324,14 +310,14 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   Validation - platform
     // --------------------------------------------------
     
-    const validationPlatformObj = validationPlatform({ required: true, platform });
+    const validationIDsPlatformObj = validationIDsPlatform({ required: true, platform });
     
-    if (validationPlatformObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationPlatformObj.errorCodeArr;
+    if (validationIDsPlatformObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationIDsPlatformObj.errorCodeArr;
       throw new Error();
     }
     
-    saveObj.platform = validationPlatformObj.value;
+    saveObj.platform = validationIDsPlatformObj.value;
     
     
     // --------------------------------------------------
@@ -342,7 +328,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     if (gameID && noGameIDPlatformArr.indexOf(platform) === -1) {
       
-      const validationGameIDServerObj = await validationGameIDServer({
+      const validationGamesGameIDServerObj = await validationGamesGameIDServer({
         required: true,
         gameID,
         conditionObj: {
@@ -352,12 +338,12 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
         }
       });
       
-      if (validationGameIDServerObj.errorCodeArr.length > 0) {
-        errorArgumentsObj.errorCodeArr = validationGameIDServerObj.errorCodeArr;
+      if (validationGamesGameIDServerObj.errorCodeArr.length > 0) {
+        errorArgumentsObj.errorCodeArr = validationGamesGameIDServerObj.errorCodeArr;
         throw new Error();
       }
       
-      saveObj.gameID = validationGameIDServerObj.value;
+      saveObj.gameID = validationGamesGameIDServerObj.value;
       
     }
     
@@ -366,42 +352,42 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   Validation - label
     // --------------------------------------------------
     
-    const validationLabelObj = validationLabel({ required: false, label });
+    const validationIDsLabelObj = validationIDsLabel({ required: false, label });
     
-    if (validationLabelObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationLabelObj.errorCodeArr;
+    if (validationIDsLabelObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationIDsLabelObj.errorCodeArr;
       throw new Error();
     }
     
-    saveObj.label = validationLabelObj.value;
+    saveObj.label = validationIDsLabelObj.value;
     
     
     // --------------------------------------------------
     //   Validation - id
     // --------------------------------------------------
     
-    const validationIDObj = validationID({ required: true, id });
+    const validationIDsIDObj = validationIDsID({ required: true, id });
     
-    if (validationIDObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationIDObj.errorCodeArr;
+    if (validationIDsIDObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationIDsIDObj.errorCodeArr;
       throw new Error();
     }
     
-    saveObj.id = validationIDObj.value;
+    saveObj.id = validationIDsIDObj.value;
     
     
     // --------------------------------------------------
     //   Validation - publicSetting
     // --------------------------------------------------
     
-    const validationPublicSettingObj = validationPublicSetting({ required: true, publicSetting });
+    const validationIDsPublicSettingObj = validationIDsPublicSetting({ required: true, publicSetting });
     
-    if (validationPublicSettingObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationPublicSettingObj.errorCodeArr;
+    if (validationIDsPublicSettingObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationIDsPublicSettingObj.errorCodeArr;
       throw new Error();
     }
     
-    saveObj.publicSetting = validationPublicSettingObj.value;
+    saveObj.publicSetting = validationIDsPublicSettingObj.value;
     
     
     
@@ -605,10 +591,17 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     //   Validation - _id
     // --------------------------------------------------
     
-    const validation_idServerObj = await validation_idServer({ usersLogin_id, _id });
+    const validationIDs_idServerObj = await validationIDs_idServer({
+      required: true,
+      _id,
+      conditionObj: {
+        _id,
+        users_id: usersLogin_id,
+      }
+    });
     
-    if (validation_idServerObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validation_idServerObj.errorCodeArr;
+    if (validationIDs_idServerObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationIDs_idServerObj.errorCodeArr;
       throw new Error();
     }
     

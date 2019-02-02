@@ -34,12 +34,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 
 // ---------------------------------------------
 //   Components
@@ -99,20 +93,13 @@ const StyledTextFieldWide = styled(TextField)`
   }
 `;
 
-const SearchBox = styled.div`
-  margin: 24px 0 0 0;
-`;
-
 const SendButtonBox = styled.div`
   margin: 24px 0 0 0;
 `;
 
-const StyledButton = styled(Button)`
-  && {
-    margin: 0 12px 0 0;
-  }
+const SearchBox = styled.div`
+  margin: 24px 0 0 0;
 `;
-
 
 
 
@@ -131,7 +118,7 @@ export default injectIntl(class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormEditSubmit`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormRegisterSubmit`, false);
   }
   
   
@@ -147,10 +134,6 @@ export default injectIntl(class extends React.Component {
     const { buttonDisabledObj } = stores.layout;
     
     const {
-      
-      idFormDataObj,
-      
-      handleIDFormSetEditForm,
       
       idFormPlatformObj,
       handleIDFormPlatform,
@@ -171,12 +154,7 @@ export default injectIntl(class extends React.Component {
       idFormSearchObj,
       handleIDFormSearch,
       
-      idFormDeleteDialogOpenObj,
-      handleIDFormDeleteDialogOpen,
-      handleIDFormDeleteDialogClose,
-      
-      handleIDFormEditSubmit,
-      handleIDFormDeleteSubmit
+      handleIDFormRegisterSubmit
       
     } = stores.idSelectForm;
     
@@ -187,39 +165,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = `${_id}-idFormEditSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormEditSubmit`] : true;
-    
-    
-    // --------------------------------------------------
-    //   Component - 編集可能なID
-    // --------------------------------------------------
-    
-    const componentsIDArr = [];
-    const dataArr = _id in idFormDataObj ? idFormDataObj[_id] : [];
-    
-    for (const [index, valueObj] of dataArr.entries()) {
-      
-      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
-      
-      componentsIDArr.push(
-        <IDBox
-          key={index}
-          onClick={() => handleIDFormSetEditForm({ _id, ids_id: valueObj._id })}
-        >
-          <IDSelectChip
-            platform={valueObj.platform}
-            label={valueObj.label}
-            id={valueObj.id}
-            games_id={games_id}
-            gamesThumbnail={gamesThumbnail}
-            gamesName={gamesName}
-          />
-        </IDBox>
-      );
-      
-    }
+    const buttonDisabled = `${_id}-idFormRegisterSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormRegisterSubmit`] : true;
     
     
     
@@ -340,14 +286,6 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   IDを削除するか尋ねるダイアログを表示するための変数
-    // --------------------------------------------------
-    
-    const deleteDialogOpen = _id in idFormDeleteDialogOpenObj ? idFormDeleteDialogOpenObj[_id] : false;
-    
-    
-    
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -364,10 +302,7 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   formIDValue: {green ${formIDValue}}
-    //   formIDError: {green ${formIDError}}
-    //   formIDMessageID: {green ${formIDMessageID}}
-    //   formIDNumberOfCharacters: {green ${formIDNumberOfCharacters}}
+    //   _id: {green ${_id}}
     // `);
     
     
@@ -382,7 +317,7 @@ export default injectIntl(class extends React.Component {
         
         
         <Description>
-          編集したいIDを押してから、フォームに必要なデータを入力してください。「編集する」ボタンを押すとIDの編集が完了します。<br /><br />
+          フォームに必要なデータを入力してください。「登録する」ボタンを押すとIDの登録が完了します。<br /><br />
           
           IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
         </Description>
@@ -390,18 +325,8 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* 編集可能なID */}
-        <Heading>[ 編集可能なID ]</Heading>
-        
-        <IDsBox>
-          {componentsIDArr}
-        </IDsBox>
-        
-        
-        
-        
-        {/* 編集フォーム */}
-        <Heading>[ 編集フォーム ]</Heading>
+        {/* 登録フォーム */}
+        <Heading>[ 登録フォーム ]</Heading>
         
         
         {/* プラットフォーム */}
@@ -520,58 +445,19 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* ボタン */}
+        {/* 「登録する」ボタン */}
         <SendButtonBox>
-          
-          <StyledButton
-            variant="outlined"
-            color="primary"
-            onClick={() => handleIDFormEditSubmit({
-              _id,
-            })}
-            disabled={buttonDisabled}
-          >
-            編集する
-          </StyledButton>
-          
           <Button
             variant="outlined"
-            color="secondary"
-            onClick={() => handleIDFormDeleteDialogOpen({
+            color="primary"
+            onClick={() => handleIDFormRegisterSubmit({
               _id,
             })}
             disabled={buttonDisabled}
           >
-            削除する
+            登録する
           </Button>
-          
         </SendButtonBox>
-        
-        
-        
-        {/* IDを削除するか尋ねるダイアログ */}
-        <Dialog
-          open={deleteDialogOpen}
-          onClose={() => handleIDFormDeleteDialogClose({ _id })}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">ID削除</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              このIDを削除しますか？
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => handleIDFormDeleteSubmit({ _id })} color="primary" autoFocus>
-              はい
-            </Button>
-            
-            <Button onClick={() => handleIDFormDeleteDialogClose({ _id })} color="primary">
-              いいえ
-            </Button>
-          </DialogActions>
-        </Dialog>
         
         
       </Container>

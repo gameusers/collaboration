@@ -17,7 +17,7 @@ const util = require('util');
  * @param {boolean} required - Required
  * @param {string} platform - プラットフォーム
  */
-const validationPlatform = ({ required, platform }) => {
+const validationIDsPlatform = ({ required, platform }) => {
   
   
   // ---------------------------------------------
@@ -95,4 +95,4 @@ const validationPlatform = ({ required, platform }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationPlatform;
+module.exports = validationIDsPlatform;

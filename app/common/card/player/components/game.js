@@ -273,7 +273,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Panel Expanded & Button Disabled
+    //   Panel Expanded & Button Disable
     // --------------------------------------------------
     
     let panelExpanded = true;

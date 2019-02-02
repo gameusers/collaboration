@@ -3,7 +3,7 @@
 
 
 [![node](https://img.shields.io/badge/node-v10.15.0-lightgrey.svg)](https://nodejs.org/ja/)
-[![npm](https://img.shields.io/badge/npm-v6.5.0-blue.svg)](https://www.npmjs.com/)
+[![npm](https://img.shields.io/badge/npm-v6.7.0-blue.svg)](https://www.npmjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-v4.0.3-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)

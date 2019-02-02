@@ -36,10 +36,11 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 //   Validations
 // ---------------------------------------------
 
-const validationPlatform = require('../../../@database/ids/validations/platform');
-const validationLabel = require('../../../@database/ids/validations/label');
-const validationID = require('../../../@database/ids/validations/id');
-const validationPublicSetting = require('../../../@database/ids/validations/public-setting');
+const validation_id = require('../../../@validations/_id');
+const validationIDsPlatform = require('../../../@database/ids/validations/platform');
+const validationIDsLabel = require('../../../@database/ids/validations/label');
+const validationIDsID = require('../../../@database/ids/validations/id');
+const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
 
 
 
@@ -84,7 +85,7 @@ class Store {
   
   /**
    * ダイアログを閉じる
-   * @param {string} _id - ID
+   * @param {string} _id
    */
   @action.bound
   handleIDFormDialogClose({ _id }) {
@@ -94,7 +95,7 @@ class Store {
   
   /**
    * ダイアログを開く
-   * @param {string} _id - ID
+   * @param {string} _id
    * @param {Array} selectedArr - 選択されているIDが入っている配列
    */
   @action.bound
@@ -122,20 +123,22 @@ class Store {
       } else {
         
         // console.log('fetchWrapper');
+        
+        
+        // ---------------------------------------------
+        //   Button Disable
+        // ---------------------------------------------
+        
+        storeLayout.handleButtonDisabledObj(`${_id}-idForm`, true);
          
+        
+        
         
         // ---------------------------------------------
         //   FormData
         // ---------------------------------------------
         
         const formData = new FormData();
-        
-        
-        // ---------------------------------------------
-        //   Button Disabled
-        // ---------------------------------------------
-        
-        storeLayout.handleButtonDisabledObj(`${_id}-idForm`, true);
         
         
         // ---------------------------------------------
@@ -159,7 +162,7 @@ class Store {
         
         
         // ---------------------------------------------
-        //  Data 更新
+        //   Data 更新
         // ---------------------------------------------
         
         const idFormDataArr = resultObj.data;
@@ -242,6 +245,7 @@ class Store {
   
   // ---------------------------------------------
   //   フォームのコンテンツを切り替える
+  //   選択 / 編集 / 登録の各フォーム
   // ---------------------------------------------
   
   /**
@@ -253,7 +257,7 @@ class Store {
   
   /**
    * フォームのコンテンツを切り替える
-   * @param {string} _id - ID
+   * @param {string} _id
    * @param {string} type - 表示するコンテンツ select / edit
    */
   @action.bound
@@ -291,7 +295,7 @@ class Store {
   
   /**
    * 選択IDから未選択IDに移動する
-   * @param {string} _id - ID
+   * @param {string} _id
    * @param {number} index - 移動するIDの配列index
    */
   @action.bound
@@ -303,7 +307,7 @@ class Store {
   
   /**
    * 未選択IDから選択IDに移動する
-   * @param {string} _id - ID
+   * @param {string} _id
    * @param {number} index - 移動するIDの配列index
    */
   @action.bound
@@ -315,7 +319,7 @@ class Store {
   
   /**
    * 選択を確定するボタンを押したときに実行される
-   * @param {string} _id - ID
+   * @param {string} _id
    * @param {Array} idArr - 選択されたIDの配列
    * @param {function} func - ボタンを押したときに実行する関数
    */
@@ -338,10 +342,10 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * フォームの値を設定する（編集用）
-   * 編集フォームの Chip をクリックしたときに発動
+   * 編集時に編集するIDを選択する（各フォームの値を設定する）
+   * 編集フォームの ID (Chip) をクリックしたときに発動
    * @param {Object} eventObj - イベント
-   * @param {string} _id - ID
+   * @param {string} _id
    */
   @action.bound
   handleIDFormSetEditForm({ _id, ids_id }) {
@@ -367,6 +371,12 @@ class Store {
     //   --------------------\n
     // `);
     
+    // console.log(chalk`
+    //   searchObj.platform: {green ${searchObj.platform}}
+    //   searchObj.id: {green ${searchObj.id}}
+    //   searchObj.search: {green ${searchObj.search}}
+    // `);
+    
     this.handleIDFormGame({
       _id,
       games_id: searchObj.games_id,
@@ -375,14 +385,15 @@ class Store {
       name: searchObj.gamesName
     });
     
-    this.idForm_idObj[_id] = searchObj._id;
-    this.idFormPlatformObj[_id] = searchObj.platform;
-    this.idFormLabelObj[_id] = searchObj.label;
-    this.idFormIDObj[_id] = searchObj.id;
-    this.idFormPublicSettingObj[_id] = searchObj.publicSetting;
-    this.idFormSearchObj[_id] = searchObj.search;
+    this.handleIDForm_id({ _id, value: searchObj._id });
+    this.handleIDFormPlatform({ _id, value: searchObj.platform });
+    this.handleIDFormLabel({ _id, value: searchObj.label });
+    this.handleIDFormID({ _id, value: searchObj.id });
+    this.handleIDFormPublicSetting({ _id, value: searchObj.publicSetting });
+    this.handleIDFormSearch({ _id, value: searchObj.search });
     
   };
+  
   
   
   
@@ -394,6 +405,33 @@ class Store {
   
   
   /**
+   * _idを変更する
+   * @param {string} _id
+   * @param {string} value
+   */
+  @action.bound
+  handleIDForm_id({ _id, value }) {
+    
+    const validationObj = validation_id({ required: true, _id: value });
+    
+    this.idForm_idObj[_id] = {
+      value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.idForm_idObj[_id].error = true;
+      this.idForm_idObj[_id].messageID = validationObj.errorCodeArr[0];
+    }
+    
+  };
+  
+  
+  
+  
+  /**
    * プラットフォーム選択フォームの選択値を入れるオブジェクト
    * @type {Object}
    */
@@ -402,16 +440,16 @@ class Store {
   
   /**
    * プラットフォームを変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} _id - ID
+   * @param {string} _id
+   * @param {string} value
    */
   @action.bound
-  handleIDFormPlatform({ eventObj, _id }) {
+  handleIDFormPlatform({ _id, value }) {
     
-    const validationObj = validationPlatform({ required: true, platform: eventObj.target.value });
+    const validationObj = validationIDsPlatform({ required: true, platform: value });
     
     this.idFormPlatformObj[_id] = {
-      value: eventObj.target.value,
+      value,
       error: false,
       messageID: '',
       numberOfCharacters: validationObj.numberOfCharacters,
@@ -425,6 +463,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * ゲーム入力フォームの入力値を入れるオブジェクト
    * @type {Object}
@@ -434,7 +474,7 @@ class Store {
   
   /**
    * ゲームを変更する
-   * @param {string} _id - ID
+   * @param {string} _id
    * @param {string} games_id - DB games games_id
    * @param {string} gameID - DB games gameID
    * @param {boolean} thumbnail - サムネイルが表示できるか
@@ -457,12 +497,13 @@ class Store {
   
   /**
    * ゲームを削除する
-   * @param {string} _id - ID
+   * @param {string} _id
    */
   @action.bound
   handleIDFormGameDelete({ _id }) {
     this.idFormGameObj[_id] = [];
   };
+  
   
   
   
@@ -475,16 +516,16 @@ class Store {
   
   /**
    * ラベルを変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} _id - ID
+   * @param {string} _id
+   * @param {string} value
    */
   @action.bound
-  handleIDFormLabel({ eventObj, _id }) {
+  handleIDFormLabel({ _id, value }) {
     
-    const validationObj = validationLabel({ required: false, label: eventObj.target.value });
+    const validationObj = validationIDsLabel({ required: false, label: value });
     
     this.idFormLabelObj[_id] = {
-      value: eventObj.target.value,
+      value,
       error: false,
       messageID: '',
       numberOfCharacters: validationObj.numberOfCharacters,
@@ -498,6 +539,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * ID入力フォームの入力値を入れるオブジェクト
    * @type {Object}
@@ -507,16 +550,16 @@ class Store {
   
   /**
    * IDを変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} _id - ID
+   * @param {string} _id
+   * @param {string} value
    */
   @action.bound
-  handleIDFormID({ eventObj, _id }) {
+  handleIDFormID({ _id, value }) {
     
-    const validationObj = validationID({ required: true, id: eventObj.target.value });
+    const validationObj = validationIDsID({ required: true, id: value });
     
     this.idFormIDObj[_id] = {
-      value: eventObj.target.value,
+      value,
       error: false,
       messageID: '',
       numberOfCharacters: validationObj.numberOfCharacters,
@@ -530,6 +573,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * 公開設定選択フォームの選択値を入れるオブジェクト
    * @type {Object}
@@ -539,16 +584,16 @@ class Store {
   
   /**
    * 公開設定を変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} _id - ID
+   * @param {string} _id
+   * @param {string} value
    */
   @action.bound
-  handleIDFormPublicSetting({ eventObj, _id }) {
+  handleIDFormPublicSetting({ _id, value }) {
     
-    const validationObj = validationPublicSetting({ required: true, publicSetting: eventObj.target.value });
+    const validationObj = validationIDsPublicSetting({ required: true, publicSetting: value });
     
     this.idFormPublicSettingObj[_id] = {
-      value: eventObj.target.value,
+      value,
       error: false,
       messageID: '',
       numberOfCharacters: validationObj.numberOfCharacters,
@@ -559,8 +604,9 @@ class Store {
       this.idFormPublicSettingObj[_id].messageID = validationObj.errorCodeArr[0];
     }
     
-    // this.idFormPublicSettingObj[_id] = eventObj.target.value;
   };
+  
+  
   
   
   /**
@@ -572,27 +618,125 @@ class Store {
   
   /**
    * 検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
-   * @param {string} _id - DB card-players _id
+   * @param {string} _id
+   * @param {string} value
    */
   @action.bound
-  handleIDFormSearch({ eventObj, _id }) {
-    this.idFormSearchObj[_id] = eventObj.target.checked;
+  handleIDFormSearch({ _id, value }) {
+    this.idFormSearchObj[_id] = value;
   };
   
   
   
   
+  /**
+   * 削除ダイアログを表示するかどうかを決めるオブジェクト
+   * IDを削除する際に利用。ダイアログで削除していいか尋ねる
+   * @type {Object}
+   */
+  @observable idFormDeleteDialogOpenObj = {};
+  
   
   /**
-   * フォームを送信する
-   * @param {string} _id - ID
+   * 削除ダイアログを開く
+   * @param {string} _id
    */
   @action.bound
-  async handleIDFormSubmit({ _id }) {
+  handleIDFormDeleteDialogOpen({ _id }) {
+    
+    
+    // ---------------------------------------------
+    //   削除するIDが選ばれていない場合、エラーを通知
+    // ---------------------------------------------
+    
+    if (_id in this.idForm_idObj === false) {
+      storeLayout.handleSnackbarOpen('error', '削除するIDを選んでください');
+      return;
+    }
+      
+    
+    this.idFormDeleteDialogOpenObj[_id] = true;
+    
+  };
+  
+  
+  /**
+   * 削除ダイアログを閉じる
+   * @param {string} _id
+   */
+  @action.bound
+  handleIDFormDeleteDialogClose({ _id }) {
+    this.idFormDeleteDialogOpenObj[_id] = false;
+  };
+  
+  
+  
+  
+  /**
+   * 編集フォームを送信する
+   * @param {string} _id
+   */
+  @action.bound
+  async handleIDFormEditSubmit({ _id }) {
     
     
     try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   編集するIDが選ばれていない場合、エラー
+      // ---------------------------------------------
+      
+      if (_id in this.idForm_idObj === false) {
+        throw new Error('編集するIDを選んでください');
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   フォームのデータを取得
+      // ---------------------------------------------
+      
+      const form_id = _id in this.idForm_idObj ? this.idForm_idObj[_id].value : '';
+      const formPlatform = _id in this.idFormPlatformObj ? this.idFormPlatformObj[_id].value : '';
+      const formLabel = _id in this.idFormLabelObj ? this.idFormLabelObj[_id].value : '';
+      const formID = _id in this.idFormIDObj ? this.idFormIDObj[_id].value : '';
+      const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
+      const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
+      
+      const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
+      
+      
+      // ---------------------------------------------
+      //   フォームのバリデーション作動
+      // ---------------------------------------------
+      
+      this.handleIDFormPlatform({ _id, value: formPlatform });
+      this.handleIDFormLabel({ _id, value: formLabel });
+      this.handleIDFormID({ _id, value: formID });
+      this.handleIDFormPublicSetting({ _id, value: formPublicSetting });
+      this.handleIDFormSearch({ _id, value: formSearch });
+      
+      
+      // ---------------------------------------------
+      //   フォームに必要な情報が入力されていない場合、エラー
+      // ---------------------------------------------
+      
+      if (!formPlatform || !formID || !formPublicSetting) {
+        throw new Error('フォームに必要な情報が入力されていません');
+      }
+      
+      
       
       
       // ---------------------------------------------
@@ -601,34 +745,13 @@ class Store {
       
       const formData = new FormData();
       
-      const gameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
-      
-      // console.log(chalk`
-      //   this.idForm_idObj[_id]: {green ${this.idForm_idObj[_id]}}
-      //   gameID: {green ${gameID}}
-      // `);
-      
-      // console.log(`
-      //   ----- this.idFormGameObj[_id] -----\n
-      //   ${util.inspect(this.idFormGameObj[_id], { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      formData.append('_id', this.idForm_idObj[_id]);
-      formData.append('platform', this.idFormPlatformObj[_id]);
-      formData.append('gameID', gameID);
-      formData.append('label',  this.idFormLabelObj[_id]);
-      formData.append('id', this.idFormIDObj[_id]);
-      formData.append('publicSetting', this.idFormPublicSettingObj[_id]);
-      formData.append('search', this.idFormSearchObj[_id]);
-      
-      
-      // ---------------------------------------------
-      //   Button Disabled
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, true);
+      formData.append('_id', form_id);
+      formData.append('platform', formPlatform);
+      formData.append('gameID', formGameID);
+      formData.append('label',  formLabel);
+      formData.append('id', formID);
+      formData.append('publicSetting', formPublicSetting);
+      formData.append('search', formSearch);
       
       
       // ---------------------------------------------
@@ -652,7 +775,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //  Data 更新
+      //   Data 更新
       // ---------------------------------------------
       
       this.idFormDataObj[_id] = resultObj.data;
@@ -662,15 +785,7 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', '編集しました。');
-      
-      // if (type === 'follow') {
-        
-      // } else {
-      //   storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
-      // }
-      
-      
+      storeLayout.handleSnackbarOpen('success', 'IDを編集しました');
       
       
       // ---------------------------------------------
@@ -683,21 +798,21 @@ class Store {
       //   --------------------\n
       // `);
       
-      // console.log(`
-      //   ----- this.idFormGameObj[_id] -----\n
-      //   ${util.inspect(this.idFormGameObj[_id], { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- resultObj.data -----\n
-      //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-        
-      
       
     } catch (errorObj) {
+      
+      // console.log(`
+      //   ----- errorObj -----\n
+      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      
       
     } finally {
       
@@ -715,6 +830,296 @@ class Store {
   };
   
   
+  
+  
+  /**
+   * 削除フォームを送信する
+   * @param {string} _id
+   */
+  @action.bound
+  async handleIDFormDeleteSubmit({ _id }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   編集するIDが選ばれていない場合、エラー
+      // ---------------------------------------------
+      
+      if (_id in this.idForm_idObj === false) {
+        throw new Error('削除するIDを選んでください');
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   フォームのデータを取得
+      // ---------------------------------------------
+      
+      const form_id = _id in this.idForm_idObj ? this.idForm_idObj[_id].value : '';
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('_id', form_id);
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${storeData.urlApi}/v1/ids/delete`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
+      
+      
+      // ---------------------------------------------
+      //   Data 更新
+      // ---------------------------------------------
+      
+      this.idFormDataObj[_id] = resultObj.data;
+      
+      
+      // ---------------------------------------------
+      //   削除ダイアログを閉じる
+      // ---------------------------------------------
+      
+      this.handleIDFormDeleteDialogClose({ _id });
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('success', 'IDを削除しました');
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      // console.log(`
+      //   ----- errorObj -----\n
+      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, false);
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * 登録フォームを送信する
+   * @param {string} _id
+   */
+  @action.bound
+  async handleIDFormRegisterSubmit({ _id }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${_id}-idFormRegisterSubmit`, true);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   フォームのデータを取得
+      // ---------------------------------------------
+      
+      const form_id = _id in this.idForm_idObj ? this.idForm_idObj[_id].value : '';
+      const formPlatform = _id in this.idFormPlatformObj ? this.idFormPlatformObj[_id].value : '';
+      const formLabel = _id in this.idFormLabelObj ? this.idFormLabelObj[_id].value : '';
+      const formID = _id in this.idFormIDObj ? this.idFormIDObj[_id].value : '';
+      const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
+      const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
+      
+      const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
+      
+      
+      // ---------------------------------------------
+      //   フォームのバリデーション作動
+      // ---------------------------------------------
+      
+      this.handleIDFormPlatform({ _id, value: formPlatform });
+      this.handleIDFormLabel({ _id, value: formLabel });
+      this.handleIDFormID({ _id, value: formID });
+      this.handleIDFormPublicSetting({ _id, value: formPublicSetting });
+      this.handleIDFormSearch({ _id, value: formSearch });
+      
+      
+       // ---------------------------------------------
+      //   フォームに必要な情報が入力されていない場合、エラー
+      // ---------------------------------------------
+      
+      if (!formPlatform || !formID || !formPublicSetting) {
+        throw new Error('フォームに必要な情報が入力されていません');
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('_id', form_id);
+      formData.append('platform', formPlatform);
+      formData.append('gameID', formGameID);
+      formData.append('label',  formLabel);
+      formData.append('id', formID);
+      formData.append('publicSetting', formPublicSetting);
+      formData.append('search', formSearch);
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${storeData.urlApi}/v1/ids/upsert`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
+      
+      
+      // ---------------------------------------------
+      //   Data 更新
+      // ---------------------------------------------
+      
+      this.idFormDataObj[_id.replace('-register', '')] = resultObj.data;
+      
+      
+      // ---------------------------------------------
+      //   フォームを空にする
+      // ---------------------------------------------
+      
+      this.handleIDFormPlatform({ _id, value: '' });
+      this.handleIDFormLabel({ _id, value: '' });
+      this.handleIDFormID({ _id, value: '' });
+      this.handleIDFormPublicSetting({ _id, value: '' });
+      this.handleIDFormSearch({ _id, value: true });
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('success', 'IDを新規登録しました');
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      // console.log(`
+      //   ----- errorObj -----\n
+      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisabledObj(`${_id}-idFormRegisterSubmit`, false);
+      
+      
+    }
+    
+    
+  };
   
   
 }

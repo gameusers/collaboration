@@ -75,7 +75,7 @@ let statusCode = 400;
 let errorArgumentsObj = {
   fileID: 'QOVB4jVBQ',
   functionID: '',
-  errorCodeArr: [500000],
+  errorCodeArr: [],
   errorObj: {},
 };
 
@@ -122,11 +122,10 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const { _id } = req.body;
-    const validationObj = validation_id(_id);
+    const validationObj = validation_id({ required: true, _id });
     
-    if (validationObj.error) {
-      statusCode = 400;
-      errorArgumentsObj.errorCodeArr = ['xXQ6zimji'];
+    if (validationObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
       throw new Error();
     }
     
@@ -275,11 +274,10 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
     // --------------------------------------------------
     
     const { _id } = req.body;
-    const validationObj = validation_id(_id);
+    const validationObj = validation_id({ required: true, _id });
     
-    if (validationObj.error) {
-      statusCode = 400;
-      errorArgumentsObj.errorCodeArr = ['xXQ6zimji'];
+    if (validationObj.errorCodeArr.length > 0) {
+      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
       throw new Error();
     }
     

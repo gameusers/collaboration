@@ -17,7 +17,7 @@ const util = require('util');
  * @param {boolean} required - Required
  * @param {string} label - ラベル
  */
-const validationLabel = ({ required, label }) => {
+const validationIDsLabel = ({ required, label }) => {
   
   
   // ---------------------------------------------
@@ -83,4 +83,4 @@ const validationLabel = ({ required, label }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationLabel;
+module.exports = validationIDsLabel;

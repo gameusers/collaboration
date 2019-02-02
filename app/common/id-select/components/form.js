@@ -47,6 +47,7 @@ import IconClose from '@material-ui/icons/Close';
 
 import FormSelect from './form-select';
 import FormEdit from './form-edit';
+import FormRegister from './form-register';
 
 
 
@@ -151,6 +152,16 @@ export default class extends React.Component {
     
     if (_id in idFormContentsTypeObj) {
       contentsType = idFormContentsTypeObj[_id];
+    }
+    
+    let componentForm = '';
+    
+    if (contentsType === 'select') {
+      componentForm = <FormSelect _id={_id} func={func} />;
+    } else if (contentsType === 'edit') {
+      componentForm = <FormEdit _id={_id} />;
+    } else {
+      componentForm = <FormRegister _id={`${_id}-register`} />;
     }
     
     
@@ -265,16 +276,7 @@ export default class extends React.Component {
           
           
           {/* コンテンツ */}
-          {contentsType === 'select' ? (
-            <FormSelect
-              _id={_id}
-              func={func}
-            />
-          ) : (
-            <FormEdit
-              _id={_id}
-            />
-          )}
+          {componentForm}
           
           
         </Dialog>

@@ -142,7 +142,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id } = this.props;
+    const { stores, _id, func, selectedArr } = this.props;
     const { formatMessage } = this.props.intl;
     const { buttonDisabledObj } = stores.layout;
     
@@ -382,7 +382,7 @@ export default injectIntl(class extends React.Component {
         
         
         <Description>
-          編集したいIDを押してから、フォームに必要なデータを入力してください。「編集する」ボタンを押すとIDの編集が完了します。<br /><br />
+          編集したいIDを押してから、フォームの内容を編集してください。「編集する」ボタンを押すとIDの編集が完了します。<br /><br />
           
           IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
         </Description>
@@ -528,6 +528,8 @@ export default injectIntl(class extends React.Component {
             color="primary"
             onClick={() => handleIDFormEditSubmit({
               _id,
+              func,
+              selectedArr
             })}
             disabled={buttonDisabled}
           >
@@ -563,11 +565,22 @@ export default injectIntl(class extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleIDFormDeleteSubmit({ _id })} color="primary" autoFocus>
+            <Button
+              onClick={() => handleIDFormDeleteSubmit({
+                _id,
+                func,
+                selectedArr
+              })}
+              color="primary"
+              autoFocus
+            >
               はい
             </Button>
             
-            <Button onClick={() => handleIDFormDeleteDialogClose({ _id })} color="primary">
+            <Button
+              onClick={() => handleIDFormDeleteDialogClose({ _id })}
+              color="primary"
+            >
               いいえ
             </Button>
           </DialogActions>

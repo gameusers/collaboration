@@ -37,7 +37,7 @@ const ja_JP = {
   //   Error / Validation / DB games
   // ---------------------------------------------
   
-  // /app/@database/games/validations/game-id.js
+  // /app/@database/games/validations/game-id-server.js
   '5Ig82NHic': 'gameIDを入力してください',
   'uj4asy4EI': 'gameIDに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
   '61osZ7Z99': 'gameIDは7文字以上、14文字以内で入力してください',
@@ -48,7 +48,7 @@ const ja_JP = {
   //   Error / Validation / DB ids
   // ---------------------------------------------
   
-  // /app/@database/ids/validations/_id.js
+  // /app/@database/ids/validations/_id-server.js
   'fKnyEX5Px': '_idを入力してください',
   '0Nm7pQeYW': '_idに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
   'Vg08kFRAe': '_idは7文字以上、14文字以内で入力してください',

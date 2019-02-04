@@ -177,7 +177,7 @@ class Store {
           });
           
           if (index !== -1) {
-            idFormDataSelectedArr.push(valueObj);
+            idFormDataSelectedArr.push(valueObj._id);
           }
           
         }
@@ -190,7 +190,7 @@ class Store {
           });
           
           if (index === -1) {
-            idFormDataUnselectedArr.push(valueObj);
+            idFormDataUnselectedArr.push(valueObj._id);
           }
           
         }
@@ -677,7 +677,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleIDFormEditSubmit({ _id }) {
+  async handleIDFormEditSubmit({ _id, func, selectedArr }) {
     
     
     try {
@@ -715,7 +715,10 @@ class Store {
       const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
       
       const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
-      
+      // console.log(chalk`
+      //   formGameID: {green ${formGameID}}
+      // `);
+      // return;
       
       // ---------------------------------------------
       //   フォームのバリデーション作動
@@ -782,6 +785,54 @@ class Store {
       
       
       // ---------------------------------------------
+      //   渡された関数を実行する
+      //   ID登録フォームをロードした元のフォームのIDを更新する
+      // ---------------------------------------------
+      
+      const updatedArr = [];
+      
+      for (let valueObj of selectedArr.values()) {
+        // console.log(index, valueObj);
+        
+        // console.log(`
+        //   ----- valueObj -----\n
+        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        
+        const newObj = resultObj.data.find((valueObj2) => {
+          return valueObj2._id === valueObj._id;
+        });
+        
+        if (newObj) {
+          updatedArr.push(newObj);
+        }
+        
+        // console.log(`
+        //   ----- newObj -----\n
+        //   ${util.inspect(newObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+      }
+      
+      func({ _id, idArr: updatedArr });
+      
+      // console.log(`
+      //   ----- updatedArr -----\n
+      //   ${util.inspect(updatedArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- selectedArr -----\n
+      //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
@@ -837,7 +888,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleIDFormDeleteSubmit({ _id }) {
+  async handleIDFormDeleteSubmit({ _id, func, selectedArr }) {
     
     
     try {
@@ -904,6 +955,28 @@ class Store {
       // ---------------------------------------------
       
       this.idFormDataObj[_id] = resultObj.data;
+      
+      
+      // ---------------------------------------------
+      //   渡された関数を実行する
+      //   ID登録フォームをロードした元のフォームのIDを更新する
+      // ---------------------------------------------
+      
+      const updatedArr = [];
+      
+      for (let valueObj of selectedArr.values()) {
+        
+        const newObj = resultObj.data.find((valueObj2) => {
+          return valueObj2._id === valueObj._id;
+        });
+        
+        if (newObj) {
+          updatedArr.push(newObj);
+        }
+        
+      }
+      
+      func({ _id, idArr: updatedArr });
       
       
       // ---------------------------------------------

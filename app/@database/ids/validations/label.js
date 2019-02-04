@@ -10,6 +10,13 @@ const chalk = require('chalk');
 const util = require('util');
 
 
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
 
 
 /**
@@ -32,7 +39,7 @@ const validationIDsLabel = ({ required, label }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = label;
+  const value = String(label);
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -47,12 +54,12 @@ const validationIDsLabel = ({ required, label }) => {
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && value === '') {
+  if (!required && validator.isEmpty(value)) {
     return resultObj;
   }
   
   // 文字数チェック
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
+  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('SRiWEDTEA');
   }
   

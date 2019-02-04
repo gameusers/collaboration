@@ -10,6 +10,13 @@ const chalk = require('chalk');
 const util = require('util');
 
 
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
 
 
 /**
@@ -32,7 +39,7 @@ const validationIDsID = ({ required, id }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = id;
+  const value = String(id);
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -47,17 +54,17 @@ const validationIDsID = ({ required, id }) => {
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && value === '') {
+  if (!required && validator.isEmpty(value)) {
     return resultObj;
   }
   
   // 存在チェック
-  if (value === '') {
+  if (validator.isEmpty(value)) {
     resultObj.errorCodeArr.push('FsjP5Xb5h');
   }
   
   // 文字数チェック
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
+  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('RheyjmgKo');
   }
   

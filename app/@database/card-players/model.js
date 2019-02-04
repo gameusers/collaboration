@@ -979,23 +979,77 @@ const formatForEditForm = (argumentsObj) => {
 
 
 /**
+ * 取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {Array} 取得データ
+ */
+const find = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Model.find(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * カウントを取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {number} カウント数
+ */
+const count = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Model.countDocuments(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 挿入 / 更新する
  * @param {Object} argumentsObj - 引数
- * @return {Object} 
+ * @return {Array} 
  */
-const upsert = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj,
-    saveObj
-    
-  } = argumentsObj;
+const upsert = async ({ conditionObj, saveObj }) => {
   
   
   // --------------------------------------------------
@@ -1009,14 +1063,7 @@ const upsert = async (argumentsObj) => {
     //   Upsert
     // --------------------------------------------------
     
-    const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -1035,18 +1082,7 @@ const upsert = async (argumentsObj) => {
  * @param {Object} argumentsObj - 引数
  * @return {Array} 
  */
-const insertMany = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    saveArr
-    
-  } = argumentsObj;
+const insertMany = async ({ saveArr }) => {
   
   
   // --------------------------------------------------
@@ -1060,14 +1096,7 @@ const insertMany = async (argumentsObj) => {
     //   insertMany
     // --------------------------------------------------
     
-    const docArr = await Model.insertMany(saveArr);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.insertMany(saveArr);
     
     
   } catch (err) {
@@ -1083,21 +1112,10 @@ const insertMany = async (argumentsObj) => {
 
 /**
  * 削除する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
  * @return {Array} 
  */
-const deleteMany = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj
-    
-  } = argumentsObj;
+const deleteMany = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
@@ -1108,17 +1126,10 @@ const deleteMany = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Remove
+    //   Delete
     // --------------------------------------------------
     
-    const docArr = await Model.deleteMany(conditionObj);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -1140,6 +1151,8 @@ module.exports = {
   findForCardPlayer,
   findOneBy_id,
   findOneBy_idForEditForm,
+  find,
+  count,
   upsert,
   insertMany,
   deleteMany

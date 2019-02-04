@@ -109,6 +109,7 @@ export default class extends React.Component {
     
     const {
       
+      idFormDataObj,
       idFormDataSelectedObj,
       idFormDataUnselectedObj,
       handleIDFormMoveFromSelectedToUnselected,
@@ -139,28 +140,39 @@ export default class extends React.Component {
     
     const componentsSelectedArr = [];
     const dataSelectedArr = _id in idFormDataSelectedObj ? idFormDataSelectedObj[_id] : [];
+    const selectButtonIDArr = [];
     
-    for (const [index, valueObj] of dataSelectedArr.entries()) {
+    for (const [index, value] of dataSelectedArr.entries()) {
       
-      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
+      const dataSelectedObj = idFormDataObj[_id].find((valueObj) => {
+        return valueObj._id === value;
+      });
       
-      componentsSelectedArr.push(
-        <IDBox
-          key={index}
-          onClick={() => handleIDFormMoveFromSelectedToUnselected({ _id, index })}
-        >
-          <IDSelectChip
-            platform={valueObj.platform}
-            label={valueObj.label}
-            id={valueObj.id}
-            games_id={games_id}
-            gamesThumbnail={gamesThumbnail}
-            gamesName={gamesName}
-          />
-        </IDBox>
-      );
+      if (dataSelectedObj) {
+        
+        selectButtonIDArr.push(dataSelectedObj);
+        
+        const games_id = 'games_id' in dataSelectedObj ? dataSelectedObj.games_id : '';
+        const gamesThumbnail = 'gamesThumbnail' in dataSelectedObj ? dataSelectedObj.gamesThumbnail : '';
+        const gamesName = 'gamesName' in dataSelectedObj ? dataSelectedObj.gamesName : '';
+        
+        componentsSelectedArr.push(
+          <IDBox
+            key={index}
+            onClick={() => handleIDFormMoveFromSelectedToUnselected({ _id, index })}
+          >
+            <IDSelectChip
+              platform={dataSelectedObj.platform}
+              label={dataSelectedObj.label}
+              id={dataSelectedObj.id}
+              games_id={games_id}
+              gamesThumbnail={gamesThumbnail}
+              gamesName={gamesName}
+            />
+          </IDBox>
+        );
+        
+      }
       
     }
     
@@ -174,27 +186,35 @@ export default class extends React.Component {
     const componentsUnselectedArr = [];
     const dataUnselectedArr = _id in idFormDataUnselectedObj ? idFormDataUnselectedObj[_id] : [];
     
-    for (const [index, valueObj] of dataUnselectedArr.entries()) {
+    for (const [index, value] of dataUnselectedArr.entries()) {
       
-      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
+      const dataUnselectedObj = idFormDataObj[_id].find((valueObj) => {
+        return valueObj._id === value;
+      });
       
-      componentsUnselectedArr.push(
-        <IDBox
-          key={index}
-          onClick={() => handleIDFormMoveFromUnselectedToSelected({ _id, index })}
-        >
-          <IDSelectChip
-            platform={valueObj.platform}
-            label={valueObj.label}
-            id={valueObj.id}
-            games_id={games_id}
-            gamesThumbnail={gamesThumbnail}
-            gamesName={gamesName}
-          />
-        </IDBox>
-      );
+      if (dataUnselectedObj) {
+        
+        let games_id = 'games_id' in dataUnselectedObj ? dataUnselectedObj.games_id : '';
+        let gamesThumbnail = 'gamesThumbnail' in dataUnselectedObj ? dataUnselectedObj.gamesThumbnail : '';
+        let gamesName = 'gamesName' in dataUnselectedObj ? dataUnselectedObj.gamesName : '';
+        
+        componentsUnselectedArr.push(
+          <IDBox
+            key={index}
+            onClick={() => handleIDFormMoveFromUnselectedToSelected({ _id, index })}
+          >
+            <IDSelectChip
+              platform={dataUnselectedObj.platform}
+              label={dataUnselectedObj.label}
+              id={dataUnselectedObj.id}
+              games_id={games_id}
+              gamesThumbnail={gamesThumbnail}
+              gamesName={gamesName}
+            />
+          </IDBox>
+        );
+        
+      }
       
     }
     
@@ -261,7 +281,7 @@ export default class extends React.Component {
           color="primary"
           onClick={() => handleIDFormSelectButton({
             _id,
-            idArr: idFormDataSelectedObj[_id],
+            idArr: selectButtonIDArr,
             func
           })}
           disabled={buttonDisabled}

@@ -10,6 +10,13 @@ const chalk = require('chalk');
 const util = require('util');
 
 
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
 
 
 /**
@@ -32,7 +39,7 @@ const validationIDsPlatform = ({ required, platform }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = platform;
+  const value = String(platform);
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -47,24 +54,22 @@ const validationIDsPlatform = ({ required, platform }) => {
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && value === '') {
+  if (!required && validator.isEmpty(value)) {
     return resultObj;
   }
   
   // 存在チェック
-  if (value === '') {
+  if (validator.isEmpty(value)) {
     resultObj.errorCodeArr.push('dJzAwAva3');
   }
   
   // 文字数チェック
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
+  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('k6cF97QOd');
   }
   
   // 適切な値が選択されているかチェック
-  const arr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'];
-  
-  if (arr.indexOf(value) === -1) {
+  if (!validator.isIn(value, ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'])) {
     resultObj.errorCodeArr.push('kopWIEmo4');
   }
   

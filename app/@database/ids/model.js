@@ -659,7 +659,6 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    // return await Model.find(conditionObj).count().exec();
     return await Model.countDocuments(conditionObj).exec();
     
     
@@ -712,18 +711,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
  * @param {Object} argumentsObj - 引数
  * @return {Array} 
  */
-const insertMany = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    saveArr
-    
-  } = argumentsObj;
+const insertMany = async ({ saveArr }) => {
   
   
   // --------------------------------------------------
@@ -737,14 +725,7 @@ const insertMany = async (argumentsObj) => {
     //   insertMany
     // --------------------------------------------------
     
-    const docArr = await Model.insertMany(saveArr);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.insertMany(saveArr);
     
     
   } catch (err) {

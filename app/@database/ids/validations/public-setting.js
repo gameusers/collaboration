@@ -10,6 +10,13 @@ const chalk = require('chalk');
 const util = require('util');
 
 
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
 
 
 /**
@@ -32,7 +39,7 @@ const validationIDsPublicSetting = ({ required, publicSetting }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = publicSetting;
+  const value = String(publicSetting);
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -47,21 +54,26 @@ const validationIDsPublicSetting = ({ required, publicSetting }) => {
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && value === '') {
+  if (!required && validator.isEmpty(value)) {
     return resultObj;
   }
   
   // 存在チェック
-  if (value === '') {
+  if (validator.isEmpty(value)) {
     resultObj.errorCodeArr.push('Fafdlkugx');
   }
   
-  // 適切な値が選択されているかチェック
-  const pattern = new RegExp(`^[${minNumber}-${maxNumber}]$`);
-  
-  if (String(value).match(pattern) === null) {
+  // 数字が範囲内に収まっているかチェック
+  if (!validator.isInt(value, { min: minNumber, max: maxNumber })) {
     resultObj.errorCodeArr.push('1wG57OGCe');
   }
+  
+  // 適切な値が選択されているかチェック
+  // const pattern = new RegExp(`^[${minNumber}-${maxNumber}]$`);
+  
+  // if (String(value).match(pattern) === null) {
+  //   resultObj.errorCodeArr.push('1wG57OGCe');
+  // }
   
   
   // ---------------------------------------------

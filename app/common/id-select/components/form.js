@@ -50,6 +50,11 @@ import FormEdit from './form-edit';
 import FormRegister from './form-register';
 
 
+const validation_id = require('../../../@validations/_id');
+const validationIDsPlatform = require('../../../@database/ids/validations/platform');
+const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
+
+
 
 
 // --------------------------------------------------
@@ -157,11 +162,26 @@ export default class extends React.Component {
     let componentForm = '';
     
     if (contentsType === 'select') {
-      componentForm = <FormSelect _id={_id} func={func} />;
+      componentForm =
+        <FormSelect
+          _id={_id}
+          func={func}
+        />
+      ;
     } else if (contentsType === 'edit') {
-      componentForm = <FormEdit _id={_id} />;
+      componentForm =
+        <FormEdit
+          _id={_id}
+          func={func}
+          selectedArr={selectedArr}
+        />
+      ;
     } else {
-      componentForm = <FormRegister _id={`${_id}-register`} />;
+      componentForm =
+        <FormRegister
+          _id={`${_id}-register`}
+        />
+      ;
     }
     
     
@@ -171,6 +191,32 @@ export default class extends React.Component {
     // --------------------------------------------------
     //   Console 出力
     // --------------------------------------------------
+    
+    // const test = 1;
+    
+    // console.log(`
+    //   ----- validationIDsPublicSetting({ required: true, publicSetting: test }) -----\n
+    //   ${util.inspect(validationIDsPublicSetting({ required: true, publicSetting: test }), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- validationIDsPlatform({ required: true, platform: test }) -----\n
+    //   ${util.inspect(validationIDsPlatform({ required: true, platform: test }), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- validation_id({ required: true, _id: test }) -----\n
+    //   ${util.inspect(validation_id({ required: true, _id: test }), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   String(value): {green ${String(test)}}
+    // `);
+    
+    
     
     // console.log(`
     //   ----- stores.data.usersLoginObj -----\n

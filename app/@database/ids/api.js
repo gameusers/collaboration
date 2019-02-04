@@ -260,8 +260,6 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     const { _id, platform, gameID, label, id, publicSetting, search } = req.body;
     
     
-    
-    
     // --------------------------------------------------
     //   Save Object
     // --------------------------------------------------
@@ -477,6 +475,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   platform: {green ${platform}}
+    //   gameID: {green ${gameID}}
     //   label: {green ${label}}
     //   id: {green ${id}}
     //   publicSetting: {green ${publicSetting}}

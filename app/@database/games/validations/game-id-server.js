@@ -17,13 +17,18 @@ const util = require('util');
 const ModelGames = require('../model');
 
 
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
 
 
 /**
  * gameID
  * @param {boolean} required - Required
- * @param {string} language - 言語
- * @param {string} country - 国
  * @param {string} gameID - db games gameID
  * @param {Object} conditionObj - 検索条件
  */
@@ -42,7 +47,7 @@ const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) =
   //   Result Object
   // ---------------------------------------------
   
-  const value = gameID;
+  const value = String(gameID);
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -57,12 +62,12 @@ const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) =
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && value === '') {
+  if (!required && validator.isEmpty(value)) {
     return resultObj;
   }
   
   // 存在チェック
-  if (value === '') {
+  if (validator.isEmpty(value)) {
     resultObj.errorCodeArr.push('5Ig82NHic');
   }
   
@@ -72,12 +77,12 @@ const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) =
   }
   
   // 文字数チェック
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
+  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('61osZ7Z99');
   }
   
   // データベースに存在しているかチェック
-  const count = await ModelGames.count(conditionObj);
+  const count = await ModelGames.count({ conditionObj });
   
   if (count === 0) {
     resultObj.errorCodeArr.push('Zg03IN2R8');

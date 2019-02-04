@@ -11,25 +11,10 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
-// ---------------------------------------------
-
-// const shortid = require('shortid');
-// const moment = require('moment');
-
-
-// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
 const Model = require('./schema');
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { srcset } = require('../../@format/image');
 
 
 
@@ -111,30 +96,44 @@ const find = async ({ conditionObj }) => {
 
 
 /**
+ * カウントを取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {number} カウント数
+ */
+const count = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Model.countDocuments(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 挿入 / 更新する
  * @param {Object} argumentsObj - 引数
- * @return {Object} 
+ * @return {Array} 
  */
-const upsert = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj,
-    saveObj
-    
-  } = argumentsObj;
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
+const upsert = async ({ conditionObj, saveObj }) => {
   
   
   // --------------------------------------------------
@@ -148,14 +147,7 @@ const upsert = async (argumentsObj) => {
     //   Upsert
     // --------------------------------------------------
     
-    const docArr = await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: false, setDefaultsOnInsert: true }).exec();
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
+    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -174,18 +166,7 @@ const upsert = async (argumentsObj) => {
  * @param {Object} argumentsObj - 引数
  * @return {Array} 
  */
-const insertMany = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    saveArr
-    
-  } = argumentsObj;
+const insertMany = async ({ saveArr }) => {
   
   
   // --------------------------------------------------
@@ -199,19 +180,7 @@ const insertMany = async (argumentsObj) => {
     //   insertMany
     // --------------------------------------------------
     
-    const docArr = await Model.insertMany(saveArr);
-    
-    
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.insertMany(saveArr);
     
     
   } catch (err) {
@@ -227,21 +196,10 @@ const insertMany = async (argumentsObj) => {
 
 /**
  * 削除する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
  * @return {Array} 
  */
-const deleteMany = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    conditionObj
-    
-  } = argumentsObj;
+const deleteMany = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
@@ -252,22 +210,10 @@ const deleteMany = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Remove
+    //   Delete
     // --------------------------------------------------
     
-    const docArr = await Model.deleteMany(conditionObj);
-    
-    
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docArr;
+    return await Model.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -288,6 +234,7 @@ const deleteMany = async (argumentsObj) => {
 module.exports = {
   findBySearchKeywordsArrForSuggestion,
   find,
+  count,
   upsert,
   insertMany,
   deleteMany

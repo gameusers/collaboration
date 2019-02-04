@@ -17,6 +17,13 @@ const util = require('util');
 const ModelIDs = require('../model');
 
 
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
 
 
 /**
@@ -40,7 +47,7 @@ const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = _id;
+  const value = String(_id);
   const numberOfCharacters = value ? value.length : 0;
   
   let resultObj = {
@@ -55,12 +62,12 @@ const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && value === '') {
+  if (!required && validator.isEmpty(value)) {
     return resultObj;
   }
   
   // 存在チェック
-  if (value === '') {
+  if (validator.isEmpty(value)) {
     resultObj.errorCodeArr.push('fKnyEX5Px');
   }
   
@@ -70,7 +77,7 @@ const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
   }
   
   // 文字数チェック
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
+  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('Vg08kFRAe');
   }
   
@@ -87,14 +94,7 @@ const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
   // ---------------------------------------------
   
   // console.log(chalk`
-  //   usersLogin_id: {green ${usersLogin_id}}
   //   _id: {green ${_id}}
-  // `);
-  
-  // console.log(`
-  //   ----- docArr -----\n
-  //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-  //   --------------------\n
   // `);
   
   // console.log(`

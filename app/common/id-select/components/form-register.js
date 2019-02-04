@@ -317,7 +317,7 @@ export default injectIntl(class extends React.Component {
         
         
         <Description>
-          フォームに必要なデータを入力してください。「登録する」ボタンを押すとIDの登録が完了します。<br /><br />
+          IDを登録する場合は、こちらのフォームに必要なデータを入力してから「登録する」ボタンを押してください。<br /><br />
           
           IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
         </Description>

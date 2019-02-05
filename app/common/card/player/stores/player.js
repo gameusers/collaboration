@@ -897,7 +897,7 @@ class Store {
    * 趣味を変更する
    * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} index - 変更する配列のインデックス
+   * @param {number} index - 変更する配列のインデックス
    */
   @action.bound
   handleCardPlayerEditHobby(eventObj, _id, index) {
@@ -917,6 +917,10 @@ class Store {
   
   
   
+  
+  // ---------------------------------------------
+  //   特技
+  // ---------------------------------------------
   
   /**
    * 特技の <TextField /> の数を増やす
@@ -943,7 +947,7 @@ class Store {
    * 特技を変更する
    * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} index - 変更する配列のインデックス
+   * @param {number} index - 変更する配列のインデックス
    */
   @action.bound
   handleCardPlayerEditSpecialSkill(eventObj, _id, index) {
@@ -1729,6 +1733,121 @@ class Store {
     
     const copiedArr = JSON.parse(JSON.stringify(idArr));
     this.cardPlayerEditFormDataObj[_id].idArr = copiedArr;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   活動時間
+  // ---------------------------------------------
+  
+  // this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.push('');
+  
+  
+  /**
+   * 特技の <TextField /> の数を減らす
+   * @param {string}  _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 削除する配列のインデックス
+   */
+  // @action.bound
+  // handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement(_id, index) {
+  //   this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.splice(index, 1);
+  // };
+  
+
+  
+  /**
+   * 活動時間（開始時間）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 変更する配列のインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditActivityTimeBeginTime({ _id, index, value }) {
+    this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr[index].beginTime = value;
+  };
+  
+  
+  /**
+   * 活動時間（終了時間）を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 変更する配列のインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditActivityTimeEndTime({ _id, index, value }) {
+    this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr[index].endTime = value;
+  };
+  
+  
+  /**
+   * 活動時間の曜日を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 変更する配列のインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditActivityTimeWeekArr({ _id, index, value }) {
+    
+    let weekArr = 'weekArr' in this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr[index] ? this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr[index].weekArr : [];
+    
+    // 配列に存在しない場合は追加、存在する場合は削除
+    if (weekArr.indexOf(value) === -1) {
+      weekArr.push(value);
+    } else {
+      const newArr = weekArr.filter(number => number !== value);
+      weekArr = newArr;
+    }
+    
+    // 数字の昇順に並び替え
+    const sortedArr = weekArr.slice().sort((a, b) => {
+      return a - b;
+    });
+    
+    // console.log(`
+    //   ----- sortedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(sortedArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr[index].weekArr = sortedArr;
+    
+  };
+  
+  
+  /**
+   * 活動時間のフォームを追加する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditActivityTimeAddForm({ _id }) {
+    if (this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr.length < 7) {
+      this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr.push({});
+    }
+  };
+  
+  
+  /**
+   * 活動時間のフォームを削除する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditActivityTimeRemoveForm({ _id }) {
+    if (this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr.pop();
+    }
+  };
+  
+  
+  /**
+   * 活動時間の検索チェックボックスを変更する
+   * @param {Object} eventObj - イベント
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   */
+  @action.bound
+  handleCardPlayerEditActivityTimeSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].activityTimeObj.search = value;
   };
   
   

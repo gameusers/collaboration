@@ -134,11 +134,13 @@ const schema = mongoose.Schema({
     search: { type: Boolean, required: true },
   },
   lookingForFriendsObj: {
+    value: { type: Boolean, required: true },
     icon: { type: String, required: true },
     comment: String,
     search: { type: Boolean, required: true },
   },
   voiceChatObj: {
+    value: { type: Boolean, required: true },
     comment: String,
     search: { type: Boolean, required: true },
   },

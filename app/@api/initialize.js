@@ -68,6 +68,22 @@ const router = express.Router();
 
 
 // --------------------------------------------------
+//   Status Code & Error Arguments Object
+// --------------------------------------------------
+
+let statusCode = 400;
+
+let errorArgumentsObj = {
+  fileID: 'Mv7RFeKQ1',
+  functionID: '',
+  errorCodeArr: [],
+  errorObj: {},
+};
+
+
+
+
+// --------------------------------------------------
 //   Initial Props / Function ID: gUwZx1hDG
 // --------------------------------------------------
 
@@ -75,18 +91,19 @@ router.post('/db', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  // const localeObj = locale({
+  //   acceptLanguage: req.headers['accept-language']
+  // });
+  
+  
+  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
-  let statusCode = 400;
-  
-  let errorArgumentsObj = {
-    fileID: 'Mv7RFeKQ1',
-    functionID: 'gUwZx1hDG',
-    errorCodeArr: [500000],
-    errorObj: {},
-  };
+  errorArgumentsObj.functionID = 'gUwZx1hDG';
   
   
   try {
@@ -102,22 +119,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
-    
-    // const localeObj = locale({
-    //   acceptLanguage: req.headers['accept-language']
-    // });
-    
-    
-    // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
-    const date = moment().utcOffset(0);
-    let conditionObj = {};
-    let saveObj = {};
+    let returnObj = {};
     let saveArr = [];
+    const date = moment().utcOffset(0);
     
     
     
@@ -202,13 +209,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     //   DB / Games
     // --------------------------------------------------
-    
-    // ---------------------------------------------
-    //   Condition Object
-    // ---------------------------------------------
-    
-    conditionObj = { _id: 'w_zkqpr3R' || shortid.generate() };
-    
     
     // ---------------------------------------------
     //   Save Object
@@ -1874,24 +1874,26 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'fkqjMZzff',
               beginTime: '19:00',
-              endTime: '24:00',
-              weekArr: [0, 1, 2, 3, 4]
+              endTime: '00:00',
+              weekArr: [1, 2, 3, 4, 5]
             },
             {
               _id: 'J-ReJUaTK',
-              beginTime: '9:00',
-              endTime: '24:00',
-              weekArr: [5, 6]
+              beginTime: '09:00',
+              endTime: '23:30',
+              weekArr: [0, 6]
             }
           ],
           search: true,
         },
         lookingForFriendsObj: {
+          value: true,
           icon: 'emoji_u1f61c',
           comment: 'ゲーム配信をしているので、その際に一緒に遊べる人がいればいいなと思ってます。学生から社会人の方まで、誰でもフレンド申請してもらってOKです。ただ配信外ではひとりで遊ぶのが好きなので、招待をもらっても応えられないのですが、それでもいい方はぜひフレンドになってください。',
           search: true,
         },
         voiceChatObj: {
+          value: false,
           comment: 'ボイスチャットはゲーム配信のときにどうしても必要になったら使いますが、基本的には使っていません。',
           search: true,
         },
@@ -2050,24 +2052,26 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'QNRzpKmGB',
               beginTime: '19:00',
-              endTime: '24:00',
+              endTime: '21:50',
               weekArr: [0, 1, 2, 3, 4]
             },
             {
               _id: '1qaGh3U0i',
-              beginTime: '9:00',
-              endTime: '24:00',
+              beginTime: '09:00',
+              endTime: '22:00',
               weekArr: [5, 6]
             }
           ],
           search: true,
         },
         lookingForFriendsObj: {
+          value: true,
           icon: 'emoji_u1f47f',
           comment: '',
           search: true,
         },
         voiceChatObj: {
+          value: true,
           comment: '',
           search: true,
         },
@@ -2193,7 +2197,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: '7Euewb_Ik',
               beginTime: '21:00',
-              endTime: '3:00',
+              endTime: '03:00',
               weekArr: [5, 6]
             }
           ],
@@ -2332,7 +2336,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: '2eD3Ovfqr',
               beginTime: '21:00',
-              endTime: '3:00',
+              endTime: '03:00',
               weekArr: [5, 6]
             }
           ],
@@ -2390,11 +2394,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
     await ModelCardGames.deleteMany({});
     returnObj = await ModelCardGames.insertMany({ saveArr });
     
-    // returnObj = await ModelCardGames.upsert({
-    //   conditionObj,
-    //   saveObj
-    // });
-    
     
     
     
@@ -2425,34 +2424,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     
-    
-    
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
-    
-    // console.log('db');
     
     // console.log(chalk`
     //   users_id: {green ${users_id}}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
     // `);
     
     // console.log(`

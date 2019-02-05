@@ -26,9 +26,6 @@ import styled from 'styled-components';
 import Button from '@material-ui/core/Button';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-// import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -56,6 +53,7 @@ import PC from './pc';
 import HardwareActive from './hardware-active';
 import HardwareInactive from './hardware-inactive';
 import ID from './id';
+import ActivityTime from './activity-time';
 
 
 
@@ -64,12 +62,6 @@ import ID from './id';
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
-
-// const Container = styled.div`
-//   // margin: 28px 0 0 0;
-//   padding: 0;
-// `;
-
 
 // ---------------------------------------------
 //   Content / Card Content
@@ -226,6 +218,10 @@ export default class extends React.Component {
       hardwareActiveArr,
       hardwareInactiveArr,
       idArr,
+      activityTimeObj,
+      lookingForFriendsObj,
+      voiceChatObj,
+      linkArr
       
     } = cardPlayerEditFormDataObj[cardPlayers_id];
     
@@ -261,16 +257,16 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- cardPlayerEditFormDataObj[cardPlayers_id].idArr -----\n
-    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id].idArr, { colors: true, depth: null })}\n
+    //   ----- cardPlayerEditFormDataObj[cardPlayers_id] -----\n
+    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id], { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- cardPlayersObj.idArr -----\n
-    //   ${util.inspect(cardPlayersObj.idArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- lookingForFriendsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(lookingForFriendsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(chalk`
     //   users_id: {green ${users_id}}
@@ -466,6 +462,16 @@ export default class extends React.Component {
               _id={cardPlayers_id}
               selectedArr={idArr}
               func={handleCardPlayerEditID}
+            />
+          </Box>
+          
+          
+          {/* 活動時間 */}
+          <Box>
+            <ActivityTime
+              _id={cardPlayers_id}
+              arr={activityTimeObj.valueArr}
+              search={activityTimeObj.search}
             />
           </Box>
           

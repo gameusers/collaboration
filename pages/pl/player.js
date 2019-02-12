@@ -86,7 +86,7 @@ import initStoreGameSelectSuggestion from '../../app/common/game-select/stores/s
 
 import Layout from '../../app/common/layout/components/layout';
 import CardPlayer from '../../app/common/card/player/components/player';
-import CardGame from '../../app/common/card/player/components/game';
+// import CardGame from '../../app/common/card/player/components/game';
 import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 // import DialogTest from '../../app/common/user/components/dialog';
@@ -335,34 +335,34 @@ class Component extends React.Component {
         
       } else {
         
-        if (index === 0) {
+        // if (index === 0) {
           
-          componentCardsArr.push(
-            <CardGame
-              cardGames_id={valueObj.cardGames_id}
-              showGameName={true}
-              showCardPlayerButton={false}
-              // showCardGameButton={false}
-              showFollow={false}
-              key={index}
-            />
-          );
+        //   componentCardsArr.push(
+        //     <CardGame
+        //       cardGames_id={valueObj.cardGames_id}
+        //       showGameName={true}
+        //       showCardPlayerButton={false}
+        //       // showCardGameButton={false}
+        //       showFollow={false}
+        //       key={index}
+        //     />
+        //   );
           
-        } else {
+        // } else {
           
-          componentCardsArr.push(
-            <CardBox key={index}>
-              <CardGame
-                cardGames_id={valueObj.cardGames_id}
-                showGameName={true}
-                showCardPlayerButton={false}
-                // showCardGameButton={false}
-                showFollow={false}
-              />
-            </CardBox>
-          );
+        //   componentCardsArr.push(
+        //     <CardBox key={index}>
+        //       <CardGame
+        //         cardGames_id={valueObj.cardGames_id}
+        //         showGameName={true}
+        //         showCardPlayerButton={false}
+        //         // showCardGameButton={false}
+        //         showFollow={false}
+        //       />
+        //     </CardBox>
+        //   );
           
-        }
+        // }
         
         
       }

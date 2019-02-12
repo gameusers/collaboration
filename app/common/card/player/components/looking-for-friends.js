@@ -80,7 +80,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { icon, comment } = this.props;
+    const { value, icon, comment } = this.props;
     
     
     
@@ -91,6 +91,19 @@ export default class extends React.Component {
     
     if (!icon || !comment) {
       return null;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   募集中
+    // --------------------------------------------------
+    
+    let text = '募集していません';
+    
+    if (value) {
+      text = '募集中';
     }
     
     
@@ -126,7 +139,7 @@ export default class extends React.Component {
               height="26"
             />
           </FriendIcon>
-          <Heading>フレンド募集</Heading>
+          <Heading>フレンド: {text}</Heading>
         </HeadingBox>
         
         <CommentBox><Paragraph text={comment} /></CommentBox>

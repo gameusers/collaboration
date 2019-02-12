@@ -54,6 +54,9 @@ import HardwareActive from './hardware-active';
 import HardwareInactive from './hardware-inactive';
 import ID from './id';
 import ActivityTime from './activity-time';
+import LookingForFriends from './looking-for-friends';
+import VoiceChat from './voice-chat';
+import FormLink from './link';
 
 
 
@@ -262,11 +265,11 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- lookingForFriendsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(lookingForFriendsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- linkArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
     //   users_id: {green ${users_id}}
@@ -475,6 +478,37 @@ export default class extends React.Component {
             />
           </Box>
           
+          
+          {/* フレンド */}
+          <Box>
+            <LookingForFriends
+              _id={cardPlayers_id}
+              value={lookingForFriendsObj.value}
+              icon={lookingForFriendsObj.icon}
+              comment={lookingForFriendsObj.comment}
+              search={lookingForFriendsObj.search}
+            />
+          </Box>
+          
+          
+          {/* ボイスチャット */}
+          <Box>
+            <VoiceChat
+              _id={cardPlayers_id}
+              value={voiceChatObj.value}
+              comment={voiceChatObj.comment}
+              search={voiceChatObj.search}
+            />
+          </Box>
+          
+          
+          {/* Link */}
+          <Box>
+            <FormLink
+              _id={cardPlayers_id}
+              arr={linkArr}
+            />
+          </Box>
           
           
         </StyledCardContent>

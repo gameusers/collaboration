@@ -51,7 +51,7 @@ import Pc from './pc';
 import Hardware from './hardware';
 import Id from './id';
 import ActivityTime from './activity-time';
-import Friend from './friend';
+import LookingForFriend from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import Link from './link';
 import FollowButton from './follow-button';
@@ -323,13 +323,32 @@ export default class extends React.Component {
       
     
     // ---------------------------------------------
-    //   ID & Friend
+    //   ID
     // ---------------------------------------------
     
     const idArr = cardPlayersObj.idArr;
+    
+    
+    // ---------------------------------------------
+    //   活動時間
+    // ---------------------------------------------
+    
     const activityTimeArr = cardPlayersObj.activityTimeObj.valueArr;
+    
+    
+    // ---------------------------------------------
+    //   フレンド募集
+    // ---------------------------------------------
+    
+    const lookingForFriendsValue = cardPlayersObj.lookingForFriendsObj.value;
     const lookingForFriendsIcon = cardPlayersObj.lookingForFriendsObj.icon;
     const lookingForFriendsComment = cardPlayersObj.lookingForFriendsObj.comment;
+    
+    
+    // ---------------------------------------------
+    //   ボイスチャット
+    // ---------------------------------------------
+    
     const voiceChatComment = cardPlayersObj.voiceChatObj.comment;
     
     
@@ -536,7 +555,8 @@ export default class extends React.Component {
                 
                 
                 {/* フレンド募集 */}
-                <Friend
+                <LookingForFriend
+                  value={lookingForFriendsValue}
                   icon={lookingForFriendsIcon}
                   comment={lookingForFriendsComment}
                 />

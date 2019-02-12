@@ -17,18 +17,26 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import TextareaAutosize from 'react-autosize-textarea';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import Icon from '@material-ui/icons/HeadsetMic';
 
 
 
@@ -48,12 +56,56 @@ const Description = styled.p`
 `;
 
 const SelectBox = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 24px 0 0 0;
+`;
+
+const IconBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  margin: 0;
+`;
+
+// const IconSelectedImg = styled.img`
+//   width: 26px;
+//   height: 26px;
+//   margin: 0 4px 0 0;
+// `;
+
+const StyledIcon = styled(Icon)`
+  && {
+    font-size: 24px;
+    margin: 0 6px 0 0;
+  }
+`;
+
+const IconText = styled.div`
+  margin: 0 4px 0 0;
+`;
+
+const TextareaBox = styled.div`
   margin: 12px 0 0 0;
 `;
 
-const StyledTextField = styled(TextField)`
+const StyledTextareaAutosize = styled(TextareaAutosize)`
   && {
-    margin-right: 16px;
+    width: 600px;
+    max-width: 600px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    line-height: 1.8;
+    
+    &:focus {
+      outline: 1px #A9F5F2 solid;
+    }
+    
+    @media screen and (max-width: 480px) {
+      width: 100%;
+      max-width: auto;
+      resize: none;
+    }
   }
 `;
 
@@ -84,25 +136,19 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, alternativeText, search } = this.props;
+    const { stores, _id, value, comment, search } = this.props;
     
     const {
       
-      handleCardPlayerEditSex,
-      handleCardPlayerEditSexAlternativeText,
-      handleCardPlayerEditSexSearch
+      handleCardPlayerEditVoiceChatValue,
+      handleCardPlayerEditVoiceChatComment,
+      handleCardPlayerEditVoiceChatSearch
       
     } = stores.cardPlayer;
     
     
     // --------------------------------------------------
-    //   フォーマット
-    // --------------------------------------------------
-    
-    
-    
-    // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -112,10 +158,11 @@ export default class extends React.Component {
     // `);
     
     // console.log(chalk`
+    //   _id: {green ${_id}}
     //   value: {green ${value}}
-    //   alternativeText: {green ${alternativeText}}
+    //   icon: {green ${icon}}
+    //   comment: {green ${comment}}
     //   search: {green ${search}}
-    //   birthday: {green ${birthday}}
     // `);
     
     
@@ -126,39 +173,45 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>性別</Heading>
+        <Heading>ボイスチャット</Heading>
         
-        <Description>性別を選択してください。選択すると性別が表示されます。選択肢以外の値を入力したい場合は、その他のフォームに入力してください。</Description>
+        <Description>入力するとボイスチャットについての情報が表示されます。</Description>
         
         
         <SelectBox>
+        
+          <IconBox>
+            <StyledIcon />
+            <IconText>ボイスチャット: </IconText>
+          </IconBox>
+        
+        
           <FormControl>
             <Select
               value={value}
-              onChange={(event) => handleCardPlayerEditSex(event, _id)}
+              onChange={(eventObj) => handleCardPlayerEditVoiceChatValue({ _id, value: eventObj.target.value })}
               inputProps={{
-                name: 'sex',
-                id: 'sex',
+                name: 'friend',
+                id: 'friend',
               }}
             >
-              <MenuItem value={'male'}>男性</MenuItem>
-              <MenuItem value={'female'}>女性</MenuItem>
+              <MenuItem value={true}>できる</MenuItem>
+              <MenuItem value={false}>できない</MenuItem>
             </Select>
           </FormControl>
+          
         </SelectBox>
         
         
-        <StyledTextField
-          id="sexAlternativeText"
-          label="その他"
-          value={alternativeText}
-          onChange={(event) => handleCardPlayerEditSexAlternativeText(event, _id)}
-          helperText="他の値を表示したい場合はこちらに入力してください"
-          margin="normal"
-          inputProps={{
-            maxLength: 20,
-          }}
-        />
+        <TextareaBox>
+          <StyledTextareaAutosize
+            rows={5}
+            placeholder="コメントを入力してください"
+            value={comment}
+            onChange={(eventObj) => handleCardPlayerEditVoiceChatComment({ _id, value: eventObj.target.value })}
+            maxLength={3000}
+          />
+        </TextareaBox>
         
         
         <SearchBox>
@@ -166,10 +219,10 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditSexSearch(event, _id)}
+                onChange={(eventObj) => handleCardPlayerEditVoiceChatSearch({ _id, value: eventObj.target.checked })}
               />
             }
-            label="性別で検索可能にする"
+            label="ボイスチャット欄の入力情報で検索可能にする"
           />
         </SearchBox>
         

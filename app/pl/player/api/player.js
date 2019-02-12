@@ -194,14 +194,14 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   アクセスしたページ所有者のゲームカード情報
     // --------------------------------------------------
     
-    const cardGamesObj = await ModelCardGames.find({
-      users_id,
-      language: localeObj.language,
-      country: localeObj.country,
-      usersLogin_id
-    });
+    // const cardGamesObj = await ModelCardGames.find({
+    //   users_id,
+    //   language: localeObj.language,
+    //   country: localeObj.country,
+    //   usersLogin_id
+    // });
     
-    returnObj.cardGamesObj = cardGamesObj;
+    // returnObj.cardGamesObj = cardGamesObj;
     
     
     // --------------------------------------------------
@@ -216,13 +216,13 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       });
     }
     
-    cardGamesKeysArr = Object.keys(cardGamesObj);
+    // cardGamesKeysArr = Object.keys(cardGamesObj);
     
-    if (cardGamesKeysArr.length > 0) {
-      returnObj.cardsArr.push({
-        cardGames_id: cardGamesKeysArr[0]
-      });
-    }
+    // if (cardGamesKeysArr.length > 0) {
+    //   returnObj.cardsArr.push({
+    //     cardGames_id: cardGamesKeysArr[0]
+    //   });
+    // }
     
     
     // --------------------------------------------------

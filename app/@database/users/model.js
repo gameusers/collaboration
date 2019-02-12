@@ -16,7 +16,7 @@ const util = require('util');
 
 const shortid = require('shortid');
 const moment = require('moment');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 
 // ---------------------------------------------

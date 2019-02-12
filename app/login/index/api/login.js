@@ -20,7 +20,7 @@ const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 // const shortid = require('shortid');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const fetch = require('isomorphic-unfetch');
 const FormData = require('form-data');
 

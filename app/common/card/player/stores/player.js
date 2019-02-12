@@ -1851,6 +1851,149 @@ class Store {
   };
   
   
+  
+  
+  // ---------------------------------------------
+  //   フレンド
+  // ---------------------------------------------
+  
+  /**
+   * フレンドのアイコンを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditFriendIcon({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.icon = value;
+  };
+  
+  
+  /**
+   * フレンドの「募集中」「募集していません」を切り替える
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditFriendValue({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.value = value;
+  };
+  
+  
+  /**
+   * フレンドのコメントを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditFriendComment({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.comment = value;
+  };
+  
+  
+  /**
+   * フレンドの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditFriendSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.search = value;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   ボイスチャット
+  // ---------------------------------------------
+  
+  /**
+   * ボイスチャットの「できる」「できない」を切り替える
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditVoiceChatValue({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].voiceChatObj.value = value;
+  };
+  
+  
+  /**
+   * ボイスチャットのコメントを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditVoiceChatComment({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].voiceChatObj.comment = value;
+  };
+  
+  
+  /**
+   * ボイスチャットの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditVoiceChatSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].voiceChatObj.search = value;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Link
+  // ---------------------------------------------
+  
+  /**
+   * リンクのタイプを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 配列の変更するインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditLinkType({ _id, index, value }) {
+    this.cardPlayerEditFormDataObj[_id].linkArr[index].type = value;
+  };
+  
+  
+  /**
+   * リンクのタイトルを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 配列の変更するインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditLinkLabel({ _id, index, value }) {
+    this.cardPlayerEditFormDataObj[_id].linkArr[index].label = value;
+  };
+  
+  
+  /**
+   * リンクのURLを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 配列の変更するインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditLinkURL({ _id, index, value }) {
+    this.cardPlayerEditFormDataObj[_id].linkArr[index].url = value;
+  };
+  
+  
+  /**
+   * リンクの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 配列の変更するインデックス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditLinkSearch({ _id, index, value }) {
+    this.cardPlayerEditFormDataObj[_id].linkArr[index].search = value;
+  };
+  
+  
 }
 
 

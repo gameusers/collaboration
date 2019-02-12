@@ -47,7 +47,7 @@ import User from '../../../user/components/user';
 import Hardware from './hardware';
 import Id from './id';
 import ActivityTime from './activity-time';
-import Friend from './friend';
+import LookingForFriend from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import FollowButton from './follow-button';
 import Link from './link';
@@ -400,7 +400,7 @@ export default class extends React.Component {
             
             
             {/* フレンド募集 */}
-            <Friend
+            <LookingForFriend
               icon={lookingForFriendsIcon}
               comment={lookingForFriendsComment}
             />

@@ -298,14 +298,14 @@ export default class extends React.Component {
           {/* ハンドルネーム */}
           <HandleName
             _id={cardPlayers_id}
-            name={nameObj.value}
+            nameObj={nameObj}
           />
           
           
           {/* ステータス */}
           <Status
             _id={cardPlayers_id}
-            status={statusObj.value}
+            statusObj={statusObj}
           />
           
           
@@ -325,7 +325,7 @@ export default class extends React.Component {
           <Box>
             <Comment
               _id={cardPlayers_id}
-              comment={commentObj.value}
+              commentObj={commentObj}
             />
           </Box>
           

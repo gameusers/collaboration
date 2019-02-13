@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -48,7 +49,7 @@ const StyledTextField = styled(TextField)`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -62,13 +63,23 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, status } = this.props;
+    const { stores, intl, _id, statusObj } = this.props;
     
     const {
       
       handleCardPlayerEditStatus,
       
     } = stores.cardPlayer;
+    
+    
+    // --------------------------------------------------
+    //   フォームの値
+    // --------------------------------------------------
+    
+    const formValue = statusObj.value ? statusObj.value : '';
+    const formError = statusObj.error ? statusObj.error : false;
+    const formMessageID = statusObj.messageID ? statusObj.messageID : 'RuqHo4jGS';
+    const formNumberOfCharacters = statusObj.numberOfCharacters ? statusObj.numberOfCharacters : 0;
     
     
     // --------------------------------------------------
@@ -79,9 +90,10 @@ export default class extends React.Component {
       <StyledTextField
         id="status"
         label="ステータス"
-        value={status}
-        onChange={(event) => handleCardPlayerEditStatus(event, _id)}
-        helperText="ハンドルネームの横に表示される文字です"
+        value={formValue}
+        onChange={(eventObj) => handleCardPlayerEditStatus({ _id, value: eventObj.target.value })}
+        error={formError}
+        helperText={intl.formatMessage({ id: formMessageID }, { numberOfCharacters: formNumberOfCharacters })}
         margin="normal"
         inputProps={{
           maxLength: 20,
@@ -91,4 +103,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

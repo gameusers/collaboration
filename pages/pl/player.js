@@ -180,6 +180,12 @@ class Component extends React.Component {
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    // console.log(`
+    //   ----- process.env -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(process.env)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     return { isServer, pathname, initialPropsObj, statusCode, localeObj };
@@ -368,6 +374,13 @@ class Component extends React.Component {
       }
       
     }
+    
+    
+    // console.log(chalk`
+    //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
+    //   process.env.URL_BASE: {green ${process.env.URL_BASE}}
+    //   process.env.URL_API: {green ${process.env.URL_API}}
+    // `);
     
     
     

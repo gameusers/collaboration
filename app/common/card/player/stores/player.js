@@ -32,6 +32,15 @@ import { fetchWrapper } from '../../../../@modules/fetch';
 import { errorsArrIntoErrorMessage } from '../../../../@format/error';
 
 
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersHandleName = require('../../../../@database/card-players/validations/handle-name');
+const validationCardPlayersStatus = require('../../../../@database/card-players/validations/status');
+const validationCardPlayersComment = require('../../../../@database/card-players/validations/comment');
+
+
 
 
 // --------------------------------------------------
@@ -709,35 +718,77 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 名前を変更する
-   * @param {Object} eventObj - イベント
+   * ハンドルネームを変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditName(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].nameObj.value = eventObj.target.value;
+  handleCardPlayerEditName({ _id, value }) {
+    
+    const validationObj = validationCardPlayersHandleName({ required: true, value });
+    
+    this.cardPlayerEditFormDataObj[_id].nameObj = {
+      value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].nameObj.error = true;
+      this.cardPlayerEditFormDataObj[_id].nameObj.messageID = validationObj.errorCodeArr[0];
+    }
+    
   };
   
   
   /**
    * ステータスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditStatus(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].statusObj.value = eventObj.target.value;
+  handleCardPlayerEditStatus({ _id, value }) {
+    
+    const validationObj = validationCardPlayersStatus({ required: true, value });
+    
+    this.cardPlayerEditFormDataObj[_id].statusObj = {
+      value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].statusObj.error = true;
+      this.cardPlayerEditFormDataObj[_id].statusObj.messageID = validationObj.errorCodeArr[0];
+    }
+    
   };
   
   
   /**
    * コメントを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditComment(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].commentObj.value = eventObj.target.value;
+  handleCardPlayerEditComment({ _id, value }) {
+    
+    const validationObj = validationCardPlayersComment({ required: false, value });
+    
+    this.cardPlayerEditFormDataObj[_id].commentObj = {
+      value,
+      error: false,
+      messageID: '',
+      numberOfCharacters: validationObj.numberOfCharacters,
+    };
+    
+    if (validationObj.errorCodeArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].commentObj.error = true;
+      this.cardPlayerEditFormDataObj[_id].commentObj.messageID = validationObj.errorCodeArr[0];
+    }
+    
   };
   
   
@@ -1742,21 +1793,6 @@ class Store {
   //   活動時間
   // ---------------------------------------------
   
-  // this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.push('');
-  
-  
-  /**
-   * 特技の <TextField /> の数を減らす
-   * @param {string}  _id - DB card-players _id / DB card-games _id
-   * @param {number} index - 削除する配列のインデックス
-   */
-  // @action.bound
-  // handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement(_id, index) {
-  //   this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.splice(index, 1);
-  // };
-  
-
-  
   /**
    * 活動時間（開始時間）を変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
@@ -1955,6 +1991,12 @@ class Store {
   @action.bound
   handleCardPlayerEditLinkType({ _id, index, value }) {
     this.cardPlayerEditFormDataObj[_id].linkArr[index].type = value;
+    
+    // console.log(`
+    //   ----- this.cardPlayerEditFormDataObj[_id].linkArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.cardPlayerEditFormDataObj[_id].linkArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
   };
   
   
@@ -1991,6 +2033,44 @@ class Store {
   @action.bound
   handleCardPlayerEditLinkSearch({ _id, index, value }) {
     this.cardPlayerEditFormDataObj[_id].linkArr[index].search = value;
+  };
+  
+  
+  /**
+   * リンクの入力フォームを追加する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 配列の変更するインデックス
+   */
+  @action.bound
+  handleCardPlayerAddLinkForm({ _id, index }) {
+    
+    if (this.cardPlayerEditFormDataObj[_id].linkArr.length < 20) {
+      this.cardPlayerEditFormDataObj[_id].linkArr.push({});
+    }
+    
+    // this.cardPlayerEditFormDataObj[_id].linkArr.push({
+    //   _id: '',
+    //   type: '',
+    //   url: '',
+    //   search: true,
+    // });
+  };
+  
+  
+  /**
+   * リンクの入力フォームを削除する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {number} index - 配列の変更するインデックス
+   */
+  @action.bound
+  handleCardPlayerRemoveLinkForm({ _id, index }) {
+    
+    if (index === 999) {
+      this.cardPlayerEditFormDataObj[_id].linkArr.pop();
+    } else {
+      this.cardPlayerEditFormDataObj[_id].linkArr.splice(index, 1);
+    }
+    
   };
   
   

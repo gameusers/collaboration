@@ -140,7 +140,9 @@ export default class extends React.Component {
       handleCardPlayerEditLinkType,
       handleCardPlayerEditLinkLabel,
       handleCardPlayerEditLinkURL,
-      handleCardPlayerEditLinkSearch
+      handleCardPlayerEditLinkSearch,
+      handleCardPlayerAddLinkForm,
+      handleCardPlayerRemoveLinkForm
       
     } = stores.cardPlayer;
     
@@ -155,19 +157,25 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of arr.entries()) {
       
+      const type = 'type' in valueObj ? valueObj.type : '';
+      const label = 'label' in valueObj ? valueObj.label : '';
+      const url = 'url' in valueObj ? valueObj.url : '';
+      const search = 'search' in valueObj ? valueObj.search : '';
+      
+      
       componentsArr.push(
         
         <FormBox key={index}>
           
           <SelectBox>
             <FormControl>
-              <InputLabel htmlFor="type">ウェブサイトの種類</InputLabel>
+              <InputLabel htmlFor="linkType">ウェブサイトの種類</InputLabel>
               <StyledSelect
-                value={valueObj.type}
+                value={type}
                 onChange={(eventObj) => handleCardPlayerEditLinkType({ _id, index, value: eventObj.target.value })}
                 inputProps={{
-                  name: 'type',
-                  id: 'type',
+                  name: 'linkType',
+                  id: 'linkType',
                 }}
               >
                 <MenuItem value={'Twitter'}>Twitter</MenuItem>
@@ -182,8 +190,9 @@ export default class extends React.Component {
             </FormControl>
             
             
+            {/* - ボタン */}
             <IconButtonForSelect
-              // onClick={() => handleCardPlayerEditActivityTimeRemoveForm({ _id })}
+              onClick={() => handleCardPlayerRemoveLinkForm({ _id, index })}
             >
               <IconRemoveCircle />
             </IconButtonForSelect>
@@ -195,7 +204,7 @@ export default class extends React.Component {
             <StyledTextFieldWide
               id="linkLabel"
               label="リンクのタイトル"
-              value={valueObj.label}
+              value={label}
               onChange={(eventObj) => handleCardPlayerEditLinkLabel({ _id, index, value: eventObj.target.value })}
               helperText="リンクのタイトルを入力してください"
               margin="normal"
@@ -207,9 +216,9 @@ export default class extends React.Component {
           
           
           <StyledTextField100Per
-            id="linkLabel"
+            id="linkURL"
             label="URL"
-            value={valueObj.url}
+            value={url}
             onChange={(eventObj) => handleCardPlayerEditLinkURL({ _id, index, value: eventObj.target.value })}
             helperText="URLを入力してください"
             margin="normal"
@@ -223,7 +232,7 @@ export default class extends React.Component {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={valueObj.search}
+                  checked={search}
                   onChange={(eventObj) => handleCardPlayerEditLinkSearch({ _id, index, value: eventObj.target.checked })}
                 />
               }
@@ -245,17 +254,27 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- arr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- process.env -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(process.env)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
-    //   value: {green ${value}}
-    //   alternativeText: {green ${alternativeText}}
-    //   search: {green ${search}}
-    //   birthday: {green ${birthday}}
+    //   _id: {green ${_id}}
+    //   process.env.customKey: {green ${process.env.customKey}}
+    // `);
+    
+    // console.log(chalk`
+    //   process.env.NODE_ENV2: {green ${process.env.NODE_ENV}}
+    //   process.env.URL_BASE2: {green ${process.env.URL_BASE}}
+    //   process.env.URL_API2: {green ${process.env.URL_API}}
     // `);
     
     
@@ -280,7 +299,7 @@ export default class extends React.Component {
           
           {/* - ボタン */}
           <IconButtonForButtonBox
-            // onClick={() => handleCardPlayerEditActivityTimeRemoveForm({ _id })}
+            onClick={() => handleCardPlayerRemoveLinkForm({ _id, index: 999 })}
           >
             <IconRemoveCircle />
           </IconButtonForButtonBox>
@@ -288,7 +307,7 @@ export default class extends React.Component {
           
           {/* + ボタン */}
           <IconButton
-            // onClick={() => handleCardPlayerEditActivityTimeAddForm({ _id })}
+            onClick={() => handleCardPlayerAddLinkForm({ _id })}
           >
             <IconAddCircle />
           </IconButton>

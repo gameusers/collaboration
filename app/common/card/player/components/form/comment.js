@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
+import { injectIntl } from 'react-intl';
 
 
 
@@ -63,7 +64,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -77,13 +78,23 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, comment } = this.props;
+    const { stores, intl, _id, commentObj } = this.props;
     
     const {
       
       handleCardPlayerEditComment,
       
     } = stores.cardPlayer;
+    
+    
+    // --------------------------------------------------
+    //   フォームの値
+    // --------------------------------------------------
+    
+    const formValue = commentObj.value ? commentObj.value : '';
+    // const formError = commentObj.error ? commentObj.error : false;
+    // const formMessageID = commentObj.messageID ? commentObj.messageID : 'w7TbcLAdl';
+    // const formNumberOfCharacters = commentObj.numberOfCharacters ? commentObj.numberOfCharacters : 0;
     
     
     // --------------------------------------------------
@@ -97,8 +108,8 @@ export default class extends React.Component {
         <StyledTextareaAutosize
           rows={5}
           placeholder="コメントを入力してください"
-          value={comment}
-          onChange={(event) => handleCardPlayerEditComment(event, _id)}
+          value={formValue}
+          onChange={(eventObj) => handleCardPlayerEditComment({ _id, value: eventObj.target.value })}
           maxLength={3000}
         />
       </React.Fragment>
@@ -106,4 +117,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

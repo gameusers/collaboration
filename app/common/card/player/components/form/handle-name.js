@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -48,7 +49,7 @@ const StyledTextField = styled(TextField)`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -62,13 +63,42 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, name } = this.props;
+    const { stores, intl, _id, nameObj } = this.props;
+    // const { formatMessage } = this.props.intl;
     
     const {
       
       handleCardPlayerEditName,
       
     } = stores.cardPlayer;
+    
+    
+    // --------------------------------------------------
+    //   フォームの値
+    // --------------------------------------------------
+    
+    const formValue = nameObj.value ? nameObj.value : '';
+    const formError = nameObj.error ? nameObj.error : false;
+    const formMessageID = nameObj.messageID ? nameObj.messageID : 'l1Nr3Di-O';
+    const formNumberOfCharacters = nameObj.numberOfCharacters ? nameObj.numberOfCharacters : 0;
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- nameObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(nameObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   formValue: {green ${formValue}}
+    //   formError: {green ${formError}}
+    //   formMessageID: {green ${formMessageID}}
+    //   formNumberOfCharacters: {green ${formNumberOfCharacters}}
+    // `);
     
     
     // --------------------------------------------------
@@ -79,9 +109,10 @@ export default class extends React.Component {
       <StyledTextField
         id="name"
         label="ハンドルネーム"
-        value={name}
-        onChange={(event) => handleCardPlayerEditName(event, _id)}
-        helperText="公開される名前です"
+        value={formValue}
+        onChange={(eventObj) => handleCardPlayerEditName({ _id, value: eventObj.target.value })}
+        error={formError}
+        helperText={intl.formatMessage({ id: formMessageID }, { numberOfCharacters: formNumberOfCharacters })}
         margin="normal"
         inputProps={{
           maxLength: 20,
@@ -91,4 +122,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

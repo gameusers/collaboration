@@ -34,6 +34,27 @@ const ja_JP = {
   
   
   // ---------------------------------------------
+  //   Error / Validation / DB card-players
+  // ---------------------------------------------
+  
+  // /app/@database/card-players/validations/handle-name.js
+  'l1Nr3Di-O': '公開される名前です',
+  'MbA-_vCAC': 'ハンドルネームを入力してください',
+  'BQchi4d_c': 'ハンドルネームは1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/status.js
+  'RuqHo4jGS': 'ハンドルネームの横に表示される文字です',
+  'fAlgLHIYq': 'ステータスを入力してください',
+  'pV2b1h_Dg': 'ステータスは1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/comment.js
+  'w7TbcLAdl': '',
+  'eMHCRsdFC': 'コメントを入力してください',
+  '721_WCmbT': 'コメントは1文字以上、20文字以内で入力してください',
+  
+  
+  
+  // ---------------------------------------------
   //   Error / Validation / DB games
   // ---------------------------------------------
   

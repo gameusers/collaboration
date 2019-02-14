@@ -219,12 +219,12 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //     level: 999,
     //     accessDate: '2018-08-06T08:50:00Z',
     //     cardPlayerObj: {
-    //       birthday: '2002-10-19T00:00:00Z',
+    //       age: '2002-10-19T00:00:00Z',
     //       sex: 'male',
     //     },
     //     cardGameObj: {
     //       'reaBMD4W6': {
-    //         birthday: '2002-10-19T00:00:00Z',
+    //         age: '2002-10-19T00:00:00Z',
     //         sex: 'male',
     //       }
     //     }

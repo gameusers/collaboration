@@ -38,7 +38,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Components
 // ---------------------------------------------
 
-import HandleName from './handle-name';
+import HandleName from './name';
 import Status from './status';
 import Comment from './comment';
 import Age from './age';
@@ -207,7 +207,7 @@ export default class extends React.Component {
       nameObj,
       statusObj,
       commentObj,
-      birthdayObj,
+      ageObj,
       sexObj,
       addressObj,
       gamingExperienceObj,
@@ -334,9 +334,10 @@ export default class extends React.Component {
           <Box>
             <Age
               _id={cardPlayers_id}
-              value={birthdayObj.value}
-              alternativeText={birthdayObj.alternativeText}
-              search={birthdayObj.search}
+              ageObj={ageObj}
+              // value={ageObj.value}
+              // alternativeText={ageObj.alternativeText}
+              // search={ageObj.search}
             />
           </Box>
           

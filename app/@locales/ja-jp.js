@@ -37,7 +37,7 @@ const ja_JP = {
   //   Error / Validation / DB card-players
   // ---------------------------------------------
   
-  // /app/@database/card-players/validations/handle-name.js
+  // /app/@database/card-players/validations/name.js
   'l1Nr3Di-O': '公開される名前です',
   'MbA-_vCAC': 'ハンドルネームを入力してください',
   'BQchi4d_c': 'ハンドルネームは1文字以上、20文字以内で入力してください',
@@ -51,6 +51,13 @@ const ja_JP = {
   'w7TbcLAdl': '',
   'eMHCRsdFC': 'コメントを入力してください',
   '721_WCmbT': 'コメントは1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/age.js
+  '4T_kAMjFU': '誕生日から年齢が自動で計算されます',
+  'bT9TGtVck': '誕生日が正しい日付ではありません',
+  'Qo5IGidJY': '例えば17歳と入力すると、ずっと17歳に固定されます',
+  'v57dv3fYB': '年齢（固定値）は1文字以上、20文字以内で入力してください',
+  'vND6SH_5t': '年齢の検索可能チェックボックスが正しい値ではありません',
   
   
   

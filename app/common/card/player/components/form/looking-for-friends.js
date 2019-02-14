@@ -172,8 +172,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- birthdayObj -----\n
-    //   ${util.inspect(birthdayObj, { colors: true, depth: null })}\n
+    //   ----- ageObj -----\n
+    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

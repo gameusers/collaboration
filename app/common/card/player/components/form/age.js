@@ -27,6 +27,7 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -50,7 +51,6 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  // line-height: 1.6em;
 `;
 
 const StyledTextField = styled(TextField)`
@@ -72,7 +72,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -86,22 +86,42 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, alternativeText, search } = this.props;
+    const { stores, intl, _id, ageObj } = this.props;
     
     const {
       
-      handleCardPlayerEditBirthday,
-      handleCardPlayerEditBirthdayAlternativeText,
-      handleCardPlayerEditBirthdaySearch
+      handleCardPlayerEditAge,
+      handleCardPlayerEditAgeAlternativeText,
+      handleCardPlayerEditAgeSearch
       
     } = stores.cardPlayer;
+    
+    
+    // --------------------------------------------------
+    //   フォームの値
+    // --------------------------------------------------
+    
+    const formValue = ageObj.value ? ageObj.value : '';
+    const formValueError = ageObj.valueError ? ageObj.valueError : false;
+    const formValueMessageID = ageObj.valueMessageID ? ageObj.valueMessageID : '4T_kAMjFU';
+    const formValueNumberOfCharacters = ageObj.valueNumberOfCharacters ? ageObj.valueNumberOfCharacters : 0;
+    
+    const formAlternativeText = ageObj.alternativeText ? ageObj.alternativeText : '';
+    const formAlternativeTextError = ageObj.alternativeTextError ? ageObj.alternativeTextError : false;
+    const formAlternativeTextMessageID = ageObj.alternativeTextMessageID ? ageObj.alternativeTextMessageID : 'Qo5IGidJY';
+    const formAlternativeTextNumberOfCharacters = ageObj.alternativeTextNumberOfCharacters ? ageObj.alternativeTextNumberOfCharacters : 0;
+    
+    const formSearch = ageObj.search ? ageObj.search : '';
+    // const formSearchError = ageObj.searchError ? ageObj.searchError : false;
+    // const formSearchMessageID = ageObj.searchMessageID ? ageObj.searchMessageID : 'Qo5IGidJY';
+    // const formSearchNumberOfCharacters = ageObj.searchNumberOfCharacters ? ageObj.searchNumberOfCharacters : 0;
     
     
     // --------------------------------------------------
     //   フォーマット
     // --------------------------------------------------
     
-    const formattedDate = moment(value).format('YYYY-MM-DD');
+    const formattedDate = moment(formValue).format('YYYY-MM-DD');
     
     
     // --------------------------------------------------
@@ -109,8 +129,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- birthdayObj -----\n
-    //   ${util.inspect(birthdayObj, { colors: true, depth: null })}\n
+    //   ----- ageObj -----\n
+    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -118,7 +138,7 @@ export default class extends React.Component {
     //   value: {green ${value}}
     //   alternativeText: {green ${alternativeText}}
     //   search: {green ${search}}
-    //   birthday: {green ${birthday}}
+    //   age: {green ${age}}
     // `);
     
     
@@ -135,12 +155,13 @@ export default class extends React.Component {
         
         
         <StyledTextField
-          id="birthday"
+          id="age"
           label="誕生日"
           type="date"
           value={formattedDate}
-          onChange={(event) => handleCardPlayerEditBirthday(event, _id)}
-          helperText="誕生日から年齢が自動で計算されます"
+          onChange={(eventObj) => handleCardPlayerEditAge({ _id, value: eventObj.target.value })}
+          error={formValueError}
+          helperText={intl.formatMessage({ id: formValueMessageID }, { numberOfCharacters: formValueNumberOfCharacters })}
           margin="normal"
           InputLabelProps={{
             shrink: true,
@@ -148,11 +169,12 @@ export default class extends React.Component {
         />
         
         <StyledTextField
-          id="birthdayAlternativeText"
+          id="ageAlternativeText"
           label="年齢（固定値）"
-          value={alternativeText}
-          onChange={(event) => handleCardPlayerEditBirthdayAlternativeText(event, _id)}
-          helperText="例えば17歳と入力すると、ずっと17歳に固定されます"
+          value={formAlternativeText}
+          onChange={(eventObj) => handleCardPlayerEditAgeAlternativeText({ _id, value: eventObj.target.value })}
+          error={formAlternativeTextError}
+          helperText={intl.formatMessage({ id: formAlternativeTextMessageID }, { numberOfCharacters: formAlternativeTextNumberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -163,8 +185,8 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditBirthdaySearch(event, _id)}
+                checked={formSearch}
+                onChange={(eventObj) => handleCardPlayerEditAgeSearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="年齢で検索可能にする"
@@ -176,4 +198,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

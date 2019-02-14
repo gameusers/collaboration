@@ -1800,7 +1800,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
   それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
           search: true,
         },
-        birthdayObj: {
+        ageObj: {
           value: '2002-10-19T00:00:00Z',
           alternativeText: '',
           search: true,
@@ -1980,7 +1980,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
 ゲームを登録するとゲームページが同時に作成されます。登録直後はゲームページのURLは以下のようにランダムな文字列に設定され、運営が確認後、正式なURLに置き換わります。URLをブラウザのお気に入りに入れたり、ブログなどに掲載する場合は気をつけてください。`,
           search: true,
         },
-        birthdayObj: {
+        ageObj: {
           value: '1868-04-04T00:00:00Z',
           alternativeText: '',
           search: true,

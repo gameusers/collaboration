@@ -109,8 +109,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- birthdayObj -----\n
-    //   ${util.inspect(birthdayObj, { colors: true, depth: null })}\n
+    //   ----- ageObj -----\n
+    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -118,7 +118,7 @@ export default class extends React.Component {
     //   value: {green ${value}}
     //   alternativeText: {green ${alternativeText}}
     //   search: {green ${search}}
-    //   birthday: {green ${birthday}}
+    //   age: {green ${age}}
     // `);
     
     

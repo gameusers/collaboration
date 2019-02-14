@@ -266,8 +266,8 @@ export default class extends React.Component {
     //   Profile
     // ---------------------------------------------
     
-    const birthdayValue = cardPlayersObj.birthdayObj.value;
-    const birthdayAlternativeText = cardPlayersObj.birthdayObj.alternativeText;
+    const ageValue = cardPlayersObj.ageObj.value;
+    const ageAlternativeText = cardPlayersObj.ageObj.alternativeText;
     const sexValue = cardPlayersObj.sexObj.value;
     const sexAlternativeText = cardPlayersObj.sexObj.alternativeText;
     const addressAlternativeText = cardPlayersObj.addressObj.alternativeText;
@@ -489,8 +489,8 @@ export default class extends React.Component {
                 
                 {/* 年齢・性別などのプロフィール */}
                 <Profile
-                  birthdayValue={birthdayValue}
-                  birthdayAlternativeText={birthdayAlternativeText}
+                  ageValue={ageValue}
+                  ageAlternativeText={ageAlternativeText}
                   sexValue={sexValue}
                   sexAlternativeText={sexAlternativeText}
                   addressAlternativeText={addressAlternativeText}

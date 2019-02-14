@@ -124,8 +124,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const {
-      birthdayValue,
-      birthdayAlternativeText,
+      ageValue,
+      ageAlternativeText,
       sexValue,
       sexAlternativeText,
       addressAlternativeText,
@@ -141,8 +141,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (
-      !birthdayValue &&
-      !birthdayAlternativeText &&
+      !ageValue &&
+      !ageAlternativeText &&
       !sexValue &&
       !sexAlternativeText &&
       !addressAlternativeText &&
@@ -171,10 +171,10 @@ export default class extends React.Component {
     
     let age = '';
     
-    if (birthdayAlternativeText) {
-      age = birthdayAlternativeText;
-    } else if (birthdayValue) {
-      age = `${moment().diff(birthdayValue, 'years')}歳`;
+    if (ageAlternativeText) {
+      age = ageAlternativeText;
+    } else if (ageValue) {
+      age = `${moment().diff(ageValue, 'years')}歳`;
     }
     
     if (age) {

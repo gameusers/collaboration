@@ -24,7 +24,7 @@ const validator = require('validator');
  * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersHandleName = ({ required, value }) => {
+const validationCardPlayersName = ({ required, value }) => {
   
   
   // ---------------------------------------------
@@ -95,4 +95,4 @@ const validationCardPlayersHandleName = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersHandleName;
+module.exports = validationCardPlayersName;

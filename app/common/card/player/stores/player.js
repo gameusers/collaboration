@@ -36,9 +36,10 @@ import { errorsArrIntoErrorMessage } from '../../../../@format/error';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersHandleName = require('../../../../@database/card-players/validations/handle-name');
+const validationCardPlayersName = require('../../../../@database/card-players/validations/name');
 const validationCardPlayersStatus = require('../../../../@database/card-players/validations/status');
 const validationCardPlayersComment = require('../../../../@database/card-players/validations/comment');
+const validationCardPlayersAge = require('../../../../@database/card-players/validations/age');
 
 
 
@@ -725,7 +726,7 @@ class Store {
   @action.bound
   handleCardPlayerEditName({ _id, value }) {
     
-    const validationObj = validationCardPlayersHandleName({ required: true, value });
+    const validationObj = validationCardPlayersName({ required: true, value });
     
     this.cardPlayerEditFormDataObj[_id].nameObj = {
       value,
@@ -767,6 +768,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * コメントを変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
@@ -796,34 +799,91 @@ class Store {
   
   /**
    * 年齢（誕生日）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditBirthday(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].birthdayObj.value = eventObj.target.value;
+  handleCardPlayerEditAge({ _id, value }) {
+    // console.log(value);
+    const validationObj = validationCardPlayersAge({
+      required: false,
+      value,
+      alternativeText: this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText,
+      search: this.cardPlayerEditFormDataObj[_id].ageObj.search
+    });
+    
+    this.cardPlayerEditFormDataObj[_id].ageObj.value = value;
+    this.cardPlayerEditFormDataObj[_id].ageObj.valueError = false;
+    this.cardPlayerEditFormDataObj[_id].ageObj.valueMessageID = '';
+    this.cardPlayerEditFormDataObj[_id].ageObj.valueNumberOfCharacters = validationObj.valueNumberOfCharacters;
+    
+    if (validationObj.valueErrorCodeArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].ageObj.valueError = true;
+      this.cardPlayerEditFormDataObj[_id].ageObj.valueMessageID = validationObj.valueErrorCodeArr[0];
+    }
+    
+    // 年齢（固定値）をクリア
+    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText = '';
+    
   };
   
   
   /**
    * 年齢（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditBirthdayAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].birthdayObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditAgeAlternativeText({ _id, value }) {
+    
+    const validationObj = validationCardPlayersAge({
+      required: false,
+      value: this.cardPlayerEditFormDataObj[_id].ageObj.value,
+      alternativeText: value,
+      search: this.cardPlayerEditFormDataObj[_id].ageObj.search
+    });
+    
+    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText = value;
+    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextError = false;
+    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextMessageID = '';
+    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextNumberOfCharacters = validationObj.alternativeTextNumberOfCharacters;
+    
+    if (validationObj.alternativeTextErrorCodeArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextError = true;
+      this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextMessageID = validationObj.alternativeTextErrorCodeArr[0];
+    }
+    
+    // 誕生日をクリア
+    this.cardPlayerEditFormDataObj[_id].ageObj.value = null;
+    
   };
   
   
   /**
    * 年齢の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditBirthdaySearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].birthdayObj.search = eventObj.target.checked;
+  handleCardPlayerEditAgeSearch({ _id, value }) {
+    
+    const validationObj = validationCardPlayersAge({
+      required: false,
+      value: this.cardPlayerEditFormDataObj[_id].ageObj.value,
+      alternativeText: this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText,
+      search: value
+    });
+    
+    this.cardPlayerEditFormDataObj[_id].ageObj.search = value;
+    this.cardPlayerEditFormDataObj[_id].ageObj.searchError = false;
+    this.cardPlayerEditFormDataObj[_id].ageObj.searchMessageID = '';
+    this.cardPlayerEditFormDataObj[_id].ageObj.searchNumberOfCharacters = validationObj.searchNumberOfCharacters;
+    
+    if (validationObj.searchErrorCodeArr.length > 0) {
+      this.cardPlayerEditFormDataObj[_id].ageObj.searchError = true;
+      this.cardPlayerEditFormDataObj[_id].ageObj.searchMessageID = validationObj.searchErrorCodeArr[0];
+    }
+    
   };
   
   

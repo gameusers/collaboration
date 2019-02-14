@@ -20,7 +20,7 @@ const validator = require('validator');
 
 
 /**
- * ステータス
+ * コメント
  * @param {boolean} required - Required
  * @param {string} value - 値
  */

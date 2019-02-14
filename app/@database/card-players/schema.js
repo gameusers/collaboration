@@ -44,7 +44,7 @@ const schema = mongoose.Schema({
     value: String,
     search: { type: Boolean, required: true },
   },
-  birthdayObj: {
+  ageObj: {
     value: Date,
     alternativeText: String,
     search: { type: Boolean, required: true },

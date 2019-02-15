@@ -20,19 +20,11 @@ const validator = require('validator');
 
 
 /**
- * 年齢（誕生日）
+ * ゲーム歴（始めた日）
  * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersAge = ({ required, value }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  // const minLength = 1;
-  // const maxLength = 20;
+const validationCardPlayersGamingExperience = ({ required, value }) => {
   
   
   // ---------------------------------------------
@@ -45,7 +37,7 @@ const validationCardPlayersAge = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: '4T_kAMjFU',
+    messageCode: 'fCsp5ULCG',
     error: false,
     errorCodeArr: []
   };
@@ -62,7 +54,7 @@ const validationCardPlayersAge = ({ required, value }) => {
   
   // 日付チェック
   if (!validator.isISO8601(data)) {
-    resultObj.errorCodeArr.push('bT9TGtVck');
+    resultObj.errorCodeArr.push('m63_G3fPy');
   }
   
   
@@ -102,4 +94,4 @@ const validationCardPlayersAge = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersAge;
+module.exports = validationCardPlayersGamingExperience;

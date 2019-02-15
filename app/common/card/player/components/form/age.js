@@ -31,6 +31,14 @@ import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersAge = require('../../../../../@database/card-players/validations/age');
+const validationCardPlayersAgeAlternativeText = require('../../../../../@database/card-players/validations/age-alternative-text');
+
+
+// ---------------------------------------------
 //   Moment Locale
 // ---------------------------------------------
 
@@ -98,30 +106,18 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   フォームの値
+    //   Validation
     // --------------------------------------------------
     
-    const formValue = ageObj.value ? ageObj.value : '';
-    const formValueError = ageObj.valueError ? ageObj.valueError : false;
-    const formValueMessageID = ageObj.valueMessageID ? ageObj.valueMessageID : '4T_kAMjFU';
-    const formValueNumberOfCharacters = ageObj.valueNumberOfCharacters ? ageObj.valueNumberOfCharacters : 0;
-    
-    const formAlternativeText = ageObj.alternativeText ? ageObj.alternativeText : '';
-    const formAlternativeTextError = ageObj.alternativeTextError ? ageObj.alternativeTextError : false;
-    const formAlternativeTextMessageID = ageObj.alternativeTextMessageID ? ageObj.alternativeTextMessageID : 'Qo5IGidJY';
-    const formAlternativeTextNumberOfCharacters = ageObj.alternativeTextNumberOfCharacters ? ageObj.alternativeTextNumberOfCharacters : 0;
-    
-    const formSearch = ageObj.search ? ageObj.search : '';
-    // const formSearchError = ageObj.searchError ? ageObj.searchError : false;
-    // const formSearchMessageID = ageObj.searchMessageID ? ageObj.searchMessageID : 'Qo5IGidJY';
-    // const formSearchNumberOfCharacters = ageObj.searchNumberOfCharacters ? ageObj.searchNumberOfCharacters : 0;
+    const validationValueObj = validationCardPlayersAge({ required: false, value: ageObj.value });
+    const validationAlternativeTextObj = validationCardPlayersAgeAlternativeText({ required: false, value: ageObj.alternativeText });
     
     
     // --------------------------------------------------
-    //   フォーマット
+    //   日付のフォーマット
     // --------------------------------------------------
     
-    const formattedDate = moment(formValue).format('YYYY-MM-DD');
+    const formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
     
     
     // --------------------------------------------------
@@ -160,8 +156,8 @@ export default injectIntl(class extends React.Component {
           type="date"
           value={formattedDate}
           onChange={(eventObj) => handleCardPlayerEditAge({ _id, value: eventObj.target.value })}
-          error={formValueError}
-          helperText={intl.formatMessage({ id: formValueMessageID }, { numberOfCharacters: formValueNumberOfCharacters })}
+          error={validationValueObj.error}
+          helperText={intl.formatMessage({ id: validationValueObj.messageCode }, { numberOfCharacters: validationValueObj.numberOfCharacters })}
           margin="normal"
           InputLabelProps={{
             shrink: true,
@@ -171,10 +167,10 @@ export default injectIntl(class extends React.Component {
         <StyledTextField
           id="ageAlternativeText"
           label="年齢（固定値）"
-          value={formAlternativeText}
+          value={validationAlternativeTextObj.value}
           onChange={(eventObj) => handleCardPlayerEditAgeAlternativeText({ _id, value: eventObj.target.value })}
-          error={formAlternativeTextError}
-          helperText={intl.formatMessage({ id: formAlternativeTextMessageID }, { numberOfCharacters: formAlternativeTextNumberOfCharacters })}
+          error={validationAlternativeTextObj.error}
+          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -185,7 +181,7 @@ export default injectIntl(class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={formSearch}
+                checked={ageObj.search}
                 onChange={(eventObj) => handleCardPlayerEditAgeSearch({ _id, value: eventObj.target.checked })}
               />
             }

@@ -412,7 +412,7 @@ class Store {
   @action.bound
   handleIDForm_id({ _id, value }) {
     
-    const validationObj = validation_id({ required: true, _id: value });
+    const validationObj = validation_id({ required: true, value });
     
     this.idForm_idObj[_id] = {
       value,

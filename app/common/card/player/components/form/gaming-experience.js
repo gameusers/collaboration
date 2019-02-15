@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import moment from 'moment';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -27,6 +28,14 @@ import moment from 'moment';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersGamingExperience = require('../../../../../@database/card-players/validations/gaming-experience');
+const validationCardPlayersGamingExperienceAlternativeText = require('../../../../../@database/card-players/validations/gaming-experience-alternative-text');
 
 
 // ---------------------------------------------
@@ -50,7 +59,6 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  // line-height: 1.6em;
 `;
 
 const StyledTextField = styled(TextField)`
@@ -72,7 +80,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -86,7 +94,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, alternativeText, search } = this.props;
+    const { stores, intl, _id, gamingExperienceObj } = this.props;
     
     const {
       
@@ -98,10 +106,18 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   フォーマット
+    //   Validation
     // --------------------------------------------------
     
-    const formattedDate = moment(value).format('YYYY-MM-DD');
+    const validationValueObj = validationCardPlayersGamingExperience({ required: false, value: gamingExperienceObj.value });
+    const validationAlternativeTextObj = validationCardPlayersGamingExperienceAlternativeText({ required: false, value: gamingExperienceObj.alternativeText });
+    
+    
+    // --------------------------------------------------
+    //   日付のフォーマット
+    // --------------------------------------------------
+    
+    const formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
     
     
     // --------------------------------------------------
@@ -139,8 +155,9 @@ export default class extends React.Component {
           label="ゲームを始めた日"
           type="date"
           value={formattedDate}
-          onChange={(event) => handleCardPlayerEditGamingExperience(event, _id)}
-          helperText="始めた日からゲーム歴が自動で計算されます"
+          onChange={(eventObj) => handleCardPlayerEditGamingExperience({ _id, value: eventObj.target.value })}
+          error={validationValueObj.error}
+          helperText={intl.formatMessage({ id: validationValueObj.messageCode }, { numberOfCharacters: validationValueObj.numberOfCharacters })}
           margin="normal"
           InputLabelProps={{
             shrink: true,
@@ -150,9 +167,10 @@ export default class extends React.Component {
         <StyledTextField
           id="gamingExperienceAlternativeText"
           label="ゲーム歴（固定値）"
-          value={alternativeText}
-          onChange={(event) => handleCardPlayerEditGamingExperienceAlternativeText(event, _id)}
-          helperText="例えば3年と入力すると、ずっと3年に固定されます"
+          value={validationAlternativeTextObj.value}
+          onChange={(eventObj) => handleCardPlayerEditGamingExperienceAlternativeText({ _id, value: eventObj.target.value })}
+          error={validationValueObj.error}
+          helperText={intl.formatMessage({ id: validationValueObj.messageCode }, { numberOfCharacters: validationValueObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -163,8 +181,8 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditGamingExperienceSearch(event, _id)}
+                checked={gamingExperienceObj.search}
+                onChange={(eventObj) => handleCardPlayerEditGamingExperienceSearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="ゲーム歴で検索可能にする"
@@ -176,4 +194,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

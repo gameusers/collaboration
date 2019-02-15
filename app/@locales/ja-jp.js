@@ -55,9 +55,30 @@ const ja_JP = {
   // /app/@database/card-players/validations/age.js
   '4T_kAMjFU': '誕生日から年齢が自動で計算されます',
   'bT9TGtVck': '誕生日が正しい日付ではありません',
+  
+  // /app/@database/card-players/validations/age-alternative-text.js
   'Qo5IGidJY': '例えば17歳と入力すると、ずっと17歳に固定されます',
   'v57dv3fYB': '年齢（固定値）は1文字以上、20文字以内で入力してください',
-  'vND6SH_5t': '年齢の検索可能チェックボックスが正しい値ではありません',
+  
+  // /app/@database/card-players/validations/sex.js
+  'SGHeQofcR': '',
+  'PH8jcw-VF': '性別に正しい値が選ばれていません',
+  
+  // /app/@database/card-players/validations/sex-alternative-text.js
+  '2FWoSprRW': '他の値を表示したい場合はこちらに入力してください',
+  'r6hrEshZH': '性別（その他）は1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/address.js
+  'GguXb4Xxo': '公開されるので気をつけましょう',
+  'xdAU7SgoO': '住所は1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/gaming-experience.js
+  'fCsp5ULCG': '始めた日からゲーム歴が自動で計算されます',
+  'm63_G3fPy': '始めた日が正しい日付ではありません',
+  
+  // /app/@database/card-players/validations/gaming-experience-alternative-text.js
+  'wfVpYnnq-': '例えば3年と入力すると、ずっと3年に固定されます',
+  'xmBouOVh7': 'ゲーム歴（固定値）は1文字以上、20文字以内で入力してください',
   
   
   

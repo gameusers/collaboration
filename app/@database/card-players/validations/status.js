@@ -45,6 +45,8 @@ const validationCardPlayersStatus = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
+    messageCode: 'RuqHo4jGS',
+    error: false,
     errorCodeArr: []
   };
   
@@ -66,6 +68,16 @@ const validationCardPlayersStatus = ({ required, value }) => {
   // 文字数チェック
   if (!validator.isLength(data, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('pV2b1h_Dg');
+  }
+  
+  
+  // ---------------------------------------------
+  //   Message Code & Error
+  // ---------------------------------------------
+  
+  if (resultObj.errorCodeArr.length > 0) {
+    resultObj.messageCode = resultObj.errorCodeArr[0];
+    resultObj.error = true;
   }
   
   

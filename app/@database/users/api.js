@@ -142,7 +142,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     //   Validation
     // --------------------------------------------------
     
-    const validationObj = validation_id({ required: true, _id: users_id });
+    const validationObj = validation_id({ required: true, value: users_id });
     
     if (validationObj.errorCodeArr.length > 0) {
       errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;

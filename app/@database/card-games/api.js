@@ -122,7 +122,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const { _id } = req.body;
-    const validationObj = validation_id({ required: true, _id });
+    const validationObj = validation_id({ required: true, value: _id });
     
     if (validationObj.error) {
       statusCode = 400;

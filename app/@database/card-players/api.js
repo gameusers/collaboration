@@ -122,7 +122,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const { _id } = req.body;
-    const validationObj = validation_id({ required: true, _id });
+    const validationObj = validation_id({ required: true, value: _id });
     
     if (validationObj.errorCodeArr.length > 0) {
       errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
@@ -274,7 +274,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
     // --------------------------------------------------
     
     const { _id } = req.body;
-    const validationObj = validation_id({ required: true, _id });
+    const validationObj = validation_id({ required: true, value: _id });
     
     if (validationObj.errorCodeArr.length > 0) {
       errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;

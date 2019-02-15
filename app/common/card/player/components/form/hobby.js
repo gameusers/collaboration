@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -36,6 +37,13 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 
 import IconAddCircle from '@material-ui/icons/AddCircle';
 import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersHobby = require('../../../../../@database/card-players/validations/hobby');
 
 
 
@@ -79,7 +87,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -98,7 +106,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr, search } = this.props;
+    const { stores, intl, _id, hobbiesObj, arr, search } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -112,8 +120,6 @@ export default class extends React.Component {
     } = stores.cardPlayer;
     
     
-    
-    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
@@ -124,6 +130,14 @@ export default class extends React.Component {
       buttonDisabled = buttonDisabledObj[`${_id}-editFormHobby`];
     }
     
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    const validationObj = validationCardPlayersHobby({ required: false, valueArr: hobbiesObj.valueArr });
+    
+    // const validationObj = validationCardPlayersHobby({ required: false, valueArr: 0 });
     
     
     
@@ -176,6 +190,12 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
+    console.log(`
+      ----- validationObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
     // console.log(chalk`
     //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
     // `);
@@ -225,4 +245,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

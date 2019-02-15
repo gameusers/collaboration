@@ -20,19 +20,19 @@ const validator = require('validator');
 
 
 /**
- * 年齢（誕生日）
+ * 年齢（固定値）
  * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersAge = ({ required, value }) => {
+const validationCardPlayersSexAlternativeText = ({ required, value }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  // const minLength = 1;
-  // const maxLength = 20;
+  const minLength = 1;
+  const maxLength = 20;
   
   
   // ---------------------------------------------
@@ -45,7 +45,7 @@ const validationCardPlayersAge = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: '4T_kAMjFU',
+    messageCode: '2FWoSprRW',
     error: false,
     errorCodeArr: []
   };
@@ -60,9 +60,9 @@ const validationCardPlayersAge = ({ required, value }) => {
     return resultObj;
   }
   
-  // 日付チェック
-  if (!validator.isISO8601(data)) {
-    resultObj.errorCodeArr.push('bT9TGtVck');
+  // 文字数チェック
+  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+    resultObj.errorCodeArr.push('r6hrEshZH');
   }
   
   
@@ -102,4 +102,4 @@ const validationCardPlayersAge = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersAge;
+module.exports = validationCardPlayersSexAlternativeText;

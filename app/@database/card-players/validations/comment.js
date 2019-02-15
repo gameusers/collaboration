@@ -45,6 +45,8 @@ const validationCardPlayersComment = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
+    messageCode: 'w7TbcLAdl',
+    error: false,
     errorCodeArr: []
   };
   
@@ -66,6 +68,16 @@ const validationCardPlayersComment = ({ required, value }) => {
   // 文字数チェック
   if (!validator.isLength(data, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('721_WCmbT');
+  }
+  
+  
+  // ---------------------------------------------
+  //   Message Code & Error
+  // ---------------------------------------------
+  
+  if (resultObj.errorCodeArr.length > 0) {
+    resultObj.messageCode = resultObj.errorCodeArr[0];
+    resultObj.error = true;
   }
   
   

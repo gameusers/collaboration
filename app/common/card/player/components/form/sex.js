@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -29,6 +30,14 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersSex = require('../../../../../@database/card-players/validations/sex');
+const validationCardPlayersSexAlternativeText = require('../../../../../@database/card-players/validations/sex-alternative-text');
 
 
 
@@ -70,7 +79,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -84,7 +93,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, alternativeText, search } = this.props;
+    const { stores, intl, _id, sexObj } = this.props;
     
     const {
       
@@ -96,8 +105,11 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   フォーマット
+    //   Validation
     // --------------------------------------------------
+    
+    const validationValueObj = validationCardPlayersSex({ required: false, value: sexObj.value });
+    const validationAlternativeTextObj = validationCardPlayersSexAlternativeText({ required: false, value: sexObj.alternativeText });
     
     
     
@@ -126,6 +138,7 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
+        
         <Heading>性別</Heading>
         
         <Description>性別を選択してください。選択すると性別が表示されます。選択肢以外の値を入力したい場合は、その他のフォームに入力してください。</Description>
@@ -134,13 +147,14 @@ export default class extends React.Component {
         <SelectBox>
           <FormControl>
             <Select
-              value={value}
-              onChange={(event) => handleCardPlayerEditSex(event, _id)}
+              value={validationValueObj.value}
+              onChange={(eventObj) => handleCardPlayerEditSex({ _id, value: eventObj.target.value })}
               inputProps={{
                 name: 'sex',
                 id: 'sex',
               }}
             >
+              <MenuItem value={''}></MenuItem>
               <MenuItem value={'male'}>男性</MenuItem>
               <MenuItem value={'female'}>女性</MenuItem>
             </Select>
@@ -150,10 +164,11 @@ export default class extends React.Component {
         
         <StyledTextField
           id="sexAlternativeText"
-          label="その他"
-          value={alternativeText}
-          onChange={(event) => handleCardPlayerEditSexAlternativeText(event, _id)}
-          helperText="他の値を表示したい場合はこちらに入力してください"
+          label="性別（その他）"
+          value={validationAlternativeTextObj.value}
+          onChange={(eventObj) => handleCardPlayerEditSexAlternativeText({ _id, value: eventObj.target.value })}
+          error={validationAlternativeTextObj.error}
+          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -165,8 +180,8 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditSexSearch(event, _id)}
+                checked={sexObj.earch}
+                onChange={(eventObj) => handleCardPlayerEditSexSearch({ _id, value: eventObj.target.value })}
               />
             }
             label="性別で検索可能にする"
@@ -179,4 +194,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

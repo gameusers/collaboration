@@ -346,9 +346,7 @@ export default class extends React.Component {
           <Box>
             <Sex
               _id={cardPlayers_id}
-              value={sexObj.value}
-              alternativeText={sexObj.alternativeText}
-              search={sexObj.search}
+              sexObj={sexObj}
             />
           </Box>
           
@@ -357,8 +355,7 @@ export default class extends React.Component {
           <Box>
             <Address
               _id={cardPlayers_id}
-              alternativeText={addressObj.alternativeText}
-              search={addressObj.search}
+              addressObj={addressObj}
             />
           </Box>
           
@@ -367,9 +364,10 @@ export default class extends React.Component {
           <Box>
             <GamingExperience
               _id={cardPlayers_id}
-              value={gamingExperienceObj.value}
-              alternativeText={gamingExperienceObj.alternativeText}
-              search={gamingExperienceObj.search}
+              gamingExperienceObj={gamingExperienceObj}
+              // value={gamingExperienceObj.value}
+              // alternativeText={gamingExperienceObj.alternativeText}
+              // search={gamingExperienceObj.search}
             />
           </Box>
           
@@ -378,6 +376,7 @@ export default class extends React.Component {
           <Box>
             <Hobby
               _id={cardPlayers_id}
+              hobbiesObj={hobbiesObj}
               arr={hobbiesObj.valueArr}
               search={hobbiesObj.search}
             />

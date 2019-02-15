@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -26,6 +27,13 @@ import styled from 'styled-components';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersAddressAlternativeText = require('../../../../../@database/card-players/validations/address-alternative-text');
 
 
 
@@ -42,7 +50,6 @@ const Heading = styled.div`
 
 const Description = styled.p`
   font-size: 14px;
-  // line-height: 1.6em;
 `;
 
 const StyledTextField = styled(TextField)`
@@ -64,7 +71,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -78,7 +85,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, alternativeText, search } = this.props;
+    const { stores, intl, _id, addressObj } = this.props;
     
     const {
       
@@ -89,7 +96,14 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   Validation
+    // --------------------------------------------------
+    
+    const validationAlternativeTextObj = validationCardPlayersAddressAlternativeText({ required: false, value: addressObj.alternativeText });
+    
+    
+    // --------------------------------------------------
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -113,6 +127,7 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
+        
         <Heading>住所</Heading>
         
         <Description>入力すると住所が表示されます。公開される情報なので、あまり詳しい情報は載せないようにしましょう。</Description>
@@ -121,9 +136,10 @@ export default class extends React.Component {
         <StyledTextField
           id="addressAlternativeText"
           label="住所"
-          value={alternativeText}
-          onChange={(event) => handleCardPlayerEditAddressAlternativeText(event, _id)}
-          helperText=""
+          value={validationAlternativeTextObj.value}
+          onChange={(eventObj) => handleCardPlayerEditAddressAlternativeText({ _id, value: eventObj.target.value })}
+          error={validationAlternativeTextObj.error}
+          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -135,8 +151,8 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditAddressSearch(event, _id)}
+                checked={addressObj.search}
+                onChange={(eventObj) => handleCardPlayerEditAddressSearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="住所で検索可能にする"
@@ -149,4 +165,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

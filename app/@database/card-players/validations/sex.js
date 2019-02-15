@@ -20,11 +20,11 @@ const validator = require('validator');
 
 
 /**
- * 年齢（誕生日）
+ * 性別
  * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersAge = ({ required, value }) => {
+const validationCardPlayersSex = ({ required, value }) => {
   
   
   // ---------------------------------------------
@@ -45,7 +45,7 @@ const validationCardPlayersAge = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: '4T_kAMjFU',
+    messageCode: 'SGHeQofcR',
     error: false,
     errorCodeArr: []
   };
@@ -60,9 +60,9 @@ const validationCardPlayersAge = ({ required, value }) => {
     return resultObj;
   }
   
-  // 日付チェック
-  if (!validator.isISO8601(data)) {
-    resultObj.errorCodeArr.push('bT9TGtVck');
+  // 適切な値が選択されているかチェック
+  if (!validator.isIn(value, ['male', 'female'])) {
+    resultObj.errorCodeArr.push('PH8jcw-VF');
   }
   
   
@@ -102,4 +102,4 @@ const validationCardPlayersAge = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersAge;
+module.exports = validationCardPlayersSex;

@@ -24,7 +24,7 @@ const validator = require('validator');
  * @param {boolean} required - Required
  * @param {string} _id - _id
  */
-const validation_id = ({ required, _id }) => {
+const validation_id = ({ required, value }) => {
   
   
   // ---------------------------------------------
@@ -39,11 +39,11 @@ const validation_id = ({ required, _id }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = String(_id);
-  const numberOfCharacters = value ? value.length : 0;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
-    value,
+    value: data,
     numberOfCharacters,
     errorCodeArr: []
   };
@@ -54,22 +54,22 @@ const validation_id = ({ required, _id }) => {
   // ---------------------------------------------
   
   // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(value)) {
+  if (!required && validator.isEmpty(data)) {
     return resultObj;
   }
   
   // 存在チェック
-  if (validator.isEmpty(value)) {
+  if (validator.isEmpty(data)) {
     resultObj.errorCodeArr.push('pE9jBkXXP');
   }
   
   // 英数と -_ のみ
-  if (value.match(/^[\w\-]+$/) === null) {
+  if (data.match(/^[\w\-]+$/) === null) {
     resultObj.errorCodeArr.push('8oyLhJOlh');
   }
   
   // 文字数チェック
-  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
+  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
     resultObj.errorCodeArr.push('N48T3XvnC');
   }
   

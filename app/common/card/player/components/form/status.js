@@ -25,6 +25,15 @@ import { injectIntl } from 'react-intl';
 // ---------------------------------------------
 
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersStatus = require('../../../../../@database/card-players/validations/status');
 
 
 
@@ -38,6 +47,10 @@ const StyledTextField = styled(TextField)`
   && {
     margin-right: 16px;
   }
+`;
+
+const SearchBox = styled.div`
+  margin: 0;
 `;
 
 
@@ -68,18 +81,16 @@ export default injectIntl(class extends React.Component {
     const {
       
       handleCardPlayerEditStatus,
+      handleCardPlayerEditStatusSearch
       
     } = stores.cardPlayer;
     
     
     // --------------------------------------------------
-    //   フォームの値
+    //   Validation
     // --------------------------------------------------
     
-    const formValue = statusObj.value ? statusObj.value : '';
-    const formError = statusObj.error ? statusObj.error : false;
-    const formMessageID = statusObj.messageID ? statusObj.messageID : 'RuqHo4jGS';
-    const formNumberOfCharacters = statusObj.numberOfCharacters ? statusObj.numberOfCharacters : 0;
+    const validationObj = validationCardPlayersStatus({ required: true, value: statusObj.value });
     
     
     // --------------------------------------------------
@@ -87,18 +98,34 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <StyledTextField
-        id="status"
-        label="ステータス"
-        value={formValue}
-        onChange={(eventObj) => handleCardPlayerEditStatus({ _id, value: eventObj.target.value })}
-        error={formError}
-        helperText={intl.formatMessage({ id: formMessageID }, { numberOfCharacters: formNumberOfCharacters })}
-        margin="normal"
-        inputProps={{
-          maxLength: 20,
-        }}
-      />
+      <React.Fragment>
+        
+        <StyledTextField
+          id="status"
+          label="ステータス"
+          value={validationObj.value}
+          onChange={(eventObj) => handleCardPlayerEditStatus({ _id, value: eventObj.target.value })}
+          error={validationObj.error}
+          helperText={intl.formatMessage({ id: validationObj.messageCode }, { numberOfCharacters: validationObj.numberOfCharacters })}
+          margin="normal"
+          inputProps={{
+            maxLength: 20,
+          }}
+        />
+        
+        <SearchBox>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={statusObj.search}
+                onChange={(eventObj) => handleCardPlayerEditStatusSearch({ _id, value: eventObj.target.checked })}
+              />
+            }
+            label="ステータスで検索可能にする"
+          />
+        </SearchBox>
+        
+      </React.Fragment>
     );
     
   }

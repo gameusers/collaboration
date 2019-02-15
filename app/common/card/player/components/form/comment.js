@@ -21,6 +21,21 @@ import TextareaAutosize from 'react-autosize-textarea';
 import { injectIntl } from 'react-intl';
 
 
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersComment = require('../../../../../@database/card-players/validations/comment');
+
+
 
 
 // --------------------------------------------------
@@ -39,7 +54,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
     max-width: 600px;
     border-radius: 4px;
     box-sizing: border-box;
-    margin: 6px 0 10px 0;
+    margin: 6px 0 0 0;
     padding: 8px 12px;
     line-height: 1.8;
     
@@ -53,6 +68,10 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
       resize: none;
     }
   }
+`;
+
+const SearchBox = styled.div`
+  margin: 0 0 10px 0;
 `;
 
 
@@ -83,18 +102,16 @@ export default injectIntl(class extends React.Component {
     const {
       
       handleCardPlayerEditComment,
+      handleCardPlayerEditCommentSearch
       
     } = stores.cardPlayer;
     
     
     // --------------------------------------------------
-    //   フォームの値
+    //   Validation
     // --------------------------------------------------
     
-    const formValue = commentObj.value ? commentObj.value : '';
-    // const formError = commentObj.error ? commentObj.error : false;
-    // const formMessageID = commentObj.messageID ? commentObj.messageID : 'w7TbcLAdl';
-    // const formNumberOfCharacters = commentObj.numberOfCharacters ? commentObj.numberOfCharacters : 0;
+    const validationObj = validationCardPlayersComment({ required: true, value: commentObj.value });
     
     
     // --------------------------------------------------
@@ -103,15 +120,31 @@ export default injectIntl(class extends React.Component {
     
     return (
       <React.Fragment>
+        
         <Heading>コメント</Heading>
+        
         
         <StyledTextareaAutosize
           rows={5}
           placeholder="コメントを入力してください"
-          value={formValue}
+          value={validationObj.value}
           onChange={(eventObj) => handleCardPlayerEditComment({ _id, value: eventObj.target.value })}
           maxLength={3000}
         />
+        
+        
+        <SearchBox>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={commentObj.search}
+                onChange={(eventObj) => handleCardPlayerEditCommentSearch({ _id, value: eventObj.target.checked })}
+              />
+            }
+            label="コメントで検索可能にする"
+          />
+        </SearchBox>
+        
       </React.Fragment>
     );
     

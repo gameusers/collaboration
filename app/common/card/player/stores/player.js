@@ -725,22 +725,21 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditName({ _id, value }) {
-    
-    const validationObj = validationCardPlayersName({ required: true, value });
-    
-    this.cardPlayerEditFormDataObj[_id].nameObj = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.cardPlayerEditFormDataObj[_id].nameObj.error = true;
-      this.cardPlayerEditFormDataObj[_id].nameObj.messageID = validationObj.errorCodeArr[0];
-    }
-    
+    this.cardPlayerEditFormDataObj[_id].nameObj.value = value;
   };
+  
+  
+  /**
+   * ハンドルネームの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditNameSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].nameObj.search = value;
+  };
+  
+  
   
   
   /**
@@ -750,21 +749,18 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditStatus({ _id, value }) {
-    
-    const validationObj = validationCardPlayersStatus({ required: true, value });
-    
-    this.cardPlayerEditFormDataObj[_id].statusObj = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.cardPlayerEditFormDataObj[_id].statusObj.error = true;
-      this.cardPlayerEditFormDataObj[_id].statusObj.messageID = validationObj.errorCodeArr[0];
-    }
-    
+    this.cardPlayerEditFormDataObj[_id].statusObj.value = value;
+  };
+  
+  
+  /**
+   * ステータスの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditStatusSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].statusObj.search = value;
   };
   
   
@@ -777,21 +773,18 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditComment({ _id, value }) {
-    
-    const validationObj = validationCardPlayersComment({ required: false, value });
-    
-    this.cardPlayerEditFormDataObj[_id].commentObj = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.cardPlayerEditFormDataObj[_id].commentObj.error = true;
-      this.cardPlayerEditFormDataObj[_id].commentObj.messageID = validationObj.errorCodeArr[0];
-    }
-    
+    this.cardPlayerEditFormDataObj[_id].commentObj.value = value;
+  };
+  
+  
+  /**
+   * コメントの検索チェックボックスを変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditCommentSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].commentObj.search = value;
   };
   
   
@@ -804,23 +797,8 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditAge({ _id, value }) {
-    // console.log(value);
-    const validationObj = validationCardPlayersAge({
-      required: false,
-      value,
-      alternativeText: this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText,
-      search: this.cardPlayerEditFormDataObj[_id].ageObj.search
-    });
     
     this.cardPlayerEditFormDataObj[_id].ageObj.value = value;
-    this.cardPlayerEditFormDataObj[_id].ageObj.valueError = false;
-    this.cardPlayerEditFormDataObj[_id].ageObj.valueMessageID = '';
-    this.cardPlayerEditFormDataObj[_id].ageObj.valueNumberOfCharacters = validationObj.valueNumberOfCharacters;
-    
-    if (validationObj.valueErrorCodeArr.length > 0) {
-      this.cardPlayerEditFormDataObj[_id].ageObj.valueError = true;
-      this.cardPlayerEditFormDataObj[_id].ageObj.valueMessageID = validationObj.valueErrorCodeArr[0];
-    }
     
     // 年齢（固定値）をクリア
     this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText = '';
@@ -836,25 +814,10 @@ class Store {
   @action.bound
   handleCardPlayerEditAgeAlternativeText({ _id, value }) {
     
-    const validationObj = validationCardPlayersAge({
-      required: false,
-      value: this.cardPlayerEditFormDataObj[_id].ageObj.value,
-      alternativeText: value,
-      search: this.cardPlayerEditFormDataObj[_id].ageObj.search
-    });
-    
     this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText = value;
-    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextError = false;
-    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextMessageID = '';
-    this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextNumberOfCharacters = validationObj.alternativeTextNumberOfCharacters;
-    
-    if (validationObj.alternativeTextErrorCodeArr.length > 0) {
-      this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextError = true;
-      this.cardPlayerEditFormDataObj[_id].ageObj.alternativeTextMessageID = validationObj.alternativeTextErrorCodeArr[0];
-    }
     
     // 誕生日をクリア
-    this.cardPlayerEditFormDataObj[_id].ageObj.value = null;
+    this.cardPlayerEditFormDataObj[_id].ageObj.value = '';
     
   };
   
@@ -866,24 +829,7 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditAgeSearch({ _id, value }) {
-    
-    const validationObj = validationCardPlayersAge({
-      required: false,
-      value: this.cardPlayerEditFormDataObj[_id].ageObj.value,
-      alternativeText: this.cardPlayerEditFormDataObj[_id].ageObj.alternativeText,
-      search: value
-    });
-    
     this.cardPlayerEditFormDataObj[_id].ageObj.search = value;
-    this.cardPlayerEditFormDataObj[_id].ageObj.searchError = false;
-    this.cardPlayerEditFormDataObj[_id].ageObj.searchMessageID = '';
-    this.cardPlayerEditFormDataObj[_id].ageObj.searchNumberOfCharacters = validationObj.searchNumberOfCharacters;
-    
-    if (validationObj.searchErrorCodeArr.length > 0) {
-      this.cardPlayerEditFormDataObj[_id].ageObj.searchError = true;
-      this.cardPlayerEditFormDataObj[_id].ageObj.searchMessageID = validationObj.searchErrorCodeArr[0];
-    }
-    
   };
   
   
@@ -891,58 +837,68 @@ class Store {
   
   /**
    * 性別を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditSex(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.value = eventObj.target.value;
+  handleCardPlayerEditSex({ _id, value }) {
+    
+    this.cardPlayerEditFormDataObj[_id].sexObj.value = value;
+    
+    // 性別（その他）をクリア
+    this.cardPlayerEditFormDataObj[_id].sexObj.alternativeText = '';
+    
   };
   
   
   /**
-   * 性別（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
+   * 性別（その他）を変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditSexAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditSexAlternativeText({ _id, value }) {
+    
+    this.cardPlayerEditFormDataObj[_id].sexObj.alternativeText = value;
+    
+    // 性別をクリア
+    this.cardPlayerEditFormDataObj[_id].sexObj.value = '';
+    
   };
   
   
   /**
    * 性別の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditSexSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.search = eventObj.target.checked;
+  handleCardPlayerEditSexSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].sexObj.search = value;
   };
   
   
   
   
   /**
-   * 住所（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
+   * 住所（その他）を変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditAddressAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].addressObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditAddressAlternativeText({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].addressObj.alternativeText = value;
   };
   
   
   /**
    * 住所の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditAddressSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].addressObj.search = eventObj.target.checked;
+  handleCardPlayerEditAddressSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].addressObj.search = value;
   };
   
   
@@ -950,34 +906,44 @@ class Store {
   
   /**
    * ゲーム歴（ゲームを始めた日）を変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditGamingExperience(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.value = eventObj.target.value;
+  handleCardPlayerEditGamingExperience({ _id, value }) {
+    
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.value = value;
+    
+    // ゲーム歴（固定値）をクリア
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.alternativeText = '';
+    
   };
   
   
   /**
-   * ゲーム歴（alternativeText）を変更する
-   * @param {Object} eventObj - イベント
+   * ゲーム歴（固定値）を変更する
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditGamingExperienceAlternativeText(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.alternativeText = eventObj.target.value;
+  handleCardPlayerEditGamingExperienceAlternativeText({ _id, value }) {
+    
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.alternativeText = value;
+    
+    // ゲーム歴をクリア
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.value = '';
+    
   };
   
   
   /**
    * ゲーム歴の検索チェックボックスを変更する
-   * @param {Object} eventObj - イベント
    * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
    */
   @action.bound
-  handleCardPlayerEditGamingExperienceSearch(eventObj, _id) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.search = eventObj.target.checked;
+  handleCardPlayerEditGamingExperienceSearch({ _id, value }) {
+    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.search = value;
   };
   
   

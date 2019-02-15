@@ -25,6 +25,15 @@ import { injectIntl } from 'react-intl';
 // ---------------------------------------------
 
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersName = require('../../../../../@database/card-players/validations/name');
 
 
 
@@ -38,6 +47,10 @@ const StyledTextField = styled(TextField)`
   && {
     margin-right: 16px;
   }
+`;
+
+const SearchBox = styled.div`
+  margin: 0;
 `;
 
 
@@ -64,23 +77,20 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const { stores, intl, _id, nameObj } = this.props;
-    // const { formatMessage } = this.props.intl;
     
     const {
       
       handleCardPlayerEditName,
+      handleCardPlayerEditNameSearch
       
     } = stores.cardPlayer;
     
     
     // --------------------------------------------------
-    //   フォームの値
+    //   Validation
     // --------------------------------------------------
     
-    const formValue = nameObj.value ? nameObj.value : '';
-    const formError = nameObj.error ? nameObj.error : false;
-    const formMessageID = nameObj.messageID ? nameObj.messageID : 'l1Nr3Di-O';
-    const formNumberOfCharacters = nameObj.numberOfCharacters ? nameObj.numberOfCharacters : 0;
+    const validationObj = validationCardPlayersName({ required: true, value: nameObj.value });
     
     
     // --------------------------------------------------
@@ -88,16 +98,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- nameObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(nameObj)), { colors: true, depth: null })}\n
+    //   ----- validationObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(chalk`
-    //   formValue: {green ${formValue}}
-    //   formError: {green ${formError}}
-    //   formMessageID: {green ${formMessageID}}
-    //   formNumberOfCharacters: {green ${formNumberOfCharacters}}
+    //   _id: {green ${_id}}
     // `);
     
     
@@ -106,18 +113,34 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <StyledTextField
-        id="name"
-        label="ハンドルネーム"
-        value={formValue}
-        onChange={(eventObj) => handleCardPlayerEditName({ _id, value: eventObj.target.value })}
-        error={formError}
-        helperText={intl.formatMessage({ id: formMessageID }, { numberOfCharacters: formNumberOfCharacters })}
-        margin="normal"
-        inputProps={{
-          maxLength: 20,
-        }}
-      />
+      <React.Fragment>
+        
+        <StyledTextField
+          id="name"
+          label="ハンドルネーム"
+          value={validationObj.value}
+          onChange={(eventObj) => handleCardPlayerEditName({ _id, value: eventObj.target.value })}
+          error={validationObj.error}
+          helperText={intl.formatMessage({ id: validationObj.messageCode }, { numberOfCharacters: validationObj.numberOfCharacters })}
+          margin="normal"
+          inputProps={{
+            maxLength: 20,
+          }}
+        />
+        
+        <SearchBox>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={nameObj.search}
+                onChange={(eventObj) => handleCardPlayerEditNameSearch({ _id, value: eventObj.target.checked })}
+              />
+            }
+            label="ハンドルネームで検索可能にする"
+          />
+        </SearchBox>
+        
+      </React.Fragment>
     );
     
   }

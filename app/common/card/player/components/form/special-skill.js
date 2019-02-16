@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -36,6 +37,13 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 
 import IconAddCircle from '@material-ui/icons/AddCircle';
 import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersSpecialSkill = require('../../../../../@database/card-players/validations/special-skill');
 
 
 
@@ -79,15 +87,10 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
-  }
-  
-  
-  componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editFormSpecialSkill`, false);
   }
   
   
@@ -98,14 +101,12 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr, search } = this.props;
-    
-    const { buttonDisabledObj } = stores.layout;
+    const { stores, intl, _id, specialSkillsObj } = this.props;
     
     const {
       
-      handleCardPlayerEditFormSpecialSkillTextFieldCountIncrement,
-      handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement,
+      handleCardPlayerAddSpecialSkillForm,
+      handleCardPlayerRemoveSpecialSkillForm,
       handleCardPlayerEditSpecialSkill,
       handleCardPlayerEditSpecialSkillSearch
       
@@ -115,14 +116,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Button - Disabled
+    //   Validation
     // --------------------------------------------------
     
-    let buttonDisabled = true;
-    
-    if (`${_id}-editFormSpecialSkill` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-editFormSpecialSkill`];
-    }
+    const validationObj = validationCardPlayersSpecialSkill({ required: false, valueArr: specialSkillsObj.valueArr });
     
     
     
@@ -133,16 +130,16 @@ export default class extends React.Component {
     
     const componentsArr = [];
     
-    for (let i = 0; i < arr.length; i++) {
+    for (const [index, value] of specialSkillsObj.valueArr.entries()) {
       
       componentsArr.push(
         <StyledTextField
-          id={`specialSkill-${i}`}
-          value={arr[i]}
-          onChange={(event) => handleCardPlayerEditSpecialSkill(event, _id, i)}
+          id={`specialSkill-${index}`}
+          value={value}
+          onChange={(eventObj) => handleCardPlayerEditSpecialSkill({ _id, index, value: eventObj.target.value })}
           margin="dense"
           variant="outlined"
-          key={i}
+          key={index}
           inputProps={{
             maxLength: 20,
           }}
@@ -150,8 +147,7 @@ export default class extends React.Component {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => handleCardPlayerEditFormSpecialSkillTextFieldCountDecrement(_id, i)}
-                  disabled={buttonDisabled}
+                  onClick={() => handleCardPlayerRemoveSpecialSkillForm({ _id, index })}
                 >
                   <IconRemoveCircle />
                 </IconButton>
@@ -163,16 +159,45 @@ export default class extends React.Component {
       
     }
     
+    // for (let i = 0; i < arr.length; i++) {
+      
+    //   componentsArr.push(
+    //     <StyledTextField
+    //       id={`specialSkill-${i}`}
+    //       value={arr[i]}
+    //       onChange={(event) => handleCardPlayerEditSpecialSkill(event, _id, i)}
+    //       margin="dense"
+    //       variant="outlined"
+    //       key={i}
+    //       inputProps={{
+    //         maxLength: 20,
+    //       }}
+    //       InputProps={{
+    //         endAdornment: (
+    //           <InputAdornment position="end">
+    //             <IconButton
+    //               onClick={() => handleCardPlayerRemoveSpecialSkillForm(_id, i)}
+    //             >
+    //               <IconRemoveCircle />
+    //             </IconButton>
+    //           </InputAdornment>
+    //         ),
+    //       }}
+    //     />
+    //   );
+      
+    // }
+    
     
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(arr, { colors: true, depth: null })}\n
+    //   ----- validationObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -196,11 +221,13 @@ export default class extends React.Component {
         
         <TextFieldBox>
           
+          {/* フォーム */}
           {componentsArr}
           
+          
+          {/* フォーム追加ボタン */}
           <IconButton
-            onClick={() => handleCardPlayerEditFormSpecialSkillTextFieldCountIncrement(_id)}
-            disabled={buttonDisabled}
+            onClick={() => handleCardPlayerAddSpecialSkillForm({ _id })}
           >
             <IconAddCircle />
           </IconButton>
@@ -208,12 +235,13 @@ export default class extends React.Component {
         </TextFieldBox>
         
         
+        {/* 検索可能チェックボックス */}
         <SearchBox>
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditSpecialSkillSearch(event, _id)}
+                checked={specialSkillsObj.search}
+                onChange={(eventObj) => handleCardPlayerEditSpecialSkillSearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="特技で検索可能にする"
@@ -225,4 +253,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

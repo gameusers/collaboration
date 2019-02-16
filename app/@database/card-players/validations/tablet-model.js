@@ -20,11 +20,11 @@ const validator = require('validator');
 
 
 /**
- * 年齢（固定値）
+ * タブレット（モデル）
  * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
+const validationCardPlayersTabletModel = ({ required, value }) => {
   
   
   // ---------------------------------------------
@@ -32,7 +32,7 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 20;
+  const maxLength = 50;
   
   
   // ---------------------------------------------
@@ -46,7 +46,7 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Qo5IGidJY',
+    messageCode: 'KGJvD0Fj3',
     error: false,
     errorCodeArr: []
   };
@@ -63,7 +63,7 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     if (required && validator.isEmpty(data)) {
       
       messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('fV6A5pFoX');
+      resultObj.errorCodeArr.push('B2vH6jtI5');
       
     // Not Required で入力値が空の場合、処理停止
     } else if (!required && validator.isEmpty(data)) {
@@ -74,8 +74,8 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('xdAU7SgoO');
-      resultObj.errorCodeArr.push('SYYj39V8F');
+      messageCodeArr.unshift('yhgyXHqZu');
+      resultObj.errorCodeArr.push('Lp7275u8f');
     }
     
     
@@ -87,7 +87,7 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('uGT4FgV7s');
+    resultObj.errorCodeArr.push('kKkY4fgq1');
     
     
   } finally {
@@ -126,4 +126,4 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersAgeAlternativeText;
+module.exports = validationCardPlayersTabletModel;

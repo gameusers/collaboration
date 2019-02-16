@@ -20,11 +20,11 @@ const validator = require('validator');
 
 
 /**
- * 年齢（固定値）
+ * 特技
  * @param {boolean} required - Required
- * @param {string} value - 値
+ * @param {string} valueArr - 配列
  */
-const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
+const validationCardPlayersSpecialSkill = ({ required, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -39,14 +39,11 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
-  const numberOfCharacters = data ? data.length : 0;
   const messageCodeArr = [];
   
   let resultObj = {
-    value: data,
-    numberOfCharacters,
-    messageCode: 'Qo5IGidJY',
+    valueArr: [],
+    messageCode: 'C5lyqOFQz',
     error: false,
     errorCodeArr: []
   };
@@ -59,23 +56,33 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('fV6A5pFoX');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
-      return resultObj;
-      
+    // 配列ではない
+    if (!Array.isArray(valueArr)) {
+      messageCodeArr.unshift('c9T-0LONy');
+      resultObj.errorCodeArr.push('60QC7yyw5');
     }
     
-    // 文字数チェック
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('xdAU7SgoO');
-      resultObj.errorCodeArr.push('SYYj39V8F');
+    // Not Required で配列が空の場合、処理停止
+    if (!required && valueArr.length === 0) {
+      return resultObj;
+    }
+    
+    
+    for (let value of valueArr.values()) {
+      
+      // 空でない
+      if (!validator.isEmpty(value)) {
+        
+        // 文字数エラー
+        if (!validator.isLength(value, { min: minLength, max: maxLength })) {
+          messageCodeArr.unshift('xdAU7SgoO');
+          resultObj.errorCodeArr.push('rYiM5Wsge');
+        } else {
+          resultObj.valueArr.push(value);
+        }
+        
+      }
+      
     }
     
     
@@ -87,7 +94,7 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('uGT4FgV7s');
+    resultObj.errorCodeArr.push('lFm4b8pPX');
     
     
   } finally {
@@ -126,4 +133,4 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersAgeAlternativeText;
+module.exports = validationCardPlayersSpecialSkill;

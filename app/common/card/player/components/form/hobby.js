@@ -94,11 +94,6 @@ export default injectIntl(class extends React.Component {
   }
   
   
-  componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editFormHobby`, false);
-  }
-  
-  
   render() {
     
     
@@ -106,29 +101,18 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, hobbiesObj, arr, search } = this.props;
-    
-    const { buttonDisabledObj } = stores.layout;
+    const { stores, intl, _id, hobbiesObj } = this.props;
     
     const {
       
-      handleCardPlayerEditFormHobbyTextFieldCountIncrement,
-      handleCardPlayerEditFormHobbyTextFieldCountDecrement,
+      handleCardPlayerAddHobbyForm,
+      handleCardPlayerRemoveHobbyForm,
       handleCardPlayerEditHobby,
       handleCardPlayerEditHobbySearch
       
     } = stores.cardPlayer;
     
     
-    // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    let buttonDisabled = true;
-    
-    if (`${_id}-editFormHobby` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-editFormHobby`];
-    }
     
     
     // --------------------------------------------------
@@ -137,7 +121,8 @@ export default injectIntl(class extends React.Component {
     
     const validationObj = validationCardPlayersHobby({ required: false, valueArr: hobbiesObj.valueArr });
     
-    // const validationObj = validationCardPlayersHobby({ required: false, valueArr: 0 });
+    // const validationObj = validationCardPlayersHobby({ required: false, valueArr: ['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] });
+    
     
     
     
@@ -147,16 +132,17 @@ export default injectIntl(class extends React.Component {
     
     const componentsArr = [];
     
-    for (let i = 0; i < arr.length; i++) {
+    for (const [index, value] of hobbiesObj.valueArr.entries()) {
+      // console.log(index, value);
       
       componentsArr.push(
         <StyledTextField
-          id={`hobby-${i}`}
-          value={arr[i]}
-          onChange={(event) => handleCardPlayerEditHobby(event, _id, i)}
+          id={`hobby-${index}`}
+          value={value}
+          onChange={(eventObj) => handleCardPlayerEditHobby({ _id, index, value: eventObj.target.value })}
           margin="dense"
           variant="outlined"
-          key={i}
+          key={index}
           inputProps={{
             maxLength: 20,
           }}
@@ -164,8 +150,7 @@ export default injectIntl(class extends React.Component {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => handleCardPlayerEditFormHobbyTextFieldCountDecrement(_id, i)}
-                  disabled={buttonDisabled}
+                  onClick={() => handleCardPlayerRemoveHobbyForm({ _id, index })}
                 >
                   <IconRemoveCircle />
                 </IconButton>
@@ -185,16 +170,10 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(arr, { colors: true, depth: null })}\n
+    //   ----- validationObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    console.log(`
-      ----- validationObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
     // console.log(chalk`
     //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
@@ -216,11 +195,13 @@ export default injectIntl(class extends React.Component {
         
         <TextFieldBox>
           
+          {/* フォーム */}
           {componentsArr}
           
+          
+          {/* フォーム追加ボタン */}
           <IconButton
-            onClick={() => handleCardPlayerEditFormHobbyTextFieldCountIncrement(_id)}
-            disabled={buttonDisabled}
+            onClick={() => handleCardPlayerAddHobbyForm({ _id })}
           >
             <IconAddCircle />
           </IconButton>
@@ -228,12 +209,13 @@ export default injectIntl(class extends React.Component {
         </TextFieldBox>
         
         
+        {/* 検索可能チェックボックス */}
         <SearchBox>
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditHobbySearch(event, _id)}
+                checked={hobbiesObj.search}
+                onChange={(eventObj) => handleCardPlayerEditHobbySearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="趣味で検索可能にする"

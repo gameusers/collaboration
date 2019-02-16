@@ -31,23 +31,10 @@ const ja_JP = {
   'C5lyqOFQz': '',
   'qnWsuPcrJ': 'その他のエラー',
   
-  'cFbXmuFVh': '入力してください',
-  'xdAU7SgoO': '1文字以上、20文字以内で入力してください',
-  'yhgyXHqZu': '1文字以上、50文字以内で入力してください',
-  'pLES2ZGM2': '1文字以上、3000文字以内で入力してください',
-  
-  'PH8jcw-VF': '正しい値が選ばれていません',
-  'bT9TGtVck': '正しい日付ではありません',
-  'c9T-0LONy': '配列ではありません',
-  
-  
   // /app/@validations/_id.js
   'pE9jBkXXP': '_idを入力してください',
   '8oyLhJOlh': '_idに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
   'N48T3XvnC': '_idは7文字以上、14文字以内で入力してください',
-  
-  
-  
   
   
   // ---------------------------------------------
@@ -56,31 +43,74 @@ const ja_JP = {
   
   // /app/@database/card-players/validations/name.js
   'l1Nr3Di-O': '公開される名前です',
+  'MbA-_vCAC': 'ハンドルネームを入力してください',
+  'BQchi4d_c': 'ハンドルネームは1文字以上、20文字以内で入力してください',
   
   // /app/@database/card-players/validations/status.js
   'RuqHo4jGS': 'ハンドルネームの横に表示される文字です',
+  'fAlgLHIYq': 'ステータスを入力してください',
+  'pV2b1h_Dg': 'ステータスは1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/comment.js
+  'w7TbcLAdl': '',
+  'eMHCRsdFC': 'コメントを入力してください',
+  '721_WCmbT': 'コメントは1文字以上、3000文字以内で入力してください',
   
   // /app/@database/card-players/validations/age.js
   '4T_kAMjFU': '誕生日から年齢が自動で計算されます',
+  'bT9TGtVck': '誕生日が正しい日付ではありません',
   
   // /app/@database/card-players/validations/age-alternative-text.js
   'Qo5IGidJY': '例えば17歳と入力すると、ずっと17歳に固定されます',
+  'v57dv3fYB': '年齢（固定値）は1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/sex.js
+  'SGHeQofcR': '',
+  'PH8jcw-VF': '性別に正しい値が選ばれていません',
   
   // /app/@database/card-players/validations/sex-alternative-text.js
   '2FWoSprRW': '他の値を表示したい場合はこちらに入力してください',
+  'r6hrEshZH': '性別（その他）は1文字以上、20文字以内で入力してください',
   
   // /app/@database/card-players/validations/address.js
   'GguXb4Xxo': '公開されるので気をつけましょう',
+  'xdAU7SgoO': '住所は1文字以上、20文字以内で入力してください',
   
   // /app/@database/card-players/validations/gaming-experience.js
   'fCsp5ULCG': '始めた日からゲーム歴が自動で計算されます',
+  'm63_G3fPy': '始めた日が正しい日付ではありません',
   
   // /app/@database/card-players/validations/gaming-experience-alternative-text.js
   'wfVpYnnq-': '例えば3年と入力すると、ずっと3年に固定されます',
+  'xmBouOVh7': 'ゲーム歴（固定値）は1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/hobby.js
+  'v9pQT-vPd': '',
+  'JQ0e-7nz7': '投稿された趣味データが配列ではありません',
+  'dnYZ0ZPsZ': '趣味は1文字以上、20文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/special-skill.js
+  'DNn9KDQXk': '',
+  'c9T-0LONy': '投稿された特技データが配列ではありません',
+  'SHWPVbHAh': '特技は1文字以上、20文字以内で入力してください',
   
   // /app/@database/card-players/validations/smartphone-model.js
-  // /app/@database/card-players/validations/tablet-model.js
   'KGJvD0Fj3': 'モデル名、機種名などを入力してください',
+  'yhgyXHqZu': 'モデル名は1文字以上、50文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/smartphone-comment.js
+  'Q5ETLSyg3': '',
+  'cFbXmuFVh': '入力してください',
+  'pLES2ZGM2': '1文字以上、3000文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/tablet-model.js
+  'C5lyqOFQz': 'モデル名、機種名などを入力してください',
+  'Lp7275u8f': 'モデル名は1文字以上、50文字以内で入力してください',
+  
+  // /app/@database/card-players/validations/tablet-comment.js
+  'DvptUw-Y1': '',
+  '9v88yz5vY': 'コメントを入力してください',
+  'qCvryRmoL': 'コメントは1文字以上、3000文字以内で入力してください',
   
   
   

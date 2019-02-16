@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
 
@@ -27,6 +28,14 @@ import TextareaAutosize from 'react-autosize-textarea';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersTabletModel = require('../../../../../@database/card-players/validations/tablet-model');
+// const validationCardPlayersTabletComment = require('../../../../../@database/card-players/validations/tablet-comment');
 
 
 
@@ -93,7 +102,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -107,7 +116,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, model, comment, search } = this.props;
+    const { stores, intl, _id, tabletObj } = this.props;
     
     const {
       
@@ -119,7 +128,16 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   Validation
+    // --------------------------------------------------
+    
+    const validationModelObj = validationCardPlayersTabletModel({ required: false, value: tabletObj.model });
+    // const validationCommentObj = validationCardPlayersTabletComment({ required: false, value: tabletObj.comment });
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -151,9 +169,10 @@ export default class extends React.Component {
         <StyledTextFieldWide
           id="smartphoneModel"
           label="モデル"
-          value={model}
-          onChange={(event) => handleCardPlayerEditTabletModel(event, _id)}
-          helperText="モデル名、機種名などを入力してください"
+          value={tabletObj.model}
+          onChange={(eventObj) => handleCardPlayerEditTabletModel({ _id, value: eventObj.target.value })}
+          error={validationModelObj.error}
+          helperText={intl.formatMessage({ id: validationModelObj.messageCode }, { numberOfCharacters: validationModelObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 50,
@@ -165,8 +184,8 @@ export default class extends React.Component {
           <StyledTextareaAutosize
             rows={5}
             placeholder="コメントを入力してください"
-            value={comment}
-            onChange={(event) => handleCardPlayerEditTabletComment(event, _id)}
+            value={tabletObj.comment}
+            onChange={(eventObj) => handleCardPlayerEditTabletComment({ _id, value: eventObj.target.value })}
             maxLength={3000}
           />
         </TextareaBox>
@@ -176,8 +195,8 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditTabletSearch(event, _id)}
+                checked={tabletObj.search}
+                onChange={(eventObj) => handleCardPlayerEditTabletSearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="タブレットの情報で検索可能にする"
@@ -190,4 +209,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

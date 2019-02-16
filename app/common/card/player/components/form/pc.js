@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 
 
@@ -27,6 +28,14 @@ import TextareaAutosize from 'react-autosize-textarea';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const validationCardPlayersPCModel = require('../../../../../@database/card-players/validations/pc-model');
+// const validationCardPlayersPCComment = require('../../../../../@database/card-players/validations/pc-comment');
 
 
 
@@ -45,16 +54,16 @@ const Description = styled.p`
   font-size: 14px;
 `;
 
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
+// const StyledTextField = styled(TextField)`
+//   && {
+//     margin-right: 16px;
     
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      margin-right: initial;
-    }
-  }
-`;
+//     @media screen and (max-width: 480px) {
+//       width: 100%;
+//       margin-right: initial;
+//     }
+//   }
+// `;
 
 const StyledTextFieldWide = styled(TextField)`
   && {
@@ -107,7 +116,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -123,7 +132,9 @@ export default class extends React.Component {
     
     const {
       stores,
+      intl,
       _id,
+      pcObj,
       model,
       comment,
       os,
@@ -165,7 +176,14 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   Validation
+    // --------------------------------------------------
+    
+    const validationModelObj = validationCardPlayersPCModel({ required: false, value: pcObj.model });
+    
+    
+    // --------------------------------------------------
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -197,9 +215,10 @@ export default class extends React.Component {
         <StyledTextFieldWide
           id="pcModel"
           label="モデル"
-          value={model}
-          onChange={(event) => handleCardPlayerEditPCModel(event, _id)}
-          helperText="モデル名、機種名などを入力してください"
+          value={pcObj.model}
+          onChange={(eventObj) => handleCardPlayerEditPCModel({ _id, value: eventObj.target.value })}
+          error={validationModelObj.error}
+          helperText={intl.formatMessage({ id: validationModelObj.messageCode }, { numberOfCharacters: validationModelObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 50,
@@ -211,8 +230,8 @@ export default class extends React.Component {
           <StyledTextareaAutosize
             rows={5}
             placeholder="コメントを入力してください"
-            value={comment}
-            onChange={(event) => handleCardPlayerEditPCComment(event, _id)}
+            value={pcObj.comment}
+            onChange={(eventObj) => handleCardPlayerEditPCComment({ _id, value: eventObj.target.value })}
             maxLength={3000}
           />
         </TextareaBox>
@@ -392,4 +411,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

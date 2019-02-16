@@ -20,7 +20,7 @@ const validator = require('validator');
 
 
 /**
- * 年齢（固定値）
+ * 住所（固定値）
  * @param {boolean} required - Required
  * @param {string} value - 値
  */
@@ -41,6 +41,7 @@ const validationCardPlayersAddressAlternativeText = ({ required, value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
@@ -51,47 +52,70 @@ const validationCardPlayersAddressAlternativeText = ({ required, value }) => {
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(data)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // Required で入力値が空の場合、エラー
+    if (required && validator.isEmpty(data)) {
+      
+      messageCodeArr.unshift('cFbXmuFVh');
+      resultObj.errorCodeArr.push('nk1SDmt6q');
+      
+    // Not Required で入力値が空の場合、処理停止
+    } else if (!required && validator.isEmpty(data)) {
+      
+      return resultObj;
+      
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('xdAU7SgoO');
+      resultObj.errorCodeArr.push('eMPKsG5-2');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('9wWy2qjbq');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 文字数チェック
-  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-    resultObj.errorCodeArr.push('xdAU7SgoO');
-  }
-  
-  
-  // ---------------------------------------------
-  //   Message Code & Error
-  // ---------------------------------------------
-  
-  if (resultObj.errorCodeArr.length > 0) {
-    resultObj.messageCode = resultObj.errorCodeArr[0];
-    resultObj.error = true;
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   id: {green ${id}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 

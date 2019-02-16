@@ -22,7 +22,7 @@ const validator = require('validator');
 /**
  * 趣味
  * @param {boolean} required - Required
- * @param {string} value - 値
+ * @param {string} valueArr - 配列
  */
 const validationCardPlayersHobby = ({ required, valueArr }) => {
   
@@ -39,13 +39,11 @@ const validationCardPlayersHobby = ({ required, valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  // const data = String(value);
-  // const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
-    valueArr,
-    // numberOfCharacters,
-    messageCode: 'v9pQT-vPd',
+    valueArr: [],
+    messageCode: 'C5lyqOFQz',
     error: false,
     errorCodeArr: []
   };
@@ -58,17 +56,10 @@ const validationCardPlayersHobby = ({ required, valueArr }) => {
     //   Validation
     // ---------------------------------------------
     
-    console.log(chalk`
-      Array.isArray(valueArr): {green ${Array.isArray(valueArr)}}
-      valueArr.length: {green ${valueArr.length}}
-    `);
-    
-    
-    // console.log(b);
-    
-    // 配列かどうか
+    // 配列ではない
     if (!Array.isArray(valueArr)) {
-      resultObj.errorCodeArr.push('JQ0e-7nz7');
+      messageCodeArr.unshift('c9T-0LONy');
+      resultObj.errorCodeArr.push('MXX4J47D8');
     }
     
     // Not Required で配列が空の場合、処理停止
@@ -79,72 +70,59 @@ const validationCardPlayersHobby = ({ required, valueArr }) => {
     
     for (let value of valueArr.values()) {
       
-      // 文字数チェック
-      if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-        resultObj.errorCodeArr.push('dnYZ0ZPsZ');
+      // 空でない
+      if (!validator.isEmpty(value)) {
+        
+        // 文字数エラー
+        if (!validator.isLength(value, { min: minLength, max: maxLength })) {
+          messageCodeArr.unshift('xdAU7SgoO');
+          resultObj.errorCodeArr.push('gPixdTZkL');
+        } else {
+          resultObj.valueArr.push(value);
+        }
+        
       }
       
-      console.log(value);
     }
-    
-    
-    
     
     
   } catch (errorObj) {
     
     
     // ---------------------------------------------
-    //   Snackbar: Error
+    //   その他のエラー
     // ---------------------------------------------
     
-    // if (type === 'follow') {
-    //   storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
-    // } else {
-    //   storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
-    // }
-    
-    console.log(errorObj.message);
-    
-    console.log(`
-      ----- errorObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(errorObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('k5noDLE5H');
     
     
   } finally {
     
     
     // ---------------------------------------------
-    //   Message Code & Error
+    //   Message Code
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.messageCode = resultObj.errorCodeArr[0];
-      resultObj.error = true;
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
     }
     
     
     // ---------------------------------------------
-    //   console.log
+    //  Error
     // ---------------------------------------------
     
-    // console.log(chalk`
-    //   id: {green ${id}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
     
     
     return resultObj;
     
     
   }
+  
   
 };
 

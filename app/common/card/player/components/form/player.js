@@ -365,9 +365,6 @@ export default class extends React.Component {
             <GamingExperience
               _id={cardPlayers_id}
               gamingExperienceObj={gamingExperienceObj}
-              // value={gamingExperienceObj.value}
-              // alternativeText={gamingExperienceObj.alternativeText}
-              // search={gamingExperienceObj.search}
             />
           </Box>
           
@@ -377,8 +374,6 @@ export default class extends React.Component {
             <Hobby
               _id={cardPlayers_id}
               hobbiesObj={hobbiesObj}
-              arr={hobbiesObj.valueArr}
-              search={hobbiesObj.search}
             />
           </Box>
           
@@ -387,8 +382,7 @@ export default class extends React.Component {
           <Box>
             <SpecialSkill
               _id={cardPlayers_id}
-              arr={specialSkillsObj.valueArr}
-              search={specialSkillsObj.search}
+              specialSkillsObj={specialSkillsObj}
             />
           </Box>
           
@@ -397,9 +391,7 @@ export default class extends React.Component {
           <Box>
             <Smartphone
               _id={cardPlayers_id}
-              model={smartphoneObj.model}
-              comment={smartphoneObj.comment}
-              search={smartphoneObj.search}
+              smartphoneObj={smartphoneObj}
             />
           </Box>
           
@@ -408,6 +400,7 @@ export default class extends React.Component {
           <Box>
             <Tablet
               _id={cardPlayers_id}
+              tabletObj={tabletObj}
               model={tabletObj.model}
               comment={tabletObj.comment}
               search={tabletObj.search}
@@ -419,6 +412,7 @@ export default class extends React.Component {
           <Box>
             <PC
               _id={cardPlayers_id}
+              pcObj={pcObj}
               model={pcObj.model}
               comment={pcObj.comment}
               os={pcObj.specsObj.os}

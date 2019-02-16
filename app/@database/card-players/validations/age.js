@@ -28,19 +28,12 @@ const validationCardPlayersAge = ({ required, value }) => {
   
   
   // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  // const minLength = 1;
-  // const maxLength = 20;
-  
-  
-  // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
@@ -51,47 +44,70 @@ const validationCardPlayersAge = ({ required, value }) => {
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(data)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // Required で入力値が空の場合、エラー
+    if (required && validator.isEmpty(data)) {
+      
+      messageCodeArr.unshift('cFbXmuFVh');
+      resultObj.errorCodeArr.push('xlNZqJymK');
+      
+    // Not Required で入力値が空の場合、処理停止
+    } else if (!required && validator.isEmpty(data)) {
+      
+      return resultObj;
+      
+    }
+    
+    // 日付チェック
+    if (!validator.isISO8601(data)) {
+      messageCodeArr.unshift('bT9TGtVck');
+      resultObj.errorCodeArr.push('XEscDUq2G');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('azPaxbHWj');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 日付チェック
-  if (!validator.isISO8601(data)) {
-    resultObj.errorCodeArr.push('bT9TGtVck');
-  }
-  
-  
-  // ---------------------------------------------
-  //   Message Code & Error
-  // ---------------------------------------------
-  
-  if (resultObj.errorCodeArr.length > 0) {
-    resultObj.messageCode = resultObj.errorCodeArr[0];
-    resultObj.error = true;
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   id: {green ${id}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 

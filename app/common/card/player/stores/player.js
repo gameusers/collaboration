@@ -16,6 +16,9 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import keycode from 'keycode';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -103,6 +106,7 @@ class Store {
   
   /**
    * プレイヤーカード用ダイアログを開く
+   * PLAYER / GAME ボタンを押すとプレイヤーカードが表示される
    * @param {string} type - 開くカードのタイプ player / game
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
@@ -521,6 +525,19 @@ class Store {
   
   
   /**
+   * フォーム用のデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleCardPlayerEditFormData({ pathArr, value }) {
+    lodashSet(this.cardPlayerEditFormDataObj, pathArr, value);
+  };
+  
+  
+  
+  
+  /**
    * ダイアログを表示するかどうかを決めるオブジェクト
    * データを元に戻す際に利用。ダイアログで元に戻していいか尋ねる
    * @type {Object}
@@ -562,6 +579,7 @@ class Store {
     this.cardPlayerEditFormUndoDataDialogOpenObj[_id] = false;
     
   };
+  
   
   
   
@@ -1159,180 +1177,6 @@ class Store {
   //   PC
   // ---------------------------------------------
   
-  /**
-   * PCのモデルを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCModel({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.model = value;
-  };
-  
-  
-  /**
-   * PCのコメントを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCComment({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.comment = value;
-  };
-  
-  
-  /**
-   * PCスペックのOSを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecOS({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.os = value;
-  };
-  
-  
-  /**
-   * PCスペックのCPUを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecCPU({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpu = value;
-  };
-  
-  
-  /**
-   * PCスペックのCPUクーラーを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecCPUCooler({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.cpuCooler = value;
-  };
-  
-  
-  /**
-   * PCスペックのマザーボードを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecMotherboard({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.motherboard = value;
-  };
-  
-  
-  /**
-   * PCスペックのメモリーを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecMemory({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.memory = value;
-  };
-  
-  
-  /**
-   * PCスペックのストレージを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecStorage({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.storage = value;
-  };
-  
-  
-  /**
-   * PCスペックのグラフィックカードを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecGraphicsCard({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.graphicsCard = value;
-  };
-  
-  
-  /**
-   * PCスペックの光学ドライブを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecOpticalDrive({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.opticalDrive = value;
-  };
-  
-  
-  /**
-   * PCスペックの電源を変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecPowerSupply({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.powerSupply = value;
-  };
-  
-  
-  /**
-   * PCスペックのケースを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecPCCase({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.pcCase = value;
-  };
-  
-  
-  /**
-   * PCスペックのモニターを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecMonitor({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.monitor = value;
-  };
-  
-  
-  /**
-   * PCスペックのマウスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecMouse({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.mouse = value;
-  };
-  
-  
-  /**
-   * PCスペックのキーボードを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSpecKeyboard({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.specsObj.keyboard = value;
-  };
-  
-  
-  /**
-   * PCの検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditPCSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].pcObj.search = value;
-  };
   
   
   

@@ -43,6 +43,7 @@
     "isomorphic-unfetch": "^3.0.0",
     "jss": "^9.8.7",
     "keycode": "^2.2.0",
+    "lodash": "^4.17.11",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "moment": "^2.24.0",

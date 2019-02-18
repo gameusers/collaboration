@@ -413,22 +413,22 @@ export default class extends React.Component {
             <PC
               _id={cardPlayers_id}
               pcObj={pcObj}
-              model={pcObj.model}
-              comment={pcObj.comment}
-              os={pcObj.specsObj.os}
-              cpu={pcObj.specsObj.cpu}
-              cpuCooler={pcObj.specsObj.cpuCooler}
-              motherboard={pcObj.specsObj.motherboard}
-              memory={pcObj.specsObj.memory}
-              storage={pcObj.specsObj.storage}
-              graphicsCard={pcObj.specsObj.graphicsCard}
-              opticalDrive={pcObj.specsObj.opticalDrive}
-              powerSupply={pcObj.specsObj.powerSupply}
-              pcCase={pcObj.specsObj.pcCase}
-              monitor={pcObj.specsObj.monitor}
-              mouse={pcObj.specsObj.mouse}
-              keyboard={pcObj.specsObj.keyboard}
-              search={pcObj.search}
+              // model={pcObj.model}
+              // comment={pcObj.comment}
+              // os={pcObj.specsObj.os}
+              // cpu={pcObj.specsObj.cpu}
+              // cpuCooler={pcObj.specsObj.cpuCooler}
+              // motherboard={pcObj.specsObj.motherboard}
+              // memory={pcObj.specsObj.memory}
+              // storage={pcObj.specsObj.storage}
+              // graphicsCard={pcObj.specsObj.graphicsCard}
+              // opticalDrive={pcObj.specsObj.opticalDrive}
+              // powerSupply={pcObj.specsObj.powerSupply}
+              // pcCase={pcObj.specsObj.pcCase}
+              // monitor={pcObj.specsObj.monitor}
+              // mouse={pcObj.specsObj.mouse}
+              // keyboard={pcObj.specsObj.keyboard}
+              // search={pcObj.search}
             />
           </Box>
           

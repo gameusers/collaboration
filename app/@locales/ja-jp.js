@@ -34,10 +34,12 @@ const ja_JP = {
   'cFbXmuFVh': '入力してください',
   'xdAU7SgoO': '1文字以上、20文字以内で入力してください',
   'yhgyXHqZu': '1文字以上、50文字以内で入力してください',
+  'Uh3rnK7Dk': '1文字以上、100文字以内で入力してください',
   'pLES2ZGM2': '1文字以上、3000文字以内で入力してください',
   
   'PH8jcw-VF': '正しい値が選ばれていません',
   'bT9TGtVck': '正しい日付ではありません',
+  
   'c9T-0LONy': '配列ではありません',
   
   
@@ -45,7 +47,6 @@ const ja_JP = {
   'pE9jBkXXP': '_idを入力してください',
   '8oyLhJOlh': '_idに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
   'N48T3XvnC': '_idは7文字以上、14文字以内で入力してください',
-  
   
   
   
@@ -81,6 +82,7 @@ const ja_JP = {
   // /app/@database/card-players/validations/smartphone-model.js
   // /app/@database/card-players/validations/tablet-model.js
   'KGJvD0Fj3': 'モデル名、機種名などを入力してください',
+  
   
   
   

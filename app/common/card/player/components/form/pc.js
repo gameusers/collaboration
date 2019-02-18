@@ -34,7 +34,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersPCModel = require('../../../../../@database/card-players/validations/pc-model');
+const { validationCardPlayersPCModel, validationCardPlayersPCSpec } = require('../../../../../@database/card-players/validations/pc');
 // const validationCardPlayersPCComment = require('../../../../../@database/card-players/validations/pc-comment');
 
 
@@ -54,17 +54,6 @@ const Description = styled.p`
   font-size: 14px;
 `;
 
-// const StyledTextField = styled(TextField)`
-//   && {
-//     margin-right: 16px;
-    
-//     @media screen and (max-width: 480px) {
-//       width: 100%;
-//       margin-right: initial;
-//     }
-//   }
-// `;
-
 const StyledTextFieldWide = styled(TextField)`
   && {
     width: 400px;
@@ -76,7 +65,6 @@ const StyledTextFieldWide = styled(TextField)`
     }
   }
 `;
-
 
 const TextareaBox = styled.div`
   margin: 12px 0 0 0;
@@ -135,42 +123,44 @@ export default injectIntl(class extends React.Component {
       intl,
       _id,
       pcObj,
-      model,
-      comment,
-      os,
-      cpu,
-      cpuCooler,
-      motherboard,
-      memory,
-      storage,
-      graphicsCard,
-      opticalDrive,
-      powerSupply,
-      pcCase,
-      monitor,
-      mouse,
-      keyboard,
-      search
+      // model,
+      // comment,
+      // os,
+      // cpu,
+      // cpuCooler,
+      // motherboard,
+      // memory,
+      // storage,
+      // graphicsCard,
+      // opticalDrive,
+      // powerSupply,
+      // pcCase,
+      // monitor,
+      // mouse,
+      // keyboard,
+      // search
     } = this.props;
     
     const {
       
-      handleCardPlayerEditPCModel,
-      handleCardPlayerEditPCComment,
-      handleCardPlayerEditPCSpecOS,
-      handleCardPlayerEditPCSpecCPU,
-      handleCardPlayerEditPCSpecCPUCooler,
-      handleCardPlayerEditPCSpecMotherboard,
-      handleCardPlayerEditPCSpecMemory,
-      handleCardPlayerEditPCSpecStorage,
-      handleCardPlayerEditPCSpecGraphicsCard,
-      handleCardPlayerEditPCSpecOpticalDrive,
-      handleCardPlayerEditPCSpecPowerSupply,
-      handleCardPlayerEditPCSpecPCCase,
-      handleCardPlayerEditPCSpecMonitor,
-      handleCardPlayerEditPCSpecMouse,
-      handleCardPlayerEditPCSpecKeyboard,
-      handleCardPlayerEditPCSearch
+      handleCardPlayerEditFormData,
+      
+      // handleCardPlayerEditPCModel,
+      // handleCardPlayerEditPCComment,
+      // handleCardPlayerEditPCSpecOS,
+      // handleCardPlayerEditPCSpecCPU,
+      // handleCardPlayerEditPCSpecCPUCooler,
+      // handleCardPlayerEditPCSpecMotherboard,
+      // handleCardPlayerEditPCSpecMemory,
+      // handleCardPlayerEditPCSpecStorage,
+      // handleCardPlayerEditPCSpecGraphicsCard,
+      // handleCardPlayerEditPCSpecOpticalDrive,
+      // handleCardPlayerEditPCSpecPowerSupply,
+      // handleCardPlayerEditPCSpecPCCase,
+      // handleCardPlayerEditPCSpecMonitor,
+      // handleCardPlayerEditPCSpecMouse,
+      // handleCardPlayerEditPCSpecKeyboard,
+      // handleCardPlayerEditPCSearch
       
     } = stores.cardPlayer;
     
@@ -180,6 +170,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const validationModelObj = validationCardPlayersPCModel({ required: false, value: pcObj.model });
+    // const validationSpecObj = validationCardPlayersPCSpec({ required: false, valueObj: pcObj.specsObj });
+    
     
     
     // --------------------------------------------------
@@ -187,8 +179,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- ageObj -----\n
-    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
+    //   ----- validationSpecObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationSpecObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -212,11 +204,15 @@ export default injectIntl(class extends React.Component {
         <Description>入力するとPCについての情報が表示されます。現在、利用しているPCの情報を入力してください。</Description>
         
         
+        {/* モデル */}
         <StyledTextFieldWide
           id="pcModel"
           label="モデル"
           value={pcObj.model}
-          onChange={(eventObj) => handleCardPlayerEditPCModel({ _id, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'model'],
+            value: eventObj.target.value
+          })}
           error={validationModelObj.error}
           helperText={intl.formatMessage({ id: validationModelObj.messageCode }, { numberOfCharacters: validationModelObj.numberOfCharacters })}
           margin="normal"
@@ -226,22 +222,30 @@ export default injectIntl(class extends React.Component {
         />
         
         
+        {/* コメント */}
         <TextareaBox>
           <StyledTextareaAutosize
             rows={5}
             placeholder="コメントを入力してください"
             value={pcObj.comment}
-            onChange={(eventObj) => handleCardPlayerEditPCComment({ _id, value: eventObj.target.value })}
+            onChange={(eventObj) => handleCardPlayerEditFormData({
+              pathArr: [_id, 'pcObj', 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
           />
         </TextareaBox>
         
         
+        {/* スペック */}
         <StyledTextFieldWide
           id="specOS"
           label="OS"
-          value={os}
-          onChange={(event) => handleCardPlayerEditPCSpecOS(event, _id)}
+          value={pcObj.specsObj.os}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'os'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -252,8 +256,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specCPU"
           label="CPU"
-          value={cpu}
-          onChange={(event) => handleCardPlayerEditPCSpecCPU(event, _id)}
+          value={pcObj.specsObj.cpu}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'cpu'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -264,8 +271,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specCPUCooler"
           label="CPUクーラー"
-          value={cpuCooler}
-          onChange={(event) => handleCardPlayerEditPCSpecCPUCooler(event, _id)}
+          value={pcObj.specsObj.cpuCooler}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'cpuCooler'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -276,8 +286,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specMotherboard"
           label="マザーボード"
-          value={motherboard}
-          onChange={(event) => handleCardPlayerEditPCSpecMotherboard(event, _id)}
+          value={pcObj.specsObj.motherboard}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'motherboard'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -288,8 +301,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specMemory"
           label="メモリー"
-          value={memory}
-          onChange={(event) => handleCardPlayerEditPCSpecMemory(event, _id)}
+          value={pcObj.specsObj.memory}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'memory'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -300,8 +316,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specStorage"
           label="ストレージ"
-          value={storage}
-          onChange={(event) => handleCardPlayerEditPCSpecStorage(event, _id)}
+          value={pcObj.specsObj.storage}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'storage'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -312,8 +331,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specGraphicsCard"
           label="グラフィックカード"
-          value={graphicsCard}
-          onChange={(event) => handleCardPlayerEditPCSpecGraphicsCard(event, _id)}
+          value={pcObj.specsObj.graphicsCard}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'graphicsCard'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -324,8 +346,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specOpticalDrive"
           label="光学ドライブ"
-          value={opticalDrive}
-          onChange={(event) => handleCardPlayerEditPCSpecOpticalDrive(event, _id)}
+          value={pcObj.specsObj.opticalDrive}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'opticalDrive'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -336,8 +361,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specPowerSupply"
           label="電源"
-          value={powerSupply}
-          onChange={(event) => handleCardPlayerEditPCSpecPowerSupply(event, _id)}
+          value={pcObj.specsObj.powerSupply}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'powerSupply'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -348,8 +376,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specCase"
           label="ケース"
-          value={pcCase}
-          onChange={(event) => handleCardPlayerEditPCSpecPCCase(event, _id)}
+          value={pcObj.specsObj.pcCase}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'pcCase'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -360,8 +391,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specMonitor"
           label="モニター"
-          value={monitor}
-          onChange={(event) => handleCardPlayerEditPCSpecMonitor(event, _id)}
+          value={pcObj.specsObj.monitor}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'monitor'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -372,8 +406,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specMouse"
           label="マウス"
-          value={mouse}
-          onChange={(event) => handleCardPlayerEditPCSpecMouse(event, _id)}
+          value={pcObj.specsObj.mouse}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'mouse'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -384,8 +421,11 @@ export default injectIntl(class extends React.Component {
         <StyledTextFieldWide
           id="specKeyboard"
           label="キーボード"
-          value={keyboard}
-          onChange={(event) => handleCardPlayerEditPCSpecKeyboard(event, _id)}
+          value={pcObj.specsObj.keyboard}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'specsObj', 'keyboard'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 100,
@@ -397,8 +437,11 @@ export default injectIntl(class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(event) => handleCardPlayerEditPCSearch(event, _id)}
+                checked={pcObj.search}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'pcObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="PCの情報で検索可能にする"

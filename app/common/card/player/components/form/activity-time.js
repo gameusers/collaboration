@@ -17,6 +17,8 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
+// import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -25,8 +27,10 @@ import styled from 'styled-components';
 
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
 
 
@@ -37,6 +41,12 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconAddCircle from '@material-ui/icons/AddCircle';
 import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../../@database/card-players/validations/activity-time');
 
 
 
@@ -51,27 +61,25 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const Box = styled.div`
-  margin: 0;
-`;
-
-const StyledFormGroup = styled(FormGroup)`
-  && {
-    margin: 0;
-  }
+  
 `;
 
 const TextFieldBox = styled.div`
-  margin: 0;
+  margin: 12px 0 0 0;
 `;
 
 const StyledTextField = styled(TextField)`
   && {
     margin-right: 16px;
   }
+`;
+
+const IconButtonBox = styled.div`
+  margin: 12px 0 0 0;
 `;
 
 const StyledIconButton = styled(IconButton)`
@@ -81,7 +89,7 @@ const StyledIconButton = styled(IconButton)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -93,7 +101,7 @@ const SearchBox = styled.div`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -107,18 +115,30 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr, search } = this.props;
+    const { stores, intl, _id, activityTimeObj } = this.props;
     
     const {
       
-      handleCardPlayerEditActivityTimeBeginTime,
-      handleCardPlayerEditActivityTimeEndTime,
+      handleCardPlayerEditFormData,
       handleCardPlayerEditActivityTimeWeekArr,
       handleCardPlayerEditActivityTimeAddForm,
       handleCardPlayerEditActivityTimeRemoveForm,
-      handleCardPlayerEditActivityTimeSearch,
       
     } = stores.cardPlayer;
+    
+    
+    
+    // --------------------------------------------------
+    //   Validations
+    // --------------------------------------------------
+    
+    const validationObj = validationCardPlayersActivityTimeObjValueArr({ required: false, valueArr: activityTimeObj.valueArr });
+    
+    // console.log(`
+    //   ----- validationObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -127,17 +147,19 @@ export default class extends React.Component {
     
     let componentsArr = [];
     
-    for (const [index, valueObj] of arr.entries()) {
-      
-      // console.log(chalk`
-      //   valueObj.weekArr.indexOf(0): {green ${valueObj.weekArr.indexOf(0)}}
-      //   valueObj.beginTime: {green ${valueObj.beginTime}}
-      //   valueObj.endTime: {green ${valueObj.endTime}}
-      // `);
+    for (const [index, valueObj] of activityTimeObj.valueArr.entries()) {
       
       const beginTime = 'beginTime' in valueObj ? valueObj.beginTime : '';
+      const beginTimeError = validationObj.formArr[index].beginTimeObj.error;
+      const beginTimeMessageCode = validationObj.formArr[index].beginTimeObj.messageCode;
+      
       const endTime = 'endTime' in valueObj ? valueObj.endTime : '';
+      const endTimeError = validationObj.formArr[index].endTimeObj.error;
+      const endTimeMessageCode = validationObj.formArr[index].endTimeObj.messageCode;
+      
       const weekArr = 'weekArr' in valueObj ? valueObj.weekArr : [];
+      const weekError = validationObj.formArr[index].weekObj.error;
+      const weekMessageCode = validationObj.formArr[index].weekObj.messageCode;
       
       
       componentsArr.push(
@@ -150,8 +172,12 @@ export default class extends React.Component {
               label="開始時間"
               type="time"
               value={beginTime}
-              onChange={(eventObj) => handleCardPlayerEditActivityTimeBeginTime({ _id, index, value: eventObj.target.value })}
-              helperText="ゲームを開始する時間を選んでください"
+              onChange={(eventObj) => handleCardPlayerEditFormData({
+                pathArr: [_id, 'activityTimeObj', 'valueArr', index, 'beginTime'],
+                value: eventObj.target.value
+              })}
+              error={beginTimeError}
+              helperText={intl.formatMessage({ id: beginTimeMessageCode })}
               margin="normal"
               InputLabelProps={{
                 shrink: true,
@@ -163,8 +189,12 @@ export default class extends React.Component {
               label="終了時間"
               type="time"
               value={endTime}
-              onChange={(eventObj) => handleCardPlayerEditActivityTimeEndTime({ _id, index, value: eventObj.target.value })}
-              helperText="ゲームを終了する時間を選んでください"
+              onChange={(eventObj) => handleCardPlayerEditFormData({
+                pathArr: [_id, 'activityTimeObj', 'valueArr', index, 'endTime'],
+                value: eventObj.target.value
+              })}
+              error={endTimeError}
+              helperText={intl.formatMessage({ id: endTimeMessageCode })}
               margin="normal"
               InputLabelProps={{
                 shrink: true,
@@ -174,114 +204,120 @@ export default class extends React.Component {
           </TextFieldBox>
           
           
-          <StyledFormGroup row>
+          <FormControl required error={weekError} component="fieldset">
             
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(0) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 0
-                  })}
-                  color="primary"
-                />
-              }
-              label="日"
-            />
+            <FormGroup row>
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(0) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 0
+                    })}
+                    color="primary"
+                  />
+                }
+                label="日"
+              />
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(1) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 1
+                    })}
+                    color="primary"
+                  />
+                }
+                label="月"
+              />
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(2) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 2
+                    })}
+                    color="primary"
+                  />
+                }
+                label="火"
+              />
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(3) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 3
+                    })}
+                    color="primary"
+                  />
+                }
+                label="水"
+              />
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(4) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 4
+                    })}
+                    color="primary"
+                  />
+                }
+                label="木"
+              />
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(5) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 5
+                    })}
+                    color="primary"
+                  />
+                }
+                label="金"
+              />
+              
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={weekArr.indexOf(6) !== -1}
+                    onChange={() => handleCardPlayerEditActivityTimeWeekArr({
+                      _id,
+                      index,
+                      value: 6
+                    })}
+                    color="primary"
+                  />
+                }
+                label="土"
+              />
+              
+            </FormGroup>
             
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(1) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 1
-                  })}
-                  color="primary"
-                />
-              }
-              label="月"
-            />
+            <FormHelperText>{intl.formatMessage({ id: weekMessageCode })}</FormHelperText>
             
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(2) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 2
-                  })}
-                  color="primary"
-                />
-              }
-              label="火"
-            />
-            
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(3) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 3
-                  })}
-                  color="primary"
-                />
-              }
-              label="水"
-            />
-            
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(4) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 4
-                  })}
-                  color="primary"
-                />
-              }
-              label="木"
-            />
-            
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(5) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 5
-                  })}
-                  color="primary"
-                />
-              }
-              label="金"
-            />
-            
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={weekArr.indexOf(6) !== -1}
-                  onChange={() => handleCardPlayerEditActivityTimeWeekArr({
-                    _id,
-                    index,
-                    value: 6
-                  })}
-                  color="primary"
-                />
-              }
-              label="土"
-            />
-            
-          </StyledFormGroup>
+          </FormControl>
           
         </Box>
       );
@@ -290,7 +326,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -301,8 +337,8 @@ export default class extends React.Component {
     // const copiedArr = JSON.parse(JSON.stringify(arr));
     
     // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   ----- activityTimeObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(activityTimeObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -324,20 +360,25 @@ export default class extends React.Component {
         {componentsArr}
         
         
-        {/* - ボタン */}
-        <StyledIconButton
-          onClick={() => handleCardPlayerEditActivityTimeRemoveForm({ _id })}
-        >
-          <IconRemoveCircle />
-        </StyledIconButton>
-        
-        
-        {/* + ボタン */}
-        <IconButton
-          onClick={() => handleCardPlayerEditActivityTimeAddForm({ _id })}
-        >
-          <IconAddCircle />
-        </IconButton>
+        {/* フォーム追加・削除ボタン */}
+        <IconButtonBox>
+          
+          {/* - ボタン */}
+          <StyledIconButton
+            onClick={() => handleCardPlayerEditActivityTimeRemoveForm({ _id })}
+          >
+            <IconRemoveCircle />
+          </StyledIconButton>
+          
+          
+          {/* + ボタン */}
+          <IconButton
+            onClick={() => handleCardPlayerEditActivityTimeAddForm({ _id })}
+          >
+            <IconAddCircle />
+          </IconButton>
+          
+        </IconButtonBox>
         
         
         {/* 検索チェックボックス */}
@@ -345,8 +386,11 @@ export default class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={search}
-                onChange={(eventObj) => handleCardPlayerEditActivityTimeSearch({ _id, value: eventObj.target.checked })}
+                checked={activityTimeObj.search}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'activityTimeObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="活動時間で検索可能にする"
@@ -358,4 +402,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

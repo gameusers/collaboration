@@ -20,19 +20,10 @@ const validator = require('validator');
 
 
 /**
- * PC（モデル）
- * @param {boolean} required - Required
- * @param {string} value - 値
+ * フレンド（募集中 / 募集していません）
+ * @param {boolean} value - 値
  */
-const validationCardPlayersPCModel = ({ required, value }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 1;
-  const maxLength = 50;
+const validationCardPlayersLookingForFriendsValue = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -41,12 +32,11 @@ const validationCardPlayersPCModel = ({ required, value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
-    value: data,
+    value,
     numberOfCharacters,
-    messageCode: 'KGJvD0Fj3',
+    messageCode: 'C5lyqOFQz',
     error: false,
     errorCodeArr: []
   };
@@ -59,23 +49,9 @@ const validationCardPlayersPCModel = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('ghkg23x85');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
-      return resultObj;
-      
-    }
-    
-    // 文字数チェック
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('yhgyXHqZu');
-      resultObj.errorCodeArr.push('cjSNy-Vha');
+    // Booleanチェック
+    if (!validator.isBoolean(data)) {
+      resultObj.errorCodeArr.push('9IUXKBT9o');
     }
     
     
@@ -86,20 +62,10 @@ const validationCardPlayersPCModel = ({ required, value }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('QobeBXNyx');
+    resultObj.errorCodeArr.push('Tiac-8IG-');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -123,11 +89,10 @@ const validationCardPlayersPCModel = ({ required, value }) => {
 
 
 /**
- * PC（コメント）
- * @param {boolean} required - Required
+ * フレンド（コメント）
  * @param {string} value - 値
  */
-const validationCardPlayersPCComment = ({ required, value }) => {
+const validationCardPlayersLookingForFriendsComment = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -144,7 +109,6 @@ const validationCardPlayersPCComment = ({ required, value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
@@ -162,23 +126,14 @@ const validationCardPlayersPCComment = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('GOKQvL5H5');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
       return resultObj;
-      
     }
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('pLES2ZGM2');
-      resultObj.errorCodeArr.push('K96lkq3va');
+      resultObj.errorCodeArr.push('UklJ5elqG');
     }
     
     
@@ -189,20 +144,10 @@ const validationCardPlayersPCComment = ({ required, value }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('a2gZ8GZFC');
+    resultObj.errorCodeArr.push('B947_pb8N');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -226,29 +171,22 @@ const validationCardPlayersPCComment = ({ required, value }) => {
 
 
 /**
- * PC（スペック）
- * @param {boolean} required - Required
+ * フレンド（アイコン）
  * @param {string} value - 値
  */
-const validationCardPlayersPCSpec = ({ required, valueObj }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 1;
-  const maxLength = 100;
+const validationCardPlayersLookingForFriendsIcon = ({ value }) => {
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  const messageCodeArr = [];
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
-    valueObj,
+    value: data,
+    numberOfCharacters,
     messageCode: 'C5lyqOFQz',
     error: false,
     errorCodeArr: []
@@ -262,14 +200,9 @@ const validationCardPlayersPCSpec = ({ required, valueObj }) => {
     //   Validation
     // ---------------------------------------------
     
-    for (let data of Object.values(valueObj)) {
-      
-      // 文字数チェック
-      if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-        messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('nl_g-mb6_');
-      }
-      
+    // 適切な値が選択されているかチェック
+    if (!validator.isIn(data, ['emoji_u1f9b8', 'emoji_u1f9b9', 'emoji_u1f9d0', 'emoji_u1f9df', 'emoji_u1f47f', 'emoji_u1f60a', 'emoji_u1f60b', 'emoji_u1f60c', 'emoji_u1f60d', 'emoji_u1f60e', 'emoji_u1f60f', 'emoji_u1f61a', 'emoji_u1f61b', 'emoji_u1f61c', 'emoji_u1f61d', 'emoji_u1f61e', 'emoji_u1f61f', 'emoji_u1f62a', 'emoji_u1f62b', 'emoji_u1f62c', 'emoji_u1f62d', 'emoji_u1f62e', 'emoji_u1f62f', 'emoji_u1f92a', 'emoji_u1f92a_200d_2063_fe0f', 'emoji_u1f92b', 'emoji_u1f92c', 'emoji_u1f92d', 'emoji_u1f92e', 'emoji_u1f92f', 'emoji_u1f97a', 'emoji_u1f600', 'emoji_u1f601', 'emoji_u1f602', 'emoji_u1f603', 'emoji_u1f604', 'emoji_u1f605', 'emoji_u1f606', 'emoji_u1f607', 'emoji_u1f608', 'emoji_u1f609', 'emoji_u1f610', 'emoji_u1f611', 'emoji_u1f612', 'emoji_u1f613', 'emoji_u1f614', 'emoji_u1f615', 'emoji_u1f616', 'emoji_u1f617', 'emoji_u1f618', 'emoji_u1f619', 'emoji_u1f620', 'emoji_u1f621', 'emoji_u1f622', 'emoji_u1f623', 'emoji_u1f624', 'emoji_u1f625', 'emoji_u1f626', 'emoji_u1f627', 'emoji_u1f628', 'emoji_u1f629', 'emoji_u1f630', 'emoji_u1f631', 'emoji_u1f632', 'emoji_u1f633', 'emoji_u1f634', 'emoji_u1f635', 'emoji_u1f636', 'emoji_u1f637', 'emoji_u1f641', 'emoji_u1f642', 'emoji_u1f643', 'emoji_u1f644', 'emoji_u1f644_200d_2063_fe0f', 'emoji_u1f910', 'emoji_u1f911', 'emoji_u1f912', 'emoji_u1f913', 'emoji_u1f914', 'emoji_u1f915', 'emoji_u1f917', 'emoji_u1f920', 'emoji_u1f922', 'emoji_u1f923', 'emoji_u1f924', 'emoji_u1f924_200d_2063_fe0f', 'emoji_u1f925', 'emoji_u1f927', 'emoji_u1f928', 'emoji_u1f928_200d_1f922', 'emoji_u1f929', 'emoji_u1f970', 'emoji_u1f971', 'emoji_u1f973', 'emoji_u1f974', 'emoji_u1f975', 'emoji_u1f976', 'emoji_u263a', 'emoji_u2639'])) {
+      resultObj.errorCodeArr.push('b2OYfWoEX');
     }
     
     
@@ -280,20 +213,10 @@ const validationCardPlayersPCSpec = ({ required, valueObj }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('jfiBXkrK0');
+    resultObj.errorCodeArr.push('chR0DYdYJ');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -321,7 +244,7 @@ const validationCardPlayersPCSpec = ({ required, valueObj }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersPCModel,
-  validationCardPlayersPCComment,
-  validationCardPlayersPCSpec
+  validationCardPlayersLookingForFriendsValue,
+  validationCardPlayersLookingForFriendsComment,
+  validationCardPlayersLookingForFriendsIcon
 };

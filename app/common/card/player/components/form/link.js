@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -41,6 +42,13 @@ import IconAddCircle from '@material-ui/icons/AddCircle';
 import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 
 
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationCardPlayersLinkArr } = require('../../../../../@database/card-players/validations/link');
+
+
 
 
 // --------------------------------------------------
@@ -54,7 +62,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const FormBox = styled.div`
@@ -95,10 +103,8 @@ const StyledTextField100Per = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
-
-
 
 const ButtonBox = styled.div`
   margin: 12px;
@@ -119,7 +125,7 @@ const IconButtonForButtonBox = styled(IconButton)`
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
@@ -133,20 +139,22 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr } = this.props;
+    const { stores, intl, _id, arr } = this.props;
     
     const {
       
-      handleCardPlayerEditLinkType,
-      handleCardPlayerEditLinkLabel,
-      handleCardPlayerEditLinkURL,
-      handleCardPlayerEditLinkSearch,
+      handleCardPlayerEditFormData,
       handleCardPlayerAddLinkForm,
       handleCardPlayerRemoveLinkForm
       
     } = stores.cardPlayer;
     
     
+    // --------------------------------------------------
+    //   Validations
+    // --------------------------------------------------
+    
+    const validationObj = validationCardPlayersLinkArr({ required: false, valueArr: arr });
     
     
     // --------------------------------------------------
@@ -157,9 +165,17 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of arr.entries()) {
       
+      
       const type = 'type' in valueObj ? valueObj.type : '';
+      
       const label = 'label' in valueObj ? valueObj.label : '';
+      const labelError = validationObj.formArr[index].labelObj.error;
+      const labelMessageCode = validationObj.formArr[index].labelObj.messageCode;
+      
       const url = 'url' in valueObj ? valueObj.url : '';
+      const urlError = validationObj.formArr[index].urlObj.error;
+      const urlMessageCode = validationObj.formArr[index].urlObj.messageCode;
+      
       const search = 'search' in valueObj ? valueObj.search : '';
       
       
@@ -172,7 +188,10 @@ export default class extends React.Component {
               <InputLabel htmlFor="linkType">ウェブサイトの種類</InputLabel>
               <StyledSelect
                 value={type}
-                onChange={(eventObj) => handleCardPlayerEditLinkType({ _id, index, value: eventObj.target.value })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'linkArr', index, 'type'],
+                  value: eventObj.target.value
+                })}
                 inputProps={{
                   name: 'linkType',
                   id: 'linkType',
@@ -205,8 +224,12 @@ export default class extends React.Component {
               id="linkLabel"
               label="リンクのタイトル"
               value={label}
-              onChange={(eventObj) => handleCardPlayerEditLinkLabel({ _id, index, value: eventObj.target.value })}
-              helperText="リンクのタイトルを入力してください"
+              onChange={(eventObj) => handleCardPlayerEditFormData({
+                pathArr: [_id, 'linkArr', index, 'label'],
+                value: eventObj.target.value
+              })}
+              error={labelError}
+              helperText={intl.formatMessage({ id: labelMessageCode })}
               margin="normal"
               inputProps={{
                 maxLength: 20,
@@ -219,8 +242,12 @@ export default class extends React.Component {
             id="linkURL"
             label="URL"
             value={url}
-            onChange={(eventObj) => handleCardPlayerEditLinkURL({ _id, index, value: eventObj.target.value })}
-            helperText="URLを入力してください"
+            onChange={(eventObj) => handleCardPlayerEditFormData({
+              pathArr: [_id, 'linkArr', index, 'url'],
+              value: eventObj.target.value
+            })}
+            error={urlError}
+            helperText={intl.formatMessage({ id: urlMessageCode })}
             margin="normal"
             inputProps={{
               maxLength: 500,
@@ -233,7 +260,10 @@ export default class extends React.Component {
               control={
                 <Checkbox
                   checked={search}
-                  onChange={(eventObj) => handleCardPlayerEditLinkSearch({ _id, index, value: eventObj.target.checked })}
+                  onChange={(eventObj) => handleCardPlayerEditFormData({
+                    pathArr: [_id, 'linkArr', index, 'search'],
+                    value: eventObj.target.checked
+                  })}
                 />
               }
               label="このリンクを検索可能にする"
@@ -254,11 +284,11 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- validationObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- process.env -----\n
@@ -320,4 +350,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

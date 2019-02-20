@@ -35,12 +35,20 @@ const ja_JP = {
   'xdAU7SgoO': '1文字以上、20文字以内で入力してください',
   'yhgyXHqZu': '1文字以上、50文字以内で入力してください',
   'Uh3rnK7Dk': '1文字以上、100文字以内で入力してください',
+  'eASl8OdnD': '1文字以上、500文字以内で入力してください',
   'pLES2ZGM2': '1文字以上、3000文字以内で入力してください',
   
   'PH8jcw-VF': '正しい値が選ばれていません',
   'bT9TGtVck': '正しい日付ではありません',
+  'McbWUO45b': '正しい時間ではありません',
+  'Bv79Cmo2s': '正しいURLではありません',
+  'vplWXcVvo': '曜日を選んでください',
+  'dmja16xDh': '曜日が選ばれていません',
   
+  'Nbu_IqorV': '範囲内の数字ではありません',
   'c9T-0LONy': '配列ではありません',
+  
+  'JBkjlGQMh': '入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
   
   
   // /app/@validations/_id.js
@@ -82,6 +90,14 @@ const ja_JP = {
   // /app/@database/card-players/validations/smartphone-model.js
   // /app/@database/card-players/validations/tablet-model.js
   'KGJvD0Fj3': 'モデル名、機種名などを入力してください',
+  
+  // /app/@database/card-players/validations/activity-time.js
+  'vKhuy_98i': 'ゲームを開始する時間を選んでください',
+  'h7yr2vkyk': 'ゲームを終了する時間を選んでください',
+  
+  // /app/@database/card-players/validations/link.js
+  'sOgKU3gS9': 'リンクのタイトルを入力してください',
+  'CAhUTCx7B': 'URLを入力してください',
   
   
   

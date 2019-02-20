@@ -20,33 +20,30 @@ const validator = require('validator');
 
 
 /**
- * PC（モデル）
+ * ID Array
  * @param {boolean} required - Required
- * @param {string} value - 値
+ * @param {string} valueArr - 検証する配列
  */
-const validationCardPlayersPCModel = ({ required, value }) => {
+const validationCardPlayersIDArr = ({ required, valueArr }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 1;
-  const maxLength = 50;
+  const minLength = 7;
+  const maxLength = 14;
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
-  const numberOfCharacters = data ? data.length : 0;
   const messageCodeArr = [];
   
   let resultObj = {
-    value: data,
-    numberOfCharacters,
-    messageCode: 'KGJvD0Fj3',
+    valueArr: [],
+    messageCode: 'C5lyqOFQz',
     error: false,
     errorCodeArr: []
   };
@@ -59,23 +56,29 @@ const validationCardPlayersPCModel = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
+    for (let dataObj of valueArr.values()) {
       
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('ghkg23x85');
+      const error = false;
+      const _id = dataObj._id;
       
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
+      // 文字数チェック
+      if (!validator.isLength(_id, { min: minLength, max: maxLength })) {
+        messageCodeArr.unshift('Uh3rnK7Dk');
+        resultObj.errorCodeArr.push('GVaeKN4HI');
+        error = true;
+      }
       
-      return resultObj;
+      // 英数と -_ のみ
+      if (_id.match(/^[\w\-]+$/) === null) {
+        messageCodeArr.unshift('JBkjlGQMh');
+        resultObj.errorCodeArr.push('n381nXqty');
+        error = true;
+      }
       
-    }
-    
-    // 文字数チェック
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('yhgyXHqZu');
-      resultObj.errorCodeArr.push('cjSNy-Vha');
+      if (!error) {
+        resultObj.valueArr.push(_id);
+      }
+      
     }
     
     
@@ -87,7 +90,7 @@ const validationCardPlayersPCModel = ({ required, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('QobeBXNyx');
+    resultObj.errorCodeArr.push('kiWVCUNgA');
     
     
   } finally {
@@ -126,4 +129,6 @@ const validationCardPlayersPCModel = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersPCModel;
+module.exports = {
+  validationCardPlayersIDArr,
+};

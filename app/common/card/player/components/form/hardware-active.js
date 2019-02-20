@@ -136,7 +136,7 @@ export default class extends React.Component {
             key={index}
             label={valueObj.name}
             color="primary"
-            onDelete={() => handleCardPlayerDeleteHardwareActive(_id, valueObj.hardwareID)}
+            onDelete={() => handleCardPlayerDeleteHardwareActive({ _id, hardwareID: valueObj.hardwareID })}
             variant="outlined"
           />
         );
@@ -213,7 +213,11 @@ export default class extends React.Component {
             key={index}
             component="div"
             selected={index === suggestionSelected}
-            onMouseDown={() => handleCardPlayerAddHardwareActive(_id, valueObj.hardwareID, valueObj.name)}
+            onMouseDown={() => handleCardPlayerAddHardwareActive({
+              _id,
+              hardwareID: valueObj.hardwareID,
+              name: valueObj.name
+            })}
             style={{
               fontWeight: index2 !== -1 ? 'bold' : 'normal',
             }}
@@ -249,8 +253,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- ageObj -----\n
-    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -283,16 +287,22 @@ export default class extends React.Component {
         
         
         <div
-          onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus(_id)}
-          onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur(_id)}
+          onFocus={()=> handleCardPlayerHardwareActiveTextFieldOnFocus({ _id })}
+          onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur({ _id })}
         >
           
           <StyledTextFieldWide
             id="hardwareActive"
             label="ハードウェア名"
             value={inputValue}
-            onChange={(event) => handleCardPlayerEditHardwareActiveTextField(event, _id)}
-            onKeyDown={(eventObj) => handleCardPlayerFormHardwareActiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
+            onChange={(eventObj) => handleCardPlayerEditHardwareActiveTextField({
+              _id,
+              value: eventObj.target.value
+            })}
+            onKeyDown={(eventObj) => handleCardPlayerFormHardwareActiveSuggestionOnKeyDown({
+              eventObj,
+              _id,
+            })}
             margin="normal"
             autoComplete="off"
             inputProps={{
@@ -310,7 +320,7 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditHardwareActiveSearch(event, _id)}
+                onChange={(eventObj) => handleCardPlayerEditHardwareActiveSearch({ _id, value: eventObj.target.checked })}
               />
             }
             label="所有ハードウェアで検索可能にする"

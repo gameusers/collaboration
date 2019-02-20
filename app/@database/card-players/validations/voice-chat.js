@@ -20,11 +20,79 @@ const validator = require('validator');
 
 
 /**
- * PC（コメント）
- * @param {boolean} required - Required
+ * ボイスチャット（できる / できない）
+ * @param {boolean} value - 値
+ */
+const validationCardPlayersVoiceChatValue = ({ value }) => {
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  
+  let resultObj = {
+    value,
+    numberOfCharacters,
+    messageCode: 'C5lyqOFQz',
+    error: false,
+    errorCodeArr: []
+  };
+  
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // Booleanチェック
+    if (!validator.isBoolean(data)) {
+      resultObj.errorCodeArr.push('3hl9oEFB3');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    resultObj.errorCodeArr.push('B8CjcolLw');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
+    return resultObj;
+    
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * ボイスチャット（コメント）
  * @param {string} value - 値
  */
-const validationCardPlayersPCComment = ({ required, value }) => {
+const validationCardPlayersVoiceChatComment = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -41,7 +109,6 @@ const validationCardPlayersPCComment = ({ required, value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
@@ -59,23 +126,14 @@ const validationCardPlayersPCComment = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('GOKQvL5H5');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
       return resultObj;
-      
     }
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('pLES2ZGM2');
-      resultObj.errorCodeArr.push('K96lkq3va');
+      resultObj.errorCodeArr.push('CBclgusej');
     }
     
     
@@ -86,20 +144,10 @@ const validationCardPlayersPCComment = ({ required, value }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('a2gZ8GZFC');
+    resultObj.errorCodeArr.push('Zra5EfoXu');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -126,4 +174,7 @@ const validationCardPlayersPCComment = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersPCComment;
+module.exports = {
+  validationCardPlayersVoiceChatValue,
+  validationCardPlayersVoiceChatComment,
+};

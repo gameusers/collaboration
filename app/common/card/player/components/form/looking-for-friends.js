@@ -45,7 +45,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const IconButtonBox = styled.div`
@@ -105,7 +105,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -133,14 +133,7 @@ export default class extends React.Component {
     
     const { stores, _id, value, icon, comment, search } = this.props;
     
-    const {
-      
-      handleCardPlayerEditFriendIcon,
-      handleCardPlayerEditFriendValue,
-      handleCardPlayerEditFriendComment,
-      handleCardPlayerEditFriendSearch
-      
-    } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
@@ -156,7 +149,10 @@ export default class extends React.Component {
       componentIconArr.push(
         <IconButton
           key={index}
-          onClick={() => handleCardPlayerEditFriendIcon({ _id, value })}
+          onClick={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'lookingForFriendsObj', 'icon'],
+            value
+          })}
         >
           <IconButtonImg
             src={`/static/img/common/blob-emoji/${value}.png`}
@@ -213,11 +209,14 @@ export default class extends React.Component {
             <IconText>フレンド: </IconText>
           </IconBox>
         
-        
+          
           <FormControl>
             <Select
               value={value}
-              onChange={(eventObj) => handleCardPlayerEditFriendValue({ _id, value: eventObj.target.value })}
+              onChange={(eventObj) => handleCardPlayerEditFormData({
+                pathArr: [_id, 'lookingForFriendsObj', 'value'],
+                value: eventObj.target.value
+              })}
               inputProps={{
                 name: 'friend',
                 id: 'friend',
@@ -236,7 +235,10 @@ export default class extends React.Component {
             rows={5}
             placeholder="コメントを入力してください"
             value={comment}
-            onChange={(eventObj) => handleCardPlayerEditFriendComment({ _id, value: eventObj.target.value })}
+            onChange={(eventObj) => handleCardPlayerEditFormData({
+              pathArr: [_id, 'lookingForFriendsObj', 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
           />
         </TextareaBox>
@@ -247,7 +249,10 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(eventObj) => handleCardPlayerEditFriendSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'lookingForFriendsObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="フレンド欄の入力情報で検索可能にする"

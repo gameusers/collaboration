@@ -1,18 +1,14 @@
-/* Swiper 上書き */
-.swiper-pagination {
-  pointer-events: none;
+body {
+  background-color: #ecf0f1;
+  word-wrap: break-word;
+  font-family: -apple-system, BlinkMacSystemFont, "メイリオ", Meiryo, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
 }
 
 /* 画像下部の無駄な余白を消すために、img タグをブロック要素にする */
 img {
   display: block;
-}
-
-body {
-  background-color: #ecf0f1;
-  word-wrap: break-word;
-  font-family: -apple-system, BlinkMacSystemFont, "メイリオ", Meiryo, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", sans-serif;
-  line-height: 1.8;
 }
 
 a {
@@ -23,6 +19,15 @@ a {
 a:hover {
   text-decoration:underline;
 }
+
+
+
+
+/* Swiper 上書き */
+.swiper-pagination {
+  pointer-events: none;
+}
+
 
 
 

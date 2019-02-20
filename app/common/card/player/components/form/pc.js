@@ -34,8 +34,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const { validationCardPlayersPCModel, validationCardPlayersPCSpec } = require('../../../../../@database/card-players/validations/pc');
-// const validationCardPlayersPCComment = require('../../../../../@database/card-players/validations/pc-comment');
+const { validationCardPlayersPCModel } = require('../../../../../@database/card-players/validations/pc');
 
 
 
@@ -51,7 +50,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const StyledTextFieldWide = styled(TextField)`
@@ -92,7 +91,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -118,60 +117,16 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const {
-      stores,
-      intl,
-      _id,
-      pcObj,
-      // model,
-      // comment,
-      // os,
-      // cpu,
-      // cpuCooler,
-      // motherboard,
-      // memory,
-      // storage,
-      // graphicsCard,
-      // opticalDrive,
-      // powerSupply,
-      // pcCase,
-      // monitor,
-      // mouse,
-      // keyboard,
-      // search
-    } = this.props;
+    const { stores, intl, _id, pcObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditFormData,
-      
-      // handleCardPlayerEditPCModel,
-      // handleCardPlayerEditPCComment,
-      // handleCardPlayerEditPCSpecOS,
-      // handleCardPlayerEditPCSpecCPU,
-      // handleCardPlayerEditPCSpecCPUCooler,
-      // handleCardPlayerEditPCSpecMotherboard,
-      // handleCardPlayerEditPCSpecMemory,
-      // handleCardPlayerEditPCSpecStorage,
-      // handleCardPlayerEditPCSpecGraphicsCard,
-      // handleCardPlayerEditPCSpecOpticalDrive,
-      // handleCardPlayerEditPCSpecPowerSupply,
-      // handleCardPlayerEditPCSpecPCCase,
-      // handleCardPlayerEditPCSpecMonitor,
-      // handleCardPlayerEditPCSpecMouse,
-      // handleCardPlayerEditPCSpecKeyboard,
-      // handleCardPlayerEditPCSearch
-      
-    } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Validations
     // --------------------------------------------------
     
     const validationModelObj = validationCardPlayersPCModel({ required: false, value: pcObj.model });
-    // const validationSpecObj = validationCardPlayersPCSpec({ required: false, valueObj: pcObj.specsObj });
-    
     
     
     // --------------------------------------------------
@@ -179,16 +134,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- validationSpecObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationSpecObj)), { colors: true, depth: null })}\n
+    //   ----- pcObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pcObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(chalk`
-    //   value: {green ${value}}
-    //   alternativeText: {green ${alternativeText}}
-    //   search: {green ${search}}
-    //   age: {green ${age}}
+    //   _id: {green ${_id}}
     // `);
     
     

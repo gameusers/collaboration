@@ -52,7 +52,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const SelectBox = styled.div`
@@ -66,12 +66,6 @@ const IconBox = styled.div`
   flex-flow: row nowrap;
   margin: 0;
 `;
-
-// const IconSelectedImg = styled.img`
-//   width: 26px;
-//   height: 26px;
-//   margin: 0 4px 0 0;
-// `;
 
 const StyledIcon = styled(Icon)`
   && {
@@ -110,7 +104,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -137,6 +131,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, _id, value, comment, search } = this.props;
+    
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     const {
       
@@ -189,7 +185,10 @@ export default class extends React.Component {
           <FormControl>
             <Select
               value={value}
-              onChange={(eventObj) => handleCardPlayerEditVoiceChatValue({ _id, value: eventObj.target.value })}
+              onChange={(eventObj) => handleCardPlayerEditFormData({
+                pathArr: [_id, 'voiceChatObj', 'value'],
+                value: eventObj.target.value
+              })}
               inputProps={{
                 name: 'friend',
                 id: 'friend',
@@ -208,7 +207,10 @@ export default class extends React.Component {
             rows={5}
             placeholder="コメントを入力してください"
             value={comment}
-            onChange={(eventObj) => handleCardPlayerEditVoiceChatComment({ _id, value: eventObj.target.value })}
+            onChange={(eventObj) => handleCardPlayerEditFormData({
+              pathArr: [_id, 'voiceChatObj', 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
           />
         </TextareaBox>
@@ -219,7 +221,10 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(eventObj) => handleCardPlayerEditVoiceChatSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'voiceChatObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="ボイスチャット欄の入力情報で検索可能にする"

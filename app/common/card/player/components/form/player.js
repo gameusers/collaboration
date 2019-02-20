@@ -191,7 +191,8 @@ export default class extends React.Component {
       handleCardPlayerEditFormUndoDataDialogClose,
       handleCardPlayerEditFormUndoData,
       handleCardPlayerEditFormClose,
-      handleCardPlayerEditID
+      handleCardPlayerEditID,
+      handleEditFormSubmit
       
     } = stores.cardPlayer;
     
@@ -256,12 +257,12 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----- cardPlayerEditFormDataObj[cardPlayers_id] -----\n
-    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id], { colors: true, depth: null })}\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayerEditFormDataObj[cardPlayers_id])), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -335,9 +336,6 @@ export default class extends React.Component {
             <Age
               _id={cardPlayers_id}
               ageObj={ageObj}
-              // value={ageObj.value}
-              // alternativeText={ageObj.alternativeText}
-              // search={ageObj.search}
             />
           </Box>
           
@@ -413,22 +411,6 @@ export default class extends React.Component {
             <PC
               _id={cardPlayers_id}
               pcObj={pcObj}
-              // model={pcObj.model}
-              // comment={pcObj.comment}
-              // os={pcObj.specsObj.os}
-              // cpu={pcObj.specsObj.cpu}
-              // cpuCooler={pcObj.specsObj.cpuCooler}
-              // motherboard={pcObj.specsObj.motherboard}
-              // memory={pcObj.specsObj.memory}
-              // storage={pcObj.specsObj.storage}
-              // graphicsCard={pcObj.specsObj.graphicsCard}
-              // opticalDrive={pcObj.specsObj.opticalDrive}
-              // powerSupply={pcObj.specsObj.powerSupply}
-              // pcCase={pcObj.specsObj.pcCase}
-              // monitor={pcObj.specsObj.monitor}
-              // mouse={pcObj.specsObj.mouse}
-              // keyboard={pcObj.specsObj.keyboard}
-              // search={pcObj.search}
             />
           </Box>
           
@@ -467,8 +449,7 @@ export default class extends React.Component {
           <Box>
             <ActivityTime
               _id={cardPlayers_id}
-              arr={activityTimeObj.valueArr}
-              search={activityTimeObj.search}
+              activityTimeObj={activityTimeObj}
             />
           </Box>
           
@@ -514,7 +495,7 @@ export default class extends React.Component {
             <Button
               variant="outlined"
               color="primary"
-              // onClick={() => handleCardPlayerEditFormOpen(cardPlayers_id)}
+              onClick={() => handleEditFormSubmit({ _id: cardPlayers_id })}
               disabled={buttonDisabled}
             >
               保存する

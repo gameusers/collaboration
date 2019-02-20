@@ -135,7 +135,7 @@ export default class extends React.Component {
             key={index}
             label={valueObj.name}
             color="primary"
-            onDelete={() => handleCardPlayerDeleteHardwareInactive(_id, valueObj.hardwareID)}
+            onDelete={() => handleCardPlayerDeleteHardwareInactive({ _id, hardwareID: valueObj.hardwareID })}
             variant="outlined"
           />
         );
@@ -212,7 +212,11 @@ export default class extends React.Component {
             key={index}
             component="div"
             selected={index === suggestionSelected}
-            onMouseDown={() => handleCardPlayerAddHardwareInactive(_id, valueObj.hardwareID, valueObj.name)}
+            onMouseDown={() => handleCardPlayerAddHardwareInactive({
+              _id,
+              hardwareID: valueObj.hardwareID,
+              name: valueObj.name
+            })}
             style={{
               fontWeight: index2 !== -1 ? 'bold' : 'normal',
             }}
@@ -280,16 +284,22 @@ export default class extends React.Component {
         
         
         <div
-          onFocus={()=> handleCardPlayerHardwareInactiveTextFieldOnFocus(_id)}
-          onBlur={()=> handleCardPlayerHardwareInactiveTextFieldOnBlur(_id)}
+          onFocus={()=> handleCardPlayerHardwareInactiveTextFieldOnFocus({ _id })}
+          onBlur={()=> handleCardPlayerHardwareInactiveTextFieldOnBlur({ _id })}
         >
           
           <StyledTextFieldWide
             id="hardwareInactive"
             label="ハードウェア名"
             value={inputValue}
-            onChange={(event) => handleCardPlayerEditHardwareInactiveTextField(event, _id)}
-            onKeyDown={(eventObj) => handleCardPlayerFormHardwareInactiveSuggestionOnKeyDown(eventObj, _id, 'hardwareSuggestionSelected', 1)}
+            onChange={(eventObj) => handleCardPlayerEditHardwareInactiveTextField({
+              _id,
+              value: eventObj.target.value
+            })}
+            onKeyDown={(eventObj) => handleCardPlayerFormHardwareInactiveSuggestionOnKeyDown({
+              eventObj,
+              _id
+            })}
             margin="normal"
             autoComplete="off"
             inputProps={{
@@ -307,7 +317,10 @@ export default class extends React.Component {
             control={
               <Checkbox
                 checked={search}
-                onChange={(event) => handleCardPlayerEditHardwareInactiveSearch(event, _id)}
+                onChange={(eventObj) => handleCardPlayerEditHardwareInactiveSearch({
+                  _id,
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="昔、所有していたハードウェアで検索可能にする"

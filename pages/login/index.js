@@ -157,7 +157,7 @@ const ReCAPTCHAContainer = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/login
+//   URL: http://dev-1.gameusers.org:8080/login
 // --------------------------------------------------
 
 @observer

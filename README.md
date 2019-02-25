@@ -13,7 +13,7 @@ Game Users を Node.js に書き換えたい！
 Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、みんなで開発できる環境を作ってみました。
 <br><br>
 
-[開発中のウェブサイト（リアルタイムでコードが反映されます）](http://35.203.143.160:8080/)
+[開発中のウェブサイト（リアルタイムでコードが反映されます）](http://dev-1.gameusers.org:8080/)
 <br><br>
 
 **ゲストアカウント**
@@ -26,8 +26,8 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 ゲストアカウントでログインすると以下のページが見れるようになります。管理者がいないときは、ゲストアカウントは Read Only になっています。
 <br><br>
 
-- [Cloud9 IDE](https://us-west-2.console.aws.amazon.com/cloud9/ide/df44294c8853471b8ddd609c09af06f3)
-- [Mongo Express（Basic認証が表示されますが空欄で入れます）](https://df44294c8853471b8ddd609c09af06f3.vfs.cloud9.us-west-2.amazonaws.com:8081/)
+- [Cloud9 IDE](https://us-west-2.console.aws.amazon.com/cloud9/ide/7e3fb917694e4ae5b1570f0b0e887090)
+- [Mongo Express（Basic認証が表示されますが空欄で入れます）](https://7e3fb917694e4ae5b1570f0b0e887090.vfs.cloud9.us-west-2.amazonaws.com:8081/)
 <br><br>
 
 ※ ログアウトするときはブラウザを閉じるだけでOKです。ゴミ箱マークは押さないようにしてください。
@@ -41,9 +41,10 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 マスターアカウント（master-1～5）でログインできる方は、以下の Cloud9 環境も利用できます。
 <br><br>
 
-- [開発中のウェブサイト 2](http://35.203.143.160:8082/)
+※ 2019/2/23 現在停止中です。
+- [開発中のウェブサイト 2](http://dev-1.gameusers.org:8082/)
 - [Cloud9 IDE 2](https://us-west-2.console.aws.amazon.com/cloud9/ide/df44294c8853471b8ddd609c09af06f3)
-- [開発中のウェブサイト 3](http://35.203.143.160:8083/)
+- [開発中のウェブサイト 3](http://dev-1.gameusers.org:8083/)
 - [Cloud9 IDE 3](https://us-west-2.console.aws.amazon.com/cloud9/ide/7338aa92de58493393812a0a42b03518)
 <br /><br /><br />
 
@@ -62,8 +63,8 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 
     # URL
-    URL_BASE=http://35.203.143.160:8080/
-    URL_API=http://35.203.143.160:8080/api
+    URL_BASE=http://dev-1.gameusers.org:8080/
+    URL_API=http://dev-1.gameusers.org:8080/api
 
 デフォルトでは上記の値に設定されていますが、例えば localhost でアクセスする場合は、以下のように変更してください。
 

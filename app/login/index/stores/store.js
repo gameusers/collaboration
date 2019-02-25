@@ -823,7 +823,7 @@ class Store {
         this.handleFormReset();
         
         // Page Transition
-        window.location.href = `http://35.203.143.160:8080/pl/${jsonObj.playerID}`;
+        window.location.href = `http://dev-1.gameusers.org:8080/pl/${jsonObj.playerID}`;
         
       })
       .catch((error) => {

@@ -39,17 +39,19 @@ import { errorsArrIntoErrorMessage } from '../../../../@format/error';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersName = require('../../../../@database/card-players/validations/name');
-const validationCardPlayersStatus = require('../../../../@database/card-players/validations/status');
-const validationCardPlayersComment = require('../../../../@database/card-players/validations/comment');
-const validationCardPlayersAge = require('../../../../@database/card-players/validations/age');
+const { validationCardPlayersName } = require('../../../../@database/card-players/validations/name');
+const { validationCardPlayersStatus } = require('../../../../@database/card-players/validations/status');
+// const validationCardPlayersComment = require('../../../../@database/card-players/validations/comment');
+// const validationCardPlayersAge = require('../../../../@database/card-players/validations/age');
 
 
-const { validationCardPlayersHardwareActiveArr, validationCardPlayersHardwareInactiveArr } = require('../../../../@database/card-players/validations/hardware');
-const { validationCardPlayersIDArr } = require('../../../../@database/card-players/validations/id');
+// const { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } = require('../../../../@database/card-players/validations/pc');
+// const { validationCardPlayersHardwareActiveArr, validationCardPlayersHardwareInactiveArr } = require('../../../../@database/card-players/validations/hardware');
+// const { validationCardPlayersIDArr } = require('../../../../@database/card-players/validations/id');
 const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@database/card-players/validations/activity-time');
-const { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } = require('../../../../@database/card-players/validations/looking-for-friends');
-const { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } = require('../../../../@database/card-players/validations/voice-chat');
+// const { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } = require('../../../../@database/card-players/validations/looking-for-friends');
+// const { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } = require('../../../../@database/card-players/validations/voice-chat');
+const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
 
 
 
@@ -741,90 +743,6 @@ class Store {
   // ---------------------------------------------
   
   // ---------------------------------------------
-  //   ハンドルネーム
-  // ---------------------------------------------
-  
-  /**
-   * ハンドルネームを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditName({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].nameObj.value = value;
-  };
-  
-  
-  /**
-   * ハンドルネームの検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditNameSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].nameObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   ステータス
-  // ---------------------------------------------
-  
-  /**
-   * ステータスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditStatus({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].statusObj.value = value;
-  };
-  
-  
-  /**
-   * ステータスの検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditStatusSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].statusObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   コメント
-  // ---------------------------------------------
-  
-  /**
-   * コメントを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditComment({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].commentObj.value = value;
-  };
-  
-  
-  /**
-   * コメントの検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditCommentSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].commentObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
   //   年齢
   // ---------------------------------------------
   
@@ -857,17 +775,6 @@ class Store {
     // 誕生日をクリア
     this.cardPlayerEditFormDataObj[_id].ageObj.value = '';
     
-  };
-  
-  
-  /**
-   * 年齢の検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditAgeSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].ageObj.search = value;
   };
   
   
@@ -909,45 +816,6 @@ class Store {
   };
   
   
-  /**
-   * 性別の検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditSexSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].sexObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   住所
-  // ---------------------------------------------
-  
-  /**
-   * 住所（その他）を変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditAddressAlternativeText({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].addressObj.alternativeText = value;
-  };
-  
-  
-  /**
-   * 住所の検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditAddressSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].addressObj.search = value;
-  };
-  
-  
   
   
   // ---------------------------------------------
@@ -986,17 +854,6 @@ class Store {
   };
   
   
-  /**
-   * ゲーム歴の検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditGamingExperienceSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].gamingExperienceObj.search = value;
-  };
-  
-  
   
   
   // ---------------------------------------------
@@ -1021,29 +878,6 @@ class Store {
   @action.bound
   handleCardPlayerRemoveHobbyForm({ _id, index }) {
     this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr.splice(index, 1);
-  };
-  
-  
-  /**
-   * 趣味を変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {number} index - 変更する配列のインデックス
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditHobby({ _id, index, value }) {
-    this.cardPlayerEditFormDataObj[_id].hobbiesObj.valueArr[index] = value;
-  };
-  
-  
-  /**
-   * 趣味の検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditHobbySearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].hobbiesObj.search = value;
   };
   
   
@@ -1072,115 +906,6 @@ class Store {
   handleCardPlayerRemoveSpecialSkillForm({ _id, index }) {
     this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr.splice(index, 1);
   };
-  
-  
-  /**
-   * 特技を変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {number} index - 変更する配列のインデックス
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditSpecialSkill({ _id, index, value }) {
-    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.valueArr[index] = value;
-  };
-  
-  
-  /**
-   * 特技の検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditSpecialSkillSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].specialSkillsObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   スマートフォン
-  // ---------------------------------------------
-  
-  /**
-   * スマートフォンのモデルを変更する
-   *@param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditSmartphoneModel({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].smartphoneObj.model = value;
-  };
-  
-  
-  /**
-   * スマートフォンのコメントを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditSmartphoneComment({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].smartphoneObj.comment = value;
-  };
-  
-  
-  /**
-   * スマートフォンの検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditSmartphoneSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].smartphoneObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   タブレット
-  // ---------------------------------------------
-  
-  /**
-   * タブレットのモデルを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditTabletModel({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].tabletObj.model = value;
-  };
-  
-  
-  /**
-   * タブレットのコメントを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditTabletComment({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].tabletObj.comment = value;
-  };
-  
-  
-  /**
-   * タブレットの検索チェックボックスを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleCardPlayerEditTabletSearch({ _id, value }) {
-    this.cardPlayerEditFormDataObj[_id].tabletObj.search = value;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   PC
-  // ---------------------------------------------
-  
   
   
   
@@ -1710,16 +1435,6 @@ class Store {
   
   
   // ---------------------------------------------
-  //   フレンド
-  // ---------------------------------------------
-  
-  
-  // ---------------------------------------------
-  //   ボイスチャット
-  // ---------------------------------------------
-  
-  
-  // ---------------------------------------------
   //   Link
   // ---------------------------------------------
   
@@ -1783,90 +1498,27 @@ class Store {
       // storeLayout.handleButtonDisabledObj(`${_id}-editForm`, true);
       
       
-      
       // ---------------------------------------------
       //   Validation
       // ---------------------------------------------
       
-      const validationHardwareActiveArrObj = validationCardPlayersHardwareActiveArr({ required: false, valueArr: this.cardPlayerEditFormDataObj[_id].hardwareActiveArr });
-      
-      const validationHardwareInactiveArrObj = validationCardPlayersHardwareInactiveArr({ required: false, valueArr: this.cardPlayerEditFormDataObj[_id].hardwareInactiveArr });
-      
-      const validationIDArrObj = validationCardPlayersIDArr({ required: false, valueArr: this.cardPlayerEditFormDataObj[_id].idArr });
-      
-      const validationActivityTimeObjValueArrObj = validationCardPlayersActivityTimeObjValueArr({ valueArr: this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr });
-      
-      const validationLookingForFriendsValueObj = validationCardPlayersLookingForFriendsValue({ value: this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.value });
-      
-      const validationLookingForFriendsCommentObj = validationCardPlayersLookingForFriendsComment({ value: this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.comment });
-      
-      const validationLookingForFriendsIconObj = validationCardPlayersLookingForFriendsIcon({ value: this.cardPlayerEditFormDataObj[_id].lookingForFriendsObj.icon });
-      
-      const validationVoiceChatValueObj = validationCardPlayersVoiceChatValue({ value: this.cardPlayerEditFormDataObj[_id].voiceChatObj.value });
-      
-      const validationVoiceChatCommentObj = validationCardPlayersVoiceChatComment({ value: this.cardPlayerEditFormDataObj[_id].voiceChatObj.comment });
-      
-      // , 
-      
-      
-      
-      console.log(`
-        ----- validationHardwareActiveArrObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationHardwareActiveArrObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationHardwareInactiveArrObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationHardwareInactiveArrObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationIDArrObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationIDArrObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationActivityTimeObjValueArrObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationActivityTimeObjValueArrObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationLookingForFriendsValueObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationLookingForFriendsValueObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationLookingForFriendsCommentObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationLookingForFriendsCommentObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationLookingForFriendsIconObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationLookingForFriendsIconObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationVoiceChatValueObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationVoiceChatValueObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationVoiceChatCommentObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationVoiceChatCommentObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      return;
-      
-      
+      if (
+        
+        // ハンドルネーム
+        validationCardPlayersName({ value: this.cardPlayerEditFormDataObj[_id].nameObj.value }).error ||
+        
+        // ステータス
+        validationCardPlayersStatus({ value: this.cardPlayerEditFormDataObj[_id].statusObj.value }).error ||
+        
+        // 活動時間
+        validationCardPlayersActivityTimeObjValueArr({ valueArr: this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr }).error ||
+        
+        // リンク
+        validationCardPlayersLinkArr({ valueArr: this.cardPlayerEditFormDataObj[_id].linkArr }).error
+        
+      ) {
+        throw new Error();
+      }
       
       
       // ---------------------------------------------
@@ -1875,10 +1527,7 @@ class Store {
       
       const formData = new FormData();
       
-      formData.append('users_id', users_id);
-      
-      
-      
+      formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
       
       
       // ---------------------------------------------
@@ -1886,7 +1535,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/users/follow`,
+        urlApi: `${storeData.urlApi}/v1/card-players/upsert`,
         methodType: 'POST',
         formData: formData
       });
@@ -1898,6 +1547,8 @@ class Store {
       //   --------------------\n
       // `);
       
+      return;
+      
       
       // ---------------------------------------------
       //   Error
@@ -1906,13 +1557,6 @@ class Store {
       if ('errorsArr' in resultObj) {
         throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
       }
-      
-      
-      // ---------------------------------------------
-      //   ダイアログを閉じる
-      // ---------------------------------------------
-      
-      this.handleFollowDialogClose(users_id);
       
       
       // ---------------------------------------------
@@ -1926,11 +1570,7 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      if (type === 'follow') {
-        storeLayout.handleSnackbarOpen('success', 'フォローしました。');
-      } else {
-        storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
-      }
+      storeLayout.handleSnackbarOpen('success', '保存しました');
       
       
     } catch (error) {
@@ -1940,11 +1580,7 @@ class Store {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      if (type === 'follow') {
-        storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
-      } else {
-        storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
-      }
+      storeLayout.handleSnackbarOpen('error', `フォームの入力内容を見直してください`);
       
       
     } finally {

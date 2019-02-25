@@ -33,7 +33,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersName = require('../../../../../@database/card-players/validations/name');
+const { validationCardPlayersName } = require('../../../../../@database/card-players/validations/name');
 
 
 
@@ -50,7 +50,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -78,19 +78,14 @@ export default injectIntl(class extends React.Component {
     
     const { stores, intl, _id, nameObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditName,
-      handleCardPlayerEditNameSearch
-      
-    } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
-    const validationObj = validationCardPlayersName({ required: true, value: nameObj.value });
+    const validationObj = validationCardPlayersName({ value: nameObj.value });
     
     
     // --------------------------------------------------
@@ -119,7 +114,10 @@ export default injectIntl(class extends React.Component {
           id="name"
           label="ハンドルネーム"
           value={validationObj.value}
-          onChange={(eventObj) => handleCardPlayerEditName({ _id, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'nameObj', 'value'],
+            value: eventObj.target.value
+          })}
           error={validationObj.error}
           helperText={intl.formatMessage({ id: validationObj.messageCode }, { numberOfCharacters: validationObj.numberOfCharacters })}
           margin="normal"
@@ -133,7 +131,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={nameObj.search}
-                onChange={(eventObj) => handleCardPlayerEditNameSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'nameObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="ハンドルネームで検索可能にする"

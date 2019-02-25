@@ -33,7 +33,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersAddressAlternativeText = require('../../../../../@database/card-players/validations/address-alternative-text');
+const { validationCardPlayersAddressAlternativeText } = require('../../../../../@database/card-players/validations/address');
 
 
 
@@ -49,7 +49,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const StyledTextField = styled(TextField)`
@@ -59,7 +59,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -87,19 +87,14 @@ export default injectIntl(class extends React.Component {
     
     const { stores, intl, _id, addressObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditAddressAlternativeText,
-      handleCardPlayerEditAddressSearch
-      
-    } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
-    const validationAlternativeTextObj = validationCardPlayersAddressAlternativeText({ required: false, value: addressObj.alternativeText });
+    const validationAlternativeTextObj = validationCardPlayersAddressAlternativeText({ value: addressObj.alternativeText });
     
     
     // --------------------------------------------------
@@ -137,7 +132,10 @@ export default injectIntl(class extends React.Component {
           id="addressAlternativeText"
           label="住所"
           value={validationAlternativeTextObj.value}
-          onChange={(eventObj) => handleCardPlayerEditAddressAlternativeText({ _id, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'addressObj', 'alternativeText'],
+            value: eventObj.target.value
+          })}
           error={validationAlternativeTextObj.error}
           helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
@@ -152,7 +150,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={addressObj.search}
-                onChange={(eventObj) => handleCardPlayerEditAddressSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'addressObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="住所で検索可能にする"

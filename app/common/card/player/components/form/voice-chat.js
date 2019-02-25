@@ -64,7 +64,6 @@ const SelectBox = styled.div`
 const IconBox = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  margin: 0;
 `;
 
 const StyledIcon = styled(Icon)`
@@ -133,14 +132,6 @@ export default class extends React.Component {
     const { stores, _id, value, comment, search } = this.props;
     
     const { handleCardPlayerEditFormData } = stores.cardPlayer;
-    
-    const {
-      
-      handleCardPlayerEditVoiceChatValue,
-      handleCardPlayerEditVoiceChatComment,
-      handleCardPlayerEditVoiceChatSearch
-      
-    } = stores.cardPlayer;
     
     
     // --------------------------------------------------

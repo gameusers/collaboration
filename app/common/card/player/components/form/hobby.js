@@ -39,13 +39,6 @@ import IconAddCircle from '@material-ui/icons/AddCircle';
 import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const validationCardPlayersHobby = require('../../../../../@database/card-players/validations/hobby');
-
-
 
 
 // --------------------------------------------------
@@ -59,7 +52,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const TextFieldBox = styled.div`
@@ -75,7 +68,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -105,25 +98,11 @@ export default injectIntl(class extends React.Component {
     
     const {
       
+      handleCardPlayerEditFormData,
       handleCardPlayerAddHobbyForm,
       handleCardPlayerRemoveHobbyForm,
-      handleCardPlayerEditHobby,
-      handleCardPlayerEditHobbySearch
       
     } = stores.cardPlayer;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationObj = validationCardPlayersHobby({ required: false, valueArr: hobbiesObj.valueArr });
-    
-    // const validationObj = validationCardPlayersHobby({ required: false, valueArr: ['aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'] });
-    
-    
     
     
     // --------------------------------------------------
@@ -133,13 +112,15 @@ export default injectIntl(class extends React.Component {
     const componentsArr = [];
     
     for (const [index, value] of hobbiesObj.valueArr.entries()) {
-      // console.log(index, value);
       
       componentsArr.push(
         <StyledTextField
           id={`hobby-${index}`}
           value={value}
-          onChange={(eventObj) => handleCardPlayerEditHobby({ _id, index, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'hobbiesObj', 'valueArr', index],
+            value: eventObj.target.value
+          })}
           margin="dense"
           variant="outlined"
           key={index}
@@ -163,10 +144,8 @@ export default injectIntl(class extends React.Component {
     }
     
     
-    
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -178,8 +157,6 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
     // `);
-    
-    
     
     
     // --------------------------------------------------
@@ -215,7 +192,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={hobbiesObj.search}
-                onChange={(eventObj) => handleCardPlayerEditHobbySearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'hobbiesObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="趣味で検索可能にする"

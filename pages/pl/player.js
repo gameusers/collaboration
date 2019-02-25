@@ -124,7 +124,7 @@ const CardBox = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/pl/***
+//   URL: http://dev-1.gameusers.org:8080/pl/***
 // --------------------------------------------------
 
 @observer
@@ -416,7 +416,7 @@ class Component extends React.Component {
               {/* カードダイアログテスト用 */}
               <div style={{ margin: '0 0 20px 0', padding: '10px', backgroundColor: 'white' }}>
                 <User
-                  thumbnailSrc={'http://35.203.143.160:8080/static/img/card/players/zaoOWw89g/thumbnail/image.jpg'}
+                  thumbnailSrc={'http://dev-1.gameusers.org:8080/static/img/card/players/zaoOWw89g/thumbnail/image.jpg'}
                   name={'Name'}
                   playerID={'user1'}
                   status={'Status'}

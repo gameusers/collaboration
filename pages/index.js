@@ -148,7 +148,7 @@ const StyledIconChatBubble = styled(IconChatBubble)`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/
+//   URL: http://dev-1.gameusers.org:8080/
 // --------------------------------------------------
 
 @observer

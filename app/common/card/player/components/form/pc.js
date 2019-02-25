@@ -30,13 +30,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const { validationCardPlayersPCModel } = require('../../../../../@database/card-players/validations/pc');
-
-
 
 
 // --------------------------------------------------
@@ -123,13 +116,6 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Validations
-    // --------------------------------------------------
-    
-    const validationModelObj = validationCardPlayersPCModel({ required: false, value: pcObj.model });
-    
-    
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -159,14 +145,12 @@ export default injectIntl(class extends React.Component {
         {/* モデル */}
         <StyledTextFieldWide
           id="pcModel"
-          label="モデル"
+          label="モデル・機種名"
           value={pcObj.model}
           onChange={(eventObj) => handleCardPlayerEditFormData({
             pathArr: [_id, 'pcObj', 'model'],
             value: eventObj.target.value
           })}
-          error={validationModelObj.error}
-          helperText={intl.formatMessage({ id: validationModelObj.messageCode }, { numberOfCharacters: validationModelObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 50,

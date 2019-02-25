@@ -33,7 +33,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersStatus = require('../../../../../@database/card-players/validations/status');
+const { validationCardPlayersStatus } = require('../../../../../@database/card-players/validations/status');
 
 
 
@@ -50,7 +50,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -78,19 +78,14 @@ export default injectIntl(class extends React.Component {
     
     const { stores, intl, _id, statusObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditStatus,
-      handleCardPlayerEditStatusSearch
-      
-    } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
-    const validationObj = validationCardPlayersStatus({ required: true, value: statusObj.value });
+    const validationObj = validationCardPlayersStatus({ value: statusObj.value });
     
     
     // --------------------------------------------------
@@ -104,7 +99,10 @@ export default injectIntl(class extends React.Component {
           id="status"
           label="ステータス"
           value={validationObj.value}
-          onChange={(eventObj) => handleCardPlayerEditStatus({ _id, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'statusObj', 'value'],
+            value: eventObj.target.value
+          })}
           error={validationObj.error}
           helperText={intl.formatMessage({ id: validationObj.messageCode }, { numberOfCharacters: validationObj.numberOfCharacters })}
           margin="normal"
@@ -118,7 +116,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={statusObj.search}
-                onChange={(eventObj) => handleCardPlayerEditStatusSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'statusObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="ステータスで検索可能にする"

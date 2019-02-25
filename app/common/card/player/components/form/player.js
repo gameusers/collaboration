@@ -72,10 +72,7 @@ import FormLink from './link';
 
 const StyledCardContent = styled(CardContent)`
   && {
-    // margin-top: 0;
-    // margin-bottom: 0;
-    // padding-top: 0;
-    // padding-bottom: 0;
+    
   }
 `;
 
@@ -132,13 +129,6 @@ const ImageTitle = styled.div`
 const StyledCardActions = styled(CardActions)`
   && {
     margin: 6px;
-    // margin: 16px 0 0 0;
-    // padding-top: 0;
-    // padding-bottom: 16px;
-    
-    // @media screen and (max-width: 480px) {
-    //   padding: 0 10px 16px 10px;
-    // }
   }
 `;
 
@@ -197,8 +187,6 @@ export default class extends React.Component {
     } = stores.cardPlayer;
     
     
-    
-    
     // --------------------------------------------------
     //   Form Data
     // --------------------------------------------------
@@ -230,8 +218,6 @@ export default class extends React.Component {
     } = cardPlayerEditFormDataObj[cardPlayers_id];
     
     
-    
-    
     // --------------------------------------------------
     //   Dialog
     // --------------------------------------------------
@@ -252,8 +238,6 @@ export default class extends React.Component {
     if (`${cardPlayers_id}-editForm` in buttonDisabledObj) {
       buttonDisabled = buttonDisabledObj[`${cardPlayers_id}-editForm`];
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -399,9 +383,6 @@ export default class extends React.Component {
             <Tablet
               _id={cardPlayers_id}
               tabletObj={tabletObj}
-              model={tabletObj.model}
-              comment={tabletObj.comment}
-              search={tabletObj.search}
             />
           </Box>
           

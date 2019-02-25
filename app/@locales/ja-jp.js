@@ -79,7 +79,7 @@ const ja_JP = {
   '2FWoSprRW': '他の値を表示したい場合はこちらに入力してください',
   
   // /app/@database/card-players/validations/address.js
-  'GguXb4Xxo': '公開されるので気をつけましょう',
+  'GguXb4Xxo': '詳しい住所は載せないようにしてください',
   
   // /app/@database/card-players/validations/gaming-experience.js
   'fCsp5ULCG': '始めた日からゲーム歴が自動で計算されます',

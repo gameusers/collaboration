@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * PC（モデル）
- * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersPCModel = ({ required, value }) => {
+const validationCardPlayersPCModel = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -59,23 +58,15 @@ const validationCardPlayersPCModel = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('ghkg23x85');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
       return resultObj;
-      
     }
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
       messageCodeArr.unshift('yhgyXHqZu');
-      resultObj.errorCodeArr.push('cjSNy-Vha');
+      resultObj.errorCodeArr.push('LwyyiMp9o');
     }
     
     
@@ -87,7 +78,7 @@ const validationCardPlayersPCModel = ({ required, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('QobeBXNyx');
+    resultObj.errorCodeArr.push('DK86cuiZ5');
     
     
   } finally {
@@ -124,10 +115,9 @@ const validationCardPlayersPCModel = ({ required, value }) => {
 
 /**
  * PC（コメント）
- * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersPCComment = ({ required, value }) => {
+const validationCardPlayersPCComment = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -162,23 +152,15 @@ const validationCardPlayersPCComment = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('GOKQvL5H5');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
       return resultObj;
-      
     }
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
       messageCodeArr.unshift('pLES2ZGM2');
-      resultObj.errorCodeArr.push('K96lkq3va');
+      resultObj.errorCodeArr.push('MyP66xx_9');
     }
     
     
@@ -190,7 +172,7 @@ const validationCardPlayersPCComment = ({ required, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('a2gZ8GZFC');
+    resultObj.errorCodeArr.push('eAvDP1eBH');
     
     
   } finally {
@@ -227,10 +209,9 @@ const validationCardPlayersPCComment = ({ required, value }) => {
 
 /**
  * PC（スペック）
- * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersPCSpec = ({ required, valueObj }) => {
+const validationCardPlayersPCSpec = ({ valueObj }) => {
   
   
   // ---------------------------------------------
@@ -267,7 +248,7 @@ const validationCardPlayersPCSpec = ({ required, valueObj }) => {
       // 文字数チェック
       if (!validator.isLength(data, { min: minLength, max: maxLength })) {
         messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('nl_g-mb6_');
+        resultObj.errorCodeArr.push('fwq9KZOmc');
       }
       
     }
@@ -281,7 +262,7 @@ const validationCardPlayersPCSpec = ({ required, valueObj }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('jfiBXkrK0');
+    resultObj.errorCodeArr.push('L15FgzNiK');
     
     
   } finally {

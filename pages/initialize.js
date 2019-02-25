@@ -28,7 +28,7 @@ const { fetchWrapper } = require('../app/@modules/fetch');
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/initialize
+//   URL: http://dev-1.gameusers.org:8080/initialize
 // --------------------------------------------------
 
 class Component extends React.Component {

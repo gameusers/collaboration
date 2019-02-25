@@ -33,7 +33,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersComment = require('../../../../../@database/card-players/validations/comment');
+const { validationCardPlayersComment } = require('../../../../../@database/card-players/validations/comment');
 
 
 
@@ -99,19 +99,14 @@ export default injectIntl(class extends React.Component {
     
     const { stores, intl, _id, commentObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditComment,
-      handleCardPlayerEditCommentSearch
-      
-    } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
-    const validationObj = validationCardPlayersComment({ required: true, value: commentObj.value });
+    const validationObj = validationCardPlayersComment({ value: commentObj.value });
     
     
     // --------------------------------------------------
@@ -128,7 +123,10 @@ export default injectIntl(class extends React.Component {
           rows={5}
           placeholder="コメントを入力してください"
           value={validationObj.value}
-          onChange={(eventObj) => handleCardPlayerEditComment({ _id, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'commentObj', 'value'],
+            value: eventObj.target.value
+          })}
           maxLength={3000}
         />
         
@@ -138,7 +136,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={commentObj.search}
-                onChange={(eventObj) => handleCardPlayerEditCommentSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'commentObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="コメントで検索可能にする"

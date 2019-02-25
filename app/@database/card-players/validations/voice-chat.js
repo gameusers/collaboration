@@ -51,7 +51,7 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
     
     // Booleanチェック
     if (!validator.isBoolean(data)) {
-      resultObj.errorCodeArr.push('3hl9oEFB3');
+      resultObj.errorCodeArr.push('hpz55PqlZ');
     }
     
     
@@ -62,7 +62,7 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('B8CjcolLw');
+    resultObj.errorCodeArr.push('W6PoyD7Su');
     
     
   } finally {
@@ -133,7 +133,7 @@ const validationCardPlayersVoiceChatComment = ({ value }) => {
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      resultObj.errorCodeArr.push('CBclgusej');
+      resultObj.errorCodeArr.push('rXpHOv1ph');
     }
     
     
@@ -144,7 +144,7 @@ const validationCardPlayersVoiceChatComment = ({ value }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('Zra5EfoXu');
+    resultObj.errorCodeArr.push('mJsZDkHpv');
     
     
   } finally {

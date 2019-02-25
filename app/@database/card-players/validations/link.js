@@ -51,6 +51,7 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
   const errorCodeSet = new Set();
   
   let resultObj = {
+    valueArr: [],
     formArr: [],
     error: false,
     errorCodeArr: []
@@ -65,6 +66,8 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
     // ---------------------------------------------
     
     for (let dataObj of Object.values(valueArr)) {
+      
+      const error = false;
       
       const _id = dataObj._id ? dataObj._id : shortid.generate();
       const type = dataObj.type ? dataObj.type : '';
@@ -120,7 +123,8 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       
       // 英数と -_ のみ
       if (_id.match(/^[\w\-]+$/) === null) {
-        errorCodeSet.add('1ArF0ut8V');
+        errorCodeSet.add('uTHUXw0Li');
+        error = true;
       }
       
       
@@ -132,7 +136,8 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       if (!validator.isIn(type, ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Pixiv', 'Other'])) {
         formObj.typeObj.error = true;
         formObj.typeObj.messageCode = 'PH8jcw-VF';
-        errorCodeSet.add('nNCzZDQrE');
+        errorCodeSet.add('gLkbRV4v-');
+        error = true;
       }
       
       
@@ -140,11 +145,20 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       //   Label
       // ---------------------------------------------
       
+      // Type が Other の場合、Label の入力が必要
+      if (type === 'Other' && validator.isEmpty(label)) {
+        formObj.labelObj.error = true;
+        formObj.labelObj.messageCode = 'cFbXmuFVh';
+        errorCodeSet.add('V_j_folkh');
+        error = true;
+      }
+      
       // 文字数チェック
       if (!validator.isEmpty(label) && !validator.isLength(label, { min: minLengthLabel, max: maxLengthLabel })) {
         formObj.labelObj.error = true;
         formObj.labelObj.messageCode = 'xdAU7SgoO';
-        errorCodeSet.add('JBMaWZy8Q');
+        errorCodeSet.add('z6TMmqmA7');
+        error = true;
       }
       
       
@@ -156,14 +170,16 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       if (!validator.isLength(url, { min: minLengthURL, max: maxLengthURL })) {
         formObj.urlObj.error = true;
         formObj.urlObj.messageCode = 'eASl8OdnD';
-        errorCodeSet.add('crjh4LA6v');
+        errorCodeSet.add('PjVGliScE');
+        error = true;
       }
       
       // URLチェック
       if (!validator.isURL(url)) {
         formObj.urlObj.error = true;
         formObj.urlObj.messageCode = 'Bv79Cmo2s';
-        errorCodeSet.add('Rj9SOuo9a');
+        errorCodeSet.add('Zq1czsL9E');
+        error = true;
       }
       
       
@@ -173,6 +189,16 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       
       // フォーム用
       resultObj.formArr.push(formObj);
+      
+      // データベース更新用
+      if (!error) {
+        resultObj.valueArr.push({
+          _id,
+          type,
+          label,
+          url
+        });
+      }
       
       
     }
@@ -187,7 +213,7 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    errorCodeSet.add('cvj2gQZWC');
+    errorCodeSet.add('_cLCLfYVB');
     
     
   } finally {

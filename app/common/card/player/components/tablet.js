@@ -35,7 +35,6 @@ import Paragraph from '../../../layout/components/paragraph';
 
 
 
-
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
@@ -43,7 +42,6 @@ import Paragraph from '../../../layout/components/paragraph';
 
 const Container = styled.div`
   margin: 28px 0 0 0;
-  padding: 0;
 `;
 
 const HeadingBox = styled.div`
@@ -64,9 +62,7 @@ const Heading = styled.h3`
 
 const CommentBox = styled.div`
   margin: 6px 0 0 0;
-  padding: 0;
 `;
-
 
 
 

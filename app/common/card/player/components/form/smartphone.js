@@ -30,14 +30,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const validationCardPlayersSmartphoneModel = require('../../../../../@database/card-players/validations/smartphone-model');
-const validationCardPlayersSmartphoneComment = require('../../../../../@database/card-players/validations/smartphone-comment');
-
-
 
 
 // --------------------------------------------------
@@ -51,7 +43,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const StyledTextFieldWide = styled(TextField)`
@@ -90,7 +82,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -118,21 +110,7 @@ export default injectIntl(class extends React.Component {
     
     const { stores, intl, _id, smartphoneObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditSmartphoneModel,
-      handleCardPlayerEditSmartphoneComment,
-      handleCardPlayerEditSmartphoneSearch
-      
-    } = stores.cardPlayer;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationModelObj = validationCardPlayersSmartphoneModel({ required: false, value: smartphoneObj.model });
-    // const validationCommentObj = validationCardPlayersSmartphoneComment({ required: false, value: smartphoneObj.comment });
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
@@ -167,11 +145,12 @@ export default injectIntl(class extends React.Component {
         
         <StyledTextFieldWide
           id="smartphoneModel"
-          label="モデル"
+          label="モデル・機種名"
           value={smartphoneObj.model}
-          onChange={(eventObj) => handleCardPlayerEditSmartphoneModel({ _id, value: eventObj.target.value })}
-          error={validationModelObj.error}
-          helperText={intl.formatMessage({ id: validationModelObj.messageCode }, { numberOfCharacters: validationModelObj.numberOfCharacters })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'smartphoneObj', 'model'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 50,
@@ -184,7 +163,10 @@ export default injectIntl(class extends React.Component {
             rows={5}
             placeholder="コメントを入力してください"
             value={smartphoneObj.comment}
-            onChange={(eventObj) => handleCardPlayerEditSmartphoneComment({ _id, value: eventObj.target.value })}
+            onChange={(eventObj) => handleCardPlayerEditFormData({
+              pathArr: [_id, 'smartphoneObj', 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
           />
         </TextareaBox>
@@ -195,7 +177,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={smartphoneObj.search}
-                onChange={(eventObj) => handleCardPlayerEditSmartphoneSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'smartphoneObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="スマートフォンの情報で検索可能にする"

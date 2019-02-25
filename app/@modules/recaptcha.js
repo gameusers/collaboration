@@ -24,7 +24,7 @@ const verifyRecaptcha = async (req, res) => {
   //   {
   //     success: true,
   //     challenge_ts: '2018-09-22T10:53:45Z',
-  //     hostname: '35.203.143.160'
+  //     hostname: 'dev-1.gameusers.org'
   //   }
   //
   //   {
@@ -51,7 +51,7 @@ const verifyRecaptcha = async (req, res) => {
   if (process.env.NODE_ENV === 'production' || process.env.VERIFY_RECAPTCHA === '1') {
   
     const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
-    // const verificationUrl = `http://35.203.143.160:8080/api/v1/login/test2`;
+    // const verificationUrl = `http://dev-1.gameusers.org:8080/api/v1/login/test2`;
       
     await fetch(verificationUrl, {
       method: 'GET',

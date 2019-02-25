@@ -86,7 +86,7 @@ const StyledButton = styled(Button)`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/logout
+//   URL: http://dev-1.gameusers.org:8080/logout
 // --------------------------------------------------
 
 @observer

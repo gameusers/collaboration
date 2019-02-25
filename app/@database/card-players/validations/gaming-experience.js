@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * ゲーム歴（始めた日）
- * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersGamingExperience = ({ required, value }) => {
+const validationCardPlayersGamingExperience = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -51,17 +50,9 @@ const validationCardPlayersGamingExperience = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('fhtaaM05Y');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
       return resultObj;
-      
     }
     
     // 日付チェック
@@ -114,8 +105,105 @@ const validationCardPlayersGamingExperience = ({ required, value }) => {
 
 
 
+/**
+ * ゲーム歴（固定値）
+ * @param {string} value - 値
+ */
+const validationCardPlayersGamingExperienceAlternativeText = ({ value }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 1;
+  const maxLength = 20;
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
+  
+  let resultObj = {
+    value: data,
+    numberOfCharacters,
+    messageCode: 'wfVpYnnq-',
+    error: false,
+    errorCodeArr: []
+  };
+  
+  
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
+      return resultObj;
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('xdAU7SgoO');
+      resultObj.errorCodeArr.push('kM2-GNQQF');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('wVMrRMwXg');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
+    return resultObj;
+    
+    
+  }
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersGamingExperience;
+module.exports = {
+  validationCardPlayersGamingExperience,
+  validationCardPlayersGamingExperienceAlternativeText
+};

@@ -956,8 +956,10 @@ const formatForEditForm = (argumentsObj) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete copiedObj._id;
-    delete copiedObj.imageVideoArr;
+    // delete copiedObj._id;
+    // delete copiedObj.imageVideoArr;
+    // delete copiedObj.hardwareActiveObj;
+    // delete copiedObj.hardwareInactiveObj;
     delete copiedObj.hardwaresArr;
     
     

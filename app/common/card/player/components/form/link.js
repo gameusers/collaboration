@@ -154,7 +154,7 @@ export default injectIntl(class extends React.Component {
     //   Validations
     // --------------------------------------------------
     
-    const validationObj = validationCardPlayersLinkArr({ required: false, valueArr: arr });
+    const validationObj = validationCardPlayersLinkArr({ valueArr: arr });
     
     
     // --------------------------------------------------
@@ -284,11 +284,11 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- validationObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- validationObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- process.env -----\n

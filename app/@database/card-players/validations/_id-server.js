@@ -11,6 +11,13 @@ const util = require('util');
 
 
 // ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const Model = require('../model');
+
+
+// ---------------------------------------------
 //   Validation
 // ---------------------------------------------
 
@@ -20,19 +27,18 @@ const validator = require('validator');
 
 
 /**
- * 年齢（固定値）
- * @param {boolean} required - Required
+ * _id
  * @param {string} value - 値
  */
-const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
+const validationCardPlayers_idServer = async ({ value, conditionObj }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 1;
-  const maxLength = 20;
+  const minLength = 7;
+  const maxLength = 14;
   
   
   // ---------------------------------------------
@@ -40,13 +46,9 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
   // ---------------------------------------------
   
   const data = String(value);
-  const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
-    numberOfCharacters,
-    messageCode: 'Qo5IGidJY',
     error: false,
     errorCodeArr: []
   };
@@ -59,23 +61,21 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('fV6A5pFoX');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
-      return resultObj;
-      
-    }
-    
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('xdAU7SgoO');
-      resultObj.errorCodeArr.push('SYYj39V8F');
+      resultObj.errorCodeArr.push('jy8hab7SJ');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      resultObj.errorCodeArr.push('bxW_wFEsC');
+    }
+    
+    // データベースに存在しているか＆編集権限チェック
+    const count = await Model.count({ conditionObj });
+    
+    if (count !== 1) {
+      resultObj.errorCodeArr.push('4x07Owt6c');
     }
     
     
@@ -86,20 +86,10 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('uGT4FgV7s');
+    resultObj.errorCodeArr.push('SzEAAA2RG');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -126,4 +116,6 @@ const validationCardPlayersAgeAlternativeText = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersAgeAlternativeText;
+module.exports = {
+  validationCardPlayers_idServer
+};

@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * 特技
- * @param {boolean} required - Required
  * @param {string} valueArr - 配列
  */
-const validationCardPlayersSpecialSkill = ({ required, valueArr }) => {
+const validationCardPlayersSpecialSkill = ({ valueArr }) => {
   
   
   // ---------------------------------------------
@@ -59,11 +58,11 @@ const validationCardPlayersSpecialSkill = ({ required, valueArr }) => {
     // 配列ではない
     if (!Array.isArray(valueArr)) {
       messageCodeArr.unshift('c9T-0LONy');
-      resultObj.errorCodeArr.push('60QC7yyw5');
+      resultObj.errorCodeArr.push('OvvwIWXKV');
     }
     
-    // Not Required で配列が空の場合、処理停止
-    if (!required && valueArr.length === 0) {
+    // 配列が空の場合、処理停止
+    if (valueArr.length === 0) {
       return resultObj;
     }
     
@@ -76,7 +75,7 @@ const validationCardPlayersSpecialSkill = ({ required, valueArr }) => {
         // 文字数エラー
         if (!validator.isLength(value, { min: minLength, max: maxLength })) {
           messageCodeArr.unshift('xdAU7SgoO');
-          resultObj.errorCodeArr.push('rYiM5Wsge');
+          resultObj.errorCodeArr.push('vMuBsrU34');
         } else {
           resultObj.valueArr.push(value);
         }
@@ -94,7 +93,7 @@ const validationCardPlayersSpecialSkill = ({ required, valueArr }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('lFm4b8pPX');
+    resultObj.errorCodeArr.push('NptRylRcy');
     
     
   } finally {

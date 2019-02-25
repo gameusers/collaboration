@@ -184,6 +184,8 @@ app.prepare().then(() => {
   server.get('/pl/:param1*', (req, res) => {
     
     
+
+    
     // --------------------------------------------------
     //   Console 出力
     // --------------------------------------------------
@@ -198,6 +200,12 @@ app.prepare().then(() => {
     
     // console.log(chalk`
     //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    // `);
+    
+    // const remoteAddress = req.connection.remoteAddress;
+    
+    // console.log(`
+    //   remoteAddress: \n${util.inspect(remoteAddress, { colors: true, depth: null })}
     // `);
     
     

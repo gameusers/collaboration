@@ -74,7 +74,7 @@ const ButtonGoogle = styled(Button)`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://35.203.143.160:8080/login/social
+//   URL: http://dev-1.gameusers.org:8080/login/social
 // --------------------------------------------------
 
 @observer

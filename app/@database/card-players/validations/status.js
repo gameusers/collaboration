@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * ステータス
- * @param {boolean} required - Required
  * @param {string} value - 値
  */
-const validationCardPlayersStatus = ({ required, value }) => {
+const validationCardPlayersStatus = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -59,23 +58,10 @@ const validationCardPlayersStatus = ({ required, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('OOomlS0wp');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
-      return resultObj;
-      
-    }
-    
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
       messageCodeArr.unshift('xdAU7SgoO');
-      resultObj.errorCodeArr.push('Ec_GT4CAh');
+      resultObj.errorCodeArr.push('lkVgpEBbK');
     }
     
     
@@ -87,7 +73,7 @@ const validationCardPlayersStatus = ({ required, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('Ck2znz4lX');
+    resultObj.errorCodeArr.push('FIV1XReAO');
     
     
   } finally {
@@ -126,4 +112,6 @@ const validationCardPlayersStatus = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersStatus;
+module.exports = {
+  validationCardPlayersStatus
+};

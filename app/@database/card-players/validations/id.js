@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * ID Array
- * @param {boolean} required - Required
  * @param {string} valueArr - 検証する配列
  */
-const validationCardPlayersIDArr = ({ required, valueArr }) => {
+const validationCardPlayersIDArr = ({ valueArr }) => {
   
   
   // ---------------------------------------------
@@ -64,14 +63,14 @@ const validationCardPlayersIDArr = ({ required, valueArr }) => {
       // 文字数チェック
       if (!validator.isLength(_id, { min: minLength, max: maxLength })) {
         messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('GVaeKN4HI');
+        resultObj.errorCodeArr.push('GKfEPkR4K');
         error = true;
       }
       
       // 英数と -_ のみ
       if (_id.match(/^[\w\-]+$/) === null) {
         messageCodeArr.unshift('JBkjlGQMh');
-        resultObj.errorCodeArr.push('n381nXqty');
+        resultObj.errorCodeArr.push('BVWP7ej_b');
         error = true;
       }
       
@@ -90,7 +89,7 @@ const validationCardPlayersIDArr = ({ required, valueArr }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('kiWVCUNgA');
+    resultObj.errorCodeArr.push('EqoGAaqky');
     
     
   } finally {

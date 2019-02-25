@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * 趣味
- * @param {boolean} required - Required
  * @param {string} valueArr - 配列
  */
-const validationCardPlayersHobby = ({ required, valueArr }) => {
+const validationCardPlayersHobby = ({ valueArr }) => {
   
   
   // ---------------------------------------------
@@ -59,11 +58,11 @@ const validationCardPlayersHobby = ({ required, valueArr }) => {
     // 配列ではない
     if (!Array.isArray(valueArr)) {
       messageCodeArr.unshift('c9T-0LONy');
-      resultObj.errorCodeArr.push('MXX4J47D8');
+      resultObj.errorCodeArr.push('6KiMskRbE');
     }
     
-    // Not Required で配列が空の場合、処理停止
-    if (!required && valueArr.length === 0) {
+    // 配列が空の場合、処理停止
+    if (valueArr.length === 0) {
       return resultObj;
     }
     
@@ -76,7 +75,7 @@ const validationCardPlayersHobby = ({ required, valueArr }) => {
         // 文字数エラー
         if (!validator.isLength(value, { min: minLength, max: maxLength })) {
           messageCodeArr.unshift('xdAU7SgoO');
-          resultObj.errorCodeArr.push('gPixdTZkL');
+          resultObj.errorCodeArr.push('w146uQJnZ');
         } else {
           resultObj.valueArr.push(value);
         }
@@ -94,7 +93,7 @@ const validationCardPlayersHobby = ({ required, valueArr }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('k5noDLE5H');
+    resultObj.errorCodeArr.push('N4Sev_H63');
     
     
   } finally {

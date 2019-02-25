@@ -45,8 +45,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
-  // line-height: 1.6em;
+  
 `;
 
 const HardwareBox = styled.div`
@@ -72,7 +71,7 @@ const StyledTextFieldWide = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -101,7 +100,6 @@ export default class extends React.Component {
     const { stores, _id, arr, search } = this.props;
     
     const {
-      
       
       handleCardPlayerAddHardwareActive,
       handleCardPlayerDeleteHardwareActive,
@@ -249,7 +247,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`

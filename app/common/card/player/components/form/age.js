@@ -34,8 +34,7 @@ import { injectIntl } from 'react-intl';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersAge = require('../../../../../@database/card-players/validations/age');
-const validationCardPlayersAgeAlternativeText = require('../../../../../@database/card-players/validations/age-alternative-text');
+const { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } = require('../../../../../@database/card-players/validations/age');
 
 
 // ---------------------------------------------
@@ -58,7 +57,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const StyledTextField = styled(TextField)`
@@ -68,7 +67,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -98,9 +97,9 @@ export default injectIntl(class extends React.Component {
     
     const {
       
+      handleCardPlayerEditFormData,
       handleCardPlayerEditAge,
       handleCardPlayerEditAgeAlternativeText,
-      handleCardPlayerEditAgeSearch
       
     } = stores.cardPlayer;
     
@@ -109,8 +108,8 @@ export default injectIntl(class extends React.Component {
     //   Validation
     // --------------------------------------------------
     
-    const validationValueObj = validationCardPlayersAge({ required: false, value: ageObj.value });
-    const validationAlternativeTextObj = validationCardPlayersAgeAlternativeText({ required: false, value: ageObj.alternativeText });
+    const validationValueObj = validationCardPlayersAge({ value: ageObj.value });
+    const validationAlternativeTextObj = validationCardPlayersAgeAlternativeText({ value: ageObj.alternativeText });
     
     
     // --------------------------------------------------
@@ -121,7 +120,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -182,7 +181,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={ageObj.search}
-                onChange={(eventObj) => handleCardPlayerEditAgeSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'ageObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="年齢で検索可能にする"

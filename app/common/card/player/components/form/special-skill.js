@@ -39,13 +39,6 @@ import IconAddCircle from '@material-ui/icons/AddCircle';
 import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const validationCardPlayersSpecialSkill = require('../../../../../@database/card-players/validations/special-skill');
-
-
 
 
 // --------------------------------------------------
@@ -59,7 +52,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const TextFieldBox = styled.div`
@@ -75,7 +68,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -105,23 +98,11 @@ export default injectIntl(class extends React.Component {
     
     const {
       
+      handleCardPlayerEditFormData,
       handleCardPlayerAddSpecialSkillForm,
       handleCardPlayerRemoveSpecialSkillForm,
-      handleCardPlayerEditSpecialSkill,
-      handleCardPlayerEditSpecialSkillSearch
       
     } = stores.cardPlayer;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationObj = validationCardPlayersSpecialSkill({ required: false, valueArr: specialSkillsObj.valueArr });
-    
-    
     
     
     // --------------------------------------------------
@@ -136,7 +117,10 @@ export default injectIntl(class extends React.Component {
         <StyledTextField
           id={`specialSkill-${index}`}
           value={value}
-          onChange={(eventObj) => handleCardPlayerEditSpecialSkill({ _id, index, value: eventObj.target.value })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'specialSkillsObj', 'valueArr', index],
+            value: eventObj.target.value
+          })}
           margin="dense"
           variant="outlined"
           key={index}
@@ -159,37 +143,6 @@ export default injectIntl(class extends React.Component {
       
     }
     
-    // for (let i = 0; i < arr.length; i++) {
-      
-    //   componentsArr.push(
-    //     <StyledTextField
-    //       id={`specialSkill-${i}`}
-    //       value={arr[i]}
-    //       onChange={(event) => handleCardPlayerEditSpecialSkill(event, _id, i)}
-    //       margin="dense"
-    //       variant="outlined"
-    //       key={i}
-    //       inputProps={{
-    //         maxLength: 20,
-    //       }}
-    //       InputProps={{
-    //         endAdornment: (
-    //           <InputAdornment position="end">
-    //             <IconButton
-    //               onClick={() => handleCardPlayerRemoveSpecialSkillForm(_id, i)}
-    //             >
-    //               <IconRemoveCircle />
-    //             </IconButton>
-    //           </InputAdornment>
-    //         ),
-    //       }}
-    //     />
-    //   );
-      
-    // }
-    
-    
-    
     
     // --------------------------------------------------
     //   console.log
@@ -204,8 +157,6 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
     // `);
-    
-    
     
     
     // --------------------------------------------------
@@ -241,7 +192,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={specialSkillsObj.search}
-                onChange={(eventObj) => handleCardPlayerEditSpecialSkillSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'specialSkillsObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="特技で検索可能にする"

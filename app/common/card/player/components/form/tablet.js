@@ -30,14 +30,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const validationCardPlayersTabletModel = require('../../../../../@database/card-players/validations/tablet-model');
-// const validationCardPlayersTabletComment = require('../../../../../@database/card-players/validations/tablet-comment');
-
-
 
 
 // --------------------------------------------------
@@ -51,7 +43,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const StyledTextFieldWide = styled(TextField)`
@@ -90,7 +82,7 @@ const StyledTextareaAutosize = styled(TextareaAutosize)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -118,22 +110,7 @@ export default injectIntl(class extends React.Component {
     
     const { stores, intl, _id, tabletObj } = this.props;
     
-    const {
-      
-      handleCardPlayerEditTabletModel,
-      handleCardPlayerEditTabletComment,
-      handleCardPlayerEditTabletSearch
-      
-    } = stores.cardPlayer;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationModelObj = validationCardPlayersTabletModel({ required: false, value: tabletObj.model });
-    // const validationCommentObj = validationCardPlayersTabletComment({ required: false, value: tabletObj.comment });
-    
+    const { handleCardPlayerEditFormData } = stores.cardPlayer;
     
     
     // --------------------------------------------------
@@ -141,16 +118,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- ageObj -----\n
-    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
+    //   ----- tabletObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(tabletObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(chalk`
-    //   value: {green ${value}}
-    //   alternativeText: {green ${alternativeText}}
-    //   search: {green ${search}}
-    //   age: {green ${age}}
+    //   _id: {green ${_id}}
     // `);
     
     
@@ -168,11 +142,12 @@ export default injectIntl(class extends React.Component {
         
         <StyledTextFieldWide
           id="smartphoneModel"
-          label="モデル"
+          label="モデル・機種名"
           value={tabletObj.model}
-          onChange={(eventObj) => handleCardPlayerEditTabletModel({ _id, value: eventObj.target.value })}
-          error={validationModelObj.error}
-          helperText={intl.formatMessage({ id: validationModelObj.messageCode }, { numberOfCharacters: validationModelObj.numberOfCharacters })}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'tabletObj', 'model'],
+            value: eventObj.target.value
+          })}
           margin="normal"
           inputProps={{
             maxLength: 50,
@@ -185,7 +160,10 @@ export default injectIntl(class extends React.Component {
             rows={5}
             placeholder="コメントを入力してください"
             value={tabletObj.comment}
-            onChange={(eventObj) => handleCardPlayerEditTabletComment({ _id, value: eventObj.target.value })}
+            onChange={(eventObj) => handleCardPlayerEditFormData({
+              pathArr: [_id, 'tabletObj', 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
           />
         </TextareaBox>
@@ -196,7 +174,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={tabletObj.search}
-                onChange={(eventObj) => handleCardPlayerEditTabletSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'tabletObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="タブレットの情報で検索可能にする"

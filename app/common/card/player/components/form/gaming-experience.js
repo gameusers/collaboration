@@ -34,8 +34,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersGamingExperience = require('../../../../../@database/card-players/validations/gaming-experience');
-const validationCardPlayersGamingExperienceAlternativeText = require('../../../../../@database/card-players/validations/gaming-experience-alternative-text');
+const { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } = require('../../../../../@database/card-players/validations/gaming-experience');
 
 
 // ---------------------------------------------
@@ -58,7 +57,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const StyledTextField = styled(TextField)`
@@ -68,7 +67,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -98,9 +97,9 @@ export default injectIntl(class extends React.Component {
     
     const {
       
+      handleCardPlayerEditFormData,
       handleCardPlayerEditGamingExperience,
       handleCardPlayerEditGamingExperienceAlternativeText,
-      handleCardPlayerEditGamingExperienceSearch
       
     } = stores.cardPlayer;
     
@@ -109,8 +108,8 @@ export default injectIntl(class extends React.Component {
     //   Validation
     // --------------------------------------------------
     
-    const validationValueObj = validationCardPlayersGamingExperience({ required: false, value: gamingExperienceObj.value });
-    const validationAlternativeTextObj = validationCardPlayersGamingExperienceAlternativeText({ required: false, value: gamingExperienceObj.alternativeText });
+    const validationValueObj = validationCardPlayersGamingExperience({ value: gamingExperienceObj.value });
+    const validationAlternativeTextObj = validationCardPlayersGamingExperienceAlternativeText({ value: gamingExperienceObj.alternativeText });
     
     
     // --------------------------------------------------
@@ -121,7 +120,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -182,7 +181,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={gamingExperienceObj.search}
-                onChange={(eventObj) => handleCardPlayerEditGamingExperienceSearch({ _id, value: eventObj.target.checked })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'gamingExperienceObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="ゲーム歴で検索可能にする"

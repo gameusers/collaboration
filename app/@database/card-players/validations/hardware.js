@@ -21,10 +21,9 @@ const validator = require('validator');
 
 /**
  * 所有ハードウェア
- * @param {boolean} required - Required
  * @param {string} valueArr - 検証する配列
  */
-const validationCardPlayersHardwareActiveArr = ({ required, valueArr }) => {
+const validationCardPlayersHardwareActiveArr = ({ valueArr }) => {
   
   
   // ---------------------------------------------
@@ -64,14 +63,14 @@ const validationCardPlayersHardwareActiveArr = ({ required, valueArr }) => {
       // 文字数チェック
       if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
         messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('D6pDITDvs');
+        resultObj.errorCodeArr.push('tFlEEjxSS');
         error = true;
       }
       
       // 英数と -_ のみ
       if (hardwareID.match(/^[\w\-]+$/) === null) {
         messageCodeArr.unshift('JBkjlGQMh');
-        resultObj.errorCodeArr.push('rnJRVq95i');
+        resultObj.errorCodeArr.push('IFiJBqjtV');
         error = true;
       }
       
@@ -90,7 +89,7 @@ const validationCardPlayersHardwareActiveArr = ({ required, valueArr }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('IMRQFXD19');
+    resultObj.errorCodeArr.push('xXG98ZiUb');
     
     
   } finally {
@@ -127,10 +126,9 @@ const validationCardPlayersHardwareActiveArr = ({ required, valueArr }) => {
 
 /**
  * 昔、所有していたハードウェア
- * @param {boolean} required - Required
  * @param {string} valueArr - 検証する配列
  */
-const validationCardPlayersHardwareInactiveArr = ({ required, valueArr }) => {
+const validationCardPlayersHardwareInactiveArr = ({ valueArr }) => {
   
   
   // ---------------------------------------------
@@ -170,14 +168,14 @@ const validationCardPlayersHardwareInactiveArr = ({ required, valueArr }) => {
       // 文字数チェック
       if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
         messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('U1qfyyBN8');
+        resultObj.errorCodeArr.push('hJBw3xw77');
         error = true;
       }
       
       // 英数と -_ のみ
       if (hardwareID.match(/^[\w\-]+$/) === null) {
         messageCodeArr.unshift('JBkjlGQMh');
-        resultObj.errorCodeArr.push('OgJ9R-xRe');
+        resultObj.errorCodeArr.push('bBg-IbHg0');
         error = true;
       }
       
@@ -196,7 +194,7 @@ const validationCardPlayersHardwareInactiveArr = ({ required, valueArr }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('2Wd7mKHP6');
+    resultObj.errorCodeArr.push('TL7SiUXLa');
     
     
   } finally {

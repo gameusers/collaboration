@@ -64,6 +64,13 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
     
     for (let dataObj of Object.values(valueArr)) {
       
+      const error = false;
+      
+      const _id = dataObj._id ? dataObj._id : shortid.generate();
+      const beginTime = dataObj.beginTime ? dataObj.beginTime : '';
+      const endTime = dataObj.endTime ? dataObj.endTime : '';
+      const weekArr = dataObj.weekArr ? dataObj.weekArr : [];
+      
       
       const formObj = {
         beginTimeObj: {
@@ -80,12 +87,7 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
         },
       };
       
-      const error = false;
       
-      const _id = dataObj._id ? dataObj._id : shortid.generate();
-      const beginTime = dataObj.beginTime ? dataObj.beginTime : '';
-      const endTime = dataObj.endTime ? dataObj.endTime : '';
-      const weekArr = dataObj.weekArr ? dataObj.weekArr : [];
       
       // const beginTime = dataObj.beginTime;
       // const beginTime = '03:60';

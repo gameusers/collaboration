@@ -9,7 +9,7 @@ module.exports = withCSS({
     urlApi: process.env.URL_API
   },
   env: {
-    NODE_ENV: process.env.NODE_ENV,
+    ENVIRONMENT: process.env.NODE_ENV,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     VERIFY_RECAPTCHA: process.env.VERIFY_RECAPTCHA,
     URL_BASE: process.env.URL_BASE,

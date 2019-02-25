@@ -36,8 +36,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Validations
 // ---------------------------------------------
 
-const validationCardPlayersSex = require('../../../../../@database/card-players/validations/sex');
-const validationCardPlayersSexAlternativeText = require('../../../../../@database/card-players/validations/sex-alternative-text');
+const { validationCardPlayersSex, validationCardPlayersSexAlternativeText } = require('../../../../../@database/card-players/validations/sex');
 
 
 
@@ -53,7 +52,7 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const SelectBox = styled.div`
@@ -67,7 +66,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const SearchBox = styled.div`
-  margin: 0;
+  
 `;
 
 
@@ -97,9 +96,9 @@ export default injectIntl(class extends React.Component {
     
     const {
       
+      handleCardPlayerEditFormData,
       handleCardPlayerEditSex,
       handleCardPlayerEditSexAlternativeText,
-      handleCardPlayerEditSexSearch
       
     } = stores.cardPlayer;
     
@@ -108,13 +107,13 @@ export default injectIntl(class extends React.Component {
     //   Validation
     // --------------------------------------------------
     
-    const validationValueObj = validationCardPlayersSex({ required: false, value: sexObj.value });
-    const validationAlternativeTextObj = validationCardPlayersSexAlternativeText({ required: false, value: sexObj.alternativeText });
+    const validationValueObj = validationCardPlayersSex({ value: sexObj.value });
+    const validationAlternativeTextObj = validationCardPlayersSexAlternativeText({ value: sexObj.alternativeText });
     
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -181,7 +180,10 @@ export default injectIntl(class extends React.Component {
             control={
               <Checkbox
                 checked={sexObj.earch}
-                onChange={(eventObj) => handleCardPlayerEditSexSearch({ _id, value: eventObj.target.value })}
+                onChange={(eventObj) => handleCardPlayerEditFormData({
+                  pathArr: [_id, 'sexObj', 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="性別で検索可能にする"

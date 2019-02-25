@@ -20,11 +20,10 @@ const validator = require('validator');
 
 
 /**
- * ゲーム歴（固定値）
- * @param {boolean} required - Required
+ * 住所（固定値）
  * @param {string} value - 値
  */
-const validationCardPlayersGamingExperienceAlternativeText = ({ required, value }) => {
+const validationCardPlayersAddressAlternativeText = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -46,7 +45,7 @@ const validationCardPlayersGamingExperienceAlternativeText = ({ required, value 
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'wfVpYnnq-',
+    messageCode: 'GguXb4Xxo',
     error: false,
     errorCodeArr: []
   };
@@ -59,23 +58,15 @@ const validationCardPlayersGamingExperienceAlternativeText = ({ required, value 
     //   Validation
     // ---------------------------------------------
     
-    // Required で入力値が空の場合、エラー
-    if (required && validator.isEmpty(data)) {
-      
-      messageCodeArr.unshift('cFbXmuFVh');
-      resultObj.errorCodeArr.push('FsmXU5tNb');
-      
-    // Not Required で入力値が空の場合、処理停止
-    } else if (!required && validator.isEmpty(data)) {
-      
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
       return resultObj;
-      
     }
     
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
       messageCodeArr.unshift('xdAU7SgoO');
-      resultObj.errorCodeArr.push('QH70WIj37');
+      resultObj.errorCodeArr.push('KAXvCSlYA');
     }
     
     
@@ -87,7 +78,7 @@ const validationCardPlayersGamingExperienceAlternativeText = ({ required, value 
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('6Nq4B0ROf');
+    resultObj.errorCodeArr.push('38Hhw9eWU');
     
     
   } finally {
@@ -126,4 +117,6 @@ const validationCardPlayersGamingExperienceAlternativeText = ({ required, value 
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersGamingExperienceAlternativeText;
+module.exports = {
+  validationCardPlayersAddressAlternativeText
+};

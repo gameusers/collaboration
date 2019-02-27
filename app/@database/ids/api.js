@@ -264,7 +264,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   Save Object
     // --------------------------------------------------
     
-    const date = moment().utcOffset(0);
+    const date = moment().toISOString();
     
     let saveObj = {
       createdDate: date,

@@ -36,12 +36,25 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-const validation_id = require('../../@validations/_id');
+const { validation_id } = require('../../@validations/_id');
+const { validationBoolean } = require('../../@validations/boolean');
+
 const { validationCardPlayers_idServer } = require('./validations/_id-server');
 const { validationCardPlayersName } = require('./validations/name');
 const { validationCardPlayersStatus } = require('./validations/status');
 const { validationCardPlayersComment } = require('./validations/comment');
 const { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } = require('./validations/age');
+const { validationCardPlayersSex, validationCardPlayersSexAlternativeText } = require('./validations/sex');
+const { validationCardPlayersAddressAlternativeText } = require('./validations/address');
+const { validationCardPlayersGamingExperience, validationCardPlayersGamingExperienceAlternativeText } = require('./validations/gaming-experience');
+const { validationCardPlayersHobby } = require('./validations/hobby');
+const { validationCardPlayersSpecialSkill } = require('./validations/special-skill');
+const { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneComment } = require('./validations/smartphone');
+const { validationCardPlayersTabletModel, validationCardPlayersTabletComment } = require('./validations/tablet');
+const { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } = require('./validations/pc');
+const { validationCardPlayersHardwareActiveArrServer, validationCardPlayersHardwareInactiveArrServer } = require('./validations/hardware-server');
+
+
 
 
 
@@ -373,7 +386,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
 //   更新 / Function ID: PKbgf0qOq
 // --------------------------------------------------
 
-router.post('/upsert', upload.none(), async (req, res, next) => {
+router.post('/update', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -439,20 +452,23 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     let validationObj = {};
     
-    const val = (func, argumentsObj) => {
+    const val = (func, argumentsObj, name) => {
       
       const validationObj = func(argumentsObj);
       
-      console.log(`
-        ----- validationObj -----\n
-        ${util.inspect(validationObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      
+      const title = name ? `${name} / ` : '';
+      console.log(`\n---------- ${title}validationObj ----------\n`);
+      console.dir(validationObj);
+      console.log(`\n-----------------------------------\n`);
+      
       
       if (validationObj.error) {
         errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
         throw new Error();
       }
+      
+      return validationObj;
       
     };
     
@@ -461,31 +477,131 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   ハンドルネーム
     // --------------------------------------------------
     
-    val(validationCardPlayersName, { value: saveObj.nameObj.value });
+    // val(validationCardPlayersName, { value: saveObj.nameObj.value }, 'ハンドルネーム');
+    // val(validationBoolean, { value: saveObj.nameObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   ステータス
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersStatus, { value: saveObj.statusObj.value }, 'ステータス');
+    // val(validationBoolean, { value: saveObj.statusObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   コメント
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersComment, { value: saveObj.commentObj.value }, 'コメント');
+    // val(validationBoolean, { value: saveObj.commentObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   年齢
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersAge, { value: saveObj.ageObj.value }, '年齢');
+    // val(validationCardPlayersAgeAlternativeText, { value: saveObj.ageObj.alternativeText });
+    // val(validationBoolean, { value: saveObj.ageObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   性別
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersSex, { value: saveObj.sexObj.value }, '性別');
+    // val(validationCardPlayersSexAlternativeText, { value: saveObj.sexObj.alternativeText });
+    // val(validationBoolean, { value: saveObj.sexObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   住所
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersAddressAlternativeText, { value: saveObj.addressObj.alternativeText }, '住所');
+    // val(validationBoolean, { value: saveObj.addressObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   ゲーム歴
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersGamingExperience, { value: saveObj.gamingExperienceObj.value }, 'ゲーム歴');
+    // val(validationCardPlayersGamingExperienceAlternativeText, { value: saveObj.gamingExperienceObj.alternativeText });
+    // val(validationBoolean, { value: saveObj.gamingExperienceObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   趣味
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersHobby, { valueArr: saveObj.hobbiesObj.valueArr }, '趣味');
+    // val(validationBoolean, { value: saveObj.hobbiesObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   特技
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersSpecialSkill, { valueArr: saveObj.specialSkillsObj.valueArr }, '特技');
+    // val(validationBoolean, { value: saveObj.specialSkillsObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   スマートフォン
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersSmartphoneModel, { value: saveObj.smartphoneObj.model }, 'スマートフォン');
+    // val(validationCardPlayersSmartphoneComment, { value: saveObj.smartphoneObj.comment });
+    // val(validationBoolean, { value: saveObj.smartphoneObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   タブレット
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersTabletModel, { value: saveObj.tabletObj.model }, 'タブレット');
+    // val(validationCardPlayersTabletComment, { value: saveObj.tabletObj.comment });
+    // val(validationBoolean, { value: saveObj.tabletObj.search });
+    
+    
+    // // --------------------------------------------------
+    // //   PC
+    // // --------------------------------------------------
+    
+    // val(validationCardPlayersPCModel, { value: saveObj.pcObj.model }, 'PC');
+    // val(validationCardPlayersPCComment, { value: saveObj.pcObj.comment });
+    // val(validationCardPlayersPCSpec, { valueObj: saveObj.pcObj.specsObj });
+    // val(validationBoolean, { value: saveObj.pcObj.search });
     
     
     // --------------------------------------------------
-    //   ステータス
+    //   所有ハードウェア
     // --------------------------------------------------
     
-    val(validationCardPlayersStatus, { value: saveObj.statusObj.value });
+    validationObj = await validationCardPlayersHardwareActiveArrServer({ valueArr: saveObj.hardwareActiveArr });
+    
+    if (validationObj.error) {
+      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+      throw new Error();
+    }
+    
+    saveObj.hardwareActiveObj.valueArr = validationObj.valueArr;
+    
+    val(validationBoolean, { value: saveObj.hardwareActiveObj.search });
     
     
-    // --------------------------------------------------
-    //   コメント
-    // --------------------------------------------------
+    validationObj = await validationCardPlayersHardwareInactiveArrServer({ valueArr: saveObj.hardwareInactiveArr });
     
-    val(validationCardPlayersComment, { value: saveObj.commentObj.value });
+    if (validationObj.error) {
+      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+      throw new Error();
+    }
     
+    saveObj.hardwareInactiveObj.valueArr = validationObj.valueArr;
     
-    // --------------------------------------------------
-    //   年齢
-    // --------------------------------------------------
-    
-    val(validationCardPlayersAge, { value: saveObj.ageObj.value });
-    val(validationCardPlayersAgeAlternativeText, { value: saveObj.ageObj.alternativeText });
-    
-    
+    val(validationBoolean, { value: saveObj.hardwareInactiveObj.search });
     
     
     // --------------------------------------------------
@@ -494,10 +610,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     validationObj = await validationCardPlayers_idServer({
       value: saveObj._id,
-      conditionObj: {
-        _id: saveObj._id,
-        users_id: usersLogin_id,
-      }
+      usersLogin_id,
     });
     
     if (validationObj.error) {
@@ -508,20 +621,12 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     
     
-    // validationObj = validationCardPlayersComment({ value: saveObj.commentObj.value });
-    
-    // if (validationObj.error) {
-    //   errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-    //   throw new Error();
-    // }
-    
-    
     // --------------------------------------------------
     //   Set Date & Delete Property
     // --------------------------------------------------
     
-    const date = moment().utcOffset(0);
-    saveObj.updatedDate = date;
+    const ISO8601 = moment().toISOString();
+    saveObj.updatedDate = ISO8601;
     
     delete saveObj.createdDate;
     delete saveObj.users_id;
@@ -530,13 +635,16 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     delete saveObj.hardwareInactiveArr;
     
     
+    // console.log(chalk`
+    //   ISO8601: {green ${ISO8601}}
+    //   moment().toISOString(true): {green ${moment().toISOString(true)}}
+    //   moment().toISOString(): {green ${moment().toISOString()}}
+    //   Date.prototype.toISOString: {green ${Date.prototype.toISOString}}
+    // `);
     
-    
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    console.log(`\n---------- saveObj ----------\n`);
+    console.dir(saveObj);
+    console.log(`\n-----------------------------------\n`);
     
     
     

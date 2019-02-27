@@ -29,8 +29,9 @@ const validator = require('validator');
 /**
  * _id
  * @param {string} value - 値
+ * @param {string} usersLogin_id - DB users _id ログインしているユーザーの_id
  */
-const validationCardPlayers_idServer = async ({ value, conditionObj }) => {
+const validationCardPlayers_idServer = async ({ value, usersLogin_id }) => {
   
   
   // ---------------------------------------------
@@ -72,7 +73,12 @@ const validationCardPlayers_idServer = async ({ value, conditionObj }) => {
     }
     
     // データベースに存在しているか＆編集権限チェック
-    const count = await Model.count({ conditionObj });
+    const count = await Model.count({
+      conditionObj: {
+        _id: value,
+        users_id: usersLogin_id,
+      }
+    });
     
     if (count !== 1) {
       resultObj.errorCodeArr.push('4x07Owt6c');

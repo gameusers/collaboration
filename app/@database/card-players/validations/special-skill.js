@@ -132,4 +132,6 @@ const validationCardPlayersSpecialSkill = ({ valueArr }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationCardPlayersSpecialSkill;
+module.exports = {
+  validationCardPlayersSpecialSkill,
+};

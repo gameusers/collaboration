@@ -106,7 +106,7 @@ const errorCodeIntoErrorObj = (errorArgumentsObj) => {
     }
     
     errorsArr.push(tempObj);
-    logArr.push(`${moment().utcOffset(0)}\nCode: ${tempObj.code}\nMessage: ${tempObj.message}\n`);
+    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nMessage: ${tempObj.message}\n`);
     
   }
   

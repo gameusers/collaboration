@@ -50,7 +50,7 @@ import FormEdit from './form-edit';
 import FormRegister from './form-register';
 
 
-const validation_id = require('../../../@validations/_id');
+const { validation_id } = require('../../../@validations/_id');
 const validationIDsPlatform = require('../../../@database/ids/validations/platform');
 const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
 

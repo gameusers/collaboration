@@ -137,7 +137,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     //   Property
     // --------------------------------------------------
     
-    const date = moment().utcOffset(0);
+    const date = moment().toISOString();
     let conditionObj = {};
     let saveObj = {};
     let saveArr = [];

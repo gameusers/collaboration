@@ -124,7 +124,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     let returnObj = {};
     let saveArr = [];
-    const date = moment().utcOffset(0);
+    const date = moment().toISOString();
     
     
     
@@ -1041,7 +1041,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       
       {
-        _id: '8RERfeQQ9',
+        _id: 'PlRw2lxiy',
         createdDate: date,
         updatedDate: date,
         language: 'ja',

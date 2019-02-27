@@ -22,7 +22,7 @@ const validator = require('validator');
 /**
  * _id
  * @param {boolean} required - Required
- * @param {string} _id - _id
+ * @param {string} value
  */
 const validation_id = ({ required, value }) => {
   
@@ -45,49 +45,65 @@ const validation_id = ({ required, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
+    error: false,
     errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(data)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // Not Required で入力値が空の場合、処理停止
+    if (!required && validator.isEmpty(data)) {
+      return resultObj;
+    }
+    
+    // 存在チェック
+    if (validator.isEmpty(data)) {
+      resultObj.errorCodeArr.push('pE9jBkXXP');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      resultObj.errorCodeArr.push('8oyLhJOlh');
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      resultObj.errorCodeArr.push('N48T3XvnC');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    resultObj.errorCodeArr.push('76W7KuPNM');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
-  
-  // 存在チェック
-  if (validator.isEmpty(data)) {
-    resultObj.errorCodeArr.push('pE9jBkXXP');
-  }
-  
-  // 英数と -_ のみ
-  if (data.match(/^[\w\-]+$/) === null) {
-    resultObj.errorCodeArr.push('8oyLhJOlh');
-  }
-  
-  // 文字数チェック
-  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-    resultObj.errorCodeArr.push('N48T3XvnC');
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   required: {green ${required}}
-  //   _id: {green ${_id}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
   
   
   return resultObj;
@@ -101,4 +117,6 @@ const validation_id = ({ required, value }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validation_id;
+module.exports = {
+  validation_id
+};

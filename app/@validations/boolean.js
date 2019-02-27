@@ -20,29 +20,21 @@ const validator = require('validator');
 
 
 /**
- * 趣味
- * @param {string} valueArr - 配列
+ * Boolean
+ * @param {boolean} required - Required
+ * @param {boolean} value
  */
-const validationCardPlayersHobby = ({ valueArr }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 1;
-  const maxLength = 20;
+const validationBoolean = ({ required, value }) => {
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  const messageCodeArr = [];
+  const data = String(value);
   
   let resultObj = {
-    valueArr: [],
-    messageCode: 'C5lyqOFQz',
+    value,
     error: false,
     errorCodeArr: []
   };
@@ -55,33 +47,19 @@ const validationCardPlayersHobby = ({ valueArr }) => {
     //   Validation
     // ---------------------------------------------
     
-    // 配列ではない
-    if (!Array.isArray(valueArr)) {
-      messageCodeArr.unshift('c9T-0LONy');
-      resultObj.errorCodeArr.push('6KiMskRbE');
-    }
-    
-    // 配列が空の場合、処理停止
-    if (valueArr.length === 0) {
+    // Not Required で入力値が空の場合、処理停止
+    if (!required && validator.isEmpty(data)) {
       return resultObj;
     }
     
+    // 存在チェック
+    if (validator.isEmpty(data)) {
+      resultObj.errorCodeArr.push('xQjF_ZOgn');
+    }
     
-    for (let value of valueArr.values()) {
-      
-      // 空でない
-      if (!validator.isEmpty(value)) {
-        
-        // 文字数エラー
-        if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-          messageCodeArr.unshift('xdAU7SgoO');
-          resultObj.errorCodeArr.push('w146uQJnZ');
-        } else {
-          resultObj.valueArr.push(value);
-        }
-        
-      }
-      
+    // Booleanチェック
+    if (!validator.isBoolean(data)) {
+      resultObj.errorCodeArr.push('g4oAVWC1X');
     }
     
     
@@ -92,20 +70,10 @@ const validationCardPlayersHobby = ({ valueArr }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('N4Sev_H63');
+    resultObj.errorCodeArr.push('G2whS9Xow');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -123,6 +91,8 @@ const validationCardPlayersHobby = ({ valueArr }) => {
   }
   
   
+  return resultObj;
+  
 };
 
 
@@ -133,5 +103,5 @@ const validationCardPlayersHobby = ({ valueArr }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersHobby,
+  validationBoolean
 };

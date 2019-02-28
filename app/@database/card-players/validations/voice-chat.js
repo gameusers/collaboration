@@ -36,7 +36,7 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
   let resultObj = {
     value,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };
@@ -113,7 +113,7 @@ const validationCardPlayersVoiceChatComment = ({ value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };

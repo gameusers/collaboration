@@ -45,7 +45,7 @@ const validationCardPlayersComment = ({ value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };

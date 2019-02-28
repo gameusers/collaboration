@@ -139,7 +139,7 @@ const validationCardPlayersPCComment = ({ value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };
@@ -230,7 +230,7 @@ const validationCardPlayersPCSpec = ({ valueObj }) => {
   
   let resultObj = {
     valueObj,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };

@@ -53,7 +53,11 @@ const { validationCardPlayersSmartphoneModel, validationCardPlayersSmartphoneCom
 const { validationCardPlayersTabletModel, validationCardPlayersTabletComment } = require('./validations/tablet');
 const { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } = require('./validations/pc');
 const { validationCardPlayersHardwareActiveArrServer, validationCardPlayersHardwareInactiveArrServer } = require('./validations/hardware-server');
-
+const { validationCardPlayersIDArrServer } = require('./validations/id-server');
+const { validationCardPlayersActivityTimeObjValueArr } = require('./validations/activity-time');
+const { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } = require('./validations/looking-for-friends');
+const { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } = require('./validations/voice-chat');
+const { validationCardPlayersLinkArr } = require('./validations/link');
 
 
 
@@ -452,9 +456,9 @@ router.post('/update', upload.none(), async (req, res, next) => {
     
     let validationObj = {};
     
-    const val = (func, argumentsObj, name) => {
+    const val = async (func, argumentsObj, name) => {
       
-      const validationObj = func(argumentsObj);
+      const validationObj = await func(argumentsObj);
       
       
       const title = name ? `${name} / ` : '';
@@ -472,151 +476,199 @@ router.post('/update', upload.none(), async (req, res, next) => {
       
     };
     
+    // const val = (func, argumentsObj, name) => {
+      
+    //   const validationObj = func(argumentsObj);
+      
+      
+    //   const title = name ? `${name} / ` : '';
+    //   console.log(`\n---------- ${title}validationObj ----------\n`);
+    //   console.dir(validationObj);
+    //   console.log(`\n-----------------------------------\n`);
+      
+      
+    //   if (validationObj.error) {
+    //     errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+    //     throw new Error();
+    //   }
+      
+    //   return validationObj;
+      
+    // };
+    
     
     // --------------------------------------------------
     //   ハンドルネーム
     // --------------------------------------------------
     
-    // val(validationCardPlayersName, { value: saveObj.nameObj.value }, 'ハンドルネーム');
-    // val(validationBoolean, { value: saveObj.nameObj.search });
+    await val(validationCardPlayersName, { value: saveObj.nameObj.value }, 'ハンドルネーム');
+    await val(validationBoolean, { value: saveObj.nameObj.search });
     
     
-    // // --------------------------------------------------
-    // //   ステータス
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   ステータス
+    // --------------------------------------------------
     
-    // val(validationCardPlayersStatus, { value: saveObj.statusObj.value }, 'ステータス');
-    // val(validationBoolean, { value: saveObj.statusObj.search });
-    
-    
-    // // --------------------------------------------------
-    // //   コメント
-    // // --------------------------------------------------
-    
-    // val(validationCardPlayersComment, { value: saveObj.commentObj.value }, 'コメント');
-    // val(validationBoolean, { value: saveObj.commentObj.search });
+    await val(validationCardPlayersStatus, { value: saveObj.statusObj.value }, 'ステータス');
+    await val(validationBoolean, { value: saveObj.statusObj.search });
     
     
-    // // --------------------------------------------------
-    // //   年齢
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   コメント
+    // --------------------------------------------------
     
-    // val(validationCardPlayersAge, { value: saveObj.ageObj.value }, '年齢');
-    // val(validationCardPlayersAgeAlternativeText, { value: saveObj.ageObj.alternativeText });
-    // val(validationBoolean, { value: saveObj.ageObj.search });
-    
-    
-    // // --------------------------------------------------
-    // //   性別
-    // // --------------------------------------------------
-    
-    // val(validationCardPlayersSex, { value: saveObj.sexObj.value }, '性別');
-    // val(validationCardPlayersSexAlternativeText, { value: saveObj.sexObj.alternativeText });
-    // val(validationBoolean, { value: saveObj.sexObj.search });
+    await val(validationCardPlayersComment, { value: saveObj.commentObj.value }, 'コメント');
+    await val(validationBoolean, { value: saveObj.commentObj.search });
     
     
-    // // --------------------------------------------------
-    // //   住所
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   年齢
+    // --------------------------------------------------
     
-    // val(validationCardPlayersAddressAlternativeText, { value: saveObj.addressObj.alternativeText }, '住所');
-    // val(validationBoolean, { value: saveObj.addressObj.search });
-    
-    
-    // // --------------------------------------------------
-    // //   ゲーム歴
-    // // --------------------------------------------------
-    
-    // val(validationCardPlayersGamingExperience, { value: saveObj.gamingExperienceObj.value }, 'ゲーム歴');
-    // val(validationCardPlayersGamingExperienceAlternativeText, { value: saveObj.gamingExperienceObj.alternativeText });
-    // val(validationBoolean, { value: saveObj.gamingExperienceObj.search });
+    await val(validationCardPlayersAge, { value: saveObj.ageObj.value }, '年齢');
+    await val(validationCardPlayersAgeAlternativeText, { value: saveObj.ageObj.alternativeText });
+    await val(validationBoolean, { value: saveObj.ageObj.search });
     
     
-    // // --------------------------------------------------
-    // //   趣味
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   性別
+    // --------------------------------------------------
     
-    // val(validationCardPlayersHobby, { valueArr: saveObj.hobbiesObj.valueArr }, '趣味');
-    // val(validationBoolean, { value: saveObj.hobbiesObj.search });
-    
-    
-    // // --------------------------------------------------
-    // //   特技
-    // // --------------------------------------------------
-    
-    // val(validationCardPlayersSpecialSkill, { valueArr: saveObj.specialSkillsObj.valueArr }, '特技');
-    // val(validationBoolean, { value: saveObj.specialSkillsObj.search });
+    await val(validationCardPlayersSex, { value: saveObj.sexObj.value }, '性別');
+    await val(validationCardPlayersSexAlternativeText, { value: saveObj.sexObj.alternativeText });
+    await val(validationBoolean, { value: saveObj.sexObj.search });
     
     
-    // // --------------------------------------------------
-    // //   スマートフォン
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   住所
+    // --------------------------------------------------
     
-    // val(validationCardPlayersSmartphoneModel, { value: saveObj.smartphoneObj.model }, 'スマートフォン');
-    // val(validationCardPlayersSmartphoneComment, { value: saveObj.smartphoneObj.comment });
-    // val(validationBoolean, { value: saveObj.smartphoneObj.search });
-    
-    
-    // // --------------------------------------------------
-    // //   タブレット
-    // // --------------------------------------------------
-    
-    // val(validationCardPlayersTabletModel, { value: saveObj.tabletObj.model }, 'タブレット');
-    // val(validationCardPlayersTabletComment, { value: saveObj.tabletObj.comment });
-    // val(validationBoolean, { value: saveObj.tabletObj.search });
+    await val(validationCardPlayersAddressAlternativeText, { value: saveObj.addressObj.alternativeText }, '住所');
+    await val(validationBoolean, { value: saveObj.addressObj.search });
     
     
-    // // --------------------------------------------------
-    // //   PC
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   ゲーム歴
+    // --------------------------------------------------
     
-    // val(validationCardPlayersPCModel, { value: saveObj.pcObj.model }, 'PC');
-    // val(validationCardPlayersPCComment, { value: saveObj.pcObj.comment });
-    // val(validationCardPlayersPCSpec, { valueObj: saveObj.pcObj.specsObj });
-    // val(validationBoolean, { value: saveObj.pcObj.search });
+    await val(validationCardPlayersGamingExperience, { value: saveObj.gamingExperienceObj.value }, 'ゲーム歴');
+    await val(validationCardPlayersGamingExperienceAlternativeText, { value: saveObj.gamingExperienceObj.alternativeText });
+    await val(validationBoolean, { value: saveObj.gamingExperienceObj.search });
+    
+    
+    // --------------------------------------------------
+    //   趣味
+    // --------------------------------------------------
+    
+    validationObj = await val(validationCardPlayersHobby, { valueArr: saveObj.hobbiesObj.valueArr }, '趣味');
+    saveObj.hobbiesObj.valueArr = validationObj.valueArr;
+    await val(validationBoolean, { value: saveObj.hobbiesObj.search });
+    
+    
+    // --------------------------------------------------
+    //   特技
+    // --------------------------------------------------
+    
+    validationObj = await val(validationCardPlayersSpecialSkill, { valueArr: saveObj.specialSkillsObj.valueArr }, '特技');
+    saveObj.specialSkillsObj.valueArr = validationObj.valueArr;
+    await val(validationBoolean, { value: saveObj.specialSkillsObj.search });
+    
+    
+    // --------------------------------------------------
+    //   スマートフォン
+    // --------------------------------------------------
+    
+    await val(validationCardPlayersSmartphoneModel, { value: saveObj.smartphoneObj.model }, 'スマートフォン');
+    await val(validationCardPlayersSmartphoneComment, { value: saveObj.smartphoneObj.comment });
+    await val(validationBoolean, { value: saveObj.smartphoneObj.search });
+    
+    
+    // --------------------------------------------------
+    //   タブレット
+    // --------------------------------------------------
+    
+    await val(validationCardPlayersTabletModel, { value: saveObj.tabletObj.model }, 'タブレット');
+    await val(validationCardPlayersTabletComment, { value: saveObj.tabletObj.comment });
+    await val(validationBoolean, { value: saveObj.tabletObj.search });
+    
+    
+    // --------------------------------------------------
+    //   PC
+    // --------------------------------------------------
+    
+    await val(validationCardPlayersPCModel, { value: saveObj.pcObj.model }, 'PC');
+    await val(validationCardPlayersPCComment, { value: saveObj.pcObj.comment });
+    await val(validationCardPlayersPCSpec, { valueObj: saveObj.pcObj.specsObj });
+    await val(validationBoolean, { value: saveObj.pcObj.search });
     
     
     // --------------------------------------------------
     //   所有ハードウェア
     // --------------------------------------------------
     
-    validationObj = await validationCardPlayersHardwareActiveArrServer({ valueArr: saveObj.hardwareActiveArr });
-    
-    if (validationObj.error) {
-      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-      throw new Error();
-    }
-    
+    validationObj = await val(validationCardPlayersHardwareActiveArrServer, { valueArr: saveObj.hardwareActiveArr }, '所有ハードウェア');
     saveObj.hardwareActiveObj.valueArr = validationObj.valueArr;
+    await val(validationBoolean, { value: saveObj.hardwareActiveObj.search });
     
-    val(validationBoolean, { value: saveObj.hardwareActiveObj.search });
     
+    // --------------------------------------------------
+    //   昔、所有していたハードウェア
+    // --------------------------------------------------
     
-    validationObj = await validationCardPlayersHardwareInactiveArrServer({ valueArr: saveObj.hardwareInactiveArr });
-    
-    if (validationObj.error) {
-      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-      throw new Error();
-    }
-    
+    validationObj = await val(validationCardPlayersHardwareInactiveArrServer, { valueArr: saveObj.hardwareInactiveArr }, '昔、所有していたハードウェア');
     saveObj.hardwareInactiveObj.valueArr = validationObj.valueArr;
+    await val(validationBoolean, { value: saveObj.hardwareInactiveObj.search });
     
-    val(validationBoolean, { value: saveObj.hardwareInactiveObj.search });
+    
+    // --------------------------------------------------
+    //   ID
+    // --------------------------------------------------
+    
+    validationObj = await val(validationCardPlayersIDArrServer, { valueArr: saveObj.idArr, usersLogin_id }, 'ID');
+    saveObj.idArr = validationObj.valueArr;
+    
+    
+    // --------------------------------------------------
+    //   活動時間
+    // --------------------------------------------------
+    
+    validationObj = await val(validationCardPlayersActivityTimeObjValueArr, { valueArr: saveObj.activityTimeObj.valueArr }, '活動時間');
+    saveObj.activityTimeObj.valueArr = validationObj.valueArr;
+    await val(validationBoolean, { value: saveObj.activityTimeObj.search });
+    
+    
+    // --------------------------------------------------
+    //   フレンド募集
+    // --------------------------------------------------
+    
+    await val(validationCardPlayersLookingForFriendsValue, { value: saveObj.lookingForFriendsObj.value }, 'フレンド募集');
+    await val(validationCardPlayersLookingForFriendsComment, { value: saveObj.lookingForFriendsObj.comment });
+    await val(validationCardPlayersLookingForFriendsIcon, { value: saveObj.lookingForFriendsObj.icon });
+    await val(validationBoolean, { value: saveObj.lookingForFriendsObj.search });
+    
+    
+    // --------------------------------------------------
+    //   ボイスチャット
+    // --------------------------------------------------
+    
+    await val(validationCardPlayersVoiceChatValue, { value: saveObj.voiceChatObj.value }, 'ボイスチャット');
+    await val(validationCardPlayersVoiceChatComment, { value: saveObj.voiceChatObj.comment });
+    await val(validationBoolean, { value: saveObj.voiceChatObj.search });
+    
+    
+    // --------------------------------------------------
+    //   リンク
+    // --------------------------------------------------
+    
+    validationObj = await val(validationCardPlayersLinkArr, { valueArr: saveObj.linkArr }, 'リンク');
+    saveObj.linkArr = validationObj.valueArr;
     
     
     // --------------------------------------------------
     //   _id
     // --------------------------------------------------
     
-    validationObj = await validationCardPlayers_idServer({
-      value: saveObj._id,
-      usersLogin_id,
-    });
-    
-    if (validationObj.error) {
-      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-      throw new Error();
-    }
+    await val(validationCardPlayers_idServer, { value: saveObj._id, usersLogin_id }, '_id');
     
     
     
@@ -651,89 +703,6 @@ router.post('/update', upload.none(), async (req, res, next) => {
     
     return;
     
-    
-    // // --------------------------------------------------
-    // //   Validation - platform
-    // // --------------------------------------------------
-    
-    // const validationIDsPlatformObj = validationIDsPlatform({ required: true, platform });
-    
-    // if (validationIDsPlatformObj.errorCodeArr.length > 0) {
-    //   errorArgumentsObj.errorCodeArr = validationIDsPlatformObj.errorCodeArr;
-    //   throw new Error();
-    // }
-    
-    // saveObj.platform = validationIDsPlatformObj.value;
-    
-    
-    // // --------------------------------------------------
-    // //   Validation - Game ID
-    // // --------------------------------------------------
-    
-    // const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
-    
-    // if (gameID && noGameIDPlatformArr.indexOf(platform) === -1) {
-      
-    //   const validationGamesGameIDServerObj = await validationGamesGameIDServer({
-    //     required: true,
-    //     gameID,
-    //     conditionObj: {
-    //       language: localeObj.language,
-    //       country: localeObj.country,
-    //       gameID,
-    //     }
-    //   });
-      
-    //   if (validationGamesGameIDServerObj.errorCodeArr.length > 0) {
-    //     errorArgumentsObj.errorCodeArr = validationGamesGameIDServerObj.errorCodeArr;
-    //     throw new Error();
-    //   }
-      
-    //   saveObj.gameID = validationGamesGameIDServerObj.value;
-      
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Validation - label
-    // // --------------------------------------------------
-    
-    // const validationIDsLabelObj = validationIDsLabel({ required: false, label });
-    
-    // if (validationIDsLabelObj.errorCodeArr.length > 0) {
-    //   errorArgumentsObj.errorCodeArr = validationIDsLabelObj.errorCodeArr;
-    //   throw new Error();
-    // }
-    
-    // saveObj.label = validationIDsLabelObj.value;
-    
-    
-    // // --------------------------------------------------
-    // //   Validation - id
-    // // --------------------------------------------------
-    
-    // const validationIDsIDObj = validationIDsID({ required: true, id });
-    
-    // if (validationIDsIDObj.errorCodeArr.length > 0) {
-    //   errorArgumentsObj.errorCodeArr = validationIDsIDObj.errorCodeArr;
-    //   throw new Error();
-    // }
-    
-    // saveObj.id = validationIDsIDObj.value;
-    
-    
-    // // --------------------------------------------------
-    // //   Validation - publicSetting
-    // // --------------------------------------------------
-    
-    // const validationIDsPublicSettingObj = validationIDsPublicSetting({ required: true, publicSetting });
-    
-    // if (validationIDsPublicSettingObj.errorCodeArr.length > 0) {
-    //   errorArgumentsObj.errorCodeArr = validationIDsPublicSettingObj.errorCodeArr;
-    //   throw new Error();
-    // }
-    
-    // saveObj.publicSetting = validationIDsPublicSettingObj.value;
     
     
     

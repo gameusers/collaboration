@@ -124,7 +124,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     let returnObj = {};
     let saveArr = [];
-    const date = moment().toISOString();
+    const ISO8601 = moment().toISOString();
     
     
     
@@ -140,9 +140,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
         _id: 'jun-deE4J',
-        createdDate: date,
-        updatedDate: date,
-        accessDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
         level: 99,
         playerID: 'user1',
         loginID: '8OM0dhDak',
@@ -159,9 +159,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'P7UJMuUnx',
-        createdDate: date,
-        updatedDate: date,
-        accessDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
         level: 1,
         playerID: 'user2',
         loginID: 'enPLLYBBEg3y',
@@ -178,9 +178,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '6GWOpEcD3',
-        createdDate: date,
-        updatedDate: date,
-        accessDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
         level: 1,
         playerID: 'user3',
         loginID: 'nzPR7R9GO',
@@ -217,8 +217,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
         _id: 'w_zkqpr3R',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         gameID: 'Jk92aglWl',
         urlID: 'Dead-by-Daylight',
         language: 'ja',
@@ -286,8 +286,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {  
         _id: 'dhjc8SPwK',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         gameID: 'Jk92aglWl',
         urlID: 'Dead-by-Daylight',
         language: 'en',
@@ -329,8 +329,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '8OKcZy3R-',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         gameID: 'lxdubg6IY',
         urlID: 'Super-Smash-Bros-SPECIAL',
         language: 'ja',
@@ -380,8 +380,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '007_qLOR2',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         gameID: 'lxdubg6IY',
         urlID: 'Super-Smash-Bros-Ultimate',
         language: 'en',
@@ -428,8 +428,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'PdWVRzkoW',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         gameID: 'YcIvt9hf7',
         urlID: 'Dragon-Quest-Builders2',
         language: 'ja',
@@ -500,8 +500,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
         _id: 'nO7XxHZYM',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'YC3gSkK67',
@@ -509,8 +509,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'iWeBuc0j2',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'YC3gSkK67',
@@ -520,8 +520,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'ksTu6wRs0l',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'jpPfXudBt',
@@ -529,8 +529,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'ohPaZnDHr',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'jpPfXudBt',
@@ -540,8 +540,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'ouLGbf_KSd',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'aiB1RZ0f8',
@@ -549,8 +549,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'XErEwHoNy',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'aiB1RZ0f8',
@@ -560,8 +560,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '9iRS29w3we',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'sU94RUPS7',
@@ -569,8 +569,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'acQTo-M0r',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'sU94RUPS7',
@@ -580,8 +580,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '0Uaz_dOxXq',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'lDdVW5ANX',
@@ -589,8 +589,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'AmPQz8iqR',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'lDdVW5ANX',
@@ -600,8 +600,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'RpptnE2zlp',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: '-HKDHuR2v',
@@ -609,8 +609,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'nwCUpgBxm',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: '-HKDHuR2v',
@@ -620,8 +620,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'b_QI2RFSEQ6',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'NCt2Bb7WF',
@@ -629,8 +629,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'nbGG_uNfA',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'NCt2Bb7WF',
@@ -640,8 +640,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'mlfWkx-ZxJL',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'CoIMeJDxB',
@@ -649,8 +649,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'kQ_135dZL',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'CoIMeJDxB',
@@ -660,8 +660,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'deBQJJV-m8s',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'n2k7J_e12',
@@ -669,8 +669,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'kG0O00psM',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'n2k7J_e12',
@@ -680,8 +680,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'uEUpcTb87D_',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'SV1mg4iuD',
@@ -689,8 +689,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'qrIbvFXm2',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'SV1mg4iuD',
@@ -700,8 +700,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'ejdGhTwE1Gb',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: '691Od0Wty',
@@ -709,8 +709,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'lkNbIGAUE',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: '691Od0Wty',
@@ -720,8 +720,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'cU9z-CA3d29',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'rsx6C2bsy',
@@ -729,8 +729,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: '7Asj0C1FV',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'rsx6C2bsy',
@@ -740,8 +740,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'bfxzmy3eib9',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         genreID: 'HBpRRumc3',
@@ -749,8 +749,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'Nm8Nyp82f',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         genreID: 'HBpRRumc3',
@@ -780,8 +780,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
         _id: '4FJM8n4Xa',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'en',
         country: 'US',
         hardwareID: 'I-iu-WmkO',
@@ -793,8 +793,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'R6uD6BzZ5',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'I-iu-WmkO',
@@ -814,8 +814,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'adzG1JLYu',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'KyOSlwcLk',
@@ -833,8 +833,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'KVvkuvZF2',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: '2yKF4qXAw',
@@ -851,8 +851,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'WOQKUSPPR',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'eKmDxi8lX',
@@ -873,8 +873,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '8oGNQ2hMR',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'Z4R-SPN2-',
@@ -892,8 +892,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '9zeb0m_13',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'lBSGQeGmx',
@@ -910,8 +910,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'zSvRzOp0V',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'zB4ivcsqM',
@@ -932,8 +932,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'wlDy9Dqmv',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'o9bdsq5af',
@@ -950,8 +950,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'N-V_maXNc',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: '45syCFviA',
@@ -988,8 +988,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'iZ7MmkuQw',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'Kj_Djheqt',
@@ -1007,8 +1007,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'I2cKTLJNk',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: '8RERfeQQ9',
@@ -1042,8 +1042,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'PlRw2lxiy',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'XLUt628gr',
@@ -1066,8 +1066,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'XLUt628gr',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: '78lc0hPjL',
@@ -1082,8 +1082,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'NiozcDYe-',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: '08Qp5KxPA',
@@ -1106,8 +1106,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '4iGMasHh4',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'YNZ6nb1Ki',
@@ -1141,8 +1141,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '91N2yPx6B',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'n3wYKZ_ao',
@@ -1160,8 +1160,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'qX8WLLubQ',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'GTxWVd0z-',
@@ -1183,8 +1183,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'FW76LaH_H',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'TdK3Oc-yV',
@@ -1218,8 +1218,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'vk2kF94Ks',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'uPqoiXA_8',
@@ -1240,8 +1240,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'Gu1hYjbv7',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'Zd_Ia4Hwm',
@@ -1270,8 +1270,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '_z4DBLYNi',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'XBKalRRW7',
@@ -1288,8 +1288,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '9Z6Wh_JJ2',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'sO2U2PzHl',
@@ -1306,8 +1306,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'QQtnx7FEN',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'qBsY8y0nO',
@@ -1325,8 +1325,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'IcH7HG2f7',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'u3SQqtJ-u',
@@ -1345,8 +1345,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'S2Q_3MrBo',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'PYIE0rv_e',
@@ -1363,8 +1363,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '4OkTt-VSM',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'AIvzEgDCd',
@@ -1381,8 +1381,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'Uem6UalMW',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'HATpnt7sl',
@@ -1411,8 +1411,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'nMhdlLGm6',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'efIOgWs3N',
@@ -1441,8 +1441,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'YvgkE6inK',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'qk9DiUwN-',
@@ -1471,8 +1471,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: '_3asC9ODV',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'mOpBZsQBm',
@@ -1512,8 +1512,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'pr6k8Jn6_',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'P0UG-LHOQ',
@@ -1535,8 +1535,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'KN9AMVKP7',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'SXybALV1f',
@@ -1551,8 +1551,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'M7YVRglvr',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         language: 'ja',
         country: 'JP',
         hardwareID: 'o-f3Zxd49',
@@ -1587,8 +1587,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
         _id: 'GcymNACvc',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'PlayStation',
@@ -1599,8 +1599,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'mDuSVm6S7',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'Xbox',// ゲーマータグ
@@ -1611,8 +1611,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'n4I1BDtxH',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'Nintendo',// フレンドコード
@@ -1623,8 +1623,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'L00bEpD46',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'Steam',
@@ -1635,8 +1635,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: '8bJV9G6MU',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: 'Jk92aglWl',
         platform: 'PC',
@@ -1647,8 +1647,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'UVOFSNbXR',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: 'lxdubg6IY',
         platform: 'Other',
@@ -1659,8 +1659,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'ixVVi-MyF',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'Other',
@@ -1671,8 +1671,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: '6tzEJLtel',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: 'YcIvt9hf7',
         platform: 'PC',
@@ -1683,8 +1683,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'lgOWOBejs',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'Android',
@@ -1695,8 +1695,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'QyAZzwSod',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: '',
         platform: 'iOS',
@@ -1707,8 +1707,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       {
         _id: 'VambZTyDP',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'P7UJMuUnx',
         gameID: '',
         platform: 'PlayStation',
@@ -1741,8 +1741,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
         _id: 'zaoOWw89g',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         language: 'ja',
         nameObj: {
@@ -1960,8 +1960,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
         _id: 'WAMuArrBZ',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'P7UJMuUnx',
         language: 'ja',
         nameObj: {
@@ -2109,8 +2109,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     saveArr = [
       {
          _id: 'TzjNMDQyl',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         gameID: 'Jk92aglWl',
         language: 'ja',
@@ -2247,8 +2247,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       {
          _id: '3sZUV34Q_',
-        createdDate: date,
-        updatedDate: date,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
         users_id: 'P7UJMuUnx',
         gameID: 'lxdubg6IY',
         language: 'ja',

@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
+// const util = require('util');
 
 
 // ---------------------------------------------
@@ -88,39 +88,8 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
       };
       
       
-      
-      // const beginTime = dataObj.beginTime;
-      // const beginTime = '03:60';
-      // const endTime = dataObj.endTime;
-      // const weekArr = dataObj.weekArr;
-      
-      
-      // console.log(`
-      //   ----- dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   _id: {green ${_id}}
-      //   beginTime: {green ${beginTime}}
-      //   endTime: {green ${endTime}}
-      // `);
-      
-      // console.log(chalk`
-      //   beginTime: {green ${beginTime}}
-      //   validator.isEmpty(beginTime): {green ${validator.isEmpty(beginTime)}}
-      // `);
-      
-      // console.log(`
-      //   ----- weekArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(weekArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
-      //   ID
+      //   _id
       // ---------------------------------------------
       
       // 英数と -_ のみ
@@ -219,9 +188,7 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
     
   } catch (errorObj) {
     
-    // console.log(chalk`
-    //   errorObj.message: {green ${errorObj.message}}
-    // `);
+    
     // ---------------------------------------------
     //   その他のエラー
     // ---------------------------------------------
@@ -231,12 +198,6 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
     
   } finally {
     
-    
-    // console.log(`
-    //   ----- errorCodeSet -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(errorCodeSet)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // ---------------------------------------------
     //   Error

@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -166,17 +167,19 @@ export default injectIntl(class extends React.Component {
     for (const [index, valueObj] of arr.entries()) {
       
       
-      const type = 'type' in valueObj ? valueObj.type : '';
+      const type = lodashGet(valueObj, ['type'], '');
       
-      const label = 'label' in valueObj ? valueObj.label : '';
-      const labelError = validationObj.formArr[index].labelObj.error;
-      const labelMessageCode = validationObj.formArr[index].labelObj.messageCode;
+      const label = lodashGet(valueObj, ['label'], '');
+      const labelError = lodashGet(validationObj, ['formArr', index, 'labelObj', 'error'], false);
+      const labelMessageCode = lodashGet(validationObj, ['formArr', index, 'labelObj', 'messageCode'], 'Error');
       
-      const url = 'url' in valueObj ? valueObj.url : '';
-      const urlError = validationObj.formArr[index].urlObj.error;
-      const urlMessageCode = validationObj.formArr[index].urlObj.messageCode;
+      const url = lodashGet(valueObj, ['url'], '');
+      const urlError = lodashGet(validationObj, ['formArr', index, 'urlObj', 'error'], false);
+      const urlMessageCode = lodashGet(validationObj, ['formArr', index, 'urlObj', 'messageCode'], 'Error');
       
-      const search = 'search' in valueObj ? valueObj.search : '';
+      const search = lodashGet(valueObj, ['search'], '');
+      
+      
       
       
       componentsArr.push(
@@ -283,18 +286,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- validationObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- process.env -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(process.env)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}

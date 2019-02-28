@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
+// const util = require('util');
 
 
 // ---------------------------------------------
@@ -73,11 +73,12 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       const type = dataObj.type ? dataObj.type : '';
       const label = dataObj.label ? dataObj.label : '';
       const url = dataObj.url ? dataObj.url : '';
+      const search = dataObj.search ? dataObj.search : true;
       
       
       const formObj = {
         typeObj: {
-          messageCode: 'C5lyqOFQz',
+          messageCode: 'Error',
           error: false
         },
         labelObj: {
@@ -89,32 +90,6 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
           error: false
         },
       };
-      
-      
-      
-      // console.log(`
-      //   ----- dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(chalk`
-      //   _id: {green ${_id}}
-      //   type: {green ${type}}
-      //   label: {green ${label}}
-      //   url: {green ${url}}
-      // `);
-      
-      // console.log(chalk`
-      //   beginTime: {green ${beginTime}}
-      //   validator.isEmpty(beginTime): {green ${validator.isEmpty(beginTime)}}
-      // `);
-      
-      // console.log(`
-      //   ----- weekArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(weekArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
@@ -184,6 +159,17 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       
       
       // ---------------------------------------------
+      //   Search
+      // ---------------------------------------------
+      
+      // Booleanチェック
+      if (!validator.isBoolean(String(search))) {
+        errorCodeSet.add('mUuHS5wy-');
+        error = true;
+      }
+      
+      
+      // ---------------------------------------------
       //   データ代入
       // ---------------------------------------------
       
@@ -196,7 +182,8 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
           _id,
           type,
           label,
-          url
+          url,
+          search
         });
       }
       
@@ -206,9 +193,7 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
     
   } catch (errorObj) {
     
-    // console.log(chalk`
-    //   errorObj.message: {green ${errorObj.message}}
-    // `);
+    
     // ---------------------------------------------
     //   その他のエラー
     // ---------------------------------------------
@@ -218,12 +203,6 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
     
   } finally {
     
-    
-    // console.log(`
-    //   ----- errorCodeSet -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(errorCodeSet)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // ---------------------------------------------
     //   Error

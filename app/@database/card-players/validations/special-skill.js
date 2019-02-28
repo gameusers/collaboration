@@ -42,7 +42,7 @@ const validationCardPlayersSpecialSkill = ({ valueArr }) => {
   
   let resultObj = {
     valueArr: [],
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };

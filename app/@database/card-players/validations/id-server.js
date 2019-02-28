@@ -7,7 +7,13 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
+
+
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelIDs = require('../../ids/model');
 
 
 // ---------------------------------------------
@@ -22,8 +28,9 @@ const validator = require('validator');
 /**
  * ID Array
  * @param {string} valueArr - 検証する配列
+ * @param {string} usersLogin_id - DB users _id ログインしているユーザーの_id
  */
-const validationCardPlayersIDArr = ({ valueArr }) => {
+const validationCardPlayersIDArrServer = async ({ valueArr, usersLogin_id }) => {
   
   
   // ---------------------------------------------
@@ -38,11 +45,10 @@ const validationCardPlayersIDArr = ({ valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const messageCodeArr = [];
+  let idArr = [];
   
   let resultObj = {
     valueArr: [],
-    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };
@@ -62,21 +68,48 @@ const validationCardPlayersIDArr = ({ valueArr }) => {
       
       // 文字数チェック
       if (!validator.isLength(_id, { min: minLength, max: maxLength })) {
-        messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('GKfEPkR4K');
+        resultObj.errorCodeArr.push('uLEZ8clC3');
         error = true;
       }
       
       // 英数と -_ のみ
       if (_id.match(/^[\w\-]+$/) === null) {
-        messageCodeArr.unshift('JBkjlGQMh');
-        resultObj.errorCodeArr.push('BVWP7ej_b');
+        resultObj.errorCodeArr.push('JtatkxSDj');
         error = true;
       }
       
       if (!error) {
-        resultObj.valueArr.push(_id);
+        idArr.push(_id);
       }
+      
+    }
+    
+    
+    // データベースを検索
+    if (idArr.length > 0) {
+      
+      const docArr = await ModelIDs.find({
+        conditionObj: {
+          $and: [
+            { _id: { $in: idArr } },
+            { users_id: usersLogin_id },
+          ]
+        }
+      });
+      
+      // ループしてデータベースに存在している _id のみ resultObj.valueArr に追加する
+      for (let value of idArr.values()) {
+        
+        const tempObj = docArr.find((valueObj) => {
+          return valueObj._id === value;
+        });
+        
+        if (tempObj) {
+          resultObj.valueArr.push(tempObj._id);
+        }
+        
+      }
+      
       
     }
     
@@ -88,20 +121,10 @@ const validationCardPlayersIDArr = ({ valueArr }) => {
     //   その他のエラー
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('EqoGAaqky');
+    resultObj.errorCodeArr.push('Su7PND-R8');
     
     
   } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
     
     
     // ---------------------------------------------
@@ -129,5 +152,5 @@ const validationCardPlayersIDArr = ({ valueArr }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersIDArr,
+  validationCardPlayersIDArrServer,
 };

@@ -42,7 +42,7 @@ const validationCardPlayersHobby = ({ valueArr }) => {
   
   let resultObj = {
     valueArr: [],
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };

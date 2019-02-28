@@ -36,7 +36,7 @@ const validationCardPlayersLookingForFriendsValue = ({ value }) => {
   let resultObj = {
     value,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };
@@ -113,7 +113,7 @@ const validationCardPlayersLookingForFriendsComment = ({ value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };
@@ -187,7 +187,7 @@ const validationCardPlayersLookingForFriendsIcon = ({ value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'C5lyqOFQz',
+    messageCode: 'Error',
     error: false,
     errorCodeArr: []
   };

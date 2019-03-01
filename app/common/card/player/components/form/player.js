@@ -58,6 +58,8 @@ import LookingForFriends from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import FormLink from './link';
 
+import FormImage from '../../../../form/components/image';
+
 
 
 
@@ -110,7 +112,9 @@ const ThumbnailBox = styled.div`
 `;
 
 const ThumbnailTitle = styled.div`
-  color: rgba(0, 0, 0, 0.54);
+  font-weight: bold;
+  // color: black;
+  // color: rgba(0, 0, 0, 0.54);
 `;
 
 const ImageBox = styled.div`
@@ -274,7 +278,6 @@ export default class extends React.Component {
         
         <StyledCardContent>
           
-          
           <Heading>プレイヤーカード</Heading>
           
           <Description>プレイヤーカードというのは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になりますので、いろいろ入力してみてください。</Description>
@@ -294,10 +297,16 @@ export default class extends React.Component {
           />
           
           
-          <ThumbnailBox>
+          {/*<ThumbnailBox>
             <ThumbnailTitle>サムネイル</ThumbnailTitle>
             <input type="file" name="example" size="30" />
+          </ThumbnailBox>*/}
+          
+          <ThumbnailBox>
+            <ThumbnailTitle>サムネイル</ThumbnailTitle>
+            <FormImage _id={`${cardPlayers_id}-thumbnail`} />
           </ThumbnailBox>
+          
           
           
           <ImageBox>

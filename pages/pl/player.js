@@ -78,6 +78,7 @@ import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../app/pl/player/stores/store';
 import initStoreIDSelectForm from '../../app/common/id-select/stores/form';
 import initStoreGameSelectSuggestion from '../../app/common/game-select/stores/suggestion';
+import initStoreFormImageVideo from '../../app/common/form/stores/image-video';
 
 
 // ---------------------------------------------
@@ -258,6 +259,7 @@ class Component extends React.Component {
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.idSelectForm = initStoreIDSelectForm(argumentsObj, this.stores);
       this.stores.gameSelectSuggestion = initStoreGameSelectSuggestion(argumentsObj, this.stores);
+      this.stores.formImageVideo = initStoreFormImageVideo(argumentsObj, this.stores);
       
       
       // --------------------------------------------------

@@ -2,7 +2,19 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+import chalk from 'chalk';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import { action, observable } from 'mobx';
+import lodashSet from 'lodash/set';
 
 
 // --------------------------------------------------
@@ -304,35 +316,48 @@ class Store {
   //   Lightbox - 画像表示
   // ---------------------------------------------
   
+  /**
+   * Lightboxのデータを入れるオブジェクト
+   * @type {Object}
+   */
   @observable lightboxObj = {};
+  
+  
+  /**
+   * Lightboxのデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleEditLightbox({ pathArr, value }) {
+    lodashSet(this.lightboxObj, pathArr, value);
+  };
+  
+  
+  
+  
+  // @observable lightboxObj = {};
   @observable lightboxCurrentNoObj = {};
   @observable lightboxOpenObj = {};
   
+  
+  /**
+   * Lightboxを開く
+   * @param {string} _id - ID
+   * @param {string} value - 値
+   */
   @action.bound
-  handleLightboxOpen(id, currentNo) {
-    
-    
-    // ---------------------------------------------
-    //  Console 出力
-    // ---------------------------------------------
-    
-    console.log(`\n\n`);
-    console.log(`--- handleLightboxOpen ---`);
-    console.log(`id = ${id}`);
-    console.log(`currentNo = ${currentNo}`);
-    console.dir(this.lightboxObj[id]);
-    console.dir(this.lightboxObj);
-    
-    console.log(`\n\n`);
-    
-    
-    this.lightboxCurrentNoObj[id] = currentNo;
-    this.lightboxOpenObj[id] = true;
+  handleLightboxOpen({ _id, currentNo }) {
+    lodashSet(this.lightboxObj, ['open'], true);
+    // this.lightboxCurrentNoObj[_id] = currentNo;
+    // this.lightboxOpenObj[_id] = true;
   };
   
+  
   @action.bound
-  handleLightboxClose(id) {
-    this.lightboxOpenObj[id] = false;
+  handleLightboxClose({ id }) {
+    lodashSet(this.lightboxObj, ['open'], false);
+    // this.lightboxOpenObj[id] = false;
   };
   
   @action.bound
@@ -374,8 +399,8 @@ class Store {
   // ----------------------------------------
   
   @action.bound
-  initializeLightbox(id, imageVideoArr = []) {
-    
+  initializeLightbox({ id, imageVideoArr }) {
+    return;
     
     // ---------------------------------------------
     //  Console 出力

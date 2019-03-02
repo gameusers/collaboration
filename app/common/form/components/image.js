@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -39,6 +39,13 @@ import IconVideocam from '@material-ui/icons/Videocam';
 import IconClose from '@material-ui/icons/Close';
 import IconDescription from '@material-ui/icons/Description';
 import IconHelpOutline from '@material-ui/icons/HelpOutline';
+
+
+// ---------------------------------------------
+//   Material UI / Color
+// ---------------------------------------------
+
+import cyan from '@material-ui/core/colors/cyan';
 
 
 // ---------------------------------------------
@@ -141,6 +148,49 @@ const CaptionDescription = styled.p`
 
 
 // ---------------------------------------------
+//   Image Video Preview
+// ---------------------------------------------
+
+const PreviewContainer = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: 10px 0 0 0;
+  padding: 0;
+`;
+
+const PreviewBox = styled.div`
+  position: relative;
+  margin: 10px 12px 0 0;
+  padding: 0;
+`;
+
+const PreviewImg = styled.img`
+  max-height: 108px;
+  
+  @media screen and (max-width: 480px) {
+    max-height: 54px;
+  }
+`;
+
+const PreviewDeleteFab = styled(Fab)`
+  && {
+    background-color: ${cyan[500]};
+    &:hover {
+      background-color: ${cyan[700]};
+    }
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    // z-index: 1000;
+  }
+`;
+
+
+// ---------------------------------------------
 //   Common
 // ---------------------------------------------
 
@@ -184,98 +234,110 @@ export default injectIntl(class extends React.Component {
     } = stores.formImageVideo;
     
     
+    const {
+      
+      lightboxObj,
+      handleEditLightbox,
+      handleLightboxOpen,
+      handleLightboxClose,
+      handleLightboxPrevious,
+      handleLightboxNext,
+      
+    } = stores.layout;
+    
+    
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
+    
+    const previewArr = lodashGet(dataObj, [_id, 'previewArr'], []);
     
     const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
     const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
     
     
     
+    // console.log(`\n---------- previewArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(previewArr)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    
     // --------------------------------------------------
-    //   Component - Image & Video Thumbnail
+    //   Component - Preview Thumbnail Image & Video
     // --------------------------------------------------
     
-    // const componentImageVideoArr = [];
-    // let imageIndex = 0;
+    const componentsPreviewArr = [];
     
-    // if (imageVideoArr && imageVideoArr.length > 0) {
+    if (previewArr.length > 0) {
       
-    //   for (const [index, value] of imageVideoArr.entries()) {
-        
-    //     // console.log(`index = ${index}`);
-    //     // console.log(`componentImageVideoArr`);
-    //     // console.dir(value);
-        
-    //     // ---------------------------------------------
-    //     //   画像
-    //     // ---------------------------------------------
-        
-    //     if (value.type === 'image') {
-          
-    //       // Lightboxで開く画像Noを設定する
-    //       const lightBoxOpenNo = imageIndex;
-          
-          
-    //       componentImageVideoArr.push(
-    //         <PreviewBox key={index}>
-    //           <PreviewImg
-    //             src={value.imageSetArr[0].src}
-    //             onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
-    //           />
-              
-    //           <PreviewDeleteFab
-    //             color="primary"
-    //             onClick={() => handleImageVideoDelete(id, index)}
-    //           >
-    //             <IconClose />
-    //           </PreviewDeleteFab>
-    //         </PreviewBox>
-    //       );
-          
-    //       imageIndex += 1;
-        
-        
-    //     // ---------------------------------------------
-    //     //   動画
-    //     // ---------------------------------------------
-        
-    //     } else {
-          
-    //       componentImageVideoArr.push(
-    //         <PreviewBox key={index}>
-    //           <PreviewImg
-    //             src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-    //             onClick={() => handleModalVideoOpen(value.videoChannel, value.videoId)}
-    //           />
-              
-    //           <PreviewVideoPlayButtonImg
-    //             src="/static/img/common/video-play-button.png"
-    //           />
-              
-    //           <PreviewDeleteFab
-    //             color="primary"
-    //             onClick={() => handleImageVideoDelete(id, index)}
-    //           >
-    //             <IconClose />
-    //           </PreviewDeleteFab>
-              
-    //         </PreviewBox>
-    //       );
-          
-    //     }
-        
-    //   };
+      let imageIndex = 0;
       
-    // }
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    // const validationObj = validationCardPlayersName({ value: nameObj.value });
+      for (const [index, valueObj] of previewArr.entries()) {
+        
+        
+        // ---------------------------------------------
+        //   画像
+        // ---------------------------------------------
+        
+        if (valueObj.type === 'image') {
+          
+          // Lightboxで開く画像Noを設定する
+          const lightBoxOpenNo = imageIndex;
+          
+          
+          componentsPreviewArr.push(
+            <PreviewBox key={index}>
+              <PreviewImg
+                src={valueObj.imageSetArr[0].src}
+                onClick={() => handleEditLightbox({ pathArr: [_id, 'open'], value: true })}
+                // onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
+              />
+              
+              <PreviewDeleteFab
+                color="primary"
+                // onClick={() => handleImageVideoDelete(id, index)}
+              >
+                <IconClose />
+              </PreviewDeleteFab>
+            </PreviewBox>
+          );
+          
+          imageIndex += 1;
+        
+        
+        // ---------------------------------------------
+        //   動画
+        // ---------------------------------------------
+        
+        } else {
+          
+          // componentsPreviewArr.push(
+          //   <PreviewBox key={index}>
+          //     <PreviewImg
+          //       src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
+          //       onClick={() => handleModalVideoOpen(value.videoChannel, value.videoId)}
+          //     />
+              
+          //     <PreviewVideoPlayButtonImg
+          //       src="/static/img/common/video-play-button.png"
+          //     />
+              
+          //     <PreviewDeleteFab
+          //       color="primary"
+          //       onClick={() => handleImageVideoDelete(id, index)}
+          //     >
+          //       <IconClose />
+          //     </PreviewDeleteFab>
+              
+          //   </PreviewBox>
+          // );
+          
+        }
+        
+      };
+      
+    }
     
     
     
@@ -302,6 +364,13 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
+        {/* Preview */}
+        <PreviewContainer>
+          {componentsPreviewArr}
+        </PreviewContainer>
+        
+        
+        {/* Input file */}
         <ImageInputFileBox>
           
           <ImageInputFile
@@ -321,6 +390,7 @@ export default injectIntl(class extends React.Component {
         </ImageInputFileBox>
         
         
+        {/* Caption */}
         <ImageTextField
           placeholder="画像名・簡単な解説を入力"
           value={imageCaption}
@@ -349,12 +419,16 @@ export default injectIntl(class extends React.Component {
           }}
         />
         
+        
+        {/* Captionについての解説 */}
         {imageCaptionOpen &&
           <CaptionDescription>
-            アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力して追加すると、拡大された画像の下部に入力した文字が表示されるようになります。<strong>基本的には未入力で問題ありません</strong>が、アップロードした画像について丁寧に説明したい場合などに利用してください。
+            アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力して追加すると、拡大された画像の下部に入力した文字が表示されるようになります。<strong>基本的には未入力で問題ありません</strong>が、アップロードした画像について、説明を加えたい場合に利用してください。
           </CaptionDescription>
         }
         
+        
+        {/* アップロードできる画像の解説 */}
         <Description>
           アップロードできる画像の種類は JPEG, PNG, GIF, BMP, SVG で、ファイルサイズが5MB以内のものです。<FontRed>画像を選択したら追加ボタンを押してください。</FontRed>
         </Description>

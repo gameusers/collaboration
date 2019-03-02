@@ -9,7 +9,9 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
+// import Lightbox from 'react-images';
 import ModalVideo from 'react-modal-video';
+// import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -22,8 +24,6 @@ import Footer from './footer';
 
 import Snackbar from './snackbar';
 import Loading from './loading';
-
-// import CardPlayerDialog from '../../card/player/components/dialog';
 
 
 // ---------------------------------------------
@@ -74,6 +74,19 @@ export default class extends React.Component {
     
     const { stores } = this.props;
     
+    // const {
+      
+    //   lightboxObj,
+    //   handleEditLightbox,
+    //   handleLightboxOpen,
+    //   handleLightboxClose,
+    //   handleLightboxPrevious,
+    //   handleLightboxNext,
+      
+    // } = stores.layout;
+    
+    // const lightboxOpen = lodashGet(lightboxObj, ['open'], false);
+    
     
     // --------------------------------------------------
     //   Return
@@ -82,6 +95,7 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
+        
         {/* Head 内部のタグをここで追記する */}
         <Head>
           <meta charSet='utf-8' />
@@ -89,19 +103,37 @@ export default class extends React.Component {
           <meta name="robots" content="noindex,nofollow" />
         </Head>
         
+        
         {/* ヘッダー */}
         <Header />
+        
         
         {/* ヘッダー - メインナビゲーション */}
         <HeaderNavMain
           headerNavMainArr={this.props.headerNavMainArr}
         />
         
+        
         {/* コンテンツ */}
         {this.props.children}
         
+        
         {/* フッター */}
         <Footer />
+        
+        
+        {/* 画像用のLightbox */}
+        {/*<Lightbox
+          images={stores.layout.lightboxImagesObj[stores.layout.lightboxImagesId]}
+          currentImage={stores.layout.lightboxCurrentNo}
+          isOpen={lightboxOpen}
+          onClickPrev={stores.layout.handleLightboxPreviousCurrentNo}
+          onClickNext={stores.layout.handleLightboxNextCurrentNo}
+          onClose={stores.layout.handleLightboxClose}
+          backdropClosesModal
+          preloadNextImage={false}
+        />*/}
+        
         
         {/* 動画用のモーダルウィンドウ */}
         <ModalVideo
@@ -111,14 +143,14 @@ export default class extends React.Component {
           onClose={stores.layout.handleModalVideoClose}
         />
         
+        
         {/* Snackbar 通知用 */}
         <Snackbar />
         
-        {/* プレイヤーカードを表示するダイアログ */}
-        {/*<CardPlayerDialog />*/}
         
         {/* Loading */}
         <Loading />
+        
         
       </React.Fragment>
     );

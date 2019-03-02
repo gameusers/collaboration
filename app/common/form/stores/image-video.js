@@ -254,16 +254,12 @@ class Store {
     const height = lodashGet(this.dataObj, [_id, 'imageObj', 'height'], '');
     // const extension = lodashGet(this.dataObj, [_id, 'imageObj', 'extension'], '');
     const caption = lodashGet(this.dataObj, [_id, 'imageCaption'], '');
-    const previewArr = lodashGet(this.dataObj, ['previewArr'], []);
+    const previewArr = lodashGet(this.dataObj, [_id, 'previewArr'], []);
     
     
-    // ---------------------------------------------
-    //   画像が選択されていない場合は処理停止
-    // ---------------------------------------------
-    
-    // if (!src) {
-    //   return;
-    // }
+    console.log(`\n---------- previewArr ----------\n`);
+    console.dir(JSON.parse(JSON.stringify(previewArr)));
+    console.log(`\n-----------------------------------\n`);
     
     
     // ---------------------------------------------
@@ -296,7 +292,7 @@ class Store {
     
     
     // ---------------------------------------------
-    //   画像が選択されていて、重複していない場合はオブジェクトに追加する
+    //   画像が選択されていない場合、処理停止
     // ---------------------------------------------
     
     if (src === '') {
@@ -304,90 +300,99 @@ class Store {
       storeLayout.handleSnackbarOpen('error', '画像を選択してください。');
       return;
       
+      
+    // ---------------------------------------------
+    //   同じ画像を追加しようとしている場合、処理停止
+    // ---------------------------------------------  
+    
     } else if (duplication) {
       
       storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が追加されています。');
       return;
       
+      
+    // ---------------------------------------------
+    //   srcset 用のデータを生成する
+    // ---------------------------------------------
+      
     } else {
       
-      // const imageId = shortid.generate();
       const imageSetArr = [];
-      let aspectRatio = 1;
+      // let aspectRatio = 1;
       
-      if (width >= height) {
+      // if (width >= height) {
         
-        aspectRatio = height / width;
+      //   aspectRatio = height / width;
         
-        if (width <= 320) {
+      //   if (width <= 320) {
           
-          imageSetArr.push({
-            w: '320w',
-            src,
-            width,
-            height,
-            type: 'JPEG'
-          });
+      //     imageSetArr.push({
+      //       w: '320w',
+      //       src,
+      //       width,
+      //       height,
+      //       type: 'JPEG'
+      //     });
           
-        } else if (width > 320) {
+      //   } else if (width > 320) {
           
-          imageSetArr.push({
-            w: '320w',
-            src,
-            width: 320,
-            height: Math.round(320 * aspectRatio),
-            type: 'JPEG'
-          });
+      //     imageSetArr.push({
+      //       w: '320w',
+      //       src,
+      //       width: 320,
+      //       height: Math.round(320 * aspectRatio),
+      //       type: 'JPEG'
+      //     });
           
-        }
+      //   }
         
-        if (width > 480) {
+      //   if (width > 480) {
           
-          imageSetArr.push({
-            w: '480w',
-            src,
-            width: 480,
-            height: Math.round(480 * aspectRatio),
-            type: 'JPEG'
-          });
+      //     imageSetArr.push({
+      //       w: '480w',
+      //       src,
+      //       width: 480,
+      //       height: Math.round(480 * aspectRatio),
+      //       type: 'JPEG'
+      //     });
           
-        }
+      //   }
         
-      } else {
+      // } else {
         
-        if (height <= 320) {
+      //   if (height <= 320) {
           
-          imageSetArr.push({
-            w: '320w',
-            src,
-            width,
-            height,
-            type: 'JPEG'
-          });
+      //     imageSetArr.push({
+      //       w: '320w',
+      //       src,
+      //       width,
+      //       height,
+      //       type: 'JPEG'
+      //     });
           
-        } else if (height > 320) {
+      //   } else if (height > 320) {
           
-          imageSetArr.push({
-            w: '320w',
-            src,
-            width: Math.round(320 * aspectRatio),
-            height: 320,
-            type: 'JPEG'
-          });
+      //     imageSetArr.push({
+      //       w: '320w',
+      //       src,
+      //       width: Math.round(320 * aspectRatio),
+      //       height: 320,
+      //       type: 'JPEG'
+      //     });
           
-        }
+      //   }
         
-        if (height > 480) {
-          imageSetArr.push({
-            w: '480w',
-            src,
-            width: Math.round(480 * aspectRatio),
-            height: 480,
-            type: 'JPEG'
-          });
-        }
+      //   if (height > 480) {
+      //     imageSetArr.push({
+      //       w: '480w',
+      //       src,
+      //       width: Math.round(480 * aspectRatio),
+      //       height: 480,
+      //       type: 'JPEG'
+      //     });
+      //   }
         
-      }
+      // }
       
       imageSetArr.push({
         w: 'source',
@@ -399,7 +404,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   imageVideoArr に追加する
+      //   previewArr に追加する
       // ---------------------------------------------
       
       previewArr.push({
@@ -414,17 +419,14 @@ class Store {
       // Preview 用のオブジェクトに追加する
       lodashSet(this.dataObj, [_id, 'previewArr'], previewArr);
       
-      // this.imageVideoObj[_id] = previewArr;
-      
       // Caption 入力フォームをリセット
       lodashSet(this.dataObj, [_id, 'imageCaption'], '');
-      // this.imageCaptionObj[_id] = '';
       
       
       
-      console.log(`\n---------- this.dataObj[_id] ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(this.dataObj[_id])));
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- this.dataObj[_id] ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(this.dataObj[_id])));
+      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------

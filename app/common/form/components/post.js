@@ -485,12 +485,12 @@ export default class extends React.Component {
             <PreviewBox key={index}>
               <PreviewImg
                 src={value.imageSetArr[0].src}
-                onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
+                // onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
               />
               
               <PreviewDeleteFab
                 color="primary"
-                onClick={() => handleImageVideoDelete(id, index)}
+                // onClick={() => handleImageVideoDelete(id, index)}
               >
                 <IconClose />
               </PreviewDeleteFab>

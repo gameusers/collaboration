@@ -49,10 +49,10 @@ import cyan from '@material-ui/core/colors/cyan';
 
 
 // ---------------------------------------------
-//   Validations
+//   Components
 // ---------------------------------------------
 
-// const { validationCardPlayersName } = require('../../../../../@database/card-players/validations/name');
+import LightboxWrapper from '../../layout/components/lightbox';
 
 
 
@@ -230,6 +230,7 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleSelectImage,
       handleAddImage,
+      handleDeleteImageVideoArr,
       
     } = stores.formImageVideo;
     
@@ -239,9 +240,6 @@ export default injectIntl(class extends React.Component {
       lightboxObj,
       handleEditLightbox,
       handleLightboxOpen,
-      handleLightboxClose,
-      handleLightboxPrevious,
-      handleLightboxNext,
       
     } = stores.layout;
     
@@ -250,15 +248,12 @@ export default injectIntl(class extends React.Component {
     //   Validation
     // --------------------------------------------------
     
-    const previewArr = lodashGet(dataObj, [_id, 'previewArr'], []);
-    
+    const imageVideoArr = lodashGet(dataObj, [_id, 'imageVideoArr'], []);
     const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
     const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
     
-    
-    
-    // console.log(`\n---------- previewArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(previewArr)));
+    // console.log(`\n---------- imageVideoArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imageVideoArr)));
     // console.log(`\n-----------------------------------\n`);
     
     
@@ -269,11 +264,11 @@ export default injectIntl(class extends React.Component {
     
     const componentsPreviewArr = [];
     
-    if (previewArr.length > 0) {
+    if (imageVideoArr && imageVideoArr.length > 0) {
       
       let imageIndex = 0;
       
-      for (const [index, valueObj] of previewArr.entries()) {
+      for (const [index, valueObj] of imageVideoArr.entries()) {
         
         
         // ---------------------------------------------
@@ -283,20 +278,19 @@ export default injectIntl(class extends React.Component {
         if (valueObj.type === 'image') {
           
           // Lightboxで開く画像Noを設定する
-          const lightBoxOpenNo = imageIndex;
+          const currentNo = imageIndex;
           
           
           componentsPreviewArr.push(
             <PreviewBox key={index}>
               <PreviewImg
-                src={valueObj.imageSetArr[0].src}
-                onClick={() => handleEditLightbox({ pathArr: [_id, 'open'], value: true })}
-                // onClick={() => handleLightboxOpen(id, lightBoxOpenNo)}
+                src={valueObj.srcSetArr[0].src}
+                onClick={() => handleLightboxOpen({ _id, currentNo })}
               />
               
               <PreviewDeleteFab
                 color="primary"
-                // onClick={() => handleImageVideoDelete(id, index)}
+                onClick={() => handleDeleteImageVideoArr(_id, index)}
               >
                 <IconClose />
               </PreviewDeleteFab>
@@ -432,6 +426,13 @@ export default injectIntl(class extends React.Component {
         <Description>
           アップロードできる画像の種類は JPEG, PNG, GIF, BMP, SVG で、ファイルサイズが5MB以内のものです。<FontRed>画像を選択したら追加ボタンを押してください。</FontRed>
         </Description>
+        
+        
+        {/* Lightbox */}
+        <LightboxWrapper
+          _id={_id}
+          imageVideoArr={imageVideoArr}
+        />
         
       </React.Fragment>
     );

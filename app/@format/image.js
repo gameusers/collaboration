@@ -24,6 +24,106 @@
 // --------------------------------------------------
 
 /**
+ * Image & Video 情報の入った配列をフォーマットする 
+ * @param {Array} imageVideoArr - 
+ * @return {Object} フォーマットされたデータ
+ */
+const formatImageVideoArr = ({ imageVideoArr }) => {
+  
+  console.log(`\n---------- imageVideoArr ----------\n`);
+  console.dir(JSON.parse(JSON.stringify(imageVideoArr)));
+  console.log(`\n-----------------------------------\n`);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnArr = [];
+  
+  
+  // --------------------------------------------------
+  //   データ処理
+  // --------------------------------------------------
+  
+  if (imageVideoArr.length > 0) {
+    
+    // const imagesArr = [];
+    
+    
+    for (const [index, valueObj] of imageVideoArr.entries()) {
+      
+      if (valueObj.type === 'image') {
+        
+        const srcSetArr = [];
+        
+        // console.log(`\n---------- valueObj ----------\n`);
+        // console.dir(JSON.parse(JSON.stringify(valueObj)));
+        // console.log(`\n-----------------------------------\n`);
+        // --------------------------------------------------
+        //   Lightbox のライブラリで使用できるフォーマットにする
+        //   https://github.com/jossmac/react-images
+        // --------------------------------------------------
+        
+        returnArr[index] = {
+          src: '',
+          caption: valueObj.caption,
+          srcSet: '',
+        };
+        
+        
+        for (let value2Obj of valueObj.srcSetArr.values()) {
+          
+          // 画像をアップロードするときに、base64形式でプレビューを表示する
+          // その際、とりあえず srcset の値を 320w ということにして表示する
+          if (value2Obj.w === 'upload') {
+            
+            returnArr[index].src = value2Obj.src;
+            
+            srcSetArr.push(
+              `${value2Obj.src} 320w`
+            );
+            
+          } else if (value2Obj.w !== 'source') {
+            
+            returnArr[index].src = value2Obj.src;
+            
+            srcSetArr.push(
+              `${value2Obj.src} ${value2Obj.w}`
+            );
+            
+          }
+          
+        }
+        
+        
+        if (srcSetArr.length > 0) {
+          returnArr[index].srcSet = srcSetArr.join(', ');
+        }
+        
+        
+      }
+      
+    }
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return returnArr;
+  
+  
+};
+
+
+
+
+/**
  * 取得する
  * @param {string} basePath - ベースになるパス
  * @param {Array} imageVideoArr - 
@@ -38,8 +138,6 @@ const srcset = (basePath, imageVideoArr) => {
   
   let returnArr = [];
   
-  // console.log(typeof imageVideoArr[Symbol.iterator]);
-  
   
   // --------------------------------------------------
   //   データ処理
@@ -47,31 +145,30 @@ const srcset = (basePath, imageVideoArr) => {
   
   if (imageVideoArr.length > 0) {
     
-    // for (let value of imageVideoArr.values()) {
-    for (let value of imageVideoArr) {
+    for (let valueObj of imageVideoArr) {
       
-      if (value.type === 'image') {
+      if (valueObj.type === 'image') {
         
         const tempArr = [];
         let extension = '';
         let imageSrc = '';
         
-        if (value.fileFormat === 'JPEG') {
+        if (valueObj.fileFormat === 'JPEG') {
           extension = '.jpg';
-        } else if (value.fileFormat === 'PNG') {
+        } else if (valueObj.fileFormat === 'PNG') {
           extension = '.png';
-        } else if (value.fileFormat === 'GIF') {
+        } else if (valueObj.fileFormat === 'GIF') {
           extension = '.gif';
         }
         
         
         // for (let value2 of value.srcSetArr.values()) {
-        for (let value2 of value.srcSetArr) {
+        for (let value2 of valueObj.srcSetArr) {
           
           if (value2.w !== 'source') {
             // const src = `${basePath}${value._id}/${value2.w}${extension} ${value2.w}`;
-            tempArr.push(`${basePath}${value._id}/${value2.w}${extension} ${value2.w}`);
-            imageSrc = `${basePath}${value._id}/${value2.w}${extension}`;
+            tempArr.push(`${basePath}${valueObj._id}/${value2.w}${extension} ${value2.w}`);
+            imageSrc = `${basePath}${valueObj._id}/${value2.w}${extension}`;
           }
           
         }
@@ -79,7 +176,7 @@ const srcset = (basePath, imageVideoArr) => {
         returnArr.push({
           imageSrcSet: tempArr.join(', '),
           imageSrc: imageSrc,
-          imageAlt: value.caption
+          imageAlt: valueObj.caption
         });
         
       }
@@ -157,5 +254,6 @@ const srcset = (basePath, imageVideoArr) => {
 // --------------------------------------------------
 
 module.exports = {
+  formatImageVideoArr,
   srcset
 };

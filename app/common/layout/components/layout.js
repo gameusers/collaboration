@@ -9,9 +9,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
-// import Lightbox from 'react-images';
 import ModalVideo from 'react-modal-video';
-// import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -74,19 +72,6 @@ export default class extends React.Component {
     
     const { stores } = this.props;
     
-    // const {
-      
-    //   lightboxObj,
-    //   handleEditLightbox,
-    //   handleLightboxOpen,
-    //   handleLightboxClose,
-    //   handleLightboxPrevious,
-    //   handleLightboxNext,
-      
-    // } = stores.layout;
-    
-    // const lightboxOpen = lodashGet(lightboxObj, ['open'], false);
-    
     
     // --------------------------------------------------
     //   Return
@@ -120,19 +105,6 @@ export default class extends React.Component {
         
         {/* フッター */}
         <Footer />
-        
-        
-        {/* 画像用のLightbox */}
-        {/*<Lightbox
-          images={stores.layout.lightboxImagesObj[stores.layout.lightboxImagesId]}
-          currentImage={stores.layout.lightboxCurrentNo}
-          isOpen={lightboxOpen}
-          onClickPrev={stores.layout.handleLightboxPreviousCurrentNo}
-          onClickNext={stores.layout.handleLightboxNextCurrentNo}
-          onClose={stores.layout.handleLightboxClose}
-          backdropClosesModal
-          preloadNextImage={false}
-        />*/}
         
         
         {/* 動画用のモーダルウィンドウ */}

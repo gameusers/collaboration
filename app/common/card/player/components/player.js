@@ -253,11 +253,17 @@ export default class extends React.Component {
     let imageSrc = '';
     let imageAlt = '';
     
-    if (cardPlayersObj.imageArr.length > 0) {
+    if (cardPlayersObj.imagesArr.length > 0) {
       
-      imageSrcSet = cardPlayersObj.imageArr[0].imageSrcSet;
-      imageSrc = cardPlayersObj.imageArr[0].imageSrc;
-      imageAlt = cardPlayersObj.imageArr[0].imageAlt;
+      imageSrcSet = cardPlayersObj.imagesArr[0].srcSet;
+      imageSrc = cardPlayersObj.imagesArr[0].src;
+      imageAlt = cardPlayersObj.imagesArr[0].caption;
+      
+      console.log(chalk`
+        imageSrcSet: {green ${imageSrcSet}}
+        imageSrc: {green ${imageSrc}}
+        imageAlt: {green ${imageAlt}}
+      `);
       
     }
     

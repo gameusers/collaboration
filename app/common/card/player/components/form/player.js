@@ -309,10 +309,10 @@ export default class extends React.Component {
           
           
           
-          <ImageBox>
+          {/*<ImageBox>
             <ImageTitle>画像</ImageTitle>
             <input type="file" name="example" size="30" />
-          </ImageBox>
+          </ImageBox>*/}
           
           
           {/* コメント */}

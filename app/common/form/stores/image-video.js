@@ -104,31 +104,6 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 投稿された画像のソースを保存するオブジェクト
-   * @type {Object}
-   */
-  imageSrcObj = {};
-  
-  /**
-   * 投稿された画像の幅を保存するオブジェクト
-   * @type {Object}
-   */
-  imageWidthObj = {};
-  
-  /**
-   * 投稿された画像の高さを保存するオブジェクト
-   * @type {Object}
-   */
-  imageHeightObj = {};
-  
-  /**
-   * 投稿された画像の拡張子を保存するオブジェクト
-   * @type {Object}
-   */
-  imageExtensionObj = {};
-  
-  
-  /**
    * 画像を選択したときに呼び出される
    * @param {string} _id - ID
    * @param {Object} fileObj - ファイルオブジェクト
@@ -254,12 +229,12 @@ class Store {
     const height = lodashGet(this.dataObj, [_id, 'imageObj', 'height'], '');
     // const extension = lodashGet(this.dataObj, [_id, 'imageObj', 'extension'], '');
     const caption = lodashGet(this.dataObj, [_id, 'imageCaption'], '');
-    const previewArr = lodashGet(this.dataObj, [_id, 'previewArr'], []);
+    const imageVideoArr = lodashGet(this.dataObj, [_id, 'imageVideoArr'], []);
     
     
-    console.log(`\n---------- previewArr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(previewArr)));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- imageVideoArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imageVideoArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     // ---------------------------------------------
@@ -268,15 +243,15 @@ class Store {
     
     let duplication = false;
     
-    if (previewArr.length > 0) {
+    if (imageVideoArr.length > 0) {
       
-      for (const valueObj of previewArr.values()) {
+      for (const valueObj of imageVideoArr.values()) {
         
         if (valueObj.type === 'image') {
           
           console.log(`value.type = ${valueObj.type}`);
           
-          duplication = valueObj.imageSetArr.find((valueObj) => {
+          duplication = valueObj.srcSetArr.find((valueObj) => {
             return (valueObj.src === src);
           });
           
@@ -317,127 +292,55 @@ class Store {
       
     } else {
       
-      const imageSetArr = [];
-      // let aspectRatio = 1;
+      const srcSetArr = [];
       
-      // if (width >= height) {
-        
-      //   aspectRatio = height / width;
-        
-      //   if (width <= 320) {
-          
-      //     imageSetArr.push({
-      //       w: '320w',
-      //       src,
-      //       width,
-      //       height,
-      //       type: 'JPEG'
-      //     });
-          
-      //   } else if (width > 320) {
-          
-      //     imageSetArr.push({
-      //       w: '320w',
-      //       src,
-      //       width: 320,
-      //       height: Math.round(320 * aspectRatio),
-      //       type: 'JPEG'
-      //     });
-          
-      //   }
-        
-      //   if (width > 480) {
-          
-      //     imageSetArr.push({
-      //       w: '480w',
-      //       src,
-      //       width: 480,
-      //       height: Math.round(480 * aspectRatio),
-      //       type: 'JPEG'
-      //     });
-          
-      //   }
-        
-      // } else {
-        
-      //   if (height <= 320) {
-          
-      //     imageSetArr.push({
-      //       w: '320w',
-      //       src,
-      //       width,
-      //       height,
-      //       type: 'JPEG'
-      //     });
-          
-      //   } else if (height > 320) {
-          
-      //     imageSetArr.push({
-      //       w: '320w',
-      //       src,
-      //       width: Math.round(320 * aspectRatio),
-      //       height: 320,
-      //       type: 'JPEG'
-      //     });
-          
-      //   }
-        
-      //   if (height > 480) {
-      //     imageSetArr.push({
-      //       w: '480w',
-      //       src,
-      //       width: Math.round(480 * aspectRatio),
-      //       height: 480,
-      //       type: 'JPEG'
-      //     });
-      //   }
-        
-      // }
       
-      imageSetArr.push({
-        w: 'source',
+      srcSetArr.push({
+        _id: shortid.generate(),
         src,
+        w: 'upload',
         width,
         height,
-        type: 'JPEG'
       });
       
       
       // ---------------------------------------------
-      //   previewArr に追加する
+      //   imageVideoArr に追加する
       // ---------------------------------------------
       
-      previewArr.push({
-        id: shortid.generate(),
+      imageVideoArr.push({
+        _id: shortid.generate(),
         type: 'image',
-        imageSetArr,
-        caption
+        caption,
+        srcSetArr,
       });
-      
       
       
       // Preview 用のオブジェクトに追加する
-      lodashSet(this.dataObj, [_id, 'previewArr'], previewArr);
+      lodashSet(this.dataObj, [_id, 'imageVideoArr'], imageVideoArr);
       
       // Caption 入力フォームをリセット
       lodashSet(this.dataObj, [_id, 'imageCaption'], '');
       
       
-      
-      // console.log(`\n---------- this.dataObj[_id] ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(this.dataObj[_id])));
-      // console.log(`\n-----------------------------------\n`);
-      
-      
-      // ---------------------------------------------
-      //   Initialize
-      // ---------------------------------------------
-      
-      // Lightbox
-      storeLayout.initializeLightbox(_id, previewArr);
-      
-      
     }
+    
+  };
+  
+  
+  
+  
+  /**
+   * 画像・動画のプレビュー画像を削除するときに呼び出される
+   * @param {string} id - ID
+   * @param {number} index - 削除するプレビュー画像のNo
+   */
+  @action.bound
+  handleDeleteImageVideoArr({ _id, index }) {
+    
+    const imageVideoArr = lodashGet(this.dataObj, [_id, 'imageVideoArr'], []);
+    imageVideoArr[_id].splice(index, 1);
+    lodashSet(this.dataObj, [_id, 'imageVideoArr'], imageVideoArr);
     
   };
   

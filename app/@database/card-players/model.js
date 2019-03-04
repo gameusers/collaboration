@@ -22,7 +22,7 @@ const ModelIDs = require('../ids/model');
 //   Format
 // ---------------------------------------------
 
-const { srcset } = require('../../@format/image');
+const { formatImageVideoArr, srcset } = require('../../@format/image');
 
 
 
@@ -730,8 +730,10 @@ const format = (argumentsObj) => {
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
-    
-    copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
+    // console.log('AAA');
+    copiedObj.imagesArr = formatImageVideoArr({ imageVideoArr: copiedObj.imageVideoArr });
+    // copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
+    // console.log('BBB');
     
     
     // --------------------------------------------------
@@ -890,7 +892,8 @@ const formatForEditForm = (argumentsObj) => {
     //   画像の処理
     // --------------------------------------------------
     
-    copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
+    copiedObj.imageVideoArr = formatImageVideoArr({ imageVideoArr: copiedObj.imageVideoArr });
+    // copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
     
     
     // --------------------------------------------------

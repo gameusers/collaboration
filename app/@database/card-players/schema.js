@@ -23,23 +23,57 @@ const schema = mongoose.Schema({
     value: String,
     search: { type: Boolean, required: true },
   },
-  thumbnail: { type: Boolean, required: true },
-  imageVideoArr: [
-    {
-      _id: { type: String, required: true },
-      type: { type: String, enum: ['image', 'video'], required: true },
-      caption: String,
-      srcSetArr: [
-        {
-          _id: { type: String, required: true },
-          src: { type: String, required: true },
-          w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
-          width: { type: Number, required: true },
-          height: { type: Number, required: true },
-        }
-      ],
-    },
-  ],
+  imagesAndVideosObj: {
+    thumbnailArr: [
+      {
+        _id: { type: String, required: true },
+        type: { type: String, enum: ['image', 'video'], required: true },
+        caption: String,
+        srcSetArr: [
+          {
+            _id: { type: String, required: true },
+            src: { type: String, required: true },
+            w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+            width: { type: Number, required: true },
+            height: { type: Number, required: true },
+          }
+        ],
+      },
+    ],
+    mainArr: [
+      {
+        _id: { type: String, required: true },
+        type: { type: String, enum: ['image', 'video'], required: true },
+        caption: String,
+        srcSetArr: [
+          {
+            _id: { type: String, required: true },
+            src: { type: String, required: true },
+            w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+            width: { type: Number, required: true },
+            height: { type: Number, required: true },
+          }
+        ],
+      },
+    ],
+  },
+  // thumbnail: { type: Boolean, required: true },
+  // imageVideoArr: [
+  //   {
+  //     _id: { type: String, required: true },
+  //     type: { type: String, enum: ['image', 'video'], required: true },
+  //     caption: String,
+  //     srcSetArr: [
+  //       {
+  //         _id: { type: String, required: true },
+  //         src: { type: String, required: true },
+  //         w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+  //         width: { type: Number, required: true },
+  //         height: { type: Number, required: true },
+  //       }
+  //     ],
+  //   },
+  // ],
   commentObj: {
     value: String,
     search: { type: Boolean, required: true },

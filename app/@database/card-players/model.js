@@ -7,7 +7,14 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
+// const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 // ---------------------------------------------
@@ -22,7 +29,7 @@ const ModelIDs = require('../ids/model');
 //   Format
 // ---------------------------------------------
 
-const { formatImageVideoArr, srcset } = require('../../@format/image');
+const { formatImagesAndVideosArr } = require('../../@format/image');
 
 
 
@@ -33,24 +40,13 @@ const { formatImageVideoArr, srcset } = require('../../@format/image');
 
 /**
  * 取得する
- * @param {Object} argumentsObj - 引数
+ * @param {string} users_id - DB users _id
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    users_id,
-    language,
-    country,
-    usersLogin_id
-    
-  } = argumentsObj;
+const findForCardPlayer = async ({ users_id, language, country, usersLogin_id }) => {
   
   
   // --------------------------------------------------
@@ -687,23 +683,12 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
 
 /**
  * DBから取得したカード情報をフォーマットする
- * @param {Object} argumentsObj - 引数
+ * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} cardPlayersArr - カード情報の入った配列
+ * @param {Object} idsObj - ID情報の入ったオブジェクト
  * @return {Object} フォーマット後のデータ
  */
-const format = (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    usersLogin_id,
-    cardPlayersArr,
-    idsObj
-    
-  } = argumentsObj;
+const format = ({ usersLogin_id, cardPlayersArr, idsObj }) => {
   
   
   // --------------------------------------------------
@@ -721,18 +706,22 @@ const format = (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   コピー
+    //   ディープコピー
     // --------------------------------------------------
     
-    const copiedObj = JSON.parse(JSON.stringify(valueObj));
+    const cloneObj = lodashCloneDeep(valueObj);
+    // const cloneObj = JSON.parse(JSON.stringify(valueObj));
     
     
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
     // console.log('AAA');
-    copiedObj.imagesArr = formatImageVideoArr({ imageVideoArr: copiedObj.imageVideoArr });
-    // copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
+    cloneObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: cloneObj.imagesAndVideosObj.thumbnailArr });
+    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: cloneObj.imagesAndVideosObj.mainArr });
+    
+    // cloneObj.imagesArr = formatImagesAndVideosArr({ arr: cloneObj.imageVideoArr });
+    // cloneObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, cloneObj.imageVideoArr);
     // console.log('BBB');
     
     
@@ -740,7 +729,7 @@ const format = (argumentsObj) => {
     //   hardwareActive
     // --------------------------------------------------
     
-    copiedObj.hardwareActiveArr = [];
+    cloneObj.hardwareActiveArr = [];
     
     for (let value of valueObj.hardwareActiveObj.valueArr) {
       
@@ -749,7 +738,7 @@ const format = (argumentsObj) => {
       });
       
       if (obj && 'name' in obj) {
-        copiedObj.hardwareActiveArr.push({
+        cloneObj.hardwareActiveArr.push({
           name: obj.name
         });
       }
@@ -761,7 +750,7 @@ const format = (argumentsObj) => {
     //   hardwareInactive
     // --------------------------------------------------
     
-    copiedObj.hardwareInactiveArr = [];
+    cloneObj.hardwareInactiveArr = [];
     
     for (let value of valueObj.hardwareInactiveObj.valueArr) {
       
@@ -770,7 +759,7 @@ const format = (argumentsObj) => {
       });
       
       if (obj && 'name' in obj) {
-        copiedObj.hardwareInactiveArr.push({
+        cloneObj.hardwareInactiveArr.push({
           name: obj.name
         });
       }
@@ -782,19 +771,19 @@ const format = (argumentsObj) => {
     //   Follow の処理
     // --------------------------------------------------
     
-    copiedObj.usersObj.follow = false;
-    copiedObj.usersObj.followed = false;
+    cloneObj.usersObj.follow = false;
+    cloneObj.usersObj.followed = false;
     
     if (usersLogin_id) {
       
-      if (copiedObj.users_id !== usersLogin_id) {
+      if (cloneObj.users_id !== usersLogin_id) {
         
-        if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
-          copiedObj.usersObj.follow = true;
+        if (cloneObj.usersObj.followArr.includes(usersLogin_id)) {
+          cloneObj.usersObj.follow = true;
         }
         
-        if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
-          copiedObj.usersObj.followed = true;
+        if (cloneObj.usersObj.followedArr.includes(usersLogin_id)) {
+          cloneObj.usersObj.followed = true;
         }
         
       }
@@ -806,12 +795,12 @@ const format = (argumentsObj) => {
     //   ID
     // --------------------------------------------------
     
-    copiedObj.idArr = [];
+    cloneObj.idArr = [];
     
     for (let value of valueObj.idArr) {
       
       if (value in idsObj) {
-        copiedObj.idArr.push(idsObj[value]);
+        cloneObj.idArr.push(idsObj[value]);
       }
       
     }
@@ -821,16 +810,16 @@ const format = (argumentsObj) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete copiedObj._id;
-    delete copiedObj.imageVideoArr;
-    delete copiedObj.usersObj.followArr;
-    delete copiedObj.usersObj.followedArr;
-    delete copiedObj.hardwareActiveObj;
-    delete copiedObj.hardwareInactiveObj;
-    delete copiedObj.hardwaresArr;
+    delete cloneObj._id;
+    delete cloneObj.imageVideoArr;
+    delete cloneObj.usersObj.followArr;
+    delete cloneObj.usersObj.followedArr;
+    delete cloneObj.hardwareActiveObj;
+    delete cloneObj.hardwareInactiveObj;
+    delete cloneObj.hardwaresArr;
     
     
-    returnObj[valueObj._id] = copiedObj;
+    returnObj[valueObj._id] = cloneObj;
     
   }
   
@@ -849,22 +838,11 @@ const format = (argumentsObj) => {
 
 /**
  * DBから取得したカード情報をフォーマットする　編集フォーム用
- * @param {Object} argumentsObj - 引数
+ * @param {Array} cardPlayersArr - カード情報の入った配列
+ * @param {Object} idsObj - ID情報の入ったオブジェクト
  * @return {Object} フォーマット後のデータ
  */
-const formatForEditForm = (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    cardPlayersArr,
-    idsObj
-    
-  } = argumentsObj;
+const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
   
   
   // --------------------------------------------------
@@ -882,25 +860,25 @@ const formatForEditForm = (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   コピー
+    //   ディープコピー
     // --------------------------------------------------
     
-    const copiedObj = JSON.parse(JSON.stringify(valueObj));
+    const cloneObj = lodashCloneDeep(valueObj);
     
     
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
     
-    copiedObj.imageVideoArr = formatImageVideoArr({ imageVideoArr: copiedObj.imageVideoArr });
-    // copiedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, copiedObj.imageVideoArr);
+    // cloneObj.imageVideoArr = formatImagesAndVideosArr({ arr: cloneObj.imageVideoArr });
+    // cloneObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, cloneObj.imageVideoArr);
     
     
     // --------------------------------------------------
     //   hardwareActive
     // --------------------------------------------------
     
-    copiedObj.hardwareActiveArr = [];
+    cloneObj.hardwareActiveArr = [];
     
     for (let value of valueObj.hardwareActiveObj.valueArr) {
       
@@ -909,7 +887,7 @@ const formatForEditForm = (argumentsObj) => {
       });
       
       if (obj && 'name' in obj) {
-        copiedObj.hardwareActiveArr.push({
+        cloneObj.hardwareActiveArr.push({
           hardwareID: value,
           name: obj.name
         });
@@ -922,7 +900,7 @@ const formatForEditForm = (argumentsObj) => {
     //   hardwareInactive
     // --------------------------------------------------
     
-    copiedObj.hardwareInactiveArr = [];
+    cloneObj.hardwareInactiveArr = [];
     
     for (let value of valueObj.hardwareInactiveObj.valueArr) {
       
@@ -931,7 +909,7 @@ const formatForEditForm = (argumentsObj) => {
       });
       
       if (obj && 'name' in obj) {
-        copiedObj.hardwareInactiveArr.push({
+        cloneObj.hardwareInactiveArr.push({
           hardwareID: value,
           name: obj.name
         });
@@ -944,12 +922,12 @@ const formatForEditForm = (argumentsObj) => {
     //   ID
     // --------------------------------------------------
     
-    copiedObj.idArr = [];
+    cloneObj.idArr = [];
     
     for (let value of valueObj.idArr) {
       
       if (value in idsObj) {
-        copiedObj.idArr.push(idsObj[value]);
+        cloneObj.idArr.push(idsObj[value]);
       }
       
     }
@@ -959,14 +937,14 @@ const formatForEditForm = (argumentsObj) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    // delete copiedObj._id;
-    // delete copiedObj.imageVideoArr;
-    // delete copiedObj.hardwareActiveObj;
-    // delete copiedObj.hardwareInactiveObj;
-    delete copiedObj.hardwaresArr;
+    // delete cloneObj._id;
+    // delete cloneObj.imageVideoArr;
+    // delete cloneObj.hardwareActiveObj;
+    // delete cloneObj.hardwareInactiveObj;
+    delete cloneObj.hardwaresArr;
     
     
-    returnObj[valueObj._id] = copiedObj;
+    returnObj[valueObj._id] = cloneObj;
     
   }
   

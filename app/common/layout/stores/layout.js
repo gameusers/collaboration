@@ -311,8 +311,6 @@ class Store {
   
   
   
-  
-  
   // ---------------------------------------------
   //   Lightbox - 画像表示
   // ---------------------------------------------
@@ -325,36 +323,12 @@ class Store {
   
   
   /**
-   * Lightboxのデータを変更する
-   * @param {Array} pathArr - パス
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleEditLightbox({ pathArr, value }) {
-    lodashSet(this.lightboxObj, pathArr, value);
-  };
-  
-  
-  
-  
-  // @observable lightboxObj = {};
-  @observable lightboxCurrentNoObj = {};
-  @observable lightboxOpenObj = {};
-  
-  
-  /**
    * Lightboxを開く
    * @param {string} _id - ID
-   * @param {string} value - 値
+   * @param {number} currentNo - 表示する画像番号
    */
   @action.bound
   handleLightboxOpen({ _id, currentNo }) {
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   currentNo: {green ${currentNo}}
-    // `);
-    
     lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo);
     lodashSet(this.lightboxObj, [_id, 'open'], true);
   };
@@ -370,17 +344,14 @@ class Store {
   };
   
   
-  
   /**
    * 前の画像を表示する
    * @param {string} _id - ID
    */
   @action.bound
   handleLightboxPrevious({ _id }) {
-    
     const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
     lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo - 1);
-    // this.lightboxCurrentNoObj[_id] = this.lightboxCurrentNoObj[id] - 1;
   };
   
   
@@ -392,107 +363,7 @@ class Store {
   handleLightboxNext({ _id }) {
     const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
     lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo + 1);
-    
-    // this.lightboxCurrentNoObj[id] = this.lightboxCurrentNoObj[id] + 1;
   };
-  
-  
-  
-  
-  // @action.bound
-  // handleLightboxAddImage(id, imageId, src, caption) {
-    
-  //   if (!this.lightboxObj[id]) {
-  //     this.lightboxObj[id] = [];
-  //   }
-    
-  //   const insertObj = {
-  //     id: imageId,
-  //     src,
-  //     caption,
-  //     srcSet: []
-  //   };
-    
-  //   this.lightboxObj[id].push(insertObj);
-    
-  // };
-  
-  // @action.bound
-  // handleLightboxDeleteImage(id, index) {
-  //   this.lightboxObj[id].splice(index, 1);
-  // };
-  
-  
-  // ----------------------------------------
-  //   - Initialize Lightbox
-  // ----------------------------------------
-  
-  @action.bound
-  initializeLightbox({ id, imageVideoArr }) {
-    return;
-    
-    // ---------------------------------------------
-    //  Console 出力
-    // ---------------------------------------------
-    
-    // console.log(`\n\n`);
-    // console.log(`--- initializeLightbox ---`);
-    // console.log(`id = ${id}`);
-    // console.dir(imageVideoArr);
-    // console.log(`\n\n`);
-    
-    
-    const lightboxArr = [];
-    
-    for (const value of imageVideoArr.values()) {
-      
-      if (value.type === 'image') {
-        
-        let src = '';
-        const srcSetArr = [];
-        
-        for (const value2 of value.imageSetArr.values()) {
-          
-          if (value2.w !== 'source') {
-            srcSetArr.push(`${value2.src} ${value2.w}`);
-          } else {
-            src = value2.src;
-          }
-          
-          // console.log(index2, value2);
-        }
-        
-        
-        lightboxArr.push({
-          
-          id: value.id,
-          src,
-          caption: value.caption,
-          srcSet: srcSetArr
-          
-        });
-        
-      }
-      
-      // console.log(index, value);
-    }
-    
-    
-    // if (id in this.lightboxObj === false) {
-    //   this.lightboxObj[id] = lightboxArr;
-    // }
-    this.lightboxObj[id] = lightboxArr;
-    
-    if (id in this.lightboxCurrentNoObj === false) {
-      this.lightboxCurrentNoObj[id] = 0;
-    }
-    
-    if (id in this.lightboxOpenObj === false) {
-      this.lightboxOpenObj[id] = false;
-    }
-    
-  }
-  
   
   
   

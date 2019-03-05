@@ -23,7 +23,7 @@ import lodashGet from 'lodash/get';
 //   Format
 // ---------------------------------------------
 
-const { formatImageVideoArr } = require('../../../@format/image');
+const { formatImagesAndVideosArr } = require('../../../@format/image');
 
 
 
@@ -48,13 +48,11 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, imageVideoArr } = this.props;
+    const { stores, _id, imagesAndVideosArr } = this.props;
     
     const {
       
       lightboxObj,
-      // handleEditLightbox,
-      // handleLightboxOpen,
       handleLightboxClose,
       handleLightboxPrevious,
       handleLightboxNext,
@@ -69,7 +67,7 @@ export default class extends React.Component {
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (!imageVideoArr || imageVideoArr.length === 0) {
+    if (!imagesAndVideosArr || imagesAndVideosArr.length === 0) {
       return null;
     }
     
@@ -78,65 +76,7 @@ export default class extends React.Component {
     //   Format
     // --------------------------------------------------
     
-    const imagesArr = formatImageVideoArr({ imageVideoArr });
-    
-    
-    // --------------------------------------------------
-    //   Images
-    // --------------------------------------------------
-    
-    // const imagesArr = [];
-    
-    // for (const [index, valueObj] of imageVideoArr.entries()) {
-      
-    //   // {
-    //   //   src: 'http://example.com/example/img1.jpg',
-    //   //   caption: 'A forest'
-    //   //   // As an array
-    //   //   srcSet: [
-    //   //     'http://example.com/example/img1_1024.jpg 1024w',
-    //   //     'http://example.com/example/img1_800.jpg 800w',
-    //   //     'http://example.com/example/img1_500.jpg 500w',
-    //   //     'http://example.com/example/img1_320.jpg 320w',
-    //   //   ],
-    //   // },
-      
-    //   // console.log(`\n---------- valueObj ----------\n`);
-    //   // console.dir(JSON.parse(JSON.stringify(valueObj)));
-    //   // console.log(`\n-----------------------------------\n`);
-      
-    //   imagesArr[index] = {
-    //     src: '',
-    //     caption: valueObj.caption,
-    //     srcSet: [],
-    //   };
-      
-      
-    //   for (let value2Obj of valueObj.imageSetArr.values()) {
-        
-    //     if (valueObj.type === 'image') {
-          
-    //       imagesArr[index].src = value2Obj.src;
-          
-    //       if (value2Obj.w === 'upload') {
-            
-    //         imagesArr[index].srcSet.push(
-    //           `${value2Obj.src} 320w`
-    //         );
-            
-    //       } else if (value2Obj.w !== 'source') {
-            
-    //         imagesArr[index].srcSet.push(
-    //           `${value2Obj.src} ${value2Obj.w}`
-    //         );
-            
-    //       }
-          
-    //     }
-        
-    //   }
-      
-    // }
+    const imagesArr = formatImagesAndVideosArr({ arr: imagesAndVideosArr });
     
     
     // --------------------------------------------------
@@ -150,9 +90,9 @@ export default class extends React.Component {
       
     // `);
     
-    console.log(`\n---------- imagesArr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(imagesArr)));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- imagesArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     // --------------------------------------------------
@@ -168,7 +108,6 @@ export default class extends React.Component {
         onClickNext={() => handleLightboxNext({ _id })}
         onClose={() => handleLightboxClose({ _id })}
         backdropClosesModal
-        preloadNextImage={false}
       />
     );
     

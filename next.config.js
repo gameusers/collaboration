@@ -13,6 +13,7 @@ module.exports = withCSS({
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     VERIFY_RECAPTCHA: process.env.VERIFY_RECAPTCHA,
     URL_BASE: process.env.URL_BASE,
-    URL_API: process.env.URL_API
+    URL_API: process.env.URL_API,
+    UPLOAD_IMAGE_SIZE_UPPER_LIMIT: process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT
   }
 });

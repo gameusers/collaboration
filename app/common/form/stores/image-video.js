@@ -16,34 +16,8 @@ import chalk from 'chalk';
 
 import { action, observable } from 'mobx';
 import shortid from 'shortid';
-import keycode from 'keycode';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-import lodashHas from 'lodash/has';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-// import { fetchWrapper } from '../../../@modules/fetch';
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// import { errorsArrIntoErrorMessage } from '../../../../@format/error';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validationCardPlayersName } = require('../../../../@database/card-players/validations/name');
-// const { validationCardPlayersStatus } = require('../../../../@database/card-players/validations/status');
-// const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@database/card-players/validations/activity-time');
-// const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
 
 
 
@@ -100,7 +74,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Image Form
+  //   Form - Image
   // ---------------------------------------------
   
   /**
@@ -112,21 +86,13 @@ class Store {
   handleSelectImage({ _id, fileObj }) {
     
     
-    console.log(chalk`
-      _id: {green ${_id}}
-    `);
-    
-    console.log(`\n---------- fileObj ----------\n`);
-    console.dir(fileObj);
-    console.log(`\n-----------------------------------\n`);
-    
-    
     // ---------------------------------------------
     //   Config
     // ---------------------------------------------
     
     // アップロードする画像の最大サイズ、5MBまで
-    const imageSizeUpperLimit = 5242880;
+    // const imageSizeUpperLimit = 5242880;
+    // console.log(process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT);
     
     
     // ---------------------------------------------
@@ -142,17 +108,15 @@ class Store {
       return;
     }
     
-    if (!fileObj.type.match(/^image\/(gif|jpeg|png|bmp|svg\+xml)$/)) {
-      storeLayout.handleSnackbarOpen('error', 'アップロードできるのは JPEG, PNG, GIF, BMP, SVG の画像ファイルです。');
+    if (!fileObj.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
+      storeLayout.handleSnackbarOpen('error', 'アップロードできるのは JPEG, PNG, GIF, SVG の画像ファイルです。');
       return;
     }
     
-    if (fileObj.size > imageSizeUpperLimit) {
+    if (fileObj.size > process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT) {
       storeLayout.handleSnackbarOpen('error', '画像のサイズが大きすぎます。');
       return;
     }
-    
-    // return;
     
     
     // ---------------------------------------------
@@ -170,37 +134,9 @@ class Store {
 
         const { width, height } = img;
         
-        let extension = null;
-
-        if (fileObj.type === 'image/gif') {
-          extension = 'gif';
-        } else if (fileObj.type === 'image/jpeg') {
-          extension = 'jpg';
-        } else if (fileObj.type === 'image/png') {
-          extension = 'png';
-        } else if (fileObj.type === 'image/bmp') {
-          extension = 'bmp';
-        } else {
-          extension = 'svg';
-        }
-        
         lodashSet(this.dataObj, [_id, 'imageObj', 'src'], fileReader.result);
         lodashSet(this.dataObj, [_id, 'imageObj', 'width'], width);
         lodashSet(this.dataObj, [_id, 'imageObj', 'height'], height);
-        lodashSet(this.dataObj, [_id, 'imageObj', 'extension'], extension);
-        // this.handleEdit([_id, 'imageObj', 'src'], fileReader.result);
-        // this.handleEdit([_id, 'imageObj', 'width'], width);
-        // this.handleEdit([_id, 'imageObj', 'height'], height);
-        // this.handleEdit([_id, 'imageObj', 'extension'], extension);
-        
-        // this.imageSrcObj[id] = fileReader.result;
-        // this.imageWidthObj[id] = width;
-        // this.imageHeightObj[id] = height;
-        // this.imageExtensionObj[id] = extension;
-        
-        // console.log(`\n---------- this.dataObj[_id] ----------\n`);
-        // console.dir(this.dataObj[_id]);
-        // console.log(`\n-----------------------------------\n`);
         
       };
 
@@ -215,9 +151,10 @@ class Store {
    * 選択した画像を追加する
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
    * @param {string} _id - ID
+   * @param {Array} imagesAndVideosArr - 画像と動画の情報が入った配列
    */
   @action.bound
-  handleAddImage({ _id }) {
+  handleAddImage({ _id, imagesAndVideosArr }) {
     
     
     // ---------------------------------------------
@@ -227,14 +164,7 @@ class Store {
     const src = lodashGet(this.dataObj, [_id, 'imageObj', 'src'], '');
     const width = lodashGet(this.dataObj, [_id, 'imageObj', 'width'], '');
     const height = lodashGet(this.dataObj, [_id, 'imageObj', 'height'], '');
-    // const extension = lodashGet(this.dataObj, [_id, 'imageObj', 'extension'], '');
     const caption = lodashGet(this.dataObj, [_id, 'imageCaption'], '');
-    const imageVideoArr = lodashGet(this.dataObj, [_id, 'imageVideoArr'], []);
-    
-    
-    // console.log(`\n---------- imageVideoArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imageVideoArr)));
-    // console.log(`\n-----------------------------------\n`);
     
     
     // ---------------------------------------------
@@ -243,9 +173,9 @@ class Store {
     
     let duplication = false;
     
-    if (imageVideoArr.length > 0) {
+    if (imagesAndVideosArr.length > 0) {
       
-      for (const valueObj of imageVideoArr.values()) {
+      for (const valueObj of imagesAndVideosArr.values()) {
         
         if (valueObj.type === 'image') {
           
@@ -305,10 +235,10 @@ class Store {
       
       
       // ---------------------------------------------
-      //   imageVideoArr に追加する
+      //   imagesAndVideosArr に追加する
       // ---------------------------------------------
       
-      imageVideoArr.push({
+      imagesAndVideosArr.push({
         _id: shortid.generate(),
         type: 'image',
         caption,
@@ -316,10 +246,10 @@ class Store {
       });
       
       
-      // Preview 用のオブジェクトに追加する
-      lodashSet(this.dataObj, [_id, 'imageVideoArr'], imageVideoArr);
+      // ---------------------------------------------
+      //   Caption 入力フォームをリセット
+      // ---------------------------------------------
       
-      // Caption 入力フォームをリセット
       lodashSet(this.dataObj, [_id, 'imageCaption'], '');
       
       
@@ -328,20 +258,15 @@ class Store {
   };
   
   
-  
-  
   /**
-   * 画像・動画のプレビュー画像を削除するときに呼び出される
+   * 画像を削除する
    * @param {string} id - ID
-   * @param {number} index - 削除するプレビュー画像のNo
+   * @param {number} index - 削除する画像番号
+   * @param {Array} imagesAndVideosArr - 画像と動画の情報が入った配列
    */
   @action.bound
-  handleDeleteImageVideoArr({ _id, index }) {
-    
-    const imageVideoArr = lodashGet(this.dataObj, [_id, 'imageVideoArr'], []);
-    imageVideoArr[_id].splice(index, 1);
-    lodashSet(this.dataObj, [_id, 'imageVideoArr'], imageVideoArr);
-    
+  handleRemoveImage({ _id, index, imagesAndVideosArr }) {
+    imagesAndVideosArr.splice(index, 1);
   };
   
   

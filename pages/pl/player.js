@@ -403,7 +403,7 @@ class Component extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>あづみ - Game Users</title>
+              <title>マリオ - Game Users</title>
             </Head>
             
             

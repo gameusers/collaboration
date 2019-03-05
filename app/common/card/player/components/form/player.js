@@ -199,6 +199,7 @@ export default class extends React.Component {
       
       nameObj,
       statusObj,
+      imagesAndVideosObj,
       commentObj,
       ageObj,
       sexObj,
@@ -297,14 +298,13 @@ export default class extends React.Component {
           />
           
           
-          {/*<ThumbnailBox>
-            <ThumbnailTitle>サムネイル</ThumbnailTitle>
-            <input type="file" name="example" size="30" />
-          </ThumbnailBox>*/}
-          
+          {/* サムネイル */}
           <ThumbnailBox>
             <ThumbnailTitle>サムネイル</ThumbnailTitle>
-            <FormImage _id={`${cardPlayers_id}-thumbnail`} />
+            <FormImage
+              _id={`${cardPlayers_id}-thumbnail`}
+              imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
+            />
           </ThumbnailBox>
           
           

@@ -41,7 +41,6 @@ moment.locale('ja');
 
 
 
-
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
@@ -81,7 +80,6 @@ const Heading = styled.h3`
 const ItemBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  // line-height: 2.0em;
   margin: 4px 0 0 0;
   padding: 0;
   
@@ -98,7 +96,6 @@ const Item = styled.div`
     margin: 0;
   }
 `;
-
 
 
 
@@ -154,9 +151,6 @@ export default class extends React.Component {
       return null;
     }
     
-    // console.log(chalk`
-    //   hobbiesValueArr: {green ${hobbiesValueArr}}
-    // `);
     
     // --------------------------------------------------
     //   コンポーネント作成 - プロフィール項目（年齢、性別など）

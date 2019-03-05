@@ -31,7 +31,7 @@ const Model = require('./schema');
 //   Format
 // ---------------------------------------------
 
-const { srcset } = require('../../@format/image');
+const { formatImagesAndVideosArr } = require('../../@format/image');
 
 
 
@@ -582,7 +582,8 @@ const format = (argumentsObj) => {
     //   画像の処理
     // --------------------------------------------------
     
-    copiedObj.imageArr = srcset(`/static/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
+    copiedObj.imagesArr = formatImagesAndVideosArr({ arr: copiedObj.imageVideoArr });
+    // copiedObj.imageArr = srcset(`/static/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
     
     
     // --------------------------------------------------

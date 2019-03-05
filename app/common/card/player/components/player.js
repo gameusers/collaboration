@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -96,7 +97,6 @@ const ExpandMoreBox = styled.div`
 const StyledCardContent = styled(CardContent)`
   && {
     font-size: 14px;
-    // line-height: 1.7;
     padding-bottom: 0;
   }
 `;
@@ -229,43 +229,22 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   Name & Status & Thumbnail & Comment
+    //   Name / Status / Comment / Thumbnail
     // ---------------------------------------------
     
     const name = cardPlayersObj.nameObj.value;
     const status = cardPlayersObj.statusObj.value;
-    const thumbnail = cardPlayersObj.thumbnail;
     const comment = cardPlayersObj.commentObj.value;
-    
-    
-    let thumbnailSrc = '';
-    
-    if (thumbnail) {
-      thumbnailSrc = `/static/img/card/players/${cardPlayers_id}/thumbnail/image.jpg`;
-    }
+    const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
     
     
     // ---------------------------------------------
-    //   Image
+    //   Main Image
     // ---------------------------------------------
     
-    let imageSrcSet = '';
-    let imageSrc = '';
-    let imageAlt = '';
-    
-    if (cardPlayersObj.imagesArr.length > 0) {
-      
-      imageSrcSet = cardPlayersObj.imagesArr[0].srcSet;
-      imageSrc = cardPlayersObj.imagesArr[0].src;
-      imageAlt = cardPlayersObj.imagesArr[0].caption;
-      
-      console.log(chalk`
-        imageSrcSet: {green ${imageSrcSet}}
-        imageSrc: {green ${imageSrc}}
-        imageAlt: {green ${imageAlt}}
-      `);
-      
-    }
+    const imageSrcSet = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'srcSet'], '');
+    const imageSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'src'], '');
+    const imageAlt = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'caption'], '');
     
     
     // ---------------------------------------------

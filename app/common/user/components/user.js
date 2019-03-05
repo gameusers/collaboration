@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -37,14 +37,11 @@ import UserName from './name';
 const Container = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  margin: 0;
-  padding: 0;
 `;
 
 const UserThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  margin: 0 0 0 0;
 `;
 
 const UserInfoBox = styled.div`
@@ -60,8 +57,6 @@ const UserInfoBox = styled.div`
 const UserNameBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
 `;
 
 

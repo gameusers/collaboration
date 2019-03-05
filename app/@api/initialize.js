@@ -1753,51 +1753,113 @@ router.post('/db', upload.none(), async (req, res, next) => {
           value: 'ビルダー',
           search: true,
         },
-        thumbnail: true,
-        imageVideoArr: [
-          {
-            _id: 'H_NXaMPKG',
-            type: 'image',
-            caption: 'ライオン',
-            srcSetArr: [
-              {
-                _id: 'himsYqtCL',
-                src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/320w.jpg',
-                w: '320w',
-                width: 320,
-                height: 180,
-              },
-              {
-                _id: 'Cfjt2j3Y_',
-                src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/480w.jpg',
-                w: '480w',
-                width: 480,
-                height: 270,
-              },
-              {
-                _id: 'EjUz0NL8z',
-                src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/640w.jpg',
-                w: '640w',
-                width: 640,
-                height: 360,
-              },
-              {
-                _id: 'g9u6JQkLh',
-                src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/800w.jpg',
-                w: '800w',
-                width: 800,
-                height: 450,
-              },
-              {
-                _id: 'TsNkkGwok',
-                src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/source.jpg',
-                w: 'source',
-                width: 1920,
-                height: 1080,
-              },
-            ],
-          },
-        ],
+        imagesAndVideosObj: {
+          thumbnailArr: [
+            {
+              _id: 'glbzJb34t',
+              type: 'image',
+              caption: '',
+              srcSetArr: [
+                {
+                  _id: 'BWl9SejbC',
+                  src: '/static/img/card/players/zaoOWw89g/glbzJb34t/320w.png',
+                  w: '320w',
+                  width: 256,
+                  height: 256,
+                },
+              ],
+            },
+          ],
+          mainArr: [
+            {
+              _id: 'H_NXaMPKG',
+              type: 'image',
+              caption: 'ライオン',
+              srcSetArr: [
+                {
+                  _id: 'himsYqtCL',
+                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 180,
+                },
+                {
+                  _id: 'Cfjt2j3Y_',
+                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 270,
+                },
+                {
+                  _id: 'EjUz0NL8z',
+                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 360,
+                },
+                {
+                  _id: 'g9u6JQkLh',
+                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 450,
+                },
+                {
+                  _id: 'TsNkkGwok',
+                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/source.jpg',
+                  w: 'source',
+                  width: 1920,
+                  height: 1080,
+                },
+              ],
+            },
+          ],
+        },
+        // thumbnail: true,
+        // imageVideoArr: [
+        //   {
+        //     _id: 'H_NXaMPKG',
+        //     type: 'image',
+        //     caption: 'ライオン',
+        //     srcSetArr: [
+        //       {
+        //         _id: 'himsYqtCL',
+        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/320w.jpg',
+        //         w: '320w',
+        //         width: 320,
+        //         height: 180,
+        //       },
+        //       {
+        //         _id: 'Cfjt2j3Y_',
+        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/480w.jpg',
+        //         w: '480w',
+        //         width: 480,
+        //         height: 270,
+        //       },
+        //       {
+        //         _id: 'EjUz0NL8z',
+        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/640w.jpg',
+        //         w: '640w',
+        //         width: 640,
+        //         height: 360,
+        //       },
+        //       {
+        //         _id: 'g9u6JQkLh',
+        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/800w.jpg',
+        //         w: '800w',
+        //         width: 800,
+        //         height: 450,
+        //       },
+        //       {
+        //         _id: 'TsNkkGwok',
+        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/source.jpg',
+        //         w: 'source',
+        //         width: 1920,
+        //         height: 1080,
+        //       },
+        //     ],
+        //   },
+        // ],
         commentObj: {
           value: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
@@ -1976,8 +2038,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
           value: 'オーバードライブ',
           search: true,
         },
-        thumbnail: false,
-        imageVideoArr: [],
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
+        // thumbnail: false,
+        // imageVideoArr: [],
         commentObj: {
           value: `サブタイトルというのは例えば、ドラゴンクエストIII そして伝説へ… 「そして伝説へ…」の部分になります。未記入でも問題ありません。
 
@@ -2110,293 +2176,295 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Save Object
     // ---------------------------------------------
     
-    saveArr = [
-      {
-         _id: 'TzjNMDQyl',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        users_id: 'jun-deE4J',
-        gameID: 'Jk92aglWl',
-        language: 'ja',
-        theme: '',
-        nameObj: {
-          value: 'AZ-1979',
-          search: true,
-        },
-        statusObj: {
-          value: 'トラッパー',
-          search: true,
-        },
-        thumbnail: false,
-        imageVideoArr: [
-          {
-            _id: 'ZIEOqRppY',
-            type: 'image',
-            caption: '黄色のお花',
-            srcSetArr: [
-              {
-                _id: 'xz_HamTMS',
-                src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/320w.jpg',
-                w: '320w',
-                width: 320,
-                height: 213,
-              },
-              {
-                _id: 'VGaeXottk',
-                src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/480w.jpg',
-                w: '480w',
-                width: 480,
-                height: 320,
-              },
-              {
-                _id: 'E3kjgGmJ7',
-                src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/640w.jpg',
-                w: '640w',
-                width: 640,
-                height: 427,
-              },
-              {
-                _id: 'JHgN0IFXD',
-                src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/800w.jpg',
-                w: '800w',
-                width: 800,
-                height: 533,
-              },
-              {
-                _id: 'XMZ2Ioh2x',
-                src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/source.jpg',
-                w: 'source',
-                width: 1920,
-                height: 1280,
-              },
-            ],
-          },
-        ],
-        itemArr: [],
-        commentObj: {
-          value: `楽しかった時間が終わってしまいました。
-  いいゲームをプレイしたときの独特の余韻を味わえました。
-  今までゼルダの伝説でこんなに余韻が残ることはなかったのですが
-  やり遂げた嬉しさに少しの寂しさが混じったような、ビターな味わいです。
+//     saveArr = [
+//       {
+//         _id: 'TzjNMDQyl',
+//         createdDate: ISO8601,
+//         updatedDate: ISO8601,
+//         users_id: 'jun-deE4J',
+//         gameID: 'Jk92aglWl',
+//         language: 'ja',
+//         theme: '',
+//         nameObj: {
+//           value: 'AZ-1979',
+//           search: true,
+//         },
+//         statusObj: {
+//           value: 'トラッパー',
+//           search: true,
+//         },
+//         thumbnail: false,
+//         imageVideoArr: [
+//           {
+//             _id: 'ZIEOqRppY',
+//             type: 'image',
+//             caption: '黄色のお花',
+//             srcSetArr: [
+//               {
+//                 _id: 'xz_HamTMS',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/320w.jpg',
+//                 w: '320w',
+//                 width: 320,
+//                 height: 213,
+//               },
+//               {
+//                 _id: 'VGaeXottk',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/480w.jpg',
+//                 w: '480w',
+//                 width: 480,
+//                 height: 320,
+//               },
+//               {
+//                 _id: 'E3kjgGmJ7',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/640w.jpg',
+//                 w: '640w',
+//                 width: 640,
+//                 height: 427,
+//               },
+//               {
+//                 _id: 'JHgN0IFXD',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/800w.jpg',
+//                 w: '800w',
+//                 width: 800,
+//                 height: 533,
+//               },
+//               {
+//                 _id: 'XMZ2Ioh2x',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/source.jpg',
+//                 w: 'source',
+//                 width: 1920,
+//                 height: 1280,
+//               },
+//             ],
+//           },
+//         ],
+//         itemArr: [],
+//         commentObj: {
+//           value: `楽しかった時間が終わってしまいました。
+//   いいゲームをプレイしたときの独特の余韻を味わえました。
+//   今までゼルダの伝説でこんなに余韻が残ることはなかったのですが
+//   やり遂げた嬉しさに少しの寂しさが混じったような、ビターな味わいです。
   
-  今作はかなりの高評価を受けていて
-  それは任天堂ファンボーイが騒いでるだけだと思っていたのですが
-  実際やってみるとその評価に違わない面白さでした。
-  オープンワールド童貞だった任天堂なのに
-  このクオリティのものをいきなり作れるのは正直すごいと思いましたね。
-  僕の場合、オープンワールドゲームはやり込みすぎて
-  いつも最後は嫌になってクリアする感じなのですが
-  BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
-          search: true,
-        },
-        hardwarePlayingObj: {
-          valueArr: ['TdK3Oc-yV'],
-          search: true,
-        },
-        idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
-        activityTimeObj: {
-          valueArr: [
-            {
-              _id: '0X3yH-BnG',
-              beginTime: '19:00',
-              endTime: '24:00',
-              weekArr: [0, 1, 2, 3, 4]
-            },
-            {
-              _id: '7Euewb_Ik',
-              beginTime: '21:00',
-              endTime: '03:00',
-              weekArr: [5, 6]
-            }
-          ],
-          search: true,
-        },
-        lookingForFriendsObj: {
-          icon: 'emoji_u1f61c',
-          comment: '学生の方よろしく！',
-          search: true,
-        },
-        voiceChatObj: {
-          comment: '朝9時まで',
-          search: true,
-        },
-        linkArr: [
-          {
-            _id: 'K2NRYVCox',
-            type: 'Twitter',
-            label: '',
-            url: 'https://twitter.com/Azumi1979',
-            search: true,
-          },
-          {
-            _id: '0syPuDv6O',
-            type: 'Facebook',
-            label: '',
-            url: 'https://www.youtube.com/',
-            search: true,
-          },
-          {
-            _id: 'spRqODqbz',
-            type: 'Other',
-            label: 'Game開発サイト',
-            url: 'http://dev-1.gameusers.org:8080/',
-            search: true,
-          },
-        ],
-        quotationObj: {
-          cardPlayers_id: 'zaoOWw89g',
-          activityTime: true,
-          lookingForFriends: true,
-          voiceChat: true,
-          link: true,
-        },
-      },
+//   今作はかなりの高評価を受けていて
+//   それは任天堂ファンボーイが騒いでるだけだと思っていたのですが
+//   実際やってみるとその評価に違わない面白さでした。
+//   オープンワールド童貞だった任天堂なのに
+//   このクオリティのものをいきなり作れるのは正直すごいと思いましたね。
+//   僕の場合、オープンワールドゲームはやり込みすぎて
+//   いつも最後は嫌になってクリアする感じなのですが
+//   BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
+//           search: true,
+//         },
+//         hardwarePlayingObj: {
+//           valueArr: ['TdK3Oc-yV'],
+//           search: true,
+//         },
+//         idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
+//         activityTimeObj: {
+//           valueArr: [
+//             {
+//               _id: '0X3yH-BnG',
+//               beginTime: '19:00',
+//               endTime: '24:00',
+//               weekArr: [0, 1, 2, 3, 4]
+//             },
+//             {
+//               _id: '7Euewb_Ik',
+//               beginTime: '21:00',
+//               endTime: '03:00',
+//               weekArr: [5, 6]
+//             }
+//           ],
+//           search: true,
+//         },
+//         lookingForFriendsObj: {
+//           icon: 'emoji_u1f61c',
+//           comment: '学生の方よろしく！',
+//           search: true,
+//         },
+//         voiceChatObj: {
+//           comment: '朝9時まで',
+//           search: true,
+//         },
+//         linkArr: [
+//           {
+//             _id: 'K2NRYVCox',
+//             type: 'Twitter',
+//             label: '',
+//             url: 'https://twitter.com/Azumi1979',
+//             search: true,
+//           },
+//           {
+//             _id: '0syPuDv6O',
+//             type: 'Facebook',
+//             label: '',
+//             url: 'https://www.youtube.com/',
+//             search: true,
+//           },
+//           {
+//             _id: 'spRqODqbz',
+//             type: 'Other',
+//             label: 'Game開発サイト',
+//             url: 'http://dev-1.gameusers.org:8080/',
+//             search: true,
+//           },
+//         ],
+//         quotationObj: {
+//           cardPlayers_id: 'zaoOWw89g',
+//           activityTime: true,
+//           lookingForFriends: true,
+//           voiceChat: true,
+//           link: true,
+//         },
+//       },
       
       
-      {
-         _id: '3sZUV34Q_',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        users_id: 'P7UJMuUnx',
-        gameID: 'lxdubg6IY',
-        language: 'ja',
-        theme: '',
-        nameObj: {
-          value: 'パックンフラワー',
-          search: true,
-        },
-        statusObj: {
-          value: '人喰い植物',
-          search: true,
-        },
-        thumbnail: false,
-        imageVideoArr: [
-          {
-            _id: 'BrhMB9ieu',
-            type: 'image',
-            caption: 'Tree',
-            srcSetArr: [
-              {
-                _id: 'BolWOUmkF',
-                src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/320w.jpg',
-                w: '320w',
-                width: 320,
-                height: 213,
-              },
-              {
-                _id: 'gsRUhcWl3',
-                src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/480w.jpg',
-                w: '480w',
-                width: 480,
-                height: 320,
-              },
-              {
-                _id: '54sVdlP49',
-                src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/640w.jpg',
-                w: '640w',
-                width: 640,
-                height: 427,
-              },
-              {
-                _id: 'kyUo0yIl2',
-                src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/800w.jpg',
-                w: '800w',
-                width: 800,
-                height: 533,
-              },
-              {
-                _id: 'Tnp5c8Yh0',
-                src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/source.jpg',
-                w: 'source',
-                width: 1920,
-                height: 1280,
-              },
-            ],
-          },
-        ],
-        itemArr: [],
-        commentObj: {
-          value: `ドラゴンクエストビルダーズ2 #2～5
+//       {
+//         _id: '3sZUV34Q_',
+//         createdDate: ISO8601,
+//         updatedDate: ISO8601,
+//         users_id: 'P7UJMuUnx',
+//         gameID: 'lxdubg6IY',
+//         language: 'ja',
+//         theme: '',
+//         nameObj: {
+//           value: 'パックンフラワー',
+//           search: true,
+//         },
+//         statusObj: {
+//           value: '人喰い植物',
+//           search: true,
+//         },
+//         thumbnail: false,
+//         imageVideoArr: [
+//           {
+//             _id: 'BrhMB9ieu',
+//             type: 'image',
+//             caption: 'Tree',
+//             srcSetArr: [
+//               {
+//                 _id: 'BolWOUmkF',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/320w.jpg',
+//                 w: '320w',
+//                 width: 320,
+//                 height: 213,
+//               },
+//               {
+//                 _id: 'gsRUhcWl3',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/480w.jpg',
+//                 w: '480w',
+//                 width: 480,
+//                 height: 320,
+//               },
+//               {
+//                 _id: '54sVdlP49',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/640w.jpg',
+//                 w: '640w',
+//                 width: 640,
+//                 height: 427,
+//               },
+//               {
+//                 _id: 'kyUo0yIl2',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/800w.jpg',
+//                 w: '800w',
+//                 width: 800,
+//                 height: 533,
+//               },
+//               {
+//                 _id: 'Tnp5c8Yh0',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/source.jpg',
+//                 w: 'source',
+//                 width: 1920,
+//                 height: 1280,
+//               },
+//             ],
+//           },
+//         ],
+//         itemArr: [],
+//         commentObj: {
+//           value: `ドラゴンクエストビルダーズ2 #2～5
 
-序盤のモンゾーラ島でめちゃくちゃ気合を入れて
-街を作ってしまいました。
-このペースだとクリアまで相当時間がかかるかもしれませんね。
+// 序盤のモンゾーラ島でめちゃくちゃ気合を入れて
+// 街を作ってしまいました。
+// このペースだとクリアまで相当時間がかかるかもしれませんね。
 
-あと進行不能バグがめっちゃ怖いです。
-バグ満載で購入者にデバッグさせる姿勢は悪どすぎますね。
-ゲームは面白いだけにもうちょっと真面目に取り組んでもらいたいです。
+// あと進行不能バグがめっちゃ怖いです。
+// バグ満載で購入者にデバッグさせる姿勢は悪どすぎますね。
+// ゲームは面白いだけにもうちょっと真面目に取り組んでもらいたいです。
 
-からっぽ島に戻ってきて開拓を始める話になりましたが
-広大で整地もされていない土地をどう開拓していくのか
-まったくビジョンが見えないので、ちゃんとやっていけるか心配です。
-はたして最初の街のように綺麗な場所にできるんでしょうか？`,
-          search: true,
-        },
-        hardwarePlayingObj: {
-          valueArr: ['TdK3Oc-yV'],
-          search: true,
-        },
-        idArr: [],
-        activityTimeObj: {
-          valueArr: [
-            {
-              _id: 'dZCJsb6f-',
-              beginTime: '19:00',
-              endTime: '24:00',
-              weekArr: [0, 1, 2, 3, 4]
-            },
-            {
-              _id: '2eD3Ovfqr',
-              beginTime: '21:00',
-              endTime: '03:00',
-              weekArr: [5, 6]
-            }
-          ],
-          search: true,
-        },
-        lookingForFriendsObj: {
-          icon: 'emoji_u1f61e',
-          comment: '',
-          search: true,
-        },
-        voiceChatObj: {
-          comment: '',
-          search: true,
-        },
-        linkArr: [
-          {
-            _id: 'c8gHFXEij',
-            type: 'Twitter',
-            label: '',
-            url: 'https://twitter.com/Azumi1979',
-            search: true,
-          },
-          {
-            _id: '6tHU4FvfC',
-            type: 'Facebook',
-            label: '',
-            url: 'https://www.youtube.com/',
-            search: true,
-          },
-          {
-            _id: 'CTyK8Om31',
-            type: 'Other',
-            label: 'Game開発サイト',
-            url: 'http://dev-1.gameusers.org:8080/',
-            search: true,
-          },
-        ],
-        quotationObj: {
-          cardPlayers_id: 'WAMuArrBZ',
-          activityTime: false,
-          lookingForFriends: false,
-          voiceChat: false,
-          link: false,
-        },
-      },
+// からっぽ島に戻ってきて開拓を始める話になりましたが
+// 広大で整地もされていない土地をどう開拓していくのか
+// まったくビジョンが見えないので、ちゃんとやっていけるか心配です。
+// はたして最初の街のように綺麗な場所にできるんでしょうか？`,
+//           search: true,
+//         },
+//         hardwarePlayingObj: {
+//           valueArr: ['TdK3Oc-yV'],
+//           search: true,
+//         },
+//         idArr: [],
+//         activityTimeObj: {
+//           valueArr: [
+//             {
+//               _id: 'dZCJsb6f-',
+//               beginTime: '19:00',
+//               endTime: '24:00',
+//               weekArr: [0, 1, 2, 3, 4]
+//             },
+//             {
+//               _id: '2eD3Ovfqr',
+//               beginTime: '21:00',
+//               endTime: '03:00',
+//               weekArr: [5, 6]
+//             }
+//           ],
+//           search: true,
+//         },
+//         lookingForFriendsObj: {
+//           icon: 'emoji_u1f61e',
+//           comment: '',
+//           search: true,
+//         },
+//         voiceChatObj: {
+//           comment: '',
+//           search: true,
+//         },
+//         linkArr: [
+//           {
+//             _id: 'c8gHFXEij',
+//             type: 'Twitter',
+//             label: '',
+//             url: 'https://twitter.com/Azumi1979',
+//             search: true,
+//           },
+//           {
+//             _id: '6tHU4FvfC',
+//             type: 'Facebook',
+//             label: '',
+//             url: 'https://www.youtube.com/',
+//             search: true,
+//           },
+//           {
+//             _id: 'CTyK8Om31',
+//             type: 'Other',
+//             label: 'Game開発サイト',
+//             url: 'http://dev-1.gameusers.org:8080/',
+//             search: true,
+//           },
+//         ],
+//         quotationObj: {
+//           cardPlayers_id: 'WAMuArrBZ',
+//           activityTime: false,
+//           lookingForFriends: false,
+//           voiceChat: false,
+//           link: false,
+//         },
+//       },
       
       
-    ];
+//     ];
+
+    saveArr = [];
     
     
     // --------------------------------------------------

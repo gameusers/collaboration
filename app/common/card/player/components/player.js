@@ -374,17 +374,11 @@ export default class extends React.Component {
     // `);
     
     
-    // console.log(`
-    //   ----- cardPlayerEditFormOpenObj -----\n
-    //   ${util.inspect(cardPlayerEditFormOpenObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
+    // console.log(`\n---------- cardPlayersObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(cardPlayersObj)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     

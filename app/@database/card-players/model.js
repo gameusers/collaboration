@@ -218,17 +218,13 @@ const findForCardPlayer = async ({ users_id, language, country, usersLogin_id })
     //   Console 出力
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- resultCardPlayersArr -----\n
-    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- resultCardPlayersArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(resultCardPlayersArr)));
+    // console.log(`\n-----------------------------------\n`);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- returnObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(returnObj)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     
@@ -811,7 +807,7 @@ const format = ({ usersLogin_id, cardPlayersArr, idsObj }) => {
     // --------------------------------------------------
     
     delete cloneObj._id;
-    delete cloneObj.imageVideoArr;
+    // delete cloneObj.imageVideoArr;
     delete cloneObj.usersObj.followArr;
     delete cloneObj.usersObj.followedArr;
     delete cloneObj.hardwareActiveObj;

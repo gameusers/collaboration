@@ -270,6 +270,7 @@ export default class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -304,6 +305,8 @@ export default class extends React.Component {
             <FormImage
               _id={`${cardPlayers_id}-thumbnail`}
               imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
+              caption={true}
+              limit={2}
             />
           </ThumbnailBox>
           

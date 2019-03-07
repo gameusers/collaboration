@@ -83,7 +83,7 @@ class Store {
    * @param {Object} fileObj - ファイルオブジェクト
    */
   @action.bound
-  handleSelectImage({ _id, fileObj }) {
+  handleSelectImage({ _id, fileObj, imagesAndVideosArr }) {
     
     
     // ---------------------------------------------
@@ -138,8 +138,11 @@ class Store {
         lodashSet(this.dataObj, [_id, 'imageObj', 'width'], width);
         lodashSet(this.dataObj, [_id, 'imageObj', 'height'], height);
         
+        
+        // this.handleAddImage({ _id, imagesAndVideosArr });
+        
       };
-
+      
     };
 
     fileReader.readAsDataURL(fileObj);
@@ -152,11 +155,14 @@ class Store {
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
    * @param {string} _id - ID
    * @param {Array} imagesAndVideosArr - 画像と動画の情報が入った配列
+   * @param {number} limit - 画像を追加できる上限
    */
   @action.bound
-  handleAddImage({ _id, imagesAndVideosArr }) {
+  handleAddImage({ _id, imagesAndVideosArr, limit }) {
     
-    
+    console.log(chalk`
+      limit: {green ${limit}}
+    `);
     // ---------------------------------------------
     //   Get Data
     // ---------------------------------------------
@@ -238,12 +244,34 @@ class Store {
       //   imagesAndVideosArr に追加する
       // ---------------------------------------------
       
-      imagesAndVideosArr.push({
-        _id: shortid.generate(),
-        type: 'image',
-        caption,
-        srcSetArr,
-      });
+      if (limit === 1) {
+        
+        imagesAndVideosArr.splice(0, 1);
+        
+        imagesAndVideosArr.push({
+          _id: shortid.generate(),
+          type: 'image',
+          caption,
+          srcSetArr,
+        });
+        
+      } else if (limit > imagesAndVideosArr.length) {
+        
+        imagesAndVideosArr.push({
+          _id: shortid.generate(),
+          type: 'image',
+          caption,
+          srcSetArr,
+        });
+        
+      } else {
+        
+        storeLayout.handleSnackbarOpen('error', `アップロードできる画像は${limit}枚までです`);
+        return;
+        
+      }
+      
+      
       
       
       // ---------------------------------------------

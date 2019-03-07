@@ -223,8 +223,27 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'Dead-by-Daylight',
         language: 'ja',
         country: 'JP',
-        thumbnail: true,
-        imageVideoArr: [],
+        imagesAndVideosObj: {
+          thumbnailArr: [
+            {
+              _id: 'rykFm6Vfg',
+              type: 'image',
+              caption: '',
+              srcSetArr: [
+                {
+                  _id: 'BWl9SejbC',
+                  src: '/static/img/games/w_zkqpr3R/rykFm6Vfg/320w.jpg',
+                  w: '320w',
+                  width: 256,
+                  height: 256,
+                },
+              ],
+            },
+          ],
+          mainArr: [],
+        },
+        // thumbnail: true,
+        // imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',
         searchKeywordsArr: [
@@ -292,8 +311,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'Dead-by-Daylight',
         language: 'en',
         country: 'US',
-        thumbnail: false,
-        imageVideoArr: [],
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
+        // thumbnail: false,
+        // imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',
         searchKeywordsArr: [
@@ -335,8 +358,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'Super-Smash-Bros-SPECIAL',
         language: 'ja',
         country: 'JP',
-        thumbnail: false,
-        imageVideoArr: [],
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
+        // thumbnail: false,
+        // imageVideoArr: [],
         name: '大乱闘スマッシュブラザーズ SPECIAL',
         subtitle: '',
         searchKeywordsArr: [
@@ -386,8 +413,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'Super-Smash-Bros-Ultimate',
         language: 'en',
         country: 'US',
-        thumbnail: false,
-        imageVideoArr: [],
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
+        // thumbnail: false,
+        // imageVideoArr: [],
         name: 'Super Smash Bros. Ultimate',
         subtitle: '',
         searchKeywordsArr: [
@@ -434,8 +465,27 @@ router.post('/db', upload.none(), async (req, res, next) => {
         urlID: 'Dragon-Quest-Builders2',
         language: 'ja',
         country: 'JP',
-        thumbnail: true,
-        imageVideoArr: [],
+        imagesAndVideosObj: {
+          thumbnailArr: [
+            {
+              _id: 'b0gqRt4fd',
+              type: 'image',
+              caption: '',
+              srcSetArr: [
+                {
+                  _id: 'BWl9SejbC',
+                  src: '/static/img/games/PdWVRzkoW/b0gqRt4fd/320w.jpg',
+                  w: '320w',
+                  width: 256,
+                  height: 256,
+                },
+              ],
+            },
+          ],
+          mainArr: [],
+        },
+        // thumbnail: true,
+        // imageVideoArr: [],
         name: 'ドラゴンクエストビルダーズ2',
         subtitle: '',
         searchKeywordsArr: [
@@ -1815,51 +1865,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             },
           ],
         },
-        // thumbnail: true,
-        // imageVideoArr: [
-        //   {
-        //     _id: 'H_NXaMPKG',
-        //     type: 'image',
-        //     caption: 'ライオン',
-        //     srcSetArr: [
-        //       {
-        //         _id: 'himsYqtCL',
-        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/320w.jpg',
-        //         w: '320w',
-        //         width: 320,
-        //         height: 180,
-        //       },
-        //       {
-        //         _id: 'Cfjt2j3Y_',
-        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/480w.jpg',
-        //         w: '480w',
-        //         width: 480,
-        //         height: 270,
-        //       },
-        //       {
-        //         _id: 'EjUz0NL8z',
-        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/640w.jpg',
-        //         w: '640w',
-        //         width: 640,
-        //         height: 360,
-        //       },
-        //       {
-        //         _id: 'g9u6JQkLh',
-        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/800w.jpg',
-        //         w: '800w',
-        //         width: 800,
-        //         height: 450,
-        //       },
-        //       {
-        //         _id: 'TsNkkGwok',
-        //         src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/source.jpg',
-        //         w: 'source',
-        //         width: 1920,
-        //         height: 1080,
-        //       },
-        //     ],
-        //   },
-        // ],
         commentObj: {
           value: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
   
@@ -2042,8 +2047,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           thumbnailArr: [],
           mainArr: [],
         },
-        // thumbnail: false,
-        // imageVideoArr: [],
         commentObj: {
           value: `サブタイトルというのは例えば、ドラゴンクエストIII そして伝説へ… 「そして伝説へ…」の部分になります。未記入でも問題ありません。
 

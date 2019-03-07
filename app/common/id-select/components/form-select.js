@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -45,7 +46,6 @@ const Container = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
   margin: 12px 0 0 0;
 `;
 
@@ -152,9 +152,13 @@ export default class extends React.Component {
         
         selectButtonIDArr.push(dataSelectedObj);
         
-        const games_id = 'games_id' in dataSelectedObj ? dataSelectedObj.games_id : '';
-        const gamesThumbnail = 'gamesThumbnail' in dataSelectedObj ? dataSelectedObj.gamesThumbnail : '';
-        const gamesName = 'gamesName' in dataSelectedObj ? dataSelectedObj.gamesName : '';
+        // const games_id = 'games_id' in dataSelectedObj ? dataSelectedObj.games_id : '';
+        // const gamesThumbnail = 'gamesThumbnail' in dataSelectedObj ? dataSelectedObj.gamesThumbnail : '';
+        // const gamesName = 'gamesName' in dataSelectedObj ? dataSelectedObj.gamesName : '';
+        
+        const games_id = lodashGet(dataSelectedObj, ['games_id'], '');
+        const gamesThumbnailArr = lodashGet(dataSelectedObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
+        const gamesName = lodashGet(dataSelectedObj, ['gamesName'], '');
         
         componentsSelectedArr.push(
           <IDBox
@@ -166,7 +170,7 @@ export default class extends React.Component {
               label={dataSelectedObj.label}
               id={dataSelectedObj.id}
               games_id={games_id}
-              gamesThumbnail={gamesThumbnail}
+              gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
             />
           </IDBox>
@@ -175,8 +179,6 @@ export default class extends React.Component {
       }
       
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -194,9 +196,13 @@ export default class extends React.Component {
       
       if (dataUnselectedObj) {
         
-        let games_id = 'games_id' in dataUnselectedObj ? dataUnselectedObj.games_id : '';
-        let gamesThumbnail = 'gamesThumbnail' in dataUnselectedObj ? dataUnselectedObj.gamesThumbnail : '';
-        let gamesName = 'gamesName' in dataUnselectedObj ? dataUnselectedObj.gamesName : '';
+        // let games_id = 'games_id' in dataUnselectedObj ? dataUnselectedObj.games_id : '';
+        // let gamesThumbnail = 'gamesThumbnail' in dataUnselectedObj ? dataUnselectedObj.gamesThumbnail : '';
+        // let gamesName = 'gamesName' in dataUnselectedObj ? dataUnselectedObj.gamesName : '';
+        
+        const games_id = lodashGet(dataUnselectedObj, ['games_id'], '');
+        const gamesThumbnailArr = lodashGet(dataUnselectedObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
+        const gamesName = lodashGet(dataUnselectedObj, ['gamesName'], '');
         
         componentsUnselectedArr.push(
           <IDBox
@@ -208,7 +214,7 @@ export default class extends React.Component {
               label={dataUnselectedObj.label}
               id={dataUnselectedObj.id}
               games_id={games_id}
-              gamesThumbnail={gamesThumbnail}
+              gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
             />
           </IDBox>
@@ -222,7 +228,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`

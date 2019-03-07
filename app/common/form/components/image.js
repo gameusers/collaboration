@@ -32,6 +32,7 @@ import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
+// import IconCreate from '@material-ui/icons/Create';
 import IconClose from '@material-ui/icons/Close';
 import IconDescription from '@material-ui/icons/Description';
 import IconHelpOutline from '@material-ui/icons/HelpOutline';
@@ -107,7 +108,7 @@ const PreviewContainer = styled.div`
 
 const PreviewBox = styled.div`
   position: relative;
-  margin: 10px 12px 0 0;
+  margin: 10px 12px 10px 0;
 `;
 
 const PreviewImg = styled.img`
@@ -118,7 +119,34 @@ const PreviewImg = styled.img`
   }
 `;
 
-const PreviewDeleteFab = styled(Fab)`
+// const PreviewEditFab = styled(Fab)`
+//   && {
+//     background-color: ${cyan[500]};
+//     &:hover {
+//       background-color: ${cyan[700]};
+//     }
+//     width: 24px;
+//     height: 24px;
+//     min-width: 24px;
+//     min-height: 24px;
+//     position: absolute;
+//     bottom: -10px;
+//     left: -10px;
+//   }
+// `;
+
+const PreviewEditButton = styled(Button)`
+  && {
+    min-width: 10px;
+    padding: 1px 6px;
+    position: absolute;
+    bottom: -10px;
+    left: -10px;
+  }
+`;
+
+
+const PreviewRemoveFab = styled(Fab)`
   && {
     background-color: ${cyan[500]};
     &:hover {
@@ -166,7 +194,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, imagesAndVideosArr } = this.props;
+    const { stores, intl, _id, imagesAndVideosArr, caption, limit } = this.props;
     
     const {
       
@@ -218,12 +246,20 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleLightboxOpen({ _id, currentNo })}
               />
               
-              <PreviewDeleteFab
+              {/*<PreviewEditButton
+                variant="contained"
+                color="primary"
+                size="small"
+              >
+                編集
+              </PreviewEditButton>*/}
+              
+              <PreviewRemoveFab
                 color="primary"
                 onClick={() => handleRemoveImage({ _id, index, imagesAndVideosArr })}
               >
                 <IconClose />
-              </PreviewDeleteFab>
+              </PreviewRemoveFab>
             </PreviewBox>
           );
           
@@ -247,12 +283,12 @@ export default injectIntl(class extends React.Component {
           //       src="/static/img/common/video-play-button.png"
           //     />
               
-          //     <PreviewDeleteFab
+          //     <PreviewRemoveFab
           //       color="primary"
           //       onClick={() => handleImageVideoDelete(id, index)}
           //     >
           //       <IconClose />
-          //     </PreviewDeleteFab>
+          //     </PreviewRemoveFab>
               
           //   </PreviewBox>
           // );
@@ -297,14 +333,14 @@ export default injectIntl(class extends React.Component {
           
           <ImageInputFile
             type="file"
-            onChange={(eventObj) => handleSelectImage({ _id, fileObj: eventObj.target.files[0] })}
+            onChange={(eventObj) => handleSelectImage({ _id, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
           />
           
           <Button
             variant="contained"
             color="secondary"
             size="small"
-            onClick={() => handleAddImage({ _id, imagesAndVideosArr })}
+            onClick={() => handleAddImage({ _id, imagesAndVideosArr, limit })}
           >
             追加
           </Button>
@@ -313,33 +349,35 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Caption */}
-        <ImageTextField
-          placeholder="画像名・簡単な解説を入力"
-          value={imageCaption}
-          onChange={(eventObj) => handleEdit({
-            pathArr: [_id, 'imageCaption'],
-            value: eventObj.target.value
-          })}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <IconDescription />
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => handleEdit({
-                    pathArr: [_id, 'imageCaptionOpen'],
-                    value: !imageCaptionOpen
-                  })}
-                >
-                  <IconHelpOutline />
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+        {caption &&
+          <ImageTextField
+            placeholder="画像名・簡単な解説を入力"
+            value={imageCaption}
+            onChange={(eventObj) => handleEdit({
+              pathArr: [_id, 'imageCaption'],
+              value: eventObj.target.value
+            })}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <IconDescription />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => handleEdit({
+                      pathArr: [_id, 'imageCaptionOpen'],
+                      value: !imageCaptionOpen
+                    })}
+                  >
+                    <IconHelpOutline />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        }
         
         
         {/* Captionについての解説 */}

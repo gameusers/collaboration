@@ -461,10 +461,10 @@ router.post('/update', upload.none(), async (req, res, next) => {
       const validationObj = await func(argumentsObj);
       
       
-      const title = name ? `${name} / ` : '';
-      console.log(`\n---------- ${title}validationObj ----------\n`);
-      console.dir(validationObj);
-      console.log(`\n-----------------------------------\n`);
+      // const title = name ? `${name} / ` : '';
+      // console.log(`\n---------- ${title}validationObj ----------\n`);
+      // console.dir(validationObj);
+      // console.log(`\n-----------------------------------\n`);
       
       
       if (validationObj.error) {

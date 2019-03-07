@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -40,14 +41,13 @@ const Heading = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  
 `;
 
 const Box = styled.div`
   display: flex;
   flex-flow: row wrap;
   margin: 12px 0 8px 0;
-  padding: 0;
   
   @media screen and (max-width: 480px) {
     flex-flow: column wrap;
@@ -84,8 +84,6 @@ export default class extends React.Component {
     const { _id, selectedArr, func } = this.props;
     
     
-    
-    
     // --------------------------------------------------
     //   Component - 選択済み
     // --------------------------------------------------
@@ -94,9 +92,9 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of selectedArr.entries()) {
       
-      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
+      const games_id = lodashGet(valueObj, ['games_id'], '');
+      const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
+      const gamesName = lodashGet(valueObj, ['gamesName'], '');
       
       componentsSelectedArr.push(
         <IDSelectChip
@@ -105,7 +103,7 @@ export default class extends React.Component {
           label={valueObj.label}
           id={valueObj.id}
           games_id={games_id}
-          gamesThumbnail={gamesThumbnail}
+          gamesThumbnailArr={gamesThumbnailArr}
           gamesName={gamesName}
         />
       );
@@ -116,14 +114,12 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- ageObj -----\n
-    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- selectedArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(selectedArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     // console.log(chalk`
     //   value: {green ${value}}

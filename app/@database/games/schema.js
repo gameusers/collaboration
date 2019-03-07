@@ -17,23 +17,57 @@ const schema = mongoose.Schema({
   urlID: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
   country: { type: String, enum: ['US', 'JP'], required: true },
-  thumbnail: { type: Boolean, required: true },
-  imageVideoArr: [
-    {
-      _id: { type: String, required: true },
-      type: { type: String, enum: ['image', 'video'], required: true },
-      caption: String,
-      fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
-      srcSetArr: [
-        {
-          _id: { type: String, required: true },
-          w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
-          width: { type: Number, required: true },
-          height: { type: Number, required: true },
-        }
-      ],
-    },
-  ],
+  imagesAndVideosObj: {
+    thumbnailArr: [
+      {
+        _id: { type: String, required: true },
+        type: { type: String, enum: ['image', 'video'], required: true },
+        caption: String,
+        srcSetArr: [
+          {
+            _id: { type: String, required: true },
+            src: { type: String, required: true },
+            w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+            width: { type: Number, required: true },
+            height: { type: Number, required: true },
+          }
+        ],
+      },
+    ],
+    mainArr: [
+      {
+        _id: { type: String, required: true },
+        type: { type: String, enum: ['image', 'video'], required: true },
+        caption: String,
+        srcSetArr: [
+          {
+            _id: { type: String, required: true },
+            src: { type: String, required: true },
+            w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+            width: { type: Number, required: true },
+            height: { type: Number, required: true },
+          }
+        ],
+      },
+    ],
+  },
+  // thumbnail: { type: Boolean, required: true },
+  // imageVideoArr: [
+  //   {
+  //     _id: { type: String, required: true },
+  //     type: { type: String, enum: ['image', 'video'], required: true },
+  //     caption: String,
+  //     fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
+  //     srcSetArr: [
+  //       {
+  //         _id: { type: String, required: true },
+  //         w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+  //         width: { type: Number, required: true },
+  //         height: { type: Number, required: true },
+  //       }
+  //     ],
+  //   },
+  // ],
   name: { type: String, required: true },
   subtitle: String,
   searchKeywordsArr: [String],

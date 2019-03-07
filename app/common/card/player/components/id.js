@@ -17,6 +17,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -47,7 +48,6 @@ import IDSelectChip from '../../../id-select/components/chip';
 
 const Container = styled.div`
   margin: 28px 0 0 0;
-  padding: 0;
 `;
 
 
@@ -134,9 +134,13 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of arr.entries()) {
       
-      let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
+      const games_id = lodashGet(valueObj, ['games_id'], '');
+      const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
+      const gamesName = lodashGet(valueObj, ['gamesName'], '');
+      
+      // let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
+      // let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
+      // let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
       componentsArr.push(
         <IDSelectChip
@@ -145,7 +149,7 @@ export default class extends React.Component {
           label={valueObj.label}
           id={valueObj.id}
           games_id={games_id}
-          gamesThumbnail={gamesThumbnail}
+          gamesThumbnailArr={gamesThumbnailArr}
           gamesName={gamesName}
         />
       );

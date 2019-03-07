@@ -17,6 +17,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -48,8 +49,6 @@ const Container = styled.div`
   border: 1px solid #3f51b5;
   border-radius: 18px;
   margin: 8px 8px 0 0;
-  // box-sizing: border-box;
-  // cursor: pointer;
 `;
 
 const AvatarMainBox = styled.div`
@@ -116,9 +115,11 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { platform, label, id, games_id, gamesThumbnail, gamesName } = this.props;
+    const { platform, label, id, games_id, gamesThumbnailArr = [], gamesName } = this.props;
     
-    
+    // console.log(`\n---------- gamesThumbnailArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(gamesThumbnailArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     // --------------------------------------------------
@@ -128,8 +129,6 @@ export default class extends React.Component {
     if (!platform && !id) {
       return null;
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -240,11 +239,14 @@ export default class extends React.Component {
     
     let componentSubAvatar = '';
     
-    if (games_id && gamesThumbnail && gamesName) {
+    if (games_id && gamesName && gamesThumbnailArr.length > 0) {
+      
+      const src = lodashGet(gamesThumbnailArr, [0, 'srcSetArr', 0, 'src'], '');
       
       componentSubAvatar =
         <AvatarSubBox>
-          <StyledAvatar alt={gamesName} src={`/static/img/games/${games_id}/thumbnail/image.jpg`} />
+          <StyledAvatar alt={gamesName} src={src} />
+          {/*<StyledAvatar alt={gamesName} src={`/static/img/games/${games_id}/thumbnail/image.jpg`} />*/}
         </AvatarSubBox>
       ;
     }
@@ -252,9 +254,8 @@ export default class extends React.Component {
     
     
     
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`

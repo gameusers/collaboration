@@ -15,7 +15,7 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
   gameID: String,
-  platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'], required: true },
+  platform: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'], required: true },
   label: String,
   id: { type: String, required: true },
   publicSetting: { type: Number, min: 1, max: 5, required: true },

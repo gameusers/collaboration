@@ -425,10 +425,15 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
               <MenuItem value={'Xbox'}>Xbox</MenuItem>
               <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
-              <MenuItem value={'Steam'}>Steam</MenuItem>
               <MenuItem value={'PC'}>PC</MenuItem>
               <MenuItem value={'Android'}>Android</MenuItem>
               <MenuItem value={'iOS'}>iOS</MenuItem>
+              <MenuItem value={'Steam'}>Steam</MenuItem>
+              <MenuItem value={'Origin'}>Origin</MenuItem>
+              <MenuItem value={'Discord'}>Discord</MenuItem>
+              <MenuItem value={'Skype'}>Skype</MenuItem>
+              <MenuItem value={'ICQ'}>ICQ</MenuItem>
+              <MenuItem value={'Line'}>Line</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
             <FormHelperText>{formatMessage({ id: formPlatformMessageID }, { numberOfCharacters: formPlatformNumberOfCharacters })}</FormHelperText>

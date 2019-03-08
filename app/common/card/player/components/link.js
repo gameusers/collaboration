@@ -6,7 +6,7 @@
 //   Console 出力用
 // ---------------------------------------------
 
-// import chalk from 'chalk';
+import chalk from 'chalk';
 // import util from 'util';
 
 
@@ -34,9 +34,10 @@ import Icon from '@material-ui/icons/Public';
 
 
 // ---------------------------------------------
-//   Components
+//   Simple Icons
 // ---------------------------------------------
 
+import SimpleIcons from 'simple-icons-react-component';
 
 
 
@@ -48,7 +49,6 @@ import Icon from '@material-ui/icons/Public';
 
 const Container = styled.div`
   margin: 28px 0 0 0;
-  padding: 0;
 `;
 
 
@@ -80,8 +80,6 @@ const Heading = styled.h3`
 const LinkBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 0 0 0 0;
-  padding: 0 0 0 0;
 `;
 
 const LinkItem = styled.div`
@@ -98,12 +96,22 @@ const LinkOtherA = styled.a`
 
 const LinkOtherButton = styled(Button)`
   && {
-    margin: 0;
     padding: 0 6px;
     font-size: 14px;
     min-width: 36px;
     min-height: 26px
   }
+`;
+
+const IconBox = styled.div`
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  width: 24px;
+  height: 24px;
+  // border: solid 1px #848484;
+  // border-radius: 8px;
+  // padding: 4px;
 `;
 
 
@@ -166,13 +174,28 @@ export default class extends React.Component {
         
       } else if (value.url) {
         
+        // console.log(chalk`
+        //   value.type: {green ${value.type}}
+        // `);
+        
         componentLinkArr.push(
           <LinkItem key={`link${index}`}>
             <a href={value.url} target="_blank">
-              <img src={`/static/img/common/social/card/${value.type.toLowerCase()}.png`} width="26" height="26" />
+              <IconBox alt={value.type}>
+                <SimpleIcons name={value.type} />
+              </IconBox>
             </a>
           </LinkItem>
         );
+        
+        
+        // componentLinkArr.push(
+        //   <LinkItem key={`link${index}`}>
+        //     <a href={value.url} target="_blank">
+        //       <img src={`/static/img/common/social/card/${value.type.toLowerCase()}.png`} width="26" height="26" />
+        //     </a>
+        //   </LinkItem>
+        // );
         
       }
       
@@ -189,7 +212,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`

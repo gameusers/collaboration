@@ -307,6 +307,57 @@ export default injectIntl(class extends React.Component {
     
     
     
+    // ID
+    
+    // Skype
+    // #00AFF0
+    
+    // Viber
+    // #665CAC
+    
+    // Discord
+    // #7289DA
+    
+    // Origin
+    // #F56C2D
+    
+    
+    // Link
+    
+    // Discord
+    // #7289DA
+    
+    // Flickr
+    // #0063DC
+    
+    // Tumblr
+    // #36465D
+    
+    // Pinterest
+    // #BD081C
+    
+    
+    
+    // WhatsApp
+    // #25D366
+    
+    // Twitch
+    // #6441A4
+    
+    // Amazon
+    // #FF9900
+    
+    // GitHub
+    // #181717
+    
+    // WordPress
+    // #21759B
+    
+    // Slack
+    // #4A154B
+
+    
+    
     
     // --------------------------------------------------
     //   Return
@@ -347,10 +398,15 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
               <MenuItem value={'Xbox'}>Xbox</MenuItem>
               <MenuItem value={'Nintendo'}>Nintendo</MenuItem>
-              <MenuItem value={'Steam'}>Steam</MenuItem>
               <MenuItem value={'PC'}>PC</MenuItem>
               <MenuItem value={'Android'}>Android</MenuItem>
               <MenuItem value={'iOS'}>iOS</MenuItem>
+              <MenuItem value={'Steam'}>Steam</MenuItem>
+              <MenuItem value={'Origin'}>Origin</MenuItem>
+              <MenuItem value={'Discord'}>Discord</MenuItem>
+              <MenuItem value={'Skype'}>Skype</MenuItem>
+              <MenuItem value={'ICQ'}>ICQ</MenuItem>
+              <MenuItem value={'Line'}>Line</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
             <FormHelperText>{formatMessage({ id: formPlatformMessageID }, { numberOfCharacters: formPlatformNumberOfCharacters })}</FormHelperText>

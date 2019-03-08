@@ -32,6 +32,14 @@ import Avatar from '@material-ui/core/Avatar';
 // ---------------------------------------------
 
 import IconGrade from '@material-ui/icons/Grade';
+import IconPC from '@material-ui/icons/LaptopMac';
+
+
+// ---------------------------------------------
+//   Simple Icons
+// ---------------------------------------------
+
+import SimpleIcons from 'simple-icons-react-component';
 
 
 
@@ -63,7 +71,8 @@ const StyledAvatar = styled(Avatar)`
   && {
     width: 32px;
     height: 32px;
-    background-color: white;
+    line-height: 1;
+    background-color: #003791;
   }
 `;
 
@@ -145,7 +154,13 @@ export default class extends React.Component {
     
     if (platform === 'PlayStation') {
       
-      componentAvatar = <StyledAvatar alt="PlayStation" src={`/static/img/platform/playstation-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
+          <div style={{ 'width': '80%', 'marginTop': '4px' }}>
+            <SimpleIcons name="PlayStation" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
       labelValue = 'PlayStation';
       
       
@@ -155,7 +170,13 @@ export default class extends React.Component {
       
     } else if (platform === 'Xbox') {
       
-      componentAvatar = <StyledAvatar alt="Xbox" src={`/static/img/platform/xbox-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
+          <div style={{ 'width': '75%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Xbox" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
       labelValue = 'Xbox';
       
       
@@ -165,7 +186,13 @@ export default class extends React.Component {
       
     } else if (platform === 'Nintendo') {
       
-      componentAvatar = <StyledAvatar alt="Nintendo" src={`/static/img/platform/nintendo-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
+          <div style={{ 'width': '55%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Nintendo" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
       labelValue = 'Nintendo';
       
       
@@ -175,8 +202,94 @@ export default class extends React.Component {
       
     } else if (platform === 'Steam') {
       
-      componentAvatar = <StyledAvatar alt="Steam" src={`/static/img/platform/steam-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="Steam" style={{ 'backgroundColor': '#000000' }}>
+          <div style={{ 'width': '80%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Steam" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
       labelValue = 'Steam';
+      
+      
+    // ---------------------------------------------
+    //   Origin
+    // ---------------------------------------------
+      
+    } else if (platform === 'Origin') {
+      
+      componentAvatar =
+        <StyledAvatar alt="Origin" style={{ 'backgroundColor': '#F56C2D' }}>
+          <div style={{ 'width': '80%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Origin" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = 'Origin';
+      
+      
+    // ---------------------------------------------
+    //   Discord
+    // ---------------------------------------------
+      
+    } else if (platform === 'Discord') {
+      
+      componentAvatar =
+        <StyledAvatar alt="Discord" style={{ 'backgroundColor': '#7289DA' }}>
+          <div style={{ 'width': '65%', 'marginTop': '5px', 'marginRight': '1px' }}>
+            <SimpleIcons name="Discord" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = 'Discord';
+      
+      
+    // ---------------------------------------------
+    //   Skype
+    // ---------------------------------------------
+      
+    } else if (platform === 'Skype') {
+      
+      componentAvatar =
+        <StyledAvatar alt="Skype" style={{ 'backgroundColor': '#00AFF0' }}>
+          <div style={{ 'width': '70%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Skype" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = 'Skype';
+      
+      
+    // ---------------------------------------------
+    //   ICQ
+    // ---------------------------------------------
+      
+    } else if (platform === 'ICQ') {
+      
+      componentAvatar =
+        <StyledAvatar alt="ICQ" style={{ 'backgroundColor': '#7EBD00' }}>
+          <div style={{ 'width': '75%', 'marginTop': '4px' }}>
+            <SimpleIcons name="ICQ" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = 'ICQ';
+      
+      
+    // ---------------------------------------------
+    //   Line
+    // ---------------------------------------------
+      
+    } else if (platform === 'Line') {
+      
+      componentAvatar =
+        <StyledAvatar alt="Line" style={{ 'backgroundColor': '#00C300' }}>
+          <div style={{ 'width': '75%', 'marginTop': '5px' }}>
+            <SimpleIcons name="Line" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = 'Line';
       
       
     // ---------------------------------------------
@@ -185,7 +298,11 @@ export default class extends React.Component {
       
     } else if (platform === 'PC') {
       
-      componentAvatar = <StyledAvatar alt="PC" src={`/static/img/platform/pc-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="PC" style={{ 'backgroundColor': '#000000' }}>
+          <IconPC />
+        </StyledAvatar>
+      ;
       labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
       
     
@@ -195,7 +312,13 @@ export default class extends React.Component {
       
     } else if (platform === 'Android') {
       
-      componentAvatar = <StyledAvatar alt="Android" src={`/static/img/platform/android-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
+          <div style={{ 'width': '75%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Android" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
       labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
       
       
@@ -205,7 +328,13 @@ export default class extends React.Component {
       
     } else if (platform === 'iOS') {
       
-      componentAvatar = <StyledAvatar alt="iOS" src={`/static/img/platform/ios-256.jpg`} />;
+      componentAvatar =
+        <StyledAvatar alt="Apple" style={{ 'backgroundColor': '#999999' }}>
+          <div style={{ 'width': '75%', 'marginTop': '2px' }}>
+            <SimpleIcons name="Apple" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
       labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
       
       

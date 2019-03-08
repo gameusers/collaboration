@@ -36,7 +36,7 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 //   Validations
 // ---------------------------------------------
 
-const validation_id = require('../../../@validations/_id');
+const { validation_id } = require('../../../@validations/_id');
 const validationIDsPlatform = require('../../../@database/ids/validations/platform');
 const validationIDsLabel = require('../../../@database/ids/validations/label');
 const validationIDsID = require('../../../@database/ids/validations/id');

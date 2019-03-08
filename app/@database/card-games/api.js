@@ -35,7 +35,7 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-const validation_id = require('../../@validations/_id');
+const { validation_id } = require('../../@validations/_id');
 
 
 // ---------------------------------------------

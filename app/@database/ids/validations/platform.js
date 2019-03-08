@@ -69,7 +69,7 @@ const validationIDsPlatform = ({ required, platform }) => {
   }
   
   // 適切な値が選択されているかチェック
-  if (!validator.isIn(value, ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'PC', 'Android', 'iOS', 'Other'])) {
+  if (!validator.isIn(value, ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'])) {
     resultObj.errorCodeArr.push('kopWIEmo4');
   }
   

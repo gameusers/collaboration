@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -55,7 +55,6 @@ const Container = styled.div`
 `;
 
 const Description = styled.p`
-  font-size: 14px;
   margin: 12px 0 0 0;
 `;
 
@@ -305,57 +304,6 @@ export default injectIntl(class extends React.Component {
     //   _id: {green ${_id}}
     // `);
     
-    
-    
-    // ID
-    
-    // Skype
-    // #00AFF0
-    
-    // Viber
-    // #665CAC
-    
-    // Discord
-    // #7289DA
-    
-    // Origin
-    // #F56C2D
-    
-    
-    // Link
-    
-    // Discord
-    // #7289DA
-    
-    // Flickr
-    // #0063DC
-    
-    // Tumblr
-    // #36465D
-    
-    // Pinterest
-    // #BD081C
-    
-    
-    
-    // WhatsApp
-    // #25D366
-    
-    // Twitch
-    // #6441A4
-    
-    // Amazon
-    // #FF9900
-    
-    // GitHub
-    // #181717
-    
-    // WordPress
-    // #21759B
-    
-    // Slack
-    // #4A154B
-
     
     
     

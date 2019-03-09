@@ -305,8 +305,8 @@ export default class extends React.Component {
             <FormImage
               _id={`${cardPlayers_id}-thumbnail`}
               imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
-              caption={true}
-              limit={2}
+              caption={false}
+              limit={1}
             />
           </ThumbnailBox>
           
@@ -432,7 +432,8 @@ export default class extends React.Component {
           <Box>
             <ID
               _id={cardPlayers_id}
-              selectedArr={idArr}
+              // idArr={stores.cardPlayer.cardPlayerEditFormDataObj[cardPlayers_id].idArr}
+              idArr={idArr}
               func={handleCardPlayerEditID}
             />
           </Box>

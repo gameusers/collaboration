@@ -106,7 +106,7 @@ const validationCardPlayersSex = ({ value }) => {
 
 
 /**
- * 年齢（固定値）
+ * 性別（固定値）
  * @param {string} value - 値
  */
 const validationCardPlayersSexAlternativeText = ({ value }) => {

@@ -138,7 +138,7 @@ export default class extends React.Component {
     this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-panelButton`, false);
     
     // フォームを表示する、あとで消すように
-    // this.props.stores.cardPlayer.handleCardPlayerEditFormOpen('zaoOWw89g');
+    this.props.stores.cardPlayer.handleCardPlayerEditFormOpen('zaoOWw89g');
   }
   
   

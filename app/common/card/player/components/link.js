@@ -77,24 +77,20 @@ const Heading = styled.h3`
 //   リンク
 // ---------------------------------------------
 
-const LinkBox = styled.div`
+const Box = styled.div`
   display: flex;
   flex-flow: row wrap;
 `;
 
-const LinkItem = styled.div`
+const Item = styled.div`
   margin: 10px 14px 0 0;
 `;
 
-const LinkOtherBox = styled.div`
+const OtherBox = styled.div`
   margin: 10px 12px 0 0;
 `;
 
-const LinkOtherA = styled.a`
-  text-decoration: none;
-`;
-
-const LinkOtherButton = styled(Button)`
+const OtherButton = styled(Button)`
   && {
     padding: 0 6px;
     font-size: 14px;
@@ -104,14 +100,8 @@ const LinkOtherButton = styled(Button)`
 `;
 
 const IconBox = styled.div`
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
   width: 24px;
   height: 24px;
-  // border: solid 1px #848484;
-  // border-radius: 8px;
-  // padding: 4px;
 `;
 
 
@@ -160,42 +150,29 @@ export default class extends React.Component {
       if (value.type === 'Other') {
         
         componentLinkArr.push(
-          <LinkOtherBox key={index}>
-            <LinkOtherA href={value.url} target="_blank">
-              <LinkOtherButton
-                variant="contained"
-                color="secondary"
-              >
-                {value.label}
-              </LinkOtherButton>
-            </LinkOtherA>
-          </LinkOtherBox>
+          <OtherBox key={index}>
+            <OtherButton
+              variant="outlined"
+              color="secondary"
+              href={value.url}
+              target="_blank"
+            >
+              {value.label}
+            </OtherButton>
+          </OtherBox>
         );
         
       } else if (value.url) {
         
-        // console.log(chalk`
-        //   value.type: {green ${value.type}}
-        // `);
-        
         componentLinkArr.push(
-          <LinkItem key={`link${index}`}>
+          <Item key={`link${index}`}>
             <a href={value.url} target="_blank">
               <IconBox alt={value.type}>
                 <SimpleIcons name={value.type} />
               </IconBox>
             </a>
-          </LinkItem>
+          </Item>
         );
-        
-        
-        // componentLinkArr.push(
-        //   <LinkItem key={`link${index}`}>
-        //     <a href={value.url} target="_blank">
-        //       <img src={`/static/img/common/social/card/${value.type.toLowerCase()}.png`} width="26" height="26" />
-        //     </a>
-        //   </LinkItem>
-        // );
         
       }
       
@@ -204,10 +181,11 @@ export default class extends React.Component {
     let componentLinkBox = '';
     
     if (componentLinkArr.length > 0) {
-       componentLinkBox = <LinkBox>{componentLinkArr}</LinkBox>;
+       componentLinkBox = <Box>{componentLinkArr}</Box>;
     } else {
       return null;
     }
+    
     
     
     
@@ -222,6 +200,7 @@ export default class extends React.Component {
     // console.log(`
     //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
     // `);
+    
     
     
     

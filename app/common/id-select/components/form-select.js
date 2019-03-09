@@ -109,27 +109,19 @@ export default class extends React.Component {
     
     const {
       
-      idFormDataObj,
-      idFormDataSelectedObj,
-      idFormDataUnselectedObj,
-      handleIDFormMoveFromSelectedToUnselected,
-      handleIDFormMoveFromUnselectedToSelected,
-      handleIDFormSelectButton
+      dataObj,
+      handleMoveSelected,
+      handleMoveUnselected,
+      handleSelectButton
       
     } = stores.idSelectForm;
-    
-    
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
-    
-    if (`${_id}-idFormSelect` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-idFormSelect`];
-    }
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormSelect`], true);
     
     
     
@@ -138,37 +130,36 @@ export default class extends React.Component {
     //   Component - 選択ID
     // --------------------------------------------------
     
-    const componentsSelectedArr = [];
-    const dataSelectedArr = _id in idFormDataSelectedObj ? idFormDataSelectedObj[_id] : [];
-    const selectButtonIDArr = [];
+    const dataArr = lodashGet(dataObj, [_id, 'dataArr'], []);
+    const selectedIDsArr = [];
     
-    for (const [index, value] of dataSelectedArr.entries()) {
+    const componentsSelectedArr = [];
+    const selectedArr = lodashGet(dataObj, [_id, 'selectedArr'], []);
+    
+    
+    for (const [index, value] of selectedArr.entries()) {
       
-      const dataSelectedObj = idFormDataObj[_id].find((valueObj) => {
+      const tempObj = dataArr.find((valueObj) => {
         return valueObj._id === value;
       });
       
-      if (dataSelectedObj) {
+      if (tempObj) {
         
-        selectButtonIDArr.push(dataSelectedObj);
+        selectedIDsArr.push(tempObj);
         
-        // const games_id = 'games_id' in dataSelectedObj ? dataSelectedObj.games_id : '';
-        // const gamesThumbnail = 'gamesThumbnail' in dataSelectedObj ? dataSelectedObj.gamesThumbnail : '';
-        // const gamesName = 'gamesName' in dataSelectedObj ? dataSelectedObj.gamesName : '';
-        
-        const games_id = lodashGet(dataSelectedObj, ['games_id'], '');
-        const gamesThumbnailArr = lodashGet(dataSelectedObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
-        const gamesName = lodashGet(dataSelectedObj, ['gamesName'], '');
+        const games_id = lodashGet(tempObj, ['games_id'], '');
+        const gamesThumbnailArr = lodashGet(tempObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
+        const gamesName = lodashGet(tempObj, ['gamesName'], '');
         
         componentsSelectedArr.push(
           <IDBox
             key={index}
-            onClick={() => handleIDFormMoveFromSelectedToUnselected({ _id, index })}
+            onClick={() => handleMoveSelected({ _id, index })}
           >
             <IDSelectChip
-              platform={dataSelectedObj.platform}
-              label={dataSelectedObj.label}
-              id={dataSelectedObj.id}
+              platform={tempObj.platform}
+              label={tempObj.label}
+              id={tempObj.id}
               games_id={games_id}
               gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
@@ -186,33 +177,30 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const componentsUnselectedArr = [];
-    const dataUnselectedArr = _id in idFormDataUnselectedObj ? idFormDataUnselectedObj[_id] : [];
+    const unselectedArr = lodashGet(dataObj, [_id, 'unselectedArr'], []);
     
-    for (const [index, value] of dataUnselectedArr.entries()) {
+    
+    for (const [index, value] of unselectedArr.entries()) {
       
-      const dataUnselectedObj = idFormDataObj[_id].find((valueObj) => {
+      const tempObj = dataArr.find((valueObj) => {
         return valueObj._id === value;
       });
       
-      if (dataUnselectedObj) {
+      if (tempObj) {
         
-        // let games_id = 'games_id' in dataUnselectedObj ? dataUnselectedObj.games_id : '';
-        // let gamesThumbnail = 'gamesThumbnail' in dataUnselectedObj ? dataUnselectedObj.gamesThumbnail : '';
-        // let gamesName = 'gamesName' in dataUnselectedObj ? dataUnselectedObj.gamesName : '';
-        
-        const games_id = lodashGet(dataUnselectedObj, ['games_id'], '');
-        const gamesThumbnailArr = lodashGet(dataUnselectedObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
-        const gamesName = lodashGet(dataUnselectedObj, ['gamesName'], '');
+        const games_id = lodashGet(tempObj, ['games_id'], '');
+        const gamesThumbnailArr = lodashGet(tempObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
+        const gamesName = lodashGet(tempObj, ['gamesName'], '');
         
         componentsUnselectedArr.push(
           <IDBox
             key={index}
-            onClick={() => handleIDFormMoveFromUnselectedToSelected({ _id, index })}
+            onClick={() => handleMoveUnselected({ _id, index })}
           >
             <IDSelectChip
-              platform={dataUnselectedObj.platform}
-              label={dataUnselectedObj.label}
-              id={dataUnselectedObj.id}
+              platform={tempObj.platform}
+              label={tempObj.label}
+              id={tempObj.id}
               games_id={games_id}
               gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
@@ -231,21 +219,9 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- stores.data.usersLoginObj -----\n
-    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- selectedArr -----\n
-    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
-    // `);
+    // console.log(`\n---------- idArr / form select ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(idArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     
@@ -285,9 +261,9 @@ export default class extends React.Component {
         <FuncButton
           variant="outlined"
           color="primary"
-          onClick={() => handleIDFormSelectButton({
+          onClick={() => handleSelectButton({
             _id,
-            idArr: selectButtonIDArr,
+            idArr: selectedIDsArr,
             func
           })}
           disabled={buttonDisabled}

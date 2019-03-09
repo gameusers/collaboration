@@ -181,7 +181,7 @@ const schema = mongoose.Schema({
   linkArr: [
     {
       _id: { type: String, required: true },
-      type: { type: String, enum: ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Pixiv', 'Other'], required: true },
+      type: { type: String, enum: ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Discord', 'Flickr', 'Tumblr', 'Pinterest', 'Other'], required: true },
       label: String,
       url: { type: String, required: true },
       search: { type: Boolean, required: true },

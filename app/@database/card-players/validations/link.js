@@ -108,7 +108,7 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       // ---------------------------------------------
       
       // 適切な値が選択されているかチェック
-      if (!validator.isIn(type, ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Pixiv', 'Other'])) {
+      if (!validator.isIn(type, ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Discord', 'Flickr', 'Tumblr', 'Pinterest', 'Other'])) {
         formObj.typeObj.error = true;
         formObj.typeObj.messageCode = 'PH8jcw-VF';
         errorCodeSet.add('gLkbRV4v-');

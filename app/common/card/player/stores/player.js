@@ -16,9 +16,10 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import keycode from 'keycode';
-import lodashGet from 'lodash/get';
+// import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-import lodashHas from 'lodash/has';
+// import lodashHas from 'lodash/has';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -1372,8 +1373,8 @@ class Store {
    */
   @action.bound
   handleCardPlayerEditID({ _id, idArr }) {
-    const copiedArr = JSON.parse(JSON.stringify(idArr));
-    this.cardPlayerEditFormDataObj[_id].idArr = copiedArr;
+    const cloneArr = lodashCloneDeep(idArr);
+    this.cardPlayerEditFormDataObj[_id].idArr = cloneArr;
   };
   
   

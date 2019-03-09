@@ -206,7 +206,10 @@ export default injectIntl(class extends React.Component {
                 <MenuItem value={'YouTube'}>YouTube</MenuItem>
                 <MenuItem value={'Twitch'}>Twitch</MenuItem>
                 <MenuItem value={'Steam'}>Steam</MenuItem>
-                <MenuItem value={'Pixiv'}>Pixiv</MenuItem>
+                <MenuItem value={'Discord'}>Discord</MenuItem>
+                <MenuItem value={'Flickr'}>Flickr</MenuItem>
+                <MenuItem value={'Tumblr'}>Tumblr</MenuItem>
+                <MenuItem value={'Pinterest'}>Pinterest</MenuItem>
                 <MenuItem value={'Other'}>その他</MenuItem>
               </StyledSelect>
             </FormControl>

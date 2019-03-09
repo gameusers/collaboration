@@ -126,10 +126,6 @@ export default class extends React.Component {
     
     const { platform, label, id, games_id, gamesThumbnailArr = [], gamesName } = this.props;
     
-    // console.log(`\n---------- gamesThumbnailArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(gamesThumbnailArr)));
-    // console.log(`\n-----------------------------------\n`);
-    
     
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
@@ -194,6 +190,52 @@ export default class extends React.Component {
         </StyledAvatar>
       ;
       labelValue = 'Nintendo';
+      
+      
+    // ---------------------------------------------
+    //   PC
+    // ---------------------------------------------
+      
+    } else if (platform === 'PC') {
+      
+      componentAvatar =
+        <StyledAvatar alt="PC" style={{ 'backgroundColor': '#000000' }}>
+          <IconPC />
+        </StyledAvatar>
+      ;
+      labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
+      
+    
+    // ---------------------------------------------
+    //   Android
+    // ---------------------------------------------
+      
+    } else if (platform === 'Android') {
+      
+      componentAvatar =
+        <StyledAvatar alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
+          <div style={{ 'width': '75%', 'marginTop': '4px' }}>
+            <SimpleIcons name="Android" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
+      
+      
+    // ---------------------------------------------
+    //   iOS
+    // ---------------------------------------------
+      
+    } else if (platform === 'iOS') {
+      
+      componentAvatar =
+        <StyledAvatar alt="Apple" style={{ 'backgroundColor': '#999999' }}>
+          <div style={{ 'width': '75%', 'marginTop': '2px' }}>
+            <SimpleIcons name="Apple" color="white" />
+          </div>
+        </StyledAvatar>
+      ;
+      labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
       
       
     // ---------------------------------------------
@@ -293,52 +335,6 @@ export default class extends React.Component {
       
       
     // ---------------------------------------------
-    //   PC
-    // ---------------------------------------------
-      
-    } else if (platform === 'PC') {
-      
-      componentAvatar =
-        <StyledAvatar alt="PC" style={{ 'backgroundColor': '#000000' }}>
-          <IconPC />
-        </StyledAvatar>
-      ;
-      labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
-      
-    
-    // ---------------------------------------------
-    //   Android
-    // ---------------------------------------------
-      
-    } else if (platform === 'Android') {
-      
-      componentAvatar =
-        <StyledAvatar alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
-          <div style={{ 'width': '75%', 'marginTop': '4px' }}>
-            <SimpleIcons name="Android" color="white" />
-          </div>
-        </StyledAvatar>
-      ;
-      labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
-      
-      
-    // ---------------------------------------------
-    //   iOS
-    // ---------------------------------------------
-      
-    } else if (platform === 'iOS') {
-      
-      componentAvatar =
-        <StyledAvatar alt="Apple" style={{ 'backgroundColor': '#999999' }}>
-          <div style={{ 'width': '75%', 'marginTop': '2px' }}>
-            <SimpleIcons name="Apple" color="white" />
-          </div>
-        </StyledAvatar>
-      ;
-      labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
-      
-      
-    // ---------------------------------------------
     //   Other
     // ---------------------------------------------
       
@@ -375,7 +371,6 @@ export default class extends React.Component {
       componentSubAvatar =
         <AvatarSubBox>
           <StyledAvatar alt={gamesName} src={src} />
-          {/*<StyledAvatar alt={gamesName} src={`/static/img/games/${games_id}/thumbnail/image.jpg`} />*/}
         </AvatarSubBox>
       ;
     }

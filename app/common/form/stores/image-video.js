@@ -160,9 +160,9 @@ class Store {
   @action.bound
   handleAddImage({ _id, imagesAndVideosArr, limit }) {
     
-    console.log(chalk`
-      limit: {green ${limit}}
-    `);
+    // console.log(chalk`
+    //   limit: {green ${limit}}
+    // `);
     // ---------------------------------------------
     //   Get Data
     // ---------------------------------------------

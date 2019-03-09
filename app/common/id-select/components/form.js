@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,13 +17,12 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
-
-// import TextField from '@material-ui/core/TextField';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -50,11 +49,6 @@ import FormEdit from './form-edit';
 import FormRegister from './form-register';
 
 
-const { validation_id } = require('../../../@validations/_id');
-const validationIDsPlatform = require('../../../@database/ids/validations/platform');
-const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
-
-
 
 
 // --------------------------------------------------
@@ -63,8 +57,6 @@ const validationIDsPublicSetting = require('../../../@database/ids/validations/p
 // --------------------------------------------------
 
 const ButtonBox = styled.div`
-  // display: flex;
-  // flex-flow: row wrap;
   margin: 88px 0 0 12px;
   
   @media screen and (max-width: 480px) {
@@ -107,18 +99,15 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, selectedArr, func } = this.props;
+    const { stores, _id, idArr, func } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
     const {
       
-      idFormDialogObj,
-      handleIDFormDialogClose,
-      handleIDFormDialogOpen,
-      
-      idFormContentsTypeObj,
-      handleIDFormContentsType,
+      dataObj,
+      handleEdit,
+      handleDialogOpen,
       
     } = stores.idSelectForm;
     
@@ -129,22 +118,14 @@ export default class extends React.Component {
     //   Dialog
     // --------------------------------------------------
     
-    let dialogOpen = false;
-    
-    if (_id in idFormDialogObj) {
-      dialogOpen = idFormDialogObj[_id];
-    }
+    const dialogOpen = lodashGet(dataObj, [_id, 'dialog'], false);
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
-    
-    if (`${_id}-idSelectForm` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-idSelectForm`];
-    }
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idSelectForm`], true);
     
     
     
@@ -153,31 +134,27 @@ export default class extends React.Component {
     //   コンテンツを切り替える
     // --------------------------------------------------
     
-    let contentsType = 'select';
+    const contentsType = lodashGet(dataObj, [_id, 'contentsType'], 'select');
     
-    if (_id in idFormContentsTypeObj) {
-      contentsType = idFormContentsTypeObj[_id];
-    }
-    
-    let componentForm = '';
+    let componentContent = '';
     
     if (contentsType === 'select') {
-      componentForm =
+      componentContent =
         <FormSelect
           _id={_id}
           func={func}
         />
       ;
     } else if (contentsType === 'edit') {
-      componentForm =
+      componentContent =
         <FormEdit
           _id={_id}
           func={func}
-          selectedArr={selectedArr}
+          selectedArr={idArr}
         />
       ;
     } else {
-      componentForm =
+      componentContent =
         <FormRegister
           _id={`${_id}-register`}
         />
@@ -187,52 +164,17 @@ export default class extends React.Component {
     
     
     
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
-    
-    // const test = 1;
-    
-    // console.log(`
-    //   ----- validationIDsPublicSetting({ required: true, publicSetting: test }) -----\n
-    //   ${util.inspect(validationIDsPublicSetting({ required: true, publicSetting: test }), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validationIDsPlatform({ required: true, platform: test }) -----\n
-    //   ${util.inspect(validationIDsPlatform({ required: true, platform: test }), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validation_id({ required: true, _id: test }) -----\n
-    //   ${util.inspect(validation_id({ required: true, _id: test }), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(chalk`
-    //   String(value): {green ${String(test)}}
+    //   _id: {green ${_id}}
     // `);
     
-    
-    
-    // console.log(`
-    //   ----- stores.data.usersLoginObj -----\n
-    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- selectedArr -----\n
-    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
-    // `);
+    // console.log(`\n---------- idArr / form ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(idArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     
@@ -249,9 +191,9 @@ export default class extends React.Component {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleIDFormDialogOpen({
+          onClick={() => handleDialogOpen({
             _id,
-            selectedArr
+            idArr
           })}
           disabled={buttonDisabled}
         >
@@ -259,12 +201,13 @@ export default class extends React.Component {
         </Button>
         
         
-        
-        
         {/* ダイアログ - ID選択＆登録フォーム */}
         <Dialog
           open={dialogOpen}
-          onClose={() => handleIDFormDialogClose({_id})}
+          onClose={() => handleEdit({
+            pathArr: [_id, 'dialog'],
+            value: false
+          })}
           fullScreen
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
@@ -276,7 +219,10 @@ export default class extends React.Component {
             <Toolbar>
               <IconButton
                 color="inherit"
-                onClick={() => handleIDFormDialogClose({_id})}
+                onClick={() => handleEdit({
+                  pathArr: [_id, 'dialog'],
+                  value: false
+                })}
                 aria-label="Close"
               >
                 <IconClose />
@@ -294,7 +240,10 @@ export default class extends React.Component {
             <SelectFormTypeButton
               variant="outlined"
               color="primary"
-              onClick={() => handleIDFormContentsType({ _id, type: 'select' })}
+              onClick={() => handleEdit({
+                pathArr: [_id, 'contentsType'],
+                value: 'select'
+              })}
               disabled={buttonDisabled}
             >
               選択
@@ -303,7 +252,10 @@ export default class extends React.Component {
             <SelectFormTypeButton
               variant="outlined"
               color="primary"
-              onClick={() => handleIDFormContentsType({ _id, type: 'edit' })}
+              onClick={() => handleEdit({
+                pathArr: [_id, 'contentsType'],
+                value: 'edit'
+              })}
               disabled={buttonDisabled}
             >
               編集
@@ -312,7 +264,10 @@ export default class extends React.Component {
             <SelectFormTypeButton
               variant="outlined"
               color="primary"
-              onClick={() => handleIDFormContentsType({ _id, type: 'register' })}
+              onClick={() => handleEdit({
+                pathArr: [_id, 'contentsType'],
+                value: 'register'
+              })}
               disabled={buttonDisabled}
             >
               登録
@@ -322,7 +277,7 @@ export default class extends React.Component {
           
           
           {/* コンテンツ */}
-          {componentForm}
+          {componentContent}
           
           
         </Dialog>

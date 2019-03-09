@@ -54,7 +54,7 @@ const Box = styled.div`
   }
 `;
 
-const OpenDialogButtonBox = styled.div`
+const IDSelectFormBox = styled.div`
   margin: 24px 0 0 0;
 `;
 
@@ -81,7 +81,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { _id, selectedArr, func } = this.props;
+    const { _id, idArr, func } = this.props;
     
     
     // --------------------------------------------------
@@ -90,7 +90,7 @@ export default class extends React.Component {
     
     const componentsSelectedArr = [];
     
-    for (const [index, valueObj] of selectedArr.entries()) {
+    for (const [index, valueObj] of idArr.entries()) {
       
       const games_id = lodashGet(valueObj, ['games_id'], '');
       const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
@@ -117,8 +117,8 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`\n---------- selectedArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(selectedArr)));
+    // console.log(`\n---------- idArr / id ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(idArr)));
     // console.log(`\n-----------------------------------\n`);
     
     // console.log(chalk`
@@ -141,7 +141,7 @@ export default class extends React.Component {
         <Heading>ID</Heading>
         
         <Description>
-          ゲームのIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。
+          ゲームや連絡先のIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。
         </Description>
         
         
@@ -152,13 +152,13 @@ export default class extends React.Component {
         
         
         {/* ID選択・編集フォーム */}
-        <OpenDialogButtonBox>
+        <IDSelectFormBox>
           <IDSelectForm
             _id={_id}
-            selectedArr={selectedArr}
+            idArr={idArr}
             func={func}
           />
-        </OpenDialogButtonBox>
+        </IDSelectFormBox>
         
       </React.Fragment>
     );

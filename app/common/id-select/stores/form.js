@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
+// import util from 'util';
 
 
 // ---------------------------------------------
@@ -15,7 +15,10 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import keycode from 'keycode';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
+// import keycode from 'keycode';
 
 
 // ---------------------------------------------
@@ -73,33 +76,40 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Data
+  // ---------------------------------------------
+  
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable dataObj = {};
+  
+  
+  /**
+   * フォーム用のデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleEdit({ pathArr, value }) {
+    lodashSet(this.dataObj, pathArr, value);
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Dialog
   // ---------------------------------------------
   
   /**
-   * ダイアログを表示するかどうかを決める変数を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDialogObj = {};
-  
-  
-  /**
-   * ダイアログを閉じる
-   * @param {string} _id
-   */
-  @action.bound
-  handleIDFormDialogClose({ _id }) {
-    this.idFormDialogObj[_id] = false;
-  };
-  
-  
-  /**
    * ダイアログを開く
    * @param {string} _id
-   * @param {Array} selectedArr - 選択されているIDが入っている配列
+   * @param {Array} idArr - 選択されているIDが入っている配列
    */
   @action.bound
-  async handleIDFormDialogOpen({ _id, selectedArr }) {
+  async handleDialogOpen({ _id, idArr }) {
     
     
     try {
@@ -110,9 +120,9 @@ class Store {
       //   編集フォームをすぐに表示する
       // ---------------------------------------------
       
-      if (_id in this.idFormDataObj) {
+      if (lodashHas(this.dataObj, [_id, 'dataArr'])) {
         
-        this.idFormDialogObj[_id] = true;
+        lodashSet(this.dataObj, [_id, 'dialog'], true);
         
         
       // ---------------------------------------------
@@ -122,8 +132,6 @@ class Store {
       
       } else {
         
-        // console.log('fetchWrapper');
-        
         
         // ---------------------------------------------
         //   Button Disable
@@ -131,8 +139,6 @@ class Store {
         
         storeLayout.handleButtonDisabledObj(`${_id}-idForm`, true);
          
-        
-        
         
         // ---------------------------------------------
         //   FormData
@@ -165,38 +171,43 @@ class Store {
         //   Data 更新
         // ---------------------------------------------
         
-        const idFormDataArr = resultObj.data;
-        const idFormDataSelectedArr = [];
-        const idFormDataUnselectedArr = [];
+        const dataArr = resultObj.data;
+        const selectedArr = [];
+        const unselectedArr = [];
         
         // 選択ID
-        for (let valueObj of selectedArr.values()) {
+        for (let valueObj of idArr.values()) {
           
-          const index = idFormDataArr.findIndex((value2Obj) => {
+          // 存在するIDかチェックする（すでに削除されている可能性があるため）
+          const index = dataArr.findIndex((value2Obj) => {
             return value2Obj._id === valueObj._id;
           });
           
           if (index !== -1) {
-            idFormDataSelectedArr.push(valueObj._id);
+            selectedArr.push(valueObj._id);
           }
           
         }
         
         // 未選択ID
-        for (let valueObj of idFormDataArr.values()) {
+        for (let valueObj of dataArr.values()) {
           
-          const index = selectedArr.findIndex((value2Obj) => {
+          // 選択IDに含まれていない場合、配列に追加
+          const index = idArr.findIndex((value2Obj) => {
             return value2Obj._id === valueObj._id;
           });
           
           if (index === -1) {
-            idFormDataUnselectedArr.push(valueObj._id);
+            unselectedArr.push(valueObj._id);
           }
           
         }
         
-        this.idFormDataSelectedObj[_id] = idFormDataSelectedArr;
-        this.idFormDataUnselectedObj[_id] = idFormDataUnselectedArr;
+        lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
+        lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
+        lodashSet(this.dataObj, [_id, 'dataArr'], dataArr);
+        
+        // 要削除
         this.idFormDataObj[_id] = resultObj.data;
         
         
@@ -204,20 +215,7 @@ class Store {
         //   編集フォーム表示
         // ---------------------------------------------
         
-        this.idFormDialogObj[_id] = true;
-        
-        
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(`
-        //   ----- resultObj.data -----\n
-        //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        lodashSet(this.dataObj, [_id, 'dialog'], true);
          
          
       }
@@ -244,31 +242,6 @@ class Store {
   
   
   // ---------------------------------------------
-  //   フォームのコンテンツを切り替える
-  //   選択 / 編集 / 登録の各フォーム
-  // ---------------------------------------------
-  
-  /**
-   * 表示するフォームのコンテンツを決める変数を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormContentsTypeObj = {};
-  
-  
-  /**
-   * フォームのコンテンツを切り替える
-   * @param {string} _id
-   * @param {string} type - 表示するコンテンツ select / edit
-   */
-  @action.bound
-  handleIDFormContentsType({ _id, type }) {
-    this.idFormContentsTypeObj[_id] = type;
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
   //   選択
   // ---------------------------------------------
   
@@ -280,28 +253,22 @@ class Store {
   
   
   /**
-   * フォームの選択データを入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDataSelectedObj = {};
-  
-  
-  /**
-   * フォームの未選択データを入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDataUnselectedObj = {};
-  
-  
-  /**
    * 選択IDから未選択IDに移動する
    * @param {string} _id
    * @param {number} index - 移動するIDの配列index
    */
   @action.bound
-  handleIDFormMoveFromSelectedToUnselected({ _id, index }) {
-    this.idFormDataUnselectedObj[_id].push(this.idFormDataSelectedObj[_id][index]);
-    this.idFormDataSelectedObj[_id].splice(index, 1);
+  handleMoveSelected({ _id, index }) {
+    
+    const selectedArr = lodashGet(this.dataObj, [_id, 'selectedArr'], []);
+    const unselectedArr = lodashGet(this.dataObj, [_id, 'unselectedArr'], []);
+    
+    unselectedArr.push(selectedArr[index]);
+    selectedArr.splice(index, 1);
+    
+    lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
+    lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
+    
   };
   
   
@@ -311,9 +278,17 @@ class Store {
    * @param {number} index - 移動するIDの配列index
    */
   @action.bound
-  handleIDFormMoveFromUnselectedToSelected({ _id, index }) {
-    this.idFormDataSelectedObj[_id].push(this.idFormDataUnselectedObj[_id][index]);
-    this.idFormDataUnselectedObj[_id].splice(index, 1);
+  handleMoveUnselected({ _id, index }) {
+    
+    const selectedArr = lodashGet(this.dataObj, [_id, 'selectedArr'], []);
+    const unselectedArr = lodashGet(this.dataObj, [_id, 'unselectedArr'], []);
+    
+    selectedArr.push(unselectedArr[index]);
+    unselectedArr.splice(index, 1);
+    
+    lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
+    lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
+    
   };
   
   
@@ -324,13 +299,13 @@ class Store {
    * @param {function} func - ボタンを押したときに実行する関数
    */
   @action.bound
-  handleIDFormSelectButton({ _id, idArr, func }) {
+  handleSelectButton({ _id, idArr, func }) {
     
     // 渡された関数を実行する
     func({ _id, idArr });
     
     // ダイアログを閉じる
-    this.idFormDialogObj[_id] = false;
+    lodashSet(this.dataObj, [_id, 'dialog'], false);
     
   };
   
@@ -350,9 +325,15 @@ class Store {
   @action.bound
   handleIDFormSetEditForm({ _id, ids_id }) {
     
-    const searchObj = this.idFormDataObj[_id].find((valueObj) => {
+    const dataArr = lodashGet(this.dataObj, [_id, 'dataArr'], []);
+    
+    const searchObj = dataArr.find((valueObj) => {
       return valueObj._id === ids_id;
     });
+    
+    // const searchObj = this.idFormDataObj[_id].find((valueObj) => {
+    //   return valueObj._id === ids_id;
+    // });
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -781,7 +762,8 @@ class Store {
       //   Data 更新
       // ---------------------------------------------
       
-      this.idFormDataObj[_id] = resultObj.data;
+      lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
+      // this.idFormDataObj[_id] = resultObj.data;
       
       
       // ---------------------------------------------
@@ -954,7 +936,8 @@ class Store {
       //   Data 更新
       // ---------------------------------------------
       
-      this.idFormDataObj[_id] = resultObj.data;
+      lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
+      // this.idFormDataObj[_id] = resultObj.data;
       
       
       // ---------------------------------------------
@@ -1132,7 +1115,8 @@ class Store {
       //   Data 更新
       // ---------------------------------------------
       
-      this.idFormDataObj[_id.replace('-register', '')] = resultObj.data;
+      lodashSet(this.dataObj, [_id.replace('-register', ''), 'dataArr'], resultObj.data);
+      // this.idFormDataObj[_id.replace('-register', '')] = resultObj.data;
       
       
       // ---------------------------------------------

@@ -115,7 +115,6 @@ const StyledButton = styled(Button)`
 
 
 
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -147,16 +146,15 @@ export default injectIntl(class extends React.Component {
     
     const {
       
-      idFormDataObj,
-      
-      handleIDFormSetEditForm,
+      dataObj,
+      handleSetEditForm,
       
       idFormPlatformObj,
       handleIDFormPlatform,
       
-      idFormGameObj,
-      handleIDFormGame,
-      handleIDFormGameDelete,
+      // idFormGameObj,
+      handleGame,
+      handleGameDelete,
       
       idFormLabelObj,
       handleIDFormLabel,
@@ -186,7 +184,8 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = `${_id}-idFormEditSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormEditSubmit`] : true;
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormEditSubmit`], true);
+    // const buttonDisabled = `${_id}-idFormEditSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormEditSubmit`] : true;
     
     
     // --------------------------------------------------
@@ -194,7 +193,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const componentsIDArr = [];
-    const dataArr = _id in idFormDataObj ? idFormDataObj[_id] : [];
+    const dataArr = lodashGet(dataObj, [_id, 'dataArr'], []);
+    // const dataArr = _id in idFormDataObj ? idFormDataObj[_id] : [];
     
     for (const [index, valueObj] of dataArr.entries()) {
       
@@ -202,14 +202,10 @@ export default injectIntl(class extends React.Component {
       const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
       const gamesName = lodashGet(valueObj, ['gamesName'], '');
       
-      // let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      // let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      // let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
-      
       componentsIDArr.push(
         <IDBox
           key={index}
-          onClick={() => handleIDFormSetEditForm({ _id, ids_id: valueObj._id })}
+          onClick={() => handleSetEditForm({ _id, ids_id: valueObj._id })}
         >
           <IDSelectChip
             platform={valueObj.platform}
@@ -254,7 +250,14 @@ export default injectIntl(class extends React.Component {
     //   フォームの値 - Game
     // --------------------------------------------------
     
-    const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
+    const formGameArr = lodashGet(this.dataObj, [_id, 'gameArr'], []);
+    
+    console.log(`\n---------- formGameArr ----------\n`);
+    console.dir(JSON.parse(JSON.stringify(formGameArr)));
+    console.log(`\n-----------------------------------\n`);
+    
+    // const buttonDisabled = lodashGet(idFormGameObj, [`${_id}-idFormEditSubmit`], true);
+    // const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
     
     
     // --------------------------------------------------
@@ -337,7 +340,7 @@ export default injectIntl(class extends React.Component {
     //   Game 選択フォームを表示しないプラットフォーム
     // --------------------------------------------------
     
-    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
+    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'];
     
     
     
@@ -446,8 +449,8 @@ export default injectIntl(class extends React.Component {
           <GameSelectSuggestion
             _id={_id}
             selectedArr={formGameArr}
-            func={handleIDFormGame}
-            funcDelete={handleIDFormGameDelete}
+            func={handleGame}
+            funcDelete={handleGameDelete}
           />
         }
         

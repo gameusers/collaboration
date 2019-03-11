@@ -76,8 +76,8 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 import initStoreIndex from '../../app/@stores/index';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../app/pl/player/stores/store';
-import initStoreIDSelectForm from '../../app/common/id-select/stores/form';
-import initStoreGameSelectSuggestion from '../../app/common/game-select/stores/suggestion';
+import initStoreIDSelectForm from '../../app/common/id-select/stores/id-select';
+import initStoreGameSelectSuggestion from '../../app/common/game-select/stores/game-select';
 import initStoreFormImageVideo from '../../app/common/form/stores/image-video';
 
 

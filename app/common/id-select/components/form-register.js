@@ -138,8 +138,8 @@ export default injectIntl(class extends React.Component {
       handleIDFormPlatform,
       
       idFormGameObj,
-      handleIDFormGame,
-      handleIDFormGameDelete,
+      handleGame,
+      handleGameDelete,
       
       idFormLabelObj,
       handleIDFormLabel,
@@ -367,8 +367,8 @@ export default injectIntl(class extends React.Component {
           <GameSelectSuggestion
             _id={_id}
             selectedArr={formGameArr}
-            func={handleIDFormGame}
-            funcDelete={handleIDFormGameDelete}
+            func={handleGame}
+            funcDelete={handleGameDelete}
           />
         }
         

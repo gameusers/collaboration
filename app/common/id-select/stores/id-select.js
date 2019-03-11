@@ -205,7 +205,7 @@ class Store {
         
         lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
         lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
-        lodashSet(this.dataObj, [_id, 'dataArr'], dataArr);
+        lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
         
         // 要削除
         this.idFormDataObj[_id] = resultObj.data;
@@ -319,11 +319,11 @@ class Store {
   /**
    * 編集時に編集するIDを選択する（各フォームの値を設定する）
    * 編集フォームの ID (Chip) をクリックしたときに発動
-   * @param {Object} eventObj - イベント
-   * @param {string} _id
+   * @param {string} _id - ID
+   * @param {string} ids_id - DB IDs _id
    */
   @action.bound
-  handleIDFormSetEditForm({ _id, ids_id }) {
+  handleSetEditForm({ _id, ids_id }) {
     
     const dataArr = lodashGet(this.dataObj, [_id, 'dataArr'], []);
     
@@ -331,34 +331,7 @@ class Store {
       return valueObj._id === ids_id;
     });
     
-    // const searchObj = this.idFormDataObj[_id].find((valueObj) => {
-    //   return valueObj._id === ids_id;
-    // });
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   ids_id: {green ${ids_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- this.idFormDataObj[_id] -----\n
-    //   ${util.inspect(this.idFormDataObj[_id], { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- searchObj -----\n
-    //   ${util.inspect(searchObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   searchObj.platform: {green ${searchObj.platform}}
-    //   searchObj.id: {green ${searchObj.id}}
-    //   searchObj.search: {green ${searchObj.search}}
-    // `);
-    
-    this.handleIDFormGame({
+    this.handleGame({
       _id,
       games_id: searchObj.games_id,
       gameID: searchObj.gamesGameID,
@@ -462,17 +435,17 @@ class Store {
    * @param {string} name - ゲーム名
    */
   @action.bound
-  handleIDFormGame({ _id, games_id, gameID, thumbnail, name }) {
+  handleGame({ _id, games_id, gameID, thumbnail, name }) {
     
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   games_id: {green ${games_id}}
-    //   gameID: {green ${gameID}}
-    //   thumbnail: {green ${thumbnail}}
-    //   name: {green ${name}}
-    // `);
-    
-    this.idFormGameObj[_id] = [{ games_id, gameID, thumbnail, name }];
+    console.log(chalk`
+      _id: {green ${_id}}
+      games_id: {green ${games_id}}
+      gameID: {green ${gameID}}
+      thumbnail: {green ${thumbnail}}
+      name: {green ${name}}
+    `);
+    lodashSet(this.dataObj, [_id, 'gameArr'], [{ games_id, gameID, thumbnail, name }]);
+    // this.idFormGameObj[_id] = [{ games_id, gameID, thumbnail, name }];
   };
   
   
@@ -481,8 +454,9 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  handleIDFormGameDelete({ _id }) {
-    this.idFormGameObj[_id] = [];
+  handleGameDelete({ _id }) {
+    lodashSet(this.dataObj, [_id, 'gameArr'], []);
+    // this.idFormGameObj[_id] = [];
   };
   
   
@@ -695,7 +669,8 @@ class Store {
       const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
       const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
       
-      const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
+      const formGameID = lodashGet(this.dataObj, [_id, 'gameArr', 0, 'gameID'], '');
+      // const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
       // console.log(chalk`
       //   formGameID: {green ${formGameID}}
       // `);
@@ -1051,7 +1026,8 @@ class Store {
       const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
       const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
       
-      const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
+      const formGameID = lodashGet(this.dataObj, [_id, 'gameArr', 0, 'gameID'], '');
+      // const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
       
       
       // ---------------------------------------------

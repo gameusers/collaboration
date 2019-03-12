@@ -24,8 +24,8 @@ import lodashGet from 'lodash/get';
 //   Components
 // ---------------------------------------------
 
-import IDSelectChip from '../../../../id-select/components/chip';
-import IDSelectForm from '../../../../id-select/components/form';
+import IDChip from '../../../../id/components/chip';
+import IDForm from '../../../../id/components/form';
 
 
 
@@ -54,7 +54,7 @@ const Box = styled.div`
   }
 `;
 
-const IDSelectFormBox = styled.div`
+const IDFormBox = styled.div`
   margin: 24px 0 0 0;
 `;
 
@@ -97,7 +97,7 @@ export default class extends React.Component {
       const gamesName = lodashGet(valueObj, ['gamesName'], '');
       
       componentsSelectedArr.push(
-        <IDSelectChip
+        <IDChip
           key={index}
           platform={valueObj.platform}
           label={valueObj.label}
@@ -152,13 +152,13 @@ export default class extends React.Component {
         
         
         {/* ID選択・編集フォーム */}
-        <IDSelectFormBox>
-          <IDSelectForm
+        <IDFormBox>
+          <IDForm
             _id={_id}
             idArr={idArr}
             func={func}
           />
-        </IDSelectFormBox>
+        </IDFormBox>
         
       </React.Fragment>
     );

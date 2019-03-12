@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,6 +16,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -30,17 +30,10 @@ import MenuItem from '@material-ui/core/MenuItem';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconClose from '@material-ui/icons/Close';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import GameSelectChip from '../../game-select/components/chip';
+import GameChip from './chip';
 
 
 
@@ -54,7 +47,6 @@ const SelectedGamesBox = styled.div`
   display: flex;
   flex-flow: row wrap;
   margin: 12px 0 0 0;
-  padding: 0;
   
   @media screen and (max-width: 480px) {
     flex-flow: column wrap;
@@ -70,12 +62,6 @@ const StyledTextFieldWide = styled(TextField)`
     }
   }
 `;
-
-// const StyledPaper = styled(Paper)`
-//   && {
-//     margin: 12px 0 0 0;
-//   }
-// `;
 
 
 
@@ -93,11 +79,6 @@ export default class extends React.Component {
   }
   
   
-  componentDidMount() {
-    // this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-gameSelectSuggestion`, false);
-  }
-  
-  
   render() {
     
     
@@ -105,41 +86,23 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, selectedArr, func, funcDelete } = this.props;
-    
-    // const { buttonDisabledObj } = stores.layout;
+    const { stores, _id, gamesArr, func, funcDelete } = this.props;
     
     const {
       
-      gameSelectSuggestionSelectedObj,
-      handleGameSelectSuggestionAdd,
-      handleGameSelectSuggestionDelete,
+      dataObj,
+      handleEdit,
       
-      gameSelectSuggestionTextFieldObj,
-      handleGameSelectSuggestionTextField,
+      // gameSelectSuggestionSelectedObj,
+      handleAdd,
+      handleRemove,
+      handleKeyword,
       
-      gameSelectSuggestionDataObj,
-      gameSelectSuggestionKeyboardSelectedObj,
-      handleGameSelectSuggestionOnKeyDown,
+      // gameSelectSuggestionDataObj,
+      // gameSelectSuggestionKeyboardSelectedObj,
+      handleSuggestionOnKeyDown,
       
-      gameSelectSuggestionTextFieldFocusObj,
-      handleGameSelectSuggestionTextFieldOnFocus,
-      handleGameSelectSuggestionTextFieldOnBlur
-      
-    } = stores.gameSelectSuggestion;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    // let buttonDisabled = true;
-    
-    // if (`${_id}-gameSelectSuggestion` in buttonDisabledObj) {
-    //   buttonDisabled = buttonDisabledObj[`${_id}-gameSelectSuggestion`];
-    // }
+    } = stores.gameForm;
     
     
     
@@ -151,15 +114,9 @@ export default class extends React.Component {
     let componentSelected = '';
     let componentSelectedArr = [];
     
-    // let selectedGamesArr = selectedArr;
-    
-    if (_id in gameSelectSuggestionSelectedObj) {
-      selectedArr = gameSelectSuggestionSelectedObj[_id];
-    }
-    
-    if (selectedArr.length > 0) {
+    if (gamesArr.length > 0) {
       
-      for (const [index, valueObj] of selectedArr.entries()) {
+      for (const [index, valueObj] of gamesArr.entries()) {
         
         // console.log(`
         //   ----- valueObj -----\n
@@ -168,20 +125,19 @@ export default class extends React.Component {
         // `);
         
         componentSelectedArr.push(
-          <GameSelectChip
+          <GameChip
             _id={valueObj.games_id}
             gameID={valueObj.gameID}
-            thumbnail={valueObj.thumbnail}
+            imagesAndVideosObj={valueObj.imagesAndVideosObj}
             name={valueObj.name}
-            funcDelete={() => handleGameSelectSuggestionDelete({
+            funcDelete={() => handleRemove({
               _id,
               games_id: valueObj._id,
               gameID: valueObj.gameID,
-              thumbnail: valueObj.thumbnail,
+              imagesAndVideosObj: valueObj.imagesAndVideosObj,
               name: valueObj.name,
               funcDelete
             })}
-            // funcDeleteArgumentsObj={{ _id, games_id: valueObj.games_id }}
             key={index}
           />
         );
@@ -192,63 +148,21 @@ export default class extends React.Component {
       
     }
     
-    // let selectedGamesArr = selectedArr;
-    
-    // if (_id in gameSelectSuggestionSelectedObj) {
-    //   selectedGamesArr = gameSelectSuggestionSelectedObj[_id];
-    // }
-    
-    // if (selectedGamesArr.length > 0) {
-      
-    //   for (const [index, valueObj] of selectedGamesArr.entries()) {
-        
-    //     // console.log(`
-    //     //   ----- valueObj -----\n
-    //     //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //     //   --------------------\n
-    //     // `);
-        
-    //     componentSelectedArr.push(
-    //       <GameSelectChip
-    //         _id={valueObj.games_id}
-    //         gameID={valueObj.gameID}
-    //         thumbnail={valueObj.thumbnail}
-    //         name={valueObj.name}
-    //         funcDelete={handleGameSelectSuggestionDelete}
-    //         funcDeleteArgumentsObj={{ _id, games_id: valueObj.games_id }}
-    //         key={index}
-    //       />
-    //     );
-        
-    //   }
-      
-    //   componentSelected = <SelectedGamesBox>{componentSelectedArr}</SelectedGamesBox>;
-      
-    // }
-    
     
     
     
     // --------------------------------------------------
-    //   Text Field Input Value
+    //   Keyword
     // --------------------------------------------------
     
-    let textFieldValue = '';
-    
-    if (_id in gameSelectSuggestionTextFieldObj) {
-      textFieldValue = gameSelectSuggestionTextFieldObj[_id];
-    }
+    const keyword = lodashGet(dataObj, [_id, 'keyword'], '');
     
     
     // --------------------------------------------------
     //   Text Field Focus
     // --------------------------------------------------
     
-    let onFocus = false;
-    
-    if (_id in gameSelectSuggestionTextFieldFocusObj) {
-      onFocus = gameSelectSuggestionTextFieldFocusObj[_id];
-    }
+    const onFocus = lodashGet(dataObj, [_id, 'focus'], false);
     
     
     
@@ -258,43 +172,27 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // サジェストのデータ配列
-    let suggestionDataArr = [];
-    
-    if (_id in gameSelectSuggestionDataObj) {
-      suggestionDataArr = gameSelectSuggestionDataObj[_id];
-    }
-    
+    const suggestionArr = lodashGet(dataObj, [_id, 'suggestionArr'], []);
     
     // サジェストのメニューを作成
     let componentSuggestionMenuItemsArr = [];
     
-    if (onFocus && textFieldValue && suggestionDataArr.length > 0) {
-      
+    
+    if (onFocus && keyword && suggestionArr.length > 0) {
       
       // キーボードの↓↑でハードウェアを選択するための番号、初期値は影響のない9999にしておく
-      let suggestionSelected = 9999;
+      const selectedIndex = lodashGet(dataObj, [_id, 'selectedIndex'], 9999);
       
-      if (_id in gameSelectSuggestionKeyboardSelectedObj) {
-        suggestionSelected = gameSelectSuggestionKeyboardSelectedObj[_id];
-      }
-      
-      
-      // すでに選択されているハードウェアを太字で表示するための配列
-      let selectedGamesArr = selectedArr;
-      
-      if (_id in gameSelectSuggestionSelectedObj) {
-        selectedGamesArr = gameSelectSuggestionSelectedObj[_id];
-      }
-      
-      
-      for (const [index, valueObj] of suggestionDataArr.entries()) {
+      for (const [index, valueObj] of suggestionArr.entries()) {
         
         // すでに選択されているハードウェアを太字で表示するためのindex
-        const index2 = selectedGamesArr.findIndex((value2Obj) => {
+        const index2 = gamesArr.findIndex((value2Obj) => {
           return value2Obj.games_id === valueObj._id;
         });
         
         // console.log(chalk`
+        //   selectedIndex: {green ${selectedIndex}}
+        //   index: {green ${index}}
         //   index2: {green ${index2}}
         // `);
         
@@ -314,12 +212,12 @@ export default class extends React.Component {
           <MenuItem
             key={index}
             component="div"
-            selected={index === suggestionSelected}
-            onMouseDown={() => handleGameSelectSuggestionAdd({
+            selected={index === selectedIndex}
+            onMouseDown={() => handleAdd({
               _id,
               games_id: valueObj._id,
               gameID: valueObj.gameID,
-              thumbnail: valueObj.thumbnail,
+              imagesAndVideosObj: valueObj.imagesAndVideosObj,
               name: valueObj.name,
               func
             })}
@@ -355,20 +253,12 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- stores.data.usersLoginObj -----\n
-    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- selectedArr -----\n
-    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- gamesArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(gamesArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     // console.log(chalk`
     //   hobbyTextFieldCount: {green ${hobbyTextFieldCount}}
@@ -390,16 +280,22 @@ export default class extends React.Component {
         
         
         <div
-          onFocus={()=> handleGameSelectSuggestionTextFieldOnFocus(_id)}
-          onBlur={()=> handleGameSelectSuggestionTextFieldOnBlur(_id)}
+          onFocus={() => handleEdit({
+            pathArr: [_id, 'focus'],
+            value: true
+          })}
+          onBlur={() => handleEdit({
+            pathArr: [_id, 'focus'],
+            value: false
+          })}
         >
           
           <StyledTextFieldWide
             id="hardwareActive"
             label="ゲーム"
-            value={textFieldValue}
-            onChange={(eventObj) => handleGameSelectSuggestionTextField({ eventObj, _id })}
-            onKeyDown={(eventObj) => handleGameSelectSuggestionOnKeyDown({ eventObj, _id })}
+            value={keyword}
+            onChange={(eventObj) => handleKeyword({ _id, value: eventObj.target.value })}
+            onKeyDown={(eventObj) => handleSuggestionOnKeyDown({ eventObj, _id, func })}
             helperText="ゲーム名の一部を入力して、検索結果から選んでください"
             margin="normal"
             autoComplete="off"

@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
@@ -20,11 +19,10 @@ const validator = require('validator');
 
 
 /**
- * publicSetting
- * @param {boolean} required - Required
- * @param {string} publicSetting - 公開設定
+ * Platform
+ * @param {string} value - 値
  */
-const validationIDsPublicSetting = ({ required, publicSetting }) => {
+const validationIDsPublicSetting = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -39,60 +37,70 @@ const validationIDsPublicSetting = ({ required, publicSetting }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = String(publicSetting);
-  const numberOfCharacters = value ? value.length : 0;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
-    value,
+    value: data,
     numberOfCharacters,
+    messageCode: 'TogSfI8lD',
+    error: false,
     errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(value)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 数字が範囲内に収まっているかチェック
+    if (!validator.isInt(data, { min: minNumber, max: maxNumber })) {
+      messageCodeArr.unshift('TogSfI8lD');
+      resultObj.errorCodeArr.push('wibWQJaPV');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('wpzywA_VP');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 存在チェック
-  if (validator.isEmpty(value)) {
-    resultObj.errorCodeArr.push('Fafdlkugx');
-  }
-  
-  // 数字が範囲内に収まっているかチェック
-  if (!validator.isInt(value, { min: minNumber, max: maxNumber })) {
-    resultObj.errorCodeArr.push('1wG57OGCe');
-  }
-  
-  // 適切な値が選択されているかチェック
-  // const pattern = new RegExp(`^[${minNumber}-${maxNumber}]$`);
-  
-  // if (String(value).match(pattern) === null) {
-  //   resultObj.errorCodeArr.push('1wG57OGCe');
-  // }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   publicSetting: {green ${publicSetting}}
-  //   String(value): {green ${String(value)}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 
@@ -103,4 +111,6 @@ const validationIDsPublicSetting = ({ required, publicSetting }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationIDsPublicSetting;
+module.exports = {
+  validationIDsPublicSetting
+};

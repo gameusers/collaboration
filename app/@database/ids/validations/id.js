@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
@@ -20,11 +19,10 @@ const validator = require('validator');
 
 
 /**
- * id
- * @param {boolean} required - Required
- * @param {string} id - ID
+ * ID
+ * @param {string} value - 値
  */
-const validationIDsID = ({ required, id }) => {
+const validationIDsID = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -39,52 +37,70 @@ const validationIDsID = ({ required, id }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = String(id);
-  const numberOfCharacters = value ? value.length : 0;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
-    value,
+    value: data,
     numberOfCharacters,
+    messageCode: 'oWwTCtWxC',
+    error: false,
     errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(value)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('oWwTCtWxC');
+      resultObj.errorCodeArr.push('nkIty98Qk');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('sFPZwUC4M');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 存在チェック
-  if (validator.isEmpty(value)) {
-    resultObj.errorCodeArr.push('FsjP5Xb5h');
-  }
-  
-  // 文字数チェック
-  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-    resultObj.errorCodeArr.push('RheyjmgKo');
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   id: {green ${id}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 
@@ -95,4 +111,6 @@ const validationIDsID = ({ required, id }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationIDsID;
+module.exports = {
+  validationIDsID
+};

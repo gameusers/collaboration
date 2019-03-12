@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
@@ -20,11 +19,10 @@ const validator = require('validator');
 
 
 /**
- * label
- * @param {boolean} required - Required
- * @param {string} label - ラベル
+ * ラベル
+ * @param {string} value - 値
  */
-const validationIDsLabel = ({ required, label }) => {
+const validationIDsLabel = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -39,47 +37,75 @@ const validationIDsLabel = ({ required, label }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = String(label);
-  const numberOfCharacters = value ? value.length : 0;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
-    value,
+    value: data,
     numberOfCharacters,
+    messageCode: 'ZlyG1tegW',
+    error: false,
     errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(value)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
+      return resultObj;
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('9c6Lprg6n');
+      resultObj.errorCodeArr.push('1SWp4o6uw');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('ORXnLjgyE');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 文字数チェック
-  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-    resultObj.errorCodeArr.push('SRiWEDTEA');
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   label: {green ${label}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 
@@ -90,4 +116,6 @@ const validationIDsLabel = ({ required, label }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationIDsLabel;
+module.exports = {
+  validationIDsLabel
+};

@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
 
 
 // ---------------------------------------------
@@ -18,6 +17,17 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
+import lodashGet from 'lodash/get';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationIDsPlatform } = require('../../../@database/ids/validations/platform');
+const { validationIDsLabel } = require('../../../@database/ids/validations/label');
+const { validationIDsID } = require('../../../@database/ids/validations/id');
+const { validationIDsPublicSetting } = require('../../../@database/ids/validations/public-setting');
 
 
 // ---------------------------------------------
@@ -39,8 +49,7 @@ import Select from '@material-ui/core/Select';
 //   Components
 // ---------------------------------------------
 
-import IDSelectChip from './chip';
-import GameSelectSuggestion from '../../game-select/components/suggestion';
+import GameForm from '../../game/components/form';
 
 
 
@@ -61,21 +70,6 @@ const Description = styled.p`
 const Heading = styled.div`
   font-weight: bold;
   margin: 24px 0 0 0;
-`;
-
-const IDsBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 4px 0 24px 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-const IDBox = styled.div`
-  cursor: pointer;
 `;
 
 const PlatformBox = styled.div`
@@ -117,7 +111,13 @@ export default injectIntl(class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormRegisterSubmit`, false);
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormRegisterSubmit` });
+    
   }
   
   
@@ -128,158 +128,82 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id } = this.props;
-    const { formatMessage } = this.props.intl;
+    const { stores, intl, _id } = this.props;
     const { buttonDisabledObj } = stores.layout;
     
     const {
       
-      idFormPlatformObj,
-      handleIDFormPlatform,
+      dataObj,
+      handleEdit,
       
-      idFormGameObj,
+      // idFormGameObj,
       handleGame,
       handleGameDelete,
       
-      idFormLabelObj,
-      handleIDFormLabel,
-      
-      idFormIDObj,
-      handleIDFormID,
-      
-      idFormPublicSettingObj,
-      handleIDFormPublicSetting,
-      
-      idFormSearchObj,
-      handleIDFormSearch,
-      
       handleIDFormRegisterSubmit
       
-    } = stores.idSelectForm;
+    } = stores.idForm;
     
     
     
     
     // --------------------------------------------------
-    //   Button - Disabled
+    //   Button - Disable
     // --------------------------------------------------
     
-    const buttonDisabled = `${_id}-idFormRegisterSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormRegisterSubmit`] : true;
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormRegisterSubmit`], true);
     
     
-    
-    
-    // --------------------------------------------------
-    //   フォームの値 - プラットフォーム
-    // --------------------------------------------------
-    
-    let formPlatformValue = '';
-    let formPlatformError = false;
-    let formPlatformMessageID = 'GHXngbv4G';
-    let formPlatformNumberOfCharacters = 0;
-    
-    if (_id in idFormPlatformObj) {
-      
-      formPlatformValue = idFormPlatformObj[_id].value;
-      formPlatformError = idFormPlatformObj[_id].error;
-      
-      if (idFormPlatformObj[_id].messageID) {
-        formPlatformMessageID = idFormPlatformObj[_id].messageID;
-      }
-      
-      formPlatformNumberOfCharacters = idFormPlatformObj[_id].numberOfCharacters;
-      
-    }
     
     
     // --------------------------------------------------
-    //   フォームの値 - Game
+    //   プラットフォーム
     // --------------------------------------------------
     
-    const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
-    
-    
-    // --------------------------------------------------
-    //   フォームの値 - ラベル
-    // --------------------------------------------------
-    
-    let formLabelValue = '';
-    let formLabelError = false;
-    let formLabelMessageID = 'ZlyG1tegW';
-    let formLabelNumberOfCharacters = 0;
-    
-    if (_id in idFormLabelObj) {
-      
-      formLabelValue = idFormLabelObj[_id].value;
-      formLabelError = idFormLabelObj[_id].error;
-      
-      if (idFormLabelObj[_id].messageID) {
-        formLabelMessageID = idFormLabelObj[_id].messageID;
-      }
-      
-      formLabelNumberOfCharacters = idFormLabelObj[_id].numberOfCharacters;
-      
-    }
+    const platform = lodashGet(dataObj, [_id, 'platform'], '');
+    const validationPlatformObj = validationIDsPlatform({ value: platform });
     
     
     // --------------------------------------------------
-    //   フォームの値 - ID
+    //   ゲーム選択フォーム
     // --------------------------------------------------
     
-    let formIDValue = '';
-    let formIDError = false;
-    let formIDMessageID = 'oWwTCtWxC';
-    let formIDNumberOfCharacters = 0;
+    const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
+    // const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
     
-    if (_id in idFormIDObj) {
-      
-      formIDValue = idFormIDObj[_id].value;
-      formIDError = idFormIDObj[_id].error;
-      
-      if (idFormIDObj[_id].messageID) {
-        formIDMessageID = idFormIDObj[_id].messageID;
-      }
-      
-      formIDNumberOfCharacters = idFormIDObj[_id].numberOfCharacters;
-      
-    }
+    // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
+    const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
     
     
     // --------------------------------------------------
-    //   フォームの値 - 公開設定
+    //   ラベル
     // --------------------------------------------------
     
-    let formPublicSettingValue = 0;
-    let formPublicSettingError = false;
-    let formPublicSettingMessageID = 'TogSfI8lD';
-    let formPublicSettingNumberOfCharacters = 0;
-    
-    if (_id in idFormPublicSettingObj) {
-      
-      formPublicSettingValue = idFormPublicSettingObj[_id].value;
-      formPublicSettingError = idFormPublicSettingObj[_id].error;
-      
-      if (idFormPublicSettingObj[_id].messageID) {
-        formPublicSettingMessageID = idFormPublicSettingObj[_id].messageID;
-      }
-      
-      formPublicSettingNumberOfCharacters = idFormPublicSettingObj[_id].numberOfCharacters;
-      
-    }
+    const label = lodashGet(dataObj, [_id, 'label'], '');
+    const validationLabelObj = validationIDsLabel({ value: label });
     
     
     // --------------------------------------------------
-    //   フォームの値 - Search
+    //   ID
     // --------------------------------------------------
     
-    const formSearch = _id in idFormSearchObj ? idFormSearchObj[_id] : true;
+    const id = lodashGet(dataObj, [_id, 'id'], '');
+    const validationIDObj = validationIDsID({ value: id });
     
     
     // --------------------------------------------------
-    //   Game 選択フォームを表示しないプラットフォーム
+    //   公開設定
     // --------------------------------------------------
     
-    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
+    const publicSetting = lodashGet(dataObj, [_id, 'publicSetting'], '');
+    const validationPublicSettingObj = validationIDsPublicSetting({ value: publicSetting });
+    
+    
+    // --------------------------------------------------
+    //   検索可能
+    // --------------------------------------------------
+    
+    const search = lodashGet(dataObj, [_id, 'search'], true);
     
     
     
@@ -288,20 +212,40 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- stores.data.usersLoginObj -----\n
-    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    // console.log(chalk`
+    //   platform: {green ${platform}}
     // `);
     
-    // console.log(`
-    //   ----- selectedArr -----\n
-    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- validationPlatformObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(validationPlatformObj)));
+    // console.log(`\n-----------------------------------\n`);
     
     // console.log(chalk`
-    //   _id: {green ${_id}}
+    //   label: {green ${label}}
+    // `);
+    
+    // console.log(`\n---------- validationLabelObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(validationLabelObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(chalk`
+    //   id: {green ${id}}
+    // `);
+    
+    // console.log(`\n---------- validationIDObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(validationIDObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(chalk`
+    //   publicSetting: {green ${publicSetting}}
+    // `);
+    
+    // console.log(`\n---------- validationPublicSettingObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(validationPublicSettingObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(chalk`
+    //   search: {green ${search}}
     // `);
     
     
@@ -318,7 +262,7 @@ export default injectIntl(class extends React.Component {
         <Description>
           IDを登録する場合は、こちらのフォームに必要なデータを入力してから「登録する」ボタンを押してください。<br /><br />
           
-          IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
+          IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合は、プラットフォームや選択したゲームの名前が代わりに表示されます。
         </Description>
         
         
@@ -332,16 +276,15 @@ export default injectIntl(class extends React.Component {
         <PlatformBox>
           <FormControl
             style={{ minWidth: 300 }}
-            error={formPlatformError}
+            error={validationPlatformObj.error}
           >
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
             <Select
-              value={formPlatformValue}
-              onChange={(eventObj) => handleIDFormPlatform({ _id, value: eventObj.target.value })}
-              inputProps={{
-                name: 'platform',
-                id: 'platform',
-              }}
+              value={validationPlatformObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [_id, 'platform'],
+                value: eventObj.target.value
+              })}
             >
               <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
               <MenuItem value={'Xbox'}>Xbox</MenuItem>
@@ -357,16 +300,16 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'Line'}>Line</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
-            <FormHelperText>{formatMessage({ id: formPlatformMessageID }, { numberOfCharacters: formPlatformNumberOfCharacters })}</FormHelperText>
+            <FormHelperText>{intl.formatMessage({ id: validationPlatformObj.messageCode })}</FormHelperText>
           </FormControl>
         </PlatformBox>
         
         
         {/* ゲーム選択 */}
-        {noGameIDPlatformArr.indexOf(formPlatformValue) === -1 &&
-          <GameSelectSuggestion
+        {gameSelectForm &&
+          <GameForm
             _id={_id}
-            selectedArr={formGameArr}
+            gamesArr={gamesArr}
             func={handleGame}
             funcDelete={handleGameDelete}
           />
@@ -378,10 +321,13 @@ export default injectIntl(class extends React.Component {
           <StyledTextFieldWide
             id="label"
             label="ラベル"
-            value={formLabelValue}
-            onChange={(eventObj) => handleIDFormLabel({ _id, value: eventObj.target.value })}
-            error={formLabelError}
-            helperText={formatMessage({ id: formLabelMessageID }, { numberOfCharacters: formLabelNumberOfCharacters })}
+            value={validationLabelObj.value}
+            onChange={(eventObj) => handleEdit({
+              pathArr: [_id, 'label'],
+              value: eventObj.target.value
+            })}
+            error={validationLabelObj.error}
+            helperText={intl.formatMessage({ id: validationLabelObj.messageCode }, { numberOfCharacters: validationLabelObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
               maxLength: 30,
@@ -395,10 +341,13 @@ export default injectIntl(class extends React.Component {
           <StyledTextFieldWide
             id="label"
             label="ID"
-            value={formIDValue}
-            onChange={(eventObj) => handleIDFormID({ _id, value: eventObj.target.value })}
-            error={formIDError}
-            helperText={formatMessage({ id: formIDMessageID }, { numberOfCharacters: formIDNumberOfCharacters })}
+            value={validationIDObj.value}
+            onChange={(eventObj) => handleEdit({
+              pathArr: [_id, 'id'],
+              value: eventObj.target.value
+            })}
+            error={validationIDObj.error}
+            helperText={intl.formatMessage({ id: validationIDObj.messageCode }, { numberOfCharacters: validationIDObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
               maxLength: 128,
@@ -411,12 +360,15 @@ export default injectIntl(class extends React.Component {
         <PlatformBox>
           <FormControl
             style={{ minWidth: 300 }}
-            error={formPublicSettingError}
+            error={validationPublicSettingObj.error}
           >
             <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
             <Select
-              value={formPublicSettingValue}
-              onChange={(eventObj) => handleIDFormPublicSetting({ _id, value: eventObj.target.value })}
+              value={validationPublicSettingObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [_id, 'publicSetting'],
+                value: eventObj.target.value
+              })}
               inputProps={{
                 name: 'publicSetting',
                 id: 'publicSetting',
@@ -428,7 +380,7 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={4}>相互フォローで公開</MenuItem>
               <MenuItem value={5}>自分以外には公開しない</MenuItem>
             </Select>
-            <FormHelperText>{formatMessage({ id: formPublicSettingMessageID }, { numberOfCharacters: formPublicSettingNumberOfCharacters })}</FormHelperText>
+            <FormHelperText>{intl.formatMessage({ id: validationPublicSettingObj.messageCode })}</FormHelperText>
           </FormControl>
         </PlatformBox>
         
@@ -438,8 +390,11 @@ export default injectIntl(class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={formSearch}
-                onChange={(eventObj) => handleIDFormSearch({ _id, value: eventObj.target.checked })}
+                checked={search}
+                onChange={(eventObj) => handleEdit({
+                  pathArr: [_id, 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="このIDを検索可能にする"

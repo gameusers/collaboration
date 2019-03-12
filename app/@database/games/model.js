@@ -48,7 +48,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword
     
     return await Model.find(
       { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    ).select('gameID thumbnail name').limit(10).exec();
+    ).select('gameID imagesAndVideosObj name').limit(10).exec();
     
     
   } catch (err) {

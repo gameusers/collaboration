@@ -31,7 +31,7 @@ import Button from '@material-ui/core/Button';
 //   Components
 // ---------------------------------------------
 
-import IDSelectChip from './chip';
+import IDChip from './chip';
 
 
 
@@ -114,7 +114,7 @@ export default class extends React.Component {
       handleMoveUnselected,
       handleSelectButton
       
-    } = stores.idSelectForm;
+    } = stores.idForm;
     
     
     // --------------------------------------------------
@@ -156,7 +156,7 @@ export default class extends React.Component {
             key={index}
             onClick={() => handleMoveSelected({ _id, index })}
           >
-            <IDSelectChip
+            <IDChip
               platform={tempObj.platform}
               label={tempObj.label}
               id={tempObj.id}
@@ -197,7 +197,7 @@ export default class extends React.Component {
             key={index}
             onClick={() => handleMoveUnselected({ _id, index })}
           >
-            <IDSelectChip
+            <IDChip
               platform={tempObj.platform}
               label={tempObj.label}
               id={tempObj.id}

@@ -10,10 +10,10 @@ const ja_JP = {
   // ---------------------------------------------
   
   // /app/common/id-select/components/form-edit.js
-  'GHXngbv4G': 'IDに関係のあるプラットフォームを選んでください',
-  'ZlyG1tegW': 'IDの左側に太字で表示されます ({ numberOfCharacters }文字)',
-  'oWwTCtWxC': 'IDを入力してください ({ numberOfCharacters }文字)',
-  'TogSfI8lD': 'IDを公開する相手を選べます',
+  // 'GHXngbv4G': 'IDに関係のあるプラットフォームを選んでください',
+  // 'ZlyG1tegW': 'IDの左側に太字で表示されます ({ numberOfCharacters }文字)',
+  // 'oWwTCtWxC': 'IDを入力してください ({ numberOfCharacters }文字)',
+  // 'TogSfI8lD': 'IDを公開する相手を選べます',
   
   
   // ---------------------------------------------
@@ -33,6 +33,7 @@ const ja_JP = {
   
   'cFbXmuFVh': '入力してください',
   'xdAU7SgoO': '1文字以上、20文字以内で入力してください',
+  '9c6Lprg6n': '1文字以上、30文字以内で入力してください',
   'yhgyXHqZu': '1文字以上、50文字以内で入力してください',
   'Uh3rnK7Dk': '1文字以上、100文字以内で入力してください',
   'eASl8OdnD': '1文字以上、500文字以内で入力してください',
@@ -49,12 +50,6 @@ const ja_JP = {
   'c9T-0LONy': '配列ではありません',
   
   'JBkjlGQMh': '入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
-  
-  
-  // /app/@validations/_id.js
-  // 'pE9jBkXXP': '_idを入力してください',
-  // '8oyLhJOlh': '_idに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
-  // 'N48T3XvnC': '_idは7文字以上、14文字以内で入力してください',
   
   
   
@@ -100,8 +95,6 @@ const ja_JP = {
   'CAhUTCx7B': 'URLを入力してください',
   
   
-  
-  
   // ---------------------------------------------
   //   Error / Validation / DB games
   // ---------------------------------------------
@@ -124,21 +117,16 @@ const ja_JP = {
   'uhe5ZzGvK': '入力した_idはデータベースに存在しない、または編集権限がありません',
   
   // /app/@database/ids/validations/platform.js
-  'dJzAwAva3': 'プラットフォームを入力してください',
-  'k6cF97QOd': 'プラットフォームは2文字以上、20文字以内です',
-  'kopWIEmo4': 'プラットフォームに適切な値が選ばれていません',
+  'dJzAwAva3': 'IDに関係のあるプラットフォームを選んでください',
   
   // /app/@database/ids/validations/label.js
-  'Yl8ojApQx': 'ラベルを入力してください',
-  'SRiWEDTEA': 'ラベルは1文字以上、30文字以内です',
+  'ZlyG1tegW': 'IDの左側に太字で表示されます ({ numberOfCharacters }文字)',
   
   // /app/@database/ids/validations/id.js
-  'FsjP5Xb5h': 'IDを入力してください',
-  'RheyjmgKo': 'IDは1文字以上、128文字以内です',
+  'oWwTCtWxC': 'IDを入力してください ({ numberOfCharacters }文字)',
   
   // /app/@database/ids/validations/public-setting.js
-  'Fafdlkugx': '公開設定を入力してください',
-  '1wG57OGCe': '公開設定に適切な値が選ばれていません',
+  'TogSfI8lD': 'IDを公開する相手を選んでください',
   
   // /app/@database/ids/api.js
   'NRO3Y1hnC': 'IDの保存可能件数を超えています',

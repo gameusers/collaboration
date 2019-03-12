@@ -518,14 +518,44 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Button Disable
+  //   Button Enable / Disable
   // ---------------------------------------------
+  
+  /**
+   * ボタンの利用可能・利用不可判定を入れるオブジェクト
+   * true 利用不可 / false 利用可能
+   * @type {Object}
+   */
+  @observable buttonDisabledObj = {};
+  
+  
+  /**
+   * ボタンを利用可能にする
+   * @param {string} _id - ID
+   */
+  handleButtonEnable({ _id }) {
+    this.buttonDisabledObj[_id] = false;
+  };
+  
+  
+  /**
+   * ボタンを利用不可にする
+   * @param {string} _id - ID
+   */
+  handleButtonDisable({ _id }) {
+    this.buttonDisabledObj[_id] = true;
+  };
+  
+  
+  
+  
   
   /**
    * ボタンの利用禁止判定
    * @type {boolean}
    */
-  @observable buttonDisabledObj = {};
+  // @observable buttonDisabledObj = {};
+  
   
   /**
    * ボタンの利用禁止判定を更新する

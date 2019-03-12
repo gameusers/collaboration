@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,6 +15,8 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import keycode from 'keycode';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
@@ -62,6 +63,30 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Data
+  // ---------------------------------------------
+  
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable dataObj = {};
+  
+  
+  /**
+   * フォーム用のデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleEdit({ pathArr, value }) {
+    lodashSet(this.dataObj, pathArr, value);
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   ゲームを選択・削除する
   // ---------------------------------------------
   
@@ -69,7 +94,7 @@ class Store {
    * 選択されたゲームを入れるオブジェクト
    * @type {Object}
    */
-  @observable gameSelectSuggestionSelectedObj = {};
+  // @observable gameSelectSuggestionSelectedObj = {};
   
   
   /**
@@ -77,42 +102,14 @@ class Store {
    * @param {string} _id - ID
    * @param {string} games_id - DB games games_id
    * @param {string} gameID - DB games gameID
-   * @param {boolean} thumbnail - サムネイルが表示できるか
+   * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
    * @param {string} name - ゲーム名
    */
   @action.bound
-  handleGameSelectSuggestionAdd({ _id, games_id, gameID, thumbnail, name, func }) {
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   games_id: {green ${games_id}}
-    //   gameID: {green ${gameID}}
-    //   thumbnail: {green ${thumbnail}}
-    //   name: {green ${name}}
-    // `);
-    
-    // const arr = _id in this.gameSelectSuggestionSelectedObj ? this.gameSelectSuggestionSelectedObj[_id] : [];
-    
-    // // 配列内にすでに存在しているかチェックする
-    // const index = arr.findIndex((valueObj) => {
-    //   return valueObj.games_id === games_id;
-    // });
-    
-    // // 存在していない場合は配列に追加する
-    // if (index === -1) {
-    //   arr.push({
-    //     games_id,
-    //     gameID,
-    //     thumbnail,
-    //     name
-    //   });
-      
-    //   this.gameSelectSuggestionSelectedObj[_id] = arr;
-    // }
-    
+  handleAdd({ _id, games_id, gameID, imagesAndVideosObj, name, func }) {
     
     // 受け渡された関数を実行する
-    func({ _id, games_id, gameID, thumbnail, name });
+    func({ _id, games_id, gameID, imagesAndVideosObj, name });
     
   };
   
@@ -123,23 +120,10 @@ class Store {
    * @param {string} games_id - DB games games_id
    */
   @action.bound
-  handleGameSelectSuggestionDelete({ _id, games_id, gameID, thumbnail, name, funcDelete }) {
-    
-    // console.log('handleGameSelectSuggestionDelete');
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   games_id: {green ${games_id}}
-    // `);
-    
-    // const index = this.gameSelectSuggestionSelectedObj[_id].findIndex((valueObj) => {
-    //   return valueObj.games_id === games_id;
-    // });
-    
-    // this.gameSelectSuggestionSelectedObj[_id].splice(index, 1);
+  handleRemove({ _id, games_id, gameID, imagesAndVideosObj, name, funcDelete }) {
     
     // 受け渡された関数を実行する
-    funcDelete({ _id, games_id, gameID, thumbnail, name });
+    funcDelete({ _id, games_id, gameID, imagesAndVideosObj, name });
     
   };
   
@@ -154,7 +138,7 @@ class Store {
    * サジェストデータを入れるオブジェクト
    * @type {Object}
    */
-  @observable gameSelectSuggestionDataObj = {};
+  // @observable gameSelectSuggestionDataObj = {};
   
   
   
@@ -167,7 +151,7 @@ class Store {
    * サジェストのキーボードでの選択状態を保存するオブジェクト
    * @type {Object}
    */
-  @observable gameSelectSuggestionKeyboardSelectedObj = {};
+  // @observable gameSelectSuggestionKeyboardSelectedObj = {};
   
   
   /**
@@ -176,43 +160,59 @@ class Store {
   * Enter で現在選択されているゲームを登録する
   * @param {Object} eventObj - イベント
   * @param {string} _id - ID
+  * @param {function} func - 実行する関数
   */
   @action.bound
-  handleGameSelectSuggestionOnKeyDown({ eventObj, _id }) {
+  handleSuggestionOnKeyDown({ eventObj, _id, func }) {
+    
     
     // サジェストで現在選択されている番号
-    const selectedIndex = _id in this.gameSelectSuggestionKeyboardSelectedObj ? this.gameSelectSuggestionKeyboardSelectedObj[_id] : null;
+    const selectedIndex = lodashGet(this.dataObj, [_id, 'selectedIndex'], null);
     
     // サジェストのデータ
-    const dataArr = _id in this.gameSelectSuggestionDataObj ? this.gameSelectSuggestionDataObj[_id] : [];
+    const suggestionArr = lodashGet(this.dataObj, [_id, 'suggestionArr'], []);
     
+    
+    // console.log(chalk`
+    //   keycode(eventObj): {green ${keycode(eventObj)}}
+    //   selectedIndex: {green ${selectedIndex}}
+    // `);
+    
+    // ---------------------------------------------
+    //   キーボードの ↓ を押したとき
+    //   サジェストで現在選択されている番号が、表示されているゲームの総数以上にならないようにする
+    // ---------------------------------------------
     
     if (keycode(eventObj) === 'down') {
       
       if (selectedIndex === null) {
-        this.gameSelectSuggestionKeyboardSelectedObj[_id] = 0;
-      } else if (selectedIndex < dataArr.length - 1) {
-        this.gameSelectSuggestionKeyboardSelectedObj[_id] += 1;
+        lodashSet(this.dataObj, [_id, 'selectedIndex'], 0);
+      } else if (selectedIndex < suggestionArr.length - 1) {
+        lodashSet(this.dataObj, [_id, 'selectedIndex'], selectedIndex + 1);
       }
+      
+      
+    // ---------------------------------------------
+    //   キーボードの ↑ を押したとき
+    //   サジェストで現在選択されている番号が、0未満にならないようにする
+    // ---------------------------------------------
       
     } else if (keycode(eventObj) === 'up') {
       
       if (selectedIndex !== null && selectedIndex > 0) {
-        this.gameSelectSuggestionKeyboardSelectedObj[_id] -= 1;
+        lodashSet(this.dataObj, [_id, 'selectedIndex'], selectedIndex - 1);
       }
+      
+      
+    // ---------------------------------------------
+    //   キーボードの Enter を押したとき
+    //   サジェストで現在選択されているゲームを追加する
+    // ---------------------------------------------
       
     } else if (keycode(eventObj) === 'enter' && selectedIndex !== null) {
       
-      const { _id: games_id, gameID, thumbnail, name } = dataArr[selectedIndex];
-      
-      // console.log(chalk`
-      //   games_id: {green ${games_id}}
-      //   gameID: {green ${gameID}}
-      //   thumbnail: {green ${thumbnail}}
-      //   name: {green ${name}}
-      // `);
-      
-      this.handleGameSelectSuggestionAdd({ _id, games_id, gameID, thumbnail, name });
+      const { _id: games_id, gameID, imagesAndVideosObj, name } = suggestionArr[selectedIndex];
+      this.handleAdd({ _id, games_id, gameID, imagesAndVideosObj, name, func });
       
     }
     
@@ -229,31 +229,31 @@ class Store {
    * TextField の入力文字を入れるオブジェクト
    * @type {Object}
    */
-  @observable gameSelectSuggestionTextFieldObj = {};
+  // @observable gameSelectSuggestionTextFieldObj = {};
   
   
   /**
    * TextField を変更する
    * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
-   * @param {Object} eventObj - イベント
-   * @param {string} ID
+   * @param {string} _id - ID
+   * @param {string} value - 値
    */
   @action.bound
-  async handleGameSelectSuggestionTextField({ eventObj, _id }) {
+  async handleKeyword({ _id, value }) {
     
     
     // ---------------------------------------------
     //   TextField の値変更
     // ---------------------------------------------
     
-    this.gameSelectSuggestionTextFieldObj[_id] = eventObj.target.value;
+    lodashSet(this.dataObj, [_id, 'keyword'], value);
     
     
     // ---------------------------------------------
     //   TextField が空の場合、処理停止
     // ---------------------------------------------
     
-    if (!eventObj.target.value) {
+    if (!value) {
       return;
     }
     
@@ -271,7 +271,7 @@ class Store {
       
       const formData = new FormData();
       
-      formData.append('keyword', eventObj.target.value);
+      formData.append('keyword', value);
       
       
       // ---------------------------------------------
@@ -299,17 +299,17 @@ class Store {
       // ---------------------------------------------
       
       // サジェストのキーボードでの選択状態をクリア
-      delete this.gameSelectSuggestionKeyboardSelectedObj[_id];
+      delete this.dataObj[_id].selected;
+      // delete this.gameSelectSuggestionKeyboardSelectedObj[_id];
       
       // サジェストのデータを更新
-      this.gameSelectSuggestionDataObj[_id] = resultObj.data;
+      lodashSet(this.dataObj, [_id, 'suggestionArr'], resultObj.data);
+      // this.gameSelectSuggestionDataObj[_id] = resultObj.data;
       
       
-      // console.log(`
-      //   ----- resultObj.data -----\n
-      //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // console.log(`\n---------- resultObj.data ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(resultObj.data)));
+      // console.log(`\n-----------------------------------\n`);
         
       
     } catch (error) {
@@ -325,31 +325,31 @@ class Store {
   //   TextField へのフォーカス
   // ---------------------------------------------
   
-  /**
-   * TextField へのフォーカス状態を記録するオブジェクト
-   * @type {Object}
-   */
-  @observable gameSelectSuggestionTextFieldFocusObj = {};
+  // /**
+  // * TextField へのフォーカス状態を記録するオブジェクト
+  // * @type {Object}
+  // */
+  // @observable gameSelectSuggestionTextFieldFocusObj = {};
   
   
-  /**
-   * TextField にフォーカス
-   * @param {string} _id - ID
-   */
-  @action.bound
-  handleGameSelectSuggestionTextFieldOnFocus(_id) {
-    this.gameSelectSuggestionTextFieldFocusObj[_id] = true;
-  };
+  // /**
+  // * TextField にフォーカス
+  // * @param {string} _id - ID
+  // */
+  // @action.bound
+  // handleTextFieldOnFocus(_id) {
+  //   this.gameSelectSuggestionTextFieldFocusObj[_id] = true;
+  // };
   
   
-  /**
-   * TextField からフォーカスアウト
-   * @param {string} _id - ID
-   */
-  @action.bound
-  handleGameSelectSuggestionTextFieldOnBlur(_id) {
-    this.gameSelectSuggestionTextFieldFocusObj[_id] = false;
-  };
+  // /**
+  // * TextField からフォーカスアウト
+  // * @param {string} _id - ID
+  // */
+  // @action.bound
+  // handleTextFieldOnBlur(_id) {
+  //   this.gameSelectSuggestionTextFieldFocusObj[_id] = false;
+  // };
   
   
 }
@@ -361,7 +361,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreGameSelectSuggestion(argumentsObj, storeInstanceObj) {
+export default function initStoreGameForm(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
   

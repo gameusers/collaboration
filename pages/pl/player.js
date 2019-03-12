@@ -76,8 +76,8 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 import initStoreIndex from '../../app/@stores/index';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../app/pl/player/stores/store';
-import initStoreIDSelectForm from '../../app/common/id-select/stores/id-select';
-import initStoreGameSelectSuggestion from '../../app/common/game-select/stores/game-select';
+import initStoreIDForm from '../../app/common/id/stores/form';
+import initStoreGameForm from '../../app/common/game/stores/form';
 import initStoreFormImageVideo from '../../app/common/form/stores/image-video';
 
 
@@ -257,8 +257,8 @@ class Component extends React.Component {
       this.stores = initStoreIndex(argumentsObj);
       this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
-      this.stores.idSelectForm = initStoreIDSelectForm(argumentsObj, this.stores);
-      this.stores.gameSelectSuggestion = initStoreGameSelectSuggestion(argumentsObj, this.stores);
+      this.stores.idForm = initStoreIDForm(argumentsObj, this.stores);
+      this.stores.gameForm = initStoreGameForm(argumentsObj, this.stores);
       this.stores.formImageVideo = initStoreFormImageVideo(argumentsObj, this.stores);
       
       

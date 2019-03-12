@@ -423,7 +423,7 @@ class Store {
    * ゲーム入力フォームの入力値を入れるオブジェクト
    * @type {Object}
    */
-  @observable idFormGameObj = {};
+  // @observable idFormGameObj = {};
   
   
   /**
@@ -431,21 +431,21 @@ class Store {
    * @param {string} _id
    * @param {string} games_id - DB games games_id
    * @param {string} gameID - DB games gameID
-   * @param {boolean} thumbnail - サムネイルが表示できるか
+   * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
    * @param {string} name - ゲーム名
    */
   @action.bound
-  handleGame({ _id, games_id, gameID, thumbnail, name }) {
+  handleGame({ _id, games_id, gameID, imagesAndVideosObj, name }) {
     
-    console.log(chalk`
-      _id: {green ${_id}}
-      games_id: {green ${games_id}}
-      gameID: {green ${gameID}}
-      thumbnail: {green ${thumbnail}}
-      name: {green ${name}}
-    `);
-    lodashSet(this.dataObj, [_id, 'gameArr'], [{ games_id, gameID, thumbnail, name }]);
-    // this.idFormGameObj[_id] = [{ games_id, gameID, thumbnail, name }];
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   games_id: {green ${games_id}}
+    //   gameID: {green ${gameID}}
+    //   imagesAndVideosObj: {green ${imagesAndVideosObj}}
+    //   name: {green ${name}}
+    // `);
+    lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameID, imagesAndVideosObj, name }]);
+    
   };
   
   
@@ -455,8 +455,7 @@ class Store {
    */
   @action.bound
   handleGameDelete({ _id }) {
-    lodashSet(this.dataObj, [_id, 'gameArr'], []);
-    // this.idFormGameObj[_id] = [];
+    lodashSet(this.dataObj, [_id, 'gamesArr'], []);
   };
   
   
@@ -669,7 +668,7 @@ class Store {
       const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
       const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
       
-      const formGameID = lodashGet(this.dataObj, [_id, 'gameArr', 0, 'gameID'], '');
+      const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
       // const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
       // console.log(chalk`
       //   formGameID: {green ${formGameID}}
@@ -1026,7 +1025,7 @@ class Store {
       const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
       const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
       
-      const formGameID = lodashGet(this.dataObj, [_id, 'gameArr', 0, 'gameID'], '');
+      const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
       // const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
       
       
@@ -1164,7 +1163,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreIDSelectForm(argumentsObj, storeInstanceObj) {
+export default function initStoreIDForm(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
   

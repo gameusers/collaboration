@@ -17,6 +17,7 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -94,11 +95,9 @@ const StyledIconButton = styled(IconButton)`
   && {
     width: 22px;
     height: 22px;
-    // font-size: 12px;
     
     margin: 0 6px 2px 0;
     padding: 0;
-    // background-color: rgba(63, 81, 181, 0.7);
     background-color: #3f51b5;
   }
 `;
@@ -134,9 +133,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { _id, gameID, thumbnail, name, funcDelete, funcDeleteArgumentsObj } = this.props;
-    
-    
+    const { _id, gameID, imagesAndVideosObj, name, funcDelete, funcDeleteArgumentsObj } = this.props;
     
     
     // --------------------------------------------------
@@ -148,46 +145,37 @@ export default class extends React.Component {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   Component - Avatar
     // --------------------------------------------------
     
     let componentAvatar = '';
     
-    if (thumbnail) {
-      
-      componentAvatar =
-        <StyledAvatar alt={name} src={`/static/img/games/${_id}/thumbnail/image.jpg`} />
-      ;
-      
+    const thumbnailArr = lodashGet(imagesAndVideosObj, ['thumbnailArr'], []);
+    
+    if (thumbnailArr.length > 0) {
+      const src = lodashGet(thumbnailArr, [0, 'srcSetArr', 0, 'src'], '');
+      componentAvatar = <StyledAvatar alt={name} src={src} />;
     } else {
-      
-      componentAvatar =
-        <StyledAvatarNoImage>
-          <IconGrade />
-        </StyledAvatarNoImage>
-      ;
-      
+      componentAvatar = <StyledAvatarNoImage><IconGrade /></StyledAvatarNoImage>;
     }
     
     
-    
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
     //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
-    // console.log(`
-    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
-    // `);
+    // console.log(`\n---------- imagesAndVideosObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosObj)));
+    // console.log(`\n-----------------------------------\n`);
     
-    
+    // console.log(`\n---------- imagesAndVideosObj.thumbnailArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosObj.thumbnailArr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     // --------------------------------------------------

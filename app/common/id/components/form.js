@@ -88,7 +88,7 @@ export default class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idSelectForm`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idForm`, false);
   }
   
   
@@ -109,7 +109,7 @@ export default class extends React.Component {
       handleEdit,
       handleDialogOpen,
       
-    } = stores.idSelectForm;
+    } = stores.idForm;
     
     
     
@@ -125,7 +125,7 @@ export default class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idSelectForm`], true);
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idForm`], true);
     
     
     

@@ -36,7 +36,7 @@ import IconStyle from '@material-ui/icons/Style';
 //   Components
 // ---------------------------------------------
 
-import IDSelectChip from '../../../id-select/components/chip';
+import IDChip from '../../../id/components/chip';
 
 
 
@@ -143,7 +143,7 @@ export default class extends React.Component {
       // let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
       
       componentsArr.push(
-        <IDSelectChip
+        <IDChip
           key={index}
           platform={valueObj.platform}
           label={valueObj.label}

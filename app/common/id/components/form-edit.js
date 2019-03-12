@@ -46,8 +46,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Components
 // ---------------------------------------------
 
-import IDSelectChip from './chip';
-import GameSelectSuggestion from '../../game-select/components/suggestion';
+import IDChip from './chip';
+import GameForm from '../../game/components/form';
 
 
 
@@ -175,7 +175,7 @@ export default injectIntl(class extends React.Component {
       handleIDFormEditSubmit,
       handleIDFormDeleteSubmit
       
-    } = stores.idSelectForm;
+    } = stores.idForm;
     
     
     
@@ -207,7 +207,7 @@ export default injectIntl(class extends React.Component {
           key={index}
           onClick={() => handleSetEditForm({ _id, ids_id: valueObj._id })}
         >
-          <IDSelectChip
+          <IDChip
             platform={valueObj.platform}
             label={valueObj.label}
             id={valueObj.id}
@@ -446,7 +446,7 @@ export default injectIntl(class extends React.Component {
         
         {/* ゲーム選択 */}
         {noGameIDPlatformArr.indexOf(formPlatformValue) === -1 &&
-          <GameSelectSuggestion
+          <GameForm
             _id={_id}
             selectedArr={formGameArr}
             func={handleGame}

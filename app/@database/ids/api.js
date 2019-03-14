@@ -11,7 +11,7 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
+// const util = require('util');
 
 
 // ---------------------------------------------
@@ -37,13 +37,13 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-const validationIDs_idServer = require('./validations/_id-server');
-const validationIDsPlatform = require('./validations/platform');
-const validationIDsLabel = require('./validations/label');
-const validationIDsID = require('./validations/id');
-const validationIDsPublicSetting = require('./validations/public-setting');
+const { validationIDs_idServer } = require('./validations/_id-server');
+const { validationIDsPlatform } = require('./validations/platform');
+const { validationIDsLabel } = require('./validations/label');
+const { validationIDsID } = require('./validations/id');
+const { validationIDsPublicSetting } = require('./validations/public-setting');
 
-const validationGamesGameIDServer = require('../games/validations/game-id-server');
+const { validationGamesGameIDServer } = require('../games/validations/game-id-server');
 
 
 // ---------------------------------------------
@@ -85,6 +85,7 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
+  usersLogin_id: ''
 };
 
 
@@ -125,6 +126,8 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
     verifyCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
@@ -136,6 +139,9 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
     }
     
     const usersLogin_id = req.user._id;
+    errorArgumentsObj.usersLogin_id = usersLogin_id;
+    
+    
     
     
     // --------------------------------------------------
@@ -238,6 +244,8 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     verifyCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
@@ -249,6 +257,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     }
     
     const usersLogin_id = req.user._id;
+    errorArgumentsObj.usersLogin_id = usersLogin_id;
     
     
     
@@ -264,136 +273,112 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   Save Object
     // --------------------------------------------------
     
-    const date = moment().toISOString();
+    const ISO8601 = moment().toISOString();
     
     let saveObj = {
-      createdDate: date,
-      updatedDate: date,
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
       users_id: usersLogin_id,
-      platform: 'Other',
-      gameID: '',
-      label: '',
-      id: '',
-      publicSetting: 5,
+      platform,
+      gameID: gameID ? gameID : '',
+      label: label ? label : '',
+      id,
+      publicSetting,
       search: search ? true : false
     };
     
-    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   platform: {green ${platform}}
+    //   gameID: {green ${gameID}}
+    //   label: {green ${label}}
+    //   id: {green ${id}}
+    //   publicSetting: {green ${publicSetting}}
+    //   search: {green ${search}}
+    // `);
     
     
     // --------------------------------------------------
-    //   Validation - _id
+    //   Validation
+    // --------------------------------------------------
+    
+    const val = async (func, argumentsObj, name) => {
+      
+      const validationObj = await func(argumentsObj);
+      
+      
+      // const title = name ? `${name} / ` : '';
+      // console.log(`\n---------- ${title}validationObj ----------\n`);
+      // console.dir(validationObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      if (validationObj.error) {
+        errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+        throw new Error();
+      }
+      
+      return validationObj;
+      
+    };
+    
+    
+    // --------------------------------------------------
+    //   _id
     // --------------------------------------------------
     
     if (_id) {
-      
-      const validationIDs_idServerObj = await validationIDs_idServer({
-        required: true,
-        _id,
-        conditionObj: {
-          _id,
-          users_id: usersLogin_id,
-        }
-      });
-      
-      if (validationIDs_idServerObj.errorCodeArr.length > 0) {
-        errorArgumentsObj.errorCodeArr = validationIDs_idServerObj.errorCodeArr;
-        throw new Error();
-      }
-      
+      await val(validationIDs_idServer, { value: _id, usersLogin_id }, '_id');
     }
     
     
     // --------------------------------------------------
-    //   Validation - platform
+    //   Platform
     // --------------------------------------------------
     
-    const validationIDsPlatformObj = validationIDsPlatform({ required: true, platform });
-    
-    if (validationIDsPlatformObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationIDsPlatformObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    saveObj.platform = validationIDsPlatformObj.value;
+    await val(validationIDsPlatform, { value: platform }, 'Platform');
     
     
     // --------------------------------------------------
-    //   Validation - Game ID
+    //   Game ID
     // --------------------------------------------------
     
-    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam'];
-    
-    if (gameID && noGameIDPlatformArr.indexOf(platform) === -1) {
-      
-      const validationGamesGameIDServerObj = await validationGamesGameIDServer({
-        required: true,
-        gameID,
-        conditionObj: {
-          language: localeObj.language,
-          country: localeObj.country,
-          gameID,
-        }
-      });
-      
-      if (validationGamesGameIDServerObj.errorCodeArr.length > 0) {
-        errorArgumentsObj.errorCodeArr = validationGamesGameIDServerObj.errorCodeArr;
-        throw new Error();
-      }
-      
-      saveObj.gameID = validationGamesGameIDServerObj.value;
-      
+    // プラットフォームが以下の配列に含まれていない場合、バリデーションを実行
+    if (['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(platform) === -1) {
+      await val(validationGamesGameIDServer, { value: gameID, language: localeObj.language, country: localeObj.country, }, 'Game ID');
+    // 配列に含まれている場合は、gameIDは不要なので削除する
+    } else {
+      saveObj.gameID = '';
     }
     
     
     // --------------------------------------------------
-    //   Validation - label
+    //   Label
     // --------------------------------------------------
     
-    const validationIDsLabelObj = validationIDsLabel({ required: false, label });
-    
-    if (validationIDsLabelObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationIDsLabelObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    saveObj.label = validationIDsLabelObj.value;
+    await val(validationIDsLabel, { value: label }, 'Label');
     
     
     // --------------------------------------------------
-    //   Validation - id
+    //   ID
     // --------------------------------------------------
     
-    const validationIDsIDObj = validationIDsID({ required: true, id });
-    
-    if (validationIDsIDObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationIDsIDObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    saveObj.id = validationIDsIDObj.value;
+    await val(validationIDsID, { value: id }, 'ID');
     
     
     // --------------------------------------------------
-    //   Validation - publicSetting
+    //   Public Setting
     // --------------------------------------------------
     
-    const validationIDsPublicSettingObj = validationIDsPublicSetting({ required: true, publicSetting });
-    
-    if (validationIDsPublicSettingObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationIDsPublicSettingObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    saveObj.publicSetting = validationIDsPublicSettingObj.value;
+    await val(validationIDsPublicSetting, { value: publicSetting }, 'Public Setting');
     
     
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   保存可能件数のチェック
     //   オーバーしている場合は処理停止
-    // ---------------------------------------------
+    // --------------------------------------------------
     
     const count = await ModelIDs.count({
       conditionObj: {
@@ -484,17 +469,13 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   process.env.ID_INSERT_LIMIT: {green ${process.env.ID_INSERT_LIMIT}}
     // `);
     
-    // console.log(`
-    //   ----- saveObj -----\n
-    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- saveObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(saveObj)));
+    // console.log(`\n-----------------------------------\n`);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // console.log(`\n---------- returnObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(returnObj)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     // ---------------------------------------------
@@ -566,6 +547,8 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     verifyCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
@@ -577,6 +560,9 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     }
     
     const usersLogin_id = req.user._id;
+    errorArgumentsObj.usersLogin_id = usersLogin_id;
+    
+    
     
     
     // --------------------------------------------------
@@ -590,17 +576,17 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     //   Validation - _id
     // --------------------------------------------------
     
-    const validationIDs_idServerObj = await validationIDs_idServer({
-      required: true,
-      _id,
-      conditionObj: {
-        _id,
-        users_id: usersLogin_id,
-      }
+    const validationObj = await validationIDs_idServer({
+      value: _id,
+      usersLogin_id
     });
     
-    if (validationIDs_idServerObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationIDs_idServerObj.errorCodeArr;
+    // console.log(`\n---------- validationObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(validationObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    if (validationObj.error) {
+      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
       throw new Error();
     }
     

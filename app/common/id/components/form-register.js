@@ -135,12 +135,9 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      
-      // idFormGameObj,
       handleGame,
       handleGameDelete,
-      
-      handleIDFormRegisterSubmit
+      handleRegisterSubmit
       
     } = stores.idForm;
     
@@ -169,7 +166,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
-    // const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
     
     // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
     const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
@@ -409,7 +405,7 @@ export default injectIntl(class extends React.Component {
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => handleIDFormRegisterSubmit({
+            onClick={() => handleRegisterSubmit({
               _id,
             })}
             disabled={buttonDisabled}

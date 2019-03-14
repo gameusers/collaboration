@@ -39,11 +39,11 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 //   Validations
 // ---------------------------------------------
 
-const { validation_id } = require('../../../@validations/_id');
-const validationIDsPlatform = require('../../../@database/ids/validations/platform');
-const validationIDsLabel = require('../../../@database/ids/validations/label');
-const validationIDsID = require('../../../@database/ids/validations/id');
-const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
+// const { validation_id } = require('../../../@validations/_id');
+// const validationIDsPlatform = require('../../../@database/ids/validations/platform');
+// const validationIDsLabel = require('../../../@database/ids/validations/label');
+// const validationIDsID = require('../../../@database/ids/validations/id');
+// const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
 
 
 
@@ -137,7 +137,7 @@ class Store {
         //   Button Disable
         // ---------------------------------------------
         
-        storeLayout.handleButtonDisabledObj(`${_id}-idForm`, true);
+        storeLayout.handleButtonDisable({ _id: `${_id}-idForm` });
          
         
         // ---------------------------------------------
@@ -230,7 +230,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idForm`, false);
+      storeLayout.handleButtonEnable({ _id: `${_id}-idForm` });
       
       
     }
@@ -327,103 +327,35 @@ class Store {
     
     const dataArr = lodashGet(this.dataObj, [_id, 'dataArr'], []);
     
-    const searchObj = dataArr.find((valueObj) => {
+    // データを取得する
+    const resultObj = dataArr.find((valueObj) => {
       return valueObj._id === ids_id;
     });
     
+    // ゲームを追加する
     this.handleGame({
       _id,
-      games_id: searchObj.games_id,
-      gameID: searchObj.gamesGameID,
-      thumbnail: searchObj.gamesThumbnail,
-      name: searchObj.gamesName
+      games_id: resultObj.games_id,
+      gameID: resultObj.gamesGameID,
+      imagesAndVideosObj: resultObj.gamesImagesAndVideosObj,
+      name: resultObj.gamesName
     });
     
-    this.handleIDForm_id({ _id, value: searchObj._id });
-    this.handleIDFormPlatform({ _id, value: searchObj.platform });
-    this.handleIDFormLabel({ _id, value: searchObj.label });
-    this.handleIDFormID({ _id, value: searchObj.id });
-    this.handleIDFormPublicSetting({ _id, value: searchObj.publicSetting });
-    this.handleIDFormSearch({ _id, value: searchObj.search });
+    // データを追加する
+    lodashSet(this.dataObj, [_id, '_id'], resultObj._id);
+    lodashSet(this.dataObj, [_id, 'platform'], resultObj.platform);
+    lodashSet(this.dataObj, [_id, 'label'], resultObj.label);
+    lodashSet(this.dataObj, [_id, 'id'], resultObj.id);
+    lodashSet(this.dataObj, [_id, 'publicSetting'], resultObj.publicSetting);
+    lodashSet(this.dataObj, [_id, 'search'], resultObj.search);
+    
+    // console.log(`\n---------- resultObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(resultObj)));
+    // console.log(`\n-----------------------------------\n`);
     
   };
   
   
-  
-  
-  /**
-   * _idの値を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idForm_idObj = {};
-  
-  
-  /**
-   * _idを変更する
-   * @param {string} _id
-   * @param {string} value
-   */
-  @action.bound
-  handleIDForm_id({ _id, value }) {
-    
-    const validationObj = validation_id({ required: true, value });
-    
-    this.idForm_idObj[_id] = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.idForm_idObj[_id].error = true;
-      this.idForm_idObj[_id].messageID = validationObj.errorCodeArr[0];
-    }
-    
-  };
-  
-  
-  
-  
-  /**
-   * プラットフォーム選択フォームの選択値を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormPlatformObj = {};
-  
-  
-  /**
-   * プラットフォームを変更する
-   * @param {string} _id
-   * @param {string} value
-   */
-  @action.bound
-  handleIDFormPlatform({ _id, value }) {
-    
-    const validationObj = validationIDsPlatform({ required: true, platform: value });
-    
-    this.idFormPlatformObj[_id] = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.idFormPlatformObj[_id].error = true;
-      this.idFormPlatformObj[_id].messageID = validationObj.errorCodeArr[0];
-    }
-    
-  };
-  
-  
-  
-  
-  /**
-   * ゲーム入力フォームの入力値を入れるオブジェクト
-   * @type {Object}
-   */
-  // @observable idFormGameObj = {};
   
   
   /**
@@ -436,16 +368,7 @@ class Store {
    */
   @action.bound
   handleGame({ _id, games_id, gameID, imagesAndVideosObj, name }) {
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   games_id: {green ${games_id}}
-    //   gameID: {green ${gameID}}
-    //   imagesAndVideosObj: {green ${imagesAndVideosObj}}
-    //   name: {green ${name}}
-    // `);
     lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameID, imagesAndVideosObj, name }]);
-    
   };
   
   
@@ -462,154 +385,26 @@ class Store {
   
   
   /**
-   * ラベル入力フォームの入力値を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormLabelObj = {};
-  
-  
-  /**
-   * ラベルを変更する
-   * @param {string} _id
-   * @param {string} value
-   */
-  @action.bound
-  handleIDFormLabel({ _id, value }) {
-    
-    const validationObj = validationIDsLabel({ required: false, label: value });
-    
-    this.idFormLabelObj[_id] = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.idFormLabelObj[_id].error = true;
-      this.idFormLabelObj[_id].messageID = validationObj.errorCodeArr[0];
-    }
-    
-  };
-  
-  
-  
-  
-  /**
-   * ID入力フォームの入力値を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormIDObj = {};
-  
-  
-  /**
-   * IDを変更する
-   * @param {string} _id
-   * @param {string} value
-   */
-  @action.bound
-  handleIDFormID({ _id, value }) {
-    
-    const validationObj = validationIDsID({ required: true, id: value });
-    
-    this.idFormIDObj[_id] = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.idFormIDObj[_id].error = true;
-      this.idFormIDObj[_id].messageID = validationObj.errorCodeArr[0];
-    }
-    
-  };
-  
-  
-  
-  
-  /**
-   * 公開設定選択フォームの選択値を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormPublicSettingObj = {};
-  
-  
-  /**
-   * 公開設定を変更する
-   * @param {string} _id
-   * @param {string} value
-   */
-  @action.bound
-  handleIDFormPublicSetting({ _id, value }) {
-    
-    const validationObj = validationIDsPublicSetting({ required: true, publicSetting: value });
-    
-    this.idFormPublicSettingObj[_id] = {
-      value,
-      error: false,
-      messageID: '',
-      numberOfCharacters: validationObj.numberOfCharacters,
-    };
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      this.idFormPublicSettingObj[_id].error = true;
-      this.idFormPublicSettingObj[_id].messageID = validationObj.errorCodeArr[0];
-    }
-    
-  };
-  
-  
-  
-  
-  /**
-   * 検索チェックボックスの値を入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormSearchObj = {};
-  
-  
-  /**
-   * 検索チェックボックスを変更する
-   * @param {string} _id
-   * @param {string} value
-   */
-  @action.bound
-  handleIDFormSearch({ _id, value }) {
-    this.idFormSearchObj[_id] = value;
-  };
-  
-  
-  
-  
-  /**
-   * 削除ダイアログを表示するかどうかを決めるオブジェクト
-   * IDを削除する際に利用。ダイアログで削除していいか尋ねる
-   * @type {Object}
-   */
-  @observable idFormDeleteDialogOpenObj = {};
-  
-  
-  /**
    * 削除ダイアログを開く
    * @param {string} _id
    */
   @action.bound
-  handleIDFormDeleteDialogOpen({ _id }) {
+  handleDeleteDialogOpen({ _id }) {
     
     
     // ---------------------------------------------
     //   削除するIDが選ばれていない場合、エラーを通知
     // ---------------------------------------------
     
-    if (_id in this.idForm_idObj === false) {
+    const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+    
+    if (!form_id) {
       storeLayout.handleSnackbarOpen('error', '削除するIDを選んでください');
       return;
     }
       
     
-    this.idFormDeleteDialogOpenObj[_id] = true;
+    lodashSet(this.dataObj, [_id, 'deleteDialogOpen'], true);
     
   };
   
@@ -619,8 +414,8 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  handleIDFormDeleteDialogClose({ _id }) {
-    this.idFormDeleteDialogOpenObj[_id] = false;
+  handleDeleteDialogClose({ _id }) {
+    lodashSet(this.dataObj, [_id, 'deleteDialogOpen'], false);
   };
   
   
@@ -631,7 +426,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleIDFormEditSubmit({ _id, func, selectedArr }) {
+  async handleEditSubmit({ _id, func, idArr }) {
     
     
     try {
@@ -641,49 +436,31 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, true);
-      
-      
+      storeLayout.handleButtonDisable({ _id: `${_id}-idFormEditSubmit` });
       
       
       // ---------------------------------------------
       //   編集するIDが選ばれていない場合、エラー
       // ---------------------------------------------
       
-      if (_id in this.idForm_idObj === false) {
+      const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+      
+      if (!form_id) {
         throw new Error('編集するIDを選んでください');
       }
-      
-      
       
       
       // ---------------------------------------------
       //   フォームのデータを取得
       // ---------------------------------------------
       
-      const form_id = _id in this.idForm_idObj ? this.idForm_idObj[_id].value : '';
-      const formPlatform = _id in this.idFormPlatformObj ? this.idFormPlatformObj[_id].value : '';
-      const formLabel = _id in this.idFormLabelObj ? this.idFormLabelObj[_id].value : '';
-      const formID = _id in this.idFormIDObj ? this.idFormIDObj[_id].value : '';
-      const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
-      const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
-      
+      // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+      const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
       const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
-      // const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
-      // console.log(chalk`
-      //   formGameID: {green ${formGameID}}
-      // `);
-      // return;
-      
-      // ---------------------------------------------
-      //   フォームのバリデーション作動
-      // ---------------------------------------------
-      
-      this.handleIDFormPlatform({ _id, value: formPlatform });
-      this.handleIDFormLabel({ _id, value: formLabel });
-      this.handleIDFormID({ _id, value: formID });
-      this.handleIDFormPublicSetting({ _id, value: formPublicSetting });
-      this.handleIDFormSearch({ _id, value: formSearch });
+      const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
+      const formID = lodashGet(this.dataObj, [_id, 'id'], '');
+      const formPublicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
+      const formSearch = lodashGet(this.dataObj, [_id, 'search'], true);
       
       
       // ---------------------------------------------
@@ -693,8 +470,6 @@ class Store {
       if (!formPlatform || !formID || !formPublicSetting) {
         throw new Error('フォームに必要な情報が入力されていません');
       }
-      
-      
       
       
       // ---------------------------------------------
@@ -723,6 +498,12 @@ class Store {
       });
       
       
+      // console.log(`\n---------- resultObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(resultObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -737,7 +518,6 @@ class Store {
       // ---------------------------------------------
       
       lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
-      // this.idFormDataObj[_id] = resultObj.data;
       
       
       // ---------------------------------------------
@@ -747,7 +527,7 @@ class Store {
       
       const updatedArr = [];
       
-      for (let valueObj of selectedArr.values()) {
+      for (let valueObj of idArr.values()) {
         // console.log(index, valueObj);
         
         // console.log(`
@@ -808,10 +588,12 @@ class Store {
       
     } catch (errorObj) {
       
-      // console.log(`
-      //   ----- errorObj -----\n
-      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-      //   --------------------\n
+      // console.log(`\n---------- errorObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(errorObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(chalk`
+      //   errorObj.message: {green ${errorObj.message}}
       // `);
       
       // ---------------------------------------------
@@ -828,7 +610,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, false);
+      storeLayout.handleButtonEnable({ _id: `${_id}-idFormEditSubmit` });
       
       
     }
@@ -844,7 +626,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleIDFormDeleteSubmit({ _id, func, selectedArr }) {
+  async handleDeleteSubmit({ _id, func, idArr }) {
     
     
     try {
@@ -854,7 +636,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, true);
+      storeLayout.handleButtonDisable({ _id: `${_id}-idFormDeleteSubmit` });
       
       
       
@@ -863,7 +645,9 @@ class Store {
       //   編集するIDが選ばれていない場合、エラー
       // ---------------------------------------------
       
-      if (_id in this.idForm_idObj === false) {
+      const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+      
+      if (!form_id) {
         throw new Error('削除するIDを選んでください');
       }
       
@@ -874,7 +658,7 @@ class Store {
       //   フォームのデータを取得
       // ---------------------------------------------
       
-      const form_id = _id in this.idForm_idObj ? this.idForm_idObj[_id].value : '';
+      // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       
       
       // ---------------------------------------------
@@ -911,7 +695,6 @@ class Store {
       // ---------------------------------------------
       
       lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
-      // this.idFormDataObj[_id] = resultObj.data;
       
       
       // ---------------------------------------------
@@ -921,7 +704,7 @@ class Store {
       
       const updatedArr = [];
       
-      for (let valueObj of selectedArr.values()) {
+      for (let valueObj of idArr.values()) {
         
         const newObj = resultObj.data.find((valueObj2) => {
           return valueObj2._id === valueObj._id;
@@ -937,10 +720,17 @@ class Store {
       
       
       // ---------------------------------------------
+      //   フォームを空にする
+      // ---------------------------------------------
+      
+      this.handleClearForm({ _id });
+      
+      
+      // ---------------------------------------------
       //   削除ダイアログを閉じる
       // ---------------------------------------------
       
-      this.handleIDFormDeleteDialogClose({ _id });
+      this.handleDeleteDialogClose({ _id });
       
       
       // ---------------------------------------------
@@ -983,7 +773,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormEditSubmit`, false);
+      storeLayout.handleButtonEnable({ _id: `${_id}-idFormDeleteSubmit` });
       
       
     }
@@ -999,7 +789,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleIDFormRegisterSubmit({ _id }) {
+  async handleRegisterSubmit({ _id }) {
     
     
     try {
@@ -1009,7 +799,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormRegisterSubmit`, true);
+      storeLayout.handleButtonDisable({ _id: `${_id}-idFormRegisterSubmit` });
       
       
       
@@ -1018,26 +808,13 @@ class Store {
       //   フォームのデータを取得
       // ---------------------------------------------
       
-      const form_id = _id in this.idForm_idObj ? this.idForm_idObj[_id].value : '';
-      const formPlatform = _id in this.idFormPlatformObj ? this.idFormPlatformObj[_id].value : '';
-      const formLabel = _id in this.idFormLabelObj ? this.idFormLabelObj[_id].value : '';
-      const formID = _id in this.idFormIDObj ? this.idFormIDObj[_id].value : '';
-      const formPublicSetting = _id in this.idFormPublicSettingObj ? this.idFormPublicSettingObj[_id].value : '';
-      const formSearch = _id in this.idFormSearchObj ? this.idFormSearchObj[_id] : true;
-      
+      // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+      const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
       const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
-      // const formGameID = _id in this.idFormGameObj ? this.idFormGameObj[_id][0].gameID : '';
-      
-      
-      // ---------------------------------------------
-      //   フォームのバリデーション作動
-      // ---------------------------------------------
-      
-      this.handleIDFormPlatform({ _id, value: formPlatform });
-      this.handleIDFormLabel({ _id, value: formLabel });
-      this.handleIDFormID({ _id, value: formID });
-      this.handleIDFormPublicSetting({ _id, value: formPublicSetting });
-      this.handleIDFormSearch({ _id, value: formSearch });
+      const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
+      const formID = lodashGet(this.dataObj, [_id, 'id'], '');
+      const formPublicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
+      const formSearch = lodashGet(this.dataObj, [_id, 'search'], true);
       
       
        // ---------------------------------------------
@@ -1057,7 +834,7 @@ class Store {
       
       const formData = new FormData();
       
-      formData.append('_id', form_id);
+      // formData.append('_id', form_id);
       formData.append('platform', formPlatform);
       formData.append('gameID', formGameID);
       formData.append('label',  formLabel);
@@ -1090,19 +867,36 @@ class Store {
       //   Data 更新
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [_id.replace('-register', ''), 'dataArr'], resultObj.data);
-      // this.idFormDataObj[_id.replace('-register', '')] = resultObj.data;
+      const temp_id = _id.replace('-register', '');
+      
+      lodashSet(this.dataObj, [temp_id, 'dataArr'], resultObj.data);
+      
+      
+      // ---------------------------------------------
+      //   未選択IDに追加 / _idのみでいい
+      // ---------------------------------------------
+      
+      const dataArr = lodashGet(this.dataObj, [temp_id, 'dataArr'], []);
+      const unselectedArr = lodashGet(this.dataObj, [temp_id, 'unselectedArr'], []);
+      unselectedArr.push(dataArr[dataArr.length - 1]._id);
+      
+      lodashSet(this.dataObj, [temp_id, 'unselectedArr'], unselectedArr);
+      
+      
+      // console.log(`\n---------- resultObj.data ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(resultObj.data)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(`\n---------- unselectedArr ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(unselectedArr)));
+      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
       //   フォームを空にする
       // ---------------------------------------------
       
-      this.handleIDFormPlatform({ _id, value: '' });
-      this.handleIDFormLabel({ _id, value: '' });
-      this.handleIDFormID({ _id, value: '' });
-      this.handleIDFormPublicSetting({ _id, value: '' });
-      this.handleIDFormSearch({ _id, value: true });
+      this.handleClearForm({ _id });
       
       
       // ---------------------------------------------
@@ -1145,11 +939,30 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-idFormRegisterSubmit`, false);
+      storeLayout.handleButtonEnable({ _id: `${_id}-idFormRegisterSubmit` });
       
       
     }
     
+    
+  };
+  
+  
+  
+  
+  /**
+   * フォームを空にする
+   * @param {string} _id
+   */
+  @action.bound
+  handleClearForm({ _id }) {
+    
+    lodashSet(this.dataObj, [_id, '_id'], '');
+    lodashSet(this.dataObj, [_id, 'platform'], '');
+    lodashSet(this.dataObj, [_id, 'label'], '');
+    lodashSet(this.dataObj, [_id, 'id'], '');
+    lodashSet(this.dataObj, [_id, 'publicSetting'], '');
+    lodashSet(this.dataObj, [_id, 'search'], true);
     
   };
   

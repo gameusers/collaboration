@@ -92,14 +92,9 @@ export default class extends React.Component {
       
       dataObj,
       handleEdit,
-      
-      // gameSelectSuggestionSelectedObj,
       handleAdd,
       handleRemove,
       handleKeyword,
-      
-      // gameSelectSuggestionDataObj,
-      // gameSelectSuggestionKeyboardSelectedObj,
       handleSuggestionOnKeyDown,
       
     } = stores.gameForm;
@@ -247,7 +242,6 @@ export default class extends React.Component {
       ;
       
     }
-    
     
     
     

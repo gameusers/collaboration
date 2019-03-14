@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
 
 
 // ---------------------------------------------
@@ -92,7 +91,13 @@ export default class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormSelect`, false);
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormSelect` });
+    
   }
   
   

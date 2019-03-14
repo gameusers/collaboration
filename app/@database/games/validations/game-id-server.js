@@ -7,14 +7,13 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelGames = require('../model');
+const Model = require('../model');
 
 
 // ---------------------------------------------
@@ -28,11 +27,9 @@ const validator = require('validator');
 
 /**
  * gameID
- * @param {boolean} required - Required
- * @param {string} gameID - db games gameID
- * @param {Object} conditionObj - 検索条件
+ * @param {string} value - 値
  */
-const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) => {
+const validationGamesGameIDServer = async ({ value, language, country }) => {
   
   
   // ---------------------------------------------
@@ -47,72 +44,78 @@ const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) =
   //   Result Object
   // ---------------------------------------------
   
-  const value = String(gameID);
-  const numberOfCharacters = value ? value.length : 0;
+  const data = String(value);
   
   let resultObj = {
-    value,
-    numberOfCharacters,
+    value: data,
+    error: false,
     errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(value)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
+      return resultObj;
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      resultObj.errorCodeArr.push('7m7YndDi5');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      resultObj.errorCodeArr.push('OE9r_zJNY');
+    }
+    
+    // データベースに存在しているか＆編集権限チェック
+    const count = await Model.count({
+      conditionObj: {
+        language,
+        country,
+        gameID: value,
+      }
+    });
+    
+    if (count !== 1) {
+      resultObj.errorCodeArr.push('zcfXAgyYT');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    resultObj.errorCodeArr.push('atnrDDdeK');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 存在チェック
-  if (validator.isEmpty(value)) {
-    resultObj.errorCodeArr.push('5Ig82NHic');
-  }
-  
-  // 英数と -_ のみ
-  if (value.match(/^[\w\-]+$/) === null) {
-    resultObj.errorCodeArr.push('uj4asy4EI');
-  }
-  
-  // 文字数チェック
-  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-    resultObj.errorCodeArr.push('61osZ7Z99');
-  }
-  
-  // データベースに存在しているかチェック
-  const count = await ModelGames.count({ conditionObj });
-  
-  if (count === 0) {
-    resultObj.errorCodeArr.push('Zg03IN2R8');
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   language: {green ${language}}
-  //   country: {green ${country}}
-  //   gameID: {green ${gameID}}
-  // `);
-  
-  // console.log(`
-  //   ----- docArr -----\n
-  //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 
@@ -123,4 +126,6 @@ const validationGamesGameIDServer = async ({ required, gameID, conditionObj }) =
 //   Export
 // --------------------------------------------------
 
-module.exports = validationGamesGameIDServer;
+module.exports = {
+  validationGamesGameIDServer
+};

@@ -91,13 +91,6 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 選択されたゲームを入れるオブジェクト
-   * @type {Object}
-   */
-  // @observable gameSelectSuggestionSelectedObj = {};
-  
-  
-  /**
    * ゲームを選択する
    * @param {string} _id - ID
    * @param {string} games_id - DB games games_id
@@ -131,28 +124,8 @@ class Store {
   
   
   // ---------------------------------------------
-  //   サジェストのデータ
-  // ---------------------------------------------
-  
-  /**
-   * サジェストデータを入れるオブジェクト
-   * @type {Object}
-   */
-  // @observable gameSelectSuggestionDataObj = {};
-  
-  
-  
-  
-  // ---------------------------------------------
   //   キーボード操作
   // ---------------------------------------------
-  
-  /**
-   * サジェストのキーボードでの選択状態を保存するオブジェクト
-   * @type {Object}
-   */
-  // @observable gameSelectSuggestionKeyboardSelectedObj = {};
-  
   
   /**
   * サジェストのキーボード操作
@@ -226,13 +199,6 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * TextField の入力文字を入れるオブジェクト
-   * @type {Object}
-   */
-  // @observable gameSelectSuggestionTextFieldObj = {};
-  
-  
-  /**
    * TextField を変更する
    * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
    * @param {string} _id - ID
@@ -300,11 +266,9 @@ class Store {
       
       // サジェストのキーボードでの選択状態をクリア
       delete this.dataObj[_id].selected;
-      // delete this.gameSelectSuggestionKeyboardSelectedObj[_id];
       
       // サジェストのデータを更新
       lodashSet(this.dataObj, [_id, 'suggestionArr'], resultObj.data);
-      // this.gameSelectSuggestionDataObj[_id] = resultObj.data;
       
       
       // console.log(`\n---------- resultObj.data ----------\n`);
@@ -317,39 +281,6 @@ class Store {
     } finally {}
     
   };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   TextField へのフォーカス
-  // ---------------------------------------------
-  
-  // /**
-  // * TextField へのフォーカス状態を記録するオブジェクト
-  // * @type {Object}
-  // */
-  // @observable gameSelectSuggestionTextFieldFocusObj = {};
-  
-  
-  // /**
-  // * TextField にフォーカス
-  // * @param {string} _id - ID
-  // */
-  // @action.bound
-  // handleTextFieldOnFocus(_id) {
-  //   this.gameSelectSuggestionTextFieldFocusObj[_id] = true;
-  // };
-  
-  
-  // /**
-  // * TextField からフォーカスアウト
-  // * @param {string} _id - ID
-  // */
-  // @action.bound
-  // handleTextFieldOnBlur(_id) {
-  //   this.gameSelectSuggestionTextFieldFocusObj[_id] = false;
-  // };
   
   
 }

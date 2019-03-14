@@ -150,7 +150,7 @@ export default class extends React.Component {
         <FormEdit
           _id={_id}
           func={func}
-          selectedArr={idArr}
+          idArr={idArr}
         />
       ;
     } else {

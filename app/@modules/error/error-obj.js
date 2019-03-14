@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
@@ -21,7 +20,7 @@ const moment = require('moment');
 //   Locales
 // ---------------------------------------------
 
-const { IntlProvider } = require('react-intl');
+// const { IntlProvider } = require('react-intl');
 
 
 // ---------------------------------------------
@@ -44,21 +43,22 @@ const logger = require('../logger');
  * @param {string} functionID - 関数固有のID
  * @param {Array} errorCodeArr - エラーコードが入っている配列
  * @param {Object} errorObj - catchで取得したエラーオブジェクト
+ * @param {string} usersLogin_id - ログインしていユーザーの DB users _id
  * @return {Object} エラーオブジェクト
  */
-const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, errorObj }) => {
+const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, errorObj, usersLogin_id }) => {
   
   
   // ---------------------------------------------
   //   I18n
   // ---------------------------------------------
   
-  const intlProvider = new IntlProvider({
-     locale: localeObj.languageArr[0],
-     messages: localeObj.dataObj
-  }, {});
+  // const intlProvider = new IntlProvider({
+  //   locale: localeObj.languageArr[0],
+  //   messages: localeObj.dataObj
+  // }, {});
   
-  const { intl } = intlProvider.getChildContext();
+  // const { intl } = intlProvider.getChildContext();
   
   
   // ---------------------------------------------
@@ -77,12 +77,13 @@ const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, er
     
     let tempObj = {
       code: `${fileID}@${functionID}@${value}`,
-      message: intl.formatMessage({ id: value }),
+      // message: intl.formatMessage({ id: value }),
     };
     
     errorsArr.push(tempObj);
     
-    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nMessage: ${tempObj.message}\n`);
+    // logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nMessage: ${tempObj.message}\n`);
+    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${usersLogin_id}`);
     
   }
   

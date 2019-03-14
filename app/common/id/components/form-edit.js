@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
 
 
 // ---------------------------------------------
@@ -19,6 +18,16 @@ import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationIDsPlatform } = require('../../../@database/ids/validations/platform');
+const { validationIDsLabel } = require('../../../@database/ids/validations/label');
+const { validationIDsID } = require('../../../@database/ids/validations/id');
+const { validationIDsPublicSetting } = require('../../../@database/ids/validations/public-setting');
 
 
 // ---------------------------------------------
@@ -129,7 +138,13 @@ export default injectIntl(class extends React.Component {
   
   
   componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idFormEditSubmit`, false);
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormEditSubmit` });
+    
   }
   
   
@@ -140,40 +155,24 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, func, selectedArr } = this.props;
-    const { formatMessage } = this.props.intl;
+    const { stores, intl, _id, func, idArr } = this.props;
     const { buttonDisabledObj } = stores.layout;
     
     const {
       
       dataObj,
+      handleEdit,
+      
       handleSetEditForm,
       
-      idFormPlatformObj,
-      handleIDFormPlatform,
-      
-      // idFormGameObj,
       handleGame,
       handleGameDelete,
       
-      idFormLabelObj,
-      handleIDFormLabel,
+      handleDeleteDialogOpen,
+      handleDeleteDialogClose,
       
-      idFormIDObj,
-      handleIDFormID,
-      
-      idFormPublicSettingObj,
-      handleIDFormPublicSetting,
-      
-      idFormSearchObj,
-      handleIDFormSearch,
-      
-      idFormDeleteDialogOpenObj,
-      handleIDFormDeleteDialogOpen,
-      handleIDFormDeleteDialogClose,
-      
-      handleIDFormEditSubmit,
-      handleIDFormDeleteSubmit
+      handleEditSubmit,
+      handleDeleteSubmit
       
     } = stores.idForm;
     
@@ -185,7 +184,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormEditSubmit`], true);
-    // const buttonDisabled = `${_id}-idFormEditSubmit` in buttonDisabledObj ? buttonDisabledObj[`${_id}-idFormEditSubmit`] : true;
+    
+    
     
     
     // --------------------------------------------------
@@ -194,7 +194,6 @@ export default injectIntl(class extends React.Component {
     
     const componentsIDArr = [];
     const dataArr = lodashGet(dataObj, [_id, 'dataArr'], []);
-    // const dataArr = _id in idFormDataObj ? idFormDataObj[_id] : [];
     
     for (const [index, valueObj] of dataArr.entries()) {
       
@@ -224,132 +223,60 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   フォームの値 - プラットフォーム
+    //   プラットフォーム
     // --------------------------------------------------
     
-    let formPlatformValue = '';
-    let formPlatformError = false;
-    let formPlatformMessageID = 'GHXngbv4G';
-    let formPlatformNumberOfCharacters = 0;
-    
-    if (_id in idFormPlatformObj) {
-      
-      formPlatformValue = idFormPlatformObj[_id].value;
-      formPlatformError = idFormPlatformObj[_id].error;
-      
-      if (idFormPlatformObj[_id].messageID) {
-        formPlatformMessageID = idFormPlatformObj[_id].messageID;
-      }
-      
-      formPlatformNumberOfCharacters = idFormPlatformObj[_id].numberOfCharacters;
-      
-    }
+    const platform = lodashGet(dataObj, [_id, 'platform'], '');
+    const validationPlatformObj = validationIDsPlatform({ value: platform });
     
     
     // --------------------------------------------------
-    //   フォームの値 - Game
+    //   ゲーム選択フォーム
     // --------------------------------------------------
     
-    const formGameArr = lodashGet(this.dataObj, [_id, 'gameArr'], []);
+    const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
     
-    console.log(`\n---------- formGameArr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(formGameArr)));
-    console.log(`\n-----------------------------------\n`);
-    
-    // const buttonDisabled = lodashGet(idFormGameObj, [`${_id}-idFormEditSubmit`], true);
-    // const formGameArr = _id in idFormGameObj ? idFormGameObj[_id] : [];
+    // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
+    const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
     
     
     // --------------------------------------------------
-    //   フォームの値 - ラベル
+    //   ラベル
     // --------------------------------------------------
     
-    let formLabelValue = '';
-    let formLabelError = false;
-    let formLabelMessageID = 'ZlyG1tegW';
-    let formLabelNumberOfCharacters = 0;
-    
-    if (_id in idFormLabelObj) {
-      
-      formLabelValue = idFormLabelObj[_id].value;
-      formLabelError = idFormLabelObj[_id].error;
-      
-      if (idFormLabelObj[_id].messageID) {
-        formLabelMessageID = idFormLabelObj[_id].messageID;
-      }
-      
-      formLabelNumberOfCharacters = idFormLabelObj[_id].numberOfCharacters;
-      
-    }
+    const label = lodashGet(dataObj, [_id, 'label'], '');
+    const validationLabelObj = validationIDsLabel({ value: label });
     
     
     // --------------------------------------------------
-    //   フォームの値 - ID
+    //   ID
     // --------------------------------------------------
     
-    let formIDValue = '';
-    let formIDError = false;
-    let formIDMessageID = 'oWwTCtWxC';
-    let formIDNumberOfCharacters = 0;
-    
-    if (_id in idFormIDObj) {
-      
-      formIDValue = idFormIDObj[_id].value;
-      formIDError = idFormIDObj[_id].error;
-      
-      if (idFormIDObj[_id].messageID) {
-        formIDMessageID = idFormIDObj[_id].messageID;
-      }
-      
-      formIDNumberOfCharacters = idFormIDObj[_id].numberOfCharacters;
-      
-    }
+    const id = lodashGet(dataObj, [_id, 'id'], '');
+    const validationIDObj = validationIDsID({ value: id });
     
     
     // --------------------------------------------------
-    //   フォームの値 - 公開設定
+    //   公開設定
     // --------------------------------------------------
     
-    let formPublicSettingValue = 0;
-    let formPublicSettingError = false;
-    let formPublicSettingMessageID = 'TogSfI8lD';
-    let formPublicSettingNumberOfCharacters = 0;
-    
-    if (_id in idFormPublicSettingObj) {
-      
-      formPublicSettingValue = idFormPublicSettingObj[_id].value;
-      formPublicSettingError = idFormPublicSettingObj[_id].error;
-      
-      if (idFormPublicSettingObj[_id].messageID) {
-        formPublicSettingMessageID = idFormPublicSettingObj[_id].messageID;
-      }
-      
-      formPublicSettingNumberOfCharacters = idFormPublicSettingObj[_id].numberOfCharacters;
-      
-    }
+    const publicSetting = lodashGet(dataObj, [_id, 'publicSetting'], '');
+    const validationPublicSettingObj = validationIDsPublicSetting({ value: publicSetting });
     
     
     // --------------------------------------------------
-    //   フォームの値 - Search
+    //   検索可能
     // --------------------------------------------------
     
-    const formSearch = _id in idFormSearchObj ? idFormSearchObj[_id] : true;
-    
-    
-    // --------------------------------------------------
-    //   Game 選択フォームを表示しないプラットフォーム
-    // --------------------------------------------------
-    
-    const noGameIDPlatformArr = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'];
-    
-    
+    const search = lodashGet(dataObj, [_id, 'search'], true);
     
     
     // --------------------------------------------------
     //   IDを削除するか尋ねるダイアログを表示するための変数
     // --------------------------------------------------
     
-    const deleteDialogOpen = _id in idFormDeleteDialogOpenObj ? idFormDeleteDialogOpenObj[_id] : false;
+    const deleteDialogOpen = lodashGet(dataObj, [_id, 'deleteDialogOpen'], false);
+    
     
     
     
@@ -364,8 +291,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- selectedArr -----\n
-    //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
+    //   ----- idArr -----\n
+    //   ${util.inspect(idArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -414,16 +341,15 @@ export default injectIntl(class extends React.Component {
         <PlatformBox>
           <FormControl
             style={{ minWidth: 300 }}
-            error={formPlatformError}
+            error={validationPlatformObj.error}
           >
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
             <Select
-              value={formPlatformValue}
-              onChange={(eventObj) => handleIDFormPlatform({ _id, value: eventObj.target.value })}
-              inputProps={{
-                name: 'platform',
-                id: 'platform',
-              }}
+              value={validationPlatformObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [_id, 'platform'],
+                value: eventObj.target.value
+              })}
             >
               <MenuItem value={'PlayStation'}>PlayStation</MenuItem>
               <MenuItem value={'Xbox'}>Xbox</MenuItem>
@@ -439,16 +365,16 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'Line'}>Line</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
-            <FormHelperText>{formatMessage({ id: formPlatformMessageID }, { numberOfCharacters: formPlatformNumberOfCharacters })}</FormHelperText>
+            <FormHelperText>{intl.formatMessage({ id: validationPlatformObj.messageCode })}</FormHelperText>
           </FormControl>
         </PlatformBox>
         
         
         {/* ゲーム選択 */}
-        {noGameIDPlatformArr.indexOf(formPlatformValue) === -1 &&
+        {gameSelectForm &&
           <GameForm
             _id={_id}
-            selectedArr={formGameArr}
+            gamesArr={gamesArr}
             func={handleGame}
             funcDelete={handleGameDelete}
           />
@@ -460,10 +386,13 @@ export default injectIntl(class extends React.Component {
           <StyledTextFieldWide
             id="label"
             label="ラベル"
-            value={formLabelValue}
-            onChange={(eventObj) => handleIDFormLabel({ _id, value: eventObj.target.value })}
-            error={formLabelError}
-            helperText={formatMessage({ id: formLabelMessageID }, { numberOfCharacters: formLabelNumberOfCharacters })}
+            value={validationLabelObj.value}
+            onChange={(eventObj) => handleEdit({
+              pathArr: [_id, 'label'],
+              value: eventObj.target.value
+            })}
+            error={validationLabelObj.error}
+            helperText={intl.formatMessage({ id: validationLabelObj.messageCode }, { numberOfCharacters: validationLabelObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
               maxLength: 30,
@@ -477,10 +406,13 @@ export default injectIntl(class extends React.Component {
           <StyledTextFieldWide
             id="label"
             label="ID"
-            value={formIDValue}
-            onChange={(eventObj) => handleIDFormID({ _id, value: eventObj.target.value })}
-            error={formIDError}
-            helperText={formatMessage({ id: formIDMessageID }, { numberOfCharacters: formIDNumberOfCharacters })}
+            value={validationIDObj.value}
+            onChange={(eventObj) => handleEdit({
+              pathArr: [_id, 'id'],
+              value: eventObj.target.value
+            })}
+            error={validationIDObj.error}
+            helperText={intl.formatMessage({ id: validationIDObj.messageCode }, { numberOfCharacters: validationIDObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
               maxLength: 128,
@@ -493,12 +425,15 @@ export default injectIntl(class extends React.Component {
         <PlatformBox>
           <FormControl
             style={{ minWidth: 300 }}
-            error={formPublicSettingError}
+            error={validationPublicSettingObj.error}
           >
             <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
             <Select
-              value={formPublicSettingValue}
-              onChange={(eventObj) => handleIDFormPublicSetting({ _id, value: eventObj.target.value })}
+              value={validationPublicSettingObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [_id, 'publicSetting'],
+                value: eventObj.target.value
+              })}
               inputProps={{
                 name: 'publicSetting',
                 id: 'publicSetting',
@@ -510,7 +445,7 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={4}>相互フォローで公開</MenuItem>
               <MenuItem value={5}>自分以外には公開しない</MenuItem>
             </Select>
-            <FormHelperText>{formatMessage({ id: formPublicSettingMessageID }, { numberOfCharacters: formPublicSettingNumberOfCharacters })}</FormHelperText>
+            <FormHelperText>{intl.formatMessage({ id: validationPublicSettingObj.messageCode })}</FormHelperText>
           </FormControl>
         </PlatformBox>
         
@@ -520,8 +455,11 @@ export default injectIntl(class extends React.Component {
           <FormControlLabel
             control={
               <Checkbox
-                checked={formSearch}
-                onChange={(eventObj) => handleIDFormSearch({ _id, value: eventObj.target.checked })}
+                checked={search}
+                onChange={(eventObj) => handleEdit({
+                  pathArr: [_id, 'search'],
+                  value: eventObj.target.checked
+                })}
               />
             }
             label="このIDを検索可能にする"
@@ -531,26 +469,27 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* ボタン */}
+        {/* 「編集する」ボタン */}
         <SendButtonBox>
           
           <StyledButton
             variant="outlined"
             color="primary"
-            onClick={() => handleIDFormEditSubmit({
+            onClick={() => handleEditSubmit({
               _id,
               func,
-              selectedArr
+              idArr
             })}
             disabled={buttonDisabled}
           >
             編集する
           </StyledButton>
           
+          
           <Button
             variant="outlined"
             color="secondary"
-            onClick={() => handleIDFormDeleteDialogOpen({
+            onClick={() => handleDeleteDialogOpen({
               _id,
             })}
             disabled={buttonDisabled}
@@ -565,7 +504,7 @@ export default injectIntl(class extends React.Component {
         {/* IDを削除するか尋ねるダイアログ */}
         <Dialog
           open={deleteDialogOpen}
-          onClose={() => handleIDFormDeleteDialogClose({ _id })}
+          onClose={() => handleDeleteDialogClose({ _id })}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -577,10 +516,10 @@ export default injectIntl(class extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button
-              onClick={() => handleIDFormDeleteSubmit({
+              onClick={() => handleDeleteSubmit({
                 _id,
                 func,
-                selectedArr
+                idArr
               })}
               color="primary"
               autoFocus
@@ -589,7 +528,7 @@ export default injectIntl(class extends React.Component {
             </Button>
             
             <Button
-              onClick={() => handleIDFormDeleteDialogClose({ _id })}
+              onClick={() => handleDeleteDialogClose({ _id })}
               color="primary"
             >
               いいえ

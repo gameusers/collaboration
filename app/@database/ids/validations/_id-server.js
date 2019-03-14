@@ -7,14 +7,13 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-const util = require('util');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelIDs = require('../model');
+const Model = require('../model');
 
 
 // ---------------------------------------------
@@ -28,11 +27,10 @@ const validator = require('validator');
 
 /**
  * _id
- * @param {boolean} required - Required
- * @param {string} _id - db ids _id
- * @param {Object} conditionObj - 検索条件
+ * @param {string} value - 値
+ * @param {string} usersLogin_id - DB users _id ログインしているユーザーの_id
  */
-const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
+const validationIDs_idServer = async ({ value, usersLogin_id }) => {
   
   
   // ---------------------------------------------
@@ -47,64 +45,72 @@ const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const value = String(_id);
-  const numberOfCharacters = value ? value.length : 0;
+  const data = String(value);
   
   let resultObj = {
-    value,
-    numberOfCharacters,
+    value: data,
+    error: false,
     errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  // Not Required で入力値が空の場合、処理停止
-  if (!required && validator.isEmpty(value)) {
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      resultObj.errorCodeArr.push('kkIt7RKmd');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      resultObj.errorCodeArr.push('7ozQvO1ch');
+    }
+    
+    // データベースに存在しているか＆編集権限チェック
+    const count = await Model.count({
+      conditionObj: {
+        _id: value,
+        users_id: usersLogin_id,
+      }
+    });
+    
+    if (count !== 1) {
+      resultObj.errorCodeArr.push('sWZRJ_WyL');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    resultObj.errorCodeArr.push('WThN4dz0C');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
     return resultObj;
+    
+    
   }
   
-  // 存在チェック
-  if (validator.isEmpty(value)) {
-    resultObj.errorCodeArr.push('fKnyEX5Px');
-  }
-  
-  // 英数と -_ のみ
-  if (value.match(/^[\w\-]+$/) === null) {
-    resultObj.errorCodeArr.push('0Nm7pQeYW');
-  }
-  
-  // 文字数チェック
-  if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-    resultObj.errorCodeArr.push('Vg08kFRAe');
-  }
-  
-  // データベースに存在しているか＆編集権限チェック
-  const count = await ModelIDs.count(conditionObj);
-  
-  if (count === 0) {
-    resultObj.errorCodeArr.push('uhe5ZzGvK');
-  }
-  
-  
-  // ---------------------------------------------
-  //   console.log
-  // ---------------------------------------------
-  
-  // console.log(chalk`
-  //   _id: {green ${_id}}
-  // `);
-  
-  // console.log(`
-  //   ----- resultObj -----\n
-  //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  return resultObj;
   
 };
 
@@ -115,4 +121,6 @@ const validationIDs_idServer = async ({ required, _id, conditionObj }) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationIDs_idServer;
+module.exports = {
+  validationIDs_idServer
+};

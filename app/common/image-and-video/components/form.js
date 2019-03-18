@@ -7,7 +7,6 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
 
 
 // ---------------------------------------------
@@ -32,7 +31,6 @@ import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
-// import IconCreate from '@material-ui/icons/Create';
 import IconClose from '@material-ui/icons/Close';
 import IconDescription from '@material-ui/icons/Description';
 import IconHelpOutline from '@material-ui/icons/HelpOutline';
@@ -49,7 +47,7 @@ import cyan from '@material-ui/core/colors/cyan';
 //   Components
 // ---------------------------------------------
 
-import LightboxWrapper from '../../layout/components/lightbox';
+import LightboxWrapper from '../../image-and-video/components/lightbox';
 
 
 
@@ -119,33 +117,6 @@ const PreviewImg = styled.img`
   }
 `;
 
-// const PreviewEditFab = styled(Fab)`
-//   && {
-//     background-color: ${cyan[500]};
-//     &:hover {
-//       background-color: ${cyan[700]};
-//     }
-//     width: 24px;
-//     height: 24px;
-//     min-width: 24px;
-//     min-height: 24px;
-//     position: absolute;
-//     bottom: -10px;
-//     left: -10px;
-//   }
-// `;
-
-const PreviewEditButton = styled(Button)`
-  && {
-    min-width: 10px;
-    padding: 1px 6px;
-    position: absolute;
-    bottom: -10px;
-    left: -10px;
-  }
-`;
-
-
 const PreviewRemoveFab = styled(Fab)`
   && {
     background-color: ${cyan[500]};
@@ -194,7 +165,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, imagesAndVideosArr, caption, limit } = this.props;
+    const { stores, intl, _id, func, imagesAndVideosArr, caption, limit } = this.props;
     
     const {
       
@@ -204,9 +175,9 @@ export default injectIntl(class extends React.Component {
       handleAddImage,
       handleRemoveImage,
       
-    } = stores.formImageVideo;
+    } = stores.imageAndVideoForm;
     
-    const { handleLightboxOpen } = stores.layout;
+    const { handleLightboxOpen } = stores.imageAndVideo;
     
     const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
     const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
@@ -244,17 +215,9 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleLightboxOpen({ _id, currentNo })}
               />
               
-              {/*<PreviewEditButton
-                variant="contained"
-                color="primary"
-                size="small"
-              >
-                編集
-              </PreviewEditButton>*/}
-              
               <PreviewRemoveFab
                 color="primary"
-                onClick={() => handleRemoveImage({ _id, index, imagesAndVideosArr })}
+                onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
               >
                 <IconClose />
               </PreviewRemoveFab>
@@ -298,6 +261,8 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -311,12 +276,15 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
       <React.Fragment>
+        
         
         {/* Preview */}
         <PreviewContainer>
@@ -336,7 +304,7 @@ export default injectIntl(class extends React.Component {
             variant="contained"
             color="secondary"
             size="small"
-            onClick={() => handleAddImage({ _id, imagesAndVideosArr, limit })}
+            onClick={() => handleAddImage({ _id, func, imagesAndVideosArr, limit })}
           >
             追加
           </Button>
@@ -395,6 +363,7 @@ export default injectIntl(class extends React.Component {
           _id={_id}
           imagesAndVideosArr={imagesAndVideosArr}
         />
+        
         
       </React.Fragment>
     );

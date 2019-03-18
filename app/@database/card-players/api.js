@@ -20,7 +20,10 @@ const util = require('util');
 
 const express = require('express');
 const multer  = require('multer');
-const upload = multer({ dest: 'static/' });
+const upload = multer({
+  dest: 'static/img',
+  limits: { fieldSize: 25 * 1024 * 1024 } // アップロードできるファイルサイズ、25MBまで
+});
 const moment = require('moment');
 
 
@@ -430,6 +433,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     }
     
     const usersLogin_id = req.user._id;
+    errorArgumentsObj.usersLogin_id = usersLogin_id;
     
     
     
@@ -475,26 +479,6 @@ router.post('/update', upload.none(), async (req, res, next) => {
       return validationObj;
       
     };
-    
-    // const val = (func, argumentsObj, name) => {
-      
-    //   const validationObj = func(argumentsObj);
-      
-      
-    //   const title = name ? `${name} / ` : '';
-    //   console.log(`\n---------- ${title}validationObj ----------\n`);
-    //   console.dir(validationObj);
-    //   console.log(`\n-----------------------------------\n`);
-      
-      
-    //   if (validationObj.error) {
-    //     errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-    //     throw new Error();
-    //   }
-      
-    //   return validationObj;
-      
-    // };
     
     
     // --------------------------------------------------
@@ -687,21 +671,32 @@ router.post('/update', upload.none(), async (req, res, next) => {
     delete saveObj.hardwareInactiveArr;
     
     
-    // console.log(chalk`
-    //   ISO8601: {green ${ISO8601}}
-    //   moment().toISOString(true): {green ${moment().toISOString(true)}}
-    //   moment().toISOString(): {green ${moment().toISOString()}}
-    //   Date.prototype.toISOString: {green ${Date.prototype.toISOString}}
+    console.log(chalk`
+      ISO8601: {green ${ISO8601}}
+    `);
+    
+    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
+    // console.dir(saveObj.imagesAndVideosObj.thumbnailArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(saveObj.imagesAndVideosObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`
+    //   ----- saveObj.imagesAndVideosObj / ${ISO8601} -----\n
+    //   ${util.inspect(saveObj.imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
-    console.log(`\n---------- saveObj ----------\n`);
-    console.dir(saveObj);
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- saveObj ----------\n`);
+    // console.dir(saveObj);
+    // console.log(`\n-----------------------------------\n`);
     
     
     
     
-    return;
+    // return;
     
     
     
@@ -818,6 +813,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   Return Json Object / Success
     // ---------------------------------------------
     
+    return res.status(200).json({});
     // return res.status(200).json(returnObj);
     
     

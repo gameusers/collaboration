@@ -78,7 +78,9 @@ import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlayerPlayer from '../../app/pl/player/stores/store';
 import initStoreIDForm from '../../app/common/id/stores/form';
 import initStoreGameForm from '../../app/common/game/stores/form';
-import initStoreFormImageVideo from '../../app/common/form/stores/image-video';
+import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
+import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
+// import initStoreFormImageVideo from '../../app/common/form/stores/image-video';
 
 
 // ---------------------------------------------
@@ -116,9 +118,9 @@ const Container = styled.div`
   }
 `;
 
-const CardBox = styled.div`
-  margin: 20px 0 0 0;
-`;
+// const CardBox = styled.div`
+//   margin: 20px 0 0 0;
+// `;
 
 
 
@@ -259,7 +261,8 @@ class Component extends React.Component {
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.idForm = initStoreIDForm(argumentsObj, this.stores);
       this.stores.gameForm = initStoreGameForm(argumentsObj, this.stores);
-      this.stores.formImageVideo = initStoreFormImageVideo(argumentsObj, this.stores);
+      this.stores.imageAndVideo = initStoreImageAndVideo(argumentsObj, this.stores);
+      this.stores.imageAndVideoForm = initStoreImageAndVideoForm(argumentsObj, this.stores);
       
       
       // --------------------------------------------------

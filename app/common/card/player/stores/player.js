@@ -748,6 +748,44 @@ class Store {
   // ---------------------------------------------
   
   // ---------------------------------------------
+  //   画像とビデオ
+  // ---------------------------------------------
+  
+  /**
+   * サムネイル画像を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleImagesAndVideosObjThumbnailArr({ _id, value }) {
+    
+    let temp_id = _id;
+    temp_id = temp_id.replace('-thumbnail', '');
+    
+    lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'thumbnailArr'], value);
+    
+  };
+  
+  
+  /**
+   * メイン画像を変更する
+   * @param {string} _id - DB card-players _id / DB card-games _id
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleImagesAndVideosObjMainArr({ _id, value }) {
+    
+    let temp_id = _id;
+    temp_id = temp_id.replace('-main', '');
+    
+    lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'mainArr'], value);
+    
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   年齢
   // ---------------------------------------------
   
@@ -1497,7 +1535,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      // storeLayout.handleButtonDisabledObj(`${_id}-editForm`, true);
+      storeLayout.handleButtonDisable({ _id: `${_id}-form` });
       
       
       // ---------------------------------------------
@@ -1549,7 +1587,7 @@ class Store {
       //   --------------------\n
       // `);
       
-      return;
+      // return;
       
       
       // ---------------------------------------------
@@ -1565,7 +1603,7 @@ class Store {
       //   Data Users 更新
       // ---------------------------------------------
       
-      storeData.updateUsersObj(resultObj.data.usersObj);
+      // storeData.updateUsersObj(resultObj.data.usersObj);
       
       
       // ---------------------------------------------
@@ -1592,7 +1630,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-editForm`, false);
+      storeLayout.handleButtonEnable({ _id: `${_id}-form`});
       
       
     }

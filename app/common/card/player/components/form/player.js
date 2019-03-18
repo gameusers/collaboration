@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -58,7 +59,7 @@ import LookingForFriends from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import FormLink from './link';
 
-import FormImage from '../../../../form/components/image';
+import ImageAndVideoForm from '../../../../image-and-video/components/form';
 
 
 
@@ -107,22 +108,17 @@ const Box = styled.div`
 //   画像
 // ----------------------------------------
 
-const ThumbnailBox = styled.div`
-  margin: 24px 0 0 0;
-`;
-
-const ThumbnailTitle = styled.div`
-  font-weight: bold;
-  // color: black;
-  // color: rgba(0, 0, 0, 0.54);
-`;
-
 const ImageBox = styled.div`
   margin: 24px 0 0 0;
 `;
 
 const ImageTitle = styled.div`
-  color: rgba(0, 0, 0, 0.54);
+  font-weight: bold;
+  margin: 0 0 2px 0;
+`;
+
+const ImageDescription = styled.p`
+  
 `;
 
 
@@ -162,7 +158,13 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-editForm`, false);
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardPlayers_id}-form` });
+    
   }
   
   
@@ -186,6 +188,8 @@ export default class extends React.Component {
       handleCardPlayerEditFormUndoData,
       handleCardPlayerEditFormClose,
       handleCardPlayerEditID,
+      handleImagesAndVideosObjThumbnailArr,
+      handleImagesAndVideosObjMainArr,
       handleEditFormSubmit
       
     } = stores.cardPlayer;
@@ -223,26 +227,22 @@ export default class extends React.Component {
     } = cardPlayerEditFormDataObj[cardPlayers_id];
     
     
+    
+    
     // --------------------------------------------------
     //   Dialog
     // --------------------------------------------------
     
-    let dialogOpen = false;
-    
-    if (cardPlayers_id in cardPlayerEditFormUndoDataDialogOpenObj) {
-      dialogOpen = cardPlayerEditFormUndoDataDialogOpenObj[cardPlayers_id];
-    }
+    const dialogOpen = lodashGet(cardPlayerEditFormUndoDataDialogOpenObj, [cardPlayers_id], false);
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${cardPlayers_id}-form`], true);
     
-    if (`${cardPlayers_id}-editForm` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${cardPlayers_id}-editForm`];
-    }
+    
     
     
     // --------------------------------------------------
@@ -300,22 +300,32 @@ export default class extends React.Component {
           
           
           {/* サムネイル */}
-          <ThumbnailBox>
-            <ThumbnailTitle>サムネイル</ThumbnailTitle>
-            <FormImage
+          <ImageBox>
+            <ImageTitle>サムネイル</ImageTitle>
+            <ImageDescription>ハンドルネームの左側に表示される小さな画像です。正方形の画像をアップロードしてください。</ImageDescription>
+            <ImageAndVideoForm
               _id={`${cardPlayers_id}-thumbnail`}
+              func={handleImagesAndVideosObjThumbnailArr}
               imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
               caption={false}
               limit={1}
             />
-          </ThumbnailBox>
+          </ImageBox>
           
           
           
-          {/*<ImageBox>
-            <ImageTitle>画像</ImageTitle>
-            <input type="file" name="example" size="30" />
-          </ImageBox>*/}
+          {/* メイン画像 */}
+          <ImageBox>
+            <ImageTitle>メイン画像</ImageTitle>
+            <ImageDescription>プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。</ImageDescription>
+            <ImageAndVideoForm
+              _id={`${cardPlayers_id}-main`}
+              func={handleImagesAndVideosObjMainArr}
+              imagesAndVideosArr={imagesAndVideosObj.mainArr}
+              caption={true}
+              limit={1}
+            />
+          </ImageBox>
           
           
           {/* コメント */}
@@ -432,7 +442,6 @@ export default class extends React.Component {
           <Box>
             <ID
               _id={cardPlayers_id}
-              // idArr={stores.cardPlayer.cardPlayerEditFormDataObj[cardPlayers_id].idArr}
               idArr={idArr}
               func={handleCardPlayerEditID}
             />

@@ -61,10 +61,21 @@ app.prepare().then(() => {
   
   server.use(helmet());
   
+  // server.use(bodyParser.json({
+  //   limit: '50mb'
+  // }));
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({
+    // limit: '50mb',
     extended: true
   }));
+  
+  // app.use(bodyParser.json({limit: '50mb'}));
+  // app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+  
+  // server.use(express.json({
+  //   limit: '50mb'
+  // }));
   
   server.use(cookieParser());
   
@@ -337,6 +348,7 @@ app.prepare().then(() => {
   
   server.use((err, req, res, next) => {
     // logger.error(`${err}`);
+    console.log(`Error: ${err}`);
     
     res.status(err.status || 500);
     res.send('Error');

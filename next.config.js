@@ -1,6 +1,14 @@
 const withCSS = require('@zeit/next-css');
+const webpack = require('webpack');
 
 module.exports = withCSS({
+  // https://github.com/oliver-moran/jimp/tree/master/packages/jimp
+  webpack: (config, options) => {
+    config.plugins.push(new webpack.DefinePlugin({
+      'process.browser': 'true'
+    }));
+    return config;
+  },
   publicRuntimeConfig: {
     environment: process.env.NODE_ENV,
     recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,

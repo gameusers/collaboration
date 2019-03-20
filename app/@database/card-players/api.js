@@ -25,6 +25,8 @@ const upload = multer({
   limits: { fieldSize: 25 * 1024 * 1024 } // アップロードできるファイルサイズ、25MBまで
 });
 const moment = require('moment');
+const lodashGet = require('lodash/get');
+// const lodashIsEqual = require('lodash/isEqual');
 
 
 // ---------------------------------------------
@@ -33,6 +35,7 @@ const moment = require('moment');
 
 const { verifyCsrfToken } = require('../../@modules/csrf');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
+const { imageSave } = require('../../@modules/image');
 
 
 // ---------------------------------------------
@@ -671,9 +674,9 @@ router.post('/update', upload.none(), async (req, res, next) => {
     delete saveObj.hardwareInactiveArr;
     
     
-    console.log(chalk`
-      ISO8601: {green ${ISO8601}}
-    `);
+    // console.log(chalk`
+    //   ISO8601: {green ${ISO8601}}
+    // `);
     
     // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
     // console.dir(saveObj.imagesAndVideosObj.thumbnailArr);
@@ -684,14 +687,98 @@ router.post('/update', upload.none(), async (req, res, next) => {
     // console.log(`\n-----------------------------------\n`);
     
     // console.log(`
-    //   ----- saveObj.imagesAndVideosObj / ${ISO8601} -----\n
-    //   ${util.inspect(saveObj.imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   ----- saveObj / ${ISO8601} -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    const newImagesAndVideosObj = lodashGet(saveObj, ['imagesAndVideosObj'], {});
     
     // console.log(`\n---------- saveObj ----------\n`);
     // console.dir(saveObj);
     // console.log(`\n-----------------------------------\n`);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / IDs
+    //   ログインしているユーザーの登録IDデータ
+    // --------------------------------------------------
+    
+    const returnArr = await ModelCardPlayers.find({
+      conditionObj: {
+        _id: saveObj._id
+      }
+    });
+    
+    const oldImagesAndVideosObj = lodashGet(returnArr, [0, 'imagesAndVideosObj'], {});
+    
+    
+    
+    
+    const imageArr = imageSave({
+      newArr: newImagesAndVideosObj.thumbnailArr,
+      oldArr: oldImagesAndVideosObj.thumbnailArr,
+      directoryPath: `static/img/card/players/${saveObj._id}/`
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    // console.log(`
+    //   ----- returnObj.imagesAndVideosObj / ${ISO8601} -----\n
+    //   ${util.inspect(returnObj.imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // console.log(chalk`
+    //   saveObj._id: {green ${saveObj._id}}
+    // `);
+    
+    
+    
+    // console.log(`
+    //   ----- newImagesAndVideosObj / ${ISO8601} -----\n
+    //   ${util.inspect(newImagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- oldImagesAndVideosObj / ${ISO8601} -----\n
+    //   ${util.inspect(oldImagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   lodashIsEqual(newImagesAndVideosObj, oldImagesAndVideosObj): {green ${lodashIsEqual(newImagesAndVideosObj, oldImagesAndVideosObj)}}
+    // `);
+    
+    
+    // console.log(`
+    //   ----- newImagesAndVideosObj.thumbnailArr / ${ISO8601} -----\n
+    //   ${util.inspect(newImagesAndVideosObj.thumbnailArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnArr[0].imagesAndVideosObj.thumbnailArr / ${ISO8601} -----\n
+    //   ${util.inspect(returnArr[0].imagesAndVideosObj.thumbnailArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- oldImagesAndVideosObj.thumbnailArr / ${ISO8601} -----\n
+    //   ${util.inspect(oldImagesAndVideosObj.thumbnailArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

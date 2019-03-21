@@ -419,7 +419,7 @@ class Component extends React.Component {
               {/*<DialogTest />*/}
               
               {/* カードダイアログテスト用 */}
-              <div style={{ margin: '0 0 20px 0', padding: '10px', backgroundColor: 'white' }}>
+              {/*<div style={{ margin: '0 0 20px 0', padding: '10px', backgroundColor: 'white' }}>
                 <User
                   thumbnailSrc={'http://dev-1.gameusers.org:8080/static/img/card/players/zaoOWw89g/thumbnail/image.jpg'}
                   name={'Name'}
@@ -432,7 +432,7 @@ class Component extends React.Component {
                   cardGames_id={'3sZUV34Q_'}
                   showCardGameButton={true}
                 />
-              </div>
+              </div>*/}
               
               
               {componentCardsArr}

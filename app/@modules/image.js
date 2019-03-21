@@ -14,8 +14,12 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const mkdirp = require('mkdirp');
 const lodashGet = require('lodash/get');
+const fs = require('fs');
+// const fs = require('fs').promises;
 const Jimp = require('jimp');
+const imagemin = require('imagemin');
 const imageminMozjpeg = require('imagemin-mozjpeg');
 const imageminPngquant = require('imagemin-pngquant');
 const imageminGifsicle = require('imagemin-gifsicle');
@@ -32,24 +36,24 @@ const imageminSvgo = require('imagemin-svgo');
  * @param {Object} argumentsObj - 引数の入ったオブジェクト
  * @return {Object} 取得したデータまたはエラーオブジェクト
  */
-const imageSave = ({ newArr, oldArr, directoryPath }) => {
+const imageSave = async ({ newArr, oldArr, directoryPath }) => {
   
   
-  console.log(`
-    ----- newArr -----\n
-    ${util.inspect(newArr, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- newArr -----\n
+  //   ${util.inspect(newArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(`
-    ----- oldArr -----\n
-    ${util.inspect(oldArr, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- oldArr -----\n
+  //   ${util.inspect(oldArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(chalk`
-    directoryPath: {green ${directoryPath}}
-  `);
+  // console.log(chalk`
+  //   directoryPath: {green ${directoryPath}}
+  // `);
   
   
   // ---------------------------------------------
@@ -59,87 +63,152 @@ const imageSave = ({ newArr, oldArr, directoryPath }) => {
   let resultArr = [];
   
   
-  // ---------------------------------------------
-  //   Fetch
-  // ---------------------------------------------
   
-  const _id = lodashGet(newArr, [0, '_id'], '');
-  const src = lodashGet(newArr, [0, 'srcSetArr', 0, 'src'], '');
-  const w = lodashGet(newArr, [0, 'srcSetArr', 0, 'w'], '');
-  const width = lodashGet(newArr, [0, 'srcSetArr', 0, 'width'], '');
-  const height = lodashGet(newArr, [0, 'srcSetArr', 0, 'height'], '');
-  const extension = src.slice(src.indexOf('/') + 1, src.indexOf(';'));
-  
-  console.log(chalk`
-    _id: {green ${_id}}
-    src: {green ${src}}
-    w: {green ${w}}
-    width: {green ${width}}
-    height: {green ${height}}
-    extension: {green ${extension}}
-  `);
-  
-  
-  
-  if (w === 'upload' && src.indexOf('base64') !== -1) {
+  for (let valueObj of newArr.values()) {
     
-    const buff = Buffer.from(src.slice(src.indexOf('base64') + 7), 'base64');
     
-    Jimp.read(buff, (err, lenna) => {
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   画像データ取得
+    // ---------------------------------------------
+    
+    const _id = lodashGet(valueObj, ['_id'], '');
+    const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
+    const w = lodashGet(valueObj, ['srcSetArr', 0, 'w'], '');
+    const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], '');
+    const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], '');
+    let extension = src.slice(src.indexOf('/') + 1, src.indexOf(';'));
+    let mimeType = 'image/jpeg';
+    
+    if (extension === 'jpeg') {
+      extension = 'jpg';
+    } else if (extension === 'svg+xml') {
+      extension = 'svg';
+    } else if (extension === 'gif' || extension === 'png') {
+      extension = 'png';
+      mimeType = 'image/png';
+    }
+    
+    let ratio = height / width;
+    
+    // if (width < height) {
+    //   ratio = width / height;
+    // }
+    
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   src: {green ${src}}
+    //   w: {green ${w}}
+    //   width: {green ${width}}
+    //   height: {green ${height}}
+    //   extension: {green ${extension}}
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   base64でuploadされた画像を処理する
+    // ---------------------------------------------
+    
+    if (w === 'upload' && src.indexOf('base64') !== -1) {
       
-      console.log(err);
-      console.log(lenna);
+      let resizedWidthArr = [800, 640, 480, 320];
       
-      if (err) throw err;
-      lenna
-        .resize(256, 256) // resize
-        .quality(60) // set JPEG quality
-        .greyscale() // set greyscale
-        .write(`${directoryPath}${_id}/sample.jpg`); // save
+      if (width < 480) {
+        resizedWidthArr = [320];
+      } else if (width < 640) {
+        resizedWidthArr = [480, 320];
+      } else if (width < 800) {
+        resizedWidthArr = [640, 480, 320];
+      }
+      
+      // console.log(`
+      //   ----- resizedWidthArr -----\n
+      //   ${util.inspect(resizedWidthArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   ディレクトリ作成
+      // ---------------------------------------------
+      
+      // const dirPath = `${directoryPath}${_id}/test/`;
+      const dirPath = `${directoryPath}test/`;
+      
+      mkdirp.sync(dirPath, (err) => {
+        if (err) {
+          throw new Error('mkdir');
+        }
+      });
+      
+      
+      for (let resizedWidth of resizedWidthArr.values()) {
         
-    });
+        
+        // ---------------------------------------------
+        //   高さを計算する
+        // ---------------------------------------------
+        
+        const resizedHeight = Math.round(resizedWidth * ratio);
+        
+        console.log(chalk`
+          ratio: {green ${ratio}}
+          resizedHeight: {green ${resizedHeight}}
+        `);
+        
+        
+        // ---------------------------------------------
+        //   画像をリサイズ＆圧縮する
+        // ---------------------------------------------
+        
+        let buff = Buffer.from(src.slice(src.indexOf('base64') + 7), 'base64');
+        
+        // 画像がSVGでない場合、リサイズする
+        if (extension !== 'svg') {
+          const image = await Jimp.read(buff);
+          image.resize(resizedWidth, resizedHeight);
+          buff = await image.getBufferAsync(mimeType);
+        }
+        
+        const optimizedBuffer = await imagemin.buffer(buff, {
+          plugins: [
+            imageminMozjpeg({ quality: 80 }),
+            imageminPngquant({ quality: [0.5, 0.7] }),
+            imageminGifsicle(),
+            imageminSvgo()
+          ]
+        });
+        
+        // console.log(chalk`
+        //   optimizedBuffer: {green ${optimizedBuffer}}
+        // `);
+        
+        
+        // ---------------------------------------------
+        //   ファイル保存
+        // ---------------------------------------------
+        
+        const fileName = `${resizedWidth}w.${extension}`;
+        
+        fs.writeFileSync(`${dirPath}${fileName}`, optimizedBuffer);
+        
+        
+      }
+      
+      
+    }
+    
     
   }
-  
-  
-  
-  // for (let valueArr of newArr.values()) {
-    
-  //   const src = lodashGet(valueArr, ['srcSetArr', 0, 'src'], '');
-    
-  //   // console.log(`
-  //   //   ----- valueArr / ${ISO8601} -----\n
-  //   //   ${util.inspect(valueArr, { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-  
-    
-  //   // if (src.indexOf('base64') !== -1) {
-      
-  //   //   // const buff = Buffer.from(src.replace(/^data:image\/png;base64,/, ""), 'base64');
-  //   //   const buff = Buffer.from(src.slice(src.indexOf('base64') + 7), 'base64');
-  //   //   // const buff = Buffer.from(src, 'base64');
-      
-  //   //   Jimp.read(buff, (err, lenna) => {
-        
-  //   //     console.log(err);
-  //   //     console.log(lenna);
-        
-  //   //     if (err) throw err;
-  //   //     lenna
-  //   //       .resize(256, 256) // resize
-  //   //       .quality(60) // set JPEG quality
-  //   //       .greyscale() // set greyscale
-  //   //       .write('lena-small-bw.jpg'); // save
-  //   //   });
-      
-  //   // }
-    
-    
-  // }
-  
-  
   
   
 };

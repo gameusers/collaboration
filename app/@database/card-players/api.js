@@ -35,7 +35,7 @@ const lodashGet = require('lodash/get');
 
 const { verifyCsrfToken } = require('../../@modules/csrf');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
-const { imageSave } = require('../../@modules/image');
+const { imageSave } = require('../../@modules/image-server');
 
 
 // ---------------------------------------------

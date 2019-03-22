@@ -7,6 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -41,6 +42,13 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 // ---------------------------------------------
 
 import cyan from '@material-ui/core/colors/cyan';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { imageCalculateSize } from '../../../@modules/image';
 
 
 // ---------------------------------------------
@@ -113,6 +121,19 @@ const PreviewImg = styled.img`
   max-height: 108px;
   
   @media screen and (max-width: 480px) {
+    max-height: 54px;
+  }
+`;
+
+const PreviewSVG = styled.div`
+  background-repeat: no-repeat;
+  background-position: center center;
+  
+  max-width: 108px;
+  max-height: 108px;
+  
+  @media screen and (max-width: 480px) {
+    max-width: 54px;
     max-height: 54px;
   }
 `;
@@ -207,22 +228,67 @@ export default injectIntl(class extends React.Component {
           // Lightboxで開く画像Noを設定する
           const currentNo = imageIndex;
           
+          const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
+          const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
+          const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
           
-          componentsPreviewArr.push(
-            <PreviewBox key={index}>
-              <PreviewImg
-                src={valueObj.srcSetArr[0].src}
-                onClick={() => handleLightboxOpen({ _id, currentNo })}
-              />
-              
-              <PreviewRemoveFab
-                color="primary"
-                onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
-              >
-                <IconClose />
-              </PreviewRemoveFab>
-            </PreviewBox>
-          );
+          
+          // ---------------------------------------------
+          //   横幅・高さを計算する
+          // ---------------------------------------------
+          
+          const calculatedObj = imageCalculateSize({ width, height, maxHeight: 108 });
+          
+          // console.log(`
+          //   ----- calculatedObj -----\n
+          //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // console.log(chalk`
+          //   src: {green ${src}}
+          //   width: {green ${width}}
+          //   height: {green ${height}}
+          // `);
+          
+          
+          if (src.indexOf('data:image/svg') === -1) {
+            
+            componentsPreviewArr.push(
+              <PreviewBox key={index}>
+                <PreviewImg
+                  src={src}
+                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                />
+                
+                <PreviewRemoveFab
+                  color="primary"
+                  onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
+                >
+                  <IconClose />
+                </PreviewRemoveFab>
+              </PreviewBox>
+            );
+            
+          } else {
+            
+            componentsPreviewArr.push(
+              <PreviewBox key={index}>
+                <PreviewSVG
+                  style={{ width: `${calculatedObj.width}px`, height: `${calculatedObj.height}px`, 'backgroundImage': `url(${src})` }}
+                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                />
+                
+                <PreviewRemoveFab
+                  color="primary"
+                  onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
+                >
+                  <IconClose />
+                </PreviewRemoveFab>
+              </PreviewBox>
+            );
+            
+          }
           
           imageIndex += 1;
         

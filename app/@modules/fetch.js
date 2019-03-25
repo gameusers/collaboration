@@ -18,16 +18,21 @@ const fetch = require('isomorphic-unfetch');
 
 
 
+
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
 
 /**
  * Fetch のラッパー
- * @param {Object} argumentsObj - 引数の入ったオブジェクト
+ * @param {string} urlApi - 送信するAPIのURL
+ * @param {string} methodType - GET, POST, PUT, DELETE, etc.
+ * @param {Object} formData - FormDataオブジェクト
+ * @param {string} reqHeadersCookie - サーバー側のときに req.headers.cookie（クッキー情報）を送信　例）'_csrf=hBPvLY8t-lYCwH-dpFTXzjlCLLJQvp9-mOik'
+ * @param {string} reqAcceptLanguage - サーバー側のときに req.headers['accept-language'] を送信　例）ja,en-US;q=0.9,en;q=0.8
  * @return {Object} 取得したデータまたはエラーオブジェクト
  */
-const fetchWrapper = (argumentsObj) => {
+const fetchWrapper = ({ urlApi, methodType, formData, reqHeadersCookie, reqAcceptLanguage }) => {
   
   
   // ---------------------------------------------
@@ -38,11 +43,11 @@ const fetchWrapper = (argumentsObj) => {
     statusCode: 400
   };
   
-  const urlApi = argumentsObj.urlApi;
-  const methodType = argumentsObj.methodType;
-  const formData = argumentsObj.formData;
-  const reqHeadersCookie = argumentsObj.reqHeadersCookie;
-  const reqAcceptLanguage = argumentsObj.reqAcceptLanguage;
+  // const urlApi = argumentsObj.urlApi;
+  // const methodType = argumentsObj.methodType;
+  // const formData = argumentsObj.formData;
+  // const reqHeadersCookie = argumentsObj.reqHeadersCookie;
+  // const reqAcceptLanguage = argumentsObj.reqAcceptLanguage;
   
   
   // ---------------------------------------------
@@ -116,6 +121,7 @@ const fetchWrapper = (argumentsObj) => {
     });
   
 };
+
 
 
 

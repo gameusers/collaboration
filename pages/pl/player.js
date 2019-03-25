@@ -67,6 +67,7 @@ import { locale } from '../../app/@locales/locale';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
+import { imageCalculateSize } from '../../app/@modules/image';
 
 
 // ---------------------------------------------
@@ -101,6 +102,13 @@ import User from '../../app/common/user/components/user';
 // ---------------------------------------------
 
 import withRoot from '../../lib/material-ui/withRoot';
+
+
+
+
+
+
+
 
 
 
@@ -170,7 +178,17 @@ class Component extends React.Component {
     statusCode = resultObj.statusCode;
     initialPropsObj = resultObj.data;
     
+    // console.log(`
+    //   ----- req.headers.cookie -----\n
+    //   ${util.inspect(req.headers.cookie, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(`
+    //   ----- req.headers['accept-language'] -----\n
+    //   ${util.inspect(req.headers['accept-language'], { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- localeObj -----\n
@@ -387,6 +405,27 @@ class Component extends React.Component {
     //   process.env.URL_API: {green ${process.env.URL_API}}
     // `);
     
+    
+    
+    
+    console.log(`\n---------- imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }) ----------\n`);
+    console.dir(imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }));
+    console.log(`\n-----------------------------------\n`);
+    
+    
+    console.log(`\n---------- imageCalculateSize({ width: 500, height: 600, minSize: 128, maxSize: 550, square: true }) ----------\n`);
+    console.dir(imageCalculateSize({ width: 500, height: 900, minSize: 128, maxSize: 550, square: true }));
+    console.log(`\n-----------------------------------\n`);
+    
+    
+    console.log(`\n---------- imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }) ----------\n`);
+    console.dir(imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }));
+    console.log(`\n-----------------------------------\n`);
+    
+    
+    console.log(`\n---------- imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }) ----------\n`);
+    console.dir(imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }));
+    console.log(`\n-----------------------------------\n`);
     
     
     

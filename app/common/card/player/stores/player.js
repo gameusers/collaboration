@@ -16,9 +16,7 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import keycode from 'keycode';
-// import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-// import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
@@ -42,18 +40,8 @@ import { errorsArrIntoErrorMessage } from '../../../../@format/error';
 
 const { validationCardPlayersName } = require('../../../../@database/card-players/validations/name');
 const { validationCardPlayersStatus } = require('../../../../@database/card-players/validations/status');
-// const validationCardPlayersComment = require('../../../../@database/card-players/validations/comment');
-// const validationCardPlayersAge = require('../../../../@database/card-players/validations/age');
-
-
-// const { validationCardPlayersPCModel, validationCardPlayersPCComment, validationCardPlayersPCSpec } = require('../../../../@database/card-players/validations/pc');
-// const { validationCardPlayersHardwareActiveArr, validationCardPlayersHardwareInactiveArr } = require('../../../../@database/card-players/validations/hardware');
-// const { validationCardPlayersIDArr } = require('../../../../@database/card-players/validations/id');
 const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@database/card-players/validations/activity-time');
-// const { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } = require('../../../../@database/card-players/validations/looking-for-friends');
-// const { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } = require('../../../../@database/card-players/validations/voice-chat');
 const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
-
 
 
 

@@ -237,7 +237,7 @@ export default injectIntl(class extends React.Component {
           //   横幅・高さを計算する
           // ---------------------------------------------
           
-          const calculatedObj = imageCalculateSize({ width, height, maxHeight: 108 });
+          const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
           
           // console.log(`
           //   ----- calculatedObj -----\n

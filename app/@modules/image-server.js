@@ -15,6 +15,8 @@ const util = require('util');
 // ---------------------------------------------
 
 const mkdirp = require('mkdirp');
+const rimraf = require('rimraf');
+const shortid = require('shortid');
 const lodashGet = require('lodash/get');
 const fs = require('fs');
 const Jimp = require('jimp');
@@ -40,8 +42,10 @@ const { imageCalculateSize } = require('./image');
 
 /**
  * 画像を保存して、配列を変更する
- * @param {Object} argumentsObj - 引数の入ったオブジェクト
- * @return {Object} 取得したデータまたはエラーオブジェクト
+ * @param {Array} newArr - 新しい画像情報の入った配列
+ * @param {Array} oldArr - 古い（データベースから取得した）画像情報の入った配列
+ * @param {string} directoryPath - 保存先のディレクトリーのパス
+ * @return {Array} 画像情報の入った配列
  */
 const imageSave = async ({ newArr, oldArr, directoryPath }) => {
   
@@ -64,12 +68,37 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
   
   
   // ---------------------------------------------
+  //   配列が空の場合は処理停止
+  // ---------------------------------------------
+  
+  if (newArr.length === 0 && oldArr.length === 0) {
+    return [];
+  }
+  
+  
+  // ---------------------------------------------
+  //   画像を保存、削除できるディレクトリーを制限する
+  //   関係のないパスが送られた場合は処理停止
+  // ---------------------------------------------
+  
+  if (!directoryPath.startsWith('static/img/')) {
+    throw new Error('imageSave 1');
+  }
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Property
   // ---------------------------------------------
   
-  let resultArr = [];
+  let returnArr = [];
+  let _idsArr = [];
   
   
+  // ---------------------------------------------
+  //   画像を保存する
+  // ---------------------------------------------
   
   for (let valueObj of newArr.values()) {
     
@@ -79,6 +108,12 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
     //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    // ---------------------------------------------
+    //   Return Object
+    // ---------------------------------------------
+    
+    let returnObj = valueObj;
     
     
     // ---------------------------------------------
@@ -113,43 +148,42 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
     // `);
     
     
-    
-    
     // ---------------------------------------------
     //   base64でuploadされた画像を処理する
     // ---------------------------------------------
     
     if (w === 'upload' && src.indexOf('base64') !== -1) {
       
-      let longSideArr = [800, 640, 480, 320];
-      
-      if (width < 480) {
-        longSideArr = [320];
-      } else if (width < 640) {
-        longSideArr = [480, 320];
-      } else if (width < 800) {
-        longSideArr = [640, 480, 320];
-      }
-      
-      // console.log(`
-      //   ----- longSideArr -----\n
-      //   ${util.inspect(longSideArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
       
       // ---------------------------------------------
       //   ディレクトリ作成
       // ---------------------------------------------
       
-      // const dirPath = `${directoryPath}${_id}/test/`;
-      const dirPath = `${directoryPath}test/`;
+      const dirPath = `${directoryPath}${_id}/`;
       
       mkdirp.sync(dirPath, (err) => {
         if (err) {
           throw new Error('mkdir');
         }
       });
+      
+      
+      // ---------------------------------------------
+      //   srcset用の配列を作成
+      // ---------------------------------------------
+      
+      let srcSetArr = [];
+      
+      
+      let longSideArr = [320, 480, 640, 800];
+      
+      if (width < 480) {
+        longSideArr = [320];
+      } else if (width < 640) {
+        longSideArr = [320, 480];
+      } else if (width < 800) {
+        longSideArr = [320, 480, 640];
+      }
       
       
       for (let longSide of longSideArr.values()) {
@@ -166,18 +200,6 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
         //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
-        
-        // let resizedWidth = 0;
-        // let resizedHeight = 0;
-        
-        // if (width > height) {
-        //   resizedWidth = longSide;
-        //   resizedHeight = Math.round(longSide * ratio);
-        // } else {
-        //   resizedWidth = Math.round(longSide * ratio);
-        //   resizedHeight = longSide;
-        // }
         
         // console.log(chalk`
         //   ratio: {green ${ratio}}
@@ -208,27 +230,112 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
           ]
         });
         
-        // console.log(chalk`
-        //   optimizedBuffer: {green ${optimizedBuffer}}
-        // `);
-        
         
         // ---------------------------------------------
         //   ファイル保存
         // ---------------------------------------------
         
-        const fileName = `${longSide}w.${extension}`;
+        const srcSetSrc = `${dirPath}${longSide}w.${extension}`;
+        fs.writeFileSync(srcSetSrc, optimizedBuffer);
         
-        fs.writeFileSync(`${dirPath}${fileName}`, optimizedBuffer);
+        
+        // ---------------------------------------------
+        //   srcSetArr 作成
+        // ---------------------------------------------
+        
+        srcSetArr.push({
+          _id: shortid.generate(),
+          src: srcSetSrc,
+          w: `${longSide}w`,
+          width: calculatedObj.width,
+          height: calculatedObj.height,
+        });
         
         
       }
       
       
+      // ---------------------------------------------
+      //   srcSetArr 置き換え
+      // ---------------------------------------------
+      
+      returnObj.srcSetArr = srcSetArr;
+      
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   削除用　_idの入った配列作成
+    // ---------------------------------------------
+    
+    _idsArr.push(_id);
+    
+    
+    // ---------------------------------------------
+    //   結果オブジェクト作成
+    // ---------------------------------------------
+    
+    returnArr.push(returnObj);
+    
+    
+  }
+  
+  
+  // ---------------------------------------------
+  //   画像を削除する
+  // ---------------------------------------------
+  
+  // console.log(`
+  //   ----- _idsArr -----\n
+  //   ${util.inspect(_idsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  for (let valueObj of oldArr.values()) {
+    
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (_idsArr.includes(valueObj._id) === false) {
+      
+      const dirPath = `${directoryPath}${valueObj._id}/`;
+      // const dirPath = `static/img/card/players/test/glbzJb34t/`;
+      
+      
+      rimraf(dirPath, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+      
+      // console.log(chalk`
+      //   valueObj._id: {green ${valueObj._id}}
+      //   dirPath: {green ${dirPath}}
+      // `);
+      
+      // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
+      // console.dir(fs.statSync(dirPath));
+      // console.log(`\n-----------------------------------\n`);
+      
     }
     
     
   }
+  
+  
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return returnArr;
   
   
 };

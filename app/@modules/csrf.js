@@ -8,6 +8,7 @@ const chalk = require('chalk');
 
 
 
+
 // --------------------------------------------------
 //   function
 // --------------------------------------------------
@@ -27,16 +28,18 @@ const createCsrfToken = (req, res) => {
   const secret = tokens.secretSync();
   const token = tokens.create(secret);
   
+  req.session._csrf = secret;
+  res.cookie('_csrf', token);
+  
+  
   // console.log(chalk`
   //   createCsrfToken
   //   secret: {green ${secret}}
   //   token: {green ${token}}
   // `);
   
-  req.session._csrf = secret;
-  res.cookie('_csrf', token);
-  
 };
+
 
 
 
@@ -44,15 +47,11 @@ const createCsrfToken = (req, res) => {
  * CSRF対策でトークンを検証する。また同時にトークンを再発行する。
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
- * @return {boolean} 真偽値を返す
+ * @return {boolean} 検証結果を真偽値で返す
  * 
  * 参考：https://garafu.blogspot.com/2017/04/nodejs-express-csrfprotection.html
  */
 const verifyCsrfToken = (req, res) => {
-  
-  
-  // console.log(`process.env.NODE_ENV = ${process.env.NODE_ENV} / ${typeof process.env.NODE_ENV}`);
-  // console.log(`process.env.VERIFY_CSRF = ${process.env.VERIFY_CSRF} / ${typeof process.env.VERIFY_CSRF}`);
   
   
   // --------------------------------------------------
@@ -69,12 +68,12 @@ const verifyCsrfToken = (req, res) => {
     const secret = req.session._csrf;
     const token = req.cookies._csrf;
     
-    console.log(chalk`
-      verifyCsrfToken
-      secret: {green ${secret}}
-      token: {green ${token}}
-      tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
-    `);
+    // console.log(chalk`
+    //   verifyCsrfToken
+    //   secret: {green ${secret}}
+    //   token: {green ${token}}
+    //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
+    // `);
     
     
     
@@ -111,6 +110,7 @@ const verifyCsrfToken = (req, res) => {
   return true;
   
 };
+
 
 
 

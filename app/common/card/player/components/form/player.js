@@ -302,7 +302,7 @@ export default class extends React.Component {
           {/* サムネイル */}
           <ImageBox>
             <ImageTitle>サムネイル</ImageTitle>
-            <ImageDescription>ハンドルネームの左側に表示される小さな画像です。正方形の画像をアップロードしてください。</ImageDescription>
+            <ImageDescription>ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。</ImageDescription>
             <ImageAndVideoForm
               _id={`${cardPlayers_id}-thumbnail`}
               func={handleImagesAndVideosObjThumbnailArr}

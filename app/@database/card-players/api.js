@@ -26,7 +26,6 @@ const upload = multer({
 });
 const moment = require('moment');
 const lodashGet = require('lodash/get');
-// const lodashIsEqual = require('lodash/isEqual');
 
 
 // ---------------------------------------------
@@ -64,8 +63,6 @@ const { validationCardPlayersActivityTimeObjValueArr } = require('./validations/
 const { validationCardPlayersLookingForFriendsValue, validationCardPlayersLookingForFriendsComment, validationCardPlayersLookingForFriendsIcon } = require('./validations/looking-for-friends');
 const { validationCardPlayersVoiceChatValue, validationCardPlayersVoiceChatComment } = require('./validations/voice-chat');
 const { validationCardPlayersLinkArr } = require('./validations/link');
-
-
 
 
 // ---------------------------------------------
@@ -674,36 +671,11 @@ router.post('/update', upload.none(), async (req, res, next) => {
     delete saveObj.hardwareInactiveArr;
     
     
-    // console.log(chalk`
-    //   ISO8601: {green ${ISO8601}}
-    // `);
-    
-    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
-    // console.dir(saveObj.imagesAndVideosObj.thumbnailArr);
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(saveObj.imagesAndVideosObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`
-    //   ----- saveObj / ${ISO8601} -----\n
-    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    const newImagesAndVideosObj = lodashGet(saveObj, ['imagesAndVideosObj'], {});
-    
-    // console.log(`\n---------- saveObj ----------\n`);
-    // console.dir(saveObj);
-    // console.log(`\n-----------------------------------\n`);
-    
-    
     
     
     // --------------------------------------------------
-    //   データ取得 / IDs
-    //   ログインしているユーザーの登録IDデータ
+    //   データ取得 / Card Players
+    //   現在の画像情報を取得する
     // --------------------------------------------------
     
     const returnArr = await ModelCardPlayers.find({
@@ -714,9 +686,13 @@ router.post('/update', upload.none(), async (req, res, next) => {
     
     const oldImagesAndVideosObj = lodashGet(returnArr, [0, 'imagesAndVideosObj'], {});
     
+    const newImagesAndVideosObj = lodashGet(saveObj, ['imagesAndVideosObj'], {});
     
     
     
+    // --------------------------------------------------
+    //   画像を保存＆削除する
+    // --------------------------------------------------
     
     // const newArr = [ { _id: 'akFbZfUMno',
     // type: 'image',
@@ -729,22 +705,52 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //     width: 512,
     //     height: 512 } ] } ];
     
-    // const imageArr = imageSave({
+    // const imageArr = await imageSave({
     //   newArr,
+    //   oldArr: oldImagesAndVideosObj.thumbnailArr,
+    //   directoryPath: `static/img/card/players/test/`
+    // });
+    
+    
+    // const imageArr = await imageSave({
+    //   newArr: newImagesAndVideosObj.thumbnailArr,
     //   oldArr: oldImagesAndVideosObj.thumbnailArr,
     //   directoryPath: `static/img/card/players/${saveObj._id}/`
     // });
     
-    
     const imageArr = await imageSave({
       newArr: newImagesAndVideosObj.thumbnailArr,
       oldArr: oldImagesAndVideosObj.thumbnailArr,
-      directoryPath: `static/img/card/players/${saveObj._id}/`
+      directoryPath: `static/img/card/players/test/`
     });
     
+    saveObj.imagesAndVideosObj.thumbnailArr = imageArr;
     
     
     
+    // console.log(chalk`
+    //   ISO8601: {green ${ISO8601}}
+    // `);
+    
+    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
+    // console.dir(saveObj.imagesAndVideosObj.thumbnailArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(saveObj.imagesAndVideosObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    console.log(`
+      ----- saveObj / ${ISO8601} -----\n
+      ${util.inspect(saveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- imageArr / ${ISO8601} -----\n
+    //   ${util.inspect(imageArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

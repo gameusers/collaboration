@@ -189,6 +189,12 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     returnObj.cardPlayersObj = cardPlayersObj;
     
     
+    // console.log(chalk`
+    //   users_id: {green ${users_id}}
+    //   usersLogin_id: {green ${usersLogin_id}}
+    // `);
+    
+    
     // --------------------------------------------------
     //   データ取得 / Card Games
     //   アクセスしたページ所有者のゲームカード情報

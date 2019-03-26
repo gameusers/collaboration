@@ -591,10 +591,10 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * 編集フォームを表示するかどうかを決める変数
-   * @type {boolean}
+   * 編集フォームを表示するかどうかを決める真偽値を入れるオブジェクト
+   * @type {Object}
    */
-  @observable cardPlayerEditFormOpenObj = {};
+  @observable formOpenObj = {};
   
   
   /**
@@ -602,8 +602,8 @@ class Store {
    * @param {string} _id - ID
    */
   @action.bound
-  handleCardPlayerEditFormClose(_id) {
-    this.cardPlayerEditFormOpenObj[_id] = false;
+  handleFormClose({ _id }) {
+    this.formOpenObj[_id] = false;
   };
   
   
@@ -612,7 +612,7 @@ class Store {
    * @param {string} _id - ID
    */
   @action.bound
-  async handleCardPlayerEditFormOpen(_id) {
+  async handleFormOpen({ _id }) {
     
     
     try {
@@ -625,7 +625,7 @@ class Store {
       
       if (_id in this.cardPlayerEditFormDataObj) {
         
-        this.cardPlayerEditFormOpenObj[_id] = true;
+        this.formOpenObj[_id] = true;
         
       
       // ---------------------------------------------
@@ -687,7 +687,7 @@ class Store {
         //   編集フォーム表示
         // ---------------------------------------------
         
-        this.cardPlayerEditFormOpenObj[_id] = true;
+        this.formOpenObj[_id] = true;
         
         
         // console.log(`
@@ -1569,11 +1569,13 @@ class Store {
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      //
       
       // return;
       
@@ -1588,10 +1590,18 @@ class Store {
       
       
       // ---------------------------------------------
+      //   Data 更新 - cardPlayersObj
+      // ---------------------------------------------
+      
+      storeData.updateCardPlayersObj(resultObj.data);
+      
+      
+      // ---------------------------------------------
       //   Data Users 更新
       // ---------------------------------------------
       
-      // storeData.updateUsersObj(resultObj.data.usersObj);
+      // storeData.updateCardGamesObj(resultObj.data);
+      // this.cardPlayerEditFormDataObj[_id] = resultObj.data;
       
       
       // ---------------------------------------------

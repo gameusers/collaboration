@@ -47,8 +47,20 @@ const { imageCalculateSize } = require('./image');
  * @param {string} directoryPath - 保存先のディレクトリーのパス
  * @return {Array} 画像情報の入った配列
  */
-const imageSave = async ({ newArr, oldArr, directoryPath }) => {
+const imageSave = async ({ newArr, oldArr, directoryPath, minSize, square }) => {
   
+  
+  // console.log(`
+  //   ----- newObj -----\n
+  //   ${util.inspect(newObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- oldObj -----\n
+  //   ${util.inspect(oldObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(`
   //   ----- newArr -----\n
@@ -193,7 +205,7 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
         //   横幅・高さを計算する
         // ---------------------------------------------
         
-        const calculatedObj = imageCalculateSize({ width, height, maxSize: longSide });
+        const calculatedObj = imageCalculateSize({ width, height, minSize, maxSize: longSide, square });
         
         // console.log(`
         //   ----- calculatedObj -----\n
@@ -245,7 +257,7 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
         
         srcSetArr.push({
           _id: shortid.generate(),
-          src: srcSetSrc,
+          src: `/${srcSetSrc}`,
           w: `${longSide}w`,
           width: calculatedObj.width,
           height: calculatedObj.height,
@@ -325,8 +337,6 @@ const imageSave = async ({ newArr, oldArr, directoryPath }) => {
     
     
   }
-  
-  
   
   
   

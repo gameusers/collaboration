@@ -354,7 +354,7 @@ class Component extends React.Component {
         
         componentCardsArr.push(
           <CardPlayer
-            cardPlayers_id={valueObj.cardPlayers_id}
+            _id={valueObj.cardPlayers_id}
             cardGames_id="TzjNMDQyl"
             showCardGameButton={true}
             showFollow={true}
@@ -408,24 +408,24 @@ class Component extends React.Component {
     
     
     
-    console.log(`\n---------- imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }) ----------\n`);
-    console.dir(imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }) ----------\n`);
+    // console.dir(imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }));
+    // console.log(`\n-----------------------------------\n`);
     
     
-    console.log(`\n---------- imageCalculateSize({ width: 500, height: 600, minSize: 128, maxSize: 550, square: true }) ----------\n`);
-    console.dir(imageCalculateSize({ width: 500, height: 900, minSize: 128, maxSize: 550, square: true }));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- imageCalculateSize({ width: 500, height: 600, minSize: 128, maxSize: 550, square: true }) ----------\n`);
+    // console.dir(imageCalculateSize({ width: 500, height: 900, minSize: 128, maxSize: 550, square: true }));
+    // console.log(`\n-----------------------------------\n`);
     
     
-    console.log(`\n---------- imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }) ----------\n`);
-    console.dir(imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }) ----------\n`);
+    // console.dir(imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }));
+    // console.log(`\n-----------------------------------\n`);
     
     
-    console.log(`\n---------- imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }) ----------\n`);
-    console.dir(imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }) ----------\n`);
+    // console.dir(imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }));
+    // console.log(`\n-----------------------------------\n`);
     
     
     

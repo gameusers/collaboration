@@ -1872,7 +1872,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
               srcSetArr: [
                 {
                   _id: 'BWl9SejbC',
-                  src: '/static/img/card/players/zaoOWw89g/glbzJb34t/320w.png',
+                  src: '/static/img/card/players/zaoOWw89g/thumbnail/glbzJb34t/320w.png',
                   w: '320w',
                   width: 256,
                   height: 256,
@@ -1888,35 +1888,35 @@ router.post('/db', upload.none(), async (req, res, next) => {
               srcSetArr: [
                 {
                   _id: 'himsYqtCL',
-                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/320w.jpg',
+                  src: '/static/img/card/players/zaoOWw89g/main/H_NXaMPKG/320w.jpg',
                   w: '320w',
                   width: 320,
                   height: 180,
                 },
                 {
                   _id: 'Cfjt2j3Y_',
-                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/480w.jpg',
+                  src: '/static/img/card/players/zaoOWw89g/main/H_NXaMPKG/480w.jpg',
                   w: '480w',
                   width: 480,
                   height: 270,
                 },
                 {
                   _id: 'EjUz0NL8z',
-                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/640w.jpg',
+                  src: '/static/img/card/players/zaoOWw89g/main/H_NXaMPKG/640w.jpg',
                   w: '640w',
                   width: 640,
                   height: 360,
                 },
                 {
                   _id: 'g9u6JQkLh',
-                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/800w.jpg',
+                  src: '/static/img/card/players/zaoOWw89g/main/H_NXaMPKG/800w.jpg',
                   w: '800w',
                   width: 800,
                   height: 450,
                 },
                 {
                   _id: 'TsNkkGwok',
-                  src: '/static/img/card/players/zaoOWw89g/H_NXaMPKG/source.jpg',
+                  src: '/static/img/card/players/zaoOWw89g/main/H_NXaMPKG/source.jpg',
                   w: 'source',
                   width: 1920,
                   height: 1080,

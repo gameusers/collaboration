@@ -163,7 +163,7 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardPlayers_id}-form` });
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-form` });
     
   }
   
@@ -175,7 +175,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id } = this.props;
+    const { stores, _id } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -186,7 +186,7 @@ export default class extends React.Component {
       handleCardPlayerEditFormUndoDataDialogOpen,
       handleCardPlayerEditFormUndoDataDialogClose,
       handleCardPlayerEditFormUndoData,
-      handleCardPlayerEditFormClose,
+      handleFormClose,
       handleCardPlayerEditID,
       handleImagesAndVideosObjThumbnailArr,
       handleImagesAndVideosObjMainArr,
@@ -224,7 +224,7 @@ export default class extends React.Component {
       voiceChatObj,
       linkArr
       
-    } = cardPlayerEditFormDataObj[cardPlayers_id];
+    } = cardPlayerEditFormDataObj[_id];
     
     
     
@@ -233,14 +233,14 @@ export default class extends React.Component {
     //   Dialog
     // --------------------------------------------------
     
-    const dialogOpen = lodashGet(cardPlayerEditFormUndoDataDialogOpenObj, [cardPlayers_id], false);
+    const dialogOpen = lodashGet(cardPlayerEditFormUndoDataDialogOpenObj, [_id], false);
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(buttonDisabledObj, [`${cardPlayers_id}-form`], true);
+    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-form`], true);
     
     
     
@@ -249,11 +249,28 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    console.log(`
+      ----- cardPlayerEditFormDataObj[_id] -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(cardPlayerEditFormDataObj[_id])), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     // console.log(`
-    //   ----- cardPlayerEditFormDataObj[cardPlayers_id] -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayerEditFormDataObj[cardPlayers_id])), { colors: true, depth: null })}\n
+    //   ----- cardPlayerEditFormDataObj[_id] -----\n
+    //   ${util.inspect(cardPlayerEditFormDataObj[_id], { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    console.log(`
+      ----- cardPlayerEditFormDataObj[_id].imagesAndVideosObj -----\n
+      ${util.inspect(cardPlayerEditFormDataObj[_id].imagesAndVideosObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosObj -----\n
+      ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- linkArr -----\n
@@ -287,14 +304,14 @@ export default class extends React.Component {
           
           {/* ハンドルネーム */}
           <HandleName
-            _id={cardPlayers_id}
+            _id={_id}
             nameObj={nameObj}
           />
           
           
           {/* ステータス */}
           <Status
-            _id={cardPlayers_id}
+            _id={_id}
             statusObj={statusObj}
           />
           
@@ -304,7 +321,7 @@ export default class extends React.Component {
             <ImageTitle>サムネイル</ImageTitle>
             <ImageDescription>ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。</ImageDescription>
             <ImageAndVideoForm
-              _id={`${cardPlayers_id}-thumbnail`}
+              _id={`${_id}-thumbnail`}
               func={handleImagesAndVideosObjThumbnailArr}
               imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
               caption={false}
@@ -319,7 +336,7 @@ export default class extends React.Component {
             <ImageTitle>メイン画像</ImageTitle>
             <ImageDescription>プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。</ImageDescription>
             <ImageAndVideoForm
-              _id={`${cardPlayers_id}-main`}
+              _id={`${_id}-main`}
               func={handleImagesAndVideosObjMainArr}
               imagesAndVideosArr={imagesAndVideosObj.mainArr}
               caption={true}
@@ -331,7 +348,7 @@ export default class extends React.Component {
           {/* コメント */}
           <Box>
             <Comment
-              _id={cardPlayers_id}
+              _id={_id}
               commentObj={commentObj}
             />
           </Box>
@@ -340,7 +357,7 @@ export default class extends React.Component {
           {/* 年齢 */}
           <Box>
             <Age
-              _id={cardPlayers_id}
+              _id={_id}
               ageObj={ageObj}
             />
           </Box>
@@ -349,7 +366,7 @@ export default class extends React.Component {
           {/* 性別 */}
           <Box>
             <Sex
-              _id={cardPlayers_id}
+              _id={_id}
               sexObj={sexObj}
             />
           </Box>
@@ -358,7 +375,7 @@ export default class extends React.Component {
           {/* 住所 */}
           <Box>
             <Address
-              _id={cardPlayers_id}
+              _id={_id}
               addressObj={addressObj}
             />
           </Box>
@@ -367,7 +384,7 @@ export default class extends React.Component {
           {/* ゲーム歴 */}
           <Box>
             <GamingExperience
-              _id={cardPlayers_id}
+              _id={_id}
               gamingExperienceObj={gamingExperienceObj}
             />
           </Box>
@@ -376,7 +393,7 @@ export default class extends React.Component {
           {/* 趣味 */}
           <Box>
             <Hobby
-              _id={cardPlayers_id}
+              _id={_id}
               hobbiesObj={hobbiesObj}
             />
           </Box>
@@ -385,7 +402,7 @@ export default class extends React.Component {
           {/* 特技 */}
           <Box>
             <SpecialSkill
-              _id={cardPlayers_id}
+              _id={_id}
               specialSkillsObj={specialSkillsObj}
             />
           </Box>
@@ -394,7 +411,7 @@ export default class extends React.Component {
           {/* スマートフォン */}
           <Box>
             <Smartphone
-              _id={cardPlayers_id}
+              _id={_id}
               smartphoneObj={smartphoneObj}
             />
           </Box>
@@ -403,7 +420,7 @@ export default class extends React.Component {
           {/* タブレット */}
           <Box>
             <Tablet
-              _id={cardPlayers_id}
+              _id={_id}
               tabletObj={tabletObj}
             />
           </Box>
@@ -412,7 +429,7 @@ export default class extends React.Component {
           {/* PC */}
           <Box>
             <PC
-              _id={cardPlayers_id}
+              _id={_id}
               pcObj={pcObj}
             />
           </Box>
@@ -421,7 +438,7 @@ export default class extends React.Component {
           {/* 所有ハードウェア */}
           <Box>
             <HardwareActive
-              _id={cardPlayers_id}
+              _id={_id}
               arr={hardwareActiveArr}
               search={hardwareActiveObj.search}
             />
@@ -431,7 +448,7 @@ export default class extends React.Component {
           {/* 昔、所有していたハードウェア */}
           <Box>
             <HardwareInactive
-              _id={cardPlayers_id}
+              _id={_id}
               arr={hardwareInactiveArr}
               search={hardwareInactiveObj.search}
             />
@@ -441,7 +458,7 @@ export default class extends React.Component {
           {/* ID */}
           <Box>
             <ID
-              _id={cardPlayers_id}
+              _id={_id}
               idArr={idArr}
               func={handleCardPlayerEditID}
             />
@@ -451,7 +468,7 @@ export default class extends React.Component {
           {/* 活動時間 */}
           <Box>
             <ActivityTime
-              _id={cardPlayers_id}
+              _id={_id}
               activityTimeObj={activityTimeObj}
             />
           </Box>
@@ -460,7 +477,7 @@ export default class extends React.Component {
           {/* フレンド */}
           <Box>
             <LookingForFriends
-              _id={cardPlayers_id}
+              _id={_id}
               value={lookingForFriendsObj.value}
               icon={lookingForFriendsObj.icon}
               comment={lookingForFriendsObj.comment}
@@ -472,7 +489,7 @@ export default class extends React.Component {
           {/* ボイスチャット */}
           <Box>
             <VoiceChat
-              _id={cardPlayers_id}
+              _id={_id}
               value={voiceChatObj.value}
               comment={voiceChatObj.comment}
               search={voiceChatObj.search}
@@ -483,7 +500,7 @@ export default class extends React.Component {
           {/* Link */}
           <Box>
             <FormLink
-              _id={cardPlayers_id}
+              _id={_id}
               arr={linkArr}
             />
           </Box>
@@ -498,7 +515,7 @@ export default class extends React.Component {
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => handleEditFormSubmit({ _id: cardPlayers_id })}
+              onClick={() => handleEditFormSubmit({ _id: _id })}
               disabled={buttonDisabled}
             >
               保存する
@@ -509,7 +526,7 @@ export default class extends React.Component {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleCardPlayerEditFormUndoDataDialogOpen(cardPlayers_id)}
+                onClick={() => handleCardPlayerEditFormUndoDataDialogOpen(_id)}
                 disabled={buttonDisabled}
               >
                 元に戻す
@@ -521,7 +538,7 @@ export default class extends React.Component {
               <Button
                 variant="outlined"
                 color="primary"
-                onClick={() => handleCardPlayerEditFormClose(cardPlayers_id)}
+                onClick={() => handleFormClose({ _id })}
                 disabled={buttonDisabled}
               >
                 閉じる
@@ -535,7 +552,7 @@ export default class extends React.Component {
         {/* フォームの内容を元に戻すか尋ねるダイアログ */}
         <Dialog
           open={dialogOpen}
-          onClose={() => handleCardPlayerEditFormUndoDataDialogClose(cardPlayers_id)}
+          onClose={() => handleCardPlayerEditFormUndoDataDialogClose(_id)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -546,11 +563,11 @@ export default class extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleCardPlayerEditFormUndoData(cardPlayers_id)} color="primary" autoFocus>
+            <Button onClick={() => handleCardPlayerEditFormUndoData(_id)} color="primary" autoFocus>
               はい
             </Button>
             
-            <Button onClick={() => handleCardPlayerEditFormUndoDataDialogClose(cardPlayers_id)} color="primary">
+            <Button onClick={() => handleCardPlayerEditFormUndoDataDialogClose(_id)} color="primary">
               いいえ
             </Button>
           </DialogActions>

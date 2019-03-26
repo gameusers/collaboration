@@ -653,6 +653,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     await val(validationCardPlayers_idServer, { value: saveObj._id, usersLogin_id }, '_id');
+    const _id = saveObj._id;
     
     
     
@@ -664,6 +665,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     const ISO8601 = moment().toISOString();
     saveObj.updatedDate = ISO8601;
     
+    delete saveObj._id;
     delete saveObj.createdDate;
     delete saveObj.users_id;
     delete saveObj.imageArr;
@@ -680,7 +682,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     
     const returnArr = await ModelCardPlayers.find({
       conditionObj: {
-        _id: saveObj._id
+        _id
       }
     });
     
@@ -706,9 +708,11 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //     height: 512 } ] } ];
     
     // const imageArr = await imageSave({
+    //   // newObj: newImagesAndVideosObj,
+    //   // oldObj: oldImagesAndVideosObj,
     //   newArr,
     //   oldArr: oldImagesAndVideosObj.thumbnailArr,
-    //   directoryPath: `static/img/card/players/test/`
+    //   directoryPath: `static/img/card/players/test/thumbnail/`
     // });
     
     
@@ -718,176 +722,73 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   directoryPath: `static/img/card/players/${saveObj._id}/`
     // });
     
-    const imageArr = await imageSave({
+    const thumbnailArr = await imageSave({
       newArr: newImagesAndVideosObj.thumbnailArr,
       oldArr: oldImagesAndVideosObj.thumbnailArr,
-      directoryPath: `static/img/card/players/test/`
+      directoryPath: `static/img/card/players/test/thumbnail/`,
+      minSize: 128,
+      square: true
     });
     
-    saveObj.imagesAndVideosObj.thumbnailArr = imageArr;
-    
-    
-    
-    // console.log(chalk`
-    //   ISO8601: {green ${ISO8601}}
-    // `);
-    
-    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
-    // console.dir(saveObj.imagesAndVideosObj.thumbnailArr);
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`\n---------- saveObj.imagesAndVideosObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(saveObj.imagesAndVideosObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    console.log(`
-      ----- saveObj / ${ISO8601} -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    // console.log(`
-    //   ----- imageArr / ${ISO8601} -----\n
-    //   ${util.inspect(imageArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-
-    
-    // console.log(`
-    //   ----- returnObj.imagesAndVideosObj / ${ISO8601} -----\n
-    //   ${util.inspect(returnObj.imagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // console.log(chalk`
-    //   saveObj._id: {green ${saveObj._id}}
-    // `);
-    
-    
-    
-    // console.log(`
-    //   ----- newImagesAndVideosObj / ${ISO8601} -----\n
-    //   ${util.inspect(newImagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- oldImagesAndVideosObj / ${ISO8601} -----\n
-    //   ${util.inspect(oldImagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   lodashIsEqual(newImagesAndVideosObj, oldImagesAndVideosObj): {green ${lodashIsEqual(newImagesAndVideosObj, oldImagesAndVideosObj)}}
-    // `);
-    
-    
-    // console.log(`
-    //   ----- newImagesAndVideosObj.thumbnailArr / ${ISO8601} -----\n
-    //   ${util.inspect(newImagesAndVideosObj.thumbnailArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnArr[0].imagesAndVideosObj.thumbnailArr / ${ISO8601} -----\n
-    //   ${util.inspect(returnArr[0].imagesAndVideosObj.thumbnailArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- oldImagesAndVideosObj.thumbnailArr / ${ISO8601} -----\n
-    //   ${util.inspect(oldImagesAndVideosObj.thumbnailArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // return;
-    
-    
-    
-    
-    
-    // // ---------------------------------------------
-    // //   保存可能件数のチェック
-    // //   オーバーしている場合は処理停止
-    // // ---------------------------------------------
-    
-    // const count = await ModelIDs.count({
-    //   conditionObj: {
-    //     users_id: usersLogin_id,
-    //   },
+    // const imageArr = await imageSave({
+    //   newArr: newImagesAndVideosObj.thumbnailArr,
+    //   oldArr: oldImagesAndVideosObj.thumbnailArr,
+    //   directoryPath: `static/img/card/players/${saveObj._id}/`,
+    //   minSize: 128,
+    //   square: true
     // });
     
-    // if (count > process.env.ID_INSERT_LIMIT) {
-    //   errorArgumentsObj.errorCodeArr = ['NRO3Y1hnC'];
-    //   throw new Error();
-    // }
+    saveObj.imagesAndVideosObj.thumbnailArr = thumbnailArr;
     
     
     
     
-    // // --------------------------------------------------
-    // //   データ更新
-    // // --------------------------------------------------
+    const mainArr = await imageSave({
+      newArr: newImagesAndVideosObj.mainArr,
+      oldArr: oldImagesAndVideosObj.mainArr,
+      directoryPath: `static/img/card/players/test/main/`,
+      // minSize: 320
+    });
     
-    // let conditionObj = {};
-    
-    
-    // // ---------------------------------------------
-    // //   Update
-    // // ---------------------------------------------
-    
-    // if (_id) {
-      
-    //   conditionObj = {
-    //     _id
-    //   };
-      
-    //   delete saveObj.createdDate;
-    //   delete saveObj.users_id;
-      
-    //   saveObj = {
-    //     $set: saveObj
-    //   }
-      
-      
-    // // ---------------------------------------------
-    // //   Insert
-    // // ---------------------------------------------
-      
-    // } else {
-      
-    //   conditionObj = {
-    //     _id: shortid.generate()
-    //   };
-      
-    // }
-    
-    // await ModelIDs.upsert({
-    //   conditionObj,
-    //   saveObj,
-    // });
+    saveObj.imagesAndVideosObj.mainArr = mainArr;
     
     
     
     
-    // // --------------------------------------------------
-    // //   データ取得 / IDs
-    // //   ログインしているユーザーの登録IDデータ
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   データ更新
+    // --------------------------------------------------
     
-    // const returnObj = await ModelIDs.findBy_Users_idForForm({
-    //   language: localeObj.language,
-    //   country: localeObj.country,
-    //   usersLogin_id
-    // });
+    const conditionObj = { _id, users_id: usersLogin_id, };
+    
+    
+    // ---------------------------------------------
+    //   Update
+    // ---------------------------------------------
+    
+    const setSaveObj = {
+      $set: saveObj
+    }
+    
+    const resultUpsertObj = await ModelCardPlayers.upsert({
+      conditionObj,
+      saveObj: setSaveObj
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Card Players
+    //   プレイヤーカード情報
+    // --------------------------------------------------
+    
+    const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+      users_id: usersLogin_id,
+      language: localeObj.language,
+      country: localeObj.country,
+      usersLogin_id
+    });
     
     
     
@@ -908,9 +809,25 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   process.env.ID_INSERT_LIMIT: {green ${process.env.ID_INSERT_LIMIT}}
     // `);
     
+     // console.log(chalk`
+    //   ISO8601: {green ${ISO8601}}
+    // `);
+    
     // console.log(`
-    //   ----- saveObj -----\n
+    //   ----- saveObj / ${ISO8601} -----\n
     //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- resultUpsertObj / ${ISO8601} -----\n
+    //   ${util.inspect(resultUpsertObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- cardPlayersObj / ${ISO8601} -----\n
+    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -925,7 +842,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   Return Json Object / Success
     // ---------------------------------------------
     
-    return res.status(200).json({});
+    return res.status(200).json(cardPlayersObj);
     // return res.status(200).json(returnObj);
     
     

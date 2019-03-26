@@ -55,7 +55,7 @@ export default class extends React.Component {
   
   
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-editButton`, false);
+    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editButton`, false);
   }
   
   
@@ -66,7 +66,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, cardPlayers_id, users_id } = this.props;
+    const { stores, _id, users_id } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -74,7 +74,7 @@ export default class extends React.Component {
     
     const {
       
-      handleCardPlayerEditFormOpen
+      handleFormOpen
       
     } = stores.cardPlayer;
     
@@ -107,15 +107,15 @@ export default class extends React.Component {
     
     let buttonDisabled = true;
     
-    if (`${cardPlayers_id}-editButton` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${cardPlayers_id}-editButton`];
+    if (`${_id}-editButton` in buttonDisabledObj) {
+      buttonDisabled = buttonDisabledObj[`${_id}-editButton`];
     }
     
     let componentButton =
       <Button
         variant="outlined"
         color="primary"
-        onClick={() => handleCardPlayerEditFormOpen(cardPlayers_id)}
+        onClick={() => handleFormOpen({ _id: _id })}
         disabled={buttonDisabled}
       >
         編集する

@@ -30,7 +30,7 @@ const validationCardPlayersAge = ({ value }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   const messageCodeArr = [];
   
@@ -41,6 +41,11 @@ const validationCardPlayersAge = ({ value }) => {
     error: false,
     errorCodeArr: []
   };
+  
+  // console.log(chalk`
+  //   data: {green ${data}}
+  //   validator.isEmpty(data): {green ${validator.isEmpty(data)}}
+  // `);
   
   
   try {

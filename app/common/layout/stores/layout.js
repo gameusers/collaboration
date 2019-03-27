@@ -498,23 +498,33 @@ class Store {
   
   
   
+  
   // ---------------------------------------------
-  //   On Load
+  //   Loading
   // ---------------------------------------------
   
   /**
-   * ページの読み込み判定
+   * ローディングを表示するかどうかの真偽値
    * @type {boolean}
    */
-  @observable onload = false;
+  @observable loading = true;
+  
   
   /**
-   * ページの読み込み判定を更新する
-   * @param {boolean} value - 読み込み済み true / 読み込み前 false
+   * ローディングを表示する
    */
-  handleOnload(value) {
-    this.onload = value;
+  handleLoadingShow() {
+    this.loading = true;
   };
+  
+  
+  /**
+   * ローディングを非表示にする
+   */
+  handleLoadingHide() {
+    this.loading = false;
+  };
+  
   
   
   

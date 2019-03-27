@@ -52,13 +52,22 @@ export default class extends React.Component {
   
   componentDidMount() {
     
-    // ウィンドウの横幅が大きい場合、ヘッダーの情報を開く
+    
+    // --------------------------------------------------
+    //   ウィンドウの横幅が大きい場合、ヘッダーの情報を開く
+    // --------------------------------------------------
+    
     if (window.innerWidth > 480) {
       this.props.stores.layout.handleHeaderDataBoxOpen();
     }
     
-    // ページ読み込み判定
-    this.props.stores.layout.handleOnload(true);
+    
+    // --------------------------------------------------
+    //   ローディングを隠す
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleLoadingHide();
+    
     
   }
   
@@ -108,12 +117,12 @@ export default class extends React.Component {
         
         
         {/* 動画用のモーダルウィンドウ */}
-        <ModalVideo
+        {/*<ModalVideo
           channel={stores.layout.modalVideoChannel}
           isOpen={stores.layout.modalVideoOpen}
           videoId={stores.layout.modalVideoId}
           onClose={stores.layout.handleModalVideoClose}
-        />
+        />*/}
         
         
         {/* Snackbar 通知用 */}

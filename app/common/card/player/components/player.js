@@ -342,6 +342,7 @@ export default class extends React.Component {
     //   ボイスチャット
     // ---------------------------------------------
     
+    const voiceChatValue = cardPlayersObj.voiceChatObj.value;
     const voiceChatComment = cardPlayersObj.voiceChatObj.comment;
     
     
@@ -553,6 +554,7 @@ export default class extends React.Component {
                 
                 {/* ボイスチャット */}
                 <VoiceChat
+                  value={voiceChatValue}
                   comment={voiceChatComment}
                 />
                 

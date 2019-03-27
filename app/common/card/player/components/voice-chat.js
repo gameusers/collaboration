@@ -35,7 +35,6 @@ import Paragraph from '../../../layout/components/paragraph';
 
 
 
-
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
@@ -70,7 +69,6 @@ const CommentBox = styled.div`
 
 
 
-
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -91,9 +89,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { comment } = this.props;
-    
-    
+    const { value, comment } = this.props;
     
     
     // --------------------------------------------------
@@ -105,6 +101,15 @@ export default class extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   できる / できない
+    // --------------------------------------------------
+    
+    let text = 'できない';
+    
+    if (value) {
+      text = 'できる';
+    }
     
     
     // --------------------------------------------------
@@ -117,7 +122,7 @@ export default class extends React.Component {
         {/* 見出し */}
         <HeadingBox>
           <StyledIcon />
-          <Heading>ボイスチャット</Heading>
+          <Heading>ボイスチャット: {text}</Heading>
         </HeadingBox>
         
         {/* コメント */}

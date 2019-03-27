@@ -116,12 +116,28 @@ export default injectIntl(class extends React.Component {
     //   日付のフォーマット
     // --------------------------------------------------
     
-    const formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
+    let formattedDate = '';
+    
+    if (validationValueObj.value) {
+      formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
+    }
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- ageObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ageObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- validationValueObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationValueObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- ageObj -----\n

@@ -249,28 +249,29 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- cardPlayerEditFormDataObj[_id] -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(cardPlayerEditFormDataObj[_id])), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- cardPlayerEditFormDataObj[_id] -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayerEditFormDataObj[_id])), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(`
     //   ----- cardPlayerEditFormDataObj[_id] -----\n
     //   ${util.inspect(cardPlayerEditFormDataObj[_id], { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- cardPlayerEditFormDataObj[_id].imagesAndVideosObj -----\n
-      ${util.inspect(cardPlayerEditFormDataObj[_id].imagesAndVideosObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- cardPlayerEditFormDataObj[_id].imagesAndVideosObj -----\n
+    //   ${util.inspect(cardPlayerEditFormDataObj[_id].imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- linkArr -----\n

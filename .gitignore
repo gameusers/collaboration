@@ -37,3 +37,6 @@ desktop.ini
 
 # ファイル
 __*.
+
+# 一時的に無視する
+/static/img/card/players/test/

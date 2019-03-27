@@ -675,11 +675,10 @@ class Store {
         
         
         // ---------------------------------------------
-        //  Data 更新
+        //   Data 更新
         // ---------------------------------------------
         
         this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data);
-        
         this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data);
         
         
@@ -690,11 +689,11 @@ class Store {
         this.formOpenObj[_id] = true;
         
         
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        console.log(`
+          ----- resultObj -----\n
+          ${util.inspect(resultObj, { colors: true, depth: null })}\n
+          --------------------\n
+        `);
         
         // console.log(`
         //   ----- this.cardPlayerEditFormDataObj -----\n
@@ -1520,6 +1519,13 @@ class Store {
       
       
       // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow();
+      
+      
+      // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
       
@@ -1556,7 +1562,10 @@ class Store {
       const formData = new FormData();
       
       formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
-      
+      // console.log(`\n---------- this.cardPlayerEditFormDataObj[_id] ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(this.cardPlayerEditFormDataObj[_id])));
+      // console.log(`\n-----------------------------------\n`);
+      // return;
       
       // ---------------------------------------------
       //   Fetch
@@ -1569,15 +1578,15 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
       
-      //
       
-      // return;
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -1590,18 +1599,22 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Data 更新 - cardPlayersObj
+      //   Data 更新
       // ---------------------------------------------
       
-      storeData.updateCardPlayersObj(resultObj.data);
+      // フォーム情報更新
+      this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data.cardPlayersForEditFormObj);
+      this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data.cardPlayersForEditFormObj);
+      
+      // Store Data カード情報更新
+      storeData.updateCardPlayersObj(resultObj.data.cardPlayersObj);
       
       
       // ---------------------------------------------
-      //   Data Users 更新
+      //   編集フォームを閉じる
       // ---------------------------------------------
       
-      // storeData.updateCardGamesObj(resultObj.data);
-      // this.cardPlayerEditFormDataObj[_id] = resultObj.data;
+      this.handleFormClose({ _id });
       
       
       // ---------------------------------------------
@@ -1629,6 +1642,13 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleButtonEnable({ _id: `${_id}-form`});
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide();
       
       
     }

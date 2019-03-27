@@ -761,21 +761,23 @@ router.post('/update', upload.none(), async (req, res, next) => {
     
     const conditionObj = { _id, users_id: usersLogin_id, };
     
-    
-    // ---------------------------------------------
-    //   Update
-    // ---------------------------------------------
-    
     const setSaveObj = {
       $set: saveObj
-    }
+    };
     
-    const resultUpsertObj = await ModelCardPlayers.upsert({
+    await ModelCardPlayers.upsert({
       conditionObj,
       saveObj: setSaveObj
     });
     
     
+    
+    
+    // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+    
+    const returnObj = {};
     
     
     // --------------------------------------------------
@@ -789,6 +791,23 @@ router.post('/update', upload.none(), async (req, res, next) => {
       country: localeObj.country,
       usersLogin_id
     });
+    
+    returnObj.cardPlayersObj = cardPlayersObj;
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Card Players
+    //   プレイヤーカード情報 / 編集フォーム用
+    // --------------------------------------------------
+    
+    const cardPlayersForEditFormObj = await ModelCardPlayers.findOneBy_idForEditForm({
+      _id,
+      language: localeObj.language,
+      country: localeObj.country,
+      usersLogin_id
+    });
+    
+    returnObj.cardPlayersForEditFormObj = cardPlayersForEditFormObj;
     
     
     
@@ -842,8 +861,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   Return Json Object / Success
     // ---------------------------------------------
     
-    return res.status(200).json(cardPlayersObj);
-    // return res.status(200).json(returnObj);
+    return res.status(200).json(returnObj);
     
     
   } catch (errorObj) {

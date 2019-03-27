@@ -83,8 +83,6 @@ export default class extends React.Component {
     const { value, icon, comment } = this.props;
     
     
-    
-    
     // --------------------------------------------------
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
@@ -94,10 +92,8 @@ export default class extends React.Component {
     }
     
     
-    
-    
     // --------------------------------------------------
-    //   募集中
+    //   募集中 / 募集していません
     // --------------------------------------------------
     
     let text = '募集していません';
@@ -107,10 +103,8 @@ export default class extends React.Component {
     }
     
     
-    
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -120,8 +114,6 @@ export default class extends React.Component {
     // console.log(`
     //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
     // `);
-    
-    
     
     
     // --------------------------------------------------

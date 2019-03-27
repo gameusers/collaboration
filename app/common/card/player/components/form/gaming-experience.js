@@ -116,7 +116,13 @@ export default injectIntl(class extends React.Component {
     //   日付のフォーマット
     // --------------------------------------------------
     
-    const formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
+    let formattedDate = '';
+    
+    if (validationValueObj.value) {
+      formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
+    }
+    
+    // const formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
     
     
     // --------------------------------------------------

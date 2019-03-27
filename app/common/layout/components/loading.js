@@ -66,18 +66,14 @@ export default class extends React.Component {
     //   Data - 必要な情報を取得
     // --------------------------------------------------
     
-    const {
-      
-      onload
-      
-    } = stores.layout;
+    const { loading } = stores.layout;
     
     
     // --------------------------------------------------
-    //   読み込みが終わった場合、空のコンポーネントを返す
+    //   ローディング中でない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (onload) {
+    if (!loading) {
       return null;
     }
     

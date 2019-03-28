@@ -45,6 +45,7 @@ class Store {
    */
   @observable usersLoginObj = {};
   
+  
   /**
    * ログインユーザー情報オブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
@@ -66,10 +67,12 @@ class Store {
    */
   @observable usersObj = {};
   
+  
   // @action.bound
   insertUsersObj(obj) {
     this.usersObj = Object.assign({}, obj, this.usersObj);
   };
+  
   
   /**
    * ユーザー情報オブジェクトを更新する
@@ -79,6 +82,7 @@ class Store {
   updateUsersObj(obj) {
     this.usersObj = Object.assign({}, this.usersObj, obj);
   };
+  
   
   /**
    * ユーザー情報オブジェクトを置き換える

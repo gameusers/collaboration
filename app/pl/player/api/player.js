@@ -77,8 +77,9 @@ let statusCode = 400;
 let errorArgumentsObj = {
   fileID: '4tT2vx700',
   functionID: '',
-  errorCodeArr: [500000],
+  errorCodeArr: [],
   errorObj: {},
+  usersLogin_id: ''
 };
 
 
@@ -122,7 +123,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   CSRF
     // --------------------------------------------------
     
-    verifyCsrfToken(req, res);
+    // verifyCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -145,10 +146,39 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     let usersLogin_id = '';
     
-    if (req.user) {
+    if (req.isAuthenticated() && req.user) {
       returnObj.usersLoginObj = req.user;
       usersLogin_id = req.user._id;
     }
+    
+    // const usersLogin_id = req.user._id;
+    
+    // let usersLogin_id = '';
+    
+    // if (req.user) {
+    //   returnObj.usersLoginObj = req.user;
+    //   usersLogin_id = req.user._id;
+    // }
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Users
+    //   アクセスしたページ所有者のユーザー情報
+    // --------------------------------------------------
+    
+    const users2Obj = await ModelUsers.findOneFormatted2({
+      localeObj,
+      conditionObj: { users_id: 'jun-deE4J' },
+      usersLogin_id: 'jun-deE4J',
+    });
+    
+    console.log(`
+      ----- users2Obj -----\n
+      ${util.inspect(users2Obj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
     
     
     // --------------------------------------------------
@@ -232,7 +262,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -294,6 +324,17 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
   } catch (errorObj) {
+    
+    
+    // console.log(chalk`
+    //   errorObj.message: {green ${errorObj.message}}
+    // `);
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------

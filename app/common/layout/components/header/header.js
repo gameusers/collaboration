@@ -2,10 +2,27 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -33,8 +50,14 @@ import IconSearch from '@material-ui/icons/Search';
 import IconPerson from '@material-ui/icons/Person';
 import IconEject from '@material-ui/icons/Eject';
 
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
 import HeroImage from '../header/hero-image';
 import NavSub from '../header/nav-sub';
+
 
 
 
@@ -43,17 +66,20 @@ import NavSub from '../header/nav-sub';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Header = styled.header`
+const Container = styled.header`
   display: flex;
   flex-direction: column;
   background-color: white;
 `;
 
-const HeaderTop = styled.div`
+const Top = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
+  
   background-color: white;
   width: 100%;
+  height: 53px;
   position: -webkit-sticky;
   position: sticky;
   
@@ -61,12 +87,18 @@ const HeaderTop = styled.div`
   z-index: 1200;
 `;
 
-const HeaderTopLogo = styled.div`
-  margin: 2px 0 0 10px;
+
+// ---------------------------------------------
+//   Logo
+// ---------------------------------------------
+
+const Logo = styled.div`
+  cursor: pointer;
+  margin: 0 0 0 6px;
+  
   width: 138px;
   height: 43px;
   background-image: url('/static/img/common/logo.png');
-  cursor: pointer;
   
   @media screen and (max-width: 480px) {
     width: 30px;
@@ -77,63 +109,66 @@ const HeaderTopLogo = styled.div`
 `;
 
 
+// ---------------------------------------------
+//   Bell
+// ---------------------------------------------
 
-const IconButtonTopBell = styled(IconButton)`
+const BellIconButton = styled(IconButton)`
   && {
-    top: 5px;
-    left: 5px;
+    margin: 6px 0 0 6px;
+    padding: 6px;
     
     @media screen and (max-width: 480px) {
       width: 26px;
-      left: 0;
     }
   }
 `;
 
-const BadgeTopBell = styled(Badge)`
+const BellBadge = styled(Badge)`
   && {
     color: black;
   }
 `;
 
-const HeaderTopSearch = styled.div`
+
+// ---------------------------------------------
+//   Search
+// ---------------------------------------------
+
+const Search = styled.div`
   display: flex;
   flex-grow: 1;
   justify-content: center;
-  padding: 8px 0 0 10px;
+  
   max-width: 63%;
   margin-left: auto !important;
 `;
 
-const TextFieldTopSearch = styled(TextField)`
+const SearchTextField = styled(TextField)`
   && {
     width: 80%;
   }
 `;
 
-const ButtonTopMenu = styled(Button)`
+
+// ---------------------------------------------
+//   Thumbnail / Login Menu
+// ---------------------------------------------
+
+const ThumbnailIconButton = styled(IconButton)`
   && {
-    margin: 0 10px 0 0;
+    margin: 0 8px 0 auto;
     padding: 0;
   }
 `;
 
-const IconButtonTopThumbnail = styled(IconButton)`
+const StyledAvatar = styled(Avatar)`
   && {
-    top: 2px;
-    right: 8px;
-    margin-left: auto;
+    
   }
 `;
 
-const AvatarTop = styled(Avatar)`
-  && {
-    margin:0;
-    padding: 0;
-  }
-`;
-
-const MenuTopLoginMenu = styled(Menu)`
+const LoginMenu = styled(Menu)`
   && {
     position: fixed;
     top: 10p;
@@ -141,17 +176,15 @@ const MenuTopLoginMenu = styled(Menu)`
   }
 `;
 
-const ListItemIconTopLoginMenu = styled(ListItemIcon)`
+const LoginMenuListItemIcon = styled(ListItemIcon)`
   && {
     margin: 0 8px 0 0;
-    padding: 0;
   }
 `;
 
-const ListItemTextTopLoginMenu = styled(ListItemText)`
+const LoginMenuListItemText = styled(ListItemText)`
   && {
     margin: 0 8px 0 0;
-    padding: 0;
   }
 `;
 
@@ -180,23 +213,30 @@ export default class extends React.Component {
     
     const { stores } = this.props;
     
-    // const historyStateArr = stores.layout.historyStateArr[0];
-    
-    
     
     // --------------------------------------------------
     //   ナビゲーション - フォロー＆コミュニティ参加用を表示するかどうか
     // --------------------------------------------------
     
     let showNavSub = false;
+    
     //　一時しのぎに表示しないコード
     if ('userCommunity' in stores) {
       showNavSub = true;
     }
     
-    // if (historyStateArr && historyStateArr.param1 === 'uc' && historyStateArr.param2) {
-    //   showNavSub = true;
-    // }
+    
+    // console.log(`
+    //   ----- stores.data.usersLoginObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.usersLoginObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- stores.data.usersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.usersObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -204,27 +244,31 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Header>
-          
-        {/* トップメニュー */}
-        <HeaderTop>
+      <Container>
         
+        
+        {/* トップメニュー */}
+        <Top>
+          
+          
           {/* ロゴ */}
-          <Link prefetch href="/">
-            <HeaderTopLogo />
+          <Link href="/">
+            <Logo />
           </Link>
           
+          
           {/* ベル・通知 */}
-          <IconButtonTopBell onClick={stores.layout.handleHeaderNotificationDialogOpen}>
-            <BadgeTopBell badgeContent={4} color="primary">
+          <BellIconButton onClick={stores.layout.handleHeaderNotificationDialogOpen}>
+            <BellBadge badgeContent={5} color="primary">
               <IconNotifications />
-            </BadgeTopBell>
-          </IconButtonTopBell>
+            </BellBadge>
+          </BellIconButton>
+          
           
           {/* 検索フォーム */}
-          <HeaderTopSearch>
-            <TextFieldTopSearch
-              placeholder="ゲーム、コミュニティを検索"
+          <Search>
+            <SearchTextField
+              placeholder="検索"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -233,44 +277,53 @@ export default class extends React.Component {
                 ),
               }}
             />
-          </HeaderTopSearch>
+          </Search>
           
-          {/* メニュー */}
-          <IconButtonTopThumbnail
+          
+          {/* サムネイル */}
+          <ThumbnailIconButton
             onClick={stores.layout.handleHeaderLoginMenuOpen}
           >
-            <AvatarTop
+            <StyledAvatar
               alt="ユーザー1"
               src="https://gameusers.org/assets/img/user/1/thumbnail.jpg"
             />
-          </IconButtonTopThumbnail>
+          </ThumbnailIconButton>
           
-          <MenuTopLoginMenu
+          
+          {/* ログインメニュー */}
+          <LoginMenu
             anchorEl={stores.layout.headerLoginMenuAnchorEl}
             open={stores.layout.headerLoginMenuOpen}
             onClose={stores.layout.handleHeaderLoginMenuClose}
           >
+            
             <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
-              <ListItemIconTopLoginMenu>
+              <LoginMenuListItemIcon>
                 <IconPerson />
-              </ListItemIconTopLoginMenu>
-              <ListItemTextTopLoginMenu inset primary="プレイヤー" />
+              </LoginMenuListItemIcon>
+              <LoginMenuListItemText inset primary="プレイヤー" />
             </MenuItem>
             
             <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
-              <ListItemIconTopLoginMenu>
+              <LoginMenuListItemIcon>
                 <IconEject />
-              </ListItemIconTopLoginMenu>
-              <ListItemTextTopLoginMenu inset primary="ログアウト" />
+              </LoginMenuListItemIcon>
+              <LoginMenuListItemText inset primary="ログアウト" />
             </MenuItem>
-          </MenuTopLoginMenu>
+            
+          </LoginMenu>
           
-        </HeaderTop>
+          
+        </Top>
+        
         
         
         
         {/* ヒーローイメージ（各ゲームの大きな画像） */}
         <HeroImage />
+        
+        
         
         
         {/* ナビゲーション - フォロー＆コミュニティ参加用 */}
@@ -279,12 +332,15 @@ export default class extends React.Component {
         }
         
         
+        
+        
         {/* 通知ダイアログ */}
         <Dialog
           fullScreen
           open={stores.layout.headerNotificationDialogOpen}
           onClose={stores.layout.handleHeaderNotificationDialogClose}
         >
+        
           <AppBar>
             <Toolbar>
               <IconButton color="inherit" onClick={stores.layout.handleHeaderNotificationDialogClose} aria-label="Close">
@@ -298,6 +354,7 @@ export default class extends React.Component {
               </Button>
             </Toolbar>
           </AppBar>
+          
           <List>
             <ListItem button>
               <ListItemText primary="Phone ringtone" secondary="Titania" />
@@ -307,9 +364,11 @@ export default class extends React.Component {
               <ListItemText primary="Default notification ringtone" secondary="Tethys" />
             </ListItem>
           </List>
+          
         </Dialog>
         
-      </Header>
+        
+      </Container>
     );
   }
   

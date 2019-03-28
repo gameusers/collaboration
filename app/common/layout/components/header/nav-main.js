@@ -2,13 +2,24 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import Scrollbar from 'react-smooth-scrollbar';
 
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
 import Button from '@material-ui/core/Button';
+
+
 
 
 // --------------------------------------------------
@@ -30,30 +41,33 @@ const Container = styled.nav`
   z-index: 1200;
 `;
       
-const ButtonMenuActive = styled(Button)`
+const MenuActiveButton = styled(Button)`
   && {
+    height: 36px;
     color: white;
     margin: 0 10px 0 0;
-    padding: 2px 0 0;
     border-bottom: solid 2px #B40431;
   }
 `;
       
-const ButtonMenu = styled(Button)`
+const MenuButton = styled(Button)`
   && {
+    height: 36px;
     color: #BDBDBD;
     margin: 0 10px 0 0;
-    padding: 2px 0 0;
+    // padding: 2px 0 0;
     border-bottom: solid 2px #25283D;
   }
 `;
       
-const ScrollbarContainer = styled(Scrollbar)`
+const StyledScrollbar = styled(Scrollbar)`
   padding: 0 0 8px 0;
   overflow-x: hidden;
   overflow-y: hidden;
   white-space: nowrap;
 `;
+
+
 
 
 // --------------------------------------------------
@@ -80,10 +94,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Menu
+    //   Component - Menu
     // --------------------------------------------------
     
-    const codeArr = [];
+    const componentsArr = [];
     let active = false;
     
     
@@ -95,21 +109,21 @@ export default class extends React.Component {
         
         if (value.pathname === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
           
-          codeArr.unshift(
-            <ButtonMenuActive key={index}>
+          componentsArr.unshift(
+            <MenuActiveButton key={index}>
               {value.name}
-            </ButtonMenuActive>
+            </MenuActiveButton>
           );
           
           active = true;
           
         } else {
           
-          codeArr.unshift(
-            <Link prefetch href={value.pathname} key={index}>
-              <ButtonMenu>
+          componentsArr.unshift(
+            <Link href={value.pathname} key={index}>
+              <MenuButton>
                 {value.name}
-              </ButtonMenu>
+              </MenuButton>
             </Link>
           );
           
@@ -126,11 +140,11 @@ export default class extends React.Component {
     
     return (
       <Container>
-        <ScrollbarContainer
-          alwaysShowTracks
-        >
-          {codeArr}
-        </ScrollbarContainer>
+      
+        <StyledScrollbar alwaysShowTracks>
+          {componentsArr}
+        </StyledScrollbar>
+        
       </Container>
     );
     

@@ -192,38 +192,70 @@ class Store {
   };
   
   
+  
+  
   // ---------------------------------------------
-  //   ヘッダー - 通知ダイアログ
+  //   Header - 通知ダイアログ
   // ---------------------------------------------
   
+  /**
+   * 通知ダイアログの表示・非表示を切り替える真偽値
+   * @type {boolean}
+   */
   @observable headerNotificationDialogOpen = false;
   
   
+  /**
+   * 通知ダイアログを開く
+   */
   @action.bound
   handleHeaderNotificationDialogOpen() {
     this.headerNotificationDialogOpen = true;
   };
   
+  
+  /**
+   * 通知ダイアログを閉じる
+   */
   @action.bound
   handleHeaderNotificationDialogClose() {
     this.headerNotificationDialogOpen = false;
   };
   
   
+  
+  
   // ---------------------------------------------
-  //   ヘッダー - ログインメニュー
+  //   Header - ログインメニュー
   // ---------------------------------------------
   
+  /**
+   * メニューの位置を設定するために使用されるDOM要素
+   * @type {boolean}
+   */
   @observable headerLoginMenuAnchorEl = null;
+  
+  
+  /**
+   * ログインメニューの表示・非表示を切り替える真偽値
+   * @type {boolean}
+   */
   @observable headerLoginMenuOpen = false;
   
   
+  /**
+   * ログインメニューを開く
+   */
   @action.bound
   handleHeaderLoginMenuOpen(event) {
     this.headerLoginMenuAnchorEl = event.currentTarget;
     this.headerLoginMenuOpen = true;
   };
   
+  
+  /**
+   * ログインメニューを閉じる
+   */
   @action.bound
   handleHeaderLoginMenuClose() {
     this.headerLoginMenuAnchorEl = null;
@@ -231,8 +263,10 @@ class Store {
   };
   
   
+  
+  
   // ---------------------------------------------
-  //   ヘッダー - データ
+  //   Header - データ
   // ---------------------------------------------
   
   @observable headerDataBoxOpen = false;
@@ -249,7 +283,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   ヘッダー - ヒーローイメージ
+  //   Header - ヒーローイメージ
   // ---------------------------------------------
   
   @observable headerGameNo = 1;

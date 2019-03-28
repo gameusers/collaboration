@@ -78,6 +78,7 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [500000],
   errorObj: {},
+  usersLogin_id: ''
 };
 
 

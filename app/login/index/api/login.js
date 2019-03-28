@@ -19,7 +19,6 @@ const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-// const shortid = require('shortid');
 const bcrypt = require('bcryptjs');
 const fetch = require('isomorphic-unfetch');
 const FormData = require('form-data');
@@ -65,7 +64,6 @@ const router = express.Router();
 
 
 
-
 // --------------------------------------------------
 //   Initial Props
 // --------------------------------------------------
@@ -77,7 +75,7 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -101,11 +99,7 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     //   ログインチェック
     // --------------------------------------------------
     
-    let login = false;
-    
-    if (req.isAuthenticated()) {
-      login = true;
-    }
+    const login = req.isAuthenticated() ? true : false;
     
     
     // ---------------------------------------------
@@ -119,9 +113,9 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     
   } catch (error) {
     
-    console.log(chalk`
-      error.message: {red ${error.message}}
-    `);
+    // console.log(chalk`
+    //   error.message: {red ${error.message}}
+    // `);
     
     
     // --------------------------------------------------
@@ -149,6 +143,7 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     });
     
   }
+  
   
 });
 
@@ -191,7 +186,7 @@ router.post('/', upload.none(), (req, res, next) => {
       
       
       // --------------------------------------------------
-      //   Console 出力
+      //   console.log
       // --------------------------------------------------
       
       // console.log(chalk`
@@ -312,9 +307,9 @@ router.post('/', upload.none(), (req, res, next) => {
       
     } catch (error) {
       
-      console.log(chalk`
-        error.message: {red ${error.message}}
-      `);
+      // console.log(chalk`
+      //   error.message: {red ${error.message}}
+      // `);
       
       
       // --------------------------------------------------
@@ -423,7 +418,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser((id, done) => {
   
-  SchemaUsers.findOne({_id: id}, (err, user) => {
+  SchemaUsers.findOne({ _id: id }, (err, user) => {
     
     // console.log(`
     //   deserializeUser user ${new Date()}: \n${util.inspect(user, { colors: true, depth: null })}
@@ -450,7 +445,6 @@ passport.deserializeUser((id, done) => {
   });
   
 });
-
 
 
 

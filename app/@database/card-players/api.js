@@ -104,6 +104,7 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
+  usersLogin_id: ''
 };
 
 
@@ -747,7 +748,6 @@ router.post('/update', upload.none(), async (req, res, next) => {
       newArr: newImagesAndVideosObj.mainArr,
       oldArr: oldImagesAndVideosObj.mainArr,
       directoryPath: `static/img/card/players/test/main/`,
-      // minSize: 320
     });
     
     saveObj.imagesAndVideosObj.mainArr = mainArr;

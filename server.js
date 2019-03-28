@@ -46,6 +46,7 @@ mobxReact.useStaticRendering(true);
 
 
 
+
 // --------------------------------------------------
 //   Server
 // --------------------------------------------------
@@ -102,6 +103,7 @@ app.prepare().then(() => {
   
   
   
+  
   // --------------------------------------------------
   //   Database API
   //   参考: http://thecodebarbarian.com/building-a-nextjs-app-with-mongodb.html
@@ -131,6 +133,7 @@ app.prepare().then(() => {
   
   
   
+  
   // ---------------------------------------------
   //   故意に Error 出力
   // ---------------------------------------------
@@ -138,6 +141,7 @@ app.prepare().then(() => {
   server.get('/error', (req, res, next) => {
     throw new Error('故意のエラー');
   });
+  
   
   
   
@@ -149,7 +153,7 @@ app.prepare().then(() => {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -166,6 +170,8 @@ app.prepare().then(() => {
     createCsrfToken(req, res);
     app.render(req, res, '/login', {});
   });
+  
+  
   
   
   // ---------------------------------------------
@@ -188,6 +194,7 @@ app.prepare().then(() => {
   
   
   
+  
   // ---------------------------------------------
   //   Player
   // ---------------------------------------------
@@ -195,10 +202,8 @@ app.prepare().then(() => {
   server.get('/pl/:param1*', (req, res) => {
     
     
-
-    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -237,6 +242,7 @@ app.prepare().then(() => {
   
   
   
+  
   // ---------------------------------------------
   //   Game Community
   // ---------------------------------------------
@@ -264,6 +270,7 @@ app.prepare().then(() => {
     const { param1, param2, param3 } = req.params;
     app.render(req, res, '/gc/community', { param1, param2, param3 });
   });
+  
   
   
   
@@ -335,6 +342,8 @@ app.prepare().then(() => {
   // server.get('/test/:id', (req, res) => {
   //   return app.render(req, res, '/test', { id: req.params.id });
   // });
+  
+  
   
   
   // ---------------------------------------------

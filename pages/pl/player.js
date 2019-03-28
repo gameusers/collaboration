@@ -67,7 +67,7 @@ import { locale } from '../../app/@locales/locale';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
-import { imageCalculateSize } from '../../app/@modules/image';
+// import { imageCalculateSize } from '../../app/@modules/image';
 
 
 // ---------------------------------------------
@@ -102,13 +102,6 @@ import User from '../../app/common/user/components/user';
 // ---------------------------------------------
 
 import withRoot from '../../lib/material-ui/withRoot';
-
-
-
-
-
-
-
 
 
 
@@ -177,6 +170,11 @@ class Component extends React.Component {
     
     statusCode = resultObj.statusCode;
     initialPropsObj = resultObj.data;
+    
+    
+    
+    
+    
     
     // console.log(`
     //   ----- req.headers.cookie -----\n

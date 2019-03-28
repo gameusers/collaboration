@@ -60,7 +60,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "prop-types": "^15.7.2",
-    "rc-pagination": "^1.17.11",
+    "rc-pagination": "^1.17.13",
     "react": "^16.8.5",
     "react-autosize-textarea": "^7.0.0",
     "react-dom": "^16.8.5",

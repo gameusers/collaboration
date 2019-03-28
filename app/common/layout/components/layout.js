@@ -9,7 +9,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
-import ModalVideo from 'react-modal-video';
+// import ModalVideo from 'react-modal-video';
 
 
 // ---------------------------------------------
@@ -79,7 +79,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    // const { stores } = this.props;
     
     
     // --------------------------------------------------

@@ -56,7 +56,7 @@ moment.locale('ja');
 const Container = styled.div`
   display: flex;
   flex-flow: column wrap;
-  line-height: 1.4em;
+  line-height: 1.6em;
   margin: 0;
   padding: 0;
   

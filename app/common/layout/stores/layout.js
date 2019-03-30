@@ -354,51 +354,51 @@ class Store {
    * Lightboxのデータを入れるオブジェクト
    * @type {Object}
    */
-  @observable lightboxObj = {};
+  // @observable lightboxObj = {};
   
   
-  /**
-   * Lightboxを開く
-   * @param {string} _id - ID
-   * @param {number} currentNo - 表示する画像番号
-   */
-  @action.bound
-  handleLightboxOpen({ _id, currentNo }) {
-    lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo);
-    lodashSet(this.lightboxObj, [_id, 'open'], true);
-  };
+  // /**
+  // * Lightboxを開く
+  // * @param {string} _id - ID
+  // * @param {number} currentNo - 表示する画像番号
+  // */
+  // @action.bound
+  // handleLightboxOpen({ _id, currentNo }) {
+  //   lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo);
+  //   lodashSet(this.lightboxObj, [_id, 'open'], true);
+  // };
   
   
-  /**
-   * Lightboxを閉じる
-   * @param {string} _id - ID
-   */
-  @action.bound
-  handleLightboxClose({ _id }) {
-    lodashSet(this.lightboxObj, [_id, 'open'], false);
-  };
+  // /**
+  // * Lightboxを閉じる
+  // * @param {string} _id - ID
+  // */
+  // @action.bound
+  // handleLightboxClose({ _id }) {
+  //   lodashSet(this.lightboxObj, [_id, 'open'], false);
+  // };
   
   
-  /**
-   * 前の画像を表示する
-   * @param {string} _id - ID
-   */
-  @action.bound
-  handleLightboxPrevious({ _id }) {
-    const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
-    lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo - 1);
-  };
+  // /**
+  // * 前の画像を表示する
+  // * @param {string} _id - ID
+  // */
+  // @action.bound
+  // handleLightboxPrevious({ _id }) {
+  //   const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
+  //   lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo - 1);
+  // };
   
   
-  /**
-   * 次の画像を表示する
-   * @param {string} _id - ID
-   */
-  @action.bound
-  handleLightboxNext({ _id }) {
-    const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
-    lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo + 1);
-  };
+  // /**
+  // * 次の画像を表示する
+  // * @param {string} _id - ID
+  // */
+  // @action.bound
+  // handleLightboxNext({ _id }) {
+  //   const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
+  //   lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo + 1);
+  // };
   
   
   
@@ -408,21 +408,21 @@ class Store {
   //   https://github.com/appleple/react-modal-video
   // ---------------------------------------------
   
-  @observable modalVideoChannel = null;
-  @observable modalVideoId = null;
-  @observable modalVideoOpen = false;
+  // @observable modalVideoChannel = null;
+  // @observable modalVideoId = null;
+  // @observable modalVideoOpen = false;
   
-  @action.bound
-  handleModalVideoOpen(videoChannel, videoId) {
-    this.modalVideoChannel = videoChannel;
-    this.modalVideoId = videoId;
-    this.modalVideoOpen = true;
-  };
+  // @action.bound
+  // handleModalVideoOpen(videoChannel, videoId) {
+  //   this.modalVideoChannel = videoChannel;
+  //   this.modalVideoId = videoId;
+  //   this.modalVideoOpen = true;
+  // };
   
-  @action.bound
-  handleModalVideoClose() {
-    this.modalVideoOpen = false;
-  };
+  // @action.bound
+  // handleModalVideoClose() {
+  //   this.modalVideoOpen = false;
+  // };
   
   
   
@@ -502,7 +502,29 @@ class Store {
   //   Panel
   // ---------------------------------------------
   
+  /**
+   * パネルの開閉を切り替える真偽値
+   * @type {boolean}
+   */
   @observable panelExpandedObj = {};
+  
+  
+  /**
+   * パネルの開閉を切り替える
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handlePanelExpand({ _id }) {
+    
+    if (_id in this.panelExpandedObj) {
+      this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
+    } else {
+      this.panelExpandedObj[_id] = false;
+    }
+    
+  };
+  
+  
   
   
   @action.bound

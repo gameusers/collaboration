@@ -120,13 +120,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   CSRF
-    // --------------------------------------------------
-    
-    // verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
     //   GET 取得 & Validation
     // --------------------------------------------------
     
@@ -151,35 +144,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       usersLogin_id = req.user._id;
     }
     
-    // const usersLogin_id = req.user._id;
-    
-    // let usersLogin_id = '';
-    
-    // if (req.user) {
-    //   returnObj.usersLoginObj = req.user;
-    //   usersLogin_id = req.user._id;
-    // }
-    
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Users
-    //   アクセスしたページ所有者のユーザー情報
-    // --------------------------------------------------
-    
-    const users2Obj = await ModelUsers.findOneFormatted2({
-      localeObj,
-      conditionObj: { users_id: 'jun-deE4J' },
-      usersLogin_id: 'jun-deE4J',
-    });
-    
-    console.log(`
-      ----- users2Obj -----\n
-      ${util.inspect(users2Obj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
     
     // --------------------------------------------------
     //   データ取得 / Users
@@ -192,15 +156,21 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       usersLogin_id
     });
     
-    if (Object.keys(usersObj).length === 0) {
+    returnObj.usersObj = usersObj;
+    
+    
+    // --------------------------------------------------
+    //   ユーザー情報が存在しない場合はエラー
+    // --------------------------------------------------
+    
+    const usersKeysArr = Object.keys(usersObj);
+    
+    if (usersKeysArr.length === 0) {
       statusCode = 404;
-      errorArgumentsObj.errorCodeArr = [503001];
+      errorArgumentsObj.errorCodeArr = ['IVX1dL1pJ'];
       throw new Error();
     }
     
-    returnObj.usersObj = usersObj;
-    
-    const usersKeysArr = Object.keys(usersObj);
     const users_id = usersKeysArr[0];
     
     
@@ -217,12 +187,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;
-    
-    
-    // console.log(chalk`
-    //   users_id: {green ${users_id}}
-    //   usersLogin_id: {green ${usersLogin_id}}
-    // `);
     
     
     // --------------------------------------------------
@@ -271,41 +235,20 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // `);
     
     // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(chalk`
-    //   req.headers['accept-language']: {green ${req.headers['accept-language']}}
-    // `);
-    
-    // console.log(`
     //   ----- localeObj -----\n
     //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- usersObj -----\n
+      ${util.inspect(usersObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- cardPlayersObj -----\n
     //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardGamesObj -----\n
-    //   ${util.inspect(cardGamesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- objectKeysArr -----\n
-    //   ${util.inspect(objectKeysArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

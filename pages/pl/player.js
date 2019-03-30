@@ -174,7 +174,11 @@ class Component extends React.Component {
     
     
     
-    
+    console.log(`
+      ----- req.user -----\n
+      ${util.inspect(req.user, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- req.headers.cookie -----\n

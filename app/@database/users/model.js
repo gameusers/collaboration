@@ -17,6 +17,7 @@ const util = require('util');
 const shortid = require('shortid');
 const moment = require('moment');
 const bcrypt = require('bcryptjs');
+const lodashGet = require('lodash/get');
 
 
 // ---------------------------------------------
@@ -36,10 +37,17 @@ const validationEmail = require('./validations/email');
 
 
 // ---------------------------------------------
-//   暗号化
+//   Modules
 // ---------------------------------------------
 
 const { encrypt }  = require('../../@modules/crypto');
+
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { formatImagesAndVideosArr } = require('../../@format/image');
 
 
 // ---------------------------------------------
@@ -281,20 +289,13 @@ const findOne = async (conditionObj) => {
 
 
 /**
- * 検索してデータを取得する / 1件だけ
+ * 検索してデータを取得する / Users Obj 用
  * @param {Object} localeObj - ロケール
  * @param {Object} conditionObj - 検索条件
  * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findOneFormatted2 = async ({ localeObj, conditionObj, usersLogin_id }) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
+const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
   
   
   // --------------------------------------------------
@@ -302,22 +303,6 @@ const findOneFormatted2 = async ({ localeObj, conditionObj, usersLogin_id }) => 
   // --------------------------------------------------
   
   try {
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    console.log(chalk`
-      usersLogin_id: {green ${usersLogin_id}}
-    `);
     
     
     // --------------------------------------------------
@@ -342,12 +327,9 @@ const findOneFormatted2 = async ({ localeObj, conditionObj, usersLogin_id }) => 
                   { $and:
                     [
                       { $eq: ['$language', localeObj.languageArr[0]] },
-                      // { $eq: ['$users_id', 'jun-deE4J'] }
                       { $eq: ['$users_id', '$$users_id'] }
                     ]
                   },
-                  // { $eq: ['$users_id', 'jun-deE4J'] }
-                  // { $eq: ['$_id', '$$cardPlayersUsers_id'] },
                 }
               },
               { $project:
@@ -370,101 +352,50 @@ const findOneFormatted2 = async ({ localeObj, conditionObj, usersLogin_id }) => 
       {
         $project: {
           __v: 0,
-          followCount: 0,
-          followedCount: 0,
-          role: 0,
           createdDate: 0,
           updatedDate: 0,
           loginID: 0,
           loginPassword: 0,
           email: 0,
           country: 0,
-          // thumbnailArr: '$cardPlayersObj.imagesAndVideosObj',
-          // language: 0,
-          // nameObj: { search: 0 },
-          // statusObj: { search: 0 },
-          // commentObj: { search: 0 },
-          // ageObj: { search: 0 },
-          // sexObj: { search: 0 },
-          // addressObj: { search: 0 },
-          // gamingExperienceObj: { search: 0 },
-          // hobbiesObj: { search: 0 },
-          // specialSkillsObj: { search: 0 },
-          // smartphoneObj: { search: 0 },
-          // tabletObj: { search: 0 },
-          // pcObj: { search: 0 },
-          // hardwareActiveObj: { search: 0 },
-          // hardwareInactiveObj: { search: 0 },
-          // activityTimeObj: { search: 0 },
-          // 'activityTimeObj.valueArr': { _id: 0 },
-          // lookingForFriendsObj: { search: 0 },
-          // voiceChatObj: { search: 0 },
-          // idArr: { _id: 0, search: 0 },
-          // linkArr: { _id: 0, search: 0 },
         }
       },
       
     ]).exec();
     
     
+    // --------------------------------------------------
+    //   フォーマット
+    // --------------------------------------------------
     
-    
-    console.log(`
-      ----- resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    // if (docObj === null) {
-    //   return returnObj;
-    // }
+    const returnObj = format({ arr: resultArr });
     
     
     // --------------------------------------------------
-    //   コピー
+    //   console.log
     // --------------------------------------------------
-    
-    // const copiedObj = JSON.parse(JSON.stringify(docObj));
-    
-    
-    // --------------------------------------------------
-    //   Follow の処理
-    // --------------------------------------------------
-    
-    // if (usersLogin_id) {
-      
-    //   copiedObj.followed = false;
-      
-    //   if (
-    //     usersLogin_id &&
-    //     copiedObj._id !== usersLogin_id &&
-    //     copiedObj.followedArr.includes(usersLogin_id)
-    //   ) {
-    //     copiedObj.followed = true;
-    //   }
-      
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   _id をキーにして削除する
-    // // --------------------------------------------------
-    
-    // delete copiedObj._id;
-    // delete copiedObj.followArr;
-    // delete copiedObj.followedArr;
-    // returnObj[docObj._id] = copiedObj;
-    
-    
-    
     
     // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docObj)), { colors: true, depth: null })}\n
+    //   ----- localeObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(chalk`
+    //   usersLogin_id: {green ${usersLogin_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -487,24 +418,12 @@ const findOneFormatted2 = async ({ localeObj, conditionObj, usersLogin_id }) => 
 
 
 /**
- * 検索してデータを取得する / 1件だけ
- * @param {Object} argumentsObj - 引数
+ * フォーマットする
+ * @param {Array} arr - 配列
+ * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findOneFormatted = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    localeObj,
-    conditionObj,
-    usersLogin_id
-    
-  } = argumentsObj;
+const format = async ({ arr, usersLogin_id }) => {
   
   
   // --------------------------------------------------
@@ -514,29 +433,31 @@ const findOneFormatted = async (argumentsObj) => {
   let returnObj = {};
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
+  for (let valueObj of arr.values()) {
     
     
     // --------------------------------------------------
-    //   FindOne
+    //   _id
     // --------------------------------------------------
     
-    const docObj = await Model.findOne(conditionObj).select('_id accessDate level playerID followArr followCount followedArr followedCount role').exec();
-    
-    if (docObj === null) {
-      return returnObj;
-    }
+    const _id = lodashGet(valueObj, ['_id'], '');
     
     
     // --------------------------------------------------
-    //   コピー
+    //   Return Object
     // --------------------------------------------------
     
-    const copiedObj = JSON.parse(JSON.stringify(docObj));
+    returnObj[_id] = {
+      name: lodashGet(valueObj, ['cardPlayersObj', 'nameObj', 'value'], ''),
+      status: lodashGet(valueObj, ['cardPlayersObj', 'statusObj', 'value'], ''),
+      level: lodashGet(valueObj, ['level'], 0),
+      followCount: lodashGet(valueObj, ['followCount'], 0),
+      followedCount: lodashGet(valueObj, ['followedCount'], 0),
+      followed: false,
+      accessDate: lodashGet(valueObj, ['accessDate'], ''),
+      playerID: lodashGet(valueObj, ['playerID'], ''),
+      role: lodashGet(valueObj, ['role'], 'User'),
+    };
     
     
     // --------------------------------------------------
@@ -545,44 +466,145 @@ const findOneFormatted = async (argumentsObj) => {
     
     if (usersLogin_id) {
       
-      copiedObj.followed = false;
+      const followedArr = lodashGet(valueObj, ['followedArr'], []);
       
       if (
         usersLogin_id &&
-        copiedObj._id !== usersLogin_id &&
-        copiedObj.followedArr.includes(usersLogin_id)
+        _id !== usersLogin_id &&
+        followedArr.includes(usersLogin_id)
       ) {
-        copiedObj.followed = true;
+        returnObj[_id].followed = true;
       }
       
     }
     
     
     // --------------------------------------------------
-    //   _id をキーにして削除する
+    //   画像の処理
     // --------------------------------------------------
     
-    delete copiedObj._id;
-    delete copiedObj.followArr;
-    delete copiedObj.followedArr;
-    returnObj[docObj._id] = copiedObj;
+    const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+    const formattedArr = formatImagesAndVideosArr({ arr: thumbnailArr });
+    
+    if (formattedArr.length > 0) {
+      returnObj[_id].thumbnailObj = formattedArr[0];
+    }
     
     
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
+    // console.log(valueObj);
     
   }
   
   
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return returnObj;
+  
+  
 };
+
+
+
+
+/**
+ * 検索してデータを取得する / 1件だけ
+ * @param {Object} argumentsObj - 引数
+ * @return {Object} 取得データ
+ */
+// const findOneFormatted2 = async (argumentsObj) => {
+  
+  
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
+  
+//   const {
+    
+//     localeObj,
+//     conditionObj,
+//     usersLogin_id
+    
+//   } = argumentsObj;
+  
+  
+//   // --------------------------------------------------
+//   //   Return Value
+//   // --------------------------------------------------
+  
+//   let returnObj = {};
+  
+  
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   FindOne
+//     // --------------------------------------------------
+    
+//     const docObj = await Model.findOne(conditionObj).select('_id accessDate level playerID followArr followCount followedArr followedCount role').exec();
+    
+//     if (docObj === null) {
+//       return returnObj;
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   コピー
+//     // --------------------------------------------------
+    
+//     const copiedObj = JSON.parse(JSON.stringify(docObj));
+    
+    
+//     // --------------------------------------------------
+//     //   Follow の処理
+//     // --------------------------------------------------
+    
+//     if (usersLogin_id) {
+      
+//       copiedObj.followed = false;
+      
+//       if (
+//         usersLogin_id &&
+//         copiedObj._id !== usersLogin_id &&
+//         copiedObj.followedArr.includes(usersLogin_id)
+//       ) {
+//         copiedObj.followed = true;
+//       }
+      
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   _id をキーにして削除する
+//     // --------------------------------------------------
+    
+//     delete copiedObj._id;
+//     delete copiedObj.followArr;
+//     delete copiedObj.followedArr;
+//     returnObj[docObj._id] = copiedObj;
+    
+    
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+    
+//     return returnObj;
+    
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
+  
+  
+// };
 
 
 
@@ -1048,7 +1070,7 @@ module.exports = {
   insertMany,
   deleteMany,
   findOne,
-  findOneFormatted2,
+  // findOneFormatted2,
   findOneFormatted,
   findFormatted,
   updateForFollow,

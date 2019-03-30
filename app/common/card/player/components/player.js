@@ -7,7 +7,7 @@
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -143,10 +143,9 @@ export default class extends React.Component {
     this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-panelButton` });
     
     
-    // this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-panelButton`, false);
-    
     // フォームを表示する、あとで消すように
     // this.props.stores.cardPlayer.handleFormOpen({ _id: 'zaoOWw89g' });
+    
   }
   
   
@@ -161,8 +160,8 @@ export default class extends React.Component {
       
       stores,
       _id,
-      cardGames_id,
-      showCardGameButton,
+      // cardGames_id,
+      // showCardGameButton,
       showFollow
       
     } = this.props;
@@ -171,10 +170,17 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   cardPlayersObj
+    // --------------------------------------------------
+    
+    const cardPlayersObj = lodashGet(stores, ['data', 'cardPlayersObj', _id], {});
+    
+    
+    // --------------------------------------------------
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (_id in stores.data.cardPlayersObj === false) {
+    if (Object.keys(cardPlayersObj).length === false) {
       return null;
     }
     
@@ -185,65 +191,40 @@ export default class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const {
-      
-      panelExpandedObj,
-      handlePanelExpanded,
-      buttonDisabledObj
-      
-    } = stores.layout;
+    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', _id], true);
+    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
     // --------------------------------------------------
-    //   Panel /  Expanded & Button Disable
+    //   Button - Disabled
     // --------------------------------------------------
     
-    let panelExpanded = true;
-    
-    if (_id in panelExpandedObj) {
-      panelExpanded = panelExpandedObj[_id];
-    }
-    
-    let panelButtonDisabled = true;
-    
-    if (`${_id}-panelButton` in buttonDisabledObj) {
-      panelButtonDisabled = buttonDisabledObj[`${_id}-panelButton`];
-    }
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-panelButton`], true);
     
     
+    
+    
+    // --------------------------------------------------
+    //   users_id
+    // --------------------------------------------------
+    
+    const users_id = lodashGet(cardPlayersObj, ['users_id'], '');
     
     
     // ---------------------------------------------
-    //   cardPlayersObj & users_id
+    //   User
     // ---------------------------------------------
     
-    const cardPlayersObj = stores.data.cardPlayersObj[_id];
-    const users_id = cardPlayersObj.users_id;
-    
-    
-    // ---------------------------------------------
-    //   Access Date & Level & Follow
-    // ---------------------------------------------
-    
-    const {
-      
-      accessDate,
-      level,
-      playerID,
-      followedCount,
-      followed
-      
-    } = stores.data.usersObj[users_id];
-    
-    
-    // ---------------------------------------------
-    //   Name / Status / Comment / Thumbnail
-    // ---------------------------------------------
-    
-    const name = cardPlayersObj.nameObj.value;
-    const status = cardPlayersObj.statusObj.value;
-    const comment = cardPlayersObj.commentObj.value;
+    const name = lodashGet(cardPlayersObj, ['nameObj', 'value'], '');
+    const status = lodashGet(cardPlayersObj, ['statusObj', 'value'], '');
+    const comment = lodashGet(cardPlayersObj, ['commentObj', 'value'], '');
     const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
+    
+    const level = lodashGet(cardPlayersObj, ['usersObj', 'level'], 0);
+    const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
+    const playerID = lodashGet(cardPlayersObj, ['usersObj', 'playerID'], '');
+    const followedCount = lodashGet(cardPlayersObj, ['usersObj', 'followedCount'], 0);
+    const followed = lodashGet(cardPlayersObj, ['usersObj', 'followed'], false);
     
     
     // ---------------------------------------------
@@ -259,98 +240,98 @@ export default class extends React.Component {
     //   Profile
     // ---------------------------------------------
     
-    const ageValue = cardPlayersObj.ageObj.value;
-    const ageAlternativeText = cardPlayersObj.ageObj.alternativeText;
-    const sexValue = cardPlayersObj.sexObj.value;
-    const sexAlternativeText = cardPlayersObj.sexObj.alternativeText;
-    const addressAlternativeText = cardPlayersObj.addressObj.alternativeText;
-    const gamingExperienceValue = cardPlayersObj.gamingExperienceObj.value;
-    const gamingExperienceAlternativeText = cardPlayersObj.gamingExperienceObj.alternativeText;
-    const hobbiesValueArr = cardPlayersObj.hobbiesObj.valueArr;
-    const specialSkillsValueArr = cardPlayersObj.specialSkillsObj.valueArr;
+    const ageValue = lodashGet(cardPlayersObj, ['ageObj', 'value'], '');
+    const ageAlternativeText = lodashGet(cardPlayersObj, ['ageObj', 'alternativeText'], '');
+    const sexValue = lodashGet(cardPlayersObj, ['sexObj', 'value'], '');
+    const sexAlternativeText = lodashGet(cardPlayersObj, ['sexObj', 'alternativeText'], '');
+    const addressAlternativeText = lodashGet(cardPlayersObj, ['addressObj', 'alternativeText'], '');
+    const gamingExperienceValue = lodashGet(cardPlayersObj, ['gamingExperienceObj', 'value'], '');
+    const gamingExperienceAlternativeText = lodashGet(cardPlayersObj, ['gamingExperienceObj', 'alternativeText'], '');
+    const hobbiesValueArr = lodashGet(cardPlayersObj, ['hobbiesObj', 'valueArr'], []);
+    const specialSkillsValueArr = lodashGet(cardPlayersObj, ['specialSkillsObj', 'valueArr'], []);
     
     
     // ---------------------------------------------
     //   Hardware
     // ---------------------------------------------
     
-    const hardwareActiveArr = cardPlayersObj.hardwareActiveArr;
-    const hardwareInactiveArr = cardPlayersObj.hardwareInactiveArr;
+    const hardwareActiveArr = lodashGet(cardPlayersObj, ['hardwareActiveArr'], []);
+    const hardwareInactiveArr = lodashGet(cardPlayersObj, ['hardwareInactiveArr'], []);
     
     
     // ---------------------------------------------
     //   Smartphone
     // ---------------------------------------------
     
-    const smartphoneModel = cardPlayersObj.smartphoneObj.model;
-    const smartphoneComment = cardPlayersObj.smartphoneObj.comment;
+    const smartphoneModel = lodashGet(cardPlayersObj, ['smartphoneObj', 'model'], '');
+    const smartphoneComment = lodashGet(cardPlayersObj, ['smartphoneObj', 'comment'], '');
     
     
     // ---------------------------------------------
     //   Tablet
     // ---------------------------------------------
     
-    const tabletModel = cardPlayersObj.tabletObj.model;
-    const tabletComment = cardPlayersObj.tabletObj.comment;
+    const tabletModel = lodashGet(cardPlayersObj, ['tabletObj', 'model'], '');
+    const tabletComment = lodashGet(cardPlayersObj, ['tabletObj', 'comment'], '');
     
     
     // ---------------------------------------------
     //   PC
     // ---------------------------------------------
     
-    const pcModel = cardPlayersObj.pcObj.model;
-    const pcComment = cardPlayersObj.pcObj.comment;
-    const pcOs = cardPlayersObj.pcObj.specsObj.os;
-    const pcCpu = cardPlayersObj.pcObj.specsObj.cpu;
-    const pcCpuCooler = cardPlayersObj.pcObj.specsObj.cpuCooler;
-    const pcMotherboard = cardPlayersObj.pcObj.specsObj.motherboard;
-    const pcMemory = cardPlayersObj.pcObj.specsObj.memory;
-    const pcStorage = cardPlayersObj.pcObj.specsObj.storage;
-    const pcGraphicsCard = cardPlayersObj.pcObj.specsObj.graphicsCard;
-    const pcOpticalDrive = cardPlayersObj.pcObj.specsObj.opticalDrive;
-    const pcPowerSupply = cardPlayersObj.pcObj.specsObj.powerSupply;
-    const pcCase = cardPlayersObj.pcObj.specsObj.pcCase;
-    const pcMonitor = cardPlayersObj.pcObj.specsObj.monitor;
-    const pcMouse = cardPlayersObj.pcObj.specsObj.mouse;
-    const pcKeyboard = cardPlayersObj.pcObj.specsObj.keyboard;
+    const pcModel = lodashGet(cardPlayersObj, ['pcObj', 'model'], '');
+    const pcComment = lodashGet(cardPlayersObj, ['pcObj', 'comment'], '');
+    const pcOs = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'os'], '');
+    const pcCpu = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'cpu'], '');
+    const pcCpuCooler = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'cpuCooler'], '');
+    const pcMotherboard = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'motherboard'], '');
+    const pcMemory = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'memory'], '');
+    const pcStorage = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'storage'], '');
+    const pcGraphicsCard = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'graphicsCard'], '');
+    const pcOpticalDrive = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'opticalDrive'], '');
+    const pcPowerSupply = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'powerSupply'], '');
+    const pcCase = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'pcCase'], '');
+    const pcMonitor = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'monitor'], '');
+    const pcMouse = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'mouse'], '');
+    const pcKeyboard = lodashGet(cardPlayersObj, ['pcObj', 'specsObj', 'keyboard'], '');
       
     
     // ---------------------------------------------
     //   ID
     // ---------------------------------------------
     
-    const idArr = cardPlayersObj.idArr;
+    const idArr = lodashGet(cardPlayersObj, ['idArr'], []);
     
     
     // ---------------------------------------------
     //   活動時間
     // ---------------------------------------------
     
-    const activityTimeArr = cardPlayersObj.activityTimeObj.valueArr;
+    const activityTimeArr = lodashGet(cardPlayersObj, ['activityTimeObj', 'valueArr'], []);
     
     
     // ---------------------------------------------
     //   フレンド募集
     // ---------------------------------------------
     
-    const lookingForFriendsValue = cardPlayersObj.lookingForFriendsObj.value;
-    const lookingForFriendsIcon = cardPlayersObj.lookingForFriendsObj.icon;
-    const lookingForFriendsComment = cardPlayersObj.lookingForFriendsObj.comment;
+    const lookingForFriendsValue = lodashGet(cardPlayersObj, ['lookingForFriendsObj', 'value'], '');
+    const lookingForFriendsIcon = lodashGet(cardPlayersObj, ['lookingForFriendsObj', 'icon'], '');
+    const lookingForFriendsComment = lodashGet(cardPlayersObj, ['lookingForFriendsObj', 'comment'], '');
     
     
     // ---------------------------------------------
     //   ボイスチャット
     // ---------------------------------------------
     
-    const voiceChatValue = cardPlayersObj.voiceChatObj.value;
-    const voiceChatComment = cardPlayersObj.voiceChatObj.comment;
+    const voiceChatValue = lodashGet(cardPlayersObj, ['voiceChatObj', 'value'], '');
+    const voiceChatComment = lodashGet(cardPlayersObj, ['voiceChatObj', 'comment'], '');
     
     
     // ---------------------------------------------
     //   Link
     // ---------------------------------------------
     
-    const linkArr = cardPlayersObj.linkArr;
+    const linkArr = lodashGet(cardPlayersObj, ['linkArr'], []);
     
     
     
@@ -359,21 +340,13 @@ export default class extends React.Component {
     //   Edit Form
     // --------------------------------------------------
     
-    const formOpen = lodashGet(stores.cardPlayer, ['formOpenObj', _id], false);
-    
-    // const formOpenObj = stores.cardPlayer.formOpenObj;
-    
-    // let editFormOpen = false;
-    
-    // if (_id in formOpenObj) {
-    //   editFormOpen = formOpenObj[_id];
-    // }
+    const formOpen = lodashGet(stores, ['cardPlayer', 'formOpenObj', _id], false);
     
     
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -383,9 +356,6 @@ export default class extends React.Component {
     //   users_id: {green ${users_id}}
     //   editFormOpen: {green ${editFormOpen}}
     // `);
-    
-    
-    
     
     // console.log(`\n---------- cardPlayersObj ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(cardPlayersObj)));
@@ -425,10 +395,10 @@ export default class extends React.Component {
           {/* 右上に設置されているパネル開閉用のボタン */}
           <ExpandMoreBox>
             <IconButton
-              onClick={() => handlePanelExpanded(_id)}
+              onClick={() => handlePanelExpand({ _id })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
-              disabled={panelButtonDisabled}
+              disabled={buttonDisabled}
             >
               {panelExpanded ? (
                 <IconExpandLess />
@@ -439,6 +409,7 @@ export default class extends React.Component {
           </ExpandMoreBox>
           
         </CardTopBox>
+        
         
         
         

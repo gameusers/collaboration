@@ -25,6 +25,7 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const Model = require('./schema');
+const ModelCardPlayers = require('../card-players/model');
 
 
 // ---------------------------------------------
@@ -63,6 +64,63 @@ const logger = require('../../@modules/logger');
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
+
+/**
+ * 検索してデータを取得する / 1件だけ
+ * @param {Object} conditionObj - 検索条件
+ * @return {Object} 取得データ
+ */
+const findOne = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   FindOne
+    // --------------------------------------------------
+    
+    const docObj = await Model.findOne(conditionObj).exec();
+    
+    if (docObj === null) {
+      return returnObj;
+    }
+    
+    
+    // console.log(`
+    //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return docObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
 
 /**
  * 取得する
@@ -229,73 +287,19 @@ const deleteMany = async ({ conditionObj }) => {
 
 
 
-/**
- * 検索してデータを取得する / 1件だけ
- * @param {Object} conditionObj - 検索条件
- * @param {string} select - 必要な情報を選択
- * @return {Object} 取得データ
- */
-const findOne = async (conditionObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   FindOne
-    // --------------------------------------------------
-    
-    const docObj = await Model.findOne(conditionObj).exec();
-    
-    if (docObj === null) {
-      return returnObj;
-    }
-    
-    
-    // console.log(`
-    //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-  
-};
 
 
 
 
 
 /**
- * 検索してデータを取得する / Users Obj 用
+ * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
  * @param {Object} localeObj - ロケール
  * @param {Object} conditionObj - 検索条件
  * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
+const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
   
   
   // --------------------------------------------------
@@ -312,7 +316,7 @@ const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
     let resultArr = await Model.aggregate([
       
       {
-        $match : { _id: usersLogin_id }
+        $match : conditionObj
       },
       
       
@@ -326,7 +330,6 @@ const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$language', localeObj.languageArr[0]] },
                       { $eq: ['$users_id', '$$users_id'] }
                     ]
                   },
@@ -341,11 +344,8 @@ const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
                 }
               }
             ],
-            as: 'cardPlayersObj'
+            as: 'cardPlayersArr'
           }
-      },
-      {
-        $unwind: '$cardPlayersObj'
       },
       
       
@@ -368,7 +368,7 @@ const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
     //   フォーマット
     // --------------------------------------------------
     
-    const returnObj = format({ arr: resultArr });
+    const returnObj = format({ arr: resultArr, usersLogin_id });
     
     
     // --------------------------------------------------
@@ -397,6 +397,12 @@ const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // --------------------------------------------------
     //   Return
@@ -418,7 +424,136 @@ const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
 
 
 /**
- * フォーマットする
+ * 検索してデータを取得する / Users Obj 用
+ * @param {Object} localeObj - ロケール
+ * @param {Object} conditionObj - 検索条件
+ * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @return {Object} 取得データ
+ */
+// const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
+  
+  
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得
+//     // --------------------------------------------------
+    
+//     let resultArr = await Model.aggregate([
+      
+//       {
+//         $match : { _id: usersLogin_id }
+//       },
+      
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'card-players',
+//             let: { users_id: '$_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $and:
+//                     [
+//                       { $eq: ['$language', localeObj.languageArr[0]] },
+//                       { $eq: ['$users_id', '$$users_id'] }
+//                     ]
+//                   },
+//                 }
+//               },
+//               { $project:
+//                 {
+//                   _id: 0,
+//                   nameObj: 1,
+//                   statusObj: 1,
+//                   imagesAndVideosObj: 1,
+//                 }
+//               }
+//             ],
+//             as: 'cardPlayersObj'
+//           }
+//       },
+//       {
+//         $unwind: '$cardPlayersObj'
+//       },
+      
+      
+//       {
+//         $project: {
+//           __v: 0,
+//           createdDate: 0,
+//           updatedDate: 0,
+//           loginID: 0,
+//           loginPassword: 0,
+//           email: 0,
+//           country: 0,
+//         }
+//       },
+      
+//     ]).exec();
+    
+    
+//     // --------------------------------------------------
+//     //   フォーマット
+//     // --------------------------------------------------
+    
+//     const returnObj = format({ arr: resultArr });
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(`
+//     //   ----- localeObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- conditionObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(chalk`
+//     //   usersLogin_id: {green ${usersLogin_id}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- resultArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+    
+//     return returnObj;
+    
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
+  
+  
+// };
+
+
+
+
+/**
+ * フォーマットする / 現状、多言語に対応していない。localeObjを使用していない。
  * @param {Array} arr - 配列
  * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
@@ -432,6 +567,10 @@ const format = async ({ arr, usersLogin_id }) => {
   
   let returnObj = {};
   
+  
+  // --------------------------------------------------
+  //   Loop
+  // --------------------------------------------------
   
   for (let valueObj of arr.values()) {
     
@@ -448,8 +587,9 @@ const format = async ({ arr, usersLogin_id }) => {
     // --------------------------------------------------
     
     returnObj[_id] = {
-      name: lodashGet(valueObj, ['cardPlayersObj', 'nameObj', 'value'], ''),
-      status: lodashGet(valueObj, ['cardPlayersObj', 'statusObj', 'value'], ''),
+      // _id,
+      name: lodashGet(valueObj, ['cardPlayersArr', 0, 'nameObj', 'value'], ''),
+      status: lodashGet(valueObj, ['cardPlayersArr', 0, 'statusObj', 'value'], ''),
       level: lodashGet(valueObj, ['level'], 0),
       followCount: lodashGet(valueObj, ['followCount'], 0),
       followedCount: lodashGet(valueObj, ['followedCount'], 0),
@@ -483,7 +623,7 @@ const format = async ({ arr, usersLogin_id }) => {
     //   画像の処理
     // --------------------------------------------------
     
-    const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+    const thumbnailArr = lodashGet(valueObj, ['cardPlayersArr', 0, 'imagesAndVideosObj', 'thumbnailArr'], []);
     const formattedArr = formatImagesAndVideosArr({ arr: thumbnailArr });
     
     if (formattedArr.length > 0) {
@@ -1065,13 +1205,15 @@ const insert = async (reqBody) => {
 // --------------------------------------------------
 
 module.exports = {
+  findOne,
   find,
+  count,
   upsert,
   insertMany,
   deleteMany,
-  findOne,
+  findOneForUser,
   // findOneFormatted2,
-  findOneFormatted,
+  // findOneFormatted,
   findFormatted,
   updateForFollow,
   insert

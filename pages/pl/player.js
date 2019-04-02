@@ -174,11 +174,15 @@ class Component extends React.Component {
     
     
     
-    console.log(`
-      ----- req.user -----\n
-      ${util.inspect(req.user, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(chalk`
+    //   isServer: {green ${isServer}}
+    // `);
+    
+    // console.log(`
+    //   ----- req.user -----\n
+    //   ${util.inspect(req.user, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- req.headers.cookie -----\n
@@ -211,7 +215,7 @@ class Component extends React.Component {
     
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, localeObj };
+    return { isServer, pathname, initialPropsObj, statusCode, localeObj, usersLoginObj: req.user };
     
   }
   
@@ -248,7 +252,7 @@ class Component extends React.Component {
       if (
         this.props.statusCode !== 200 ||
         // 'usersLoginObj' in props.initialPropsObj === false ||
-        'usersObj' in props.initialPropsObj === false ||
+        // 'usersObj' in props.initialPropsObj === false ||
         'cardPlayersObj' in props.initialPropsObj === false ||
         // 'cardGamesObj' in props.initialPropsObj === false ||
         'cardsArr' in props.initialPropsObj === false
@@ -289,11 +293,31 @@ class Component extends React.Component {
       //   Store / Update Data
       // --------------------------------------------------
       
-      if ('usersLoginObj' in props.initialPropsObj) {
-        this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
+      // if ('usersLoginObj' in props.initialPropsObj) {
+      //   this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
+      // }
+      
+      if (props.usersLoginObj) {
+        this.stores.data.replaceUsersLoginObj(props.usersLoginObj);
       }
       
-      this.stores.data.replaceUsersObj(props.initialPropsObj.usersObj);
+      // this.stores.data.replaceUsersLoginObj(props.usersLoginObj);
+      
+      console.log(`
+        ----- this.stores.data.usersLoginObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(this.stores.data.usersLoginObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      // console.log(`
+      //   ----- this.stores.data.usersLoginObj -----\n
+      //   ${util.inspect(this.stores.data.usersLoginObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      // this.stores.data.replaceUsersObj(props.initialPropsObj.usersObj);
       this.stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
       this.stores.data.replaceCardGamesObj(props.initialPropsObj.cardGamesObj);
       

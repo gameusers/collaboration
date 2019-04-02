@@ -1,16 +1,29 @@
 // --------------------------------------------------
-//   Import
+//   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
 
 
 
 
 /**
  * Player ID
- * @param {string} value - Player ID
+ * @param {string} value - 値
  */
-const validationPlayerID = (value) => {
+const validationUsersPlayerID = ({ value }) => {
   
   
   // ---------------------------------------------
@@ -25,39 +38,76 @@ const validationPlayerID = (value) => {
   //   Result Object
   // ---------------------------------------------
   
-  const slicedValue = value ? value.slice(0, maxLength) : '';
-  const numberOfCharacters = slicedValue ? slicedValue.length : 0;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
-    value: slicedValue,
+    value: data,
     numberOfCharacters,
+    messageCode: 'Error',
     error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  if (slicedValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('Plaeyr IDを入力してください。');
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('ilE2NcYjI');
+      resultObj.errorCodeArr.push('CWOOoA9F1');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      messageCodeArr.unshift('JBkjlGQMh');
+      resultObj.errorCodeArr.push('gSft1rXje');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('3YA6nKRU4');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
+    return resultObj;
+    
+    
   }
   
-  if (slicedValue.match(/^[\w\-]+$/) === null) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('IDに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。');
-  }
-  
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`IDは${minLength}文字以上、${maxLength}文字以内です。`);
-  }
-  
-  // console.dir(resultObj);
-  
-  return resultObj;
   
 };
 
@@ -68,4 +118,6 @@ const validationPlayerID = (value) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationPlayerID;
+module.exports = {
+  validationUsersPlayerID,
+};

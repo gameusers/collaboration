@@ -35,7 +35,7 @@ const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 //   Validations
 // ---------------------------------------------
 
-const validationPlayerID = require('../../../@database/users/validations/player-id');
+const { validationUsersPlayerID } = require('../../../@database/users/validations/player-id');
 
 
 // ---------------------------------------------
@@ -44,7 +44,7 @@ const validationPlayerID = require('../../../@database/users/validations/player-
 
 const ModelUsers = require('../../../@database/users/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
-const ModelCardGames = require('../../../@database/card-games/model');
+// const ModelCardGames = require('../../../@database/card-games/model');
 
 
 // ---------------------------------------------
@@ -113,7 +113,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   };
   
   let cardPlayersKeysArr = [];
-  let cardGamesKeysArr = [];
+  // let cardGamesKeysArr = [];
   
   
   try {
@@ -124,11 +124,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const playerID = req.query.playerID;
-    const validationPlayerIDObj = validationPlayerID(playerID);
+    const validationUsersPlayerIDObj = validationUsersPlayerID(playerID);
     
-    if (validationPlayerIDObj.error) {
+    if (validationUsersPlayerIDObj.error) {
       statusCode = 400;
-      errorArgumentsObj.errorCodeArr = [502102];
+      errorArgumentsObj.errorCodeArr = ['chDdoM5Hv'];
       throw new Error();
     }
     
@@ -148,30 +148,33 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     //   データ取得 / Users
     //   アクセスしたページ所有者のユーザー情報
+    //   users_id を取得するためだけに使用
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOneFormatted({
-      localeObj,
-      conditionObj: { playerID },
-      usersLogin_id
+    const usersObj = await ModelUsers.findOne({
+      conditionObj: {
+        playerID,
+      }
     });
     
-    returnObj.usersObj = usersObj;
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
     //   ユーザー情報が存在しない場合はエラー
     // --------------------------------------------------
     
-    const usersKeysArr = Object.keys(usersObj);
+    const users_id = usersObj._id;
     
-    if (usersKeysArr.length === 0) {
+    if (!users_id) {
       statusCode = 404;
       errorArgumentsObj.errorCodeArr = ['IVX1dL1pJ'];
       throw new Error();
     }
-    
-    const users_id = usersKeysArr[0];
     
     
     // --------------------------------------------------
@@ -232,6 +235,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // console.log(chalk`
     //   {green pl/player/api/player / initial-props}
     //   playerID: {green ${playerID}}
+    //   users_id：{green ${users_id}}
     // `);
     
     // console.log(`
@@ -240,11 +244,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- usersObj -----\n
-      ${util.inspect(usersObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- cardPlayersObj -----\n

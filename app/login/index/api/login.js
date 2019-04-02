@@ -162,6 +162,7 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
 // --------------------------------------------------
 
 router.post('/', upload.none(), (req, res, next) => {
+  
   passport.authenticate('local', async (err, user, info) => {
     
     
@@ -207,9 +208,9 @@ router.post('/', upload.none(), (req, res, next) => {
       //   err: \n${util.inspect(err, { colors: true, depth: null })}
       // `);
       
-      // console.log(`
-      //   user: \n${util.inspect(user, { colors: true, depth: null })}
-      // `);
+      console.log(`
+        user: \n${util.inspect(user, { colors: true, depth: null })}
+      `);
       
       // console.log(`
       //   info: \n${util.inspect(info, { colors: true, depth: null })}
@@ -269,7 +270,7 @@ router.post('/', upload.none(), (req, res, next) => {
         return res.status(401).json({
           errorsArr: [
             {
-              code: 0,
+              code: 'H0eMuApu6',
               message
             },
           ]
@@ -301,6 +302,7 @@ router.post('/', upload.none(), (req, res, next) => {
         return res.status(200).json({
           playerID: req.user.playerID
         });
+        
         
       });
       
@@ -340,6 +342,7 @@ router.post('/', upload.none(), (req, res, next) => {
     }
     
   })(req, res, next);
+  
 });
 
 
@@ -353,10 +356,10 @@ passport.use(new LocalStrategy({
   },
   (username, password, done) => {
     
-    // console.log(chalk`
-    //   username: {green ${username}}
-    //   password: {green ${password}}
-    // `);
+    console.log(chalk`
+      username: {green ${username}}
+      password: {green ${password}}
+    `);
     
     
     SchemaUsers.findOne({ loginID: username }, (err, user) => {
@@ -376,7 +379,7 @@ passport.use(new LocalStrategy({
       // --------------------------------------------------
       
       if (!user) {
-        return done(null, false, { message: 'Incorrect loginID.' });
+        return done(null, false, { message: 'Incorrect Login ID.' });
       }
       
       
@@ -386,11 +389,12 @@ passport.use(new LocalStrategy({
       // --------------------------------------------------
       
       if (bcrypt.compareSync(password, user.loginPassword) === false) {
-        return done(null, false, { message: 'Incorrect loginPassword.' });
+        return done(null, false, { message: 'Incorrect Login Password.' });
       }
       
       
       return done(null, user);
+      
       
     });
     
@@ -412,37 +416,60 @@ passport.serializeUser((user, done) => {
 // --------------------------------------------------
 //   デシリアライズ
 //   セッション変数を受け取って中身を検証する
-//   DB/users コレクションを _id で検索し、ユーザーデータを取得して返す
+//   データベースからログインユーザーデータを取得して返す
 //   返ってきたユーザーデータは各 router の req.user から参照できる
 // --------------------------------------------------
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
   
-  SchemaUsers.findOne({ _id: id }, (err, user) => {
-    
-    // console.log(`
-    //   deserializeUser user ${new Date()}: \n${util.inspect(user, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   ここで req.user に送る情報を選択する
-    // --------------------------------------------------
-    
-    const usersObj = {
-      _id: user._id,
-      // name: user.name,
-      // status: user.status,
-      accessDate: user.accessDate,
-      level: user.level,
-      playerID: user.playerID,
-      role: user.role,
-    };
-    
-    done(err, usersObj);
-    
-    
+  
+  // --------------------------------------------------
+  //   データ取得 / Users
+  //   ログインユーザー情報
+  // --------------------------------------------------
+  
+  const usersObj = await ModelUsers.findOneForUser({
+    localeObj: {},
+    conditionObj: { _id: id },
+    usersLogin_id: id
   });
+  
+  let usersLoginObj = usersObj[id];
+  usersLoginObj._id = id;
+  
+  // console.log(`\n---------- usersLoginObj ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(usersLoginObj)));
+  // console.log(`\n-----------------------------------\n`);
+  
+  
+  done(null, usersLoginObj);
+  
+  
+  // SchemaUsers.findOne({ _id: id }, (err, user) => {
+    
+  //   // console.log(`
+  //   //   deserializeUser user ${new Date()}: \n${util.inspect(user, { colors: true, depth: null })}
+  //   // `);
+    
+    
+  //   // --------------------------------------------------
+  //   //   ここで req.user に送る情報を選択する
+  //   // --------------------------------------------------
+    
+  //   const usersObj = {
+  //     _id: user._id,
+  //     // name: user.name,
+  //     // status: user.status,
+  //     accessDate: user.accessDate,
+  //     level: user.level,
+  //     playerID: user.playerID,
+  //     role: user.role,
+  //   };
+    
+  //   done(err, usersObj);
+    
+    
+  // });
   
 });
 

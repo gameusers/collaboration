@@ -55,7 +55,6 @@ const MenuButton = styled(Button)`
     height: 36px;
     color: #BDBDBD;
     margin: 0 10px 0 0;
-    // padding: 2px 0 0;
     border-bottom: solid 2px #25283D;
   }
 `;
@@ -98,6 +97,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const componentsArr = [];
+    
     let active = false;
     
     
@@ -105,13 +105,13 @@ export default class extends React.Component {
       
       const reverseHeaderMenuArr = headerNavMainArr.slice().reverse();
       
-      reverseHeaderMenuArr.forEach((value, index) => {
+      for (const [index, valueObj] of reverseHeaderMenuArr.entries()) {
         
-        if (value.pathname === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
+        if (valueObj.pathname === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
           
           componentsArr.unshift(
             <MenuActiveButton key={index}>
-              {value.name}
+              {valueObj.name}
             </MenuActiveButton>
           );
           
@@ -120,16 +120,16 @@ export default class extends React.Component {
         } else {
           
           componentsArr.unshift(
-            <Link href={value.pathname} key={index}>
+            <Link href={valueObj.pathname} key={index}>
               <MenuButton>
-                {value.name}
+                {valueObj.name}
               </MenuButton>
             </Link>
           );
           
         }
         
-      });
+      }
       
     }
     

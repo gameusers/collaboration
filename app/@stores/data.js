@@ -24,13 +24,37 @@ class Store {
   //   Constructor
   // ---------------------------------------------
   
-  constructor(argumentsObj) {
+  constructor() {}
+  
+  // constructor(argumentsObj) {
     
-    this.environment = argumentsObj.environment;
-    this.urlBase = argumentsObj.urlBase;
-    this.urlApi = argumentsObj.urlApi;
+  //   this.environment = argumentsObj.environment;
+  //   this.urlBase = argumentsObj.urlBase;
+  //   this.urlApi = argumentsObj.urlApi;
     
-  }
+  // }
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Locale
+  // ---------------------------------------------
+  
+  /**
+   * Locale情報を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable localeObj = {};
+  
+  
+  /**
+   * Localeオブジェクトを更新する
+   * @param {Object} obj - 更新するオブジェクト
+   */
+  replaceLocaleObj(obj) {
+    this.localeObj = obj;
+  };
   
   
   
@@ -181,12 +205,14 @@ export default function initStoreData(argumentsObj) {
   
   
   if (isServer) {
-    
+    // console.log('initStoreData / isServer');
     return new Store(argumentsObj);
     
   } else {
     
+    // console.log('initStoreData / client');
     if (storeData === null) {
+      // console.log('initStoreData / client / storeData === null');
       storeData = new Store(argumentsObj);
     }
     

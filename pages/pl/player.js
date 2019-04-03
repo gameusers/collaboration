@@ -17,37 +17,9 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
-// import Link from 'next/link';
-import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-
-
-// ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-// import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import Input from '@material-ui/core/Input';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import InputAdornment from '@material-ui/core/InputAdornment';
-// import FormControl from '@material-ui/core/FormControl';
-// import FormHelperText from '@material-ui/core/FormHelperText';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconId from '@material-ui/icons/Person';
-// import IconPassword from '@material-ui/icons/Lock';
-// import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
-// import IconVisibility from '@material-ui/icons/Visibility';
-// import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
-// import IconMailOutline from '@material-ui/icons/MailOutline';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -67,7 +39,6 @@ import { locale } from '../../app/@locales/locale';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
-// import { imageCalculateSize } from '../../app/@modules/image';
 
 
 // ---------------------------------------------
@@ -81,7 +52,6 @@ import initStoreIDForm from '../../app/common/id/stores/form';
 import initStoreGameForm from '../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
-// import initStoreFormImageVideo from '../../app/common/form/stores/image-video';
 
 
 // ---------------------------------------------
@@ -90,11 +60,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 
 import Layout from '../../app/common/layout/components/layout';
 import CardPlayer from '../../app/common/card/player/components/player';
-// import CardGame from '../../app/common/card/player/components/game';
 import CardPlayerDialog from '../../app/common/card/player/components/dialog';
-
-// import DialogTest from '../../app/common/user/components/dialog';
-import User from '../../app/common/user/components/user';
 
 
 // ---------------------------------------------
@@ -146,15 +112,10 @@ class Component extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const { publicRuntimeConfig } = getConfig();
-    
     const isServer = !!req;
-    let initialPropsObj = {};
-    let statusCode = 400;
-    
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
+    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    const playerID = query.param1;
     
     
     // --------------------------------------------------
@@ -162,20 +123,21 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${publicRuntimeConfig.urlApi}/v1/pl/player/initial-props?playerID=${query.param1}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/pl/player/initial-props?playerID=${playerID}`),
       methodType: 'GET',
-      reqHeadersCookie: isServer ? req.headers.cookie : '',
-      reqAcceptLanguage: isServer ? req.headers['accept-language'] : ''
+      reqHeadersCookie,
+      reqAcceptLanguage,
     });
     
-    statusCode = resultObj.statusCode;
-    initialPropsObj = resultObj.data;
+    const statusCode = resultObj.statusCode;
+    const initialPropsObj = resultObj.data;
     
     
     
     
     // console.log(chalk`
     //   isServer: {green ${isServer}}
+    //   process.env.URL_API: {green ${process.env.URL_API}}
     // `);
     
     // console.log(`
@@ -185,37 +147,14 @@ class Component extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- req.headers.cookie -----\n
-    //   ${util.inspect(req.headers.cookie, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- req.headers['accept-language'] -----\n
-    //   ${util.inspect(req.headers['accept-language'], { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    // console.log(`
-    //   ----- process.env -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(process.env)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, localeObj, usersLoginObj: req.user };
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, playerID };
     
   }
   
@@ -251,21 +190,11 @@ class Component extends React.Component {
       
       if (
         this.props.statusCode !== 200 ||
-        // 'usersLoginObj' in props.initialPropsObj === false ||
-        // 'usersObj' in props.initialPropsObj === false ||
         'cardPlayersObj' in props.initialPropsObj === false ||
-        // 'cardGamesObj' in props.initialPropsObj === false ||
         'cardsArr' in props.initialPropsObj === false
       ) {
         throw new Error();
       }
-      
-      
-      // --------------------------------------------------
-      //   publicRuntimeConfig
-      // --------------------------------------------------
-      
-      const { publicRuntimeConfig } = getConfig();
       
       
       // --------------------------------------------------
@@ -275,9 +204,6 @@ class Component extends React.Component {
       const argumentsObj = {
         isServer: props.isServer,
         pathname: props.pathname,
-        environment: publicRuntimeConfig.environment,
-        urlBase: publicRuntimeConfig.urlBase,
-        urlApi: publicRuntimeConfig.urlApi
       };
       
       this.stores = initStoreIndex(argumentsObj);
@@ -290,36 +216,37 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   Store / Update Data
+      //   Update Data
       // --------------------------------------------------
       
-      // if ('usersLoginObj' in props.initialPropsObj) {
-      //   this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
-      // }
-      
-      if (props.usersLoginObj) {
-        this.stores.data.replaceUsersLoginObj(props.usersLoginObj);
+      if (Object.keys(this.stores.data.localeObj).length === 0) {
+        
+        const localeObj = locale({
+          acceptLanguage: props.reqAcceptLanguage
+        });
+        
+        this.stores.data.replaceLocaleObj(localeObj);
+        // console.log('replaceLocaleObj');
+        
+        
+        // console.log(`
+        //   ----- localeObj -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
       }
       
-      // this.stores.data.replaceUsersLoginObj(props.usersLoginObj);
       
-      console.log(`
-        ----- this.stores.data.usersLoginObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(this.stores.data.usersLoginObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      // console.log(`
-      //   ----- this.stores.data.usersLoginObj -----\n
-      //   ${util.inspect(this.stores.data.usersLoginObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // Login User
+      if ('usersLoginObj' in props.initialPropsObj) {
+        // console.log('replaceUsersLoginObj');
+        this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
+      }
       
       
-      
-      // this.stores.data.replaceUsersObj(props.initialPropsObj.usersObj);
+      // Card Players
       this.stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
-      this.stores.data.replaceCardGamesObj(props.initialPropsObj.cardGamesObj);
       
       
     } catch (e) {
@@ -359,11 +286,11 @@ class Component extends React.Component {
     const headerNavMainArr = [
       {
         name: 'プロフィール',
-        pathname: '/pl/AZ-1979'
+        pathname: `/pl/${this.props.playerID}`
       },
       {
         name: '設定',
-        pathname: '/pl/AZ-1979/config'
+        pathname: `/pl/${this.props.playerID}/config`
       }
     ];
     
@@ -388,71 +315,9 @@ class Component extends React.Component {
           />
         );
         
-      } else {
-        
-        // if (index === 0) {
-          
-        //   componentCardsArr.push(
-        //     <CardGame
-        //       cardGames_id={valueObj.cardGames_id}
-        //       showGameName={true}
-        //       showCardPlayerButton={false}
-        //       // showCardGameButton={false}
-        //       showFollow={false}
-        //       key={index}
-        //     />
-        //   );
-          
-        // } else {
-          
-        //   componentCardsArr.push(
-        //     <CardBox key={index}>
-        //       <CardGame
-        //         cardGames_id={valueObj.cardGames_id}
-        //         showGameName={true}
-        //         showCardPlayerButton={false}
-        //         // showCardGameButton={false}
-        //         showFollow={false}
-        //       />
-        //     </CardBox>
-        //   );
-          
-        // }
-        
-        
       }
       
     }
-    
-    
-    // console.log(chalk`
-    //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
-    //   process.env.URL_BASE: {green ${process.env.URL_BASE}}
-    //   process.env.URL_API: {green ${process.env.URL_API}}
-    // `);
-    
-    
-    
-    
-    // console.log(`\n---------- imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }) ----------\n`);
-    // console.dir(imageCalculateSize({ width: 500, height: 406, minSize: 128, maxSize: 320, square: true }));
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // console.log(`\n---------- imageCalculateSize({ width: 500, height: 600, minSize: 128, maxSize: 550, square: true }) ----------\n`);
-    // console.dir(imageCalculateSize({ width: 500, height: 900, minSize: 128, maxSize: 550, square: true }));
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // console.log(`\n---------- imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }) ----------\n`);
-    // console.dir(imageCalculateSize({ width: 108, height: 128, minSize: 128, maxSize: 320, square: true }));
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // console.log(`\n---------- imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }) ----------\n`);
-    // console.dir(imageCalculateSize({ width: 64, height: 64, minSize: 128, maxSize: 128, square: true }));
-    // console.log(`\n-----------------------------------\n`);
-    
     
     
     // --------------------------------------------------
@@ -463,8 +328,8 @@ class Component extends React.Component {
       <Provider stores={this.stores}>
       
         <IntlProvider 
-          locale={this.props.localeObj.languageArr[0]}
-          messages={this.props.localeObj.dataObj}
+          locale={this.stores.data.localeObj.languageArr[0]}
+          messages={this.stores.data.localeObj.dataObj}
         >
           
           <Layout headerNavMainArr={headerNavMainArr}>
@@ -477,33 +342,8 @@ class Component extends React.Component {
             
             <Container>
               
-              {/*{this.props.localeObj.language} / 
-              <FormattedMessage
-                id='hello'
-              />*/}
-              {/*<DialogTest />*/}
-              
-              {/* カードダイアログテスト用 */}
-              {/*<div style={{ margin: '0 0 20px 0', padding: '10px', backgroundColor: 'white' }}>
-                <User
-                  thumbnailSrc={'http://dev-1.gameusers.org:8080/static/img/card/players/zaoOWw89g/thumbnail/image.jpg'}
-                  name={'Name'}
-                  playerID={'user1'}
-                  status={'Status'}
-                  accessDate={'2018-12-22T02:56:41.194Z'}
-                  level={'99'}
-                  cardPlayers_id={'WAMuArrBZ'}
-                  showCardPlayerButton={true}
-                  cardGames_id={'3sZUV34Q_'}
-                  showCardGameButton={true}
-                />
-              </div>*/}
-              
-              {/*<div style={{ width: '300px', height: '300px', 'backgroundImage': 'url(data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGl0bGU+UGxheVN0YXRpb24gaWNvbjwvdGl0bGU+PHBhdGggZD0iTTguOTg1IDIuNTk2djE3LjU0OGwzLjkxNSAxLjI2MVY2LjY4OGMwLS42OS4zMDQtMS4xNTEuNzk0LS45OTEuNjM2LjE4MS43Ni44MTQuNzYgMS41MDV2NS44NzZjMi40NDEgMS4xOTMgNC4zNjItLjAwMiA0LjM2Mi0zLjE1MyAwLTMuMjM3LTEuMTI2LTQuNjc1LTQuNDM4LTUuODI3LTEuMzA3LS40NDgtMy43MjgtMS4xODYtNS4zOTEtMS41MDJoLS4wMDJ6bTQuNjU2IDE2LjI0Mmw2LjI5Ni0yLjI3NWMuNzE1LS4yNTguODI2LS42MjUuMjQ2LS44MTgtLjU4Ni0uMTkyLTEuNjM3LS4xMzktMi4zNTcuMTIzbC00LjIwNSAxLjQ5OXYtMi4zODVsLjI0LS4wODVzMS4yMDEtLjQyIDIuOTEzLS42MTVjMS42OTYtLjE4IDMuNzg1LjAyOSA1LjQzNy42NjEgMS44NDguNjAxIDIuMDQxIDEuNDcyIDEuNTc2IDIuMDcycy0xLjYyMiAxLjAzNi0xLjYyMiAxLjAzNmwtOC41NDQgMy4xMDd2LTIuMjk3bC4wMi0uMDIzek0xLjgwOCAxOC42Yy0xLjktLjU0NS0yLjIxNC0xLjY2OC0xLjM1Mi0yLjMyMS44MDEtLjU4NSAyLjE1OS0xLjA1MSAyLjE1OS0xLjA1MWw1LjYxNi0yLjAxM3YyLjMxM0w0LjIwNiAxN2MtLjcwNS4yNzEtLjgyNS42MzItLjIzOS44MjYuNTg2LjE5NSAxLjYzNy4xNSAyLjM0My0uMTJMOC4yNDggMTd2Mi4wNzRjLS4xMjEuMDI5LS4yNTYuMDQ0LS4zOTEuMDczLTEuOTM4LjMzMS0zLjk5NS4xOTYtNi4wMzctLjQ3OWwtLjAxMi0uMDY4eiIvPjwvc3ZnPg==)' }}></div>*/}
-              
-              
+              {/* プレイヤーカード */}
               {componentCardsArr}
-              
               
               {/* プレイヤーカードを表示するダイアログ */}
               <CardPlayerDialog />

@@ -18,6 +18,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -226,15 +227,21 @@ export default class extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   usersLoginObj
+    // --------------------------------------------------
+    
+    const thumbnailSrc = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'src'], '');
+    // const thumbnailCaption = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'caption'], '');
+    const thumbnailSrcSet = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'srcSet'], '');
+    
+    const playerID = lodashGet(stores, ['data', 'usersLoginObj', 'playerID'], '');
+    
+    
+    
     // console.log(`
     //   ----- stores.data.usersLoginObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.usersLoginObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- stores.data.usersObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.usersObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -285,8 +292,9 @@ export default class extends React.Component {
             onClick={stores.layout.handleHeaderLoginMenuOpen}
           >
             <StyledAvatar
-              alt="ユーザー1"
-              src="https://gameusers.org/assets/img/user/1/thumbnail.jpg"
+              alt="ログインメニュー"
+              src={thumbnailSrc}
+              srcSet={thumbnailSrcSet}
             />
           </ThumbnailIconButton>
           
@@ -298,18 +306,30 @@ export default class extends React.Component {
             onClose={stores.layout.handleHeaderLoginMenuClose}
           >
             
+            
             <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
+              
               <LoginMenuListItemIcon>
                 <IconPerson />
               </LoginMenuListItemIcon>
-              <LoginMenuListItemText inset primary="プレイヤー" />
+              
+              <Link href={`/pl/${playerID}`}>
+                <LoginMenuListItemText inset primary="プレイヤー" />
+              </Link>
+              
             </MenuItem>
             
+            
             <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
+              
               <LoginMenuListItemIcon>
                 <IconEject />
               </LoginMenuListItemIcon>
-              <LoginMenuListItemText inset primary="ログアウト" />
+              
+              <Link href="/logout">
+                <LoginMenuListItemText inset primary="ログアウト" />
+              </Link>
+              
             </MenuItem>
             
           </LoginMenu>

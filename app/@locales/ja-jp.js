@@ -26,6 +26,8 @@ const ja_JP = {
   'eASl8OdnD': '1文字以上、500文字以内で入力してください',
   'pLES2ZGM2': '1文字以上、3000文字以内で入力してください',
   'ilE2NcYjI': '3文字以上、32文字以内で入力してください',
+  'yKjojKAxy': '6文字以上、32文字以内で入力してください',
+  '_BnyJl8Xz': '8文字以上、32文字以内で入力してください',
   
   'PH8jcw-VF': '正しい値が選ばれていません',
   'bT9TGtVck': '正しい日付ではありません',
@@ -108,7 +110,20 @@ const ja_JP = {
   'NRO3Y1hnC': 'IDの保存可能件数を超えています',
   
   
-  '': '',
+  // ---------------------------------------------
+  //   Error / Validation / DB ids
+  // ---------------------------------------------
+  
+  // /app/@database/users/validations/login-id.js
+  'Xrf-TLIEN': 'ログインIDを入力してください ({ numberOfCharacters }文字)',
+  
+  // /app/@database/users/validations/login-password.js
+  'gJz51M8Pf': 'ログインパスワードを入力してください ({ numberOfCharacters }文字)',
+  'tmEi1Es0v': 'パスワードの強度が足りません ({ numberOfCharacters }文字)',
+  'NHTq1_JhE': 'IDとパスワードを同じ文字列にすることはできません',
+  
+  
+  // '': '',
 };
 
 module.exports = ja_JP;

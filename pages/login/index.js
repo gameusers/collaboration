@@ -17,11 +17,13 @@ import util from 'util';
 import React from 'react';
 import Head from 'next/head';
 // import Link from 'next/link';
-import getConfig from 'next/config';
+// import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
+// import { injectIntl } from 'react-intl';
 import ReCAPTCHA from "react-google-recaptcha";
-import fetch from 'isomorphic-unfetch';
+// import fetch from 'isomorphic-unfetch';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -37,6 +39,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
 
 
 // ---------------------------------------------
@@ -49,6 +52,25 @@ import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 import IconMailOutline from '@material-ui/icons/MailOutline';
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import ja from 'react-intl/locale-data/ja';
+addLocaleData([...en, ...ja]);
+
+import { locale } from '../../app/@locales/locale';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../app/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -66,6 +88,14 @@ import initStoreLoginIndex from '../../app/login/index/stores/store';
 import Layout from '../../app/common/layout/components/layout';
 import Panel from '../../app/common/layout/components/panel';
 import TermsOfService from '../../app/common/layout/components/terms-of-service';
+import FormLogin from '../../app/login/index/components/form-login';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+// const { validationUsersLoginID } = require('../../app/@database/users/validations/login-id2');
 
 
 // ---------------------------------------------
@@ -73,7 +103,6 @@ import TermsOfService from '../../app/common/layout/components/terms-of-service'
 // ---------------------------------------------
 
 import withRoot from '../../lib/material-ui/withRoot';
-
 
 
 
@@ -97,11 +126,16 @@ const Container = styled.div`
 // ---------------------------------------------
 
 const Description = styled.div`
-  // width: 100%;
   margin: 0 0 16px 0;
-  // padding: 0 30px 0 0;
-  // background-color: pink;
 `;
+
+// const StyledTextField = styled(TextField)`
+//   && {
+//     margin-right: 16px;
+//   }
+// `;
+
+
 
 const StyledFormControl = styled(FormControl)`
   && {
@@ -128,7 +162,6 @@ const InputBox = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 360px;
-  margin: 0;
   
   @media screen and (max-width: 480px) {
     width: 100%;
@@ -138,7 +171,6 @@ const InputBox = styled.div`
 const TermsOfServiceBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 0;
 `;
 
 
@@ -170,80 +202,54 @@ class Component extends React.Component {
   
   static async getInitialProps({ pathname, req, res }) {
     
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
     const isServer = !!req;
+    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     
     
     // --------------------------------------------------
-    //   publicRuntimeConfig
-    // --------------------------------------------------
-    
-    const { publicRuntimeConfig } = getConfig();
-    
-    
-    // ---------------------------------------------
     //   Fetch
-    // ---------------------------------------------
+    // --------------------------------------------------
     
-    // ----------------------------------------
-    //   API URL
-    // ----------------------------------------
+    const resultObj = await fetchWrapper({
+      urlApi: encodeURI(`${process.env.URL_API}/v1/login/initial-props`),
+      methodType: 'GET',
+      reqHeadersCookie,
+      reqAcceptLanguage,
+    });
     
-    const urlApi = `${publicRuntimeConfig.urlApi}/v1/login/initial-props`;
+    const statusCode = resultObj.statusCode;
+    // const initialPropsObj = resultObj.data;
+    
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
-    // ----------------------------------------
-    //   Headers
-    // ----------------------------------------
+    // --------------------------------------------------
+    //   ログインしている場合はログアウトページにリダイレクト
+    // --------------------------------------------------
     
-    const headersObj = {
-      'Accept': 'application/json'
-    };
+    const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    if (isServer) {
-      headersObj['Cookie'] = req.headers.cookie;
+    if (login) {
+      res.redirect('/logout');
+      res.end();
+      return {};
     }
     
     
-    await fetch(urlApi, {
-      method: 'GET',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      headers: headersObj
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
-        　});
-        }
-        
-        return response.json();
-      })
-      .then((jsonObj) => {
-        
-        
-        // --------------------------------------------------
-        //   ログインしている場合はログアウトページにリダイレクト
-        // --------------------------------------------------
-        
-        if (jsonObj.login) {
-          res.redirect('/logout');
-          res.end();
-          return {};
-        }
-        
-        
-      })
-      .catch((error) => {
-        
-        console.log(`catch: ${error}`);
-        
-      });
-    
-    
-    return { isServer, pathname };
+    return { isServer, pathname, statusCode, reqAcceptLanguage };
     
   }
+  
   
   
   
@@ -257,49 +263,83 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   publicRuntimeConfig
+    //   Property / Error 判定用
     // --------------------------------------------------
     
-    const { publicRuntimeConfig } = getConfig();
-    this.recaptchaSiteKey = publicRuntimeConfig.recaptchaSiteKey;
-    
-    this.verifyRecaptcha = true;
-    
-    if (publicRuntimeConfig.verifyRecaptcha === '0') {
-      this.verifyRecaptcha = false;
-    }
-    
-    
-    // console.log(chalk`
-    //   this.verifyRecaptcha: {green ${this.verifyRecaptcha}}
-    // `);
-    
-    // console.log(`
-    //   publicRuntimeConfig: \n${util.inspect(publicRuntimeConfig, { colors: true, depth: null })}
-    // `);
+    this.error = false;
     
     
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
-    const argumentsObj = {
-      isServer: props.isServer,
-      pathname: props.pathname,
-      environment: publicRuntimeConfig.environment,
-      urlBase: publicRuntimeConfig.urlBase,
-      urlApi: publicRuntimeConfig.urlApi
-    };
-    
-    this.stores = initStoreIndex(argumentsObj);
-    this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
+    try {
+      
+      
+      // --------------------------------------------------
+      //   Errorの場合
+      // --------------------------------------------------
+      
+      if (
+        this.props.statusCode !== 200
+      ) {
+        throw new Error();
+      }
+      
+      
+      // --------------------------------------------------
+      //   Store
+      // --------------------------------------------------
+      
+      const argumentsObj = {
+        isServer: props.isServer,
+        pathname: props.pathname,
+      };
+      
+      this.stores = initStoreIndex(argumentsObj);
+      this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
+      
+      
+      // --------------------------------------------------
+      //   Update Data
+      // --------------------------------------------------
+      
+      if (Object.keys(this.stores.data.localeObj).length === 0) {
+        
+        const localeObj = locale({
+          acceptLanguage: props.reqAcceptLanguage
+        });
+        
+        this.stores.data.replaceLocaleObj(localeObj);
+        
+      }
+      
+      
+    } catch (e) {
+      this.error = true;
+    }
     
     
   }
   
   
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    //   参考：https://github.com/zeit/next.js#custom-error-handling
+    // --------------------------------------------------
+    
+    if (this.error) {
+      return <Error statusCode={this.props.statusCode} />;
+    }
     
     
     // --------------------------------------------------
@@ -404,6 +444,14 @@ class Component extends React.Component {
       handleTermsOfServiceDialogOpen
       
     } = stores.layout;
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    // const loginID = lodashGet(dataObj, ['loginID'], '');
+    // const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
     
     
     
@@ -529,10 +577,15 @@ class Component extends React.Component {
     let loginRecaptchaRef = '';
     let createAccountRecaptchaRef = '';
     
-    if (this.verifyRecaptcha) {
+    if (process.env.VERIFY_RECAPTCHA === '1') {
       loginRecaptchaRef = React.createRef();
       createAccountRecaptchaRef = React.createRef();
     }
+    
+    // if (this.verifyRecaptcha) {
+    //   loginRecaptchaRef = React.createRef();
+    //   createAccountRecaptchaRef = React.createRef();
+    // }
     
     
     
@@ -542,301 +595,317 @@ class Component extends React.Component {
     
     return (
       <Provider stores={this.stores}>
-      
-        <Layout headerNavMainArr={headerNavMainArr}>
+        
+        <IntlProvider 
+          locale={this.stores.data.localeObj.languageArr[0]}
+          messages={this.stores.data.localeObj.dataObj}
+        >
           
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>ログイン - ID & パスワード - Game Users</title>
-          </Head>
-          
-          
-          <Container>
+          <Layout headerNavMainArr={headerNavMainArr}>
+            
+            {/* Head 内部のタグをここで追記する */}
+            <Head>
+              <title>ログイン - ID & パスワード - Game Users</title>
+            </Head>
             
             
-            {/* ログイン */}
-            <Panel
-              id='login'
-              summary='ログイン - ID & パスワード'
-              detailsComponent={
-                <React.Fragment>
-                  
-                  <Description>
-                    IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
-                  </Description>
-                  
-                  
-                  
-                  {/* フォーム */}
-                  <form>
+            <Container>
+              
+              
+              {/* ログイン */}
+              <FormLogin />
+              
+              
+              <Panel
+                id='login'
+                summary='ログイン - ID & パスワード'
+                detailsComponent={
+                  <React.Fragment>
                     
-                    <InputBox>
+                    <Description>
+                      IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
+                    </Description>
+                    
+                    
+                    
+                    {/* フォーム */}
+                    <form>
                       
-                      <StyledFormControl error={loginIDError}>
-                        <InputLabel htmlFor="loginID">ID{loginIDNoC}</InputLabel>
-                        <Input
-                          id="loginID"
-                          type="text"
-                          value={loginID}
-                          onChange={handleLoginID}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <IconID />
-                            </InputAdornment>
-                          }
-                        />
-                        {loginIDEM}
-                      </StyledFormControl>
-                      
-                      <StyledFormControl error={loginPasswordError}>
-                        <InputLabel htmlFor="loginPassword">パスワード{loginPasswordNoC}</InputLabel>
-                        <Input
-                          id="loginPassword"
-                          type={loginPasswordShow ? 'text' : 'password'}
-                          value={loginPassword}
-                          onChange={handleLoginPassword}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <IconPassword />
-                            </InputAdornment>
-                          }
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={handleLoginPasswordShow}
-                                onMouseDown={handleLoginPasswordMouseDown}
-                              >
-                                {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                        {loginPasswordEM}
-                      </StyledFormControl>
-                    
-                    </InputBox>
-                    
-                    
-                    
-                    {/* 送信ボタン */}
-                    <StyledButton
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleLoginSubmit(loginRecaptchaRef)}
-                    >
-                      ログイン
-                    </StyledButton>
-                    
-                    
-                    
-                    {/* reCAPTCHA */}
-                    { this.verifyRecaptcha &&
-                      <ReCAPTCHAContainer>
-                        <ReCAPTCHA
-                          ref={loginRecaptchaRef}
-                          size="invisible"
-                          badge="inline"
-                          sitekey={this.recaptchaSiteKey}
-                          onChange={handleLoginRecaptchaResponse}
-                        />
-                      </ReCAPTCHAContainer>
-                    }
-                    
-                    
-                  </form>
-                  
-                </React.Fragment>
-              }
-            />
-            
-            
-            
-            {/* アカウント作成 */}
-            <Panel
-              id='createAccount'
-              summary='アカウント作成'
-              detailsComponent={
-                <React.Fragment>
-                  
-                  <Description>
-                    アカウントを作成する場合は、こちらのフォームにIDとパスワードを入力して送信してください。
-                  </Description>
-                  
-                  <Description>
-                    利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。
-※ IDは3文字以上、32文字以内。パスワードは8文字以上、32文字以内。
-                  </Description>
-                  
-                  <Description>
-                    E-Mailの入力は任意ですが、登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
-                  </Description>
-                  
-                  <Description>
-                    ID、パスワード、E-Mailはアカウント作成後に追加・変更することが可能です。
-                  </Description>
-                  
-                  
-                  
-                  {/* フォーム */}
-                  <form>
-                    
-                    <InputBox>
-                      
-                      <StyledFormControl error={createAccountIDError}>
-                        <InputLabel htmlFor="createAccountID">ID{createAccountIDNoC}</InputLabel>
-                        <Input
-                          id="createAccountID"
-                          value={createAccountID}
-                          onChange={handleCreateAccountID}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <IconID />
-                            </InputAdornment>
-                          }
-                        />
-                        {createAccountIDEM}
-                      </StyledFormControl>
-                      
-                      
-                      <PasswordFormControl error={createAccountPasswordError} style={{margin: 0}}>
-                        <InputLabel htmlFor="createAccountPassword">パスワード{createAccountPasswordNoC}</InputLabel>
-                        <Input
-                          id="createAccountPassword"
-                          type={createAccountPasswordShow ? 'text' : 'password'}
-                          value={createAccountPassword}
-                          onChange={handleCreateAccountPassword}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <IconPassword />
-                            </InputAdornment>
-                          }
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={handleCreateAccountPasswordShow}
-                                onMouseDown={handleCreateAccountPasswordMouseDown}
-                              >
-                                {createAccountPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                        {createAccountPasswordEM}
-                      </PasswordFormControl>
-                      
-                      <PasswordScore>
-                        パスワード強度：{passwordStrength}
-                      </PasswordScore>
-                      
-                      
-                      <StyledFormControl error={createAccountPasswordConfirmationError}>
-                        <InputLabel htmlFor="createAccountPasswordConfirmation">パスワード確認{createAccountPasswordConfirmationNoC}</InputLabel>
-                        <Input
-                          id="createAccountPasswordConfirmation"
-                          type={createAccountPasswordConfirmationShow ? 'text' : 'password'}
-                          value={createAccountPasswordConfirmation}
-                          onChange={handleCreateAccountPasswordConfirmation}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <IconPasswordOutlined />
-                            </InputAdornment>
-                          }
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={handleCreateAccountPasswordConfirmationShow}
-                                onMouseDown={handleCreateAccountPasswordConfirmationMouseDown}
-                              >
-                                {createAccountPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                        />
-                        {createAccountPasswordConfirmationEM}
-                      </StyledFormControl>
-                      
-                      
-                      <StyledFormControl error={createAccountEmailError}>
-                        <InputLabel htmlFor="createAccountEmail">E-Mail（任意）{createAccountEmailNoC}</InputLabel>
-                        <Input
-                          id="createAccountEmail"
-                          value={createAccountEmail}
-                          onChange={handleCreateAccountEmail}
-                          startAdornment={
-                            <InputAdornment position="start">
-                              <IconMailOutline />
-                            </InputAdornment>
-                          }
-                        />
-                        {createAccountEmailEM}
-                      </StyledFormControl>
-                    
-                    </InputBox>
-                    
-                    
-                    
-                    <TermsOfServiceBox>
-                      
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={createAccountTermsOfService}
-                            onChange={handleCreateAccountTermsOfService}
+                      <InputBox>
+                        
+                        
+                        
+                        
+                        
+                        <StyledFormControl error={loginIDError}>
+                          <InputLabel htmlFor="loginID">ID{loginIDNoC}</InputLabel>
+                          <Input
+                            id="loginID"
+                            type="text"
+                            value={loginID}
+                            onChange={handleLoginID}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <IconID />
+                              </InputAdornment>
+                            }
                           />
-                        }
-                        label="利用規約に同意します"
-                      />
+                          {loginIDEM}
+                        </StyledFormControl>
+                        
+                        
+                        <StyledFormControl error={loginPasswordError}>
+                          <InputLabel htmlFor="loginPassword">パスワード{loginPasswordNoC}</InputLabel>
+                          <Input
+                            id="loginPassword"
+                            type={loginPasswordShow ? 'text' : 'password'}
+                            value={loginPassword}
+                            onChange={handleLoginPassword}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <IconPassword />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="Toggle password visibility"
+                                  onClick={handleLoginPasswordShow}
+                                  onMouseDown={handleLoginPasswordMouseDown}
+                                >
+                                  {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                          {loginPasswordEM}
+                        </StyledFormControl>
                       
-                      <Button
+                      </InputBox>
+                      
+                      
+                      
+                      {/* 送信ボタン */}
+                      <StyledButton
+                        variant="contained"
                         color="primary"
-                        onClick={handleTermsOfServiceDialogOpen}
+                        onClick={() => handleLoginSubmit(loginRecaptchaRef)}
                       >
-                        利用規約を表示
-                      </Button>
+                        ログイン
+                      </StyledButton>
                       
-                    </TermsOfServiceBox>
+                      
+                      
+                      {/* reCAPTCHA */}
+                      { process.env.VERIFY_RECAPTCHA === '1' &&
+                        <ReCAPTCHAContainer>
+                          <ReCAPTCHA
+                            ref={loginRecaptchaRef}
+                            size="invisible"
+                            badge="inline"
+                            sitekey={process.env.RECAPTCHA_SITE_KEY}
+                            onChange={handleLoginRecaptchaResponse}
+                          />
+                        </ReCAPTCHAContainer>
+                      }
+                      
+                      
+                    </form>
+                    
+                  </React.Fragment>
+                }
+              />
+              
+              
+              
+              {/* アカウント作成 */}
+              <Panel
+                id='createAccount'
+                summary='アカウント作成'
+                detailsComponent={
+                  <React.Fragment>
+                    
+                    <Description>
+                      アカウントを作成する場合は、こちらのフォームにIDとパスワードを入力して送信してください。
+                    </Description>
+                    
+                    <Description>
+                      利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。
+  ※ IDは3文字以上、32文字以内。パスワードは8文字以上、32文字以内。
+                    </Description>
+                    
+                    <Description>
+                      E-Mailの入力は任意ですが、登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
+                    </Description>
+                    
+                    <Description>
+                      ID、パスワード、E-Mailはアカウント作成後に追加・変更することが可能です。
+                    </Description>
                     
                     
                     
-                    {/* 送信ボタン */}
-                    <StyledButton
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleCreateAccountSubmit(createAccountRecaptchaRef)}
-                    >
-                      アカウント作成
-                    </StyledButton>
-                    
-                    
-                    
-                    {/* reCAPTCHA */}
-                    { this.verifyRecaptcha &&
-                      <ReCAPTCHAContainer>
-                        <ReCAPTCHA
-                          ref={createAccountRecaptchaRef}
-                          size="invisible"
-                          badge="inline"
-                          sitekey={this.recaptchaSiteKey}
-                          onChange={handleCreateAccountRecaptchaResponse}
+                    {/* フォーム */}
+                    <form>
+                      
+                      <InputBox>
+                        
+                        <StyledFormControl error={createAccountIDError}>
+                          <InputLabel htmlFor="createAccountID">ID{createAccountIDNoC}</InputLabel>
+                          <Input
+                            id="createAccountID"
+                            value={createAccountID}
+                            onChange={handleCreateAccountID}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <IconID />
+                              </InputAdornment>
+                            }
+                          />
+                          {createAccountIDEM}
+                        </StyledFormControl>
+                        
+                        
+                        <PasswordFormControl error={createAccountPasswordError} style={{margin: 0}}>
+                          <InputLabel htmlFor="createAccountPassword">パスワード{createAccountPasswordNoC}</InputLabel>
+                          <Input
+                            id="createAccountPassword"
+                            type={createAccountPasswordShow ? 'text' : 'password'}
+                            value={createAccountPassword}
+                            onChange={handleCreateAccountPassword}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <IconPassword />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="Toggle password visibility"
+                                  onClick={handleCreateAccountPasswordShow}
+                                  onMouseDown={handleCreateAccountPasswordMouseDown}
+                                >
+                                  {createAccountPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                          {createAccountPasswordEM}
+                        </PasswordFormControl>
+                        
+                        <PasswordScore>
+                          パスワード強度：{passwordStrength}
+                        </PasswordScore>
+                        
+                        
+                        <StyledFormControl error={createAccountPasswordConfirmationError}>
+                          <InputLabel htmlFor="createAccountPasswordConfirmation">パスワード確認{createAccountPasswordConfirmationNoC}</InputLabel>
+                          <Input
+                            id="createAccountPasswordConfirmation"
+                            type={createAccountPasswordConfirmationShow ? 'text' : 'password'}
+                            value={createAccountPasswordConfirmation}
+                            onChange={handleCreateAccountPasswordConfirmation}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <IconPasswordOutlined />
+                              </InputAdornment>
+                            }
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="Toggle password visibility"
+                                  onClick={handleCreateAccountPasswordConfirmationShow}
+                                  onMouseDown={handleCreateAccountPasswordConfirmationMouseDown}
+                                >
+                                  {createAccountPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                          {createAccountPasswordConfirmationEM}
+                        </StyledFormControl>
+                        
+                        
+                        <StyledFormControl error={createAccountEmailError}>
+                          <InputLabel htmlFor="createAccountEmail">E-Mail（任意）{createAccountEmailNoC}</InputLabel>
+                          <Input
+                            id="createAccountEmail"
+                            value={createAccountEmail}
+                            onChange={handleCreateAccountEmail}
+                            startAdornment={
+                              <InputAdornment position="start">
+                                <IconMailOutline />
+                              </InputAdornment>
+                            }
+                          />
+                          {createAccountEmailEM}
+                        </StyledFormControl>
+                      
+                      </InputBox>
+                      
+                      
+                      
+                      <TermsOfServiceBox>
+                        
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={createAccountTermsOfService}
+                              onChange={handleCreateAccountTermsOfService}
+                            />
+                          }
+                          label="利用規約に同意します"
                         />
-                      </ReCAPTCHAContainer>
-                    }
+                        
+                        <Button
+                          color="primary"
+                          onClick={handleTermsOfServiceDialogOpen}
+                        >
+                          利用規約を表示
+                        </Button>
+                        
+                      </TermsOfServiceBox>
+                      
+                      
+                      
+                      {/* 送信ボタン */}
+                      <StyledButton
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleCreateAccountSubmit(createAccountRecaptchaRef)}
+                      >
+                        アカウント作成
+                      </StyledButton>
+                      
+                      
+                      
+                      {/* reCAPTCHA */}
+                      { this.verifyRecaptcha &&
+                        <ReCAPTCHAContainer>
+                          <ReCAPTCHA
+                            ref={createAccountRecaptchaRef}
+                            size="invisible"
+                            badge="inline"
+                            sitekey={process.env.RECAPTCHA_SITE_KEY}
+                            onChange={handleCreateAccountRecaptchaResponse}
+                          />
+                        </ReCAPTCHAContainer>
+                      }
+                      
+                      
+                    </form>
                     
-                    
-                  </form>
-                  
-                </React.Fragment>
-              }
-            />
+                  </React.Fragment>
+                }
+              />
+              
+              <TermsOfService />
+              
+            </Container>
             
-            <TermsOfService />
-            
-          </Container>
+          </Layout>
           
-        </Layout>
+        </IntlProvider>
+        
       </Provider>
     );
   }

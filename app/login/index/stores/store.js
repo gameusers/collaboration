@@ -16,6 +16,8 @@ const util = require('util');
 
 import { action, observable } from 'mobx';
 import fetch from 'isomorphic-unfetch';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
@@ -29,7 +31,6 @@ const validationEmail = require('../../../@database/users/validations/email');
 
 
 
-
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
@@ -37,7 +38,6 @@ const validationEmail = require('../../../@database/users/validations/email');
 let storeLoginIndex = null;
 let storeLayout = null;
 let storeData = null;
-
 
 
 
@@ -61,6 +61,32 @@ class Store {
     this.passwordMaxLength = 32;
     
   }
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Data
+  // ---------------------------------------------
+  
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable dataObj = {};
+  
+  
+  /**
+   * フォーム用のデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleEdit({ pathArr, value }) {
+    lodashSet(this.dataObj, pathArr, value);
+  };
+  
+  
   
   
   // ---------------------------------------------
@@ -157,15 +183,17 @@ class Store {
    * 表示する true / 表示しない false
    * @type {boolean}
    */
-  @observable loginPasswordShow = false;
-
+  // @observable loginPasswordShow = false;
+  
+  
   /**
    * ログインパスワード入力フォームの目のマークを押したときに呼び出される
    * 押すと隠されているログインパスワードを表示する
    */
   @action.bound
   handleLoginPasswordShow() {
-    this.loginPasswordShow = !this.loginPasswordShow;
+    this.dataObj['loginPasswordShow'] = !this.dataObj['loginPasswordShow'];
+    // this.loginPasswordShow = !this.loginPasswordShow;
   };
   
   

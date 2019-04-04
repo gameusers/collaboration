@@ -414,7 +414,7 @@ export default class extends React.Component {
         
         
         {/* カードのコンテンツ - 折り畳まれる部分 */}
-        <Collapse in={panelExpanded} timeout="auto" unmountOnExit>
+        <Collapse in={panelExpanded} timeout="auto">
           
           
           {/* 編集フォーム */}

@@ -1,4 +1,8 @@
 // --------------------------------------------------
+//   File ID: H8RcPtx7P
+// --------------------------------------------------
+
+// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -30,6 +34,7 @@ const FormData = require('form-data');
 
 const { verifyCsrfToken } = require('../../../@modules/csrf');
 const { verifyRecaptcha } = require('../../../@modules/recaptcha');
+const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
@@ -49,6 +54,18 @@ const SchemaUsers = require('../../../@database/users/schema');
 
 
 // ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { addLocaleData } = require('react-intl');
+const en = require('react-intl/locale-data/en');
+const ja = require('react-intl/locale-data/ja');
+addLocaleData([...en, ...ja]);
+
+const { locale } = require('../../../@locales/locale');
+
+
+// ---------------------------------------------
 //   Logger
 // ---------------------------------------------
 
@@ -65,34 +82,46 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   Initial Props
+//   Status Code & Error Arguments Object
+// --------------------------------------------------
+
+let statusCode = 400;
+
+let errorArgumentsObj = {
+  fileID: 'H8RcPtx7P',
+  functionID: '',
+  errorCodeArr: [],
+  errorObj: {},
+  usersLogin_id: ''
+};
+
+
+
+
+// --------------------------------------------------
+//   Initial Props / Function ID: aNvBIBitq
 // --------------------------------------------------
 
 router.get('/initial-props', upload.none(), function(req, res, next) {
   
   
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionID = 'aNvBIBitq';
+  
+  
   try {
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   {green /app/login/index/api/login.js / initial-props}
-    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -111,36 +140,23 @@ router.get('/initial-props', upload.none(), function(req, res, next) {
     });
     
     
-  } catch (error) {
-    
-    // console.log(chalk`
-    //   error.message: {red ${error.message}}
-    // `);
+  } catch (errorObj) {
     
     
-    // --------------------------------------------------
-    //   Set Error Message
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
     
-    let message = error.message;
-    
-    if (process.env.NODE_ENV === 'production') {
-      message = 'Login Initial Props';
-    }
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------
-    //   Return Error JSON
+    //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(400).json({
-      errorsArr: [
-        {
-          code: 0,
-          message
-        },
-      ]
-    });
+    return res.status(statusCode).json(resultErrorObj);
+    
     
   }
   
@@ -208,9 +224,9 @@ router.post('/', upload.none(), (req, res, next) => {
       //   err: \n${util.inspect(err, { colors: true, depth: null })}
       // `);
       
-      console.log(`
-        user: \n${util.inspect(user, { colors: true, depth: null })}
-      `);
+      // console.log(`
+      //   user: \n${util.inspect(user, { colors: true, depth: null })}
+      // `);
       
       // console.log(`
       //   info: \n${util.inspect(info, { colors: true, depth: null })}

@@ -53,6 +53,15 @@ import IconEject from '@material-ui/icons/Eject';
 
 
 // ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconLogin from '@material-ui/icons/ExitToApp';
+
+// LabelImportant
+// SlowMotionVideo
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -169,6 +178,21 @@ const StyledAvatar = styled(Avatar)`
   }
 `;
 
+const LoginLinkBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  color: #4000FF;
+  cursor: pointer;
+  margin: 0 16px 0 0;
+`;
+
+const LoginLinkIcon = styled(IconLogin)`
+  && {
+    margin: 0 6px 0 0;
+  }
+`;
+
+
 const LoginMenu = styled(Menu)`
   && {
     position: fixed;
@@ -232,9 +256,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const thumbnailSrc = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'src'], '');
-    // const thumbnailCaption = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'caption'], '');
     const thumbnailSrcSet = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'srcSet'], '');
-    
     const playerID = lodashGet(stores, ['data', 'usersLoginObj', 'playerID'], '');
     
     
@@ -287,16 +309,24 @@ export default class extends React.Component {
           </Search>
           
           
+          
+          
           {/* サムネイル */}
-          <ThumbnailIconButton
-            onClick={stores.layout.handleHeaderLoginMenuOpen}
-          >
-            <StyledAvatar
-              alt="ログインメニュー"
-              src={thumbnailSrc}
-              srcSet={thumbnailSrcSet}
-            />
-          </ThumbnailIconButton>
+          { thumbnailSrc ? (
+            <ThumbnailIconButton
+              onClick={stores.layout.handleHeaderLoginMenuOpen}
+            >
+              <StyledAvatar
+                alt="ログインメニュー"
+                src={thumbnailSrc}
+                srcSet={thumbnailSrcSet}
+              />
+            </ThumbnailIconButton>
+          ) : (
+            <Link href="/login"><LoginLinkBox><LoginLinkIcon /> ログイン</LoginLinkBox></Link>
+          )}
+          
+          
           
           
           {/* ログインメニュー */}

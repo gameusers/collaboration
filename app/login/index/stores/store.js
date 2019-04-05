@@ -21,8 +21,25 @@ import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../../@modules/fetch';
+
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+import { errorsArrIntoErrorMessage } from '../../../@format/error';
+
+
+// ---------------------------------------------
 //   Validation
 // ---------------------------------------------
+
+const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
+const { validationUsersLoginPassword } = require('../../../@database/users/validations/login-password');
 
 const validationLoginID = require('../../../@database/users/validations/login-id');
 const { validationLoginPassword, validationLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
@@ -94,106 +111,12 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * ログインID
-   * @type {string}
-   */
-  @observable loginID = '';
-  
-  /**
-   * ログインID　文字数
-   * @type {number}
-   */
-  @observable loginIDNumberOfCharacters = 0;
-  
-  /**
-   * ログインID　エラー（バリデーション用）
-   * @type {string}
-   */
-  @observable loginIDError = false;
-  
-  /**
-   * ログインID　エラーメッセージ
-   * @type {string}
-   */
-  @observable loginIDErrorMessage = '';
-  
-  
-  /**
-   * ログインID入力フォームに文字列を入力したときに呼び出される
-   * @param {Object} event - イベント
-   */
-  @action.bound
-  handleLoginID(event) {
-    
-    const resultObj = validationLoginID(event.target.value);
-    
-    this.loginID = resultObj.value;
-    this.loginIDNumberOfCharacters = resultObj.numberOfCharacters;
-    this.loginIDError = resultObj.error;
-    this.loginIDErrorMessage = resultObj.errorMessageArr[0];
-    
-  };
-  
-  
-  
-  /**
-   * ログインパスワード
-   * @type {string}
-   */
-  @observable loginPassword = '';
-  
-  /**
-   * ログインパスワード　文字数
-   * @type {number}
-   */
-  @observable loginPasswordNumberOfCharacters = 0;
-  
-  /**
-   * ログインパスワード　エラー（バリデーション用）
-   * @type {string}
-   */
-  @observable loginPasswordError = false;
-  
-   /**
-   * ログインパスワード　エラーメッセージ
-   * @type {string}
-   */
-  @observable loginPasswordErrorMessage = '';
-  
-  
-  /**
-   * ログインパスワード入力フォームに文字列を入力したときに呼び出される
-   * @param {Object} event - イベント
-   */
-  @action.bound
-  handleLoginPassword(event) {
-    
-    const resultObj = validationLoginPassword(event.target.value);
-    
-    this.loginPassword = resultObj.value;
-    this.loginPasswordNumberOfCharacters = resultObj.numberOfCharacters;
-    this.loginPasswordError = resultObj.error;
-    this.loginPasswordErrorMessage = resultObj.errorMessageArr[0];
-    
-  };
-  
-  
-  /**
-   * 隠されているログインパスワードを表示するか
-   * 表示する true / 表示しない false
-   * @type {boolean}
-   */
-  // @observable loginPasswordShow = false;
-  
-  
-  /**
    * ログインパスワード入力フォームの目のマークを押したときに呼び出される
    * 押すと隠されているログインパスワードを表示する
    */
   @action.bound
   handleLoginPasswordShow() {
     this.dataObj['loginPasswordShow'] = !this.dataObj['loginPasswordShow'];
-    // this.loginPasswordShow = !this.loginPasswordShow;
   };
   
   
@@ -212,28 +135,21 @@ class Store {
   
   
   /**
-   * ログイン用 reCAPTCHA のトークン
-   * @type {string}
+   * フォームの送信ボタンを押すと呼び出される。reCAPTCHA をリセットしてトークンを取得する。
+   * @param {Object} recaptchaRef - reCAPTCHA コンポーネントの ref
    */
-  loginRecaptchaResponse = null;
+  @action.bound
+  handleLoginRecaptchaReset(recaptchaRef) {
+    recaptchaRef.execute();
+  }
+  
   
   /**
-   * ログイン用 reCAPTCHA のトークンをセットする
-   * ReCAPTCHA コンポーネントの onChange で呼び出される
-   * @param {string} recaptchaResponse - トークンが入っている
+   * reCAPTCHA のトークンが取得できたら、フォームを送信する
+   * @param {string} recaptchaResponse - トークン
    */
   @action.bound
   handleLoginRecaptchaResponse(recaptchaResponse) {
-    
-    
-    // ---------------------------------------------
-    //   Console 出力
-    // ---------------------------------------------
-    
-    console.log(`\n\n`);
-    console.log(`--- handleLoginRecaptchaResponse ---`);
-    console.log(`recaptchaResponse = ${recaptchaResponse}`);
-    console.log(`\n\n`);
     
     
     // ---------------------------------------------
@@ -242,140 +158,255 @@ class Store {
     
     if (recaptchaResponse) {
       
-      this.loginRecaptchaResponse = recaptchaResponse;
+      this.dataObj.loginRecaptchaResponse = recaptchaResponse;
       this.handleLoginSubmit();
       
-    } else {
-      
-      this.loginRecaptchaResponse = '';
-      
     }
+    
     
   };
   
   
-  
   /**
-   * ログインフォームで送信ボタンを押すと呼び出される
+   * ログインフォームを送信する
    * @param {Object} recaptchaRef - ReCAPTCHA コンポーネントの ref
    */
   @action.bound
-  handleLoginSubmit(recaptchaRef = null) {
+  async handleLoginSubmit(recaptchaRef) {
     
     
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const loginID = lodashGet(this.dataObj, ['loginID'], '');
+      const loginPassword = lodashGet(this.dataObj, ['loginPassword'], '');
+      const loginRecaptchaResponse = lodashGet(this.dataObj, ['loginRecaptchaResponse'], '');
+      
+      
+      // ---------------------------------------------
+      //   Validation
+      // ---------------------------------------------
+      
+      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
+      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
+      
+      
+      console.log(chalk`
+        \n---------- handleLoginSubmit ----------\n
+        loginID: {green ${loginID}}
+        loginPassword: {green ${loginPassword}}
+        loginRecaptchaResponse: {green ${loginRecaptchaResponse}}
+      `);
+      
+      console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
+      console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
+      console.log(`\n-----------------------------------\n`);
+      
+      console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
+      console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
+      console.log(`\n-----------------------------------\n`);
+      
+      return;
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('loginID', loginID);
+      formData.append('loginPassword', loginPassword);
+      formData.append('response', loginRecaptchaResponse);
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      // storeLayout.handleButtonDisable({ _id: 'login' });
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/login/test`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
+      
+      
+      
+      
+      // // ---------------------------------------------
+      // //   Data Users 更新
+      // // ---------------------------------------------
+      
+      // storeData.updateUsersObj(resultObj.data.usersObj);
+      
+      
+      // // ---------------------------------------------
+      // //   Snackbar: Success
+      // // ---------------------------------------------
+      
+      // if (type === 'follow') {
+      //   storeLayout.handleSnackbarOpen('success', 'フォローしました。');
+      // } else {
+      //   storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
+      // }
+      
+      
+    } catch (error) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      // if (type === 'follow') {
+      //   storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
+      // } else {
+      //   storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
+      // }
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ _id: 'login' });
+      
+      
+    }
     
-    // console.log(`\n\n`);
-    // console.log(`--- handleLoginSubmit ---`);
-    // console.log(`this.loginID = ${this.loginID}`);
-    // console.log(`this.loginPassword = ${this.loginPassword}`);
-    // console.log(`this.loginRecaptchaResponse = ${this.loginRecaptchaResponse}`);
-    // console.dir(recaptchaRef);
-    // console.log(`\n\n`);
+    
     
     
     // --------------------------------------------------
     //   Error
     // --------------------------------------------------
     
-    if (!this.loginRecaptchaResponse && recaptchaRef) {
+    // if (!this.loginRecaptchaResponse && recaptchaRef) {
       
-      console.log(`recaptchaRef.current.execute()`);
-      // recaptchaRef.current.reset();
-      recaptchaRef.current.execute();
-      return;
+    //   console.log(`recaptchaRef.current.execute()`);
+    //   // recaptchaRef.current.reset();
+    //   recaptchaRef.current.execute();
+    //   return;
       
-    } else if (
-      this.loginID === '' ||
-      this.loginPassword === '' ||
-      this.loginIDError ||
-      this.loginPasswordError
-    ) {
+    // } else if (
+    //   this.loginID === '' ||
+    //   this.loginPassword === '' ||
+    //   this.loginIDError ||
+    //   this.loginPasswordError
+    // ) {
       
-      storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
-      return;
+    //   storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
+    //   return;
       
-    }
+    // }
     
     
-    // --------------------------------------------------
-    //   FormData
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   FormData
+    // // --------------------------------------------------
     
-    const formDataObj = new FormData();
+    // const formDataObj = new FormData();
     
-    formDataObj.append('loginID', this.loginID);
-    formDataObj.append('loginPassword', this.loginPassword);
-    formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
-    
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    let errorObj = {};
-    const urlBase = storeData.urlBase;
-    const urlApi = `${storeData.urlApi}/v1/login`;
-    
-    // console.log(chalk`
-    //   storeData.urlBase: {green ${storeData.urlBase}}
-    // `);
-    
-    // console.log(`
-    //   storeData: \n${util.inspect(storeData, { colors: true, depth: null })}
-    // `);
-    
-    // return;
+    // formDataObj.append('loginID', this.loginID);
+    // formDataObj.append('loginPassword', this.loginPassword);
+    // formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
     
     
+    // // --------------------------------------------------
+    // //   Fetch
+    // // --------------------------------------------------
     
-    fetch(urlApi, {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      headers: {
-        'Accept': 'application/json'
-      },
-      body: formDataObj
-    })
-      .then((response) => {
+    // // ---------------------------------------------
+    // //   Property
+    // // ---------------------------------------------
+    
+    // let errorObj = {};
+    // const urlBase = storeData.urlBase;
+    // const urlApi = `${storeData.urlApi}/v1/login`;
+    
+    // // console.log(chalk`
+    // //   storeData.urlBase: {green ${storeData.urlBase}}
+    // // `);
+    
+    // // console.log(`
+    // //   storeData: \n${util.inspect(storeData, { colors: true, depth: null })}
+    // // `);
+    
+    // // return;
+    
+    
+    
+    // fetch(urlApi, {
+    //   method: 'POST',
+    //   credentials: 'same-origin',
+    //   mode: 'same-origin',
+    //   headers: {
+    //     'Accept': 'application/json'
+    //   },
+    //   body: formDataObj
+    // })
+    //   .then((response) => {
         
-        if (!response.ok) {
-          return response.json().then((jsonObj) => {
-            errorObj = jsonObj;
-        　　throw new Error(errorObj.errorsArr[0].message);
-        　});
-        }
+    //     if (!response.ok) {
+    //       return response.json().then((jsonObj) => {
+    //         errorObj = jsonObj;
+    //     　　throw new Error(errorObj.errorsArr[0].message);
+    //     　});
+    //     }
         
-        return response.json();
+    //     return response.json();
         
-      })
-      .then((jsonObj) => {
+    //   })
+    //   .then((jsonObj) => {
         
-        // console.log(`then`);
-        // console.log(`
-        //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-        // `);
+    //     // console.log(`then`);
+    //     // console.log(`
+    //     //   jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
+    //     // `);
         
-        // Form Reset
-        this.handleFormReset();
+    //     // Form Reset
+    //     this.handleFormReset();
         
-        // Page Transition
-        window.location.href = `${urlBase}pl/${jsonObj.playerID}`;
+    //     // Page Transition
+    //     window.location.href = `${urlBase}pl/${jsonObj.playerID}`;
         
-      })
-      .catch((error) => {
+    //   })
+    //   .catch((error) => {
         
-        storeLayout.handleSnackbarOpen('error', error);
-        return;
+    //     storeLayout.handleSnackbarOpen('error', error);
+    //     return;
         
-      });
+    //   });
     
   };
   

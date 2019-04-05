@@ -244,22 +244,12 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   publicRuntimeConfig
-      // --------------------------------------------------
-      
-      const { publicRuntimeConfig } = getConfig();
-      
-      
-      // --------------------------------------------------
       //   Store
       // --------------------------------------------------
       
       const argumentsObj = {
         isServer: props.isServer,
         pathname: props.pathname,
-        environment: publicRuntimeConfig.environment,
-        urlBase: publicRuntimeConfig.urlBase,
-        urlApi: publicRuntimeConfig.urlApi
       };
       
       this.stores = initStoreIndex(argumentsObj);

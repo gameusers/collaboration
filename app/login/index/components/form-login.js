@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
+import { ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 
@@ -54,8 +55,8 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 //   Validations
 // ---------------------------------------------
 
-const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id2');
-const { validationUsersLoginPassword } = require('../../../../app/@database/users/validations/login-password2');
+const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
+const { validationUsersLoginPassword } = require('../../../../app/@database/users/validations/login-password');
 
 
 
@@ -100,15 +101,15 @@ const LoginSubmitButtonBox = styled.div`
   margin: 20px 0 0 0;
 `;
 
-const StyledButton = styled(Button)`
-  && {
-    margin: 10px 0 0 0;
-  }
-`;
+// const StyledButton = styled(Button)`
+//   && {
+//     margin: 10px 0 0 0;
+//   }
+// `;
 
-const ReCAPTCHAContainer = styled.div`
-  margin: 30px 0 0 0;
-`;
+// const ReCAPTCHAContainer = styled.div`
+//   margin: 30px 0 0 0;
+// `;
 
 
 
@@ -128,11 +129,13 @@ export default injectIntl(class extends React.Component {
   
   componentDidMount(){
     
+    
     // --------------------------------------------------
     //   Button - Enable
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ _id: 'login' });
+    
     
   }
   
@@ -150,6 +153,8 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleLoginRecaptchaReset,
+      handleLoginRecaptchaResponse,
       handleLoginSubmit,
       handleLoginPasswordShow,
       handleLoginPasswordMouseDown,
@@ -193,6 +198,8 @@ export default injectIntl(class extends React.Component {
     const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
     
     
+    
+    
     // --------------------------------------------------
     //   パスワードの強度
     // --------------------------------------------------
@@ -221,38 +228,35 @@ export default injectIntl(class extends React.Component {
     //   reCAPTCHA
     // --------------------------------------------------
     
-    let loginRecaptchaRef = '';
-    // let createAccountRecaptchaRef = '';
+    // let loginRecaptchaRef = '';
+    // // let createAccountRecaptchaRef = '';
     
-    if (process.env.VERIFY_RECAPTCHA === '1') {
-      loginRecaptchaRef = React.createRef();
-      // createAccountRecaptchaRef = React.createRef();
-    }
+    // if (process.env.VERIFY_RECAPTCHA === '1') {
+    //   loginRecaptchaRef = React.createRef();
+    //   // createAccountRecaptchaRef = React.createRef();
+    // }
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- validationUsersLoginIDObj -----\n
-      ${util.inspect(validationUsersLoginIDObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- validationUsersLoginIDObj -----\n
+    //   ${util.inspect(validationUsersLoginIDObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- validationUsersLoginPasswordObj -----\n
-      ${util.inspect(validationUsersLoginPasswordObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- validationUsersLoginPasswordObj -----\n
+    //   ${util.inspect(validationUsersLoginPasswordObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
-    //   value: {green ${value}}
-    //   alternativeText: {green ${alternativeText}}
-    //   search: {green ${search}}
-    //   age: {green ${age}}
+    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
     // `);
-    //
+    
     
     // --------------------------------------------------
     //   Return
@@ -260,6 +264,15 @@ export default injectIntl(class extends React.Component {
     
     return (
       <React.Fragment>
+        
+        
+        {/* reCAPTCHA */}
+        <ReCaptcha
+          ref={ref => this.recaptcha = ref}
+          sitekey={process.env.RECAPTCHA_SITE_KEY}
+          action='login'
+          verifyCallback={handleLoginRecaptchaResponse}
+        />
         
         
         <ExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
@@ -350,7 +363,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleLoginSubmit(loginRecaptchaRef)}
+                onClick={() => handleLoginRecaptchaReset(this.recaptcha)}
                 disabled={buttonDisabled}
               >
                 ログイン

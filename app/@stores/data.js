@@ -38,6 +38,30 @@ class Store {
   
   
   // ---------------------------------------------
+  //   reCAPTCHA
+  // ---------------------------------------------
+  
+  /**
+   * reCAPTCHAトークン
+   * @type {string}
+   */
+  // @observable recapchaToken = '';
+  
+  
+  // /**
+  // * reCAPTCHAトークンを更新する
+  // * @param {string} value - 値
+  // */
+  // @action.bound
+  // replaceRecapchaToken(value) {
+  //   this.recapchaToken = value;
+  //   console.log(this.recapchaToken);
+  // };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Locale
   // ---------------------------------------------
   
@@ -52,6 +76,7 @@ class Store {
    * Localeオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
+  @action.bound
   replaceLocaleObj(obj) {
     this.localeObj = obj;
   };
@@ -74,6 +99,7 @@ class Store {
    * ログインユーザー情報オブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
+  @action.bound
   replaceUsersLoginObj(obj) {
     this.usersLoginObj = obj;
   };
@@ -92,7 +118,7 @@ class Store {
   @observable usersObj = {};
   
   
-  // @action.bound
+  @action.bound
   insertUsersObj(obj) {
     this.usersObj = Object.assign({}, obj, this.usersObj);
   };
@@ -102,7 +128,7 @@ class Store {
    * ユーザー情報オブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
-  // @action.bound
+  @action.bound
   updateUsersObj(obj) {
     this.usersObj = Object.assign({}, this.usersObj, obj);
   };
@@ -112,7 +138,7 @@ class Store {
    * ユーザー情報オブジェクトを置き換える
    * @param {Object} obj - 置き換えるオブジェクト
    */
-  // @action.bound
+  @action.bound
   replaceUsersObj(obj) {
     this.usersObj = obj;
   };
@@ -134,6 +160,7 @@ class Store {
    * プレイヤーカードのオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
+  @action.bound
   updateCardPlayersObj(obj) {
     this.cardPlayersObj = Object.assign({}, this.cardPlayersObj, obj);
   };
@@ -142,6 +169,7 @@ class Store {
    * プレイヤーカードのオブジェクトを置き換える
    * @param {Object} obj - 置き換えるオブジェクト
    */
+  @action.bound
   replaceCardPlayersObj(obj) {
     this.cardPlayersObj = obj;
   };
@@ -163,6 +191,7 @@ class Store {
    * ゲームカードのオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
+  @action.bound
   updateCardGamesObj(obj) {
     this.cardGamesObj = Object.assign({}, this.cardGamesObj, obj);
   };
@@ -171,6 +200,7 @@ class Store {
    * ゲームカードのオブジェクトを置き換える
    * @param {Object} obj - 置き換えるオブジェクト
    */
+  @action.bound
   replaceCardGamesObj(obj) {
     this.cardGamesObj = obj;
   };
@@ -184,6 +214,7 @@ class Store {
   
   @observable userCommunityObj = {};
   
+  @action.bound
   insertUserCommunityObj(dataObj) {
     this.userCommunityObj = Object.assign({}, dataObj, this.userCommunityObj);
     // console.log(`User Community insertData`);

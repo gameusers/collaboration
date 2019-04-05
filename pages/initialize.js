@@ -52,19 +52,12 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   publicRuntimeConfig
-    // --------------------------------------------------
-    
-    const { publicRuntimeConfig } = getConfig();
-    
-    
-    // --------------------------------------------------
     //   .env
     // --------------------------------------------------
     
-    this.environment = publicRuntimeConfig.environment;
-    this.urlBase = publicRuntimeConfig.urlBase;
-    this.urlApi = publicRuntimeConfig.urlApi;
+    this.environment = process.env.NODE_ENV;
+    this.urlBase = process.env.URL_BASE;
+    this.urlApi = process.env.URL_API;
     
     
   }

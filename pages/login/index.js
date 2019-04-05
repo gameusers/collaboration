@@ -21,7 +21,7 @@ import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 // import { injectIntl } from 'react-intl';
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 // import fetch from 'isomorphic-unfetch';
 import lodashGet from 'lodash/get';
 
@@ -616,106 +616,6 @@ class Component extends React.Component {
               <FormLogin />
               
               
-              <Panel
-                id='login'
-                summary='ログイン - ID & パスワード'
-                detailsComponent={
-                  <React.Fragment>
-                    
-                    <Description>
-                      IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
-                    </Description>
-                    
-                    
-                    
-                    {/* フォーム */}
-                    <form>
-                      
-                      <InputBox>
-                        
-                        
-                        
-                        
-                        
-                        <StyledFormControl error={loginIDError}>
-                          <InputLabel htmlFor="loginID">ID{loginIDNoC}</InputLabel>
-                          <Input
-                            id="loginID"
-                            type="text"
-                            value={loginID}
-                            onChange={handleLoginID}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <IconID />
-                              </InputAdornment>
-                            }
-                          />
-                          {loginIDEM}
-                        </StyledFormControl>
-                        
-                        
-                        <StyledFormControl error={loginPasswordError}>
-                          <InputLabel htmlFor="loginPassword">パスワード{loginPasswordNoC}</InputLabel>
-                          <Input
-                            id="loginPassword"
-                            type={loginPasswordShow ? 'text' : 'password'}
-                            value={loginPassword}
-                            onChange={handleLoginPassword}
-                            startAdornment={
-                              <InputAdornment position="start">
-                                <IconPassword />
-                              </InputAdornment>
-                            }
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="Toggle password visibility"
-                                  onClick={handleLoginPasswordShow}
-                                  onMouseDown={handleLoginPasswordMouseDown}
-                                >
-                                  {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                          {loginPasswordEM}
-                        </StyledFormControl>
-                      
-                      </InputBox>
-                      
-                      
-                      
-                      {/* 送信ボタン */}
-                      <StyledButton
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handleLoginSubmit(loginRecaptchaRef)}
-                      >
-                        ログイン
-                      </StyledButton>
-                      
-                      
-                      
-                      {/* reCAPTCHA */}
-                      { process.env.VERIFY_RECAPTCHA === '1' &&
-                        <ReCAPTCHAContainer>
-                          <ReCAPTCHA
-                            ref={loginRecaptchaRef}
-                            size="invisible"
-                            badge="inline"
-                            sitekey={process.env.RECAPTCHA_SITE_KEY}
-                            onChange={handleLoginRecaptchaResponse}
-                          />
-                        </ReCAPTCHAContainer>
-                      }
-                      
-                      
-                    </form>
-                    
-                  </React.Fragment>
-                }
-              />
-              
               
               
               {/* アカウント作成 */}
@@ -880,7 +780,7 @@ class Component extends React.Component {
                       
                       {/* reCAPTCHA */}
                       { this.verifyRecaptcha &&
-                        <ReCAPTCHAContainer>
+                        {/*<ReCAPTCHAContainer>
                           <ReCAPTCHA
                             ref={createAccountRecaptchaRef}
                             size="invisible"
@@ -888,7 +788,7 @@ class Component extends React.Component {
                             sitekey={process.env.RECAPTCHA_SITE_KEY}
                             onChange={handleCreateAccountRecaptchaResponse}
                           />
-                        </ReCAPTCHAContainer>
+                        </ReCAPTCHAContainer>*/}
                       }
                       
                       

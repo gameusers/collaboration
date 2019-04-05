@@ -1,18 +1,38 @@
 // --------------------------------------------------
-//   Import
+//   Require
 // --------------------------------------------------
+
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
 
 const zxcvbn = require('zxcvbn');
 
+
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
 
 
 
 
 /**
- * Password
- * @param {string} password - Password
+ * Login Password
+ * @param {boolean} required - 必須かどうか
+ * @param {string} value - 値
+ * @param {string} loginID - Login ID
  */
-const validationLoginPassword = (password, id = '') => {
+const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
   
   
   // ---------------------------------------------
@@ -27,110 +47,103 @@ const validationLoginPassword = (password, id = '') => {
   //   Result Object
   // ---------------------------------------------
   
-  const slicedPassword = password ? password.slice(0, maxLength) : '';
-  const numberOfCharacters = slicedPassword ? slicedPassword.length : 0;
-  const strengthScore = zxcvbn(slicedPassword).score;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
+  const strengthScore = zxcvbn(data).score;
   
   let resultObj = {
-    value: slicedPassword,
+    value: data,
     numberOfCharacters,
-    strengthScore,
+    messageCode: 'gJz51M8Pf',
     error: false,
-    errorMessageArr: []
+    errorCodeArr: [],
+    strengthScore
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  if (slicedPassword === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('パスワードを入力してください。');
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 空の場合、バリデーションスルー
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        resultObj.errorCodeArr.push('LJGO1br5z');
+      }
+      
+      return resultObj;
+      
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('_BnyJl8Xz');
+      resultObj.errorCodeArr.push('amAKxmNis');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      messageCodeArr.unshift('JBkjlGQMh');
+      resultObj.errorCodeArr.push('jSqs5J_a8');
+    }
+    
+    // パスワードの強度
+    if (strengthScore < 2) {
+      messageCodeArr.unshift('tmEi1Es0v');
+      resultObj.errorCodeArr.push('6PM5lQzCA');
+    }
+    
+    // IDとパスワードを同じ文字列にできない
+    if (data === loginID) {
+      messageCodeArr.unshift('NHTq1_JhE');
+      resultObj.errorCodeArr.push('Pt74iKMWF');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('Lbg6Sqyyu');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
+    return resultObj;
+    
+    
   }
   
-  if (slicedPassword.match(/^[\w\-]+$/) === null) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('パスワードに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。');
-  }
-  
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`パスワードは${minLength}文字以上、${maxLength}文字以内です。`);
-  }
-  
-  // console.log(`strengthScore = ${strengthScore}`);
-  if (strengthScore < 2) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('パスワードの強度が足りません。');
-  }
-  
-  if (slicedPassword !== '' && id !== '' && slicedPassword === id) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('IDとパスワードを同じ文字列にすることはできません。');
-  }
-  
-  
-  // console.dir(resultObj);
-  
-  return resultObj;
   
 };
-
-
-
-/**
- * Password Confirmation
- * @param {string} passwordConfirmation - Password Confirmation
- * @param {string} password - Password
- */
-const validationLoginPasswordConfirmation = (passwordConfirmation, password) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  // const minLength = 8;
-  const maxLength = 32;
-  
-  
-  // ---------------------------------------------
-  //   Result Object
-  // ---------------------------------------------
-  
-  const slicedPasswordConfirmation = passwordConfirmation ? passwordConfirmation.slice(0, maxLength) : '';
-  const numberOfCharacters = slicedPasswordConfirmation ? slicedPasswordConfirmation.length : 0;
-  
-  let resultObj = {
-    value: slicedPasswordConfirmation,
-    numberOfCharacters,
-    error: false,
-    errorMessageArr: []
-  };
-  
-  
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  if (slicedPasswordConfirmation === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('パスワード確認を入力してください。');
-  }
-  
-  if (slicedPasswordConfirmation !== '' && password !== '' && slicedPasswordConfirmation !== password) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('パスワードとパスワード確認の文字列が違っています。');
-  }
-  
-  
-  // console.dir(resultObj);
-  
-  return resultObj;
-  
-};
-
 
 
 
@@ -140,6 +153,5 @@ const validationLoginPasswordConfirmation = (passwordConfirmation, password) => 
 // --------------------------------------------------
 
 module.exports = {
-  validationLoginPassword,
-  validationLoginPasswordConfirmation
+  validationUsersLoginPassword
 };

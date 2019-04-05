@@ -2,7 +2,28 @@
 //   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
 const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const FormData = require('form-data');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { fetchWrapper } = require('./fetch');
+
 
 
 
@@ -15,7 +36,7 @@ const chalk = require('chalk');
  * @param {Object} req - リクエスト
  * @param {Object} res - レスポンス
  */
-const verifyRecaptcha = async (req, res) => {
+const verifyRecaptcha = async ({ response, remoteip }) => {
   
   
   // --------------------------------------------------
@@ -23,8 +44,10 @@ const verifyRecaptcha = async (req, res) => {
   //   
   //   {
   //     success: true,
-  //     challenge_ts: '2018-09-22T10:53:45Z',
-  //     hostname: 'dev-1.gameusers.org'
+  //     challenge_ts: '2019-04-05T06:53:57Z',
+  //     hostname: 'dev-1.gameusers.org',
+  //     score: 0.9,
+  //     action: 'login'
   //   }
   //
   //   {
@@ -35,12 +58,13 @@ const verifyRecaptcha = async (req, res) => {
   
   
   // --------------------------------------------------
-  //   Console 出力
+  //   console.log
   // --------------------------------------------------
   
   // console.log(chalk`
-  //   loginId: {green ${loginId}}
-  //   loginPassword: {green ${loginPassword}}
+  //   process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
+  //   response: {green ${response}}
+  //   remoteip: {green ${remoteip}}
   // `);
   
   
@@ -49,56 +73,56 @@ const verifyRecaptcha = async (req, res) => {
   // --------------------------------------------------
   
   if (process.env.NODE_ENV === 'production' || process.env.VERIFY_RECAPTCHA === '1') {
-  
-    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${req.body['g-recaptcha-response']}&remoteip=${req.connection.remoteAddress}`;
-    // const verificationUrl = `http://dev-1.gameusers.org:8080/api/v1/login/test2`;
-      
-    await fetch(verificationUrl, {
-      method: 'GET',
-      mode: 'cors',
-      credentials: 'omit',
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-      .then((response) => {
-        
-        if (response.ok) {
-          // console.log(`verifyRecaptcha response.ok`);
-          return response.json();
-        }
-        
-        throw new Error('Network response was not ok.');
-        
-      })
-      .then((jsonObj) => {
-        
-        if (jsonObj.success) {
-          // console.log(`verifyRecaptcha success: true`);
-          return true;
-        }
-        
-        // console.log(`verifyRecaptcha ${jsonObj['error-codes'][0]}`);
-        // throw new Error('success: false');
-        throw new Error(jsonObj['error-codes'][0]);
-        
-      })
-      .catch((error) => {
-        
-        // console.log(`verifyRecaptcha error: ${error.message}`);
-        throw new Error(`reCAPTCHA: ${error.message}`);
-        
-      });
-      
+    
+    
+    // ---------------------------------------------
+    //   FormData
+    // ---------------------------------------------
+    
+    const formData = new FormData();
+    
+    formData.append('secret', process.env.RECAPTCHA_SECRET_KEY);
+    formData.append('response', response);
+    formData.append('remoteip', remoteip);
+    
+    
+    // --------------------------------------------------
+    //   Fetch
+    // --------------------------------------------------
+    
+    const resultObj = await fetchWrapper({
+      urlApi: 'https://www.google.com/recaptcha/api/siteverify',
+      methodType: 'POST',
+      formData: formData,
+    });
+    
+    // const statusCode = lodashGet(resultObj, ['statusCode'], '');
+    const success = lodashGet(resultObj, ['data', 'success'], false);
+    
+    // console.log(chalk`
+    //   statusCode: {green ${statusCode}}
+    //   success: {green ${success}}
+    // `);
+    
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    return success;
+    
+    
   }
   
-  // console.log(`verifyRecaptcha 検証スルー`);
   
   // --------------------------------------------------
   //   開発時、VERIFY_RECAPTCHA === '0' のときは検証スルー
   // --------------------------------------------------
   
   return true;
+  
   
 };
 

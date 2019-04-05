@@ -9,6 +9,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
+import { loadReCaptcha } from 'react-recaptcha-v3';
 // import ModalVideo from 'react-modal-video';
 
 
@@ -67,6 +68,14 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleLoadingHide();
+    
+    
+    // --------------------------------------------------
+    //   Initialize the ReCaptcha
+    //   https://github.com/codeep/react-recaptcha-v3
+    // --------------------------------------------------
+    
+    loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
     
     
   }

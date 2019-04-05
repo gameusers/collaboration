@@ -1,23 +1,36 @@
 // --------------------------------------------------
-//   Import
+//   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console 出力用
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
 
 
 
 
 /**
  * Login ID
- * @param {string} value - Login ID
+ * @param {string} value - 値
  */
-const validationLoginID = (value) => {
+const validationUsersLoginID = ({ required = false, value }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 3;
+  const minLength = 6;
   const maxLength = 32;
   
   
@@ -25,39 +38,87 @@ const validationLoginID = (value) => {
   //   Result Object
   // ---------------------------------------------
   
-  const slicedValue = value ? value.slice(0, maxLength) : '';
-  const numberOfCharacters = slicedValue ? slicedValue.length : 0;
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  const messageCodeArr = [];
   
   let resultObj = {
-    value: slicedValue,
+    value: data,
     numberOfCharacters,
+    messageCode: 'Xrf-TLIEN',
     error: false,
-    errorMessageArr: []
+    errorCodeArr: []
   };
   
   
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
-  
-  if (slicedValue === '') {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('IDを入力してください。');
+  try {
+    
+    
+    // ---------------------------------------------
+    //   Validation
+    // ---------------------------------------------
+    
+    // 空の場合、処理停止
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        resultObj.errorCodeArr.push('SHAUeHKbh');
+      }
+      
+      return resultObj;
+      
+    }
+    
+    // 文字数チェック
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      messageCodeArr.unshift('yKjojKAxy');
+      resultObj.errorCodeArr.push('M4fBF4b4P');
+    }
+    
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      messageCodeArr.unshift('JBkjlGQMh');
+      resultObj.errorCodeArr.push('rRvP75Hnw');
+    }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   その他のエラー
+    // ---------------------------------------------
+    
+    messageCodeArr.unshift('qnWsuPcrJ');
+    resultObj.errorCodeArr.push('IL3i80Cpp');
+    
+    
+  } finally {
+    
+    
+    // ---------------------------------------------
+    //   Message Code
+    // ---------------------------------------------
+    
+    if (messageCodeArr.length > 0) {
+      resultObj.messageCode = messageCodeArr[0];
+    }
+    
+    
+    // ---------------------------------------------
+    //  Error
+    // ---------------------------------------------
+    
+    if (resultObj.errorCodeArr.length > 0) {
+      resultObj.error = true;
+    }
+    
+    
+    return resultObj;
+    
+    
   }
   
-  if (slicedValue.match(/^[\w\-]+$/) === null) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push('IDに入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です。');
-  }
-  
-  if (numberOfCharacters < minLength || numberOfCharacters > maxLength) {
-    resultObj.error = true;
-    resultObj.errorMessageArr.push(`IDは${minLength}文字以上、${maxLength}文字以内です。`);
-  }
-  
-  // console.dir(resultObj);
-  
-  return resultObj;
   
 };
 
@@ -68,4 +129,6 @@ const validationLoginID = (value) => {
 //   Export
 // --------------------------------------------------
 
-module.exports = validationLoginID;
+module.exports = {
+  validationUsersLoginID
+};

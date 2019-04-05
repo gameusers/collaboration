@@ -98,11 +98,33 @@ let errorArgumentsObj = {
 
 
 
+router.post('/test', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Set Variables
+  // --------------------------------------------------
+  
+  const { response } = req.body;
+  
+  
+  // ---------------------------------------------
+  //   CSRF & reCAPTCHA
+  // ---------------------------------------------
+  
+  verifyCsrfToken(req, res);
+  await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+  
+  
+});
+
+
+
 // --------------------------------------------------
 //   Initial Props / Function ID: aNvBIBitq
 // --------------------------------------------------
 
-router.get('/initial-props', upload.none(), function(req, res, next) {
+router.get('/initial-props', upload.none(), (req, res, next) => {
   
   
   // --------------------------------------------------

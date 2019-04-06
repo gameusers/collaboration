@@ -567,17 +567,28 @@ class Store {
   
   
   /**
+   * ローディングを表示する場所
+   * @type {boolean}
+   */
+  @observable loadingLeft = false;
+  
+  
+  /**
    * ローディングを表示する
    */
-  handleLoadingShow() {
+  handleLoadingShow({ left = false }) {
     this.loading = true;
+    
+    if (left) {
+      this.loadingLeft = true;
+    }
   };
   
   
   /**
    * ローディングを非表示にする
    */
-  handleLoadingHide() {
+  handleLoadingHide({}) {
     this.loading = false;
   };
   

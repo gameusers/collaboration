@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -16,18 +16,28 @@ const util = require('util');
 
 import React from 'react';
 import Head from 'next/head';
-// import Link from 'next/link';
-import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-import fetch from 'isomorphic-unfetch';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   Material UI
+//   Locales
 // ---------------------------------------------
 
-import Button from '@material-ui/core/Button';
+import { IntlProvider, addLocaleData } from 'react-intl';
+import en from 'react-intl/locale-data/en';
+import ja from 'react-intl/locale-data/ja';
+addLocaleData([...en, ...ja]);
+
+import { locale } from '../../app/@locales/locale';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../app/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -37,16 +47,13 @@ import Button from '@material-ui/core/Button';
 import initStoreIndex from '../../app/@stores/index';
 import initStoreLogoutIndex from '../../app/logout/index/stores/store';
 
-// import initStoreIndex from '../../app/common/stores/index';
-// import initStoreLogoutIndex from '../../app/logout/index/stores/store';
-
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import Panel from '../../app/common/layout/components/panel';
+import FormLogout from '../../app/logout/index/components/form-logout';
 
 
 // ---------------------------------------------
@@ -71,16 +78,6 @@ const Container = styled.div`
   }
 `;
 
-const Description = styled.div`
-  margin: 0 0 16px 0;
-`;
-
-const StyledButton = styled(Button)`
-  && {
-    margin: 10px 0 0 0;
-  }
-`;
-
 
 
 
@@ -92,110 +89,62 @@ const StyledButton = styled(Button)`
 @observer
 class Component extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   getInitialProps
+  // --------------------------------------------------
+  
   static async getInitialProps({ pathname, req, res }) {
     
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
     const isServer = !!req;
+    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     
-    // console.log(`
-    //   req.headers: \n${util.inspect(req.headers, { colors: true, depth: null })}
-    // `);
     
     // --------------------------------------------------
-    //   publicRuntimeConfig
-    // --------------------------------------------------
-    
-    const { publicRuntimeConfig } = getConfig();
-    
-    
-    // ---------------------------------------------
     //   Fetch
-    // ---------------------------------------------
+    // --------------------------------------------------
     
-    // ----------------------------------------
-    //   API URL
-    // ----------------------------------------
+    const resultObj = await fetchWrapper({
+      urlApi: encodeURI(`${process.env.URL_API}/v1/logout/initial-props`),
+      methodType: 'GET',
+      reqHeadersCookie,
+      reqAcceptLanguage,
+    });
     
-    const urlApi = `${publicRuntimeConfig.urlApi}/v1/logout/initialProps`;
+    const statusCode = resultObj.statusCode;
+    const initialPropsObj = resultObj.data;
     
     
-    // ----------------------------------------
-    //   Headers
-    // ----------------------------------------
+    // --------------------------------------------------
+    //   ログインしていない時はログインページにリダイレクト
+    // --------------------------------------------------
     
-    const headersObj = {
-      'Accept': 'application/json'
-    };
+    const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    if (isServer) {
-      headersObj['Cookie'] = req.headers.cookie;
+    if (login === false) {
+      res.redirect('/login');
+      res.end();
+      return {};
     }
     
     
-    await fetch(urlApi, {
-      method: 'GET',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      headers: headersObj
-      // headers: {
-      //   'Accept': 'application/json',
-      //   'Cookie': req.headers.cookie
-      // }
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
-        　});
-        }
-        
-        return response.json();
-      })
-      .then((jsonObj) => {
-        
-        console.log(`then 1`);
-        // console.dir(jsonObj);
-        
-        
-        
-        // --------------------------------------------------
-        //   Console 出力
-        // --------------------------------------------------
-        
-        // console.log(chalk`
-        //   isServer: {green ${isServer}}
-        //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-        // `);
-        
-        // console.log(`
-        //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-        // `);
-        
-        console.log(`
-          jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-        `);
-        
-        
-        // --------------------------------------------------
-        //   ログインしていない時はログインページにリダイレクト
-        // --------------------------------------------------
-        
-        if (jsonObj.login === false) {
-          res.redirect('/login');
-          res.end();
-          return {};
-        }
-        
-      })
-      .catch((error) => {
-        
-        console.log(`catch: ${error}`);
-        
-      });
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
     
     
-    return { isServer, pathname };
   }
   
+  
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     
@@ -203,160 +152,99 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   publicRuntimeConfig
+    //   Property / Error 判定用
     // --------------------------------------------------
     
-    const { publicRuntimeConfig } = getConfig();
+    this.error = false;
     
     
     // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
-    const argumentsObj = {
-      isServer: props.isServer,
-      pathname: props.pathname,
-      environment: publicRuntimeConfig.environment,
-      urlApi: publicRuntimeConfig.urlApi
-    };
+    try {
+      
+      
+      // --------------------------------------------------
+      //   Errorの場合
+      // --------------------------------------------------
+      
+      if (
+        this.props.statusCode !== 200
+      ) {
+        throw new Error();
+      }
+      
+      
+      // --------------------------------------------------
+      //   Store
+      // --------------------------------------------------
+      
+      const argumentsObj = {
+        isServer: props.isServer,
+        pathname: props.pathname,
+      };
+      
+      this.stores = initStoreIndex(argumentsObj);
+      this.stores.logoutIndex = initStoreLogoutIndex(argumentsObj, this.stores);
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Locale
+      // --------------------------------------------------
+      
+      if (Object.keys(this.stores.data.localeObj).length === 0) {
+        
+        const localeObj = locale({
+          acceptLanguage: props.reqAcceptLanguage
+        });
+        
+        this.stores.data.replaceLocaleObj(localeObj);
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Login User
+      // --------------------------------------------------
+      
+      if ('usersLoginObj' in props.initialPropsObj) {
+        this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
+      }
+      
+      
+    } catch (e) {
+      this.error = true;
+    }
     
-    this.stores = initStoreIndex(argumentsObj);
-    this.stores.logoutIndex = initStoreLogoutIndex(argumentsObj, this.stores);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Fetch
-    // ---------------------------------------------
-    
-    // this.urlApi = `${publicRuntimeConfig.urlApi}/v1/logout/initialProps`;
-    
-    // fetch(this.urlApi, {
-    //   method: 'GET',
-    //   credentials: 'same-origin',
-    //   mode: 'same-origin',
-    //   headers: {
-    //     'Accept': 'application/json'
-    //   }
-    // })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       return response.json().then((jsonObj) => {
-    //     　　throw new Error(jsonObj.errorsArr[0].message);
-    //     　});
-    //     }
-        
-    //     return response.json();
-    //   })
-    //   .then((jsonObj) => {
-        
-    //     console.log(`then 2`);
-    //     console.dir(jsonObj);
-        
-        
-        
-    //     // --------------------------------------------------
-    //     //   Console 出力
-    //     // --------------------------------------------------
-        
-    //     // console.log(chalk`
-    //     //   loginId: {green ${loginId}}
-    //     //   loginPassword: {green ${loginPassword}}
-    //     //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    //     // `);
-        
-    //     console.log(`
-    //       jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-    //     `);
-        
-        
-    //     if (jsonObj.login === false) {
-    //       // res.redirect('/login');
-    //       // res.end();
-    //       // return {};
-    //     }
-        
-    //   })
-    //   .catch((error) => {
-        
-    //     console.log(`catch: ${error}`);
-        
-    //   });
     
   }
   
   
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    //   参考：https://github.com/zeit/next.js#custom-error-handling
+    // --------------------------------------------------
+    
+    if (this.error) {
+      return <Error statusCode={this.props.statusCode} />;
+    }
     
     
     // --------------------------------------------------
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
-    
-    
-    
-    // ---------------------------------------------
-    //   Fetch
-    // ---------------------------------------------
-    
-    // const urlApi = `${this.urlApi}`;
-    
-    // fetch(urlApi, {
-    //   method: 'GET',
-    //   credentials: 'same-origin',
-    //   mode: 'same-origin',
-    //   headers: {
-    //     'Accept': 'application/json'
-    //   }
-    // })
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       return response.json().then((jsonObj) => {
-    //     　　throw new Error(jsonObj.errorsArr[0].message);
-    //     　});
-    //     }
-        
-    //     return response.json();
-    //   })
-    //   .then((jsonObj) => {
-        
-    //     console.log(`then 3`);
-    //     console.dir(jsonObj);
-        
-        
-        
-    //     // --------------------------------------------------
-    //     //   Console 出力
-    //     // --------------------------------------------------
-        
-    //     // console.log(chalk`
-    //     //   loginId: {green ${loginId}}
-    //     //   loginPassword: {green ${loginPassword}}
-    //     //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    //     // `);
-        
-    //     console.log(`
-    //       jsonObj: \n${util.inspect(jsonObj, { colors: true, depth: null })}
-    //     `);
-        
-        
-    //     if (jsonObj.login === false) {
-    //       // res.redirect('/login');
-    //       // res.end();
-    //       // return {};
-    //     }
-        
-    //   })
-    //   .catch((error) => {
-        
-    //     console.log(`catch: ${error}`);
-        
-    //   });
-    
+    // const stores = this.stores;
     
     
     // --------------------------------------------------
@@ -372,17 +260,6 @@ class Component extends React.Component {
     
     
     
-    // --------------------------------------------------
-    //   Login
-    // --------------------------------------------------
-    
-    const {
-      
-      handleLogout
-      
-    } = stores.logoutIndex;
-    
-    
     
     // --------------------------------------------------
     //   Return
@@ -390,52 +267,38 @@ class Component extends React.Component {
     
     return (
       <Provider stores={this.stores}>
-      
-        <Layout headerNavMainArr={headerNavMainArr}>
+        
+        <IntlProvider 
+          locale={this.stores.data.localeObj.languageArr[0]}
+          messages={this.stores.data.localeObj.dataObj}
+        >
           
-          {/* Head 内部のタグをここで追記する */}
-          <Head>
-            <title>ログアウト - Game Users</title>
-          </Head>
-          
-          
-          <Container>
+          <Layout headerNavMainArr={headerNavMainArr}>
             
-            <Panel
-              id='logout'
-              summary='ログアウト'
-              detailsComponent={
-                <React.Fragment>
-                  
-                  <Description>
-                    ログアウトする場合は以下のボタンを押してください。
-                  </Description>
-                  
-                  
-                  {/* フォーム */}
-                  <form>
-                    
-                    {/* 送信ボタン */}
-                    <StyledButton
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleLogout()}
-                    >
-                      ログアウト
-                    </StyledButton>
-                    
-                  </form>
-                  
-                </React.Fragment>
-              }
-            />
+            {/* Head 内部のタグをここで追記する */}
+            <Head>
+              <title>ログアウト - Game Users</title>
+            </Head>
             
-          </Container>
+            
+            <Container>
+              
+              
+              {/* ログアウト */}
+              <FormLogout />
+              
+              
+            </Container>
+            
+          </Layout>
           
-        </Layout>
+        </IntlProvider>
+        
       </Provider>
     );
+    
   }
+  
 }
 
 export default withRoot(Component);

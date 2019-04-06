@@ -2,8 +2,34 @@
 //   Import
 // --------------------------------------------------
 
-import { action, observable } from 'mobx';
-import fetch from 'isomorphic-unfetch';
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+import { action } from 'mobx';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../../@modules/fetch';
+
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+import { errorsArrIntoErrorMessage } from '../../../@format/error';
+
 
 
 
@@ -17,6 +43,7 @@ let storeData = null;
 
 
 
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -25,81 +52,124 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Constructor
+  //   constructor
   // ---------------------------------------------
   
-  constructor() {
-    
-  }
+  constructor() {}
+  
+  
   
   
   // ---------------------------------------------
-  //   Login - ID & Password
+  //   Logout
   // ---------------------------------------------
   
   /**
    * ログアウトフォームで送信ボタンを押すと呼び出される
    */
   @action.bound
-  handleLogout() {
+  async handleLogout() {
     
     
-    // ---------------------------------------------
-    //   Console 出力
-    // ---------------------------------------------
-    
-    console.log(`\n\n`);
-    console.log(`--- handleLogout ---`);
-    console.log(`\n\n`);
-    
-    
-    
-    // ---------------------------------------------
-    //   FormData
-    // ---------------------------------------------
-    
-    const formData = new FormData();
-    
-    
-    // ---------------------------------------------
-    //   Fetch
-    // ---------------------------------------------
-    
-    const urlApi = `${storeData.urlApi}/v1/logout`;
-    
-    fetch(urlApi, {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      headers: {
-        'Accept': 'application/json'
-      },
-      body: formData
-    })
-      .then((response) => {
-        if (!response.ok) {
-          return response.json().then((jsonObj) => {
-        　　throw new Error(jsonObj.errorsArr[0].message);
-        　});
-        }
-        
-        return response.json();
-      })
-      .then((jsonObj) => {
-        
-        console.log(`then`);
-        console.dir(jsonObj);
-        
-        // this.handleFormReset();
-        
-      })
-      .catch((error) => {
-        
-        console.log(`catch: ${error}`);
-        
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ _id: 'logout' });
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/logout`,
+        methodType: 'POST',
+        formData: formData
       });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('success', 'ログアウトしました');
+      
+      
+      // ---------------------------------------------
+      //   Page Transition
+      // ---------------------------------------------
+      
+      window.location.href = process.env.URL_BASE;
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ _id: 'logout' });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
     
   };
+  
   
 }
 

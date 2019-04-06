@@ -33,8 +33,8 @@ const { fetchWrapper } = require('./fetch');
 
 /**
  * reCAPTCHAの検証を行う
- * @param {Object} req - リクエスト
- * @param {Object} res - レスポンス
+ * @param {string} response - reCAPTCHAのトークン
+ * @param {string} remoteip - アクセスしたユーザーのIP
  */
 const verifyRecaptcha = async ({ response, remoteip }) => {
   
@@ -96,22 +96,28 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
       formData: formData,
     });
     
-    // const statusCode = lodashGet(resultObj, ['statusCode'], '');
-    const success = lodashGet(resultObj, ['data', 'success'], false);
+    const score = lodashGet(resultObj, ['data', 'score'], false);
+    const success = score >= 0.5 ? true : false;
     
     // console.log(chalk`
-    //   statusCode: {green ${statusCode}}
+    //   score: {green ${score}}
     //   success: {green ${success}}
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
-    return success;
+    if (success === false) {
+      throw new Error('reCAPTCHA: Low Score');
+    }
+    
+    
+    
+    // return success;
     
     
   }
@@ -121,7 +127,7 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
   //   開発時、VERIFY_RECAPTCHA === '0' のときは検証スルー
   // --------------------------------------------------
   
-  return true;
+  // return true;
   
   
 };

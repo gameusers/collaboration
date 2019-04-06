@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -29,12 +29,9 @@ import lodashGet from 'lodash/get';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-// import Typography from '@material-ui/core/Typography';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 
@@ -74,10 +71,8 @@ const Description = styled.p`
   
 `;
 
-
 const LoginIDBox = styled.div`
-  // font-weight: bold;
-  // font-size: 18px;
+  
 `;
 
 const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
@@ -97,19 +92,9 @@ const StyledTextFieldWide = styled(TextField)`
   }
 `;
 
-const LoginSubmitButtonBox = styled.div`
+const SubmitButtonBox = styled.div`
   margin: 20px 0 0 0;
 `;
-
-// const StyledButton = styled(Button)`
-//   && {
-//     margin: 10px 0 0 0;
-//   }
-// `;
-
-// const ReCAPTCHAContainer = styled.div`
-//   margin: 30px 0 0 0;
-// `;
 
 
 
@@ -122,10 +107,21 @@ const LoginSubmitButtonBox = styled.div`
 @observer
 export default injectIntl(class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
   
   componentDidMount(){
     
@@ -139,6 +135,12 @@ export default injectIntl(class extends React.Component {
     
   }
   
+  
+  
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -155,7 +157,6 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleLoginRecaptchaReset,
       handleLoginRecaptchaResponse,
-      handleLoginSubmit,
       handleLoginPasswordShow,
       handleLoginPasswordMouseDown,
       
@@ -222,21 +223,6 @@ export default injectIntl(class extends React.Component {
     // `;
     
     
-    
-    
-    // --------------------------------------------------
-    //   reCAPTCHA
-    // --------------------------------------------------
-    
-    // let loginRecaptchaRef = '';
-    // // let createAccountRecaptchaRef = '';
-    
-    // if (process.env.VERIFY_RECAPTCHA === '1') {
-    //   loginRecaptchaRef = React.createRef();
-    //   // createAccountRecaptchaRef = React.createRef();
-    // }
-    
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -256,6 +242,8 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
     // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -304,6 +292,7 @@ export default injectIntl(class extends React.Component {
                 })}
                 error={validationUsersLoginIDObj.error}
                 helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageCode }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
+                disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{
                   maxLength: 32,
@@ -332,6 +321,7 @@ export default injectIntl(class extends React.Component {
                 })}
                 error={validationUsersLoginPasswordObj.error}
                 helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageCode }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
+                disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{
                   maxLength: 32,
@@ -359,7 +349,7 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Submit Button */}
-            <LoginSubmitButtonBox>
+            <SubmitButtonBox>
               <Button
                 variant="contained"
                 color="primary"
@@ -368,7 +358,7 @@ export default injectIntl(class extends React.Component {
               >
                 ログイン
               </Button>
-            </LoginSubmitButtonBox>
+            </SubmitButtonBox>
             
             
           </StyledExpansionPanelDetails>

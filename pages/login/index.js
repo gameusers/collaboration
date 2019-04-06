@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,13 +16,9 @@ import util from 'util';
 
 import React from 'react';
 import Head from 'next/head';
-// import Link from 'next/link';
-// import getConfig from 'next/config';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-// import { injectIntl } from 'react-intl';
-// import ReCAPTCHA from "react-google-recaptcha";
-// import fetch from 'isomorphic-unfetch';
+import { loadReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 
@@ -58,7 +54,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 //   Locales
 // ---------------------------------------------
 
-import { IntlProvider, addLocaleData, FormattedMessage } from 'react-intl';
+import { IntlProvider, addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import ja from 'react-intl/locale-data/ja';
 addLocaleData([...en, ...ja]);
@@ -89,13 +85,6 @@ import Layout from '../../app/common/layout/components/layout';
 import Panel from '../../app/common/layout/components/panel';
 import TermsOfService from '../../app/common/layout/components/terms-of-service';
 import FormLogin from '../../app/login/index/components/form-login';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validationUsersLoginID } = require('../../app/@database/users/validations/login-id2');
 
 
 // ---------------------------------------------
@@ -224,7 +213,6 @@ class Component extends React.Component {
     });
     
     const statusCode = resultObj.statusCode;
-    // const initialPropsObj = resultObj.data;
     
     // console.log(`
     //   ----- resultObj -----\n
@@ -301,7 +289,7 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   Update Data
+      //   Locale
       // --------------------------------------------------
       
       if (Object.keys(this.stores.data.localeObj).length === 0) {
@@ -318,6 +306,22 @@ class Component extends React.Component {
     } catch (e) {
       this.error = true;
     }
+    
+    
+  }
+  
+  
+  
+  
+  componentDidMount() {
+    
+    
+    // --------------------------------------------------
+    //   Initialize the ReCaptcha
+    //   https://github.com/codeep/react-recaptcha-v3
+    // --------------------------------------------------
+    
+    loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
     
     
   }
@@ -349,7 +353,6 @@ class Component extends React.Component {
     const stores = this.stores;
     
     
-    
     // --------------------------------------------------
     //   Header Navigation
     // --------------------------------------------------
@@ -364,7 +367,6 @@ class Component extends React.Component {
         pathname: '/login/social'
       }
     ];
-    
     
     
     // --------------------------------------------------

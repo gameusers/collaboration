@@ -216,7 +216,7 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   Update Data
+      //   Update Data - Locale
       // --------------------------------------------------
       
       if (Object.keys(this.stores.data.localeObj).length === 0) {
@@ -238,14 +238,19 @@ class Component extends React.Component {
       }
       
       
-      // Login User
+      // --------------------------------------------------
+      //   Update Data - Login User
+      // --------------------------------------------------
+      
       if ('usersLoginObj' in props.initialPropsObj) {
-        // console.log('replaceUsersLoginObj');
         this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
       }
       
       
-      // Card Players
+      // --------------------------------------------------
+      //   Update Data - Card Players
+      // --------------------------------------------------
+      
       this.stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
       
       
@@ -258,6 +263,10 @@ class Component extends React.Component {
   
   
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     

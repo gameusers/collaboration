@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -140,7 +140,36 @@ class Store {
    */
   @action.bound
   handleLoginRecaptchaReset(recaptchaRef) {
+    
+    
+    // ---------------------------------------------
+    //   Loading 表示
+    // ---------------------------------------------
+    
+    storeLayout.handleLoadingShow({ left: true });
+    
+    
+    // ---------------------------------------------
+    //   Button Disable
+    // ---------------------------------------------
+    
+    storeLayout.handleButtonDisable({ _id: 'login' });
+    
+    
+    // ---------------------------------------------
+    //   Button Submitted
+    // ---------------------------------------------
+    
+    lodashSet(this.dataObj, ['loginButtonSubmitted'], true);
+    
+    
+    // ---------------------------------------------
+    //   reCAPTCHA Reset
+    // ---------------------------------------------
+    
     recaptchaRef.execute();
+    
+    
   }
   
   
@@ -156,10 +185,12 @@ class Store {
     //   Set ReCAPTCHA Response & Login
     // ---------------------------------------------
     
-    if (recaptchaResponse) {
+    const submitted = lodashGet(this.dataObj, ['loginButtonSubmitted'], false);
+    
+    if (submitted && recaptchaResponse) {
       
       this.dataObj.loginRecaptchaResponse = recaptchaResponse;
-      this.handleLoginSubmit();
+      this.handleLogin();
       
     }
     
@@ -172,7 +203,7 @@ class Store {
    * @param {Object} recaptchaRef - ReCAPTCHA コンポーネントの ref
    */
   @action.bound
-  async handleLoginSubmit(recaptchaRef) {
+  async handleLogin(recaptchaRef) {
     
     
     try {
@@ -195,22 +226,32 @@ class Store {
       const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
       
       
-      console.log(chalk`
-        \n---------- handleLoginSubmit ----------\n
-        loginID: {green ${loginID}}
-        loginPassword: {green ${loginPassword}}
-        loginRecaptchaResponse: {green ${loginRecaptchaResponse}}
-      `);
+      // ---------------------------------------------
+      //   Validation Error
+      // ---------------------------------------------
       
-      console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      console.log(`\n-----------------------------------\n`);
+      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error) {
+        throw new Error('フォームの入力内容に問題があります');
+      }
       
-      console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      console.log(`\n-----------------------------------\n`);
       
-      return;
+      
+      // console.log(chalk`
+      //   \n---------- handleLogin ----------\n
+      //   loginID: {green ${loginID}}
+      //   loginPassword: {green ${loginPassword}}
+      //   loginRecaptchaResponse: {green ${loginRecaptchaResponse}}
+      // `);
+      
+      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // return;
       
       
       // ---------------------------------------------
@@ -225,18 +266,11 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      // storeLayout.handleButtonDisable({ _id: 'login' });
-      
-      
-      // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login/test`,
+        urlApi: `${process.env.URL_API}/v1/login`,
         methodType: 'POST',
         formData: formData
       });
@@ -260,41 +294,34 @@ class Store {
       
       
       
-      // // ---------------------------------------------
-      // //   Data Users 更新
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
       
-      // storeData.updateUsersObj(resultObj.data.usersObj);
-      
-      
-      // // ---------------------------------------------
-      // //   Snackbar: Success
-      // // ---------------------------------------------
-      
-      // if (type === 'follow') {
-      //   storeLayout.handleSnackbarOpen('success', 'フォローしました。');
-      // } else {
-      //   storeLayout.handleSnackbarOpen('success', 'フォローを解除しました。');
-      // }
+      storeLayout.handleSnackbarOpen('success', 'ログインしました');
       
       
-    } catch (error) {
+      // ---------------------------------------------
+      //   Page Transition
+      // ---------------------------------------------
+      
+      const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
+      window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      
+      
+    } catch (errorObj) {
       
       
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      // if (type === 'follow') {
-      //   storeLayout.handleSnackbarOpen('error', `フォローできませんでした。${error.message}`);
-      // } else {
-      //   storeLayout.handleSnackbarOpen('error', `フォローの解除ができませんでした。。${error.message}`);
-      // }
+      storeLayout.handleSnackbarOpen('error', errorObj.message);
       
       
     } finally {
       
-      
+      // console.log('finally');
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
@@ -302,33 +329,16 @@ class Store {
       storeLayout.handleButtonEnable({ _id: 'login' });
       
       
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
     }
     
     
-    
-    
-    // --------------------------------------------------
-    //   Error
-    // --------------------------------------------------
-    
-    // if (!this.loginRecaptchaResponse && recaptchaRef) {
-      
-    //   console.log(`recaptchaRef.current.execute()`);
-    //   // recaptchaRef.current.reset();
-    //   recaptchaRef.current.execute();
-    //   return;
-      
-    // } else if (
-    //   this.loginID === '' ||
-    //   this.loginPassword === '' ||
-    //   this.loginIDError ||
-    //   this.loginPasswordError
-    // ) {
-      
-    //   storeLayout.handleSnackbarOpen('error', 'フォームの入力内容に問題があります。');
-    //   return;
-      
-    // }
     
     
     // // --------------------------------------------------

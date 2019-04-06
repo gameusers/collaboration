@@ -9,8 +9,6 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
-import { loadReCaptcha } from 'react-recaptcha-v3';
-// import ModalVideo from 'react-modal-video';
 
 
 // ---------------------------------------------
@@ -67,15 +65,7 @@ export default class extends React.Component {
     //   ローディングを隠す
     // --------------------------------------------------
     
-    this.props.stores.layout.handleLoadingHide();
-    
-    
-    // --------------------------------------------------
-    //   Initialize the ReCaptcha
-    //   https://github.com/codeep/react-recaptcha-v3
-    // --------------------------------------------------
-    
-    loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
+    this.props.stores.layout.handleLoadingHide({});
     
     
   }
@@ -123,15 +113,6 @@ export default class extends React.Component {
         
         {/* フッター */}
         <Footer />
-        
-        
-        {/* 動画用のモーダルウィンドウ */}
-        {/*<ModalVideo
-          channel={stores.layout.modalVideoChannel}
-          isOpen={stores.layout.modalVideoOpen}
-          videoId={stores.layout.modalVideoId}
-          onClose={stores.layout.handleModalVideoClose}
-        />*/}
         
         
         {/* Snackbar 通知用 */}

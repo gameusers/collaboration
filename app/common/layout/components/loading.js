@@ -29,7 +29,7 @@ import styled from 'styled-components';
 const Container = styled.div`
   && {
     position: fixed;
-    right: 50px;
+    
     bottom: 20px;
     margin: 0;
     padding: 0;
@@ -66,7 +66,7 @@ export default class extends React.Component {
     //   Data - 必要な情報を取得
     // --------------------------------------------------
     
-    const { loading } = stores.layout;
+    const { loading, loadingLeft } = stores.layout;
     
     
     // --------------------------------------------------
@@ -83,7 +83,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <Container style={loadingLeft ? { left: '50px' } : { right: '50px' }}>
         
         <div className="la-pacman">
         	<div />

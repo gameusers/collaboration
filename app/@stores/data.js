@@ -26,38 +26,6 @@ class Store {
   
   constructor() {}
   
-  // constructor(argumentsObj) {
-    
-  //   this.environment = argumentsObj.environment;
-  //   this.urlBase = argumentsObj.urlBase;
-  //   this.urlApi = argumentsObj.urlApi;
-    
-  // }
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   reCAPTCHA
-  // ---------------------------------------------
-  
-  /**
-   * reCAPTCHAトークン
-   * @type {string}
-   */
-  // @observable recapchaToken = '';
-  
-  
-  // /**
-  // * reCAPTCHAトークンを更新する
-  // * @param {string} value - 値
-  // */
-  // @action.bound
-  // replaceRecapchaToken(value) {
-  //   this.recapchaToken = value;
-  //   console.log(this.recapchaToken);
-  // };
-  
   
   
   

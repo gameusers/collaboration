@@ -1,16 +1,47 @@
 // --------------------------------------------------
+//   File ID: v_tFMEa7f
+// --------------------------------------------------
+
+// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
-const express = require('express');
-const multer  = require('multer');
-const upload = multer({ dest: 'static/' });
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
 
 const chalk = require('chalk');
 const util = require('util');
 
-const { verifyCsrfToken } = require('../../../@modules/csrf');
 
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const express = require('express');
+const multer  = require('multer');
+const upload = multer({ dest: 'static/' });
+// const FormData = require('form-data');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { verifyCsrfToken } = require('../../../@modules/csrf');
+const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { addLocaleData } = require('react-intl');
+const en = require('react-intl/locale-data/en');
+const ja = require('react-intl/locale-data/ja');
+addLocaleData([...en, ...ja]);
+
+const { locale } = require('../../../@locales/locale');
 
 
 // --------------------------------------------------
@@ -23,51 +54,61 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   Initial Props
+//   Status Code & Error Arguments Object
 // --------------------------------------------------
 
-router.get('/initialProps', upload.none(), function(req, res, next) {
+let statusCode = 400;
+
+let errorArgumentsObj = {
+  fileID: 'v_tFMEa7f',
+  functionID: '',
+  errorCodeArr: [],
+  errorObj: {},
+  usersLogin_id: ''
+};
+
+
+
+
+// --------------------------------------------------
+//   Initial Props / Function ID: iAYmdOksz
+// --------------------------------------------------
+
+router.get('/initial-props', upload.none(), (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionID = 'iAYmdOksz';
+  
+  let returnObj = {
+    login: false
+  };
+  
+  
   
   
   try {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
     
-    console.log(chalk`
-      {green logout api / initialProps}
-      req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    `);
-    
-    console.log(`
-      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    `);
-    
-    
-    // ---------------------------------------------
-    //   CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   ログインチェック
-    // --------------------------------------------------
-    
-    let login = false;
-    
-    if (req.isAuthenticated()) {
-      console.log(chalk`
-        {green logout / initialProps / ログインしています}
-      `);
-      login = true;
-    } else {
-      console.log(chalk`
-        {green logout / initialProps / ログインしていません}
-      `);
+    if (req.isAuthenticated() && req.user) {
+      returnObj.usersLoginObj = req.user;
+      returnObj.login = true;
     }
     
     
@@ -75,75 +116,61 @@ router.get('/initialProps', upload.none(), function(req, res, next) {
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json({
-      login
-    });
+    return res.status(200).json(returnObj);
     
     
-  } catch (error) {
-    
-    console.log(chalk`
-      error.message: {red ${error.message}}
-    `);
+  } catch (errorObj) {
     
     
-    // --------------------------------------------------
-    //   Set Error Message
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
     
-    let message = error.message;
-    
-    if (process.env.NODE_ENV === 'production') {
-      message = 'Logout Initial Props';
-    }
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------
-    //   Return Error JSON
+    //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(400).json({
-      errorsArr: [
-        {
-          code: 0,
-          message
-        },
-      ]
-    });
+    return res.status(statusCode).json(resultErrorObj);
+    
     
   }
+  
   
 });
 
 
 
+
 // --------------------------------------------------
-//   ログアウト
+//   ログアウト / Function ID: lpePrqvT4
 // --------------------------------------------------
 
 router.post('/', upload.none(), function(req, res, next) {
   
   
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionID = 'lpePrqvT4';
+  
+  
+  
+  
   try {
-    
-    
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
-    
-    console.log(chalk`
-      {green logout}
-    `);
-    
-    if (req.isAuthenticated()) {
-      console.log(chalk`
-        {green logout / initialProps / ログインしています}
-      `);
-    } else {
-      console.log(chalk`
-        {green logout / initialProps / ログインしていません}
-      `);
-    }
     
     
     // ---------------------------------------------
@@ -169,40 +196,30 @@ router.post('/', upload.none(), function(req, res, next) {
     });
     
     
-  } catch (error) {
-    
-    console.log(chalk`
-      error.message: {red ${error.message}}
-    `);
+  } catch (errorObj) {
     
     
-    // --------------------------------------------------
-    //   Set Error Message
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
     
-    let message = error.message;
-    
-    if (process.env.NODE_ENV === 'production') {
-      message = 'Logout';
-    }
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
     // --------------------------------------------------
-    //   Return Error JSON
+    //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(400).json({
-      errorsArr: [
-        {
-          code: 0,
-          message
-        },
-      ]
-    });
+    return res.status(statusCode).json(resultErrorObj);
+    
     
   }
   
+  
 });
+
+
 
 
 module.exports = router;

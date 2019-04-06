@@ -7,7 +7,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -38,11 +38,11 @@ const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
-//   Validation
+//   Validations
 // ---------------------------------------------
 
-const validationLoginID = require('../../../@database/users/validations/login-id');
-const { validationLoginPassword } = require('../../../@database/users/validations/login-password');
+const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
+const { validationUsersLoginPassword } = require('../../../@database/users/validations/login-password');
 
 
 // ---------------------------------------------
@@ -63,13 +63,6 @@ const ja = require('react-intl/locale-data/ja');
 addLocaleData([...en, ...ja]);
 
 const { locale } = require('../../../@locales/locale');
-
-
-// ---------------------------------------------
-//   Logger
-// ---------------------------------------------
-
-const logger = require('../../../@modules/logger');
 
 
 // --------------------------------------------------
@@ -98,25 +91,25 @@ let errorArgumentsObj = {
 
 
 
-router.post('/test', upload.none(), async (req, res, next) => {
+// router.post('/test', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Set Variables
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Set Variables
+//   // --------------------------------------------------
   
-  const { response } = req.body;
-  
-  
-  // ---------------------------------------------
-  //   CSRF & reCAPTCHA
-  // ---------------------------------------------
-  
-  verifyCsrfToken(req, res);
-  await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+//   const { response } = req.body;
   
   
-});
+//   // ---------------------------------------------
+//   //   CSRF & reCAPTCHA
+//   // ---------------------------------------------
+  
+//   verifyCsrfToken(req, res);
+//   await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+  
+  
+// });
 
 
 
@@ -142,24 +135,31 @@ router.get('/initial-props', upload.none(), (req, res, next) => {
   
   errorArgumentsObj.functionID = 'aNvBIBitq';
   
+  let returnObj = {
+    login: false
+  };
+  
+  
+  
   
   try {
     
     
     // --------------------------------------------------
-    //   ログインチェック
+    //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
     
-    const login = req.isAuthenticated() ? true : false;
+    if (req.isAuthenticated() && req.user) {
+      returnObj.usersLoginObj = req.user;
+      returnObj.login = true;
+    }
     
     
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json({
-      login
-    });
+    return res.status(200).json(returnObj);
     
     
   } catch (errorObj) {
@@ -204,6 +204,16 @@ router.post('/', upload.none(), (req, res, next) => {
   passport.authenticate('local', async (err, user, info) => {
     
     
+    // --------------------------------------------------
+    //   Locale
+    // --------------------------------------------------
+    
+    const localeObj = locale({
+      acceptLanguage: req.headers['accept-language']
+    });
+    
+    
+    
     try {
       
       
@@ -211,7 +221,7 @@ router.post('/', upload.none(), (req, res, next) => {
       //   Set Variables
       // --------------------------------------------------
       
-      const { loginID, loginPassword } = req.body;
+      const { loginID, loginPassword, response } = req.body;
       
       
       // --------------------------------------------------
@@ -219,7 +229,6 @@ router.post('/', upload.none(), (req, res, next) => {
       // --------------------------------------------------
       
       if (req.isAuthenticated()) {
-        logger.log('error', `/app/login/index/api/login.js\nrouter.post('/')\nLogin Already`);
         throw new Error('Login Already');
       }
       
@@ -228,31 +237,12 @@ router.post('/', upload.none(), (req, res, next) => {
       //   console.log
       // --------------------------------------------------
       
-      // console.log(chalk`
-      //   loginID: {green ${loginID}}
-      //   loginPassword: {green ${loginPassword}}
-      //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-      // `);
-      
-      // console.log(`
-      //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-      // `);
-      
-      // console.log(`
-      //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-      // `);
-      
-      // console.log(`
-      //   err: \n${util.inspect(err, { colors: true, depth: null })}
-      // `);
-      
-      // console.log(`
-      //   user: \n${util.inspect(user, { colors: true, depth: null })}
-      // `);
-      
-      // console.log(`
-      //   info: \n${util.inspect(info, { colors: true, depth: null })}
-      // `);
+      console.log(chalk`
+        loginID: {green ${loginID}}
+        loginPassword: {green ${loginPassword}}
+        response: {green ${response}}
+        req.isAuthenticated(): {green ${req.isAuthenticated()}}
+      `);
       
       
       
@@ -261,18 +251,25 @@ router.post('/', upload.none(), (req, res, next) => {
       // ---------------------------------------------
       
       verifyCsrfToken(req, res);
-      await verifyRecaptcha(req, res);
+      await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
       
       
       // --------------------------------------------------
       //   Validation
       // --------------------------------------------------
       
-      const validationLoginIDObj = validationLoginID(loginID);
-      const validationLoginPasswordObj = validationLoginPassword(loginPassword);
+      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
+      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
       
-      if (validationLoginIDObj.error || validationLoginPasswordObj.error) {
-        logger.log('error', `/app/login/index/api/login.js / router.post('/') / Validation`);
+      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error) {
         throw new Error('Validation');
       }
       
@@ -282,7 +279,6 @@ router.post('/', upload.none(), (req, res, next) => {
       // ---------------------------------------------
       
       if (err) {
-        logger.log('error', `/app/login/index/api/login.js / router.post('/') / Error: ${err}`);
         throw new Error('Passport 1');
       }
       
@@ -297,7 +293,7 @@ router.post('/', upload.none(), (req, res, next) => {
         let message = info.message;
         
         if (process.env.NODE_ENV === 'production') {
-          message = 'ID、またはパスワードが間違っています。';
+          message = 'ID、またはパスワードが間違っています';
         }
         
         
@@ -345,39 +341,26 @@ router.post('/', upload.none(), (req, res, next) => {
       });
       
       
-    } catch (error) {
-      
-      // console.log(chalk`
-      //   error.message: {red ${error.message}}
-      // `);
+    } catch (errorObj) {
       
       
-      // --------------------------------------------------
-      //   Set Error Message
-      // --------------------------------------------------
+      // ---------------------------------------------
+      //   Error Object
+      // ---------------------------------------------
       
-      let message = error.message;
-      
-      if (process.env.NODE_ENV === 'production') {
-        message = 'Login';
-      }
+      errorArgumentsObj.errorObj = errorObj;
+      const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
       
       
       // --------------------------------------------------
-      //   Return Error JSON
+      //   Return JSON Object / Error
       // --------------------------------------------------
       
-      return res.status(400).json({
-        errorsArr: [
-          {
-            code: 0,
-            message
-          },
-        ]
-      });
+      return res.status(statusCode).json(resultErrorObj);
       
       
     }
+    
     
   })(req, res, next);
   
@@ -394,10 +377,10 @@ passport.use(new LocalStrategy({
   },
   (username, password, done) => {
     
-    console.log(chalk`
-      username: {green ${username}}
-      password: {green ${password}}
-    `);
+    // console.log(chalk`
+    //   username: {green ${username}}
+    //   password: {green ${password}}
+    // `);
     
     
     SchemaUsers.findOne({ loginID: username }, (err, user) => {
@@ -417,7 +400,7 @@ passport.use(new LocalStrategy({
       // --------------------------------------------------
       
       if (!user) {
-        return done(null, false, { message: 'Incorrect Login ID.' });
+        return done(null, false, { message: 'ID、またはパスワードが間違っています' });
       }
       
       
@@ -427,7 +410,7 @@ passport.use(new LocalStrategy({
       // --------------------------------------------------
       
       if (bcrypt.compareSync(password, user.loginPassword) === false) {
-        return done(null, false, { message: 'Incorrect Login Password.' });
+        return done(null, false, { message: 'ID、またはパスワードが間違っています' });
       }
       
       
@@ -483,32 +466,6 @@ passport.deserializeUser(async (id, done) => {
   done(null, usersLoginObj);
   
   
-  // SchemaUsers.findOne({ _id: id }, (err, user) => {
-    
-  //   // console.log(`
-  //   //   deserializeUser user ${new Date()}: \n${util.inspect(user, { colors: true, depth: null })}
-  //   // `);
-    
-    
-  //   // --------------------------------------------------
-  //   //   ここで req.user に送る情報を選択する
-  //   // --------------------------------------------------
-    
-  //   const usersObj = {
-  //     _id: user._id,
-  //     // name: user.name,
-  //     // status: user.status,
-  //     accessDate: user.accessDate,
-  //     level: user.level,
-  //     playerID: user.playerID,
-  //     role: user.role,
-  //   };
-    
-  //   done(err, usersObj);
-    
-    
-  // });
-  
 });
 
 
@@ -536,7 +493,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
     // --------------------------------------------------
     
     if (req.isAuthenticated()) {
-      logger.log('error', `${loggerPath}Login Already`);
+      // logger.log('error', `${loggerPath}Login Already`);
       throw new Error('Login Already');
     }
     
@@ -654,7 +611,7 @@ router.post('/create-account', upload.none(), async (req, res) => {
   } catch (error) {
     
     
-    logger.log('error', `${loggerPath}${error}`);
+    // logger.log('error', `${loggerPath}${error}`);
     
     
     // --------------------------------------------------

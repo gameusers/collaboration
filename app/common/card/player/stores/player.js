@@ -1522,7 +1522,7 @@ class Store {
       //   Loading 表示
       // ---------------------------------------------
       
-      storeLayout.handleLoadingShow();
+      storeLayout.handleLoadingShow({});
       
       
       // ---------------------------------------------
@@ -1648,7 +1648,7 @@ class Store {
       //   Loading 非表示
       // ---------------------------------------------
       
-      storeLayout.handleLoadingHide();
+      storeLayout.handleLoadingHide({});
       
       
     }

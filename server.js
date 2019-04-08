@@ -150,25 +150,13 @@ app.prepare().then(() => {
   // ---------------------------------------------
   
   server.get('/login', (req, res, next) => {
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    // `);
-    
-    // logger.warn('test');
-    
-    
     createCsrfToken(req, res);
     app.render(req, res, '/login', {});
+  });
+  
+  server.get('/login/account', (req, res, next) => {
+    createCsrfToken(req, res);
+    app.render(req, res, '/login/account', {});
   });
   
   
@@ -180,13 +168,13 @@ app.prepare().then(() => {
   
   server.get('/logout', (req, res, next) => {
     
-    console.log(`
-      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-    `);
+    // console.log(`
+    //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+    // `);
     
-    console.log(chalk`
-      /logout / req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    `);
+    // console.log(chalk`
+    //   /logout / req.isAuthenticated(): {green ${req.isAuthenticated()}}
+    // `);
     
     createCsrfToken(req, res);
     app.render(req, res, '/logout', {});

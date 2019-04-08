@@ -3,6 +3,14 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
@@ -106,6 +114,11 @@ export default class extends React.Component {
       const reverseHeaderMenuArr = headerNavMainArr.slice().reverse();
       
       for (const [index, valueObj] of reverseHeaderMenuArr.entries()) {
+        
+        // console.log(chalk`
+        //   valueObj.pathname: {green ${valueObj.pathname}}
+        //   stores.pathname: {green ${stores.pathname}}
+        // `);
         
         if (valueObj.pathname === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
           

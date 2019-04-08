@@ -46,7 +46,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../../app/@stores/index';
-import initStoreLoginIndex from '../../app/login/index/stores/store';
+import initStoreLoginAccount from '../../app/login/account/stores/store';
 
 
 // ---------------------------------------------
@@ -54,8 +54,7 @@ import initStoreLoginIndex from '../../app/login/index/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import FormLogin from '../../app/login/index/components/form-login';
-// import FormCreateAccount from '../../app/login/index/components/form-create-account';
+import FormCreateAccount from '../../app/login/index/components/form-create-account';
 
 
 // ---------------------------------------------
@@ -193,7 +192,7 @@ class Component extends React.Component {
       
       this.stores = initStoreIndex(argumentsObj);
       this.stores.pathname = props.pathname;
-      this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
+      this.stores.loginAccount = initStoreLoginAccount(argumentsObj, this.stores);
       
       
       // --------------------------------------------------
@@ -300,7 +299,7 @@ class Component extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>ログイン - ID & パスワード - Game Users</title>
+              <title>アカウント作成 - Game Users</title>
             </Head>
             
             
@@ -312,20 +311,16 @@ class Component extends React.Component {
               <ReCaptcha
                 ref={ref => this.recaptcha = ref}
                 sitekey={process.env.RECAPTCHA_SITE_KEY}
-                action='login'
-                verifyCallback={(response) => stores.loginIndex.handleRecaptchaResponse({
+                action='createAccount'
+                verifyCallback={(response) => stores.loginAccount.handleRecaptchaResponse({
                   response,
                   ref: this.recaptcha,
                 })}
               />
               
               
-              {/* ログイン */}
-              <FormLogin />
-              
-              
               {/* アカウント作成 */}
-              {/*<FormCreateAccount />*/}
+              <FormCreateAccount />
               
               
             </Container>

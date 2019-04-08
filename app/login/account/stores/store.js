@@ -47,7 +47,7 @@ const { validationUsersLoginPassword } = require('../../../@database/users/valid
 //   Store
 // --------------------------------------------------
 
-let storeLoginIndex = null;
+let storeLoginAccount = null;
 let storeLayout = null;
 let storeData = null;
 
@@ -95,27 +95,49 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Login - ID & Password
+  //   Create Account
   // ---------------------------------------------
   
   /**
-   * ログインパスワード入力フォームの目のマークを押したときに呼び出される
+   * パスワード入力フォームの目のマークを押したときに呼び出される
    * 押すと隠されているログインパスワードを表示する
    */
   @action.bound
   handlePasswordShow() {
-    this.dataObj['loginPasswordShow'] = !this.dataObj['loginPasswordShow'];
+    this.dataObj['createAccountLoginPasswordShow'] = !this.dataObj['createAccountLoginPasswordShow'];
   };
   
   
   /**
-   * ログインパスワード入力フォーム onMouseDown で呼び出される
+   * パスワード入力フォーム onMouseDown で呼び出される
    * Material UI のページに解説されているとおりに入れている
    * 参考：https://material-ui.com/demos/text-fields/#input-adornments
    * @param {Object} eventObj - イベント
    */
   @action.bound
   handlePasswordMouseDown(eventObj) {
+    eventObj.preventDefault();
+  };
+  
+  
+  /**
+   * パスワード確認入力フォームの目のマークを押したときに呼び出される
+   * 押すと隠されているログインパスワードを表示する
+   */
+  @action.bound
+  handlePasswordConfirmationShow() {
+    this.dataObj['createAccountLoginPasswordConfirmationShow'] = !this.dataObj['createAccountLoginPasswordConfirmationShow'];
+  };
+  
+  
+  /**
+   * パスワード確認入力フォーム onMouseDown で呼び出される
+   * Material UI のページに解説されているとおりに入れている
+   * 参考：https://material-ui.com/demos/text-fields/#input-adornments
+   * @param {Object} eventObj - イベント
+   */
+  @action.bound
+  handlePasswordConfirmationMouseDown(eventObj) {
     eventObj.preventDefault();
   };
   
@@ -186,11 +208,9 @@ class Store {
     // ---------------------------------------------
     
     const formType = lodashGet(this.dataObj, ['formType'], '');
-    // console.log(formType);
     
-    if (formType === 'login' && response) {
-      // console.log('AAA');
-      this.handleLogin();
+    if (formType === 'createAccount' && response) {
+      this.handleCreateAccount();
     }
     
     
@@ -200,10 +220,10 @@ class Store {
   
   
   /**
-   * ログインフォームを送信する
+   * アカウント作成フォームを送信する
    */
   @action.bound
-  async handleLogin() {
+  async handleCreateAccount() {
     
     
     try {
@@ -244,7 +264,7 @@ class Store {
       
       
       // console.log(chalk`
-      //   \n---------- handleLogin ----------\n
+      //   \n---------- handleCreateAccount ----------\n
       //   loginID: {green ${loginID}}
       //   loginPassword: {green ${loginPassword}}
       //   recaptchaResponse: {green ${recaptchaResponse}}
@@ -265,61 +285,61 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
+      // const formData = new FormData();
       
-      formData.append('loginID', loginID);
-      formData.append('loginPassword', loginPassword);
-      formData.append('response', recaptchaResponse);
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login`,
-        methodType: 'POST',
-        formData: formData
-      });
+      // formData.append('loginID', loginID);
+      // formData.append('loginPassword', loginPassword);
+      // formData.append('response', recaptchaResponse);
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
+      
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${process.env.URL_API}/v1/login`,
+      //   methodType: 'POST',
+      //   formData: formData
+      // });
       
       
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
-      }
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
       
       
-      // ---------------------------------------------
-      //   Form Reset
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
       
-      lodashSet(this.dataObj, 'loginID', '');
-      lodashSet(this.dataObj, 'loginPassword', '');
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen('success', 'ログインしました');
+      // if ('errorsArr' in resultObj) {
+      //   throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      // }
       
       
-      // ---------------------------------------------
-      //   Page Transition
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Form Reset
+      // // ---------------------------------------------
       
-      const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
-      window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      // lodashSet(this.dataObj, 'loginID', '');
+      // lodashSet(this.dataObj, 'loginPassword', '');
+      
+      
+      // // ---------------------------------------------
+      // //   Snackbar: Success
+      // // ---------------------------------------------
+      
+      // storeLayout.handleSnackbarOpen('success', 'ログインしました');
+      
+      
+      // // ---------------------------------------------
+      // //   Page Transition
+      // // ---------------------------------------------
+      
+      // const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
+      // window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
       
       
     } catch (errorObj) {
@@ -339,7 +359,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: 'login' });
+      storeLayout.handleButtonEnable({ _id: 'createAccount' });
       
       
       // ---------------------------------------------
@@ -364,7 +384,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLoginIndex(argumentsObj, storeInstanceObj) {
+export default function initStoreLoginAccount(argumentsObj, storeInstanceObj) {
   
   const isServer = argumentsObj.isServer;
   
@@ -384,11 +404,11 @@ export default function initStoreLoginIndex(argumentsObj, storeInstanceObj) {
     
   } else {
     
-    if (storeLoginIndex === null) {
-      storeLoginIndex = new Store();
+    if (storeLoginAccount === null) {
+      storeLoginAccount = new Store();
     }
     
-    return storeLoginIndex;
+    return storeLoginAccount;
     
   }
   

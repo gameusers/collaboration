@@ -2,19 +2,41 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
 import IconClose from '@material-ui/icons/Close';
+
 
 
 
@@ -51,6 +73,7 @@ const StyledOl = styled.ol`
   // list-style-type: decimal;
   margin: 20px 0 20px 20px;
 `;
+
 
 
 
@@ -108,7 +131,7 @@ export default class extends React.Component {
             <IconButton color="inherit" onClick={handleTermsOfServiceDialogClose} aria-label="Close">
               <IconClose />
             </IconButton>
-            <Typography variant="title" color="inherit">
+            <Typography variant="h6" color="inherit">
               利用規約
             </Typography>
           </Toolbar>

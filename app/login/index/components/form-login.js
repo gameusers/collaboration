@@ -18,7 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
-import { ReCaptcha } from 'react-recaptcha-v3';
+// import { ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 
@@ -117,8 +117,6 @@ export default injectIntl(class extends React.Component {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -134,8 +132,6 @@ export default injectIntl(class extends React.Component {
     
     
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -155,10 +151,9 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleLoginRecaptchaReset,
-      handleLoginRecaptchaResponse,
-      handleLoginPasswordShow,
-      handleLoginPasswordMouseDown,
+      handleRecaptchaReset,
+      handlePasswordShow,
+      handlePasswordMouseDown,
       
     } = stores.loginIndex;
     
@@ -202,28 +197,6 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   パスワードの強度
-    // --------------------------------------------------
-    
-    // const passwordColorArr = ['red', 'red', 'tomato', 'green', 'green'];
-    // const passwordStrengthArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
-    
-    // let passwordColor = passwordColorArr[validationUsersLoginPasswordObj.strengthScore];
-    // let passwordStrength = passwordStrengthArr[validationUsersLoginPasswordObj.strengthScore];
-    
-    // if (loginPassword === '') {
-    //   passwordColor = '#848484';
-    //   passwordStrength = ' -';
-    // }
-    
-    // const PasswordStrength = styled.div`
-    //   font-size: 14px;
-    //   margin: 4px 0 10px 0;
-    //   color: ${passwordColor};
-    // `;
-    
-    
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
@@ -240,7 +213,7 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
+    //   recaptchaRef: {green ${recaptchaRef}}
     // `);
     
     
@@ -254,15 +227,6 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* reCAPTCHA */}
-        <ReCaptcha
-          ref={ref => this.recaptcha = ref}
-          sitekey={process.env.RECAPTCHA_SITE_KEY}
-          action='login'
-          verifyCallback={handleLoginRecaptchaResponse}
-        />
-        
-        
         <ExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
           
           
@@ -270,6 +234,8 @@ export default injectIntl(class extends React.Component {
           <ExpansionPanelSummary expandIcon={<IconExpandMore />} onClick={() => handlePanelExpand({ _id: 'login' })}>
             <Heading>ログイン - ID & パスワード</Heading>
           </ExpansionPanelSummary>
+          
+          
           
           
           {/* Contents */}
@@ -308,6 +274,8 @@ export default injectIntl(class extends React.Component {
             </LoginIDBox>
             
             
+            
+            
             {/* Login Password */}
             <LoginIDBox>
               <StyledTextFieldWide
@@ -336,8 +304,8 @@ export default injectIntl(class extends React.Component {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="Toggle password visibility"
-                        onClick={handleLoginPasswordShow}
-                        onMouseDown={handleLoginPasswordMouseDown}
+                        onClick={handlePasswordShow}
+                        onMouseDown={handlePasswordMouseDown}
                       >
                         {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
                       </IconButton>
@@ -348,12 +316,14 @@ export default injectIntl(class extends React.Component {
             </LoginIDBox>
             
             
+            
+            
             {/* Submit Button */}
             <SubmitButtonBox>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleLoginRecaptchaReset(this.recaptcha)}
+                onClick={() => handleRecaptchaReset({ formType: 'login' })}
                 disabled={buttonDisabled}
               >
                 ログイン

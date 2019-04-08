@@ -207,6 +207,7 @@ class Component extends React.Component {
       };
       
       this.stores = initStoreIndex(argumentsObj);
+      this.stores.pathname = props.pathname;
       this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.idForm = initStoreIDForm(argumentsObj, this.stores);

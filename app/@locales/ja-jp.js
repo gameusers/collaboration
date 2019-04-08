@@ -115,12 +115,20 @@ const ja_JP = {
   // ---------------------------------------------
   
   // /app/@database/users/validations/login-id.js
-  'Xrf-TLIEN': 'ログインIDを入力してください ({ numberOfCharacters }文字)',
+  'Xrf-TLIEN': 'ログインIDを入力してください',
   
   // /app/@database/users/validations/login-password.js
-  'gJz51M8Pf': 'ログインパスワードを入力してください ({ numberOfCharacters }文字)',
-  'tmEi1Es0v': 'パスワードの強度が足りません ({ numberOfCharacters }文字)',
+  'gJz51M8Pf': 'ログインパスワードを入力してください',
+  'tmEi1Es0v': 'パスワードの強度が足りません',
   'NHTq1_JhE': 'IDとパスワードを同じ文字列にすることはできません',
+  
+  // /app/@database/users/validations/login-password-confirmation.js
+  'KBFOZp6kv': '同じパスワードをもう一度入力してください',
+  '9jFs2LU6e': 'パスワードが一致しません',
+  
+  // /app/@database/users/validations/email.js
+  'I6k9-tUpp': 'E-Mailアドレスを入力してください',
+  '5O4K1an7k': '正しいE-Mailアドレスではありません',
   
   
   // '': '',

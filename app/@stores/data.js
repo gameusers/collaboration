@@ -24,7 +24,10 @@ class Store {
   //   Constructor
   // ---------------------------------------------
   
-  constructor() {}
+  // constructor(argumentsObj) {
+  //   console.log('constructor');
+  //   this.pathname = argumentsObj.pathname;
+  // }
   
   
   

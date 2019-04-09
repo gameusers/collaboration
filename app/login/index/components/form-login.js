@@ -18,7 +18,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
-// import { ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 
@@ -42,10 +41,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconID from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
-import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
@@ -54,6 +51,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 
 const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
 const { validationUsersLoginPassword } = require('../../../../app/@database/users/validations/login-password');
+
 
 
 

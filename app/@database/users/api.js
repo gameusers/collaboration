@@ -76,7 +76,7 @@ let statusCode = 400;
 let errorArgumentsObj = {
   fileID: 'EOnyUrk82',
   functionID: '',
-  errorCodeArr: [500000],
+  errorCodeArr: [],
   errorObj: {},
   usersLogin_id: ''
 };

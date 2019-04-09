@@ -80,6 +80,7 @@ const Container = styled.header`
   display: flex;
   flex-direction: column;
   background-color: white;
+  // margin: 20px 0 0 0;
 `;
 
 const Top = styled.div`
@@ -94,7 +95,7 @@ const Top = styled.div`
   position: sticky;
   
   top: 0;
-  z-index: 1200;
+  z-index: 1000;
 `;
 
 

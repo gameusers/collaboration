@@ -9,6 +9,8 @@
 import React from 'react';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
+import Router from 'next/router';
+import NProgress from 'nprogress';
 
 
 // ---------------------------------------------
@@ -31,7 +33,25 @@ import '../../../../app/@css/reset.css';
 import 'react-id-swiper/src/styles/css/swiper.css';
 import 'rc-pagination/assets/index.css';
 import 'react-modal-video/css/modal-video.min.css';
+import 'nprogress/nprogress.css';
 import '../../../../app/@css/style.css';
+
+
+
+
+// --------------------------------------------------
+//   NProgress / Slim progress bars for Ajax'y applications. Inspired by Google, YouTube, and Medium.
+//   https://github.com/rstacruz/nprogress
+// --------------------------------------------------
+
+NProgress.configure({ showSpinner: false });
+
+Router.events.on('routeChangeStart', url => {
+  // console.log(`Loading: ${url}`);
+  NProgress.start();
+});
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
 
 
 

@@ -127,8 +127,8 @@ const ja_JP = {
   '9jFs2LU6e': 'パスワードが一致しません',
   
   // /app/@database/users/validations/email.js
-  'I6k9-tUpp': 'E-Mailアドレスを入力してください',
-  '5O4K1an7k': '正しいE-Mailアドレスではありません',
+  'I6k9-tUpp': 'メールアドレスを入力してください',
+  '5O4K1an7k': '正しいメールアドレスではありません',
   
   
   // '': '',

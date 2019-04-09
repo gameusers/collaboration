@@ -68,7 +68,7 @@ const CommunityRuleButton = styled(Button)`
     color: white;
     margin: 0 2px 0 0;
     padding: 0 6px 0 2px;
-  }nav-follow
+  }
 `;
 
 const CommunityIconAssignment = styled(IconAssignment)`

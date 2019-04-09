@@ -208,7 +208,7 @@ export default injectIntl(class extends React.Component {
     
     const createAccountLoginPasswordShow = lodashGet(dataObj, ['createAccountLoginPasswordShow'], false);
     const createAccountLoginPassword = lodashGet(dataObj, ['createAccountLoginPassword'], '');
-    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: createAccountLoginPassword, createAccountLoginID });
+    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: createAccountLoginPassword, loginID: createAccountLoginID });
     
     
     // --------------------------------------------------

@@ -46,7 +46,7 @@ const Container = styled.nav`
   position: -webkit-sticky;
   position: sticky;
   top: -1px;
-  z-index: 1200;
+  z-index: 1000;
 `;
       
 const MenuActiveButton = styled(Button)`

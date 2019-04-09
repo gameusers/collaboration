@@ -16,6 +16,7 @@ import util from 'util';
 
 import React from 'react';
 import Head from 'next/head';
+import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
@@ -55,7 +56,6 @@ import initStoreLoginIndex from '../../app/login/index/stores/store';
 
 import Layout from '../../app/common/layout/components/layout';
 import FormLogin from '../../app/login/index/components/form-login';
-// import FormCreateAccount from '../../app/login/index/components/form-create-account';
 
 
 // ---------------------------------------------
@@ -135,9 +135,16 @@ class Component extends React.Component {
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
     if (login) {
-      res.redirect('/logout');
-      res.end();
-      return {};
+      
+      if (isServer && res) {
+        res.writeHead(302, {
+          Location: '/logout'
+        });
+        res.end();
+      } else {
+        Router.replace('/logout');
+      }
+      
     }
     
     
@@ -322,10 +329,6 @@ class Component extends React.Component {
               
               {/* ログイン */}
               <FormLogin />
-              
-              
-              {/* アカウント作成 */}
-              {/*<FormCreateAccount />*/}
               
               
             </Container>

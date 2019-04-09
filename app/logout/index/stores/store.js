@@ -14,6 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+import Router from 'next/router';
 import { action } from 'mobx';
 
 
@@ -135,6 +136,7 @@ class Store {
       //   Page Transition
       // ---------------------------------------------
       
+      // Router.replace('/');
       window.location.href = process.env.URL_BASE;
       
       

@@ -39,8 +39,7 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 
 const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
 const { validationUsersLoginPassword } = require('../../../@database/users/validations/login-password');
-
-
+const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
 // --------------------------------------------------
@@ -240,56 +239,72 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      const loginID = lodashGet(this.dataObj, ['loginID'], '');
-      const loginPassword = lodashGet(this.dataObj, ['loginPassword'], '');
+      const createAccountLoginID = lodashGet(this.dataObj, ['createAccountLoginID'], '');
+      const createAccountLoginPassword = lodashGet(this.dataObj, ['createAccountLoginPassword'], '');
+      const createAccountEmail = lodashGet(this.dataObj, ['createAccountEmail'], '');
+      const createAccountTermsOfService = lodashGet(this.dataObj, ['createAccountTermsOfService'], false);
       const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
+      
+      
+      // ---------------------------------------------
+      //   利用規約のチェック
+      // ---------------------------------------------
+      
+      if (createAccountTermsOfService === false) {
+        throw new Error('利用規約に同意してください');
+      }
       
       
       // ---------------------------------------------
       //   Validation
       // ---------------------------------------------
       
-      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
-      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
+      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: createAccountLoginID });
+      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: createAccountLoginPassword, loginID: createAccountLoginID });
+      const validationUsersEmailObj = validationUsersEmail({ value: createAccountEmail });
       
       
       // ---------------------------------------------
       //   Validation Error
       // ---------------------------------------------
       
-      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error) {
+      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error || validationUsersEmailObj.error) {
         throw new Error('フォームの入力内容に問題があります');
       }
       
       
       
-      // console.log(chalk`
-      //   \n---------- handleCreateAccount ----------\n
-      //   loginID: {green ${loginID}}
-      //   loginPassword: {green ${loginPassword}}
-      //   recaptchaResponse: {green ${recaptchaResponse}}
-      // `);
+      console.log(chalk`
+        \n---------- handleCreateAccount ----------\n
+        createAccountLoginID: {green ${createAccountLoginID}}
+        createAccountLoginPassword: {green ${createAccountLoginPassword}}
+        createAccountEmail: {green ${createAccountEmail}}
+        recaptchaResponse: {green ${recaptchaResponse}}
+      `);
       
-      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      // console.log(`\n-----------------------------------\n`);
+      console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
+      console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
+      console.log(`\n-----------------------------------\n`);
       
-      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      // console.log(`\n-----------------------------------\n`);
+      console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
+      console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
+      console.log(`\n-----------------------------------\n`);
       
-      // return;
+      console.log(`\n---------- validationUsersEmailObj ----------\n`);
+      console.dir(JSON.parse(JSON.stringify(validationUsersEmailObj)));
+      console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      // const formData = new FormData();
+      const formData = new FormData();
       
-      // formData.append('loginID', loginID);
-      // formData.append('loginPassword', loginPassword);
-      // formData.append('response', recaptchaResponse);
+      formData.append('loginID', createAccountLoginID);
+      formData.append('loginPassword', createAccountLoginPassword);
+      formData.append('email', createAccountEmail);
+      formData.append('response', recaptchaResponse);
       
       
       // // ---------------------------------------------

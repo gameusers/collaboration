@@ -16,6 +16,7 @@ const util = require('util');
 
 import React from 'react';
 import Head from 'next/head';
+import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import lodashGet from 'lodash/get';
@@ -128,10 +129,36 @@ class Component extends React.Component {
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
     if (login === false) {
-      res.redirect('/login');
-      res.end();
-      return {};
+      
+      if (isServer && res) {
+        res.writeHead(302, {
+          Location: '/login'
+        });
+        res.end();
+      } else {
+        Router.replace('/login');
+      }
+      
     }
+    
+    // if (login === false) {
+      
+    //   if (isServer && res) {
+    //     res.redirect('/login');
+    //     res.end();
+    //   } else {
+    //     Router.replace('/login');
+    //   }
+      
+    // }
+    
+    
+    
+    // if (login === false) {
+    //   res.redirect('/login');
+    //   res.end();
+    //   return {};
+    // }
     
     
     return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };

@@ -11,6 +11,13 @@ const util = require('util');
 
 
 // ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const Model = require('../model');
+
+
+// ---------------------------------------------
 //   Validation
 // ---------------------------------------------
 
@@ -20,18 +27,18 @@ const validator = require('validator');
 
 
 /**
- * E-Mail
+ * Login ID
  * @param {string} value - 値
  */
-const validationUsersEmail = ({ required = false, value }) => {
+const validationUsersLoginIDServer = async ({ value }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 3;
-  const maxLength = 100;
+  const minLength = 6;
+  const maxLength = 32;
   
   
   // ---------------------------------------------
@@ -39,13 +46,11 @@ const validationUsersEmail = ({ required = false, value }) => {
   // ---------------------------------------------
   
   const data = String(value);
-  const numberOfCharacters = data ? data.length : 0;
   const messageCodeArr = [];
   
   let resultObj = {
     value: data,
-    numberOfCharacters,
-    messageCode: 'I6k9-tUpp',
+    messageCode: '',
     error: false,
     errorCodeArr: []
   };
@@ -58,27 +63,28 @@ const validationUsersEmail = ({ required = false, value }) => {
     //   Validation
     // ---------------------------------------------
     
-    // 空の場合、処理停止
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        resultObj.errorCodeArr.push('XIn-aRGHD');
-      }
-      
-      return resultObj;
-      
-    }
-    
     // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
       messageCodeArr.unshift('yKjojKAxy');
-      resultObj.errorCodeArr.push('M4fBF4b4P');
+      resultObj.errorCodeArr.push('e4g-rZvGD');
     }
     
-    // メールアドレスチェック
-    if (!validator.isEmail(data)) {
-      messageCodeArr.unshift('5O4K1an7k');
-      resultObj.errorCodeArr.push('M4fBF4b4P');
+    // 英数と -_ のみ
+    if (data.match(/^[\w\-]+$/) === null) {
+      messageCodeArr.unshift('JBkjlGQMh');
+      resultObj.errorCodeArr.push('6po2zu3If');
+    }
+    
+    // データベースに存在しているかチェック
+    const count = await Model.count({
+      conditionObj: {
+        loginID: value,
+      }
+    });
+    
+    if (count === 1) {
+      messageCodeArr.unshift('Y1J-vK0hW');
+      resultObj.errorCodeArr.push('fi1EoNmKH');
     }
     
     
@@ -90,7 +96,7 @@ const validationUsersEmail = ({ required = false, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('IL3i80Cpp');
+    resultObj.errorCodeArr.push('0aw5t0JvG');
     
     
   } finally {
@@ -130,5 +136,5 @@ const validationUsersEmail = ({ required = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersEmail
+  validationUsersLoginIDServer
 };

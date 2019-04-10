@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-import Router from 'next/router';
 import { action } from 'mobx';
 
 
@@ -101,7 +100,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/logout`,
+        urlApi: `${process.env.URL_API}/v1/users/logout`,
         methodType: 'POST',
         formData: formData
       });
@@ -136,7 +135,6 @@ class Store {
       //   Page Transition
       // ---------------------------------------------
       
-      // Router.replace('/');
       window.location.href = process.env.URL_BASE;
       
       
@@ -174,6 +172,7 @@ class Store {
   
   
 }
+
 
 
 

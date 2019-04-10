@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 // const chalk = require('chalk');
@@ -43,10 +43,10 @@ const errorsArrIntoErrorMessage = (errorsArr) => {
     
     const errorMessageArr = [];
     
-    for (let value of errorsArr.values()) {
+    for (let valueObj of errorsArr.values()) {
       // errorMessageArr.push(`Error Code: ${value.code}`);
       // errorMessageArr.push(`${value.message} エラーコード ${value.code}`);
-      errorMessageArr.push(`${value.message}`);
+      errorMessageArr.push(`${valueObj.message}`);
     }
     
     returnValue = errorMessageArr.join(' / ');

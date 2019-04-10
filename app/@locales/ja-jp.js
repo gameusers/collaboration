@@ -111,11 +111,14 @@ const ja_JP = {
   
   
   // ---------------------------------------------
-  //   Error / Validation / DB ids
+  //   Error / Validation / DB users
   // ---------------------------------------------
   
   // /app/@database/users/validations/login-id.js
   'Xrf-TLIEN': 'ログインIDを入力してください',
+  
+  // /app/@database/users/validations/login-id-server.js
+  'Y1J-vK0hW': '入力したログインIDは利用できません',
   
   // /app/@database/users/validations/login-password.js
   'gJz51M8Pf': 'ログインパスワードを入力してください',

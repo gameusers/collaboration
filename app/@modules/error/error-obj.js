@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -14,13 +15,6 @@ const chalk = require('chalk');
 // ---------------------------------------------
 
 const moment = require('moment');
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { IntlProvider } = require('react-intl');
 
 
 // ---------------------------------------------
@@ -38,27 +32,15 @@ const logger = require('../logger');
 
 /**
  * Error 情報の入ったオブジェクトを返す
- * @param {Object} localeObj - ロケール
  * @param {string} fileID - ファイル固有のID
  * @param {string} functionID - 関数固有のID
+ * @param {string} messageCode - メッセージコード
  * @param {Array} errorCodeArr - エラーコードが入っている配列
  * @param {Object} errorObj - catchで取得したエラーオブジェクト
  * @param {string} usersLogin_id - ログインしていユーザーの DB users _id
  * @return {Object} エラーオブジェクト
  */
-const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, errorObj, usersLogin_id }) => {
-  
-  
-  // ---------------------------------------------
-  //   I18n
-  // ---------------------------------------------
-  
-  // const intlProvider = new IntlProvider({
-  //   locale: localeObj.languageArr[0],
-  //   messages: localeObj.dataObj
-  // }, {});
-  
-  // const { intl } = intlProvider.getChildContext();
+const errorCodeIntoErrorObj = ({ fileID, functionID, messageCode, errorCodeArr, errorObj, usersLogin_id }) => {
   
   
   // ---------------------------------------------
@@ -70,19 +52,28 @@ const errorCodeIntoErrorObj = ({ localeObj, fileID, functionID, errorCodeArr, er
   
   
   // ---------------------------------------------
-  //   Errors Arr & Log Array
+  //   Loop
   // ---------------------------------------------
   
   for (let value of errorCodeArr) {
     
+    
+    // ---------------------------------------------
+    //   Errors Arr
+    // ---------------------------------------------
+    
     let tempObj = {
       code: `${fileID}@${functionID}@${value}`,
-      // message: intl.formatMessage({ id: value }),
+      messageCode,
     };
     
     errorsArr.push(tempObj);
     
-    // logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nMessage: ${tempObj.message}\n`);
+    
+    // ---------------------------------------------
+    //   Log Array
+    // ---------------------------------------------
+    
     logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${usersLogin_id}`);
     
   }

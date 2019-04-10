@@ -149,75 +149,75 @@ router.get('/initial-props', upload.none(), (req, res, next) => {
 //   ログアウト / Function ID: lpePrqvT4
 // --------------------------------------------------
 
-router.post('/', upload.none(), function(req, res, next) {
+// router.post('/', upload.none(), function(req, res, next) {
   
   
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  errorArgumentsObj.functionID = 'lpePrqvT4';
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
+  
+//   errorArgumentsObj.functionID = 'lpePrqvT4';
   
   
-  try {
-    
-    
-    // ---------------------------------------------
-    //   CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // ---------------------------------------------
-    //   ログアウト処理
-    // ---------------------------------------------
-    
-    req.logout();
-    
-    
-    // ---------------------------------------------
-    //   Success
-    // ---------------------------------------------
-    
-    return res.status(200).json({
-      success: true
-    });
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Error Object
-    // ---------------------------------------------
-    
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
   
   
-});
+//   try {
+    
+    
+//     // ---------------------------------------------
+//     //   CSRF
+//     // ---------------------------------------------
+    
+//     verifyCsrfToken(req, res);
+    
+    
+//     // ---------------------------------------------
+//     //   ログアウト処理
+//     // ---------------------------------------------
+    
+//     req.logout();
+    
+    
+//     // ---------------------------------------------
+//     //   Success
+//     // ---------------------------------------------
+    
+//     return res.status(200).json({
+//       success: true
+//     });
+    
+    
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Error Object
+//     // ---------------------------------------------
+    
+//     errorArgumentsObj.errorObj = errorObj;
+//     const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
+  
+  
+// });
 
 
 

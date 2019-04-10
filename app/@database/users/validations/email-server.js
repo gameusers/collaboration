@@ -11,6 +11,13 @@ const util = require('util');
 
 
 // ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const Model = require('../model');
+
+
+// ---------------------------------------------
 //   Validation
 // ---------------------------------------------
 
@@ -23,7 +30,7 @@ const validator = require('validator');
  * E-Mail
  * @param {string} value - 値
  */
-const validationUsersEmail = ({ required = false, value }) => {
+const validationUsersEmailServer = async ({ required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -81,6 +88,18 @@ const validationUsersEmail = ({ required = false, value }) => {
       resultObj.errorCodeArr.push('M4fBF4b4P');
     }
     
+    // データベースに存在しているかチェック
+    const count = await Model.count({
+      conditionObj: {
+        email: value,
+      }
+    });
+    
+    if (count === 1) {
+      messageCodeArr.unshift('Y1J-vK0hW');
+      resultObj.errorCodeArr.push('fi1EoNmKH');
+    }
+    
     
   } catch (errorObj) {
     
@@ -90,7 +109,7 @@ const validationUsersEmail = ({ required = false, value }) => {
     // ---------------------------------------------
     
     messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('IL3i80Cpp');
+    resultObj.errorCodeArr.push('0aw5t0JvG');
     
     
   } finally {
@@ -130,5 +149,5 @@ const validationUsersEmail = ({ required = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersEmail
+  validationUsersEmailServer
 };

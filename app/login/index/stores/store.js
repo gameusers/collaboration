@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-import Router from 'next/router';
 import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
@@ -278,7 +277,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/login`,
+        urlApi: `${process.env.URL_API}/v1/users/login`,
         methodType: 'POST',
         formData: formData
       });
@@ -320,17 +319,6 @@ class Store {
       // ---------------------------------------------
       
       const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
-      // history.replaceState(null, null, '/logout');
-      // history.pushState(null, null, '/logout1');
-      // history.pushState(null, null, '/logout2');
-      // history.pushState(null, null, '/logout3');
-    //   console.log(`
-    //   ----- history.state -----\n
-    //   ${util.inspect(history.state, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-      // Router.replace(`/pl/${playerID}`);
-      // Router.replace(`${process.env.URL_BASE}pl/${playerID}`);
       window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
       
       

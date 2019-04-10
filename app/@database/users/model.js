@@ -424,135 +424,6 @@ const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
 
 
 /**
- * 検索してデータを取得する / Users Obj 用
- * @param {Object} localeObj - ロケール
- * @param {Object} conditionObj - 検索条件
- * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
- * @return {Object} 取得データ
- */
-// const findOneFormatted = async ({ localeObj, conditionObj, usersLogin_id }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   データ取得
-//     // --------------------------------------------------
-    
-//     let resultArr = await Model.aggregate([
-      
-//       {
-//         $match : { _id: usersLogin_id }
-//       },
-      
-      
-//       {
-//         $lookup:
-//           {
-//             from: 'card-players',
-//             let: { users_id: '$_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $and:
-//                     [
-//                       { $eq: ['$language', localeObj.languageArr[0]] },
-//                       { $eq: ['$users_id', '$$users_id'] }
-//                     ]
-//                   },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   _id: 0,
-//                   nameObj: 1,
-//                   statusObj: 1,
-//                   imagesAndVideosObj: 1,
-//                 }
-//               }
-//             ],
-//             as: 'cardPlayersObj'
-//           }
-//       },
-//       {
-//         $unwind: '$cardPlayersObj'
-//       },
-      
-      
-//       {
-//         $project: {
-//           __v: 0,
-//           createdDate: 0,
-//           updatedDate: 0,
-//           loginID: 0,
-//           loginPassword: 0,
-//           email: 0,
-//           country: 0,
-//         }
-//       },
-      
-//     ]).exec();
-    
-    
-//     // --------------------------------------------------
-//     //   フォーマット
-//     // --------------------------------------------------
-    
-//     const returnObj = format({ arr: resultArr });
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(`
-//     //   ----- localeObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- conditionObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(chalk`
-//     //   usersLogin_id: {green ${usersLogin_id}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
-
-
-
-
-/**
  * フォーマットする / 現状、多言語に対応していない。localeObjを使用していない。
  * @param {Array} arr - 配列
  * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
@@ -644,107 +515,6 @@ const format = async ({ arr, usersLogin_id }) => {
   
   
 };
-
-
-
-
-/**
- * 検索してデータを取得する / 1件だけ
- * @param {Object} argumentsObj - 引数
- * @return {Object} 取得データ
- */
-// const findOneFormatted2 = async (argumentsObj) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Property
-//   // --------------------------------------------------
-  
-//   const {
-    
-//     localeObj,
-//     conditionObj,
-//     usersLogin_id
-    
-//   } = argumentsObj;
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   FindOne
-//     // --------------------------------------------------
-    
-//     const docObj = await Model.findOne(conditionObj).select('_id accessDate level playerID followArr followCount followedArr followedCount role').exec();
-    
-//     if (docObj === null) {
-//       return returnObj;
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   コピー
-//     // --------------------------------------------------
-    
-//     const copiedObj = JSON.parse(JSON.stringify(docObj));
-    
-    
-//     // --------------------------------------------------
-//     //   Follow の処理
-//     // --------------------------------------------------
-    
-//     if (usersLogin_id) {
-      
-//       copiedObj.followed = false;
-      
-//       if (
-//         usersLogin_id &&
-//         copiedObj._id !== usersLogin_id &&
-//         copiedObj.followedArr.includes(usersLogin_id)
-//       ) {
-//         copiedObj.followed = true;
-//       }
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   _id をキーにして削除する
-//     // --------------------------------------------------
-    
-//     delete copiedObj._id;
-//     delete copiedObj.followArr;
-//     delete copiedObj.followedArr;
-//     returnObj[docObj._id] = copiedObj;
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
 
 
 
@@ -872,7 +642,7 @@ const findFormatted = async (conditionObj, usersLogin_id) => {
  * フォローする
  * @param {string} usersLogin_id - フォローするユーザーの_id
  * @param {string} users_id - フォローされるユーザーの_id
- * @return {string} 
+ * @return {Object} 
  */
 const updateForFollow = async (usersLogin_id, users_id) => {
   
@@ -1040,11 +810,185 @@ const updateForFollow = async (usersLogin_id, users_id) => {
 
 
 /**
+ * アカウントを作成する
+ * @param {string} loginID - Login ID
+ * @param {string} loginPassword - Login Password
+ * @param {string} email - E-Mail
+ * @return {Object} 
+ */
+const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await Model.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    // await session.startTransaction();
+    
+    
+    // // --------------------------------------------------
+    // //   Find One
+    // // --------------------------------------------------
+    
+    // const conditionFindOne1Obj = { _id: usersLogin_id };
+    // const users1Obj = await Model.findOne(conditionFindOne1Obj).exec();
+    
+    // const conditionFindOne2Obj = { _id: users_id };
+    // const users2Obj = await Model.findOne(conditionFindOne2Obj).exec();
+    
+    // if (users1Obj === null || users2Obj === null) {
+    //   throw new Error('必要なユーザーが存在しません。');
+    // }
+    
+    
+    // // --------------------------------------------------
+    // //   フォロー解除
+    // // --------------------------------------------------
+    
+    // if (users1Obj.followArr.includes(users_id)) {
+      
+      
+    //   // --------------------------------------------------
+    //   //   Update
+    //   // --------------------------------------------------
+      
+    //   const condition1Obj = { _id: usersLogin_id };
+    //   const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
+    //   const option1Obj = { session: session };
+    //   await Model.update(condition1Obj, save1Obj, option1Obj).exec();
+      
+    //   const condition2Obj = { _id: users_id };
+    //   const save2Obj = { $pull: { followedArr: usersLogin_id }, $inc: { followedCount: -1 }  };
+    //   const option2Obj = { session: session };
+    //   await Model.update(condition2Obj, save2Obj, option2Obj).exec();
+      
+      
+    // // --------------------------------------------------
+    // //   フォロー
+    // // --------------------------------------------------
+    
+    // } else {
+      
+      
+    //   // --------------------------------------------------
+    //   //   Update
+    //   // --------------------------------------------------
+      
+    //   const condition1Obj = { _id: usersLogin_id };
+    //   const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
+    //   const option1Obj = { session: session };
+    //   await Model.update(condition1Obj, save1Obj, option1Obj).exec();
+      
+    //   const condition2Obj = { _id: users_id };
+    //   const save2Obj = { $addToSet: { followedArr: usersLogin_id }, $inc: { followedCount: 1 }  };
+    //   const option2Obj = { session: session };
+    //   await Model.update(condition2Obj, save2Obj, option2Obj).exec();
+      
+      
+    // }
+    
+    
+    // // --------------------------------------------------
+    // //   Transaction / Commit
+    // // --------------------------------------------------
+    
+    // await session.commitTransaction(); // コミット
+    // // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    // // --------------------------------------------------
+    // //   Model / Users / データ取得
+    // // --------------------------------------------------
+    
+    // const conditionObj = { _id: { $in: [usersLogin_id, users_id]} };
+    // returnObj.usersObj = await findFormatted(conditionObj, usersLogin_id);
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      loginID: {green ${loginID}}
+      loginPassword: {green ${loginPassword}}
+      email: {green ${email}}
+    `);
+    
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * 挿入する
  * @param {Object} reqBody
  * @return {Object} playerIdの入ったオブジェクト
  */
-const insert = async (reqBody) => {
+const insertForCreateAccount2 = async (reqBody) => {
   
   
   // --------------------------------------------------
@@ -1066,7 +1010,6 @@ const insert = async (reqBody) => {
     // --------------------------------------------------
     
     const { createAccountId, createAccountPassword, createAccountEmail } = reqBody;
-    
     
     
     // --------------------------------------------------
@@ -1134,12 +1077,12 @@ const insert = async (reqBody) => {
     //   Insert
     // --------------------------------------------------
     
-    const docArr = await Model.create(saveObj);
+    // const docArr = await Model.create(saveObj);
     
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -1180,16 +1123,15 @@ const insert = async (reqBody) => {
     //   Return
     // --------------------------------------------------
     
-    if (playerId in docArr) {
-      returnObj.playerId = docArr.playerId;
-    }
+    // if (playerId in docArr) {
+    //   returnObj.playerId = docArr.playerId;
+    // }
     
     return returnObj;
     
     
   } catch (err) {
     
-    logger.log('error', `/app/@database/users/model.js / insert / Error: ${err}`);
     throw err;
     
   }
@@ -1212,9 +1154,7 @@ module.exports = {
   insertMany,
   deleteMany,
   findOneForUser,
-  // findOneFormatted2,
-  // findOneFormatted,
   findFormatted,
   updateForFollow,
-  insert
+  insertForCreateAccount
 };

@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import { IntlProvider } from 'react-intl';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -229,6 +230,18 @@ class Store {
       
       
       // ---------------------------------------------
+      //   I18n
+      // ---------------------------------------------
+      
+      const intlProvider = new IntlProvider({
+        locale: storeData.localeObj.languageArr[0],
+        messages: storeData.localeObj.dataObj
+      }, {});
+      
+      const { intl } = intlProvider.getChildContext();
+      
+      
+      // ---------------------------------------------
       //   Form Type Reset
       // ---------------------------------------------
       
@@ -274,25 +287,25 @@ class Store {
       
       
       
-      console.log(chalk`
-        \n---------- handleCreateAccount ----------\n
-        createAccountLoginID: {green ${createAccountLoginID}}
-        createAccountLoginPassword: {green ${createAccountLoginPassword}}
-        createAccountEmail: {green ${createAccountEmail}}
-        recaptchaResponse: {green ${recaptchaResponse}}
-      `);
+      // console.log(chalk`
+      //   \n---------- handleCreateAccount ----------\n
+      //   createAccountLoginID: {green ${createAccountLoginID}}
+      //   createAccountLoginPassword: {green ${createAccountLoginPassword}}
+      //   createAccountEmail: {green ${createAccountEmail}}
+      //   recaptchaResponse: {green ${recaptchaResponse}}
+      // `);
       
-      console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
+      // console.log(`\n-----------------------------------\n`);
       
-      console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
+      // console.log(`\n-----------------------------------\n`);
       
-      console.log(`\n---------- validationUsersEmailObj ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(validationUsersEmailObj)));
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- validationUsersEmailObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersEmailObj)));
+      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
@@ -307,31 +320,32 @@ class Store {
       formData.append('response', recaptchaResponse);
       
       
-      // // ---------------------------------------------
-      // //   Fetch
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
       
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${process.env.URL_API}/v1/login`,
-      //   methodType: 'POST',
-      //   formData: formData
-      // });
-      
-      
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/users/create-account`,
+        methodType: 'POST',
+        formData: formData
+      });
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
-      // }
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new Error(intl.formatMessage({ id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '')}));
+        // throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+      }
       
       
       // // ---------------------------------------------
@@ -342,11 +356,11 @@ class Store {
       // lodashSet(this.dataObj, 'loginPassword', '');
       
       
-      // // ---------------------------------------------
-      // //   Snackbar: Success
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
       
-      // storeLayout.handleSnackbarOpen('success', 'ログインしました');
+      storeLayout.handleSnackbarOpen('success', 'アカウントを作成しました');
       
       
       // // ---------------------------------------------

@@ -24,8 +24,8 @@ const lodashGet = require('lodash/get');
 //   Model
 // ---------------------------------------------
 
-const Model = require('./schema');
-const ModelCardPlayers = require('../card-players/model');
+const SchemaUsers = require('./schema');
+const SchemaCardPlayers = require('../card-players/schema');
 
 
 // ---------------------------------------------
@@ -91,7 +91,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docObj = await Model.findOne(conditionObj).exec();
+    const docObj = await SchemaUsers.findOne(conditionObj).exec();
     
     if (docObj === null) {
       return returnObj;
@@ -141,7 +141,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Model.find(conditionObj).exec();
+    return await SchemaUsers.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -174,7 +174,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Model.countDocuments(conditionObj).exec();
+    return await SchemaUsers.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -207,7 +207,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -240,7 +240,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Model.insertMany(saveArr);
+    return await SchemaUsers.insertMany(saveArr);
     
     
   } catch (err) {
@@ -273,7 +273,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Model.deleteMany(conditionObj);
+    return await SchemaUsers.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -313,7 +313,7 @@ const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
     //   データ取得
     // --------------------------------------------------
     
-    let resultArr = await Model.aggregate([
+    let resultArr = await SchemaUsers.aggregate([
       
       {
         $match : conditionObj
@@ -546,7 +546,7 @@ const findFormatted = async (conditionObj, usersLogin_id) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docArr = await Model.find(conditionObj).select('_id accessDate name status playerId level followArr followCount followedArr followedCount role').exec();
+    const docArr = await SchemaUsers.find(conditionObj).select('_id accessDate name status playerId level followArr followCount followedArr followedCount role').exec();
     
     if (docArr === null) {
       return returnObj;
@@ -658,7 +658,7 @@ const updateForFollow = async (usersLogin_id, users_id) => {
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Model.startSession();
+  const session = await SchemaUsers.startSession();
   
   
   // --------------------------------------------------
@@ -680,10 +680,10 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     // --------------------------------------------------
     
     const conditionFindOne1Obj = { _id: usersLogin_id };
-    const users1Obj = await Model.findOne(conditionFindOne1Obj).exec();
+    const users1Obj = await SchemaUsers.findOne(conditionFindOne1Obj).exec();
     
     const conditionFindOne2Obj = { _id: users_id };
-    const users2Obj = await Model.findOne(conditionFindOne2Obj).exec();
+    const users2Obj = await SchemaUsers.findOne(conditionFindOne2Obj).exec();
     
     if (users1Obj === null || users2Obj === null) {
       throw new Error('必要なユーザーが存在しません。');
@@ -704,12 +704,12 @@ const updateForFollow = async (usersLogin_id, users_id) => {
       const condition1Obj = { _id: usersLogin_id };
       const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
       const option1Obj = { session: session };
-      await Model.update(condition1Obj, save1Obj, option1Obj).exec();
+      await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
       
       const condition2Obj = { _id: users_id };
       const save2Obj = { $pull: { followedArr: usersLogin_id }, $inc: { followedCount: -1 }  };
       const option2Obj = { session: session };
-      await Model.update(condition2Obj, save2Obj, option2Obj).exec();
+      await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
       
       
     // --------------------------------------------------
@@ -726,12 +726,12 @@ const updateForFollow = async (usersLogin_id, users_id) => {
       const condition1Obj = { _id: usersLogin_id };
       const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
       const option1Obj = { session: session };
-      await Model.update(condition1Obj, save1Obj, option1Obj).exec();
+      await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
       
       const condition2Obj = { _id: users_id };
       const save2Obj = { $addToSet: { followedArr: usersLogin_id }, $inc: { followedCount: 1 }  };
       const option2Obj = { session: session };
-      await Model.update(condition2Obj, save2Obj, option2Obj).exec();
+      await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
       
       
     }
@@ -811,12 +811,11 @@ const updateForFollow = async (usersLogin_id, users_id) => {
 
 /**
  * アカウントを作成する
- * @param {string} loginID - Login ID
- * @param {string} loginPassword - Login Password
- * @param {string} email - E-Mail
+ * @param {Array} usersSaveArr - 保存用配列 Users
+ * @param {Array} cardPlayersSaveArr - 保存用配列 Card Players
  * @return {Object} 
  */
-const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
+const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
   
   
   // --------------------------------------------------
@@ -830,7 +829,7 @@ const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await Model.startSession();
+  const session = await SchemaUsers.startSession();
   
   
   // --------------------------------------------------
@@ -844,77 +843,24 @@ const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
     //   Transaction / Start
     // --------------------------------------------------
     
-    // await session.startTransaction();
+    await session.startTransaction();
     
     
-    // // --------------------------------------------------
-    // //   Find One
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB Insert
+    // --------------------------------------------------
     
-    // const conditionFindOne1Obj = { _id: usersLogin_id };
-    // const users1Obj = await Model.findOne(conditionFindOne1Obj).exec();
-    
-    // const conditionFindOne2Obj = { _id: users_id };
-    // const users2Obj = await Model.findOne(conditionFindOne2Obj).exec();
-    
-    // if (users1Obj === null || users2Obj === null) {
-    //   throw new Error('必要なユーザーが存在しません。');
-    // }
+    await SchemaUsers.create(usersSaveArr, { session: session });
+    // // throw new Error();
+    await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
     
     
-    // // --------------------------------------------------
-    // //   フォロー解除
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
     
-    // if (users1Obj.followArr.includes(users_id)) {
-      
-      
-    //   // --------------------------------------------------
-    //   //   Update
-    //   // --------------------------------------------------
-      
-    //   const condition1Obj = { _id: usersLogin_id };
-    //   const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
-    //   const option1Obj = { session: session };
-    //   await Model.update(condition1Obj, save1Obj, option1Obj).exec();
-      
-    //   const condition2Obj = { _id: users_id };
-    //   const save2Obj = { $pull: { followedArr: usersLogin_id }, $inc: { followedCount: -1 }  };
-    //   const option2Obj = { session: session };
-    //   await Model.update(condition2Obj, save2Obj, option2Obj).exec();
-      
-      
-    // // --------------------------------------------------
-    // //   フォロー
-    // // --------------------------------------------------
-    
-    // } else {
-      
-      
-    //   // --------------------------------------------------
-    //   //   Update
-    //   // --------------------------------------------------
-      
-    //   const condition1Obj = { _id: usersLogin_id };
-    //   const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
-    //   const option1Obj = { session: session };
-    //   await Model.update(condition1Obj, save1Obj, option1Obj).exec();
-      
-    //   const condition2Obj = { _id: users_id };
-    //   const save2Obj = { $addToSet: { followedArr: usersLogin_id }, $inc: { followedCount: 1 }  };
-    //   const option2Obj = { session: session };
-    //   await Model.update(condition2Obj, save2Obj, option2Obj).exec();
-      
-      
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Transaction / Commit
-    // // --------------------------------------------------
-    
-    // await session.commitTransaction(); // コミット
-    // // console.log('--------コミット-----------');
+    await session.commitTransaction(); // コミット
+    console.log('--------コミット-----------');
     
     session.endSession();
     
@@ -933,11 +879,11 @@ const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      loginID: {green ${loginID}}
-      loginPassword: {green ${loginPassword}}
-      email: {green ${email}}
-    `);
+    // console.log(chalk`
+    //   loginID: {green ${loginID}}
+    //   loginPassword: {green ${loginPassword}}
+    //   email: {green ${email}}
+    // `);
     
     // console.log(`
     //   ----- usersObj -----\n
@@ -961,7 +907,13 @@ const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
     return returnObj;
     
     
-  } catch (err) {
+  } catch (errorObj) {
+    
+    console.log(`
+      ----- errorObj -----\n
+      ${util.inspect(errorObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -969,12 +921,12 @@ const insertForCreateAccount = async ({ loginID, loginPassword, email }) => {
     // --------------------------------------------------
     
     await session.abortTransaction();
-    // console.log('--------ロールバック-----------');
+    console.log('--------ロールバック-----------');
     
     session.endSession();
     
     
-    throw err;
+    throw errorObj;
     
   }
   

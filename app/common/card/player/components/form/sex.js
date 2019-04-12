@@ -153,7 +153,7 @@ export default injectIntl(class extends React.Component {
                 id: 'sex',
               }}
             >
-              <MenuItem value={''}></MenuItem>
+              <MenuItem value={'empty'}></MenuItem>
               <MenuItem value={'male'}>男性</MenuItem>
               <MenuItem value={'female'}>女性</MenuItem>
             </Select>

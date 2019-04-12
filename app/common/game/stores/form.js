@@ -245,7 +245,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/games/find-by-search-keywords-arr-for-suggestion`,
+        urlApi: `${process.env.URL_API}/v1/games/find-by-search-keywords-arr-for-suggestion`,
         methodType: 'POST',
         formData: formData
       });

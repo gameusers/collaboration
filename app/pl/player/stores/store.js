@@ -278,7 +278,7 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const urlApi = `${storeData.urlApi}/v1/login`;
+    const urlApi = `${process.env.URL_API}/v1/login`;
     
     fetch(urlApi, {
       method: 'POST',
@@ -746,7 +746,7 @@ class Store {
     //   Fetch
     // ---------------------------------------------
     
-    const urlApi = `${storeData.urlApi}/v1/login/createAccount`;
+    const urlApi = `${process.env.URL_API}/v1/login/createAccount`;
     
     fetch(urlApi, {
       method: 'POST',

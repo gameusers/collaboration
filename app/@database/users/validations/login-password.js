@@ -153,6 +153,7 @@ const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
  * @param {boolean} required - 必須かどうか
  * @param {string} value - 値
  * @param {string} confirmation - パスワード確認
+ * @return {Object} バリデーション結果
  */
 const validationUsersLoginPasswordConfirmation = ({ required = false, value, loginPassword }) => {
   

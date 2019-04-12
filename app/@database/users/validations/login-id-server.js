@@ -29,8 +29,10 @@ const validator = require('validator');
 /**
  * Login ID
  * @param {string} value - 値
+ * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @return {Object} バリデーション結果
  */
-const validationUsersLoginIDServer = async ({ value }) => {
+const validationUsersLoginIDServer = async ({ value, usersLogin_id }) => {
   
   
   // ---------------------------------------------
@@ -75,16 +77,40 @@ const validationUsersLoginIDServer = async ({ value }) => {
       resultObj.errorCodeArr.push('6po2zu3If');
     }
     
-    // データベースに存在しているかチェック
-    const count = await Model.count({
-      conditionObj: {
-        loginID: value,
-      }
-    });
     
-    if (count === 1) {
-      messageCodeArr.unshift('Y1J-vK0hW');
-      resultObj.errorCodeArr.push('fi1EoNmKH');
+    // ---------------------------------------------
+    //   データベースに存在しているかチェック
+    // ---------------------------------------------
+    
+    // 編集の場合
+    if (usersLogin_id) {
+      
+      const count = await Model.count({
+        conditionObj: {
+          _id: { '$ne': usersLogin_id },
+          loginID: value,
+        }
+      });
+      
+      if (count === 1) {
+        messageCodeArr.unshift('Y1J-vK0hW');
+        resultObj.errorCodeArr.push('2R5M5lNLA');
+      }
+      
+    // 新規の場合
+    } else {
+      
+      const count = await Model.count({
+        conditionObj: {
+          loginID: value,
+        }
+      });
+      
+      if (count === 1) {
+        messageCodeArr.unshift('Y1J-vK0hW');
+        resultObj.errorCodeArr.push('fi1EoNmKH');
+      }
+      
     }
     
     

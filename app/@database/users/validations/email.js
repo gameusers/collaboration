@@ -21,7 +21,9 @@ const validator = require('validator');
 
 /**
  * E-Mail
+ * @param {boolean} required - 必須かどうか
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
 const validationUsersEmail = ({ required = false, value }) => {
   

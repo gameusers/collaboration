@@ -28,9 +28,13 @@ const validator = require('validator');
 
 /**
  * E-Mail
+ * @param {boolean} required - 必須かどうか
  * @param {string} value - 値
+ * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {string} encryptedEmail - 暗号化されたメールアドレス
+ * @return {Object} バリデーション結果
  */
-const validationUsersEmailServer = async ({ required = false, value }) => {
+const validationUsersEmailServer = async ({ required = false, value, usersLogin_id, encryptedEmail }) => {
   
   
   // ---------------------------------------------
@@ -52,7 +56,7 @@ const validationUsersEmailServer = async ({ required = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'I6k9-tUpp',
+    messageCode: '',
     error: false,
     errorCodeArr: []
   };
@@ -88,16 +92,40 @@ const validationUsersEmailServer = async ({ required = false, value }) => {
       resultObj.errorCodeArr.push('M4fBF4b4P');
     }
     
-    // データベースに存在しているかチェック
-    const count = await Model.count({
-      conditionObj: {
-        email: value,
-      }
-    });
     
-    if (count === 1) {
-      messageCodeArr.unshift('Y1J-vK0hW');
-      resultObj.errorCodeArr.push('fi1EoNmKH');
+    // ---------------------------------------------
+    //   データベースに存在しているかチェック
+    // ---------------------------------------------
+    
+    // 編集の場合
+    if (usersLogin_id) {
+      
+      const count = await Model.count({
+        conditionObj: {
+          _id: { '$ne': usersLogin_id },
+          email: encryptedEmail,
+        }
+      });
+      
+      if (count === 1) {
+        messageCodeArr.unshift('5H8rr53kE');
+        resultObj.errorCodeArr.push('BCtGVMysf');
+      }
+      
+    // 新規の場合
+    } else {
+      
+      const count = await Model.count({
+        conditionObj: {
+          email: encryptedEmail,
+        }
+      });
+      
+      if (count === 1) {
+        messageCodeArr.unshift('5H8rr53kE');
+        resultObj.errorCodeArr.push('B4x14ISQg');
+      }
+      
     }
     
     

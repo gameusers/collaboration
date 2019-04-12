@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -56,7 +56,7 @@ const validationCardPlayersSex = ({ value }) => {
     }
     
     // 適切な値が選択されているかチェック
-    if (!validator.isIn(value, ['male', 'female'])) {
+    if (!validator.isIn(value, ['empty', 'male', 'female'])) {
       messageCodeArr.unshift('PH8jcw-VF');
       resultObj.errorCodeArr.push('C56k2p_lB');
     }

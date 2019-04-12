@@ -21,7 +21,9 @@ const validator = require('validator');
 
 /**
  * Login ID
+ * @param {boolean} required - 必須かどうか
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
 const validationUsersLoginID = ({ required = false, value }) => {
   

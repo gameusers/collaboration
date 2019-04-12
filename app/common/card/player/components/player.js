@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import lodashGet from 'lodash/get';
@@ -136,6 +137,7 @@ export default class extends React.Component {
   
   componentDidMount(){
     
+    
     // --------------------------------------------------
     //   Button - Enable
     // --------------------------------------------------
@@ -173,7 +175,7 @@ export default class extends React.Component {
     //   cardPlayersObj
     // --------------------------------------------------
     
-    const cardPlayersObj = lodashGet(stores, ['data', 'cardPlayersObj', _id], {});
+    const cardPlayersObj = toJS(lodashGet(stores, ['data', 'cardPlayersObj', _id], {}));
     
     
     // --------------------------------------------------
@@ -184,7 +186,7 @@ export default class extends React.Component {
       return null;
     }
     
-    
+
     
     
     // --------------------------------------------------
@@ -218,8 +220,24 @@ export default class extends React.Component {
     const name = lodashGet(cardPlayersObj, ['nameObj', 'value'], '');
     const status = lodashGet(cardPlayersObj, ['statusObj', 'value'], '');
     const comment = lodashGet(cardPlayersObj, ['commentObj', 'value'], '');
-    const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
     
+    // const thumbnailArr = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr'.slice()], []);
+    // const thumbnailSrc = lodashGet(thumbnailArr, [0, 'src'], '');
+    
+    
+    
+    // console.log(`\n---------- toJS(cardPlayersObj) ----------\n`);
+    // console.log(toJS(cardPlayersObj));
+    // console.dir(toJS(cardPlayersObj));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- thumbnailArr ----------\n`);
+    // console.log(thumbnailArr);
+    // console.dir(thumbnailArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
+    // return null;
     const level = lodashGet(cardPlayersObj, ['usersObj', 'level'], 0);
     const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
     const playerID = lodashGet(cardPlayersObj, ['usersObj', 'playerID'], '');

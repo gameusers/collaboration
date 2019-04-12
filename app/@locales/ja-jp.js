@@ -133,6 +133,9 @@ const ja_JP = {
   'I6k9-tUpp': 'メールアドレスを入力してください',
   '5O4K1an7k': '正しいメールアドレスではありません',
   
+  // /app/@database/users/validations/email-server.js
+  '5H8rr53kE': '入力したメールアドレスは利用できません',
+  
   
   // '': '',
 };

@@ -24,6 +24,8 @@ const upload = multer({ dest: 'static/' });
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+const shortid = require('shortid');
+const moment = require('moment');
 
 
 // ---------------------------------------------
@@ -42,9 +44,10 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 
 const { validation_id } = require('../../@validations/_id');
 
+const { validationUsersLoginID } = require('./validations/login-id');
 const { validationUsersLoginIDServer } = require('./validations/login-id-server');
 const { validationUsersLoginPassword } = require('./validations/login-password');
-const { validationUsersEmail } = require('./validations/email');
+const { validationUsersEmailServer } = require('./validations/email-server');
 
 
 // ---------------------------------------------
@@ -250,6 +253,11 @@ router.post('/login', upload.none(), (req, res, next) => {
     } catch (errorObj) {
       
       
+      console.log(`\n---------- errorObj ----------\n`);
+      console.dir(errorObj);
+      console.log(`\n-----------------------------------\n`);
+      
+      
       // ---------------------------------------------
       //   Error Object
       // ---------------------------------------------
@@ -389,15 +397,6 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
@@ -435,13 +434,13 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     // await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
     
     
+    
+    
     // --------------------------------------------------
     //   パスワードハッシュ化
     // --------------------------------------------------
     
-    // ストレッチング回数
-    const saltRounds = 10;
-    const hashedPassword = bcrypt.hashSync(loginPassword, saltRounds);
+    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
     
     
     // --------------------------------------------------
@@ -452,11 +451,10 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
     
     
+    
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
-    
-    // let validationObj = {};
     
     const val = async (func, argumentsObj, name) => {
       
@@ -484,44 +482,164 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   Login ID
     // --------------------------------------------------
     
+    // await val(validationUsersLoginIDServer, { value: loginID, usersLogin_id: 'jun-deE4J' }, 'Login ID');
+    // await val(validationUsersEmailServer, { value: email, usersLogin_id: 'jun-deE4J', encryptedEmail }, 'E-Mail');
+    
     await val(validationUsersLoginIDServer, { value: loginID }, 'Login ID');
     val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
-    val(validationUsersEmail, { value: email }, 'E-Mail');
+    await val(validationUsersEmailServer, { value: email, encryptedEmail }, 'E-Mail');
     
     
     // --------------------------------------------------
-    //   Model / Users / Insert For Create Account
+    //   Insert For Create Account
     // --------------------------------------------------
     
-    // const loginID = 'M3m77k5z6';
-    // const loginPassword = 'LRTwFXT13';
-    // const email = 'test@test.com';
+    const ISO8601 = moment().toISOString();
+    const users_id = shortid.generate();
+    const playerID = shortid.generate();
     
+    const usersSaveArr = [
+      {
+        _id: users_id,
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
+        level: 1,
+        playerID,
+        loginID,
+        loginPassword: hashedPassword,
+        email: encryptedEmail,
+        country: 'JP',
+        followArr: [],
+        followCount: 0,
+        followedArr: [],
+        followedCount: 0,
+        role: 'User'
+      },
+    ];
     
-    returnObj = await ModelUsers.insertForCreateAccount({ loginID, loginPassword, email });
+    const cardPlayersSaveArr = [
+      {
+        _id: shortid.generate(),
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id,
+        language: 'ja',
+        nameObj: {
+          value: 'Name',
+          search: true,
+        },
+        statusObj: {
+          value: 'Status',
+          search: true,
+        },
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
+        commentObj: {
+          value: '',
+          search: true,
+        },
+        ageObj: {
+          value: '',
+          alternativeText: '',
+          search: true,
+        },
+        sexObj: {
+          value: 'empty',
+          alternativeText: '',
+          search: true,
+        },
+        addressObj: {
+          value: '',
+          alternativeText: '',
+          search: true,
+        },
+        gamingExperienceObj: {
+          value: '',
+          alternativeText: '',
+          search: true,
+        },
+        hobbiesObj: {
+          valueArr: [],
+          search: true,
+        },
+        specialSkillsObj: {
+          valueArr: [],
+          search: true,
+        },
+        smartphoneObj: {
+          model: '',
+          comment: '',
+          search: true,
+        },
+        tabletObj: {
+          model: '',
+          comment: '',
+          search: true,
+        },
+        pcObj: {
+          model: '',
+          comment: '',
+          specsObj: {
+            os: '',
+            cpu: '',
+            cpuCooler: '',
+            motherboard: '',
+            memory: '',
+            storage: '',
+            graphicsCard: '',
+            opticalDrive: '',
+            powerSupply: '',
+            pcCase: '',
+            monitor: '',
+            mouse: '',
+            keyboard: ''
+          },
+          search: true,
+        },
+        hardwareActiveObj: {
+          valueArr: [],
+          search: true,
+        },
+        hardwareInactiveObj: {
+          valueArr: [],
+          search: true,
+        },
+        idArr: [],
+        activityTimeObj: {
+          valueArr: [],
+          search: true,
+        },
+        lookingForFriendsObj: {
+          value: true,
+          icon: 'emoji_u263a',
+          comment: '',
+          search: true,
+        },
+        voiceChatObj: {
+          value: true,
+          comment: '',
+          search: true,
+        },
+        linkArr: []
+      },
+    ];
+    
+    returnObj = await ModelUsers.insertForCreateAccount({ usersSaveArr, cardPlayersSaveArr });
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      loginID: {green ${loginID}}
-      loginPassword: {green ${loginPassword}}
-      email: {green ${email}}
-      hashedPassword: {green ${hashedPassword}}
-      encryptedEmail: {green ${encryptedEmail}}
-    `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   ----- validation_idObj -----\n
-    //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    // console.log(chalk`
+    //   loginID: {green ${loginID}}
+    //   loginPassword: {green ${loginPassword}}
+    //   email: {green ${email}}
+    //   hashedPassword: {green ${hashedPassword}}
+    //   encryptedEmail: {green ${encryptedEmail}}
     // `);
     
     console.log(`

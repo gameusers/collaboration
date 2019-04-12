@@ -156,7 +156,7 @@ class Store {
           // ---------------------------------------------
           
           const resultObj = await fetchWrapper({
-            urlApi: `${storeData.urlApi}/v1/card-players/find-one-by-id`,
+            urlApi: `${process.env.URL_API}/v1/card-players/find-one-by-id`,
             methodType: 'POST',
             formData: formData
           });
@@ -255,7 +255,7 @@ class Store {
           // ---------------------------------------------
           
           const resultObj = await fetchWrapper({
-            urlApi: `${storeData.urlApi}/v1/card-games/find-one-by-id`,
+            urlApi: `${process.env.URL_API}/v1/card-games/find-one-by-id`,
             methodType: 'POST',
             formData: formData
           });
@@ -397,7 +397,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/users/follow`,
+        urlApi: `${process.env.URL_API}/v1/users/follow`,
         methodType: 'POST',
         formData: formData
       });
@@ -659,7 +659,7 @@ class Store {
         // ---------------------------------------------
         
         const resultObj = await fetchWrapper({
-          urlApi: `${storeData.urlApi}/v1/card-players/find-one-by-id-for-edit-form`,
+          urlApi: `${process.env.URL_API}/v1/card-players/find-one-by-id-for-edit-form`,
           methodType: 'POST',
           formData: formData
         });
@@ -1098,7 +1098,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
+        urlApi: `${process.env.URL_API}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
         methodType: 'POST',
         formData: formData
       });
@@ -1317,7 +1317,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
+        urlApi: `${process.env.URL_API}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
         methodType: 'POST',
         formData: formData
       });
@@ -1572,7 +1572,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/card-players/update`,
+        urlApi: `${process.env.URL_API}/v1/card-players/update`,
         methodType: 'POST',
         formData: formData
       });

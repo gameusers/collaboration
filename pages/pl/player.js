@@ -318,8 +318,8 @@ class Component extends React.Component {
         componentCardsArr.push(
           <CardPlayer
             _id={valueObj.cardPlayers_id}
-            cardGames_id="TzjNMDQyl"
-            showCardGameButton={true}
+            // cardGames_id="TzjNMDQyl"
+            // showCardGameButton={true}
             showFollow={true}
             key={index}
           />

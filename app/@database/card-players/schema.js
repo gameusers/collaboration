@@ -57,23 +57,6 @@ const schema = mongoose.Schema({
       },
     ],
   },
-  // thumbnail: { type: Boolean, required: true },
-  // imageVideoArr: [
-  //   {
-  //     _id: { type: String, required: true },
-  //     type: { type: String, enum: ['image', 'video'], required: true },
-  //     caption: String,
-  //     srcSetArr: [
-  //       {
-  //         _id: { type: String, required: true },
-  //         src: { type: String, required: true },
-  //         w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
-  //         width: { type: Number, required: true },
-  //         height: { type: Number, required: true },
-  //       }
-  //     ],
-  //   },
-  // ],
   commentObj: {
     value: String,
     search: { type: Boolean, required: true },
@@ -84,7 +67,7 @@ const schema = mongoose.Schema({
     search: { type: Boolean, required: true },
   },
   sexObj: {
-    value: { type: String, enum: ['male', 'female'], required: true },
+    value: { type: String, enum: ['empty', 'male', 'female'], required: true },
     alternativeText: String,
     search: { type: Boolean, required: true },
   },
@@ -145,17 +128,6 @@ const schema = mongoose.Schema({
     search: { type: Boolean, required: true },
   },
   idArr: [String],
-  // idArr: [
-  //   {
-  //     _id: { type: String, required: true },
-  //     ids_id: { type: String, required: true },
-  //     // type: { type: String, enum: ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Other'], required: true },
-  //     // label: String,
-  //     // value: { type: String, required: true },
-  //     // publicSetting: { type: Number, min: 1, max: 5 },
-  //     // search: { type: Boolean, required: true },
-  //   },
-  // ],
   activityTimeObj: {
     valueArr: [
       {

@@ -152,7 +152,7 @@ class Store {
         // ---------------------------------------------
         
         const resultObj = await fetchWrapper({
-          urlApi: `${storeData.urlApi}/v1/ids/find-by-users-id-for-form`,
+          urlApi: `${process.env.URL_API}/v1/ids/find-by-users-id-for-form`,
           methodType: 'POST',
           formData: formData
         });
@@ -492,7 +492,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/ids/upsert`,
+        urlApi: `${process.env.URL_API}/v1/ids/upsert`,
         methodType: 'POST',
         formData: formData
       });
@@ -675,7 +675,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/ids/delete`,
+        urlApi: `${process.env.URL_API}/v1/ids/delete`,
         methodType: 'POST',
         formData: formData
       });
@@ -848,7 +848,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${storeData.urlApi}/v1/ids/upsert`,
+        urlApi: `${process.env.URL_API}/v1/ids/upsert`,
         methodType: 'POST',
         formData: formData
       });

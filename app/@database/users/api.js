@@ -26,6 +26,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
 const moment = require('moment');
+// const FormData = require('form-data');
+// const lodashGet = require('lodash/get');
 
 
 // ---------------------------------------------
@@ -36,6 +38,7 @@ const { verifyCsrfToken } = require('../../@modules/csrf');
 const { verifyRecaptcha } = require('../../@modules/recaptcha');
 const { encrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
+// const { fetchWrapper } = require('../../@modules/fetch');
 
 
 // ---------------------------------------------
@@ -426,14 +429,12 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     const { loginID, loginPassword, email, response } = req.body;
     
     
-    // // ---------------------------------------------
-    // //   CSRF & reCAPTCHA
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   CSRF & reCAPTCHA
+    // ---------------------------------------------
     
-    // verifyCsrfToken(req, res);
-    // await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
-    
-    
+    verifyCsrfToken(req, res);
+    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
     
     
     // --------------------------------------------------
@@ -450,8 +451,6 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     let encryptedEmail = email ? encrypt(email) : '';
     
     
-    
-    
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
@@ -461,10 +460,10 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
       const validationObj = await func(argumentsObj);
       
       
-      const title = name ? `${name} / ` : '';
-      console.log(`\n---------- ${title}validationObj ----------\n`);
-      console.dir(validationObj);
-      console.log(`\n-----------------------------------\n`);
+      // const title = name ? `${name} / ` : '';
+      // console.log(`\n---------- ${title}validationObj ----------\n`);
+      // console.dir(validationObj);
+      // console.log(`\n-----------------------------------\n`);
       
       
       if (validationObj.error) {
@@ -627,7 +626,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
       },
     ];
     
-    returnObj = await ModelUsers.insertForCreateAccount({ usersSaveArr, cardPlayersSaveArr });
+    await ModelUsers.insertForCreateAccount({ usersSaveArr, cardPlayersSaveArr });
     
     
     // --------------------------------------------------
@@ -642,11 +641,11 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   encryptedEmail: {green ${encryptedEmail}}
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------
@@ -657,11 +656,23 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
     
   } catch (errorObj) {
+    
     // console.log(`
     //   ----- errorObj -----\n
     //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    // console.log(errorObj);
+    
+    
+    // ---------------------------------------------
+    //   API Error
+    // ---------------------------------------------
+    
+    // errorArgumentsObj.messageCode = 'Error';
+    // errorArgumentsObj.errorCodeArr = [errorObj.message];
+    
     
     // ---------------------------------------------
     //   Error Object
@@ -681,173 +692,6 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
   }
   
 });
-
-// router.post('/create-account', upload.none(), async (req, res) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Logger
-//   // --------------------------------------------------
-  
-//   const loggerPath = "/app/login/index/api/login.js\nrouter.post('/create-account')\n";
-  
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   ログインチェック
-//     // --------------------------------------------------
-    
-//     if (req.isAuthenticated()) {
-//       // logger.log('error', `${loggerPath}Login Already`);
-//       throw new Error('Login Already');
-//     }
-    
-    
-//     // ---------------------------------------------
-//     //   CSRF & reCAPTCHA
-//     // ---------------------------------------------
-    
-//     verifyCsrfToken(req, res);
-//     await verifyRecaptcha(req, res);
-    
-    
-//     // --------------------------------------------------
-//     //   Model / Users / insert
-//     // --------------------------------------------------
-    
-//     await ModelUsers.insert(req.body);
-    
-    
-    
-    
-    
-//     // ---------------------------------------------
-//     //   Fetch - Login
-//     // ---------------------------------------------
-    
-//     let resultLoginObj = {};
-//     const urlApi = `${process.env.URL_API}/v1/login`;
-    
-    
-//     // ----------------------------------------
-//     //   Headers
-//     // ----------------------------------------
-    
-//     const headersObj = {
-//       'Accept': 'application/json',
-//       'Cookie': req.headers.cookie
-//     };
-    
-    
-//     // ----------------------------------------
-//     //   FormData
-//     // ----------------------------------------
-    
-//     const formDataObj = new FormData();
-    
-//     formDataObj.append('loginID', req.body.createAccountID);
-//     formDataObj.append('loginPassword', req.body.createAccountPassword);
-//     // formDataObj.append('g-recaptcha-response', this.loginRecaptchaResponse);
-//     // これをどうするか
-    
-
-    
-//     await fetch(urlApi, {
-//       method: 'POST',
-//       credentials: 'same-origin',
-//       mode: 'same-origin',
-//       headers: headersObj,
-//       body: formDataObj
-//     })
-//       .then((response) => {
-        
-//         if (!response.ok) {
-//           throw new Error('作成したアカウントでログインできませんでした。');
-//         }
-        
-//         return response.json();
-        
-//       })
-//       .then((jsonObj) => {
-        
-//         resultLoginObj = jsonObj;
-        
-//       });
-//       // .catch((error) => {
-        
-//       //   throw new Error();
-        
-//       // });
-    
-    
-//     // --------------------------------------------------
-//     //   Console 出力
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   urlApi: {green ${urlApi}}
-//     // `);
-    
-//     // console.log(`
-//     //   err: \n${util.inspect(err, { colors: true, depth: null })}
-//     // `);
-    
-//     // console.log(`
-//     //   user: \n${util.inspect(user, { colors: true, depth: null })}
-//     // `);
-    
-//     // console.log(`
-//     //   info: \n${util.inspect(info, { colors: true, depth: null })}
-//     // `);
-    
-//     console.log(`
-//       resultLoginObj: \n${util.inspect(resultLoginObj, { colors: true, depth: null })}
-//     `);
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Return Success JSON
-//     // --------------------------------------------------
-    
-//     return res.status(201).json(resultLoginObj);
-    
-    
-//   } catch (error) {
-    
-    
-//     // logger.log('error', `${loggerPath}${error}`);
-    
-    
-//     // --------------------------------------------------
-//     //   Set Error Message
-//     // --------------------------------------------------
-    
-//     let message = error.message;
-    
-//     if (process.env.NODE_ENV === 'production') {
-//       message = 'Create Account';
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Return Error JSON
-//     // --------------------------------------------------
-    
-//     return res.status(400).json({
-//       errorsArr: [
-//         {
-//           code: 0,
-//           message
-//         },
-//       ]
-//     });
-    
-//   }
-  
-// });
 
 
 

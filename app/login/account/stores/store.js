@@ -312,7 +312,7 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
+      let formData = new FormData();
       
       formData.append('loginID', createAccountLoginID);
       formData.append('loginPassword', createAccountLoginPassword);
@@ -324,18 +324,18 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
+      let resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v1/users/create-account`,
         methodType: 'POST',
         formData: formData
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -343,32 +343,75 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(intl.formatMessage({ id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '')}));
+        throw new Error(intl.formatMessage({ id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '') }));
+        
+        
+        // throw new Error(intl.formatMessage(
+        //   {
+        //     id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '')
+        //   },
+        //   {
+        //     code: lodashGet(resultObj, ['errorsArr', 0, 'code'], ''),
+        //   }
+        // ));
         // throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
       }
       
       
-      // // ---------------------------------------------
-      // //   Form Reset
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Form Reset
+      // ---------------------------------------------
       
-      // lodashSet(this.dataObj, 'loginID', '');
-      // lodashSet(this.dataObj, 'loginPassword', '');
+      lodashSet(this.dataObj, 'loginID', '');
+      lodashSet(this.dataObj, 'loginPassword', '');
+      lodashSet(this.dataObj, 'email', '');
       
       
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'アカウントを作成しました');
+      storeLayout.handleSnackbarOpen('success', 'アカウントを作成しました。プレイヤーページに移動します。');
       
       
-      // // ---------------------------------------------
-      // //   Page Transition
-      // // ---------------------------------------------
       
-      // const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
-      // window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      formData = new FormData();
+      
+      formData.append('loginID', createAccountLoginID);
+      formData.append('loginPassword', createAccountLoginPassword);
+      formData.append('response', recaptchaResponse);
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/users/login`,
+        methodType: 'POST',
+        formData: formData,
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      // ---------------------------------------------
+      //   Page Transition
+      // ---------------------------------------------
+      
+      const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
+      window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
       
       
     } catch (errorObj) {
@@ -396,6 +439,7 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
+      // console.log('finally');
       
       
     }

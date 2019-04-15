@@ -851,7 +851,8 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     // --------------------------------------------------
     
     await SchemaUsers.create(usersSaveArr, { session: session });
-    // // throw new Error();
+    // throw new Error('Dy16VjjQL');
+    // throw new Error();
     await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
     
     
@@ -860,18 +861,10 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     // --------------------------------------------------
     
     await session.commitTransaction(); // コミット
-    console.log('--------コミット-----------');
+    // console.log('--------コミット-----------');
     
     session.endSession();
     
-    
-    
-    // // --------------------------------------------------
-    // //   Model / Users / データ取得
-    // // --------------------------------------------------
-    
-    // const conditionObj = { _id: { $in: [usersLogin_id, users_id]} };
-    // returnObj.usersObj = await findFormatted(conditionObj, usersLogin_id);
     
     
     
@@ -909,11 +902,11 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     
   } catch (errorObj) {
     
-    console.log(`
-      ----- errorObj -----\n
-      ${util.inspect(errorObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -921,7 +914,7 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     // --------------------------------------------------
     
     await session.abortTransaction();
-    console.log('--------ロールバック-----------');
+    // console.log('--------ロールバック-----------');
     
     session.endSession();
     
@@ -929,165 +922,6 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     throw errorObj;
     
   }
-  
-};
-
-
-
-
-/**
- * 挿入する
- * @param {Object} reqBody
- * @return {Object} playerIdの入ったオブジェクト
- */
-const insertForCreateAccount2 = async (reqBody) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Set Variables
-    // --------------------------------------------------
-    
-    const { createAccountId, createAccountPassword, createAccountEmail } = reqBody;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationLoginIdObj = validationLoginId(createAccountId);
-    const validationLoginPasswordObj = validationLoginPassword(createAccountPassword, createAccountId);
-    const validationEmailObj = validationEmail(createAccountEmail);
-    
-    if (
-      validationLoginIdObj.error ||
-      validationLoginPasswordObj.error ||
-      validationEmailObj.error
-    ) {
-      throw new Error('Validation');
-    }
-    
-    
-    
-    // --------------------------------------------------
-    //   パスワードハッシュ化
-    // --------------------------------------------------
-    
-    // ストレッチング回数
-    const saltRounds = 10;
-    const passwordHash = bcrypt.hashSync(createAccountPassword, saltRounds);
-    
-    
-    
-    // --------------------------------------------------
-    //   E-Mail 暗号化
-    // --------------------------------------------------
-    
-    let encryptedEmail = '';
-    
-    if (createAccountEmail) {
-      encryptedEmail = encrypt(createAccountEmail);
-    }
-    
-    
-    
-    // --------------------------------------------------
-    //   Save Object
-    // --------------------------------------------------
-    
-    const _id = shortid.generate();
-    const playerId = shortid.generate();
-    
-    const saveObj = {
-      _id,
-      loginId: createAccountId,
-      loginPassword: passwordHash,
-      email: encryptedEmail,
-      name: '',
-      status: '',
-      playerId,
-      country: 'JP',
-      // level: 'AAA'
-    };
-    
-    
-    
-    // --------------------------------------------------
-    //   Insert
-    // --------------------------------------------------
-    
-    // const docArr = await Model.create(saveObj);
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   createAccountId: {red ${createAccountId}}
-    //   createAccountPassword: {green ${createAccountPassword}}
-    //   createAccountEmail: {green ${createAccountEmail}}
-    //   passwordHash: {green ${passwordHash}}
-    //   encryptedEmail: {green ${encryptedEmail}}
-    // `);
-    
-    // console.log(`
-    //   reqBody: \n${util.inspect(reqBody, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   validationLoginIdObj: \n${util.inspect(validationLoginIdObj, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   validationLoginPasswordObj: \n${util.inspect(validationLoginPasswordObj, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   validationEmailObj: \n${util.inspect(validationEmailObj, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   saveObj: \n${util.inspect(saveObj, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   docArr: \n${util.inspect(docArr, { colors: true, depth: null })}
-    // `);
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    // if (playerId in docArr) {
-    //   returnObj.playerId = docArr.playerId;
-    // }
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
   
 };
 

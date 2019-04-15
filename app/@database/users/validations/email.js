@@ -78,7 +78,7 @@ const validationUsersEmail = ({ required = false, value }) => {
     }
     
     // メールアドレスチェック
-    if (!validator.isEmail(data)) {
+    if (!validator.isEmail(data, { allow_utf8_local_part: false })) {
       messageCodeArr.unshift('5O4K1an7k');
       resultObj.errorCodeArr.push('M4fBF4b4P');
     }

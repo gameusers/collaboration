@@ -15,7 +15,7 @@ const ja_JP = {
   // ---------------------------------------------
   
   // 共通
-  'Error': 'Error',
+  'Error': 'Error Code: { code }',
   'qnWsuPcrJ': 'その他のエラー',
   
   'cFbXmuFVh': '入力してください',

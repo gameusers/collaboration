@@ -43,7 +43,7 @@ const schema = mongoose.Schema({
           {
             _id: { type: String, required: true },
             src: { type: String, required: true },
-            w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
+            w: { type: String, enum: ['320w', '480w', '640w', '800w', '960w', '1120w', '1280w', '1440w', '1600w', '1760w', '1920w', 'source'], required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
           }

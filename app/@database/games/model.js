@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -18,10 +18,180 @@ const Model = require('./schema');
 
 
 
-
+// 320 480 640 800 960 1120 1280 1440 1600 1760 1920
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
+
+/**
+ * 取得する / ヒーローイメージ用データ
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @return {Array} 取得データ
+ */
+const findForHeroImage = async ({ language, country }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    let resultArr = await Model.aggregate([
+      
+      
+      {
+        $match : { 'imagesAndVideosObj.mainArr._id': { $exists: true, $ne: null } }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: { gamesHardwareID: '$hardwareArr.hardwareID' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$hardwareID', '$$gamesHardwareID'] }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'game-genres',
+            let: { gamesGenreArr: '$genreArr' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$genreID', '$$gamesGenreArr'] }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  genreID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'gameGenresArr'
+          }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'developers-publishers',
+            let: {
+              gamesPublisherID: '$hardwareArr.publisherID',
+              gamesDeveloperID: '$hardwareArr.developerID',
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $or:
+                    [
+                      { $and:
+                        [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
+                        ]
+                      },
+                      { $and:
+                        [
+                          { $eq: ['$language', language] },
+                          { $eq: ['$country', country] },
+                          { $in: ['$developerPublisherID', '$$gamesDeveloperID'] }
+                        ]
+                      }
+                    ]
+                  },
+                  // { $and:
+                  //   [
+                  //     { $eq: ['$language', language] },
+                  //     { $eq: ['$country', country] },
+                  //     { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
+                  //   ]
+                  // },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  developerPublisherID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'developersPublishersArr'
+          }
+      },
+      
+      
+      {
+        $project: {
+          // __v: 0,
+          urlID: 1,
+          imagesAndVideosObj: 1,
+          name: 1,
+          subtitle: 1,
+          hardwareArr: 1,
+          linkArr: 1,
+          hardwaresArr: 1,
+          gameGenresArr: 1,
+          developersPublishersArr: 1,
+        }
+      },
+    ]).exec();
+    
+    
+    return resultArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
 
 /**
  * 取得する / サジェスト用のデータ
@@ -232,6 +402,7 @@ const deleteMany = async ({ conditionObj }) => {
 // --------------------------------------------------
 
 module.exports = {
+  findForHeroImage,
   findBySearchKeywordsArrForSuggestion,
   find,
   count,

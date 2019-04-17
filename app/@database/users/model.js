@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -14,9 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
-const moment = require('moment');
-const bcrypt = require('bcryptjs');
 const lodashGet = require('lodash/get');
 
 
@@ -29,34 +26,10 @@ const SchemaCardPlayers = require('../card-players/schema');
 
 
 // ---------------------------------------------
-//   Validation
-// ---------------------------------------------
-
-const validationLoginId = require('./validations/login-id');
-const { validationLoginPassword } = require('./validations/login-password');
-const validationEmail = require('./validations/email');
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-const { encrypt }  = require('../../@modules/crypto');
-
-
-// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
 const { formatImagesAndVideosArr } = require('../../@format/image');
-
-
-// ---------------------------------------------
-//   Logger
-// ---------------------------------------------
-
-const logger = require('../../@modules/logger');
-
 
 
 

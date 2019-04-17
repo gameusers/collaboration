@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -30,13 +30,6 @@ const ThumbnailImg = styled.img`
   border-radius: 6px;
   width: 48px;
 `;
-
-// const ThumbnailSmallImg = styled.img`
-//   border-radius: 6px;
-//   width: 38px;
-//   // margin: 3px 0 0 0;
-// `;
-
 
 
 

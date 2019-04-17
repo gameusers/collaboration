@@ -7,7 +7,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -27,7 +27,7 @@ const upload = multer({ dest: 'static/' });
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../@modules/csrf');
+// const { verifyCsrfToken } = require('../../../@modules/csrf');
 const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
@@ -42,9 +42,9 @@ const { validationUsersPlayerID } = require('../../../@database/users/validation
 //   Schema / Model
 // ---------------------------------------------
 
+const ModelGames = require('../../../@database/games/model');
 const ModelUsers = require('../../../@database/users/model');
 const ModelCardPlayers = require('../../../@database/card-players/model');
-// const ModelCardGames = require('../../../@database/card-games/model');
 
 
 // ---------------------------------------------
@@ -131,6 +131,23 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       errorArgumentsObj.errorCodeArr = ['chDdoM5Hv'];
       throw new Error();
     }
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Games
+    //   ヒーローイメージ用
+    // --------------------------------------------------
+    
+    const gamesObj = await ModelGames.findForHeroImage({
+      language: localeObj.language,
+      country: localeObj.country,
+    });
+    
+    console.log(`
+      ----- gamesObj -----\n
+      ${util.inspect(gamesObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -289,7 +306,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
     
     
     // --------------------------------------------------

@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -58,8 +58,6 @@ import IconEject from '@material-ui/icons/Eject';
 
 import IconLogin from '@material-ui/icons/ExitToApp';
 
-// LabelImportant
-// SlowMotionVideo
 
 // ---------------------------------------------
 //   Components
@@ -256,11 +254,16 @@ export default class extends React.Component {
     //   usersLoginObj
     // --------------------------------------------------
     
-    const thumbnailSrc = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'src'], '');
+    const thumbnailSrc = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
     const thumbnailSrcSet = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'srcSet'], '');
     const playerID = lodashGet(stores, ['data', 'usersLoginObj', 'playerID'], '');
     
     
+    // console.log(chalk`
+    //   thumbnailSrc: {green ${thumbnailSrc}}
+    //   thumbnailSrcSet: {green ${thumbnailSrcSet}}
+    //   playerID: {green ${playerID}}
+    // `);
     
     // console.log(`
     //   ----- stores.data.usersLoginObj -----\n
@@ -313,7 +316,7 @@ export default class extends React.Component {
           
           
           {/* サムネイル */}
-          { thumbnailSrc ? (
+          { playerID ? (
             <ThumbnailIconButton
               onClick={stores.layout.handleHeaderLoginMenuOpen}
             >

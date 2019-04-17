@@ -2,19 +2,47 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import styled from 'styled-components';
 // import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
 import IconKeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 
-import LinkIcons from '../../components/link-icons';
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import LinkIcons from '../link-icons';
+
 
 
 
@@ -157,11 +185,20 @@ const ImageThumbnail = styled.img`
 @inject('stores') @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
-
-
+  
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
     
     
@@ -170,7 +207,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores } = this.props;
-    
     
     
     // --------------------------------------------------
@@ -202,6 +238,8 @@ export default class extends React.Component {
         </DataKeyboardArrowDownIconButton>
       </DataBoxClosed>
     );
+    
+    
     
     
     // --------------------------------------------------

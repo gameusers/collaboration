@@ -44,6 +44,7 @@ const ModelCardPlayers = require('../@database/card-players/model');
 const ModelCardGames = require('../@database/card-games/model');
 const ModelGameGenres = require('../@database/game-genres/model');
 const ModelHardwares = require('../@database/hardwares/model');
+const ModelDevelopersPublishers = require('../@database/developers-publishers/model');
 
 
 // ---------------------------------------------
@@ -232,8 +233,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
               caption: '',
               srcSetArr: [
                 {
-                  _id: 'BWl9SejbC',
-                  src: '/static/img/games/w_zkqpr3R/rykFm6Vfg/320w.jpg',
+                  _id: '6Wh-bORu5',
+                  src: '/static/img/game/w_zkqpr3R/thumbnail/rykFm6Vfg/320w.jpg',
                   w: '320w',
                   width: 256,
                   height: 256,
@@ -241,10 +242,93 @@ router.post('/db', upload.none(), async (req, res, next) => {
               ],
             },
           ],
-          mainArr: [],
+          mainArr: [
+            {
+              _id: 'w_xujtkWJ',
+              type: 'image',
+              caption: '',
+              srcSetArr: [
+                {
+                  _id: 'TJV1VSY3b',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 212,
+                },
+                {
+                  _id: 's3Xs7RYbB',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 318,
+                },
+                {
+                  _id: 'ZWEnlME8G',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 424,
+                },
+                {
+                  _id: '5dlieCGRx',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 530,
+                },
+                {
+                  _id: 'HnXYejt-g',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/960w.jpg',
+                  w: '960w',
+                  width: 960,
+                  height: 636,
+                },
+                {
+                  _id: '8MEIYDuvc',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/1120w.jpg',
+                  w: '1120w',
+                  width: 1120,
+                  height: 741,
+                },
+                {
+                  _id: 'd9vKCEvKE',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/1280w.jpg',
+                  w: '1280w',
+                  width: 1280,
+                  height: 847,
+                },
+                {
+                  _id: '0QhbD9Ckz',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/1440w.jpg',
+                  w: '1440w',
+                  width: 1440,
+                  height: 953,
+                },
+                {
+                  _id: 'A5malK_QA',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/1600w.jpg',
+                  w: '1600w',
+                  width: 1600,
+                  height: 1059,
+                },
+                {
+                  _id: 'F1a-fC6Mv',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/1760w.jpg',
+                  w: '1760w',
+                  width: 1760,
+                  height: 1165,
+                },
+                {
+                  _id: 'F1a-fC6Mv',
+                  src: '/static/img/game/w_zkqpr3R/main/w_xujtkWJ/1920w.jpg',
+                  w: '1920w',
+                  width: 1920,
+                  height: 1271,
+                },
+              ],
+            },
+          ],
         },
-        // thumbnail: true,
-        // imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',
         searchKeywordsArr: [
@@ -265,8 +349,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseData: '2016-06-14T00:00:00.000Z',
             playersMin: 1,
             playersMax: 5,
-            publisherID: '',
-            developerID: '',
+            publisherID: 'YtKRcK3Ar',
+            developerID: 'YtKRcK3Ar',
           }
         ],
         linkArr: [
@@ -316,8 +400,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           thumbnailArr: [],
           mainArr: [],
         },
-        // thumbnail: false,
-        // imageVideoArr: [],
         name: 'Dead by Daylight',
         subtitle: '',
         searchKeywordsArr: [
@@ -336,8 +418,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseData: '2016-06-14T00:00:00.000Z',
             playersMin: 1,
             playersMax: 5,
-            publisherID: '',
-            developerID: '',
+            publisherID: 'YtKRcK3Ar',
+            developerID: 'YtKRcK3Ar',
           }
         ],
         linkArr: [
@@ -363,8 +445,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           thumbnailArr: [],
           mainArr: [],
         },
-        // thumbnail: false,
-        // imageVideoArr: [],
         name: '大乱闘スマッシュブラザーズ SPECIAL',
         subtitle: '',
         searchKeywordsArr: [
@@ -385,8 +465,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseData: '2018-12-07T00:00:00.000Z',
             playersMin: 1,
             playersMax: 8,
-            publisherID: '',
-            developerID: '',
+            publisherID: 'mcMOetOTh',
+            developerID: 'mcMOetOTh',
           }
         ],
         linkArr: [
@@ -418,8 +498,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
           thumbnailArr: [],
           mainArr: [],
         },
-        // thumbnail: false,
-        // imageVideoArr: [],
         name: 'Super Smash Bros. Ultimate',
         subtitle: '',
         searchKeywordsArr: [
@@ -437,8 +515,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseData: '2018-12-07T00:00:00.000Z',
             playersMin: 1,
             playersMax: 8,
-            publisherID: '',
-            developerID: '',
+            publisherID: 'mcMOetOTh',
+            developerID: 'mcMOetOTh',
           }
         ],
         linkArr: [
@@ -475,7 +553,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
               srcSetArr: [
                 {
                   _id: 'BWl9SejbC',
-                  src: '/static/img/games/PdWVRzkoW/b0gqRt4fd/320w.jpg',
+                  src: '/static/img/game/PdWVRzkoW/thumbnail/b0gqRt4fd/320w.jpg',
                   w: '320w',
                   width: 256,
                   height: 256,
@@ -483,10 +561,93 @@ router.post('/db', upload.none(), async (req, res, next) => {
               ],
             },
           ],
-          mainArr: [],
+          mainArr: [
+            {
+              _id: 'DnLgLJ003',
+              type: 'image',
+              caption: '',
+              srcSetArr: [
+                {
+                  _id: '-rv2yOt4k',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 170,
+                },
+                {
+                  _id: 'qDJbmdGnR',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 255,
+                },
+                {
+                  _id: 'kGr_fOL6a',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 339,
+                },
+                {
+                  _id: 'ZS6Jl4xoi',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 424,
+                },
+                {
+                  _id: '_H1fNemtu',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/960w.jpg',
+                  w: '960w',
+                  width: 960,
+                  height: 509,
+                },
+                {
+                  _id: 'fL37SuBzp',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/1120w.jpg',
+                  w: '1120w',
+                  width: 1120,
+                  height: 594,
+                },
+                {
+                  _id: 'B7MUrUXJk',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/1280w.jpg',
+                  w: '1280w',
+                  width: 1280,
+                  height: 679,
+                },
+                {
+                  _id: 'DN5-HwNOC',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/1440w.jpg',
+                  w: '1440w',
+                  width: 1440,
+                  height: 764,
+                },
+                {
+                  _id: 'IZJv-42u1',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/1600w.jpg',
+                  w: '1600w',
+                  width: 1600,
+                  height: 848,
+                },
+                {
+                  _id: 'waKbKhcEt',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/1760w.jpg',
+                  w: '1760w',
+                  width: 1760,
+                  height: 933,
+                },
+                {
+                  _id: '_7cXbeut3',
+                  src: '/static/img/game/PdWVRzkoW/main/DnLgLJ003/1920w.jpg',
+                  w: '1920w',
+                  width: 1920,
+                  height: 1018,
+                },
+              ],
+            },
+          ],
         },
-        // thumbnail: true,
-        // imageVideoArr: [],
         name: 'ドラゴンクエストビルダーズ2',
         subtitle: '',
         searchKeywordsArr: [
@@ -506,8 +667,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
             releaseData: '2018-12-20T00:00:00.000Z',
             playersMin: 1,
             playersMax: 4,
-            publisherID: '',
-            developerID: '',
+            publisherID: 'zXOweU_0y',
+            developerID: 'zXOweU_0y',
           }
         ],
         linkArr: [
@@ -1624,6 +1785,59 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     await ModelHardwares.deleteMany({});
     returnObj = await ModelHardwares.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Developers Publishers
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Arr
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'rwi-zvOuc',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        developerPublisherID: 'YtKRcK3Ar',
+        urlID: 'Behaviour-Interactive',
+        name: 'Behaviour Interactive'
+      },
+      {
+        _id: 'LHHV6Xh78',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        developerPublisherID: 'zXOweU_0y',
+        urlID: 'Square-Enix',
+        name: 'スクウェア・エニックス'
+      },
+      {
+        _id: 'e4gmri5Ro',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        language: 'ja',
+        country: 'JP',
+        developerPublisherID: 'mcMOetOTh',
+        urlID: 'Nintendo',
+        name: '任天堂'
+      },
+    ]
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    await ModelDevelopersPublishers.deleteMany({});
+    returnObj = await ModelDevelopersPublishers.insertMany({ saveArr });
+    
     
     
     

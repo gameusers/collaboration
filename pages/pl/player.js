@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -84,10 +84,6 @@ const Container = styled.div`
     padding: 10px 0 18px 0;
   }
 `;
-
-// const CardBox = styled.div`
-//   margin: 20px 0 0 0;
-// `;
 
 
 

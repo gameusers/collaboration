@@ -7,7 +7,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -344,14 +344,41 @@ router.post('/db', upload.none(), async (req, res, next) => {
         genreTagArr: [],
         hardwareArr: [
           {
-            _id: 'pIcOj6-43',
-            hardwareID: 'TdK3Oc-yV',
-            releaseData: '2016-06-14T00:00:00.000Z',
+            _id: '9ePBexkQh',
+            hardwareID: 'P0UG-LHOQ',
+            releaseDate: '2016-06-14T00:00:00.000Z',
             playersMin: 1,
             playersMax: 5,
             publisherID: 'YtKRcK3Ar',
             developerID: 'YtKRcK3Ar',
-          }
+          },
+          {
+            _id: 'pIcOj6-43',
+            hardwareID: 'TdK3Oc-yV',
+            releaseDate: '2018-04-04T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 5,
+            publisherID: 'YtKRcK3Ar',
+            developerID: 'YtKRcK3Ar',
+          },
+          {
+            _id: '45jlnaOGB',
+            hardwareID: 'uPqoiXA_8',
+            releaseDate: '2017-06-23T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 5,
+            publisherID: 'YtKRcK3Ar',
+            developerID: 'YtKRcK3Ar',
+          },
+          {
+            _id: 'XEqwnquRs',
+            hardwareID: 'Zd_Ia4Hwm',
+            releaseDate: '2019-08-04T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 5,
+            publisherID: 'YtKRcK3Ar',
+            developerID: 'YtKRcK3Ar',
+          },
         ],
         linkArr: [
           {
@@ -415,7 +442,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: '7kDhzjxI9',
             hardwareID: 'TdK3Oc-yV',
-            releaseData: '2016-06-14T00:00:00.000Z',
+            releaseDate: '2016-06-14T00:00:00.000Z',
             playersMin: 1,
             playersMax: 5,
             publisherID: 'YtKRcK3Ar',
@@ -462,7 +489,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: '4q7tQG2I8',
             hardwareID: 'Zd_Ia4Hwm',
-            releaseData: '2018-12-07T00:00:00.000Z',
+            releaseDate: '2018-12-07T00:00:00.000Z',
             playersMin: 1,
             playersMax: 8,
             publisherID: 'mcMOetOTh',
@@ -512,7 +539,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: '4q7tQG2I8',
             hardwareID: 'Zd_Ia4Hwm',
-            releaseData: '2018-12-07T00:00:00.000Z',
+            releaseDate: '2018-12-07T00:00:00.000Z',
             playersMin: 1,
             playersMax: 8,
             publisherID: 'mcMOetOTh',
@@ -664,12 +691,21 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'loHJZngJ2',
             hardwareID: 'TdK3Oc-yV',
-            releaseData: '2018-12-20T00:00:00.000Z',
+            releaseDate: '2018-12-20T00:00:00.000Z',
             playersMin: 1,
             playersMax: 4,
             publisherID: 'zXOweU_0y',
             developerID: 'zXOweU_0y',
-          }
+          },
+          {
+            _id: 'N_O4r9Xfe',
+            hardwareID: 'Zd_Ia4Hwm',
+            releaseDate: '2017-12-20T00:00:00.000Z',
+            playersMin: 1,
+            playersMax: 4,
+            publisherID: 'zXOweU_0y',
+            developerID: 'zXOweU_0y',
+          },
         ],
         linkArr: [
           {

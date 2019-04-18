@@ -231,7 +231,7 @@ class Store {
   
   /**
    * メニューの位置を設定するために使用されるDOM要素
-   * @type {boolean}
+   * @type {string}
    */
   @observable headerLoginMenuAnchorEl = null;
   
@@ -245,10 +245,11 @@ class Store {
   
   /**
    * ログインメニューを開く
+   * @param {Object} eventObj - イベント
    */
   @action.bound
-  handleHeaderLoginMenuOpen(event) {
-    this.headerLoginMenuAnchorEl = event.currentTarget;
+  handleHeaderLoginMenuOpen(eventObj) {
+    this.headerLoginMenuAnchorEl = eventObj.currentTarget;
     this.headerLoginMenuOpen = true;
   };
   
@@ -269,17 +270,58 @@ class Store {
   //   Header - データ
   // ---------------------------------------------
   
+  /**
+   * データの開閉状態
+   * @type {boolean}
+   */
+  @observable headerDataOpen = true;
+  
+  
+  /**
+   * データを開く
+   */
+  @action.bound
+  handleHeaderDataOpen() {
+    this.headerDataOpen = true;
+  };
+  
+  
+  /**
+   * データを閉じる
+   */
+  @action.bound
+  handleHeaderDataClose() {
+    this.headerDataOpen = false;
+  };
+  
+  
+  
+  
+  /**
+   * データの開閉状態
+   * @type {boolean}
+   */
   @observable headerDataBoxOpen = false;
   
+  
+  /**
+   * データを開く
+   */
   @action.bound
   handleHeaderDataBoxOpen() {
     this.headerDataBoxOpen = true;
   };
   
+  
+  /**
+   * データを閉じる
+   */
   @action.bound
   handleHeaderDataBoxClose() {
     this.headerDataBoxOpen = false;
   };
+  
+  
   
   
   // ---------------------------------------------

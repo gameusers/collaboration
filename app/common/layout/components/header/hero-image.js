@@ -18,6 +18,8 @@ import React from 'react';
 import styled from 'styled-components';
 // import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+import moment from 'moment';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -25,8 +27,8 @@ import { inject, observer } from 'mobx-react';
 // ---------------------------------------------
 
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Button from '@material-ui/core/Button';
+// import Badge from '@material-ui/core/Badge';
+// import Button from '@material-ui/core/Button';
 
 
 // ---------------------------------------------
@@ -51,8 +53,26 @@ import LinkIcons from '../link-icons';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-let DataBox = null;
+// let DataBox = null;
 
+const DataBox = styled.div`
+  width: 280px;
+  border-radius: 8px;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  padding: 0 0 6px 0;
+  
+  @media screen and (max-width: 480px) {
+    position: static;
+    right: auto;
+    bottom: auto;
+    margin: 10px auto;
+  }
+`;
 
 const DataTitleBox = styled.div`
   display: flex;
@@ -182,7 +202,8 @@ const ImageThumbnail = styled.img`
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
   
   
@@ -213,10 +234,153 @@ export default class extends React.Component {
     //   Data
     // --------------------------------------------------
     
+    const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
+    
+    const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
+    
+    
+    // --------------------------------------------------
+    //   Hardware
+    // --------------------------------------------------
+    
+    const hardwareArr = lodashGet(stores, ['data', 'headerObj', 'hardwareArr'], []);
+    const hardwaresArr = lodashGet(stores, ['data', 'headerObj', 'hardwaresArr'], []);
+    
+    // 日付で並び替える
+    const hardwareSortedArr = hardwareArr.slice().sort((a, b) => {
+      
+      const date1 = new Date(a.releaseDate);
+      const date2 = new Date(b.releaseDate);
+      
+      return (date1 < date2) ? -1 : 1;
+      
+    });
+    
+    
+    const hardwareNameArr = [];
+    
+    // Loop
+    for (let valueObj of hardwareSortedArr.values()) {
+      
+      const resultObj = hardwaresArr.find((value2Obj) => {
+        return value2Obj.hardwareID === valueObj.hardwareID;
+      });
+      
+      if ('name' in resultObj) {
+        hardwareNameArr.push(resultObj.name);
+      }
+      
+    }
+    
+    const hardware = hardwareNameArr.join(', ');
+    
+    
+    // --------------------------------------------------
+    //   Genre
+    // --------------------------------------------------
+    
+    const genreArr = lodashGet(stores, ['data', 'headerObj', 'genreArr'], []);
+    const gameGenresArr = lodashGet(stores, ['data', 'headerObj', 'gameGenresArr'], []);
+    
+    const genreNameArr = [];
+    
+    // Loop
+    for (let value of genreArr.values()) {
+      
+      const resultObj = gameGenresArr.find((value2Obj) => {
+        return value2Obj.genreID === value;
+      });
+      
+      if ('name' in resultObj) {
+        genreNameArr.push(resultObj.name);
+      }
+      
+    }
+    
+    const genre = genreNameArr.join(', ');
+    
+    
+    // --------------------------------------------------
+    //   Players
+    // --------------------------------------------------
+    
+    const playersMin = lodashGet(hardwareSortedArr, [0, 'playersMin'], 1);
+    const playersMax = lodashGet(hardwareSortedArr, [0, 'playersMax'], 1);
+    const players = playersMin === playersMax ? `${playersMin}人` : `${playersMin}-${playersMax}人`;
+    
+    
+    // --------------------------------------------------
+    //   Release Date
+    // --------------------------------------------------
+    
+    const releaseData = lodashGet(hardwareSortedArr, [0, 'releaseDate'], '');
+    const formattedReleaseData = moment(releaseData).format('YYYY/MM/DD');
+    
+    
+    // --------------------------------------------------
+    //   Developer & Publisher
+    // --------------------------------------------------
+    
+    const developersPublishersArr = lodashGet(stores, ['data', 'headerObj', 'developersPublishersArr'], []);
+    const developerID = lodashGet(hardwareSortedArr, [0, 'developerID'], '');
+    let developer = '';
+    
+    // Loop
+    for (let valueObj of developersPublishersArr.values()) {
+      
+      if (valueObj.developerPublisherID === developerID) {
+        developer = valueObj.name;
+      }
+      
+    }
+    
+    
+    console.log(chalk`
+      headerDataOpen: {green ${headerDataOpen}}
+      name: {green ${name}}
+      hardware: {green ${hardware}}
+    `);
+    
+    // console.log(`\n---------- hardwareSortedArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(hardwareSortedArr)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`
+    //   ----- hardwareSortedArr -----\n
+    //   ${util.inspect(hardwareSortedArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    let componentData = '';
+    
+    if (headerDataOpen) {
+      
+      componentData = 
+        <DataBox>
+          <DataTitleBox>
+            <DataTitle>{name}</DataTitle>
+            <DataKeyboardArrowUpIconButton color="secondary" onClick={stores.layout.handleHeaderDataClose}>
+              <IconKeyboardArrowUp />
+            </DataKeyboardArrowUpIconButton>
+          </DataTitleBox>
+          <DataInfo>ハード | {hardware}</DataInfo>
+          <DataInfo>ジャンル | {genre}</DataInfo>
+          <DataInfo>プレイ人数 | {players}</DataInfo>
+          <DataInfo>発売日 | {formattedReleaseData}</DataInfo>
+          <DataInfo>開発 | {developer}</DataInfo>
+          <DataLink><LinkIcons linkArr={stores.layout.headerDataLinkArr} /></DataLink>
+        </DataBox>
+      ;
+      
+    }
+    
+    
+    
     const ComponentDataBoxOpen = () => (
       <DataBox>
         <DataTitleBox>
-          <DataTitle>{stores.layout.headerDataTitle}</DataTitle>
+          <DataTitle>{name}</DataTitle>
           <DataKeyboardArrowUpIconButton color="secondary" onClick={stores.layout.handleHeaderDataBoxClose}>
             <IconKeyboardArrowUp />
           </DataKeyboardArrowUpIconButton>
@@ -232,7 +396,7 @@ export default class extends React.Component {
     
     const ComponentDataBoxClosed = () => (
       <DataBoxClosed>
-        <DataTitleClosed>{stores.layout.headerDataTitle}</DataTitleClosed>
+        <DataTitleClosed>{name}</DataTitleClosed>
         <DataKeyboardArrowDownIconButton color="secondary" onClick={stores.layout.handleHeaderDataBoxOpen}>
           <IconKeyboardArrowDown />
         </DataKeyboardArrowDownIconButton>
@@ -269,35 +433,12 @@ export default class extends React.Component {
         }
       `;
       
-      DataBox = styled.div`
-        width: 280px;
-        border-radius: 8px;
-        background-color: #000;
-        background-color: rgba(0, 0, 0, 0.5);
-        color: #fff;
-        padding: 0 0 6px 0;
-        position: absolute;
-        right: 15px;
-        bottom: 15px;
-        
-        @media screen and (max-width: 480px) {
-          position: static;
-          margin: 10px auto;
-          right: auto;
-          bottom: auto;
-        }
-      `;
+      
       
       
       code = 
         <Container>
-          
-          { stores.layout.headerDataBoxOpen ? (
-            <ComponentDataBoxOpen />
-          ) : (
-            <ComponentDataBoxClosed />
-          )}
-          
+          {componentData}
         </Container>
       ;
       

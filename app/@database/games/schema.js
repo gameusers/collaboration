@@ -80,7 +80,7 @@ const schema = mongoose.Schema({
     {
       _id: { type: String, required: true },
       hardwareID: { type: String, required: true },
-      releaseData: Date,
+      releaseDate: Date,
       playersMin: { type: Number, required: true },
       playersMax: { type: Number, required: true },
       publisherID: String,

@@ -52,6 +52,11 @@ const findForHeroImage = async ({ language, country }) => {
       
       
       {
+        $sample: { size: 1 }
+      },
+      
+      
+      {
         $lookup:
           {
             from: 'hardwares',
@@ -140,13 +145,6 @@ const findForHeroImage = async ({ language, country }) => {
                       }
                     ]
                   },
-                  // { $and:
-                  //   [
-                  //     { $eq: ['$language', language] },
-                  //     { $eq: ['$country', country] },
-                  //     { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
-                  //   ]
-                  // },
                 }
               },
               { $project:
@@ -170,16 +168,19 @@ const findForHeroImage = async ({ language, country }) => {
           name: 1,
           subtitle: 1,
           hardwareArr: 1,
+          genreArr: 1,
           linkArr: 1,
           hardwaresArr: 1,
           gameGenresArr: 1,
           developersPublishersArr: 1,
         }
       },
+      
+      
     ]).exec();
     
     
-    return resultArr;
+    return resultArr[0];
     
     
   } catch (err) {

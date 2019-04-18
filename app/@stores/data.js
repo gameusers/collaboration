@@ -56,6 +56,29 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Header
+  // ---------------------------------------------
+  
+  /**
+   * ヘッダー情報を入れるオブジェクト
+   * @type {Object}
+   */
+  @observable headerObj = {};
+  
+  
+  /**
+   *ヘッダー情報オブジェクトを置き換える
+   * @param {Object} obj - 置き換えるオブジェクト
+   */
+  @action.bound
+  replaceHeaderObj(obj) {
+    this.headerObj = obj;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Login Users
   // ---------------------------------------------
   
@@ -67,8 +90,8 @@ class Store {
   
   
   /**
-   * ログインユーザー情報オブジェクトを更新する
-   * @param {Object} obj - 更新するオブジェクト
+   * ログインユーザー情報オブジェクトを置き換える
+   * @param {Object} obj - 置き換えるオブジェクト
    */
   @action.bound
   replaceUsersLoginObj(obj) {
@@ -87,12 +110,6 @@ class Store {
    * @type {Object}
    */
   @observable usersObj = {};
-  
-  
-  @action.bound
-  insertUsersObj(obj) {
-    this.usersObj = Object.assign({}, obj, this.usersObj);
-  };
   
   
   /**

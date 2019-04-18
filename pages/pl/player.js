@@ -129,17 +129,8 @@ class Component extends React.Component {
     const initialPropsObj = resultObj.data;
     
     
-    
-    
     // console.log(chalk`
     //   isServer: {green ${isServer}}
-    //   process.env.URL_API: {green ${process.env.URL_API}}
-    // `);
-    
-    // console.log(`
-    //   ----- req.user -----\n
-    //   ${util.inspect(req.user, { colors: true, depth: null })}\n
-    //   --------------------\n
     // `);
     
     // console.log(`
@@ -223,25 +214,25 @@ class Component extends React.Component {
         });
         
         this.stores.data.replaceLocaleObj(localeObj);
-        // console.log('replaceLocaleObj');
-        
-        
-        // console.log(`
-        //   ----- localeObj -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
         
       }
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Header
+      // --------------------------------------------------
+      
+      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
       
       // --------------------------------------------------
       //   Update Data - Login User
       // --------------------------------------------------
       
-      if ('usersLoginObj' in props.initialPropsObj) {
-        this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
-      }
+      this.stores.data.replaceUsersLoginObj(lodashGet(props, ['initialPropsObj', 'usersLoginObj'], {}));
+      // if ('usersLoginObj' in props.initialPropsObj) {
+      //   this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
+      // }
       
       
       // --------------------------------------------------

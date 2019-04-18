@@ -113,7 +113,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
   };
   
   let cardPlayersKeysArr = [];
-  // let cardGamesKeysArr = [];
   
   
   try {
@@ -135,17 +134,17 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     // --------------------------------------------------
     //   データ取得 / Games
-    //   ヒーローイメージ用
+    //   ヘッダーヒーローイメージ用
     // --------------------------------------------------
     
-    const gamesObj = await ModelGames.findForHeroImage({
+    returnObj.headerObj = await ModelGames.findForHeroImage({
       language: localeObj.language,
       country: localeObj.country,
     });
     
     console.log(`
-      ----- gamesObj -----\n
-      ${util.inspect(gamesObj, { colors: true, depth: null })}\n
+      ----- returnObj.headerObj -----\n
+      ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
       --------------------\n
     `);
     
@@ -173,12 +172,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
         playerID,
       }
     });
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -210,21 +203,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   データ取得 / Card Games
-    //   アクセスしたページ所有者のゲームカード情報
-    // --------------------------------------------------
-    
-    // const cardGamesObj = await ModelCardGames.find({
-    //   users_id,
-    //   language: localeObj.language,
-    //   country: localeObj.country,
-    //   usersLogin_id
-    // });
-    
-    // returnObj.cardGamesObj = cardGamesObj;
-    
-    
-    // --------------------------------------------------
     //   カードを一覧で表示するための配列を作成する
     // --------------------------------------------------
     
@@ -235,14 +213,6 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
         cardPlayers_id: cardPlayersKeysArr[0]
       });
     }
-    
-    // cardGamesKeysArr = Object.keys(cardGamesObj);
-    
-    // if (cardGamesKeysArr.length > 0) {
-    //   returnObj.cardsArr.push({
-    //     cardGames_id: cardGamesKeysArr[0]
-    //   });
-    // }
     
     
     // --------------------------------------------------

@@ -182,7 +182,12 @@ const LoginLinkBox = styled.div`
   flex-direction: row;
   color: #4000FF;
   cursor: pointer;
+  white-space: nowrap;
   margin: 0 16px 0 0;
+  
+  @media screen and (max-width: 480px) {
+    margin: 0 10px 0 0;
+  }
 `;
 
 const LoginLinkIcon = styled(IconLogin)`
@@ -223,11 +228,20 @@ const LoginMenuListItemText = styled(ListItemText)`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
-
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
     
     
@@ -258,6 +272,10 @@ export default class extends React.Component {
     const thumbnailSrcSet = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'srcSet'], '');
     const playerID = lodashGet(stores, ['data', 'usersLoginObj', 'playerID'], '');
     
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
     
     // console.log(chalk`
     //   thumbnailSrc: {green ${thumbnailSrc}}

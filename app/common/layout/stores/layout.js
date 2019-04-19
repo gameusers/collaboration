@@ -274,7 +274,7 @@ class Store {
    * データの開閉状態
    * @type {boolean}
    */
-  @observable headerDataOpen = true;
+  @observable headerDataOpen = false;
   
   
   /**
@@ -301,25 +301,25 @@ class Store {
    * データの開閉状態
    * @type {boolean}
    */
-  @observable headerDataBoxOpen = false;
+  // @observable headerDataBoxOpen = false;
   
   
-  /**
-   * データを開く
-   */
-  @action.bound
-  handleHeaderDataBoxOpen() {
-    this.headerDataBoxOpen = true;
-  };
+  // /**
+  // * データを開く
+  // */
+  // @action.bound
+  // handleHeaderDataBoxOpen() {
+  //   this.headerDataBoxOpen = true;
+  // };
   
   
-  /**
-   * データを閉じる
-   */
-  @action.bound
-  handleHeaderDataBoxClose() {
-    this.headerDataBoxOpen = false;
-  };
+  // /**
+  // * データを閉じる
+  // */
+  // @action.bound
+  // handleHeaderDataBoxClose() {
+  //   this.headerDataBoxOpen = false;
+  // };
   
   
   

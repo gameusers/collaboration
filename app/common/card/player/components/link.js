@@ -53,7 +53,7 @@ const Container = styled.div`
 
 
 // ---------------------------------------------
-//   見出し
+//   Heading
 // ---------------------------------------------
 
 const HeadingBox = styled.div`
@@ -74,7 +74,7 @@ const Heading = styled.h3`
 
 
 // ---------------------------------------------
-//   リンク
+//   Link
 // ---------------------------------------------
 
 const Box = styled.div`
@@ -92,10 +92,11 @@ const OtherBox = styled.div`
 
 const OtherButton = styled(Button)`
   && {
-    padding: 0 6px;
     font-size: 14px;
     min-width: 36px;
     min-height: 26px
+    margin: 0;
+    padding: 0 6px;
   }
 `;
 
@@ -115,10 +116,19 @@ const IconBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -145,30 +155,30 @@ export default class extends React.Component {
     
     const componentLinkArr = [];
     
-    for (const [index, value] of linkArr.entries()) {
+    for (const [index, valueObj] of linkArr.entries()) {
       
-      if (value.type === 'Other') {
+      if (valueObj.type === 'Other') {
         
         componentLinkArr.push(
           <OtherBox key={index}>
             <OtherButton
               variant="outlined"
               color="secondary"
-              href={value.url}
+              href={valueObj.url}
               target="_blank"
             >
-              {value.label}
+              {valueObj.label}
             </OtherButton>
           </OtherBox>
         );
         
-      } else if (value.url) {
+      } else if (valueObj.url) {
         
         componentLinkArr.push(
           <Item key={`link${index}`}>
-            <a href={value.url} target="_blank">
-              <IconBox alt={value.type}>
-                <SimpleIcons name={value.type} />
+            <a href={valueObj.url} target="_blank">
+              <IconBox alt={valueObj.type}>
+                <SimpleIcons name={valueObj.type} />
               </IconBox>
             </a>
           </Item>
@@ -220,6 +230,7 @@ export default class extends React.Component {
         
       </Container>
     );
+    
     
   }
   

@@ -64,10 +64,19 @@ Router.events.on('routeChangeError', () => NProgress.done());
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
   
   componentDidMount() {
     
@@ -77,7 +86,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (window.innerWidth > 480) {
-      this.props.stores.layout.handleHeaderDataBoxOpen();
+      this.props.stores.layout.handleHeaderDataOpen();
     }
     
     
@@ -90,6 +99,10 @@ export default class extends React.Component {
     
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
 
   render() {
     

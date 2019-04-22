@@ -71,13 +71,12 @@ export default class extends React.Component {
     const usersObj = stores.data.usersObj;
     
     
-    
     // --------------------------------------------------
     //   Level
     // --------------------------------------------------
     
-    const level = usersObj[users_id].level;
-    
+    const experience = usersObj[users_id].experience;
+    const level = Math.floor(experience / 10);
     
     
     // --------------------------------------------------

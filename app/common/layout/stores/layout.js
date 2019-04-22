@@ -274,7 +274,7 @@ class Store {
    * データの開閉状態
    * @type {boolean}
    */
-  @observable headerDataOpen = false;
+  @observable headerDataOpen = true;
   
   
   /**

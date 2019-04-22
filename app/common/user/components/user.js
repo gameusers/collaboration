@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -23,8 +23,8 @@ import styled from 'styled-components';
 //   Components
 // ---------------------------------------------
 
-import UserThumbnail from './thumbnail';
-import UserName from './name';
+import Thumbnail from './thumbnail';
+import Name from './name';
 
 
 
@@ -39,12 +39,12 @@ const Container = styled.div`
   flex-flow: row nowrap;
 `;
 
-const UserThumbnailBox = styled.div`
+const ThumbnailBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
 `;
 
-const UserInfoBox = styled.div`
+const InfoBox = styled.div`
   display: flex;
   flex-flow: column nowrap;
   padding: 2px 0 0 10px;
@@ -54,7 +54,7 @@ const UserInfoBox = styled.div`
   }
 `;
 
-const UserNameBox = styled.div`
+const NameBox = styled.div`
   display: flex;
   flex-flow: row wrap;
 `;
@@ -70,10 +70,19 @@ const UserNameBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -96,7 +105,7 @@ export default class extends React.Component {
       gameUrlID,
       showGameName,
       
-      level,
+      experience,
       cardPlayers_id,
       showCardPlayerButton,
       cardGames_id,
@@ -114,15 +123,15 @@ export default class extends React.Component {
     return (
       <Container>
         
-        <UserThumbnailBox>
-          <UserThumbnail thumbnailSrc={thumbnailSrc} />
-        </UserThumbnailBox>
+        <ThumbnailBox>
+          <Thumbnail thumbnailSrc={thumbnailSrc} />
+        </ThumbnailBox>
         
         
-        <UserInfoBox>
+        <InfoBox>
           
-          <UserNameBox>
-            <UserName
+          <NameBox>
+            <Name
               name={name}
               playerID={playerID}
               status={status}
@@ -132,15 +141,15 @@ export default class extends React.Component {
               gameUrlID={gameUrlID}
               showGameName={showGameName}
               
-              level={level}
+              experience={experience}
               cardPlayers_id={cardPlayers_id}
               showCardGameButton={showCardGameButton}
               cardGames_id={cardGames_id}
               showCardPlayerButton={showCardPlayerButton}
             />
-          </UserNameBox>
+          </NameBox>
           
-        </UserInfoBox>
+        </InfoBox>
         
       </Container>
     );

@@ -85,8 +85,8 @@ export default class extends React.Component {
     //   ウィンドウの横幅が大きい場合、ヘッダーの情報を開く
     // --------------------------------------------------
     
-    if (window.innerWidth > 480) {
-      this.props.stores.layout.handleHeaderDataOpen();
+    if (window.innerWidth <= 480) {
+      this.props.stores.layout.handleHeaderDataClose();
     }
     
     

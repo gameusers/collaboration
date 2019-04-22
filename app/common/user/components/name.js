@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -36,6 +36,7 @@ import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconStars from '@material-ui/icons/Stars';
 import IconCard1 from '@material-ui/icons/Layers';
+
 
 
 
@@ -208,16 +209,29 @@ const GameBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
   
   componentDidMount(){
     this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardPlayers_id}-card-player`, false);
     this.props.stores.layout.handleButtonDisabledObj(`${this.props.cardGames_id}-card-game`, false);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -240,7 +254,7 @@ export default class extends React.Component {
       gameUrlID,
       showGameName,
       
-      level,
+      experience,
       cardPlayers_id,
       showCardPlayerButton,
       cardGames_id,
@@ -341,7 +355,9 @@ export default class extends React.Component {
       //   Level
       // --------------------------------------------------
       
-      if (!anonymity && level) {
+      if (!anonymity && experience) {
+        
+        const level = Math.floor(experience / 10);
         
         componentBottomArr.push(
           <LevelBox key="levelBox">

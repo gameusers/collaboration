@@ -142,11 +142,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       country: localeObj.country,
     });
     
-    console.log(`
-      ----- returnObj.headerObj -----\n
-      ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj.headerObj -----\n
+    //   ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

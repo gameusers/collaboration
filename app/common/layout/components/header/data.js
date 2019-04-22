@@ -55,7 +55,7 @@ import LinkIcons from './link-icons';
 //   Opened
 // --------------------------------------------------
 
-const BoxOpened = styled.div`
+const HeroImageBoxOpened = styled.div`
   width: 280px;
   border-radius: 8px;
   background-color: #000;
@@ -72,6 +72,16 @@ const BoxOpened = styled.div`
     bottom: auto;
     margin: 10px auto;
   }
+`;
+
+const ThumbnailBoxOpened = styled.div`
+  min-width: 150px;
+  max-width: 300px;
+  border-radius: 8px;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 0 0 6px 0;
 `;
 
 const TitleBox = styled.div`
@@ -93,7 +103,7 @@ const Title = styled.h1`
 const KeyboardArrowUpIconButton = styled(IconButton)`
   && {
     margin: 2px auto 0;
-    padding: 2px 0 0;
+    padding: 2px 0 0 0;
     font-size: 12px;
     width: 24px;
     height: 24px;
@@ -108,18 +118,12 @@ const Info = styled.p`
   line-height: 1.4em;
 `;
 
-const DataLink = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 5px 10px 0;
-`;
-
 
 // --------------------------------------------------
 //   Closed
 // --------------------------------------------------
 
-const BoxClosed = styled.div`
+const HeroImageBoxClosed = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -133,6 +137,20 @@ const BoxClosed = styled.div`
   position: absolute;
   right: 15px;
   bottom: 15px;
+  padding: 0 2px 0 0;
+`;
+
+const ThumbnailBoxClosed = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  min-width: 150px;
+  max-width: 300px;
+  border-radius: 8px;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
   padding: 0 2px 0 0;
 `;
       
@@ -152,7 +170,7 @@ const KeyboardArrowDownIconButton = styled(IconButton)`
     min-width: 24px;
     min-height: 24px;
     margin: 0;
-    padding: 2px 0 0;
+    padding: 0;
   }
 `;
 
@@ -188,7 +206,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    const { stores, heroImage } = this.props;
     
     
     // --------------------------------------------------
@@ -310,35 +328,77 @@ export default class extends React.Component {
     
     let componentData = '';
     
-    if (headerDataOpen) {
+    
+    // --------------------------------------------------
+    //   Hero Image
+    // --------------------------------------------------
+    
+    if (heroImage) {
       
-      componentData = 
-        <BoxOpened>
-          <TitleBox>
-            <Title>{name}</Title>
-            <KeyboardArrowUpIconButton color="secondary" onClick={stores.layout.handleHeaderDataClose}>
-              <IconKeyboardArrowUp />
-            </KeyboardArrowUpIconButton>
-          </TitleBox>
-          <Info>ハード | {hardware}</Info>
-          <Info>ジャンル | {genre}</Info>
-          <Info>プレイ人数 | {players}</Info>
-          <Info>発売日 | {formattedReleaseData}</Info>
-          <Info>開発 | {developer}</Info>
-          <LinkIcons linkArr={linkArr} />
-        </BoxOpened>
-      ;
+      if (headerDataOpen) {
+        
+        componentData = 
+          <HeroImageBoxOpened>
+            <TitleBox>
+              <Title>{name}</Title>
+              <KeyboardArrowUpIconButton color="secondary" onClick={stores.layout.handleHeaderDataClose}>
+                <IconKeyboardArrowUp />
+              </KeyboardArrowUpIconButton>
+            </TitleBox>
+            <Info>ハード | {hardware}</Info>
+            <Info>ジャンル | {genre}</Info>
+            <Info>プレイ人数 | {players}</Info>
+            <Info>発売日 | {formattedReleaseData}</Info>
+            <Info>開発 | {developer}</Info>
+            <LinkIcons linkArr={linkArr} />
+          </HeroImageBoxOpened>
+        ;
+        
+      } else {
+        
+        componentData = 
+          <HeroImageBoxClosed>
+            <TitleClosed>{name}</TitleClosed>
+            <KeyboardArrowDownIconButton color="secondary" onClick={stores.layout.handleHeaderDataOpen}>
+              <IconKeyboardArrowDown />
+            </KeyboardArrowDownIconButton>
+          </HeroImageBoxClosed>
+        ;
+        
+      }
       
+      
+    // --------------------------------------------------
+    //   Thumbnail
+    // --------------------------------------------------
+    
     } else {
       
-      componentData = 
-        <BoxClosed>
-          <TitleClosed>{name}</TitleClosed>
-          <KeyboardArrowDownIconButton color="secondary" onClick={stores.layout.handleHeaderDataOpen}>
-            <IconKeyboardArrowDown />
-          </KeyboardArrowDownIconButton>
-        </BoxClosed>
-      ;
+      if (headerDataOpen) {
+        
+        componentData = 
+          <ThumbnailBoxOpened>
+            <TitleBox>
+              <Title>{name}</Title>
+            </TitleBox>
+            <Info>ハード | {hardware}</Info>
+            <Info>ジャンル | {genre}</Info>
+            <Info>プレイ人数 | {players}</Info>
+            <Info>発売日 | {formattedReleaseData}</Info>
+            <Info>開発 | {developer}</Info>
+            <LinkIcons linkArr={linkArr} />
+          </ThumbnailBoxOpened>
+        ;
+        
+      } else {
+        
+        componentData = 
+          <ThumbnailBoxClosed>
+            <TitleClosed>{name}</TitleClosed>
+          </ThumbnailBoxClosed>
+        ;
+        
+      }
       
     }
     

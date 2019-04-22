@@ -434,7 +434,7 @@ const format = async ({ arr, usersLogin_id }) => {
       // _id,
       name: lodashGet(valueObj, ['cardPlayersArr', 0, 'nameObj', 'value'], ''),
       status: lodashGet(valueObj, ['cardPlayersArr', 0, 'statusObj', 'value'], ''),
-      level: lodashGet(valueObj, ['level'], 0),
+      experience: lodashGet(valueObj, ['experience'], 0),
       followCount: lodashGet(valueObj, ['followCount'], 0),
       followedCount: lodashGet(valueObj, ['followedCount'], 0),
       followed: false,
@@ -519,7 +519,7 @@ const findFormatted = async (conditionObj, usersLogin_id) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docArr = await SchemaUsers.find(conditionObj).select('_id accessDate name status playerId level followArr followCount followedArr followedCount role').exec();
+    const docArr = await SchemaUsers.find(conditionObj).select('_id accessDate name status playerId experience followArr followCount followedArr followedCount role').exec();
     
     if (docArr === null) {
       return returnObj;

@@ -108,7 +108,7 @@ class Component extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const isServer = !!req;
+    const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const playerID = query.param1;
@@ -131,6 +131,7 @@ class Component extends React.Component {
     
     // console.log(chalk`
     //   isServer: {green ${isServer}}
+    //   process.browser: {green ${process.browser}}
     // `);
     
     // console.log(`
@@ -224,15 +225,29 @@ class Component extends React.Component {
       
       this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
+      // console.log(chalk`
+      //   name: {green ${lodashGet(props, ['initialPropsObj', 'headerObj', 'name'], '')}}
+      // `);
+      
+      // console.log(`\n---------- headerObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(lodashGet(props, ['initialPropsObj', 'headerObj'], {}))));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(chalk`
+      //   props.isServer: {green ${props.isServer}}
+      //   process.browser: {green ${process.browser}}
+      // `);
+      // if (process.browser === false) {
+      //   console.log('update header');
+      // this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      // }
+      
       
       // --------------------------------------------------
       //   Update Data - Login User
       // --------------------------------------------------
       
       this.stores.data.replaceUsersLoginObj(lodashGet(props, ['initialPropsObj', 'usersLoginObj'], {}));
-      // if ('usersLoginObj' in props.initialPropsObj) {
-      //   this.stores.data.replaceUsersLoginObj(props.initialPropsObj.usersLoginObj);
-      // }
       
       
       // --------------------------------------------------

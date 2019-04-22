@@ -37,7 +37,7 @@ import Data from './data';
 
 const ContainerThumbnail = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-flow: row nowrap;
   justify-content: center;
   align-items: flex-start;
   background: no-repeat center center url('/static/img/common/header-back.jpg');
@@ -46,9 +46,10 @@ const ContainerThumbnail = styled.div`
 `;
 
 const ThumbnailImg = styled.img`
-  margin: 0 15px 0 0;
+  width: 128px;
   border-radius: 8px;
   box-shadow: 4px 4px 10px #383838;
+  margin: 0 15px 0 0;
   
   @media screen and (max-width: 480px) {
     width: 96px;
@@ -99,7 +100,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
-    const mainArr = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj', 'mainArr'], {});
+    const mainArr = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj', 'mainArr'], []);
+    const thumbnailArr = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
     
     
     // --------------------------------------------------
@@ -132,7 +134,8 @@ export default class extends React.Component {
     
     if (mainArr.length > 0) {
       
-      const imageObj = mainArr[Math.floor(Math.random() * mainArr.length)];
+      // const imageObj = mainArr[Math.floor(Math.random() * mainArr.length)];
+      const imageObj = mainArr[0];
       
       const srcSetArr = lodashGet(imageObj, ['srcSetArr'], []).slice().reverse();
       
@@ -199,7 +202,7 @@ export default class extends React.Component {
       
       code = 
         <Container>
-          <Data />
+          <Data heroImage={true} />
         </Container>
       ;
       
@@ -211,23 +214,13 @@ export default class extends React.Component {
     
     } else {
       
-      const imgSrc = `/static/img/game/${stores.layout.headerGameNo}/thumbnail.jpg`;
-      
-      
-      // DataBox = styled.div`
-      //   min-width: 150px;
-      //   max-width: 300px;
-      //   border-radius: 8px;
-      //   background-color: #000;
-      //   background-color: rgba(0, 0, 0, 0.5);
-      //   color: #fff;
-      //   padding: 4px 0 6px 0;
-      // `;
+      const thumbnailSrc = lodashGet(thumbnailArr.slice(), [0, 'srcSetArr', 0, 'src'], '');
+      const imgSrc = thumbnailSrc ? thumbnailSrc : '/static/img/common/thumbnail/none-game.jpg';
       
       code = 
         <ContainerThumbnail>
           <ThumbnailImg src={imgSrc} />
-          <Data />
+          <Data heroImage={false} />
         </ContainerThumbnail>
       ;
       

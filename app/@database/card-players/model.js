@@ -89,7 +89,7 @@ const findForCardPlayer = async ({ users_id, language, country, usersLogin_id })
                 {
                   _id: 0,
                   accessDate: 1,
-                  level: 1,
+                  experience: 1,
                   playerID: 1,
                   followArr: 1,
                   followedArr: 1,
@@ -309,7 +309,7 @@ const findOneBy_id = async (argumentsObj) => {
                 {
                   _id: 0,
                   accessDate: 1,
-                  level: 1,
+                  experience: 1,
                   playerID: 1,
                   followArr: 1,
                   followedArr: 1,

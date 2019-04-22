@@ -180,7 +180,32 @@ const findForHeroImage = async ({ language, country }) => {
     ]).exec();
     
     
-    return resultArr[0];
+    // --------------------------------------------------
+    //   Sort / ヒーローイメージがランダムに表示されるように並び替える
+    // --------------------------------------------------
+    
+    const resultObj = resultArr[0];
+    let mainArr = resultObj.imagesAndVideosObj.mainArr;
+    
+    for (let i = mainArr.length - 1; i > 0; i--){
+      const r = Math.floor(Math.random() * (i + 1));
+      const tmp = mainArr[i];
+      mainArr[i] = mainArr[r];
+      mainArr[r] = tmp;
+    }
+    
+    resultObj.mainArr = mainArr;
+    
+    // console.log(`\n---------- mainArr ----------\n`);
+    // console.dir(mainArr.slice());
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return resultObj;
     
     
   } catch (err) {

@@ -481,9 +481,6 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   Login ID
     // --------------------------------------------------
     
-    // await val(validationUsersLoginIDServer, { value: loginID, usersLogin_id: 'jun-deE4J' }, 'Login ID');
-    // await val(validationUsersEmailServer, { value: email, usersLogin_id: 'jun-deE4J', encryptedEmail }, 'E-Mail');
-    
     await val(validationUsersLoginIDServer, { value: loginID }, 'Login ID');
     val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
     await val(validationUsersEmailServer, { value: email, encryptedEmail }, 'E-Mail');
@@ -506,8 +503,12 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
         playerID,
         loginID,
         loginPassword: hashedPassword,
-        email: encryptedEmail,
+        emailObj: {
+          value: encryptedEmail,
+          confirmation: false,
+        },
         country: 'JP',
+        termsOfServiceConfirmedDate: ISO8601,
         experience: 0,
         titleArr: [],
         followArr: [],

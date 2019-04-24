@@ -225,23 +225,6 @@ class Component extends React.Component {
       
       this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
-      // console.log(chalk`
-      //   name: {green ${lodashGet(props, ['initialPropsObj', 'headerObj', 'name'], '')}}
-      // `);
-      
-      // console.log(`\n---------- headerObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(lodashGet(props, ['initialPropsObj', 'headerObj'], {}))));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(chalk`
-      //   props.isServer: {green ${props.isServer}}
-      //   process.browser: {green ${process.browser}}
-      // `);
-      // if (process.browser === false) {
-      //   console.log('update header');
-      // this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
-      // }
-      
       
       // --------------------------------------------------
       //   Update Data - Login User
@@ -288,7 +271,7 @@ class Component extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const stores = this.stores;
+    const stores = this.stores;
     
     
     // --------------------------------------------------
@@ -311,11 +294,16 @@ class Component extends React.Component {
     //   Player Card
     // --------------------------------------------------
     
+    let userName = '';
+    
     const componentCardsArr = [];
     
     for (const [index, valueObj] of this.props.initialPropsObj.cardsArr.entries()) {
       
       if ('cardPlayers_id' in valueObj) {
+        
+        const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
+        userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
         
         componentCardsArr.push(
           <CardPlayer
@@ -348,7 +336,7 @@ class Component extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>マリオ - Game Users</title>
+              <title>{userName} - Game Users</title>
             </Head>
             
             

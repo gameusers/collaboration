@@ -26,15 +26,18 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import { withStyles } from '@material-ui/core/styles';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
+import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 
@@ -45,9 +48,28 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.span`
+const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
+  && {
+    cursor: default !important;
+    padding-right: 16px;
+  }
+`;
+
+const Heading = styled.h2`
   font-weight: bold;
   font-size: 18px;
+`;
+
+const ExpandMoreBox = styled.div`
+  margin: 0 0 0 auto;
+  padding: 0;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  && {
+    margin: 0;
+    padding: 4px;
+  }
 `;
 
 const Description = styled.p`
@@ -69,9 +91,40 @@ const SubmitButtonBox = styled.div`
 
 
 // --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/customization/overrides/
+// --------------------------------------------------
+
+// const stylesObj = {
+  
+//   root: {
+//     cursor: 'default',
+//     // backgroundColor: 'pink',
+    
+//     '&:hover': {
+//       cursor: 'default',
+//     }
+//   },
+  
+//   content: {
+//     cursor: 'default',
+    
+//     // '&:last-child': {
+//     //   // backgroundColor: 'pink',
+//     //   paddingRight: '0!important'
+//     // }
+//   },
+  
+// };
+
+
+
+
+// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
+// @withStyles(stylesObj)
 @inject('stores')
 @observer
 export default injectIntl(class extends React.Component {
@@ -84,8 +137,6 @@ export default injectIntl(class extends React.Component {
   constructor(props) {
     super(props);
   }
-  
-  
   
   
   // --------------------------------------------------
@@ -105,8 +156,6 @@ export default injectIntl(class extends React.Component {
   }
   
   
-  
-  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -119,8 +168,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const { stores, intl } = this.props;
-    
-    
     
     
     // --------------------------------------------------
@@ -175,9 +222,29 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Heading */}
-          <ExpansionPanelSummary expandIcon={<IconExpandMore />} onClick={() => handlePanelExpand({ _id: 'logout' })}>
+          <StyledExpansionPanelSummary>
+          
             <Heading>ログアウト</Heading>
-          </ExpansionPanelSummary>
+            
+            {/* Panel Expansion Button */}
+            <ExpandMoreBox style={{ paddingRight: 0 }}>
+              <StyledIconButton
+                onClick={() => handlePanelExpand({ _id: 'logout' })}
+                aria-expanded={panelExpanded}
+                aria-label="Show more"
+                disabled={buttonDisabled}
+              >
+                {panelExpanded ? (
+                  <IconExpandLess />
+                ) : (
+                  <IconExpandMore />
+                )}
+              </StyledIconButton>
+            </ExpandMoreBox>
+            
+          </StyledExpansionPanelSummary>
+          
+          
           
           
           {/* Contents */}
@@ -201,6 +268,7 @@ export default injectIntl(class extends React.Component {
             </SubmitButtonBox>
             
           </StyledExpansionPanelDetails>
+          
           
         </ExpansionPanel>
         

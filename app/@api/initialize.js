@@ -148,8 +148,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         playerID: 'user1',
         loginID: '8OM0dhDak',
         loginPassword: '$2b$10$NsuOPWswqCkJ2STKfbKg/OMXfxdWabz1oy36HKOwRojHJ4S8FPsPS',
-        email: '486b136d80cca6546d9b5a88161b941e9ff774a1eff937493781152843423f58',
+        emailObj: {
+          value: '486b136d80cca6546d9b5a88161b941e9ff774a1eff937493781152843423f58',
+          confirmation: true,
+        },
         country: 'JP',
+        termsOfServiceConfirmedDate: ISO8601,
         experience: 999,
         titleArr: [
           {
@@ -176,8 +180,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         playerID: 'user2',
         loginID: 'enPLLYBBEg3y',
         loginPassword: '$2b$10$.O/ZmfEO2QOV6IRxxmQO1eSRMx8yhL83ISq9z/gyOpTCtbYL3j4B.',
-        email: '9b8383b1e34b684f357899abf58f3dd99e4cca2b830e87ad5f9f1bbbd077853c',
+        emailObj: {
+          value: '9b8383b1e34b684f357899abf58f3dd99e4cca2b830e87ad5f9f1bbbd077853c',
+          confirmation: false,
+        },
         country: 'JP',
+        termsOfServiceConfirmedDate: ISO8601,
         experience: 10,
         titleArr: [],
         followArr: ['jun-deE4J'],
@@ -196,8 +204,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         playerID: 'user3',
         loginID: 'nzPR7R9GO',
         loginPassword: '$2b$10$.qPAsMTPieChFehxF7TC2OXYWZdek0FKuJPABVxtBPo1UzrpOwZ6.',
-        email: '',
+        emailObj: {
+          value: '',
+          confirmation: false,
+        },
         country: 'JP',
+        termsOfServiceConfirmedDate: ISO8601,
         experience: 0,
         titleArr: [],
         followArr: [],

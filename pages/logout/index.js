@@ -102,7 +102,7 @@ class Component extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const isServer = !!req;
+    const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     
@@ -141,28 +141,8 @@ class Component extends React.Component {
       
     }
     
-    // if (login === false) {
-      
-    //   if (isServer && res) {
-    //     res.redirect('/login');
-    //     res.end();
-    //   } else {
-    //     Router.replace('/login');
-    //   }
-      
-    // }
-    
-    
-    
-    // if (login === false) {
-    //   res.redirect('/login');
-    //   res.end();
-    //   return {};
-    // }
-    
     
     return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
-    
     
   }
   
@@ -229,6 +209,13 @@ class Component extends React.Component {
         this.stores.data.replaceLocaleObj(localeObj);
         
       }
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Header
+      // --------------------------------------------------
+      
+      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
       
       // --------------------------------------------------

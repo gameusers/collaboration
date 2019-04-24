@@ -58,14 +58,6 @@ import { validationUsersLoginID } from '../../../../app/@database/users/validati
 import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../../app/@database/users/validations/login-password';
 import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
 
-// const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
-// const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../../app/@database/users/validations/login-password');
-// const { validationUsersEmail } = require('../../../../app/@database/users/validations/email');
-
-// const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
-// const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../../app/@database/users/validations/login-password');
-// const { validationUsersEmail } = require('../../../../app/@database/users/validations/email');
-
 
 // ---------------------------------------------
 //   Components

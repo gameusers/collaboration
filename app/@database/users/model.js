@@ -329,7 +329,7 @@ const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
           updatedDate: 0,
           loginID: 0,
           loginPassword: 0,
-          email: 0,
+          emailObj: 0,
           country: 0,
         }
       },

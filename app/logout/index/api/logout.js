@@ -21,14 +21,19 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
-// const FormData = require('form-data');
+
+
+// ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelGames = require('../../../@database/games/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../@modules/csrf');
 const { errorCodeIntoErrorObj } = require('../../../@modules/error/error-obj');
 
 
@@ -74,7 +79,7 @@ let errorArgumentsObj = {
 //   Initial Props / Function ID: iAYmdOksz
 // --------------------------------------------------
 
-router.get('/initial-props', upload.none(), (req, res, next) => {
+router.get('/initial-props', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -112,6 +117,17 @@ router.get('/initial-props', upload.none(), (req, res, next) => {
     }
     
     
+    // --------------------------------------------------
+    //   データ取得 / Games
+    //   ヘッダーヒーローイメージ用
+    // --------------------------------------------------
+    
+    returnObj.headerObj = await ModelGames.findForHeroImage({
+      language: localeObj.language,
+      country: localeObj.country,
+    });
+    
+    
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
@@ -141,83 +157,6 @@ router.get('/initial-props', upload.none(), (req, res, next) => {
   
   
 });
-
-
-
-
-// --------------------------------------------------
-//   ログアウト / Function ID: lpePrqvT4
-// --------------------------------------------------
-
-// router.post('/', upload.none(), function(req, res, next) {
-  
-  
-//   // --------------------------------------------------
-//   //   Locale
-//   // --------------------------------------------------
-  
-//   const localeObj = locale({
-//     acceptLanguage: req.headers['accept-language']
-//   });
-  
-  
-//   // --------------------------------------------------
-//   //   Property
-//   // --------------------------------------------------
-  
-//   errorArgumentsObj.functionID = 'lpePrqvT4';
-  
-  
-  
-  
-//   try {
-    
-    
-//     // ---------------------------------------------
-//     //   CSRF
-//     // ---------------------------------------------
-    
-//     verifyCsrfToken(req, res);
-    
-    
-//     // ---------------------------------------------
-//     //   ログアウト処理
-//     // ---------------------------------------------
-    
-//     req.logout();
-    
-    
-//     // ---------------------------------------------
-//     //   Success
-//     // ---------------------------------------------
-    
-//     return res.status(200).json({
-//       success: true
-//     });
-    
-    
-//   } catch (errorObj) {
-    
-    
-//     // ---------------------------------------------
-//     //   Error Object
-//     // ---------------------------------------------
-    
-//     errorArgumentsObj.errorObj = errorObj;
-//     const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
-    
-    
-//     // --------------------------------------------------
-//     //   Return JSON Object / Error
-//     // --------------------------------------------------
-    
-//     return res.status(statusCode).json(resultErrorObj);
-    
-    
-//   }
-  
-  
-// });
 
 
 

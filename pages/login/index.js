@@ -73,10 +73,10 @@ import withRoot from '../../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Container = styled.div`
-  padding: 10px 10px 18px 10px;
+  padding: 0 10px 18px 10px;
   
   @media screen and (max-width: 480px) {
-    padding: 10px 0 18px 0;
+    padding: 0 0 18px 0;
   }
 `;
 
@@ -103,7 +103,7 @@ class Component extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const isServer = !!req;
+    const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     
@@ -120,12 +120,7 @@ class Component extends React.Component {
     });
     
     const statusCode = resultObj.statusCode;
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    const initialPropsObj = resultObj.data;
     
     
     // --------------------------------------------------
@@ -148,7 +143,7 @@ class Component extends React.Component {
     }
     
     
-    return { isServer, pathname, statusCode, reqAcceptLanguage };
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
     
   }
   
@@ -204,7 +199,7 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   Locale
+      //   Update Data - Locale
       // --------------------------------------------------
       
       if (Object.keys(this.stores.data.localeObj).length === 0) {
@@ -216,6 +211,13 @@ class Component extends React.Component {
         this.stores.data.replaceLocaleObj(localeObj);
         
       }
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Header
+      // --------------------------------------------------
+      
+      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
       
     } catch (e) {

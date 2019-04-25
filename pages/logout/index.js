@@ -72,10 +72,10 @@ import withRoot from '../../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Container = styled.div`
-  padding: 10px 10px 18px 10px;
+  padding: 0 10px 18px 10px;
   
   @media screen and (max-width: 480px) {
-    padding: 10px 0 18px 0;
+    padding: 0 0 18px 0;
   }
 `;
 

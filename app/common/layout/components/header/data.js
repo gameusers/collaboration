@@ -102,13 +102,13 @@ const Title = styled.h1`
 
 const KeyboardArrowUpIconButton = styled(IconButton)`
   && {
-    margin: 2px auto 0;
-    padding: 2px 0 0 0;
     font-size: 12px;
     width: 24px;
     height: 24px;
     min-width: 24px;
     min-height: 24px;
+    margin: 2px auto 0;
+    padding: 2px 0 0 0;
   }
 `;
 
@@ -169,7 +169,7 @@ const KeyboardArrowDownIconButton = styled(IconButton)`
     height: 24px;
     min-width: 24px;
     min-height: 24px;
-    margin: 0;
+    margin: 2px 0 0 0;
     padding: 0;
   }
 `;

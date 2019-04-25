@@ -30,7 +30,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import { withStyles } from '@material-ui/core/styles';
 
 
 // ---------------------------------------------
@@ -48,6 +47,12 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
+const StyledExpansionPanel = styled(ExpansionPanel)`
+  && {
+    margin: 16px 0 0 0 !important;
+  }
+`;
+
 const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
   && {
     cursor: default !important;
@@ -62,7 +67,7 @@ const Heading = styled.h2`
 
 const ExpandMoreBox = styled.div`
   margin: 0 0 0 auto;
-  padding: 0;
+  padding: 0 !important;
 `;
 
 const StyledIconButton = styled(IconButton)`
@@ -91,40 +96,9 @@ const SubmitButtonBox = styled.div`
 
 
 // --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/customization/overrides/
-// --------------------------------------------------
-
-// const stylesObj = {
-  
-//   root: {
-//     cursor: 'default',
-//     // backgroundColor: 'pink',
-    
-//     '&:hover': {
-//       cursor: 'default',
-//     }
-//   },
-  
-//   content: {
-//     cursor: 'default',
-    
-//     // '&:last-child': {
-//     //   // backgroundColor: 'pink',
-//     //   paddingRight: '0!important'
-//     // }
-//   },
-  
-// };
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-// @withStyles(stylesObj)
 @inject('stores')
 @observer
 export default injectIntl(class extends React.Component {
@@ -218,7 +192,7 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        <ExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
           
           
           {/* Heading */}
@@ -226,8 +200,8 @@ export default injectIntl(class extends React.Component {
           
             <Heading>ログアウト</Heading>
             
-            {/* Panel Expansion Button */}
-            <ExpandMoreBox style={{ paddingRight: 0 }}>
+            {/* Expansion Button */}
+            <ExpandMoreBox>
               <StyledIconButton
                 onClick={() => handlePanelExpand({ _id: 'logout' })}
                 aria-expanded={panelExpanded}
@@ -270,7 +244,7 @@ export default injectIntl(class extends React.Component {
           </StyledExpansionPanelDetails>
           
           
-        </ExpansionPanel>
+        </StyledExpansionPanel>
         
         
       </React.Fragment>

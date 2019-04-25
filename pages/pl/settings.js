@@ -18,7 +18,6 @@ import React from 'react';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
-import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 
@@ -46,7 +45,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../../app/@stores/index';
-import initStoreLoginAccount from '../../app/login/account/stores/store';
+import initStorePlayerSettings from '../../app/pl/settings/stores/store';
 
 
 // ---------------------------------------------
@@ -54,7 +53,7 @@ import initStoreLoginAccount from '../../app/login/account/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import FormCreateAccount from '../../app/login/account/components/form-create-account';
+import FormEditAccount from '../../app/pl/settings/components/form-edit-account';
 
 
 // ---------------------------------------------
@@ -95,7 +94,7 @@ class Component extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res }) {
+  static async getInitialProps({ req, res, query }) {
     
     
     // --------------------------------------------------
@@ -105,6 +104,8 @@ class Component extends React.Component {
     const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    const playerID = query.param1;
+    const pathname = `/pl/${playerID}/settings`;
     
     
     // --------------------------------------------------
@@ -128,20 +129,7 @@ class Component extends React.Component {
     // `);
     
     
-    // --------------------------------------------------
-    //   ログインしている場合はログアウトページにリダイレクト
-    // --------------------------------------------------
-    
-    const login = lodashGet(resultObj, ['data', 'login'], false);
-    
-    if (login) {
-      res.redirect('/logout');
-      res.end();
-      return {};
-    }
-    
-    
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, playerID };
     
   }
   
@@ -193,7 +181,7 @@ class Component extends React.Component {
       
       this.stores = initStoreIndex(argumentsObj);
       this.stores.pathname = props.pathname;
-      this.stores.loginAccount = initStoreLoginAccount(argumentsObj, this.stores);
+      this.stores.loginAccount = initStorePlayerSettings(argumentsObj, this.stores);
       
       
       // --------------------------------------------------
@@ -218,29 +206,16 @@ class Component extends React.Component {
       this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
       
+      // --------------------------------------------------
+      //   Update Data - Login User
+      // --------------------------------------------------
+      
+      this.stores.data.replaceUsersLoginObj(lodashGet(props, ['initialPropsObj', 'usersLoginObj'], {}));
+      
+      
     } catch (e) {
       this.error = true;
     }
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // --------------------------------------------------
-    //   Initialize the ReCaptcha
-    //   https://github.com/codeep/react-recaptcha-v3
-    // --------------------------------------------------
-    
-    loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
     
     
   }
@@ -269,7 +244,7 @@ class Component extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
+    // const stores = this.stores;
     
     
     // --------------------------------------------------
@@ -278,12 +253,12 @@ class Component extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'ログイン',
-        pathname: '/login'
+        name: 'プロフィール',
+        pathname: `/pl/${this.props.playerID}`
       },
       {
-        name: 'アカウント作成',
-        pathname: '/login/account'
+        name: '設定',
+        pathname: `/pl/${this.props.playerID}/settings`
       }
     ];
     
@@ -307,7 +282,7 @@ class Component extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>アカウント作成 - Game Users</title>
+              <title>設定 - Game Users</title>
             </Head>
             
             
@@ -315,20 +290,8 @@ class Component extends React.Component {
             <Container>
               
               
-              {/* reCAPTCHA */}
-              <ReCaptcha
-                ref={ref => this.recaptcha = ref}
-                sitekey={process.env.RECAPTCHA_SITE_KEY}
-                action='createAccount'
-                verifyCallback={(response) => stores.loginAccount.handleRecaptchaResponse({
-                  response,
-                  ref: this.recaptcha,
-                })}
-              />
-              
-              
-              {/* アカウント作成 */}
-              <FormCreateAccount />
+              {/* アカウント編集 */}
+              <FormEditAccount />
               
               
             </Container>

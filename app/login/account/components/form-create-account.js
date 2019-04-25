@@ -18,7 +18,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
-import { ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
 
@@ -41,6 +40,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Material UI / Icons
 // ---------------------------------------------
 
+import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconID from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
@@ -73,9 +73,34 @@ import TermsOfService from '../../../../app/common/layout/components/terms-of-se
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.span`
+const StyledExpansionPanel = styled(ExpansionPanel)`
+  && {
+    margin: 16px 0 0 0 !important;
+  }
+`;
+
+const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
+  && {
+    cursor: default !important;
+    padding-right: 16px;
+  }
+`;
+
+const Heading = styled.h2`
   font-weight: bold;
   font-size: 18px;
+`;
+
+const ExpandMoreBox = styled.div`
+  margin: 0 0 0 auto;
+  padding: 0 !important;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  && {
+    margin: 0;
+    padding: 4px;
+  }
 `;
 
 const Description = styled.p`
@@ -167,14 +192,13 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleLoginRecaptchaReset,
-      handleLoginRecaptchaResponse,
-      handleCreateAccountLoginPasswordShow,
-      handleCreateAccountLoginPasswordMouseDown,
-      handleCreateAccountLoginPasswordConfirmationShow,
-      handleCreateAccountLoginPasswordConfirmationMouseDown,
+      handleRecaptchaReset,
+      handlePasswordShow,
+      handlePasswordMouseDown,
+      handlePasswordConfirmationShow,
+      handlePasswordConfirmationMouseDown,
       
-    } = stores.loginIndex;
+    } = stores.loginAccount;
     
     
     
@@ -210,7 +234,7 @@ export default injectIntl(class extends React.Component {
     
     const createAccountLoginPasswordShow = lodashGet(dataObj, ['createAccountLoginPasswordShow'], false);
     const createAccountLoginPassword = lodashGet(dataObj, ['createAccountLoginPassword'], '');
-    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: createAccountLoginPassword, createAccountLoginID });
+    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: createAccountLoginPassword, loginID: createAccountLoginID });
     
     
     // --------------------------------------------------
@@ -300,22 +324,31 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* reCAPTCHA */}
-        {/*<ReCaptcha
-          ref={ref => this.recaptcha = ref}
-          sitekey={process.env.RECAPTCHA_SITE_KEY}
-          action='createAccount'
-          verifyCallback={handleLoginRecaptchaResponse}
-        />*/}
-        
-        
-        <ExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
           
           
           {/* Heading */}
-          <ExpansionPanelSummary expandIcon={<IconExpandMore />} onClick={() => handlePanelExpand({ _id: 'createAccount' })}>
+          <StyledExpansionPanelSummary>
+          
             <Heading>アカウント作成</Heading>
-          </ExpansionPanelSummary>
+            
+            {/* Expansion Button */}
+            <ExpandMoreBox>
+              <StyledIconButton
+                onClick={() => handlePanelExpand({ _id: 'createAccount' })}
+                aria-expanded={panelExpanded}
+                aria-label="Show more"
+                disabled={buttonDisabled}
+              >
+                {panelExpanded ? (
+                  <IconExpandLess />
+                ) : (
+                  <IconExpandMore />
+                )}
+              </StyledIconButton>
+            </ExpandMoreBox>
+            
+          </StyledExpansionPanelSummary>
           
           
           
@@ -400,8 +433,8 @@ export default injectIntl(class extends React.Component {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="Toggle password visibility"
-                        onClick={handleCreateAccountLoginPasswordShow}
-                        onMouseDown={handleCreateAccountLoginPasswordMouseDown}
+                        onClick={handlePasswordShow}
+                        onMouseDown={handlePasswordMouseDown}
                       >
                         {createAccountLoginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
                       </IconButton>
@@ -446,8 +479,8 @@ export default injectIntl(class extends React.Component {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="Toggle password visibility"
-                        onClick={handleCreateAccountLoginPasswordConfirmationShow}
-                        onMouseDown={handleCreateAccountLoginPasswordConfirmationMouseDown}
+                        onClick={handlePasswordConfirmationShow}
+                        onMouseDown={handlePasswordConfirmationMouseDown}
                       >
                         {createAccountLoginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
                       </IconButton>
@@ -523,7 +556,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleLoginRecaptchaReset(this.recaptcha)}
+                onClick={() => handleRecaptchaReset({ formType: 'createAccount' })}
                 disabled={buttonDisabled}
               >
                 アカウント作成
@@ -533,7 +566,7 @@ export default injectIntl(class extends React.Component {
             
           </StyledExpansionPanelDetails>
           
-        </ExpansionPanel>
+        </StyledExpansionPanel>
         
         
         

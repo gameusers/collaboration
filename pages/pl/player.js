@@ -101,7 +101,7 @@ class Component extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res, query }) {
+  static async getInitialProps({ req, res, query }) {
     
     
     // --------------------------------------------------
@@ -112,6 +112,7 @@ class Component extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const playerID = query.param1;
+    const pathname = `/pl/${playerID}`;
     
     
     // --------------------------------------------------
@@ -127,7 +128,6 @@ class Component extends React.Component {
     
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
-    
     
     // console.log(chalk`
     //   isServer: {green ${isServer}}
@@ -285,7 +285,7 @@ class Component extends React.Component {
       },
       {
         name: '設定',
-        pathname: `/pl/${this.props.playerID}/config`
+        pathname: `/pl/${this.props.playerID}/settings`
       }
     ];
     

@@ -38,7 +38,6 @@ const { verifyCsrfToken } = require('../../@modules/csrf');
 const { verifyRecaptcha } = require('../../@modules/recaptcha');
 const { encrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
-// const { fetchWrapper } = require('../../@modules/fetch');
 
 
 // ---------------------------------------------
@@ -91,8 +90,8 @@ let statusCode = 400;
 let errorArgumentsObj = {
   fileID: 'EOnyUrk82',
   functionID: '',
-  messageCode: '',
-  errorCodeArr: [],
+  messageCode: 'Error',
+  errorCodeArr: ['Error'],
   errorObj: {},
   usersLogin_id: ''
 };
@@ -149,12 +148,12 @@ router.post('/login', upload.none(), (req, res, next) => {
       //   console.log
       // --------------------------------------------------
       
-      console.log(chalk`
-        loginID: {green ${loginID}}
-        loginPassword: {green ${loginPassword}}
-        response: {green ${response}}
-        req.isAuthenticated(): {green ${req.isAuthenticated()}}
-      `);
+      // console.log(chalk`
+      //   loginID: {green ${loginID}}
+      //   loginPassword: {green ${loginPassword}}
+      //   response: {green ${response}}
+      //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+      // `);
       
       
       
@@ -256,9 +255,9 @@ router.post('/login', upload.none(), (req, res, next) => {
     } catch (errorObj) {
       
       
-      console.log(`\n---------- errorObj ----------\n`);
-      console.dir(errorObj);
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- errorObj ----------\n`);
+      // console.dir(errorObj);
+      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
@@ -389,11 +388,11 @@ passport.deserializeUser(async (id, done) => {
 
 
 // --------------------------------------------------
-//   アカウント作成 / 作成後ログインする
+//   アカウント作成
 // --------------------------------------------------
 
 // --------------------------------------------------
-//   Follow / Function ID: y9FpGQjEA
+//   Create Account / Function ID: y9FpGQjEA
 // --------------------------------------------------
 
 router.post('/create-account', upload.none(), async (req, res, next) => {
@@ -414,11 +413,13 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   ログインチェック
+    //   Login Check
     // --------------------------------------------------
     
     if (req.isAuthenticated()) {
-      throw new Error('Login Already');
+      statusCode = 401;
+      errorArgumentsObj.errorCodeArr = ['WiQ3kBaeL'];
+      throw new Error();
     }
     
     
@@ -482,7 +483,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     await val(validationUsersLoginIDServer, { value: loginID }, 'Login ID');
-    val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
+    await val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
     await val(validationUsersEmailServer, { value: email, encryptedEmail }, 'E-Mail');
     
     
@@ -665,16 +666,6 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   --------------------\n
     // `);
     
-    // console.log(errorObj);
-    
-    
-    // ---------------------------------------------
-    //   API Error
-    // ---------------------------------------------
-    
-    // errorArgumentsObj.messageCode = 'Error';
-    // errorArgumentsObj.errorCodeArr = [errorObj.message];
-    
     
     // ---------------------------------------------
     //   Error Object
@@ -769,6 +760,189 @@ router.post('/logout', upload.none(), function(req, res, next) {
     
   }
   
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   ログイン情報編集
+// --------------------------------------------------
+
+// --------------------------------------------------
+//   Edit Account / Function ID: svr_ZaIOk
+// --------------------------------------------------
+
+router.post('/edit-account', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionID = 'svr_ZaIOk';
+  
+  let returnObj = {};
+  
+  
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+    
+    if (!req.isAuthenticated()) {
+      statusCode = 401;
+      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+      throw new Error();
+    }
+    
+    const usersLogin_id = req.user._id;
+    
+    
+    // --------------------------------------------------
+    //   POST 取得
+    // --------------------------------------------------
+    
+    const { loginID, loginPassword } = req.body;
+    
+    
+    // ---------------------------------------------
+    //   CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   パスワードハッシュ化
+    // --------------------------------------------------
+    
+    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    const val = async (func, argumentsObj, name) => {
+      
+      const validationObj = await func(argumentsObj);
+      
+      
+      const title = name ? `${name} / ` : '';
+      console.log(`\n---------- ${title}validationObj ----------\n`);
+      console.dir(validationObj);
+      console.log(`\n-----------------------------------\n`);
+      
+      
+      if (validationObj.error) {
+        errorArgumentsObj.messageCode = validationObj.messageCode;
+        errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+        throw new Error();
+      }
+      
+      return validationObj;
+      
+    };
+    
+    await val(validationUsersLoginIDServer, { value: loginID, usersLogin_id }, 'Login ID');
+    await val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
+    
+    
+    // --------------------------------------------------
+    //   Insert For Create Account
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    // const users_id = shortid.generate();
+    // const playerID = shortid.generate();
+    
+    // const usersSaveArr = [
+    //   {
+    //     _id: users_id,
+    //     createdDate: ISO8601,
+    //     updatedDate: ISO8601,
+    //     accessDate: ISO8601,
+    //     playerID,
+    //     loginID,
+    //     loginPassword: hashedPassword,
+    //     emailObj: {
+    //       value: encryptedEmail,
+    //       confirmation: false,
+    //     },
+    //     country: 'JP',
+    //     termsOfServiceConfirmedDate: ISO8601,
+    //     experience: 0,
+    //     titleArr: [],
+    //     followArr: [],
+    //     followCount: 0,
+    //     followedArr: [],
+    //     followedCount: 0,
+    //     role: 'User'
+    //   },
+    // ];
+    
+    // await ModelUsers.insertForCreateAccount({ usersSaveArr });
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      loginID: {green ${loginID}}
+      loginPassword: {green ${loginPassword}}
+      hashedPassword: {green ${hashedPassword}}
+    `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Return Json Object / Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   errorObj.message: {green ${errorObj.message}}
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
+    
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
   
 });
 

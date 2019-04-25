@@ -31,7 +31,7 @@ const logger = require('../logger');
 // --------------------------------------------------
 
 /**
- * Error 情報の入ったオブジェクトを返す
+ * Error 情報の入ったオブジェクトを返してログを記録する
  * @param {string} fileID - ファイル固有のID
  * @param {string} functionID - 関数固有のID
  * @param {string} messageCode - メッセージコード
@@ -74,7 +74,8 @@ const errorCodeIntoErrorObj = ({ fileID, functionID, messageCode, errorCodeArr, 
     //   Log Array
     // ---------------------------------------------
     
-    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${usersLogin_id}`);
+    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${usersLogin_id}\nMessage: ${errorObj.message}`);
+    
     
   }
   

@@ -2,7 +2,24 @@
 //   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   .env
+// ---------------------------------------------
+
 require('dotenv').config();
+
+
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
 
 const express = require('express');
 const helmet = require('helmet');
@@ -23,14 +40,17 @@ const handle = app.getRequestHandler();
 const mobxReact = require('mobx-react');
 const mongoose = require('mongoose');
 
-const chalk = require('chalk');
-const util = require('util');
 
-// const logger = require('./lib/logger/logger');
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
 
 const { createCsrfToken } = require('./app/@modules/csrf');
 
-// const routerApi = require('./app/common/routes/v1/');
+
+// ---------------------------------------------
+//   API
+// ---------------------------------------------
 
 const routerApi = require('./app/@api/v1/');
 
@@ -138,9 +158,21 @@ app.prepare().then(() => {
   //   故意に Error 出力
   // ---------------------------------------------
   
-  server.get('/error', (req, res, next) => {
-    throw new Error('故意のエラー');
-  });
+  // server.get('/error', (req, res, next) => {
+  //   throw new Error('故意のエラー');
+  // });
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   共通処理
+  // ---------------------------------------------
+  
+  const csrfToken = (req, res, next) => {
+    createCsrfToken(req, res);
+    next();
+  };
   
   
   
@@ -149,13 +181,11 @@ app.prepare().then(() => {
   //   Login
   // ---------------------------------------------
   
-  server.get('/login', (req, res, next) => {
-    createCsrfToken(req, res);
+  server.get('/login', csrfToken, (req, res, next) => {
     app.render(req, res, '/login', {});
   });
   
-  server.get('/login/account', (req, res, next) => {
-    createCsrfToken(req, res);
+  server.get('/login/account', csrfToken, (req, res, next) => {
     app.render(req, res, '/login/account', {});
   });
   
@@ -166,17 +196,7 @@ app.prepare().then(() => {
   //   Logout
   // ---------------------------------------------
   
-  server.get('/logout', (req, res, next) => {
-    
-    // console.log(`
-    //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(chalk`
-    //   /logout / req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    // `);
-    
-    createCsrfToken(req, res);
+  server.get('/logout', csrfToken, (req, res, next) => {
     app.render(req, res, '/logout', {});
   });
   
@@ -187,31 +207,13 @@ app.prepare().then(() => {
   //   Player
   // ---------------------------------------------
   
+  server.get('/pl/:param1/settings', (req, res) => {
+    const { param1 } = req.params;
+    app.render(req, res, '/pl/settings', { param1 });
+  });
+  
+  
   server.get('/pl/:param1*', (req, res) => {
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(chalk`
-    //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    // `);
-    
-    // const remoteAddress = req.connection.remoteAddress;
-    
-    // console.log(`
-    //   remoteAddress: \n${util.inspect(remoteAddress, { colors: true, depth: null })}
-    // `);
-    
     
     const { param1 } = req.params;
     
@@ -219,14 +221,14 @@ app.prepare().then(() => {
       app.render(req, res, '/pl/index', req.query);
     }
     
-    const queryObj = {
-      param1
-    };
-    
-    createCsrfToken(req, res);
-    app.render(req, res, '/pl/player', queryObj);
+    app.render(req, res, '/pl/player', { param1 });
     
   });
+  
+  
+  
+  
+  
   
   
   

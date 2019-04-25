@@ -32,21 +32,19 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
+import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconID from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
 import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
-import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
@@ -55,14 +53,13 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 
 import { validationUsersLoginID } from '../../../../app/@database/users/validations/login-id';
 import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../../app/@database/users/validations/login-password';
-import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import TermsOfService from '../../../../app/common/layout/components/terms-of-service';
+// import TermsOfService from '../../../../app/common/layout/components/terms-of-service';
 
 
 
@@ -72,9 +69,34 @@ import TermsOfService from '../../../../app/common/layout/components/terms-of-se
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.span`
+const StyledExpansionPanel = styled(ExpansionPanel)`
+  && {
+    margin: 16px 0 0 0 !important;
+  }
+`;
+
+const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
+  && {
+    cursor: default !important;
+    padding-right: 16px;
+  }
+`;
+
+const Heading = styled.h2`
   font-weight: bold;
   font-size: 18px;
+`;
+
+const ExpandMoreBox = styled.div`
+  margin: 0 0 0 auto;
+  padding: 0 !important;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  && {
+    margin: 0;
+    padding: 4px;
+  }
 `;
 
 const Description = styled.p`
@@ -100,11 +122,6 @@ const StyledTextFieldWide = styled(TextField)`
       width: 100%;
     }
   }
-`;
-
-const TermsOfServiceBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
 `;
 
 const SubmitButtonBox = styled.div`
@@ -143,7 +160,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'createAccount' });
+    this.props.stores.layout.handleButtonEnable({ _id: 'editAccount' });
     
     
   }
@@ -166,11 +183,11 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleRecaptchaReset,
       handlePasswordShow,
       handlePasswordMouseDown,
       handlePasswordConfirmationShow,
       handlePasswordConfirmationMouseDown,
+      handleEditAccount,
       
     } = stores.loginAccount;
     
@@ -181,7 +198,7 @@ export default injectIntl(class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'createAccount'], true);
+    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'editAccount'], true);
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
@@ -189,50 +206,35 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'createAccount'], true);
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'editAccount'], true);
     
     
     
     
     // --------------------------------------------------
-    //   Create Account Login ID
+    //   Login ID
     // --------------------------------------------------
     
-    const createAccountLoginID = lodashGet(dataObj, ['createAccountLoginID'], '');
-    const validationUsersLoginIDObj = validationUsersLoginID({ value: createAccountLoginID });
-    
-    
-    // --------------------------------------------------
-    //   Create Account Login Password
-    // --------------------------------------------------
-    
-    const createAccountLoginPasswordShow = lodashGet(dataObj, ['createAccountLoginPasswordShow'], false);
-    const createAccountLoginPassword = lodashGet(dataObj, ['createAccountLoginPassword'], '');
-    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: createAccountLoginPassword, loginID: createAccountLoginID });
+    const loginID = lodashGet(dataObj, ['loginID'], '');
+    const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
     
     
     // --------------------------------------------------
-    //   Create Account Login Password Confirmation
+    //   Login Password
     // --------------------------------------------------
     
-    const createAccountLoginPasswordConfirmationShow = lodashGet(dataObj, ['createAccountLoginPasswordConfirmationShow'], false);
-    const createAccountLoginPasswordConfirmation = lodashGet(dataObj, ['createAccountLoginPasswordConfirmation'], '');
-    const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: createAccountLoginPasswordConfirmation, loginPassword: createAccountLoginPassword });
-    
-    
-    // --------------------------------------------------
-    //   Create Account E-Mail
-    // --------------------------------------------------
-    
-    const createAccountEmail = lodashGet(dataObj, ['createAccountEmail'], '');
-    const validationUsersEmailObj = validationUsersEmail({ value: createAccountEmail });
+    const loginPasswordShow = lodashGet(dataObj, ['loginPasswordShow'], false);
+    const loginPassword = lodashGet(dataObj, ['loginPassword'], '');
+    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID: loginID });
     
     
     // --------------------------------------------------
-    //   利用規約
+    //   Login Password Confirmation
     // --------------------------------------------------
     
-    const createAccountTermsOfService = lodashGet(dataObj, ['createAccountTermsOfService'], false);
+    const loginPasswordConfirmationShow = lodashGet(dataObj, ['loginPasswordConfirmationShow'], false);
+    const loginPasswordConfirmation = lodashGet(dataObj, ['loginPasswordConfirmation'], '');
+    const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: loginPasswordConfirmation, loginPassword: loginPassword });
     
     
     
@@ -247,7 +249,7 @@ export default injectIntl(class extends React.Component {
     let passwordColor = passwordColorArr[validationUsersLoginPasswordObj.strengthScore];
     let passwordStrength = passwordStrengthArr[validationUsersLoginPasswordObj.strengthScore];
     
-    if (createAccountLoginPassword === '') {
+    if (loginPassword === '') {
       passwordColor = '#848484';
       passwordStrength = ' -';
     }
@@ -283,10 +285,6 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(chalk`
-    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
-    // `);
-    
     
     
     
@@ -298,13 +296,31 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        <ExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
           
           
           {/* Heading */}
-          <ExpansionPanelSummary expandIcon={<IconExpandMore />} onClick={() => handlePanelExpand({ _id: 'createAccount' })}>
-            <Heading>アカウント作成</Heading>
-          </ExpansionPanelSummary>
+          <StyledExpansionPanelSummary>
+          
+            <Heading>ログイン情報編集</Heading>
+            
+            {/* Expansion Button */}
+            <ExpandMoreBox>
+              <StyledIconButton
+                onClick={() => handlePanelExpand({ _id: 'editAccount' })}
+                aria-expanded={panelExpanded}
+                aria-label="Show more"
+                disabled={buttonDisabled}
+              >
+                {panelExpanded ? (
+                  <IconExpandLess />
+                ) : (
+                  <IconExpandMore />
+                )}
+              </StyledIconButton>
+            </ExpandMoreBox>
+            
+          </StyledExpansionPanelSummary>
           
           
           
@@ -313,19 +329,7 @@ export default injectIntl(class extends React.Component {
           <StyledExpansionPanelDetails>
             
             <Description>
-              アカウントを作成する場合は、こちらのフォームにIDとパスワードを入力して送信してください。
-            </Description>
-            
-            <Description>
-              利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
-            </Description>
-            
-            <Description>
-              E-Mailの入力は任意ですが、登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
-            </Description>
-            
-            <Description>
-              ID、パスワード、E-Mailはアカウント作成後に変更することが可能です。
+              IDとパスワードに利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
             </Description>
             
             
@@ -334,11 +338,11 @@ export default injectIntl(class extends React.Component {
             {/* Login ID */}
             <LoginIDBox>
               <StyledTextFieldWide
-                id="createAccountLoginID"
+                id="loginID"
                 label="ID"
                 value={validationUsersLoginIDObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: ['createAccountLoginID'],
+                  pathArr: ['loginID'],
                   value: eventObj.target.value
                 })}
                 error={validationUsersLoginIDObj.error}
@@ -364,12 +368,12 @@ export default injectIntl(class extends React.Component {
             {/* Login Password */}
             <LoginIDBox>
               <StyledTextFieldWide
-                id="createAccountLoginPassword"
+                id="loginPassword"
                 label="パスワード"
-                type={createAccountLoginPasswordShow ? 'text' : 'password'}
+                type={loginPasswordShow ? 'text' : 'password'}
                 value={validationUsersLoginPasswordObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: ['createAccountLoginPassword'],
+                  pathArr: ['loginPassword'],
                   value: eventObj.target.value
                 })}
                 error={validationUsersLoginPasswordObj.error}
@@ -392,7 +396,7 @@ export default injectIntl(class extends React.Component {
                         onClick={handlePasswordShow}
                         onMouseDown={handlePasswordMouseDown}
                       >
-                        {createAccountLoginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                        {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
                       </IconButton>
                     </InputAdornment>
                   )
@@ -410,12 +414,12 @@ export default injectIntl(class extends React.Component {
             {/* Login Password Confirmation */}
             <LoginIDBox>
               <StyledTextFieldWide
-                id="createAccountLoginPasswordConfirmation"
+                id="loginPasswordConfirmation"
                 label="パスワード確認"
-                type={createAccountLoginPasswordConfirmationShow ? 'text' : 'password'}
+                type={loginPasswordConfirmationShow ? 'text' : 'password'}
                 value={validationUsersLoginPasswordConfirmationObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: ['createAccountLoginPasswordConfirmation'],
+                  pathArr: ['loginPasswordConfirmation'],
                   value: eventObj.target.value
                 })}
                 error={validationUsersLoginPasswordConfirmationObj.error}
@@ -438,7 +442,7 @@ export default injectIntl(class extends React.Component {
                         onClick={handlePasswordConfirmationShow}
                         onMouseDown={handlePasswordConfirmationMouseDown}
                       >
-                        {createAccountLoginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
+                        {loginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
                       </IconButton>
                     </InputAdornment>
                   )
@@ -449,88 +453,22 @@ export default injectIntl(class extends React.Component {
             
             
             
-            {/* E-Mail */}
-            <LoginIDBox>
-              <StyledTextFieldWide
-                id="createAccountEmail"
-                label="E-Mail（任意）"
-                value={validationUsersEmailObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['createAccountEmail'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersEmailObj.error}
-                helperText={intl.formatMessage({ id: validationUsersEmailObj.messageCode }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 100,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconMailOutline />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </LoginIDBox>
-            
-            
-            
-            
-            {/* 利用規約 */}
-            <TermsOfServiceBox>
-              
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={createAccountTermsOfService}
-                    onChange={(eventObj) => handleEdit({
-                      pathArr: ['createAccountTermsOfService'],
-                      value: eventObj.target.checked
-                    })}
-                  />
-                }
-                label="利用規約に同意します"
-              />
-              
-              <Button
-                color="primary"
-                onClick={stores.layout.handleTermsOfServiceDialogOpen}
-              >
-                利用規約を表示
-              </Button>
-              
-            </TermsOfServiceBox>
-            
-            
-            
-            
             {/* Submit Button */}
             <SubmitButtonBox>
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleRecaptchaReset({ formType: 'createAccount' })}
+                onClick={() => handleEditAccount()}
                 disabled={buttonDisabled}
               >
-                アカウント作成
+                編集する
               </Button>
             </SubmitButtonBox>
             
             
           </StyledExpansionPanelDetails>
           
-        </ExpansionPanel>
-        
-        
-        
-        
-        {/* 利用規約ダイアログ */}
-        <TermsOfService />
-        
-        
+        </StyledExpansionPanel>
         
         
       </React.Fragment>

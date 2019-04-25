@@ -2,9 +2,20 @@
 //   Require
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 const Tokens = require('csrf');
 const tokens = new Tokens();
-const chalk = require('chalk');
 
 
 
@@ -76,13 +87,11 @@ const verifyCsrfToken = (req, res) => {
     // `);
     
     
-    
     // 秘密文字 と トークン の組み合わせが正しいか検証
     if (tokens.verify(secret, token) === false) {
       // console.log(`Invalid Token`);
       throw new Error('CSRF: Invalid Token');
     }
-    
     
     
     // --------------------------------------------------
@@ -98,6 +107,7 @@ const verifyCsrfToken = (req, res) => {
     
     return true;
     
+    
   }
   
   
@@ -108,6 +118,7 @@ const verifyCsrfToken = (req, res) => {
   // --------------------------------------------------
   
   return true;
+  
   
 };
 

@@ -38,6 +38,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 //   Material UI / Icons
 // ---------------------------------------------
 
+import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconID from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
@@ -60,9 +61,34 @@ const { validationUsersLoginPassword } = require('../../../../app/@database/user
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.span`
+const StyledExpansionPanel = styled(ExpansionPanel)`
+  && {
+    margin: 16px 0 0 0 !important;
+  }
+`;
+
+const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
+  && {
+    cursor: default !important;
+    padding-right: 16px;
+  }
+`;
+
+const Heading = styled.h2`
   font-weight: bold;
   font-size: 18px;
+`;
+
+const ExpandMoreBox = styled.div`
+  margin: 0 0 0 auto;
+  padding: 0 !important;
+`;
+
+const StyledIconButton = styled(IconButton)`
+  && {
+    margin: 0;
+    padding: 4px;
+  }
 `;
 
 const Description = styled.p`
@@ -225,13 +251,31 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        <ExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
           
           
           {/* Heading */}
-          <ExpansionPanelSummary expandIcon={<IconExpandMore />} onClick={() => handlePanelExpand({ _id: 'login' })}>
+          <StyledExpansionPanelSummary>
+          
             <Heading>ログイン - ID & パスワード</Heading>
-          </ExpansionPanelSummary>
+            
+            {/* Expansion Button */}
+            <ExpandMoreBox>
+              <StyledIconButton
+                onClick={() => handlePanelExpand({ _id: 'login' })}
+                aria-expanded={panelExpanded}
+                aria-label="Show more"
+                disabled={buttonDisabled}
+              >
+                {panelExpanded ? (
+                  <IconExpandLess />
+                ) : (
+                  <IconExpandMore />
+                )}
+              </StyledIconButton>
+            </ExpandMoreBox>
+            
+          </StyledExpansionPanelSummary>
           
           
           
@@ -331,7 +375,7 @@ export default injectIntl(class extends React.Component {
             
           </StyledExpansionPanelDetails>
           
-        </ExpansionPanel>
+        </StyledExpansionPanel>
         
         
       </React.Fragment>

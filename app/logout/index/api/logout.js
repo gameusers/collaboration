@@ -143,7 +143,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
     
     
     // --------------------------------------------------

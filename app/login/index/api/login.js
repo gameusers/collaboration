@@ -24,6 +24,13 @@ const upload = multer({ dest: 'static/' });
 
 
 // ---------------------------------------------
+//   Model
+// ---------------------------------------------
+
+const ModelGames = require('../../../@database/games/model');
+
+
+// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -72,7 +79,7 @@ let errorArgumentsObj = {
 //   Initial Props / Function ID: aNvBIBitq
 // --------------------------------------------------
 
-router.get('/initial-props', upload.none(), (req, res, next) => {
+router.get('/initial-props', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -110,6 +117,17 @@ router.get('/initial-props', upload.none(), (req, res, next) => {
     }
     
     
+    // --------------------------------------------------
+    //   データ取得 / Games
+    //   ヘッダーヒーローイメージ用
+    // --------------------------------------------------
+    
+    returnObj.headerObj = await ModelGames.findForHeroImage({
+      language: localeObj.language,
+      country: localeObj.country,
+    });
+    
+    
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
@@ -125,7 +143,7 @@ router.get('/initial-props', upload.none(), (req, res, next) => {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
     
     
     // --------------------------------------------------

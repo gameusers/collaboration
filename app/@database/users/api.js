@@ -26,7 +26,6 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
 const moment = require('moment');
-// const FormData = require('form-data');
 // const lodashGet = require('lodash/get');
 
 
@@ -119,9 +118,9 @@ router.post('/login', upload.none(), (req, res, next) => {
     //   Locale
     // --------------------------------------------------
     
-    const localeObj = locale({
-      acceptLanguage: req.headers['accept-language']
-    });
+    // const localeObj = locale({
+    //   acceptLanguage: req.headers['accept-language']
+    // });
     
     
     
@@ -136,12 +135,18 @@ router.post('/login', upload.none(), (req, res, next) => {
       
       
       // --------------------------------------------------
-      //   ログインチェック
+      //   Login Check
       // --------------------------------------------------
       
       if (req.isAuthenticated()) {
-        throw new Error('Login Already');
+        statusCode = 401;
+        errorArgumentsObj.errorCodeArr = ['yyaAiB5f-'];
+        throw new Error();
       }
+      
+      // if (req.isAuthenticated()) {
+      //   throw new Error('Login Already');
+      // }
       
       
       // --------------------------------------------------
@@ -181,7 +186,9 @@ router.post('/login', upload.none(), (req, res, next) => {
       // console.log(`\n-----------------------------------\n`);
       
       if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error) {
-        throw new Error('Validation');
+        errorArgumentsObj.errorCodeArr = ['jmFCQy90J'];
+        throw new Error();
+        // throw new Error('Validation');
       }
       
       
@@ -190,7 +197,9 @@ router.post('/login', upload.none(), (req, res, next) => {
       // ---------------------------------------------
       
       if (err) {
-        throw new Error('Passport 1');
+        errorArgumentsObj.errorCodeArr = ['BBoMlwE0o'];
+        throw new Error();
+        // throw new Error('Passport 1');
       }
       
       
@@ -236,7 +245,9 @@ router.post('/login', upload.none(), (req, res, next) => {
         // ---------------------------------------------
         
         if (err) {
-          throw new Error('Passport 2');
+          errorArgumentsObj.errorCodeArr = ['5PzzF23_V'];
+          throw new Error();
+          // throw new Error('Passport 2');
         }
         
         
@@ -265,7 +276,7 @@ router.post('/login', upload.none(), (req, res, next) => {
       // ---------------------------------------------
       
       errorArgumentsObj.errorObj = errorObj;
-      const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+      const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
       
       
       // --------------------------------------------------
@@ -418,7 +429,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
     if (req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['WiQ3kBaeL'];
+      errorArgumentsObj.errorCodeArr = ['L0w_PocQA'];
       throw new Error();
     }
     
@@ -449,7 +460,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   E-Mail 暗号化
     // --------------------------------------------------
     
-    let encryptedEmail = email ? encrypt(email) : '';
+    const encryptedEmail = email ? encrypt(email) : '';
     
     
     // --------------------------------------------------
@@ -700,9 +711,9 @@ router.post('/logout', upload.none(), function(req, res, next) {
   //   Locale
   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
+  // const localeObj = locale({
+  //   acceptLanguage: req.headers['accept-language']
+  // });
   
   
   // --------------------------------------------------
@@ -748,7 +759,7 @@ router.post('/logout', upload.none(), function(req, res, next) {
     // ---------------------------------------------
     
     errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
     
     
     // --------------------------------------------------
@@ -797,7 +808,7 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+      errorArgumentsObj.errorCodeArr = ['hGQuDAeuO'];
       throw new Error();
     }
     
@@ -859,35 +870,21 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
-    // const users_id = shortid.generate();
-    // const playerID = shortid.generate();
     
-    // const usersSaveArr = [
-    //   {
-    //     _id: users_id,
-    //     createdDate: ISO8601,
-    //     updatedDate: ISO8601,
-    //     accessDate: ISO8601,
-    //     playerID,
-    //     loginID,
-    //     loginPassword: hashedPassword,
-    //     emailObj: {
-    //       value: encryptedEmail,
-    //       confirmation: false,
-    //     },
-    //     country: 'JP',
-    //     termsOfServiceConfirmedDate: ISO8601,
-    //     experience: 0,
-    //     titleArr: [],
-    //     followArr: [],
-    //     followCount: 0,
-    //     followedArr: [],
-    //     followedCount: 0,
-    //     role: 'User'
-    //   },
-    // ];
+    const conditionObj = {
+      _id: usersLogin_id
+    }
     
-    // await ModelUsers.insertForCreateAccount({ usersSaveArr });
+    const saveObj = {
+      $set: {
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
+        loginID,
+        loginPassword: hashedPassword,
+      }
+    };
+    
+    await ModelUsers.upsert({ conditionObj, saveObj });
     
     
     // --------------------------------------------------

@@ -207,21 +207,21 @@ app.prepare().then(() => {
   //   Player
   // ---------------------------------------------
   
-  server.get('/pl/:param1/settings', (req, res) => {
-    const { param1 } = req.params;
-    app.render(req, res, '/pl/settings', { param1 });
+  server.get('/pl/:playerID/settings', (req, res) => {
+    const { playerID } = req.params;
+    app.render(req, res, '/pl/settings', { playerID });
   });
   
   
-  server.get('/pl/:param1*', (req, res) => {
+  server.get('/pl/:playerID*', (req, res) => {
     
-    const { param1 } = req.params;
+    const { playerID } = req.params;
     
-    if (!param1) {
+    if (!playerID) {
       app.render(req, res, '/pl/index', req.query);
     }
     
-    app.render(req, res, '/pl/player', { param1 });
+    app.render(req, res, '/pl/player', { playerID });
     
   });
   

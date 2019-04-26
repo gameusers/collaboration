@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
@@ -83,7 +84,7 @@ const Container = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/login
+//   URL: http://dev-1.gameusers.org:8080/pl/***/settings
 // --------------------------------------------------
 
 @observer
@@ -104,7 +105,7 @@ class Component extends React.Component {
     const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const playerID = query.param1;
+    const playerID = query.playerID;
     const pathname = `/pl/${playerID}/settings`;
     
     
@@ -113,19 +114,35 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/login/initial-props`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/pl/settings`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
     });
     
-    const statusCode = resultObj.statusCode;
+    let statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    
+    // --------------------------------------------------
+    //   Check Access Right
+    // --------------------------------------------------
+    
+    const myPlayerID = lodashGet(initialPropsObj, ['usersLoginObj', 'playerID'], '');
+    
+    if (playerID !== myPlayerID) {
+      statusCode = 403;
+    }
+    
+    console.log(`
+      ----- initialPropsObj.usersObj -----\n
+      ${util.inspect(initialPropsObj.usersObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(chalk`
+    //   playerID: {green ${playerID}}
+    //   myPlayerID: {green ${myPlayerID}}
     // `);
     
     
@@ -181,7 +198,7 @@ class Component extends React.Component {
       
       this.stores = initStoreIndex(argumentsObj);
       this.stores.pathname = props.pathname;
-      this.stores.loginAccount = initStorePlayerSettings(argumentsObj, this.stores);
+      this.stores.playerSettings = initStorePlayerSettings(argumentsObj, this.stores);
       
       
       // --------------------------------------------------
@@ -254,11 +271,13 @@ class Component extends React.Component {
     const headerNavMainArr = [
       {
         name: 'プロフィール',
-        pathname: `/pl/${this.props.playerID}`
+        href: `/pl/player?playerID=${this.props.playerID}`,
+        as: `/pl/${this.props.playerID}`,
       },
       {
         name: '設定',
-        pathname: `/pl/${this.props.playerID}/settings`
+        href: `/pl/settings?playerID=${this.props.playerID}`,
+        as: `/pl/${this.props.playerID}/settings`,
       }
     ];
     

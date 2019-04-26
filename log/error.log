@@ -8,3 +8,4 @@
 {"level":"error","message":"2019-04-25T11:57:31.584Z\nCode: EOnyUrk82@svr_ZaIOk@fi1EoNmKH\nLogin User: \nMessage: "}
 {"level":"error","message":"2019-04-25T12:00:33.910Z\nCode: EOnyUrk82@svr_ZaIOk@fi1EoNmKH\nLogin User: \nMessage: "}
 {"level":"error","message":"2019-04-25T12:05:29.973Z\nCode: EOnyUrk82@svr_ZaIOk@2R5M5lNLA\nLogin User: \nMessage: "}
+{"level":"error","message":"2019-04-26T09:23:28.814Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: CSRF: Invalid Token"}

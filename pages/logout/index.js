@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 import React from 'react';
+import Error from 'next/error';
 import Head from 'next/head';
 import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
@@ -112,7 +113,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/logout/initial-props`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -268,8 +269,9 @@ class Component extends React.Component {
     const headerNavMainArr = [
       {
         name: 'ログアウト',
-        pathname: '/logout'
-      }
+        href: '/logout',
+        as: '/logout',
+      },
     ];
     
     

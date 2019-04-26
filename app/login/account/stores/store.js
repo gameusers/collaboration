@@ -31,7 +31,7 @@ import { fetchWrapper } from '../../../@modules/fetch';
 //   Format
 // ---------------------------------------------
 
-import { errorsArrIntoErrorMessage } from '../../../@format/error';
+// import { errorsArrIntoErrorMessage } from '../../../@format/error';
 
 
 // ---------------------------------------------
@@ -39,7 +39,7 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 // ---------------------------------------------
 
 const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-const { validationUsersLoginPassword } = require('../../../@database/users/validations/login-password');
+const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
 const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
@@ -254,6 +254,7 @@ class Store {
       
       const createAccountLoginID = lodashGet(this.dataObj, ['createAccountLoginID'], '');
       const createAccountLoginPassword = lodashGet(this.dataObj, ['createAccountLoginPassword'], '');
+      const createAccountLoginPasswordConfirmation = lodashGet(this.dataObj, ['createAccountLoginPasswordConfirmation'], '');
       const createAccountEmail = lodashGet(this.dataObj, ['createAccountEmail'], '');
       const createAccountTermsOfService = lodashGet(this.dataObj, ['createAccountTermsOfService'], false);
       const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
@@ -274,6 +275,7 @@ class Store {
       
       const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: createAccountLoginID });
       const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: createAccountLoginPassword, loginID: createAccountLoginID });
+      const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ required: true, value: createAccountLoginPasswordConfirmation, loginPassword: createAccountLoginPassword });
       const validationUsersEmailObj = validationUsersEmail({ value: createAccountEmail });
       
       
@@ -281,7 +283,12 @@ class Store {
       //   Validation Error
       // ---------------------------------------------
       
-      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error || validationUsersEmailObj.error) {
+      if (
+        validationUsersLoginIDObj.error ||
+        validationUsersLoginPasswordObj.error ||
+        validationUsersLoginPasswordConfirmationObj.error ||
+        validationUsersEmailObj.error
+      ) {
         throw new Error('フォームの入力内容に問題があります');
       }
       

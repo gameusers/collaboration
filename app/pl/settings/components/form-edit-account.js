@@ -189,7 +189,7 @@ export default injectIntl(class extends React.Component {
       handlePasswordConfirmationMouseDown,
       handleEditAccount,
       
-    } = stores.loginAccount;
+    } = stores.playerSettings;
     
     
     

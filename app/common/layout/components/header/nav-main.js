@@ -36,9 +36,6 @@ import Button from '@material-ui/core/Button';
 // --------------------------------------------------
 
 const Container = styled.nav`
-  margin: 0 0 8px 0;
-  padding: 0;
-  
   width: 100%;
   height: 36px;
   text-align: center;
@@ -47,14 +44,16 @@ const Container = styled.nav`
   position: sticky;
   top: -1px;
   z-index: 1000;
+  margin: 0 0 8px 0;
+  padding: 0;
 `;
       
 const MenuActiveButton = styled(Button)`
   && {
     height: 36px;
     color: white;
-    margin: 0 10px 0 0;
     border-bottom: solid 2px #B40431;
+    margin: 0 10px 0 0;
   }
 `;
       
@@ -62,16 +61,16 @@ const MenuButton = styled(Button)`
   && {
     height: 36px;
     color: #BDBDBD;
-    margin: 0 10px 0 0;
     border-bottom: solid 2px #25283D;
+    margin: 0 10px 0 0;
   }
 `;
       
 const StyledScrollbar = styled(Scrollbar)`
-  padding: 0 0 8px 0;
   overflow-x: hidden;
   overflow-y: hidden;
   white-space: nowrap;
+  padding: 0 0 8px 0;
 `;
 
 
@@ -129,7 +128,7 @@ export default class extends React.Component {
         //   stores.pathname: {green ${stores.pathname}}
         // `);
         
-        if (valueObj.pathname === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
+        if (valueObj.as === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
           
           componentsArr.unshift(
             <MenuActiveButton key={index}>
@@ -142,7 +141,7 @@ export default class extends React.Component {
         } else {
           
           componentsArr.unshift(
-            <Link href={valueObj.pathname} key={index}>
+            <Link href={valueObj.href} as={valueObj.as} key={index}>
               <MenuButton>
                 {valueObj.name}
               </MenuButton>

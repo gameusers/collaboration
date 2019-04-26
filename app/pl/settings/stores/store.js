@@ -183,7 +183,11 @@ class Store {
       //   Validation Error
       // ---------------------------------------------
       
-      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error || validationUsersLoginPasswordConfirmationObj.error) {
+      if (
+        validationUsersLoginIDObj.error ||
+        validationUsersLoginPasswordObj.error ||
+        validationUsersLoginPasswordConfirmationObj.error
+      ) {
         throw new Error('フォームの入力内容に問題があります');
       }
       

@@ -5,10 +5,12 @@
 const express = require('express');
 
 const initialize = require('../initialize');
+const initialProps = require('./initial-props');
+
 const admin = require('../../admin/index/api/admin');
-const login = require('../../login/index/api/login');
-const logout = require('../../logout/index/api/logout');
-const plPlayer = require('../../pl/player/api/player');
+// const login = require('../../login/index/api/login');
+// const logout = require('../../logout/index/api/logout');
+// const plPlayer = require('../../pl/player/api/player');
 
 const users = require('../../@database/users/api');
 const cardPlayers = require('../../@database/card-players/api');
@@ -28,10 +30,12 @@ if (process.env.NODE_ENV === 'development') {
   router.use('/initialize', initialize);
 }
 
+router.use('/initial-props', initialProps);
+
 router.use('/admin', admin);
-router.use('/login', login);
-router.use('/logout', logout);
-router.use('/pl/player', plPlayer);
+// router.use('/login', login);
+// router.use('/logout', logout);
+// router.use('/pl/player', plPlayer);
 
 router.use('/users', users);
 router.use('/card-players', cardPlayers);

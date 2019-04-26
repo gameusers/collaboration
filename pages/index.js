@@ -295,12 +295,14 @@ class Component extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'プロフィール',
-        pathname: '/pl/AZ-1979'
+        name: 'ゲームコミュニティ',
+        href: '/gc',
+        as: '/gc',
       },
       {
-        name: '設定',
-        pathname: '/pl/AZ-1979/config'
+        name: 'ユーザーコミュニティ',
+        href: '/uc',
+        as: '/uc',
       }
     ];
     

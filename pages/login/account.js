@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
@@ -84,7 +85,7 @@ const Container = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/login
+//   URL: http://dev-1.gameusers.org:8080/login/account
 // --------------------------------------------------
 
 @observer
@@ -112,7 +113,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/login/initial-props`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -279,11 +280,13 @@ class Component extends React.Component {
     const headerNavMainArr = [
       {
         name: 'ログイン',
-        pathname: '/login'
+        href: '/login',
+        as: '/login',
       },
       {
         name: 'アカウント作成',
-        pathname: '/login/account'
+        href: '/login/account',
+        as: '/login/account',
       }
     ];
     

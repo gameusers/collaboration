@@ -111,7 +111,7 @@ class Component extends React.Component {
     const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const playerID = query.param1;
+    const playerID = query.playerID;
     const pathname = `/pl/${playerID}`;
     
     
@@ -120,7 +120,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/pl/player/initial-props?playerID=${playerID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/pl/player/?playerID=${playerID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -131,7 +131,7 @@ class Component extends React.Component {
     
     // console.log(chalk`
     //   isServer: {green ${isServer}}
-    //   process.browser: {green ${process.browser}}
+    //   pathname: {green ${pathname}}
     // `);
     
     // console.log(`
@@ -281,13 +281,26 @@ class Component extends React.Component {
     const headerNavMainArr = [
       {
         name: 'プロフィール',
-        pathname: `/pl/${this.props.playerID}`
+        href: `/pl/player?playerID=${this.props.playerID}`,
+        as: `/pl/${this.props.playerID}`,
       },
       {
         name: '設定',
-        pathname: `/pl/${this.props.playerID}/settings`
+        href: `/pl/settings?playerID=${this.props.playerID}`,
+        as: `/pl/${this.props.playerID}/settings`,
       }
     ];
+    
+    // const headerNavMainArr = [
+    //   {
+    //     name: 'プロフィール',
+    //     pathname: `/pl/${this.props.playerID}`
+    //   },
+    //   {
+    //     name: '設定',
+    //     pathname: `/pl/${this.props.playerID}/settings`
+    //   }
+    // ];
     
     
     // --------------------------------------------------

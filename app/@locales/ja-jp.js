@@ -9,6 +9,8 @@ const ja_JP = {
   'Error': 'Error Code: { code }',
   'qnWsuPcrJ': 'その他のエラー',
   
+  'uwHIKBy7c': 'フォームの入力内容に問題があります',
+  
   'cFbXmuFVh': '入力してください',
   'xdAU7SgoO': '1文字以上、20文字以内で入力してください',
   '9c6Lprg6n': '1文字以上、30文字以内で入力してください',
@@ -39,6 +41,10 @@ const ja_JP = {
   
   'xLLNIpo6a': 'ログインする必要があります',
   // 'WiQ3kBaeL': 'ログイン中は処理できません',
+  
+  
+  // /app/pl/settings/stores/store.js
+  
   
   
   // ---------------------------------------------
@@ -134,7 +140,17 @@ const ja_JP = {
   '5H8rr53kE': '入力したメールアドレスは利用できません',
   
   
-  // '': '',
+  
+  
+  // ---------------------------------------------
+  //   Player / Settings
+  // ---------------------------------------------
+  
+  // /app/pl/settings/stores/store.js
+  'nhn2yers2': 'ログイン情報を編集しました',
+  
+  
+  
 };
 
 module.exports = ja_JP;

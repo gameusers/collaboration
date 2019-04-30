@@ -230,6 +230,20 @@ class Component extends React.Component {
       this.stores.data.replaceUsersLoginObj(lodashGet(props, ['initialPropsObj', 'usersLoginObj'], {}));
       
       
+      // --------------------------------------------------
+      //   Update
+      // --------------------------------------------------
+      
+      const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
+      
+      this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
+      
+      // console.log(chalk`
+      //   loginID: {green ${loginID}}
+      // `);
+      
+      
+      
     } catch (e) {
       this.error = true;
     }

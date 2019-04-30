@@ -3,6 +3,10 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
+import { IntlProvider } from 'react-intl';
+import lodashGet from 'lodash/get';
+
+
 
 
 // --------------------------------------------------
@@ -44,12 +48,29 @@ class Store {
   
   
   /**
+   * intl.formatMessage 用
+   * @type {Object}
+   */
+  @observable intl = {};
+  
+  
+  /**
    * Localeオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
   @action.bound
   replaceLocaleObj(obj) {
+    
     this.localeObj = obj;
+    
+    const intlProvider = new IntlProvider({
+      locale: this.localeObj.languageArr[0],
+      messages: this.localeObj.dataObj
+    }, {});
+    
+    const { intl } = intlProvider.getChildContext();
+    this.intl = intl;
+    
   };
   
   

@@ -46,33 +46,33 @@ class Store {
   
   // historyStateArr = [];
   
-  historyStateArr = [
-    {
-      path: 'uc/az1979',
-      param1: 'uc',
-      param2: 'az1979',
-      param3: 'test',
-      param4: '',
-      param5: '',
-      file: 'uc/community.js',
-      id: 'p0V_RsaT1l8',
-      dateTime: '2017-07-24T20:45:20'
-    }
-  ]
+  // historyStateArr = [
+  //   {
+  //     path: 'uc/az1979',
+  //     param1: 'uc',
+  //     param2: 'az1979',
+  //     param3: 'test',
+  //     param4: '',
+  //     param5: '',
+  //     file: 'uc/community.js',
+  //     id: 'p0V_RsaT1l8',
+  //     dateTime: '2017-07-24T20:45:20'
+  //   }
+  // ]
   
-  insertHistoryState(obj) {
+  // insertHistoryState(obj) {
     
-    // console.dir(obj);
+  //   // console.dir(obj);
     
-    this.historyStateArr.unshift(obj);
+  //   this.historyStateArr.unshift(obj);
     
-    // 履歴を保存する数を指定する
-    this.historyStateArr.splice(30, 1);
+  //   // 履歴を保存する数を指定する
+  //   this.historyStateArr.splice(30, 1);
     
-    console.log(`insertHistoryState`);
-    console.dir(this.historyStateArr);
+  //   console.log(`insertHistoryState`);
+  //   console.dir(this.historyStateArr);
     
-  };
+  // };
   
   
   
@@ -85,111 +85,111 @@ class Store {
   //   ヘッダー - ナビゲーション / メイン
   // ---------------------------------------------
   
-  headerNavMainObj = {
+  // headerNavMainObj = {
     
-    // index: [
-    //   {
-    //     name: 'フィード',
-    //     pathname: '/'
-    //   },
-    //   {
-    //     name: 'ゲーム',
-    //     pathname: '/gc'
-    //   },
-    //   {
-    //     name: 'ユーザー',
-    //     pathname: '/uc'
-    //   },
-    //   {
-    //     name: 'テスト1',
-    //     pathname: '/test'
-    //   },
-    //   {
-    //     name: 'テスト2',
-    //     pathname: '/test'
-    //   },
-    //   {
-    //     name: 'テスト3',
-    //     pathname: '/test'
-    //   },
-    //   {
-    //     name: 'テスト4',
-    //     pathname: '/test'
-    //   },
-    //   {
-    //     name: 'テスト5',
-    //     pathname: '/test'
-    //   },
-    //   {
-    //     name: 'テスト6',
-    //     pathname: '/test'
-    //   }
-    // ],
+  //   // index: [
+  //   //   {
+  //   //     name: 'フィード',
+  //   //     pathname: '/'
+  //   //   },
+  //   //   {
+  //   //     name: 'ゲーム',
+  //   //     pathname: '/gc'
+  //   //   },
+  //   //   {
+  //   //     name: 'ユーザー',
+  //   //     pathname: '/uc'
+  //   //   },
+  //   //   {
+  //   //     name: 'テスト1',
+  //   //     pathname: '/test'
+  //   //   },
+  //   //   {
+  //   //     name: 'テスト2',
+  //   //     pathname: '/test'
+  //   //   },
+  //   //   {
+  //   //     name: 'テスト3',
+  //   //     pathname: '/test'
+  //   //   },
+  //   //   {
+  //   //     name: 'テスト4',
+  //   //     pathname: '/test'
+  //   //   },
+  //   //   {
+  //   //     name: 'テスト5',
+  //   //     pathname: '/test'
+  //   //   },
+  //   //   {
+  //   //     name: 'テスト6',
+  //   //     pathname: '/test'
+  //   //   }
+  //   // ],
     
-    index: [
-      {
-        name: 'フィード',
-        pathname: '/'
-      },
-      {
-        name: 'ゲーム',
-        pathname: '/gc'
-      },
-      {
-        name: 'ユーザー',
-        pathname: '/uc'
-      }
-    ],
+  //   index: [
+  //     {
+  //       name: 'フィード',
+  //       pathname: '/'
+  //     },
+  //     {
+  //       name: 'ゲーム',
+  //       pathname: '/gc'
+  //     },
+  //     {
+  //       name: 'ユーザー',
+  //       pathname: '/uc'
+  //     }
+  //   ],
     
-    uc: [
-      {
-        name: 'トップ',
-        pathname: '/uc/community'
-      },
-      {
-        name: 'メンバー',
-        pathname: '/uc/community/member'
-      },
-      {
-        name: 'データ',
-        pathname: '/uc/community/data'
-      }
-    ],
+  //   uc: [
+  //     {
+  //       name: 'トップ',
+  //       pathname: '/uc/community'
+  //     },
+  //     {
+  //       name: 'メンバー',
+  //       pathname: '/uc/community/member'
+  //     },
+  //     {
+  //       name: 'データ',
+  //       pathname: '/uc/community/data'
+  //     }
+  //   ],
     
-    gc: [
-      {
-        name: 'BBS',
-        pathname: '/gc/community'
-      },
-      {
-        name: '募集',
-        pathname: '/uc/community/rec'
-      },
-      {
-        name: '設定',
-        pathname: '/uc/community/config'
-      }
-    ],
+  //   gc: [
+  //     {
+  //       name: 'BBS',
+  //       pathname: '/gc/community'
+  //     },
+  //     {
+  //       name: '募集',
+  //       pathname: '/uc/community/rec'
+  //     },
+  //     {
+  //       name: '設定',
+  //       pathname: '/uc/community/config'
+  //     }
+  //   ],
     
-    login: [
-      {
-        name: 'ID & パスワード',
-        pathname: '/login'
-      },
-      {
-        name: 'ソーシャル',
-        pathname: '/login/social'
-      }
-    ],
+  //   login: [
+  //     {
+  //       name: 'ID & パスワード',
+  //       pathname: '/login'
+  //     },
+  //     {
+  //       name: 'ソーシャル',
+  //       pathname: '/login/social'
+  //     }
+  //   ],
     
-    logout: [
-      {
-        name: 'ログアウト',
-        pathname: '/logout'
-      }
-    ],
+  //   logout: [
+  //     {
+  //       name: 'ログアウト',
+  //       pathname: '/logout'
+  //     }
+  //   ],
     
-  };
+  // };
   
   
   
@@ -297,74 +297,47 @@ class Store {
   
   
   
-  /**
-   * データの開閉状態
-   * @type {boolean}
-   */
-  // @observable headerDataBoxOpen = false;
-  
-  
-  // /**
-  // * データを開く
-  // */
-  // @action.bound
-  // handleHeaderDataBoxOpen() {
-  //   this.headerDataBoxOpen = true;
-  // };
-  
-  
-  // /**
-  // * データを閉じる
-  // */
-  // @action.bound
-  // handleHeaderDataBoxClose() {
-  //   this.headerDataBoxOpen = false;
-  // };
-  
-  
-  
-  
   // ---------------------------------------------
   //   Header - ヒーローイメージ
   // ---------------------------------------------
   
-  @observable headerGameNo = 1;
-  @observable headerHeroImageArr = [1];
-  // @observable headerHeroImageArr = null;
-  @observable headerThumbnail = false;
-  @observable headerDataTitle = 'Dead by Daylight';
-  @observable headerDataHardware = 'PC, PS4, Xbox One';
-  @observable headerDataGenre = 'アクション';
-  @observable headerDataPlayersMax = '1-5人';
-  @observable headerDataReleaseDate = '2016/6/14';
-  @observable headerDataDeveloper = 'Behaviour Interactive';
-  @observable headerDataLinkArr = [
-    {
-      type: 'Official',
-      name: null,
-      url: 'http://www.deadbydaylight.com/'
-    },
-    {
-      type: 'Twitter',
-      name: null,
-      url: 'https://twitter.com/deadByBHVR'
-    },
-    {
-      type: 'Facebook',
-      name: null,
-      url: 'https://www.facebook.com/DeadByDaylight/'
-    },
-    {
-      type: 'YouTube',
-      name: null,
-      url: 'https://www.youtube.com/channel/UCaSgsFdGbwjfdawl3rOXiwQ'
-    },
-    {
-      type: 'Steam',
-      name: null,
-      url: 'https://store.steampowered.com/app/381210/'
-    }
-  ];
+  // @observable headerGameNo = 1;
+  // @observable headerHeroImageArr = [1];
+  // // @observable headerHeroImageArr = null;
+  // @observable headerThumbnail = false;
+  // @observable headerDataTitle = 'Dead by Daylight';
+  // @observable headerDataHardware = 'PC, PS4, Xbox One';
+  // @observable headerDataGenre = 'アクション';
+  // @observable headerDataPlayersMax = '1-5人';
+  // @observable headerDataReleaseDate = '2016/6/14';
+  // @observable headerDataDeveloper = 'Behaviour Interactive';
+  // @observable headerDataLinkArr = [
+  //   {
+  //     type: 'Official',
+  //     name: null,
+  //     url: 'http://www.deadbydaylight.com/'
+  //   },
+  //   {
+  //     type: 'Twitter',
+  //     name: null,
+  //     url: 'https://twitter.com/deadByBHVR'
+  //   },
+  //   {
+  //     type: 'Facebook',
+  //     name: null,
+  //     url: 'https://www.facebook.com/DeadByDaylight/'
+  //   },
+  //   {
+  //     type: 'YouTube',
+  //     name: null,
+  //     url: 'https://www.youtube.com/channel/UCaSgsFdGbwjfdawl3rOXiwQ'
+  //   },
+  //   {
+  //     type: 'Steam',
+  //     name: null,
+  //     url: 'https://store.steampowered.com/app/381210/'
+  //   }
+  // ];
   
   
   
@@ -389,128 +362,112 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Lightbox - 画像表示
+  //   Snackbar （通知用のバー）
+  //   https://material-ui.com/demos/snackbars/#transitions
   // ---------------------------------------------
   
   /**
-   * Lightboxのデータを入れるオブジェクト
-   * @type {Object}
+   * 開閉を切り替える真偽値
+   * @type {boolean}
    */
-  // @observable lightboxObj = {};
-  
-  
-  // /**
-  // * Lightboxを開く
-  // * @param {string} _id - ID
-  // * @param {number} currentNo - 表示する画像番号
-  // */
-  // @action.bound
-  // handleLightboxOpen({ _id, currentNo }) {
-  //   lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo);
-  //   lodashSet(this.lightboxObj, [_id, 'open'], true);
-  // };
-  
-  
-  // /**
-  // * Lightboxを閉じる
-  // * @param {string} _id - ID
-  // */
-  // @action.bound
-  // handleLightboxClose({ _id }) {
-  //   lodashSet(this.lightboxObj, [_id, 'open'], false);
-  // };
-  
-  
-  // /**
-  // * 前の画像を表示する
-  // * @param {string} _id - ID
-  // */
-  // @action.bound
-  // handleLightboxPrevious({ _id }) {
-  //   const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
-  //   lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo - 1);
-  // };
-  
-  
-  // /**
-  // * 次の画像を表示する
-  // * @param {string} _id - ID
-  // */
-  // @action.bound
-  // handleLightboxNext({ _id }) {
-  //   const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
-  //   lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo + 1);
-  // };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Modal - 動画表示
-  //   https://github.com/appleple/react-modal-video
-  // ---------------------------------------------
-  
-  // @observable modalVideoChannel = null;
-  // @observable modalVideoId = null;
-  // @observable modalVideoOpen = false;
-  
-  // @action.bound
-  // handleModalVideoOpen(videoChannel, videoId) {
-  //   this.modalVideoChannel = videoChannel;
-  //   this.modalVideoId = videoId;
-  //   this.modalVideoOpen = true;
-  // };
-  
-  // @action.bound
-  // handleModalVideoClose() {
-  //   this.modalVideoOpen = false;
-  // };
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Snackbar （通知用のバー）
-  // ---------------------------------------------
-  
   @observable snackbarOpen = false;
-  @observable snackbarVertical = 'bottom';
-  @observable snackbarHorizontal = 'left';
-  @observable snackbarAutoHideDuration= 5000;
+  
+  
+  /**
+   * 色 - success / error / warning / info
+   * @type {string}
+   */
   @observable snackbarVariant = '';
+  
+  
+  /**
+   * メッセージ
+   * @type {string}
+   */
   @observable snackbarMessage = '';
+  
+  
+  /**
+   * 表示位置 - 縦方向
+   * @type {string}
+   */
+  @observable snackbarVertical = 'bottom';
+  
+  
+  /**
+   * 表示位置 - 横方向
+   * @type {string}
+   */
+  @observable snackbarHorizontal = 'left';
+  
+  
+  /**
+   * 表示時間
+   * @type {number}
+   */
+  @observable snackbarAutoHideDuration= 5000;
+  
+  
+  /**
+   * キー
+   * @type {string}
+   */
   @observable snackbarKey = 'snackbarKey';
   
+  
+  /**
+   * Queue Array
+   * @type {Array}
+   */
   snackbarQueueArr = [];
   
   
+  /**
+   * Snackbarを開く
+   * @param {string} variant - 色
+   * @param {string} message - メッセージ
+   * @param {string} vertical - 縦方向
+   * @param {string} horizontal - 横方向
+   * @param {string} autoHideDuration - 表示時間
+   */
   @action.bound
-  handleSnackbarOpen(variant, message) {
+  handleSnackbarOpen({ variant, message, vertical, horizontal, autoHideDuration }) {
     
-    this.snackbarQueueArr.push({
+    const object = {
       variant,
       message,
-      key: new Date().getTime(),
-    });
+      key: `snackbar-${new Date().getTime()}`,
+    };
+    
+    if (vertical) {
+      object.vertical = vertical;
+    }
+    
+    if (horizontal) {
+      object.horizontal = horizontal;
+    }
+    
+    if (autoHideDuration) {
+      object.autoHideDuration = autoHideDuration;
+    }
+    
+    this.snackbarQueueArr.push(object);
     
     if (this.snackbarOpen) {
-      // immediately begin dismissing current message
-      // to start showing new one
       this.snackbarOpen = false;
     } else {
-      // console.log('layout/stores/scommon - handleSnackbarOpen');
       this.processQueue();
     }
     
-    // this.snackbarOpen = true;
   };
   
+  
+  /**
+   * Queue
+   */
   processQueue = () => {
     
     if (this.snackbarQueueArr.length > 0) {
-      // console.log('layout/stores/scommon - processQueue');
-      // console.log(`layout/stores/scommon - snackbarMessage = ${this.snackbarMessage}`);
       const tempArr = this.snackbarQueueArr.shift();
       this.snackbarVariant = tempArr.variant;
       this.snackbarMessage = tempArr.message;
@@ -521,21 +478,31 @@ class Store {
     
   };
   
+  
+  /**
+   * Snackbarを閉じる
+   * @param {Object} event - イベントオブジェクト
+   * @param {string} reason
+   */
   @action.bound
   handleSnackbarClose(event, reason) {
+    
     if (reason === 'clickaway') {
       return;
     }
     
     this.snackbarOpen = false;
+    
   };
   
+  
+  /**
+   * Snackbarを閉じる / Exited
+   */
   @action.bound
   handleSnackbarExited() {
     this.processQueue();
   };
-  
-  
   
   
   
@@ -725,21 +692,6 @@ class Store {
   handleTermsOfServiceDialogClose() {
     this.termsOfServiceDialogOpen = false;
   };
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   ID生成
-  // ---------------------------------------------
-  
-  // 参考：https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-  // createUuidV4() {
-  //   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-  //     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  //   );
-  // }
   
   
 }

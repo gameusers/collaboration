@@ -2,14 +2,35 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import styled from 'styled-components';
-// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
 
 import Snackbar from '@material-ui/core/Snackbar';
 import SnackbarContent from '@material-ui/core/SnackbarContent';
 import IconButton from '@material-ui/core/IconButton';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
 
 import IconCheckCircle from '@material-ui/icons/CheckCircle';
 import IconError from '@material-ui/icons/Error';
@@ -19,19 +40,11 @@ import IconClose from '@material-ui/icons/Close';
 
 
 
+
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
-
-// const Footer = styled.footer`
-//   // display: flex;
-//   // flex-direction: column;
-//   position: relative;
-//   padding: 6px 0 6px;
-//   background-color: black;
-//   color: white;
-// `;
 
 
 
@@ -133,6 +146,7 @@ const SnackbarContentWrapper = (props) => {
 
 
 
+
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
@@ -141,10 +155,19 @@ const SnackbarContentWrapper = (props) => {
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
 
   render() {
     

@@ -15,7 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import { IntlProvider } from 'react-intl';
+// import { IntlProvider } from 'react-intl';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -25,13 +25,15 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
+import CustomError from '../../../@modules/error/custom';
+import { returnErrorMessage } from '../../../@modules/error/message';
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-import { errorsArrIntoErrorMessage } from '../../../@format/error';
+// import { errorsArrIntoErrorMessage } from '../../../@format/error';
 
 
 // ---------------------------------------------
@@ -50,7 +52,7 @@ const { validationUsersEmail } = require('../../../@database/users/validations/e
 let storeLoginAccount = null;
 let storeLayout = null;
 let storeData = null;
-
+      
 
 
 
@@ -177,7 +179,7 @@ class Store {
       const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
       const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID: loginID });
       const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ required: true, value: loginPasswordConfirmation, loginPassword: loginPassword });
-      
+      // throw new Error('テストエラー');
       
       // ---------------------------------------------
       //   Validation Error
@@ -188,7 +190,7 @@ class Store {
         validationUsersLoginPasswordObj.error ||
         validationUsersLoginPasswordConfirmationObj.error
       ) {
-        throw new Error('フォームの入力内容に問題があります');
+        throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageCode: 'uwHIKBy7c' }] });
       }
       
       
@@ -228,59 +230,64 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
       
-      // ---------------------------------------------
-      //   I18n
-      // ---------------------------------------------
-      
-      const intlProvider = new IntlProvider({
-        locale: storeData.localeObj.languageArr[0],
-        messages: storeData.localeObj.dataObj
-      }, {});
-      
-      const { intl } = intlProvider.getChildContext();
-      
       if ('errorsArr' in resultObj) {
-        throw new Error(intl.formatMessage(
-          { id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '') },
-          { code: lodashGet(resultObj, ['errorsArr', 0, 'code'], '') },
-        ));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
-      // // ---------------------------------------------
-      // //   Form Reset
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Form Reset
+      // ---------------------------------------------
       
-      // lodashSet(this.dataObj, 'loginID', '');
-      // lodashSet(this.dataObj, 'loginPassword', '');
+      lodashSet(this.dataObj, 'loginPassword', '');
+      lodashSet(this.dataObj, 'loginPasswordConfirmation', '');
       
       
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'ログイン情報を編集しました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        message: storeData.intl.formatMessage({ id: 'nhn2yers2' }),
+      });
       
       
     } catch (errorObj) {
+      
+      
+      // console.log(`\n---------- errorObj.errorsArr ----------\n`);
+      // console.dir(errorObj.errorsArr);
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(chalk`
+      //   errorObj.messageCode: {green ${errorObj.messageCode}}
+      //   errorObj.errorCode: {green ${errorObj.errorCode}}
+      // `);
+      
+      // console.log(errorObj.message); //bazMessage
+      // console.log(errorObj.stack); //stacktrace
       
       
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        message: returnErrorMessage({ intl: storeData.intl, localeObj: storeData.localeObj, errorObj }),
+      });
       
       
     } finally {
@@ -298,7 +305,6 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
-      // console.log('finally');
       
       
     }

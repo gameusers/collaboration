@@ -54,7 +54,8 @@ import initStorePlayerSettings from '../../app/pl/settings/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import FormEditAccount from '../../app/pl/settings/components/form-edit-account';
+import FormAccount from '../../app/pl/settings/components/form-account';
+import FormEmail from '../../app/pl/settings/components/form-email';
 
 
 // ---------------------------------------------
@@ -134,11 +135,11 @@ class Component extends React.Component {
       statusCode = 403;
     }
     
-    console.log(`
-      ----- initialPropsObj.usersObj -----\n
-      ${util.inspect(initialPropsObj.usersObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- initialPropsObj.usersObj -----\n
+    //   ${util.inspect(initialPropsObj.usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
     //   playerID: {green ${playerID}}
@@ -235,8 +236,12 @@ class Component extends React.Component {
       // --------------------------------------------------
       
       const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
+      const emailSecret = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'secret'], '');
+      const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
       
       this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
+      this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
+      this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
       
       // console.log(chalk`
       //   loginID: {green ${loginID}}
@@ -324,7 +329,11 @@ class Component extends React.Component {
               
               
               {/* アカウント編集 */}
-              <FormEditAccount />
+              <FormAccount />
+              
+              
+              {/* E-Mail */}
+              <FormEmail />
               
               
             </Container>

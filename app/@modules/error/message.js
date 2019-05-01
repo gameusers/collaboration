@@ -50,10 +50,34 @@ const returnErrorMessage = ({ intl, localeObj, errorObj }) => {
     
     // console.log('Custom Error');
     
+    // console.log(`\n---------- errorObj.errorsArr ----------\n`);
+    // console.dir(errorObj.errorsArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(chalk`
+    //   lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error'): {green ${lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error')}}
+    // `);
+    
+    let id = lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error');
+    let code = lodashGet(errorObj, ['errorsArr', 0, 'code'], '');
+    
+    if (!id) {
+      id = 'Error';
+    }
+    
+    if (!code) {
+      code = 'Error';
+    }
+    
     message = intl.formatMessage(
-      { id: lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], '') },
-      { code: lodashGet(errorObj, ['errorsArr', 0, 'code'], '') },
+      { id },
+      { code },
     );
+    
+    // message = intl.formatMessage(
+    //   { id: lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error') },
+    //   { code: lodashGet(errorObj, ['errorsArr', 0, 'code'], '') },
+    // );
     
     
   } else {

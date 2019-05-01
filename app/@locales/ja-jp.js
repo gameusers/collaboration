@@ -148,6 +148,8 @@ const ja_JP = {
   
   // /app/pl/settings/stores/store.js
   'nhn2yers2': 'ログイン情報を編集しました',
+  '84FmVC7RZ': 'E-Mailを編集しました',
+  
   
   
   

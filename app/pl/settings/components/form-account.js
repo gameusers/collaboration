@@ -55,13 +55,6 @@ import { validationUsersLoginID } from '../../../../app/@database/users/validati
 import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../../app/@database/users/validations/login-password';
 
 
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-// import TermsOfService from '../../../../app/common/layout/components/terms-of-service';
-
-
 
 
 // --------------------------------------------------
@@ -160,7 +153,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'editAccount' });
+    this.props.stores.layout.handleButtonEnable({ _id: 'submitAccount' });
     
     
   }
@@ -187,7 +180,7 @@ export default injectIntl(class extends React.Component {
       handlePasswordMouseDown,
       handlePasswordConfirmationShow,
       handlePasswordConfirmationMouseDown,
-      handleEditAccount,
+      handleSubmitAccount,
       
     } = stores.playerSettings;
     
@@ -198,7 +191,7 @@ export default injectIntl(class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'editAccount'], true);
+    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'submitAccount'], true);
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
@@ -206,7 +199,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'editAccount'], true);
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'submitAccount'], true);
     
     
     
@@ -307,7 +300,7 @@ export default injectIntl(class extends React.Component {
             {/* Expansion Button */}
             <ExpandMoreBox>
               <StyledIconButton
-                onClick={() => handlePanelExpand({ _id: 'editAccount' })}
+                onClick={() => handlePanelExpand({ _id: 'submitAccount' })}
                 aria-expanded={panelExpanded}
                 aria-label="Show more"
                 disabled={buttonDisabled}
@@ -458,7 +451,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleEditAccount()}
+                onClick={() => handleSubmitAccount()}
                 disabled={buttonDisabled}
               >
                 編集する

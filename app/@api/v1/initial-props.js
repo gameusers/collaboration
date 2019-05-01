@@ -465,7 +465,7 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
     
     const decryptedEmail = usersObj.emailObj.value ? decrypt(usersObj.emailObj.value) : '';
     
-    let emailHidden = '';
+    let emailSecret = '';
     let emailLocalFlag = true;
     
     for (let i = 0; i < decryptedEmail.length; i++) {
@@ -475,9 +475,9 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
       }
       
       if (i === 0 || emailLocalFlag === false) {
-        emailHidden += decryptedEmail[i];
+        emailSecret += decryptedEmail[i];
       } else {
-        emailHidden += '*';
+        emailSecret += '*';
       }
       
     }
@@ -486,7 +486,7 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
       loginID: usersObj.loginID,
       playerID: usersObj.playerID,
       emailObj: {
-        value: emailHidden,
+        secret: emailSecret,
         confirmation: usersObj.emailObj.confirmation,
       }
     };

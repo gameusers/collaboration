@@ -866,7 +866,7 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Insert For Create Account
+    //   Insert For Account
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
@@ -896,6 +896,200 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
       loginPassword: {green ${loginPassword}}
       hashedPassword: {green ${hashedPassword}}
     `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Return Json Object / Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   errorObj.message: {green ${errorObj.message}}
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Error Object
+    // ---------------------------------------------
+    
+    errorArgumentsObj.errorObj = errorObj;
+    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   E-Mail登録
+// --------------------------------------------------
+
+// --------------------------------------------------
+//   Edit Account / Function ID: CuQ669oqC
+// --------------------------------------------------
+
+router.post('/email', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  errorArgumentsObj.functionID = 'CuQ669oqC';
+  
+  let returnObj = {};
+  
+  
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+    
+    if (!req.isAuthenticated()) {
+      statusCode = 401;
+      errorArgumentsObj.errorCodeArr = ['Q88YJ5uJ7'];
+      throw new Error();
+    }
+    
+    const usersLogin_id = req.user._id;
+    
+    
+    // --------------------------------------------------
+    //   POST 取得
+    // --------------------------------------------------
+    
+    const { email } = req.body;
+    
+    
+    // ---------------------------------------------
+    //   CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   E-Mail 暗号化
+    // --------------------------------------------------
+    
+    const encryptedEmail = email ? encrypt(email) : '';
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    const val = async (func, argumentsObj, name) => {
+      
+      const validationObj = await func(argumentsObj);
+      
+      
+      // const title = name ? `${name} / ` : '';
+      // console.log(`\n---------- ${title}validationObj ----------\n`);
+      // console.dir(validationObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      if (validationObj.error) {
+        errorArgumentsObj.messageCode = validationObj.messageCode;
+        errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+        throw new Error();
+      }
+      
+      return validationObj;
+      
+    };
+    
+    await val(validationUsersEmailServer, { value: email, encryptedEmail }, 'E-Mail');
+    
+    
+    // --------------------------------------------------
+    //   Insert For E-Mail
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    const conditionObj = {
+      _id: usersLogin_id
+    }
+    
+    const saveObj = {
+      $set: {
+        updatedDate: ISO8601,
+        accessDate: ISO8601,
+        emailObj: {
+          value: encryptedEmail,
+          confirmation: false,
+        },
+      }
+    };
+    
+    await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    
+    // --------------------------------------------------
+    //   E-Mail 伏せ字化
+    // --------------------------------------------------
+    
+    let emailSecret = '';
+    let emailLocalFlag = true;
+    
+    for (let i = 0; i < email.length; i++) {
+      
+      if (email[i] === '@') {
+        emailLocalFlag = false;
+      }
+      
+      if (i === 0 || emailLocalFlag === false) {
+        emailSecret += email[i];
+      } else {
+        emailSecret += '*';
+      }
+      
+    }
+    
+    returnObj.emailSecret = emailSecret;
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   email: {green ${email}}
+    //   encryptedEmail: {green ${encryptedEmail}}
+    //   emailSecret: {green ${emailSecret}}
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

@@ -450,7 +450,7 @@ export default injectIntl(class extends React.Component {
             <SubmitButtonBox>
               <Button
                 variant="contained"
-                color="secondary"
+                color="primary"
                 onClick={() => handleSubmitAccount()}
                 disabled={buttonDisabled}
               >

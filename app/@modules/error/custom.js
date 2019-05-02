@@ -6,7 +6,7 @@
  * CustomError
  * https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Global_Objects/Error
  */
-export default class CustomError extends Error {
+class CustomError extends Error {
   
   constructor({ errorsArr = [] }, ...params) {
     
@@ -26,3 +26,12 @@ export default class CustomError extends Error {
   }
   
 }
+
+
+// --------------------------------------------------
+//   Export
+// --------------------------------------------------
+
+module.exports = {
+  CustomError
+};

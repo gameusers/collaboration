@@ -327,6 +327,9 @@ export default class extends React.Component {
                   </InputAdornment>
                 ),
               }}
+              inputProps={{
+                autoComplete: "off"
+              }}
             />
           </Search>
           

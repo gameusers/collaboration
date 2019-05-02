@@ -22,6 +22,7 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const SchemaUsers = require('./schema');
+const SchemaEmailConfirmations = require('../email-confirmations/schema');
 const SchemaCardPlayers = require('../card-players/schema');
 
 
@@ -901,6 +902,150 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
 
 
 
+
+/**
+ * 挿入 / 更新する  アカウント情報編集用
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
+ * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
+ * @return {Array} 
+ */
+const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await SchemaUsers.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    // --------------------------------------------------
+    //   DB Insert
+    // --------------------------------------------------
+    
+    await SchemaUsers.update(usersConditionObj, usersSaveObj, { session, upsert: true });
+    await SchemaEmailConfirmations.update(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
+    
+    // await SchemaUsers.create(usersSaveArr, { session });
+    // throw new Error('Dy16VjjQL');
+    // throw new Error();
+    // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----- usersConditionObj -----\n
+      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- usersSaveObj -----\n
+      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- emailConfirmationsConditionObj -----\n
+      ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- emailConfirmationsSaveObj -----\n
+      ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    // return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -915,5 +1060,6 @@ module.exports = {
   findOneForUser,
   findFormatted,
   updateForFollow,
-  insertForCreateAccount
+  insertForCreateAccount,
+  upsertForCreateEditAccount
 };

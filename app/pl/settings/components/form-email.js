@@ -40,7 +40,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconID from '@material-ui/icons/Person';
+import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
@@ -56,6 +56,11 @@ import { validationUsersEmail } from '../../../../app/@database/users/validation
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
+
+
+// ---------------------------------------------
+//   Panel
+// ---------------------------------------------
 
 const StyledExpansionPanel = styled(ExpansionPanel)`
   && {
@@ -87,14 +92,47 @@ const StyledIconButton = styled(IconButton)`
   }
 `;
 
+const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
+  && {
+    display: flex;
+    flex-flow: column wrap;
+  }
+`;
+
+
+// ---------------------------------------------
+//   Description
+// ---------------------------------------------
+
 const Description = styled.p`
   margin: 0 0 16px 0;
 `;
 
+
+// ---------------------------------------------
+//   Text Field
+// ---------------------------------------------
+
+const StyledTextFieldWide = styled(TextField)`
+  && {
+    width: 400px;
+    margin: 32px 0 0 0;
+    
+    @media screen and (max-width: 480px) {
+      width: 100%;
+    }
+  }
+`;
+
+
+// ---------------------------------------------
+//   Registered Email
+// ---------------------------------------------
+
 const RegisteredEmailBox = styled.div`
   display: flex;
   flex-flow: row wrap;
-  margin: 0 0 8px 0;
+  margin: 16px 0 8px 0;
 `;
 
 const RegisteredEmail = styled.div`
@@ -110,26 +148,14 @@ const ConfirmationFalse = styled.span`
   color: red;
 `;
 
-const LoginIDBox = styled.div`
-  
+const RegisteredEmailButtonBox = styled.div`
+  margin: 0;
 `;
 
-const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
-  && {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`;
 
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
+// ---------------------------------------------
+//   Submit Button
+// ---------------------------------------------
 
 const SubmitButtonBox = styled.div`
   display: flex;
@@ -225,8 +251,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const email = lodashGet(dataObj, ['emailObj', 'value'], '');
-    const emailSecret = lodashGet(dataObj, ['emailObj', 'secret'], '');
     const emailConfirmation = lodashGet(dataObj, ['emailObj', 'confirmation'], false);
+    const emailSecret = lodashGet(dataObj, ['emailObj', 'secret'], '');
     const validationUsersEmailObj = validationUsersEmail({ value: email });
     
     
@@ -312,11 +338,11 @@ export default injectIntl(class extends React.Component {
           <StyledExpansionPanelDetails>
             
             <Description>
-              E-Mailアドレスの登録は任意ですが、登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
+              E-Mailアドレスを登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
             </Description>
             
             <Description>
-              「送信する」ボタンを押すと入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、「確認メールを再送信する」ボタンを押してください。もう一度、確認メールが送信されます。
+              E-Mailアドレスを入力して「編集する」ボタンを押すと、入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、「確認メールを再送信する」ボタンを押してください。もう一度、確認メールが送信されます。
             </Description>
             
             <Description>
@@ -329,14 +355,32 @@ export default injectIntl(class extends React.Component {
             
             
             
+            
+            {/* Registered Email */}
             <RegisteredEmailBox>
               <RegisteredEmail>登録済みのメールアドレス:</RegisteredEmail><div>{emailSecret} {componentConfirmation}</div>
             </RegisteredEmailBox>
             
+            {/* E-Mail Confirmation Send Button */}
+            {(emailSecret && !emailConfirmation) &&
+              <RegisteredEmailButtonBox>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  // onClick={() => handlesubmitEmail()}
+                  disabled={buttonDisabled}
+                  size="small"
+                >
+                  確認メールを再送信する
+                </Button>
+              </RegisteredEmailButtonBox>
+            }
             
             
-            {/* Login ID */}
-            <LoginIDBox>
+            
+            
+            {/* E-Mail */}
+            <div>
               <StyledTextFieldWide
                 id="E-Mail"
                 label="E-Mail"
@@ -355,12 +399,12 @@ export default injectIntl(class extends React.Component {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <IconID />
+                      <IconMailOutline />
                     </InputAdornment>
                   ),
                 }}
               />
-            </LoginIDBox>
+            </div>
             
             
             
@@ -371,24 +415,13 @@ export default injectIntl(class extends React.Component {
               <ButtonBox>
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   onClick={() => handleSubmitEmail()}
                   disabled={buttonDisabled}
                 >
                   編集する
                 </Button>
               </ButtonBox>
-              
-              {(emailSecret && !emailConfirmation) &&
-                <Button
-                  variant="contained"
-                  color="primary"
-                  // onClick={() => handlesubmitEmail()}
-                  disabled={buttonDisabled}
-                >
-                  確認メールを再送信する
-                </Button>
-              }
               
             </SubmitButtonBox>
             

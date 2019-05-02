@@ -26,7 +26,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
 const moment = require('moment');
-// const lodashGet = require('lodash/get');
+const lodashGet = require('lodash/get');
 
 
 // ---------------------------------------------
@@ -37,6 +37,15 @@ const { verifyCsrfToken } = require('../../@modules/csrf');
 const { verifyRecaptcha } = require('../../@modules/recaptcha');
 const { encrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
+const { logFromErrorsArr } = require('../../@modules/error/log');
+const { CustomError } = require('../../@modules/error/custom');
+
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { formatEmailSecret } = require('../../@format/email');
 
 
 // ---------------------------------------------
@@ -56,6 +65,7 @@ const { validationUsersEmailServer } = require('./validations/email-server');
 // ---------------------------------------------
 
 const ModelUsers = require('./model');
+const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
 const SchemaUsers = require('../../@database/users/schema');
 
 
@@ -85,6 +95,7 @@ const router = express.Router();
 // --------------------------------------------------
 
 let statusCode = 400;
+let usersLogin_id = '';
 
 let errorArgumentsObj = {
   fileID: 'EOnyUrk82',
@@ -950,10 +961,6 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
 //   E-Mail登録
 // --------------------------------------------------
 
-// --------------------------------------------------
-//   Edit Account / Function ID: CuQ669oqC
-// --------------------------------------------------
-
 router.post('/email', upload.none(), async (req, res, next) => {
   
   
@@ -961,11 +968,8 @@ router.post('/email', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'CuQ669oqC';
-  
   let returnObj = {};
-  
-  
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
@@ -977,11 +981,17 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['Q88YJ5uJ7'];
-      throw new Error();
+      throw new CustomError({ errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
     }
     
-    const usersLogin_id = req.user._id;
+    // if (!req.isAuthenticated()) {
+    //   statusCode = 401;
+    //   throw new CustomError({ errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
+    //   // errorArgumentsObj.errorCodeArr = ['Q88YJ5uJ7'];
+    //   // throw new Error();
+    // }
+    
+    // usersLogin_id = req.user._id;
     
     
     // --------------------------------------------------
@@ -1034,16 +1044,29 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Insert For E-Mail
+    //   Find / DB email-confirmations
+    // --------------------------------------------------
+    
+    const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: usersLogin_id });
+    const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
+    
+    // console.log(`\n---------- emailConfirmationsDocObj ----------\n`);
+    // console.dir(emailConfirmationsDocObj);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // --------------------------------------------------
+    //   Upsert 
+    //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
-    const conditionObj = {
+    const usersConditionObj = {
       _id: usersLogin_id
-    }
+    };
     
-    const saveObj = {
+    const usersSaveObj = {
       $set: {
         updatedDate: ISO8601,
         accessDate: ISO8601,
@@ -1054,31 +1077,32 @@ router.post('/email', upload.none(), async (req, res, next) => {
       }
     };
     
-    await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    const emailConfirmationsConditionObj = {
+      _id: emailConfirmations_id
+    };
+    
+    const emailConfirmationsSaveObj = {
+      $set: {
+        createdDate: ISO8601,
+        users_id: usersLogin_id,
+        emailConfirmationID: `${shortid.generate()}${shortid.generate()}${shortid.generate()}`,
+        email: encryptedEmail,
+      }
+    };
+    
+    // users_id = shortid.generate();
+    
+    // await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    await ModelUsers.upsertForCreateEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
     
     
     // --------------------------------------------------
     //   E-Mail 伏せ字化
     // --------------------------------------------------
     
-    let emailSecret = '';
-    let emailLocalFlag = true;
-    
-    for (let i = 0; i < email.length; i++) {
-      
-      if (email[i] === '@') {
-        emailLocalFlag = false;
-      }
-      
-      if (i === 0 || emailLocalFlag === false) {
-        emailSecret += email[i];
-      } else {
-        emailSecret += '*';
-      }
-      
-    }
-    
-    returnObj.emailSecret = emailSecret;
+    returnObj.emailSecret = formatEmailSecret({ value: email });
     
     
     // --------------------------------------------------
@@ -1119,12 +1143,16 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = logFromErrorsArr({ errorObj, loginUsers_id });
     
+    console.log(`
+      ----- resultErrorObj -----\n
+      ${util.inspect(resultErrorObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // --------------------------------------------------
     //   Return JSON Object / Error

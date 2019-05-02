@@ -25,7 +25,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
-import CustomError from '../../../@modules/error/custom';
+import { CustomError } from '../../../@modules/error/custom';
 import { returnErrorMessage } from '../../../@modules/error/message';
 
 
@@ -190,7 +190,7 @@ class Store {
         validationUsersLoginPasswordObj.error ||
         validationUsersLoginPasswordConfirmationObj.error
       ) {
-        throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageCode: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -351,18 +351,18 @@ class Store {
       // ---------------------------------------------
       
       if (validationUsersEmailObj.error) {
-        throw new CustomError({ errorsArr: [{ code: '6cFcqgVgL', messageCode: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: '6cFcqgVgL', messageID: 'uwHIKBy7c' }] });
       }
       
       
       
-      console.log(chalk`
-        email: {green ${email}}
-      `);
+      // console.log(chalk`
+      //   email: {green ${email}}
+      // `);
       
-      console.log(`\n---------- validationUsersEmailObj ----------\n`);
-      console.dir(JSON.parse(JSON.stringify(validationUsersEmailObj)));
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- validationUsersEmailObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersEmailObj)));
+      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
@@ -405,9 +405,9 @@ class Store {
       //   Form Reset
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, ['emailObj', 'secret'], resultObj.data.emailSecret);
       lodashSet(this.dataObj, ['emailObj', 'value'], '');
       lodashSet(this.dataObj, ['emailObj', 'confirmation'], false);
+      lodashSet(this.dataObj, ['emailObj', 'secret'], resultObj.data.emailSecret);
       
       
       // ---------------------------------------------

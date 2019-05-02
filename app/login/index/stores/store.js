@@ -127,9 +127,9 @@ class Store {
    * @param {string} type - フォームのタイプ
    */
   @action.bound
-  handleRecaptchaReset({ formType }) {
+  handleRecaptchaReset({ eventObj, formType }) {
     
-    
+    eventObj.preventDefault();
     // ---------------------------------------------
     //   Loading 表示
     // ---------------------------------------------

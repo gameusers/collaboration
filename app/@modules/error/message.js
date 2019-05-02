@@ -21,7 +21,7 @@ import lodashGet from 'lodash/get';
 //   Modules
 // ---------------------------------------------
 
-import CustomError from './custom';
+import { CustomError } from './custom';
 
 
 
@@ -58,8 +58,8 @@ const returnErrorMessage = ({ intl, localeObj, errorObj }) => {
     //   lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error'): {green ${lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error')}}
     // `);
     
-    let id = lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error');
-    let code = lodashGet(errorObj, ['errorsArr', 0, 'code'], '');
+    let id = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    let code = lodashGet(errorObj, ['errorsArr', 0, 'code'], 'Error');
     
     if (!id) {
       id = 'Error';
@@ -73,11 +73,6 @@ const returnErrorMessage = ({ intl, localeObj, errorObj }) => {
       { id },
       { code },
     );
-    
-    // message = intl.formatMessage(
-    //   { id: lodashGet(errorObj, ['errorsArr', 0, 'messageCode'], 'Error') },
-    //   { code: lodashGet(errorObj, ['errorsArr', 0, 'code'], '') },
-    // );
     
     
   } else {

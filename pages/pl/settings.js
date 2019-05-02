@@ -240,8 +240,8 @@ class Component extends React.Component {
       const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
       
       this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
-      this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
       this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
+      this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
       
       // console.log(chalk`
       //   loginID: {green ${loginID}}

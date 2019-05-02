@@ -27,3 +27,6 @@
 {"level":"error","message":"2019-05-01T07:27:34.736Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
 {"level":"error","message":"2019-05-01T07:30:43.824Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
 {"level":"error","message":"2019-05-01T07:31:26.212Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
+{"level":"error","message":"2019-05-02T06:53:42.676Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: emailSecret is not defined"}
+{"level":"error","message":"2019-05-02T06:53:42.754Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: emailSecret is not defined"}
+{"level":"error","message":"2019-05-02T06:53:46.586Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: emailSecret is not defined"}

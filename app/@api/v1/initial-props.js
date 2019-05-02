@@ -49,6 +49,13 @@ const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 
 
 // ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { formatEmailSecret } = require('../../@format/email');
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
@@ -465,28 +472,11 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
     
     const decryptedEmail = usersObj.emailObj.value ? decrypt(usersObj.emailObj.value) : '';
     
-    let emailSecret = '';
-    let emailLocalFlag = true;
-    
-    for (let i = 0; i < decryptedEmail.length; i++) {
-      
-      if (decryptedEmail[i] === '@') {
-        emailLocalFlag = false;
-      }
-      
-      if (i === 0 || emailLocalFlag === false) {
-        emailSecret += decryptedEmail[i];
-      } else {
-        emailSecret += '*';
-      }
-      
-    }
-    
     returnObj.usersObj = {
       loginID: usersObj.loginID,
       playerID: usersObj.playerID,
       emailObj: {
-        secret: emailSecret,
+        secret: formatEmailSecret({ value: decryptedEmail }),
         confirmation: usersObj.emailObj.confirmation,
       }
     };

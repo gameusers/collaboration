@@ -137,6 +137,7 @@ const ja_JP = {
   '5O4K1an7k': '正しいメールアドレスではありません',
   
   // /app/@database/users/validations/email-server.js
+  'FQgx7kEJN': '現在、利用中のメールアドレスです',
   '5H8rr53kE': '入力したメールアドレスは利用できません',
   
   

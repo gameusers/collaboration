@@ -11,6 +11,13 @@ const util = require('util');
 
 
 // ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const validator = require('validator');
+
+
+// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
@@ -18,10 +25,10 @@ const Model = require('../model');
 
 
 // ---------------------------------------------
-//   Validation
+//   Modules
 // ---------------------------------------------
 
-const validator = require('validator');
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
@@ -30,11 +37,11 @@ const validator = require('validator');
  * E-Mail
  * @param {boolean} required - 必須かどうか
  * @param {string} value - 値
- * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} encryptedEmail - 暗号化されたメールアドレス
  * @return {Object} バリデーション結果
  */
-const validationUsersEmailServer = async ({ required = false, value, usersLogin_id, encryptedEmail }) => {
+const validationUsersEmailServer = async ({ required = false, value, loginUsers_id, encryptedEmail }) => {
   
   
   // ---------------------------------------------
@@ -51,120 +58,107 @@ const validationUsersEmailServer = async ({ required = false, value, usersLogin_
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: '',
-    error: false,
-    errorCodeArr: []
   };
   
   
-  try {
+  
+  
+  // ---------------------------------------------
+  //   Validation
+  // ---------------------------------------------
+  
+  
+  // ---------------------------------------------
+  //   空の場合、処理停止
+  // ---------------------------------------------
+  
+  if (validator.isEmpty(data)) {
     
-    
-    // ---------------------------------------------
-    //   Validation
-    // ---------------------------------------------
-    
-    // 空の場合、処理停止
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        resultObj.errorCodeArr.push('XIn-aRGHD');
-      }
-      
-      return resultObj;
-      
+    if (required) {
+      throw new CustomError({ errorsArr: [{ code: 'XIn-aRGHD', messageID: 'cFbXmuFVh' }] });
     }
-    
-    // 文字数チェック
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('yKjojKAxy');
-      resultObj.errorCodeArr.push('M4fBF4b4P');
-    }
-    
-    // メールアドレスチェック
-    if (!validator.isEmail(data, { allow_utf8_local_part: false })) {
-      messageCodeArr.unshift('5O4K1an7k');
-      resultObj.errorCodeArr.push('M4fBF4b4P');
-    }
-    
-    
-    // ---------------------------------------------
-    //   データベースに存在しているかチェック
-    // ---------------------------------------------
-    
-    // 編集の場合
-    if (usersLogin_id) {
-      
-      const count = await Model.count({
-        conditionObj: {
-          _id: { '$ne': usersLogin_id },
-          email: encryptedEmail,
-        }
-      });
-      
-      if (count === 1) {
-        messageCodeArr.unshift('5H8rr53kE');
-        resultObj.errorCodeArr.push('BCtGVMysf');
-      }
-      
-    // 新規の場合
-    } else {
-      
-      const count = await Model.count({
-        conditionObj: {
-          email: encryptedEmail,
-        }
-      });
-      
-      if (count === 1) {
-        messageCodeArr.unshift('5H8rr53kE');
-        resultObj.errorCodeArr.push('B4x14ISQg');
-      }
-      
-    }
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   その他のエラー
-    // ---------------------------------------------
-    
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('0aw5t0JvG');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
-    }
-    
-    
-    // ---------------------------------------------
-    //  Error
-    // ---------------------------------------------
-    
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
-    }
-    
     
     return resultObj;
     
+  }
+  
+  
+  // ---------------------------------------------
+  //   文字数チェック
+  // ---------------------------------------------
+  
+  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+    throw new CustomError({ errorsArr: [{ code: 'M4fBF4b4P', messageID: 'ilE2NcYjI' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   メールアドレスチェック
+  // ---------------------------------------------
+  
+  if (!validator.isEmail(data, { allow_utf8_local_part: false })) {
+    throw new CustomError({ errorsArr: [{ code: 'yX8i4gekS', messageID: '5O4K1an7k' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   データベースに存在しているかチェック
+  // ---------------------------------------------
+  
+  // 編集の場合
+  if (loginUsers_id) {
+    
+    // 現在登録しているメールアドレスをもう一度登録しようとした場合、エラー
+    const count1 = await Model.count({
+      conditionObj: {
+        _id: loginUsers_id,
+        'emailObj.value': encryptedEmail,
+      }
+    });
+    
+    if (count1 === 1) {
+      throw new CustomError({ errorsArr: [{ code: 'PIfteQDcZ', messageID: 'FQgx7kEJN' }] });
+    }
+    
+    // 他のユーザーが利用しているメールアドレスを登録しようとした場合、エラー
+    const count2 = await Model.count({
+      conditionObj: {
+        _id: { '$ne': loginUsers_id },
+        'emailObj.value': encryptedEmail,
+      }
+    });
+    
+    if (count2 === 1) {
+      throw new CustomError({ errorsArr: [{ code: 'Tq6BYP4Fz', messageID: '5H8rr53kE' }] });
+    }
+    
+  // 新規の場合
+  } else {
+    
+    const count = await Model.count({
+      conditionObj: {
+        'emailObj.value': encryptedEmail,
+      }
+    });
+    
+    if (count === 1) {
+      throw new CustomError({ errorsArr: [{ code: 'V33-9qy9_', messageID: '5H8rr53kE' }] });
+    }
     
   }
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

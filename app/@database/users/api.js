@@ -975,6 +975,13 @@ router.post('/email', upload.none(), async (req, res, next) => {
   try {
     
     
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
@@ -984,32 +991,16 @@ router.post('/email', upload.none(), async (req, res, next) => {
       throw new CustomError({ errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
     }
     
-    // if (!req.isAuthenticated()) {
-    //   statusCode = 401;
-    //   throw new CustomError({ errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
-    //   // errorArgumentsObj.errorCodeArr = ['Q88YJ5uJ7'];
-    //   // throw new Error();
-    // }
-    
-    // usersLogin_id = req.user._id;
-    
     
     // --------------------------------------------------
-    //   POST 取得
+    //   POST Data
     // --------------------------------------------------
     
     const { email } = req.body;
     
     
-    // ---------------------------------------------
-    //   CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
     // --------------------------------------------------
-    //   E-Mail 暗号化
+    //   Encrypt E-Mail
     // --------------------------------------------------
     
     const encryptedEmail = email ? encrypt(email) : '';
@@ -1019,90 +1010,124 @@ router.post('/email', upload.none(), async (req, res, next) => {
     //   Validation
     // --------------------------------------------------
     
-    const val = async (func, argumentsObj, name) => {
-      
-      const validationObj = await func(argumentsObj);
-      
-      
-      // const title = name ? `${name} / ` : '';
-      // console.log(`\n---------- ${title}validationObj ----------\n`);
-      // console.dir(validationObj);
-      // console.log(`\n-----------------------------------\n`);
-      
-      
-      if (validationObj.error) {
-        errorArgumentsObj.messageCode = validationObj.messageCode;
-        errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-        throw new Error();
-      }
-      
-      return validationObj;
-      
-    };
+    await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
+    // const validationObj = await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
     
-    await val(validationUsersEmailServer, { value: email, encryptedEmail }, 'E-Mail');
-    
-    
-    // --------------------------------------------------
-    //   Find / DB email-confirmations
-    // --------------------------------------------------
-    
-    const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: usersLogin_id });
-    const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
-    
-    // console.log(`\n---------- emailConfirmationsDocObj ----------\n`);
-    // console.dir(emailConfirmationsDocObj);
+    // console.log(`\n---------- validationObj ----------\n`);
+    // console.dir(validationObj);
     // console.log(`\n-----------------------------------\n`);
     
     
     // --------------------------------------------------
-    //   Upsert 
-    //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
+    //   Property
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
-    const usersConditionObj = {
-      _id: usersLogin_id
-    };
-    
-    const usersSaveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        accessDate: ISO8601,
-        emailObj: {
-          value: encryptedEmail,
-          confirmation: false,
-        },
-      }
-    };
-    
-    
-    const emailConfirmationsConditionObj = {
-      _id: emailConfirmations_id
-    };
-    
-    const emailConfirmationsSaveObj = {
-      $set: {
-        createdDate: ISO8601,
-        users_id: usersLogin_id,
-        emailConfirmationID: `${shortid.generate()}${shortid.generate()}${shortid.generate()}`,
-        email: encryptedEmail,
-      }
-    };
-    
-    // users_id = shortid.generate();
-    
-    // await ModelUsers.upsert({ conditionObj, saveObj });
-    
-    await ModelUsers.upsertForCreateEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
-    
     
     // --------------------------------------------------
-    //   E-Mail 伏せ字化
+    //   E-Mailアドレスを保存する場合
     // --------------------------------------------------
     
-    returnObj.emailSecret = formatEmailSecret({ value: email });
+    if (email) {
+      
+      
+      // --------------------------------------------------
+      //   Find One / DB email-confirmations
+      // --------------------------------------------------
+      
+      const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: usersLogin_id });
+      const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
+      
+      // console.log(`\n---------- emailConfirmationsDocObj ----------\n`);
+      // console.dir(emailConfirmationsDocObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      // --------------------------------------------------
+      //   Upsert 
+      //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
+      // --------------------------------------------------
+      
+      const usersConditionObj = {
+        _id: loginUsers_id
+      };
+      
+      const usersSaveObj = {
+        $set: {
+          updatedDate: ISO8601,
+          accessDate: ISO8601,
+          emailObj: {
+            value: encryptedEmail,
+            confirmation: false,
+          },
+        }
+      };
+      
+      
+      const emailConfirmationsConditionObj = {
+        _id: emailConfirmations_id
+      };
+      
+      const emailConfirmationsSaveObj = {
+        $set: {
+          createdDate: ISO8601,
+          users_id: loginUsers_id,
+          emailConfirmationID: `${shortid.generate()}${shortid.generate()}${shortid.generate()}`,
+          email: encryptedEmail,
+        }
+      };
+      
+      
+      await ModelUsers.upsertForCreateEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
+      
+      
+      // --------------------------------------------------
+      //   E-Mail 伏せ字化
+      // --------------------------------------------------
+      
+      returnObj.emailSecret = formatEmailSecret({ value: email });
+      
+      
+    // --------------------------------------------------
+    //   E-Mailアドレスを空にする場合
+    // --------------------------------------------------
+    
+    } else {
+      
+      
+      // --------------------------------------------------
+      //   Update - DB users
+      // --------------------------------------------------
+      
+      const conditionObj = {
+        _id: loginUsers_id
+      };
+      
+      const saveObj = {
+        $set: {
+          updatedDate: ISO8601,
+          accessDate: ISO8601,
+          emailObj: {
+            value: '',
+            confirmation: false,
+          },
+        }
+      };
+      
+      await ModelUsers.upsert({ conditionObj, saveObj });
+      
+      
+      // --------------------------------------------------
+      //   E-Mail 伏せ字化
+      // --------------------------------------------------
+      
+      returnObj.emailSecret = '';
+      
+      
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -1112,7 +1137,7 @@ router.post('/email', upload.none(), async (req, res, next) => {
     // console.log(chalk`
     //   email: {green ${email}}
     //   encryptedEmail: {green ${encryptedEmail}}
-    //   emailSecret: {green ${emailSecret}}
+    //   returnObj.emailSecret: {green ${returnObj.emailSecret}}
     // `);
     
     // console.log(`
@@ -1120,6 +1145,8 @@ router.post('/email', upload.none(), async (req, res, next) => {
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
     
     
     // ---------------------------------------------
@@ -1141,6 +1168,8 @@ router.post('/email', upload.none(), async (req, res, next) => {
     //   errorObj.message: {green ${errorObj.message}}
     // `);
     
+    // console.log(errorObj.stack);
+    
     
     // ---------------------------------------------
     //   Log
@@ -1148,11 +1177,11 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     const resultErrorObj = logFromErrorsArr({ errorObj, loginUsers_id });
     
-    console.log(`
-      ----- resultErrorObj -----\n
-      ${util.inspect(resultErrorObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultErrorObj -----\n
+    //   ${util.inspect(resultErrorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // --------------------------------------------------
     //   Return JSON Object / Error

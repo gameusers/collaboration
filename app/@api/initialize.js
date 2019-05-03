@@ -45,6 +45,7 @@ const ModelCardGames = require('../@database/card-games/model');
 const ModelGameGenres = require('../@database/game-genres/model');
 const ModelHardwares = require('../@database/hardwares/model');
 const ModelDevelopersPublishers = require('../@database/developers-publishers/model');
+const ModelEmailConfirmations = require('../@database/email-confirmations/model');
 
 
 // ---------------------------------------------
@@ -149,7 +150,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         loginID: '8OM0dhDak',
         loginPassword: '$2b$10$NsuOPWswqCkJ2STKfbKg/OMXfxdWabz1oy36HKOwRojHJ4S8FPsPS',
         emailObj: {
-          value: '486b136d80cca6546d9b5a88161b941e9ff774a1eff937493781152843423f58',
+          value: '38cda58a026a9703cc8f5e8a104d8c88ab32965e4e6aba5e18ca93366c71e7db',// aaa@gameusers.org
           confirmation: true,
         },
         country: 'JP',
@@ -181,7 +182,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         loginID: 'enPLLYBBEg3y',
         loginPassword: '$2b$10$.O/ZmfEO2QOV6IRxxmQO1eSRMx8yhL83ISq9z/gyOpTCtbYL3j4B.',
         emailObj: {
-          value: '9b8383b1e34b684f357899abf58f3dd99e4cca2b830e87ad5f9f1bbbd077853c',
+          value: '0509b58e75540f35054f9b7acdbf0771ae7151614f805a61fe2556f6fe947e78',// bbb@gameusers.org
           confirmation: false,
         },
         country: 'JP',
@@ -2771,6 +2772,20 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
+    //   DB / Email Confirmations
+    // --------------------------------------------------
+    
+    // --------------------------------------------------
+    //   deleteMany
+    // --------------------------------------------------
+    
+    await ModelEmailConfirmations.deleteMany({});
+    
+    
+    
+    
+    
+    // --------------------------------------------------
     //   DB / Card Games
     // --------------------------------------------------
     
@@ -3066,15 +3081,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
 //     ];
 
-    saveArr = [];
+    // saveArr = [];
     
     
     // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
     
-    await ModelCardGames.deleteMany({});
-    returnObj = await ModelCardGames.insertMany({ saveArr });
+    // await ModelCardGames.deleteMany({});
+    // returnObj = await ModelCardGames.insertMany({ saveArr });
     
     
     

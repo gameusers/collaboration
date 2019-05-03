@@ -909,7 +909,7 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
  * @param {Object} usersSaveObj - DB users 保存データ
  * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
  * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
- * @return {Array} 
+ * @return {Object} 
  */
 const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj }) => {
   
@@ -971,29 +971,29 @@ const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, ema
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- usersConditionObj -----\n
-      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- usersSaveObj -----\n
-      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- emailConfirmationsConditionObj -----\n
-      ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- emailConfirmationsConditionObj -----\n
+    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- emailConfirmationsSaveObj -----\n
-      ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- emailConfirmationsSaveObj -----\n
+    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -1009,13 +1009,6 @@ const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, ema
     // --------------------------------------------------
     
     return returnObj;
-    
-    
-    // --------------------------------------------------
-    //   Upsert
-    // --------------------------------------------------
-    
-    // return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (errorObj) {

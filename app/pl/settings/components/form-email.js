@@ -342,7 +342,7 @@ export default injectIntl(class extends React.Component {
             </Description>
             
             <Description>
-              E-Mailアドレスを入力して「編集する」ボタンを押すと、入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、「確認メールを再送信する」ボタンを押してください。もう一度、確認メールが送信されます。
+              E-Mailアドレスを入力して「送信する」ボタンを押すと、入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、「確認メールを再送信する」ボタンを押してください。もう一度、確認メールが送信されます。
             </Description>
             
             <Description>
@@ -419,7 +419,7 @@ export default injectIntl(class extends React.Component {
                   onClick={() => handleSubmitEmail()}
                   disabled={buttonDisabled}
                 >
-                  編集する
+                  送信する
                 </Button>
               </ButtonBox>
               

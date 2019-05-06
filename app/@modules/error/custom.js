@@ -8,7 +8,7 @@
  */
 class CustomError extends Error {
   
-  constructor({ errorsArr = [] }, ...params) {
+  constructor({ level = 'error', errorsArr = [] }, ...params) {
     
     // Pass remaining arguments (including vendor specific ones) to parent constructor
     super(...params);
@@ -21,6 +21,7 @@ class CustomError extends Error {
     
     
     // Custom debugging information
+    this.level = level;
     this.errorsArr = errorsArr;
     
   }

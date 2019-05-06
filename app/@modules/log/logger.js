@@ -11,6 +11,7 @@ const winston = require('winston');
 // --------------------------------------------------
 
 const logger = winston.createLogger({
+  level: 'info',
   transports: [
     //
     // - Write to all logs with level `info` and below to `combined.log` 
@@ -21,10 +22,11 @@ const logger = winston.createLogger({
       maxsize: 1048576,
       level: 'error'
     }),
-    // new winston.transports.File({
-    //   filename: 'log/combined.log',
-    //   maxsize: 1048576,
-    // })
+    
+    new winston.transports.File({
+      filename: 'log/combined.log',
+      maxsize: 1048576,
+    })
   ]
 });
 

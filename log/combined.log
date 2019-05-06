@@ -1,32 +1,11 @@
-{"level":"error","message":""}
-{"level":"error","message":"2019-04-25T11:26:04.460Z\nCode: EOnyUrk82@svr_ZaIOk@Error\nLogin User: \nError Message: 故意のエラー"}
-{"level":"error","message":"2019-04-25T11:40:15.573Z\nCode: EOnyUrk82@svr_ZaIOk@Error\nLogin User: \nMessage: CSRF: Invalid Token"}
-{"level":"error","message":"2019-04-25T11:40:40.411Z\nCode: EOnyUrk82@svr_ZaIOk@Error\nLogin User: \nMessage: CSRF: Invalid Token"}
-{"level":"error","message":"2019-04-25T11:43:07.993Z\nCode: EOnyUrk82@svr_ZaIOk@Error\nLogin User: \nMessage: CSRF: Invalid Token"}
-{"level":"error","message":"2019-04-25T11:46:44.523Z\nCode: EOnyUrk82@svr_ZaIOk@Error\nLogin User: \nMessage: CSRF: Invalid Token"}
-{"level":"error","message":"2019-04-25T11:52:26.013Z\nCode: EOnyUrk82@svr_ZaIOk@Error\nLogin User: \nMessage: CSRF: Invalid Token"}
-{"level":"error","message":"2019-04-25T11:57:31.584Z\nCode: EOnyUrk82@svr_ZaIOk@fi1EoNmKH\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-25T12:00:33.910Z\nCode: EOnyUrk82@svr_ZaIOk@fi1EoNmKH\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-25T12:05:29.973Z\nCode: EOnyUrk82@svr_ZaIOk@2R5M5lNLA\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-26T09:23:28.814Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: CSRF: Invalid Token"}
-{"level":"error","message":"2019-04-29T12:39:46.729Z\nCode: DvfCyR-SZ@IXNCfSRLy@eex48Zjee\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-29T12:39:50.601Z\nCode: DvfCyR-SZ@IXNCfSRLy@eex48Zjee\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-30T08:01:16.328Z\nCode: EOnyUrk82@svr_ZaIOk@2R5M5lNLA\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-30T08:04:14.631Z\nCode: EOnyUrk82@svr_ZaIOk@2R5M5lNLA\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-30T08:39:21.737Z\nCode: EOnyUrk82@svr_ZaIOk@2R5M5lNLA\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-04-30T09:30:51.435Z\nCode: EOnyUrk82@svr_ZaIOk@2R5M5lNLA\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T06:56:11.231Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T06:56:54.236Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:02:45.774Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:03:42.926Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:04:38.719Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:05:46.219Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:07:51.867Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:20:39.845Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:24:00.600Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:27:34.736Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:30:43.824Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-01T07:31:26.212Z\nCode: EOnyUrk82@CuQ669oqC@XIn-aRGHD\nLogin User: \nMessage: "}
-{"level":"error","message":"2019-05-02T06:53:42.676Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: emailSecret is not defined"}
-{"level":"error","message":"2019-05-02T06:53:42.754Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: emailSecret is not defined"}
-{"level":"error","message":"2019-05-02T06:53:46.586Z\nCode: DvfCyR-SZ@IXNCfSRLy@Error\nLogin User: \nMessage: emailSecret is not defined"}
+{"logID":"xNdFlicIj","date":"2019-05-06T08:38:19.898Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"xNdFlicIj","messageID":"Error"}],"level":"info","message":"AAA"}
+{"logID":"jX6Apz-KL","date":"2019-05-06T08:39:21.754Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"::ffff:14.10.56.161","requestParametersObj":{"email":""},"errorsArr":[{"code":"jX6Apz-KL","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"XJUD1xMJ8","date":"2019-05-06T08:41:43.908Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"::ffff:14.10.56.161","requestParametersObj":{"email":""},"errorsArr":[{"code":"XJUD1xMJ8","messageID":"Error"}],"level":"warn","message":"AAA"}
+{"logID":"Kva5s_15i","date":"2019-05-06T08:47:46.236Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"Kva5s_15i","messageID":"Error"}],"level":"warn","message":"AAA"}
+{"logID":"8ctis8lM2","date":"2019-05-06T08:48:57.455Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"8ctis8lM2","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"9ZRbcna4W","date":"2019-05-06T09:27:27.392Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"Q88YJ5uJ7","messageID":"xLLNIpo6a"}],"level":"warn","message":""}
+{"logID":"aHRKoy493","date":"2019-05-06T09:28:30.558Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"aHRKoy493","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"V_XEpBZyp","date":"2019-05-06T09:28:52.765Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":"******"},"errorsArr":[{"code":"V_XEpBZyp","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"Lbm4R6Gff","date":"2019-05-06T09:31:14.512Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":"******"},"errorsArr":[{"code":"Q88YJ5uJ7","messageID":"xLLNIpo6a"}],"level":"warn","message":""}
+{"logID":"7-0b9K9jc","date":"2019-05-06T09:36:09.875Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":"******"},"errorsArr":[{"code":"Q88YJ5uJ7","messageID":"xLLNIpo6a"}],"level":"warn","message":""}
+{"logID":"3mr4QgyC2","date":"2019-05-06T09:37:49.836Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":"******"},"errorsArr":[{"code":"Tq6BYP4Fz","messageID":"5H8rr53kE"}],"level":"warn","message":""}

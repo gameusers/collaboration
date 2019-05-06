@@ -79,7 +79,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
   if (validator.isEmpty(data)) {
     
     if (required) {
-      throw new CustomError({ errorsArr: [{ code: 'XIn-aRGHD', messageID: 'cFbXmuFVh' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XIn-aRGHD', messageID: 'cFbXmuFVh' }] });
     }
     
     return resultObj;
@@ -92,7 +92,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
   // ---------------------------------------------
   
   if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-    throw new CustomError({ errorsArr: [{ code: 'M4fBF4b4P', messageID: 'ilE2NcYjI' }] });
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M4fBF4b4P', messageID: 'ilE2NcYjI' }] });
   }
   
   
@@ -101,7 +101,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
   // ---------------------------------------------
   
   if (!validator.isEmail(data, { allow_utf8_local_part: false })) {
-    throw new CustomError({ errorsArr: [{ code: 'yX8i4gekS', messageID: '5O4K1an7k' }] });
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yX8i4gekS', messageID: '5O4K1an7k' }] });
   }
   
   
@@ -121,7 +121,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     });
     
     if (count1 === 1) {
-      throw new CustomError({ errorsArr: [{ code: 'PIfteQDcZ', messageID: 'FQgx7kEJN' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PIfteQDcZ', messageID: 'FQgx7kEJN' }] });
     }
     
     // 他のユーザーが利用しているメールアドレスを登録しようとした場合、エラー
@@ -133,7 +133,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     });
     
     if (count2 === 1) {
-      throw new CustomError({ errorsArr: [{ code: 'Tq6BYP4Fz', messageID: '5H8rr53kE' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Tq6BYP4Fz', messageID: '5H8rr53kE' }] });
     }
     
   // 新規の場合
@@ -146,7 +146,7 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     });
     
     if (count === 1) {
-      throw new CustomError({ errorsArr: [{ code: 'V33-9qy9_', messageID: '5H8rr53kE' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'V33-9qy9_', messageID: '5H8rr53kE' }] });
     }
     
   }

@@ -1,16 +1,4 @@
-{"level":"error","message":"\nLog ID: T5393vxsY\nDate: 2019-05-02T12:54:02.026Z\nCode: \nLogin Users ID: jun-deE4J\nMessage: test\n  "}
-{"level":"error","message":"\nLog ID: Se0OpxEBR\nDate: 2019-05-03T01:48:01.765Z\nCode: yX8i4gekS\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: MjUrzUyzv\nDate: 2019-05-03T01:48:45.954Z\nCode: M4fBF4b4P\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: O2gF2hyAw\nDate: 2019-05-03T02:22:00.028Z\nCode: Tq6BYP4Fz\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: LNiTmzrZM\nDate: 2019-05-03T02:22:29.745Z\nCode: Tq6BYP4Fz\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: yveGqqh1x\nDate: 2019-05-03T02:46:27.343Z\nCode: PIfteQDcZ\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: x1Op4t2v9\nDate: 2019-05-03T02:47:31.783Z\nCode: Tq6BYP4Fz\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: idoiZQl04\nDate: 2019-05-03T03:05:28.191Z\nCode: Tq6BYP4Fz\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: 4fU64xRtd\nDate: 2019-05-03T03:05:32.751Z\nCode: PIfteQDcZ\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: T6DMbCf6p\nDate: 2019-05-03T03:05:51.242Z\nCode: \nLogin Users ID: jun-deE4J\nMessage: Cannot convert undefined or null to object\n  "}
-{"level":"error","message":"\nLog ID: VeRn1Om5h\nDate: 2019-05-03T03:22:08.786Z\nCode: \nLogin Users ID: jun-deE4J\nMessage: Cannot convert undefined or null to object\n  "}
-{"level":"error","message":"\nLog ID: xsFZNhxxW\nDate: 2019-05-03T03:24:05.841Z\nCode: \nLogin Users ID: jun-deE4J\nMessage: Cannot convert undefined or null to object\n  "}
-{"level":"error","message":"\nLog ID: TMkk55Yox\nDate: 2019-05-03T03:34:02.508Z\nCode: Tq6BYP4Fz\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: vOErZBqSf\nDate: 2019-05-03T03:34:10.239Z\nCode: PIfteQDcZ\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: IQs1CjVX0\nDate: 2019-05-03T10:03:50.524Z\nCode: Tq6BYP4Fz\nLogin Users ID: jun-deE4J\nMessage: \n  "}
-{"level":"error","message":"\nLog ID: AFrShmXVR\nDate: 2019-05-03T10:03:57.491Z\nCode: PIfteQDcZ\nLogin Users ID: jun-deE4J\nMessage: \n  "}
+{"logID":"jX6Apz-KL","date":"2019-05-06T08:39:21.754Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"::ffff:14.10.56.161","requestParametersObj":{"email":""},"errorsArr":[{"code":"jX6Apz-KL","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"8ctis8lM2","date":"2019-05-06T08:48:57.455Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"8ctis8lM2","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"aHRKoy493","date":"2019-05-06T09:28:30.558Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":""},"errorsArr":[{"code":"aHRKoy493","messageID":"Error"}],"level":"error","message":"AAA"}
+{"logID":"V_XEpBZyp","date":"2019-05-06T09:28:52.765Z","endpointID":"14n6FEth2","users_id":"jun-deE4J","ip":"240b:250:38a1:8400:5cdc:2643:84cf:d731","requestParametersObj":{"email":"******"},"errorsArr":[{"code":"V_XEpBZyp","messageID":"Error"}],"level":"error","message":"AAA"}

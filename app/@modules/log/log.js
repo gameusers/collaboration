@@ -23,7 +23,7 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('./custom');
+const { CustomError } = require('../error/custom');
 
 
 // ---------------------------------------------
@@ -42,20 +42,23 @@ const logger = require('./logger');
 /**
  * Error 情報の入ったオブジェクトを返してログを記録する
  * @param {Object} errorObj - catchで取得したエラーオブジェクト
- * @param {string} loginUsers_id - ログインしていユーザーの DB users _id
+ * @param {string} endpointID - エンドポイントを特定するID
+ * @param {string} users_id - ログインしていユーザーの DB users _id
+ * @param {string} ip - アクセスしたクライアントのIP
+ * @param {Object} requestParametersObj - GET / POSTのリクエストパラメーター
  * @return {Object} エラーオブジェクト
  */
-const returnErrorsArr = ({ errorObj, loginUsers_id }) => {
+const returnErrorsArr = ({ errorObj, endpointID, users_id, ip, requestParametersObj }) => {
   
   
   // ---------------------------------------------
   //   Property
   // ---------------------------------------------
   
-  let logArr = [];
   let errorsArr = [];
   let codeArr = [];
   const logID = shortid.generate();
+  const level = lodashGet(errorObj, ['level'], 'error');
   const message = lodashGet(errorObj, ['message'], '');
   
   
@@ -83,39 +86,38 @@ const returnErrorsArr = ({ errorObj, loginUsers_id }) => {
   
   } else {
     
-    errorsArr = [{ code: 'Error', messageID: 'Error' }];
+    errorsArr = [{ code: logID, messageID: 'Error' }];
     
   }
   
   
   // ---------------------------------------------
-  //   Log Array
+  //   Log Object
   // ---------------------------------------------
   
-  logArr.push(`
-Log ID: ${logID}
-Date: ${moment().toISOString()}
-Code: ${codeArr.join('@')}
-Login Users ID: ${loginUsers_id}
-Message: ${message}
-  `);
+  const logObj = {
+    logID,
+    date: moment().toISOString(),
+    endpointID,
+    users_id,
+    ip,
+    requestParametersObj,
+    errorsArr
+  };
   
   
   // ---------------------------------------------
   //   Log
   // ---------------------------------------------
   
-  logger.log('error', `${logArr.join(' / ')}`);
+  logger.log(level, message, logObj);
   
   
   // ---------------------------------------------
   //   Return
   // ---------------------------------------------
   
-  return {
-    logID,
-    errorsArr,
-  };
+  return { errorsArr };
   
   
 };

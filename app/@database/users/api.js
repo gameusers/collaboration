@@ -27,6 +27,7 @@ const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
 
 
 // ---------------------------------------------
@@ -37,7 +38,7 @@ const { verifyCsrfToken } = require('../../@modules/csrf');
 const { verifyRecaptcha } = require('../../@modules/recaptcha');
 const { encrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
-const { logFromErrorsArr } = require('../../@modules/error/log');
+const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
 
 
@@ -96,6 +97,7 @@ const router = express.Router();
 
 let statusCode = 400;
 let usersLogin_id = '';
+let logLevel = 'error';
 
 let errorArgumentsObj = {
   fileID: 'EOnyUrk82',
@@ -105,6 +107,10 @@ let errorArgumentsObj = {
   errorObj: {},
   usersLogin_id: ''
 };
+
+// let logObj = {
+  
+// };
 
 
 
@@ -958,7 +964,7 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   E-Mail登録
+//   E-Mail登録 / Function ID: 14n6FEth2
 // --------------------------------------------------
 
 router.post('/email', upload.none(), async (req, res, next) => {
@@ -969,10 +975,20 @@ router.post('/email', upload.none(), async (req, res, next) => {
   // --------------------------------------------------
   
   let returnObj = {};
+  let requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { email } = req.body;
+    
+    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
     
     
     // ---------------------------------------------
@@ -981,22 +997,15 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     verifyCsrfToken(req, res);
     
-    
+    // throw new Error('AAA');
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      throw new CustomError({ errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
     }
-    
-    
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const { email } = req.body;
     
     
     // --------------------------------------------------
@@ -1175,13 +1184,21 @@ router.post('/email', upload.none(), async (req, res, next) => {
     //   Log
     // ---------------------------------------------
     
-    const resultErrorObj = logFromErrorsArr({ errorObj, loginUsers_id });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      // level: logLevel,
+      endpointID: '14n6FEth2',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     // console.log(`
     //   ----- resultErrorObj -----\n
     //   ${util.inspect(resultErrorObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
     
     // --------------------------------------------------
     //   Return JSON Object / Error

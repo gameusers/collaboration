@@ -230,7 +230,7 @@ class Component extends React.Component {
       //   Update Data - Login User
       // --------------------------------------------------
       
-      this.stores.data.replaceUsersLoginObj(lodashGet(props, ['initialPropsObj', 'usersLoginObj'], {}));
+      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
       
       
       // --------------------------------------------------

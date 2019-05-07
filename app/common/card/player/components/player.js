@@ -370,7 +370,7 @@ export default class extends React.Component {
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   users_id: {green ${users_id}}
-    //   stores.data.usersLoginObj._id: {green ${stores.data.usersLoginObj._id}}
+    //   stores.data.loginUsersObj._id: {green ${stores.data.loginUsersObj._id}}
     //   users_id: {green ${users_id}}
     //   editFormOpen: {green ${editFormOpen}}
     // `);

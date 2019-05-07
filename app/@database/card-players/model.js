@@ -43,10 +43,10 @@ const { formatImagesAndVideosArr } = require('../../@format/image');
  * @param {string} users_id - DB users _id
  * @param {string} language - 言語
  * @param {string} country - 国
- * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async ({ users_id, language, country, usersLogin_id }) => {
+const findForCardPlayer = async ({ users_id, language, country, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -194,7 +194,7 @@ const findForCardPlayer = async ({ users_id, language, country, usersLogin_id })
     const resultIDsObj = await ModelIDs.findForCardPlayer({
       language,
       country,
-      usersLogin_id,
+      loginUsers_id,
       arr: ids_idArr,
     });
     
@@ -206,7 +206,7 @@ const findForCardPlayer = async ({ users_id, language, country, usersLogin_id })
     // --------------------------------------------------
     
     returnObj = format({
-      usersLogin_id,
+      loginUsers_id,
       cardPlayersArr: resultCardPlayersArr,
       idsObj: resultIDsObj
     });
@@ -264,7 +264,7 @@ const findOneBy_id = async (argumentsObj) => {
     _id,
     language,
     country,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -411,7 +411,7 @@ const findOneBy_id = async (argumentsObj) => {
     const resultIDsObj = await ModelIDs.findForCardPlayer({
       language,
       country,
-      usersLogin_id,
+      loginUsers_id,
       arr: ids_idArr,
     });
     
@@ -429,7 +429,7 @@ const findOneBy_id = async (argumentsObj) => {
     // --------------------------------------------------
     
     returnObj = format({
-      usersLogin_id,
+      loginUsers_id,
       cardPlayersArr: resultCardPlayersArr,
       idsObj: resultIDsObj
     });
@@ -489,7 +489,7 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     _id,
     language,
     country,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -518,7 +518,7 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
         $match:
           {
             _id,
-            users_id: usersLogin_id
+            users_id: loginUsers_id
           }
       },
       
@@ -609,7 +609,7 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     const resultIDsObj = await ModelIDs.findForCardPlayer({
       language,
       country,
-      usersLogin_id,
+      loginUsers_id,
       arr: ids_idArr,
     });
     
@@ -679,12 +679,12 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
 
 /**
  * DBから取得したカード情報をフォーマットする
- * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} cardPlayersArr - カード情報の入った配列
  * @param {Object} idsObj - ID情報の入ったオブジェクト
  * @return {Object} フォーマット後のデータ
  */
-const format = ({ usersLogin_id, cardPlayersArr, idsObj }) => {
+const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
   
   
   // --------------------------------------------------
@@ -770,15 +770,15 @@ const format = ({ usersLogin_id, cardPlayersArr, idsObj }) => {
     cloneObj.usersObj.follow = false;
     cloneObj.usersObj.followed = false;
     
-    if (usersLogin_id) {
+    if (loginUsers_id) {
       
-      if (cloneObj.users_id !== usersLogin_id) {
+      if (cloneObj.users_id !== loginUsers_id) {
         
-        if (cloneObj.usersObj.followArr.includes(usersLogin_id)) {
+        if (cloneObj.usersObj.followArr.includes(loginUsers_id)) {
           cloneObj.usersObj.follow = true;
         }
         
-        if (cloneObj.usersObj.followedArr.includes(usersLogin_id)) {
+        if (cloneObj.usersObj.followedArr.includes(loginUsers_id)) {
           cloneObj.usersObj.followed = true;
         }
         

@@ -79,14 +79,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: P3ut9x3Fj
+//   Initial Props / endpointID: P3ut9x3Fj
 // --------------------------------------------------
 
 router.get('/initial-props', upload.none(), async (req, res, next) => {
@@ -153,11 +153,11 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //   ログインしているユーザー情報
     // --------------------------------------------------
     
-    let usersLogin_id = '';
+    let loginUsers_id = '';
     
     if (req.isAuthenticated() && req.user) {
-      returnObj.usersLoginObj = req.user;
-      usersLogin_id = req.user._id;
+      returnObj.loginUsersObj = req.user;
+      loginUsers_id = req.user._id;
     }
     
     
@@ -196,7 +196,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
       users_id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;

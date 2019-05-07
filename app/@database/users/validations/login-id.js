@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -11,21 +11,30 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * Login ID
- * @param {boolean} required - 必須かどうか
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersLoginID = ({ required = false, value }) => {
+const validationUsersLoginID = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -42,14 +51,12 @@ const validationUsersLoginID = ({ required = false, value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Xrf-TLIEN',
+    messageID: 'Xrf-TLIEN',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -57,30 +64,35 @@ const validationUsersLoginID = ({ required = false, value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、処理停止
     if (validator.isEmpty(data)) {
       
       if (required) {
-        resultObj.errorCodeArr.push('SHAUeHKbh');
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'xLp-ObT7q', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
       
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('yKjojKAxy');
-      resultObj.errorCodeArr.push('M4fBF4b4P');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M4fBF4b4P', messageID: 'yKjojKAxy' }] });
     }
     
-    // 英数と -_ のみ
+    
+    // ---------------------------------------------
+    //   英数と -_ のみ
+    // ---------------------------------------------
+    
     if (data.match(/^[\w\-]+$/) === null) {
-      messageCodeArr.unshift('JBkjlGQMh');
-      resultObj.errorCodeArr.push('rRvP75Hnw');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'rRvP75Hnw', messageID: 'JBkjlGQMh' }] });
     }
     
     
@@ -88,38 +100,35 @@ const validationUsersLoginID = ({ required = false, value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('IL3i80Cpp');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

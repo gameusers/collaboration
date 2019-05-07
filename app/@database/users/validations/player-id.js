@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -11,19 +11,28 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * Player ID
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  */
-const validationUsersPlayerID = ({ value }) => {
+const validationUsersPlayerID = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -40,14 +49,12 @@ const validationUsersPlayerID = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -55,19 +62,20 @@ const validationUsersPlayerID = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   文字数チェック
     // ---------------------------------------------
     
-    // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('ilE2NcYjI');
-      resultObj.errorCodeArr.push('CWOOoA9F1');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CWOOoA9F1', messageID: 'ilE2NcYjI' }] });
     }
     
-    // 英数と -_ のみ
+    
+    // ---------------------------------------------
+    //   英数と -_ のみ
+    // ---------------------------------------------
+    
     if (data.match(/^[\w\-]+$/) === null) {
-      messageCodeArr.unshift('JBkjlGQMh');
-      resultObj.errorCodeArr.push('gSft1rXje');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gSft1rXje', messageID: 'JBkjlGQMh' }] });
     }
     
     
@@ -75,38 +83,35 @@ const validationUsersPlayerID = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('3YA6nKRU4');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

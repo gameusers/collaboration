@@ -285,8 +285,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- stores.data.usersLoginObj -----\n
-    //   ${util.inspect(stores.data.usersLoginObj, { colors: true, depth: null })}\n
+    //   ----- stores.data.loginUsersObj -----\n
+    //   ${util.inspect(stores.data.loginUsersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

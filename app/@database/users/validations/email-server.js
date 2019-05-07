@@ -35,7 +35,7 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 /**
  * E-Mail
- * @param {boolean} required - 必須かどうか
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} encryptedEmail - 暗号化されたメールアドレス
@@ -63,13 +63,6 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     value: data,
     numberOfCharacters,
   };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Validation
-  // ---------------------------------------------
   
   
   // ---------------------------------------------
@@ -150,8 +143,6 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
     }
     
   }
-  
-  
   
   
   // ---------------------------------------------

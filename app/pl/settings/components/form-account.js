@@ -218,7 +218,7 @@ export default injectIntl(class extends React.Component {
     
     const loginPasswordShow = lodashGet(dataObj, ['loginPasswordShow'], false);
     const loginPassword = lodashGet(dataObj, ['loginPassword'], '');
-    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID: loginID });
+    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
     
     
     // --------------------------------------------------
@@ -227,7 +227,11 @@ export default injectIntl(class extends React.Component {
     
     const loginPasswordConfirmationShow = lodashGet(dataObj, ['loginPasswordConfirmationShow'], false);
     const loginPasswordConfirmation = lodashGet(dataObj, ['loginPasswordConfirmation'], '');
-    const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: loginPasswordConfirmation, loginPassword: loginPassword });
+    const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: loginPasswordConfirmation, loginPassword });
+    
+//     console.log(`\n---------- validationUsersLoginPasswordConfirmationObj ----------\n`);
+// console.dir(validationUsersLoginPasswordConfirmationObj);
+// console.log(`\n-----------------------------------\n`);
     
     
     
@@ -339,7 +343,7 @@ export default injectIntl(class extends React.Component {
                   value: eventObj.target.value
                 })}
                 error={validationUsersLoginIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageCode }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
+                helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{
@@ -370,7 +374,7 @@ export default injectIntl(class extends React.Component {
                   value: eventObj.target.value
                 })}
                 error={validationUsersLoginPasswordObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageCode }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
+                helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{
@@ -416,7 +420,7 @@ export default injectIntl(class extends React.Component {
                   value: eventObj.target.value
                 })}
                 error={validationUsersLoginPasswordConfirmationObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageCode }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
+                helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{

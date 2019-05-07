@@ -28,9 +28,9 @@ const validator = require('validator');
 /**
  * ID Array
  * @param {string} valueArr - 検証する配列
- * @param {string} usersLogin_id - DB users _id ログインしているユーザーの_id
+ * @param {string} loginUsers_id - DB users _id ログインしているユーザーの_id
  */
-const validationCardPlayersIDArrServer = async ({ valueArr, usersLogin_id }) => {
+const validationCardPlayersIDArrServer = async ({ valueArr, loginUsers_id }) => {
   
   
   // ---------------------------------------------
@@ -92,7 +92,7 @@ const validationCardPlayersIDArrServer = async ({ valueArr, usersLogin_id }) => 
         conditionObj: {
           $and: [
             { _id: { $in: idArr } },
-            { users_id: usersLogin_id },
+            { users_id: loginUsers_id },
           ]
         }
       });

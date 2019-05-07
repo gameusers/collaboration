@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,7 +17,6 @@ const util = require('util');
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
-import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
 import styled from 'styled-components';
 import lodashGet from 'lodash/get';
@@ -47,7 +46,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../../app/@stores/index';
-import initStoreLogoutIndex from '../../app/logout/index/stores/store';
+// import initStorePlayerSettings from '../../app/pl/settings/stores/store';
 
 
 // ---------------------------------------------
@@ -55,7 +54,8 @@ import initStoreLogoutIndex from '../../app/logout/index/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import FormLogout from '../../app/logout/index/components/form-logout';
+// import FormAccount from '../../app/pl/settings/components/form-account';
+// import FormEmail from '../../app/pl/settings/components/form-email';
 
 
 // ---------------------------------------------
@@ -85,7 +85,7 @@ const Container = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/logout
+//   URL: http://dev-1.gameusers.org:8080/pl/***/settings
 // --------------------------------------------------
 
 @observer
@@ -96,7 +96,7 @@ class Component extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res }) {
+  static async getInitialProps({ pathname, req, res, query }) {
     
     
     // --------------------------------------------------
@@ -106,6 +106,8 @@ class Component extends React.Component {
     const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    const emailConfirmationID = query.emailConfirmationID;
+    // const pathname = `/pl/${playerID}/settings`;
     
     
     // --------------------------------------------------
@@ -113,37 +115,29 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/email/confirmation`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
     });
     
-    const statusCode = resultObj.statusCode;
+    let statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
     
-    // --------------------------------------------------
-    //   ログインしていない時はログインページにリダイレクト
-    // --------------------------------------------------
     
-    const login = lodashGet(resultObj, ['data', 'login'], false);
+    // console.log(`
+    //   ----- initialPropsObj -----\n
+    //   ${util.inspect(initialPropsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    if (login === false) {
-      
-      if (isServer && res) {
-        res.writeHead(302, {
-          Location: '/login'
-        });
-        res.end();
-      } else {
-        Router.replace('/login');
-      }
-      
-    }
+    console.log(chalk`
+      emailConfirmationID: {green ${emailConfirmationID}}
+    `);
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, emailConfirmationID };
     
   }
   
@@ -194,7 +188,7 @@ class Component extends React.Component {
       };
       
       this.stores = initStoreIndex(argumentsObj);
-      this.stores.logoutIndex = initStoreLogoutIndex(argumentsObj, this.stores);
+      this.stores.pathname = props.pathname;
       
       
       // --------------------------------------------------
@@ -223,9 +217,25 @@ class Component extends React.Component {
       //   Update Data - Login User
       // --------------------------------------------------
       
-      if ('loginUsersObj' in props.initialPropsObj) {
-        this.stores.data.replaceLoginUsersObj(props.initialPropsObj.loginUsersObj);
-      }
+      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
+      
+      
+      // --------------------------------------------------
+      //   Update
+      // --------------------------------------------------
+      
+      // const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
+      // const emailSecret = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'secret'], '');
+      // const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
+      
+      // this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
+      // this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
+      // this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
+      
+      // console.log(chalk`
+      //   loginID: {green ${loginID}}
+      // `);
+      
       
       
     } catch (e) {
@@ -268,10 +278,15 @@ class Component extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'ログアウト',
-        href: '/logout',
-        as: '/logout',
+        name: 'プロフィール',
+        href: `/pl/player?playerID=${this.props.playerID}`,
+        as: `/pl/${this.props.playerID}`,
       },
+      {
+        name: '設定',
+        href: `/pl/settings?playerID=${this.props.playerID}`,
+        as: `/pl/${this.props.playerID}/settings`,
+      }
     ];
     
     
@@ -291,17 +306,17 @@ class Component extends React.Component {
           
           <Layout headerNavMainArr={headerNavMainArr}>
             
+            
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>ログアウト - Game Users</title>
+              <title>設定 - Game Users</title>
             </Head>
             
             
+            {/* Contents */}
             <Container>
               
               
-              {/* ログアウト */}
-              <FormLogout />
               
               
             </Container>
@@ -312,9 +327,7 @@ class Component extends React.Component {
         
       </Provider>
     );
-    
   }
-  
 }
 
 export default withRoot(Component);

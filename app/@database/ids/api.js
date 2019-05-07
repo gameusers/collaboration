@@ -85,14 +85,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   IDデータをユーザーIDから取得 / Function ID: XwchAk4yT
+//   IDデータをユーザーIDから取得 / endpointID: XwchAk4yT
 // --------------------------------------------------
 
 router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) => {
@@ -138,8 +138,8 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
       throw new Error();
     }
     
-    const usersLogin_id = req.user._id;
-    errorArgumentsObj.usersLogin_id = usersLogin_id;
+    const loginUsers_id = req.user._id;
+    errorArgumentsObj.loginUsers_id = loginUsers_id;
     
     
     
@@ -152,7 +152,7 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
     const resultIDsObj = await ModelIDs.findBy_Users_idForForm({
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj = resultIDsObj;
@@ -163,7 +163,7 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   usersLogin_id: {green ${usersLogin_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     // console.log(`
@@ -212,7 +212,7 @@ router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) 
 
 
 // --------------------------------------------------
-//   更新 / Function ID: YTP9v6kk_
+//   更新 / endpointID: YTP9v6kk_
 // --------------------------------------------------
 
 router.post('/upsert', upload.none(), async (req, res, next) => {
@@ -256,8 +256,8 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
       throw new Error();
     }
     
-    const usersLogin_id = req.user._id;
-    errorArgumentsObj.usersLogin_id = usersLogin_id;
+    const loginUsers_id = req.user._id;
+    errorArgumentsObj.loginUsers_id = loginUsers_id;
     
     
     
@@ -278,7 +278,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     let saveObj = {
       createdDate: ISO8601,
       updatedDate: ISO8601,
-      users_id: usersLogin_id,
+      users_id: loginUsers_id,
       platform,
       gameID: gameID ? gameID : '',
       label: label ? label : '',
@@ -328,7 +328,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     if (_id) {
-      await val(validationIDs_idServer, { value: _id, usersLogin_id }, '_id');
+      await val(validationIDs_idServer, { value: _id, loginUsers_id }, '_id');
     }
     
     
@@ -382,7 +382,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     const count = await ModelIDs.count({
       conditionObj: {
-        users_id: usersLogin_id,
+        users_id: loginUsers_id,
       },
     });
     
@@ -447,7 +447,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     const returnObj = await ModelIDs.findBy_Users_idForForm({
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     
@@ -515,7 +515,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   削除 / Function ID: xE5KudSUz
+//   削除 / endpointID: xE5KudSUz
 // --------------------------------------------------
 
 router.post('/delete', upload.none(), async (req, res, next) => {
@@ -559,8 +559,8 @@ router.post('/delete', upload.none(), async (req, res, next) => {
       throw new Error();
     }
     
-    const usersLogin_id = req.user._id;
-    errorArgumentsObj.usersLogin_id = usersLogin_id;
+    const loginUsers_id = req.user._id;
+    errorArgumentsObj.loginUsers_id = loginUsers_id;
     
     
     
@@ -578,7 +578,7 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     
     const validationObj = await validationIDs_idServer({
       value: _id,
-      usersLogin_id
+      loginUsers_id
     });
     
     // console.log(`\n---------- validationObj ----------\n`);
@@ -603,7 +603,7 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     
     const conditionObj = {
       _id,
-      users_id: usersLogin_id
+      users_id: loginUsers_id
     };
     
     
@@ -626,7 +626,7 @@ router.post('/delete', upload.none(), async (req, res, next) => {
     const returnObj = await ModelIDs.findBy_Users_idForForm({
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     

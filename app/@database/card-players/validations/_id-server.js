@@ -29,9 +29,9 @@ const validator = require('validator');
 /**
  * _id
  * @param {string} value - 値
- * @param {string} usersLogin_id - DB users _id ログインしているユーザーの_id
+ * @param {string} loginUsers_id - DB users _id ログインしているユーザーの_id
  */
-const validationCardPlayers_idServer = async ({ value, usersLogin_id }) => {
+const validationCardPlayers_idServer = async ({ value, loginUsers_id }) => {
   
   
   // ---------------------------------------------
@@ -76,7 +76,7 @@ const validationCardPlayers_idServer = async ({ value, usersLogin_id }) => {
     const count = await Model.count({
       conditionObj: {
         _id: value,
-        users_id: usersLogin_id,
+        users_id: loginUsers_id,
       }
     });
     

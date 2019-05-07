@@ -69,14 +69,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: aNvBIBitq
+//   Initial Props / endpointID: aNvBIBitq
 // --------------------------------------------------
 
 router.get('/initial-props', upload.none(), async (req, res, next) => {
@@ -112,7 +112,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     if (req.isAuthenticated() && req.user) {
-      returnObj.usersLoginObj = req.user;
+      returnObj.loginUsersObj = req.user;
       returnObj.login = true;
     }
     

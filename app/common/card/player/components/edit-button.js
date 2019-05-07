@@ -70,7 +70,7 @@ export default class extends React.Component {
     
     const { buttonDisabledObj } = stores.layout;
     
-    const { usersLoginObj } = stores.data;
+    const { loginUsersObj } = stores.data;
     
     const {
       
@@ -85,7 +85,7 @@ export default class extends React.Component {
     //   ログインしていない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (Object.keys(usersLoginObj).length === 0) {
+    if (Object.keys(loginUsersObj).length === 0) {
       return null;
     }
     
@@ -94,7 +94,7 @@ export default class extends React.Component {
     //   自分のカードでない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (users_id !== usersLoginObj._id) {
+    if (users_id !== loginUsersObj._id) {
       return null;
     }
     
@@ -130,14 +130,14 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- usersLoginObj -----\n
-    //   ${util.inspect(usersLoginObj, { colors: true, depth: null })}\n
+    //   ----- loginUsersObj -----\n
+    //   ${util.inspect(loginUsersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(chalk`
     //   users_id: {green ${users_id}}
-    //   usersLoginObj._id: {green ${usersLoginObj._id}}
+    //   loginUsersObj._id: {green ${loginUsersObj._id}}
     //   followedCount: {green ${followedCount}}
     //   followed: {green ${followed}}
     // `);

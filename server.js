@@ -228,6 +228,15 @@ app.prepare().then(() => {
   
   
   
+  // ---------------------------------------------
+  //   E-Mail
+  // ---------------------------------------------
+  
+  server.get('/email/confirmation/:emailConfirmationID', csrfToken, (req, res) => {
+    const { emailConfirmationID } = req.params;
+    app.render(req, res, '/email/confirmation', { emailConfirmationID });
+  });
+  
   
   
   

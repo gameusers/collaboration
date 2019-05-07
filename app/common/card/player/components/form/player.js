@@ -281,7 +281,7 @@ export default class extends React.Component {
     
     // console.log(chalk`
     //   users_id: {green ${users_id}}
-    //   usersLoginObj._id: {green ${usersLoginObj._id}}
+    //   loginUsersObj._id: {green ${loginUsersObj._id}}
     //   followedCount: {green ${followedCount}}
     //   followed: {green ${followed}}
     // `);

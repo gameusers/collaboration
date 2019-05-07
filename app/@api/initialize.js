@@ -80,14 +80,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: gUwZx1hDG
+//   Initial Props / endpointID: gUwZx1hDG
 // --------------------------------------------------
 
 router.post('/db', upload.none(), async (req, res, next) => {
@@ -3101,21 +3101,21 @@ router.post('/db', upload.none(), async (req, res, next) => {
     // returnObj = await ModelCardGames.find({
     //   countryArr: ['JP', 'US'],
     //   languageArr: ['ja'],
-    //   usersLogin_id: 'P7UJMuUnx'
+    //   loginUsers_id: 'P7UJMuUnx'
     // });
     
     // const cardGamesObj = await ModelCardGames.find({
     //   users_id: 'jun-deE4J',
     //   language: localeObj.language,
     //   country: localeObj.country,
-    //   usersLogin_id: 'P7UJMuUnx'
+    //   loginUsers_id: 'P7UJMuUnx'
     // });
     
     // const cardPlayersObj = await ModelCardPlayers.find({
     //   users_id: 'jun-deE4J',
     //   language: localeObj.language,
     //   country: localeObj.country,
-    //   usersLogin_id: 'P7UJMuUnx'
+    //   loginUsers_id: 'P7UJMuUnx'
     // });
     
     

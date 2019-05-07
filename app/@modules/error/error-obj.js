@@ -37,10 +37,10 @@ const logger = require('../logger');
  * @param {string} messageCode - メッセージコード
  * @param {Array} errorCodeArr - エラーコードが入っている配列
  * @param {Object} errorObj - catchで取得したエラーオブジェクト
- * @param {string} usersLogin_id - ログインしていユーザーの DB users _id
+ * @param {string} loginUsers_id - ログインしていユーザーの DB users _id
  * @return {Object} エラーオブジェクト
  */
-const errorCodeIntoErrorObj = ({ fileID, functionID, messageCode, errorCodeArr, errorObj, usersLogin_id }) => {
+const errorCodeIntoErrorObj = ({ fileID, functionID, messageCode, errorCodeArr, errorObj, loginUsers_id }) => {
   
   
   // ---------------------------------------------
@@ -74,7 +74,7 @@ const errorCodeIntoErrorObj = ({ fileID, functionID, messageCode, errorCodeArr, 
     //   Log Array
     // ---------------------------------------------
     
-    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${usersLogin_id}\nMessage: ${errorObj.message}`);
+    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${loginUsers_id}\nMessage: ${errorObj.message}`);
     
     
   }

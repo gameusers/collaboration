@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -14,25 +14,28 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const zxcvbn = require('zxcvbn');
-
-
-// ---------------------------------------------
-//   Validation
-// ---------------------------------------------
-
 const validator = require('validator');
+const zxcvbn = require('zxcvbn');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * Login Password
- * @param {boolean} required - 必須かどうか
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @param {string} loginID - Login ID
  */
-const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
+const validationUsersLoginPassword = ({ throwError = false, required = false, value, loginID }) => {
   
   
   // ---------------------------------------------
@@ -49,15 +52,13 @@ const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   const strengthScore = zxcvbn(data).score;
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'gJz51M8Pf',
+    messageID: 'gJz51M8Pf',
     error: false,
-    errorCodeArr: [],
     strengthScore
   };
   
@@ -66,42 +67,53 @@ const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、バリデーションスルー
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
       
       if (required) {
-        resultObj.errorCodeArr.push('LJGO1br5z');
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'LJGO1br5z', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
       
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('_BnyJl8Xz');
-      resultObj.errorCodeArr.push('amAKxmNis');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'amAKxmNis', messageID: '_BnyJl8Xz' }] });
     }
     
-    // 英数と -_ のみ
+    
+    // ---------------------------------------------
+    //   英数と -_ のみ
+    // ---------------------------------------------
+    
     if (data.match(/^[\w\-]+$/) === null) {
-      messageCodeArr.unshift('JBkjlGQMh');
-      resultObj.errorCodeArr.push('jSqs5J_a8');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jSqs5J_a8', messageID: 'JBkjlGQMh' }] });
     }
     
-    // パスワードの強度
+    
+    // ---------------------------------------------
+    //   パスワードの強度
+    // ---------------------------------------------
+    
     if (strengthScore < 2) {
-      messageCodeArr.unshift('tmEi1Es0v');
-      resultObj.errorCodeArr.push('6PM5lQzCA');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '6PM5lQzCA', messageID: 'tmEi1Es0v' }] });
     }
     
-    // IDとパスワードを同じ文字列にできない
+    
+    // ---------------------------------------------
+    //   IDとパスワードを同じ文字列にできない
+    // ---------------------------------------------
+    
     if (data === loginID) {
-      messageCodeArr.unshift('NHTq1_JhE');
-      resultObj.errorCodeArr.push('Pt74iKMWF');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Pt74iKMWF', messageID: 'NHTq1_JhE' }] });
     }
     
     
@@ -109,38 +121,35 @@ const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('Lbg6Sqyyu');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -150,12 +159,13 @@ const validationUsersLoginPassword = ({ required = false, value, loginID }) => {
 
 /**
  * Login Password Confirmation
- * @param {boolean} required - 必須かどうか
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
- * @param {string} confirmation - パスワード確認
+ * @param {string} loginPassword - パスワード
  * @return {Object} バリデーション結果
  */
-const validationUsersLoginPasswordConfirmation = ({ required = false, value, loginPassword }) => {
+const validationUsersLoginPasswordConfirmation = ({ throwError = false, required = false, value, loginPassword }) => {
   
   
   // ---------------------------------------------
@@ -164,16 +174,12 @@ const validationUsersLoginPasswordConfirmation = ({ required = false, value, log
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
-  const strengthScore = zxcvbn(data).score;
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'KBFOZp6kv',
+    messageID: 'KBFOZp6kv',
     error: false,
-    errorCodeArr: [],
-    strengthScore
   };
   
   
@@ -181,24 +187,26 @@ const validationUsersLoginPasswordConfirmation = ({ required = false, value, log
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、バリデーションスルー
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
       
       if (required) {
-        resultObj.errorCodeArr.push('JVjz5HxhU');
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JVjz5HxhU', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
       
     }
     
-    // パスワードとパスワード確認が同じ文字列でない
+    
+    // ---------------------------------------------
+    //   パスワードとパスワード確認が同じ文字列でない
+    // ---------------------------------------------
+    
     if (data !== loginPassword) {
-      messageCodeArr.unshift('9jFs2LU6e');
-      resultObj.errorCodeArr.push('sNtN2doNl');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sNtN2doNl', messageID: '9jFs2LU6e' }] });
     }
     
     
@@ -206,38 +214,35 @@ const validationUsersLoginPasswordConfirmation = ({ required = false, value, log
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('Bl3nDkgLO');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

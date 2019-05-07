@@ -21,6 +21,8 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
+const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
 
 
 // ---------------------------------------------
@@ -43,9 +45,10 @@ const { validationUsersPlayerID } = require('../../@database/users/validations/p
 //   Modules
 // ---------------------------------------------
 
-// const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
+const { returnErrorsArr } = require('../../@modules/log/log');
+const { CustomError } = require('../../@modules/error/custom');
 
 
 // ---------------------------------------------
@@ -88,14 +91,14 @@ let errorArgumentsObj = {
   messageCode: 'Error',
   errorCodeArr: ['Error'],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: GBsTCSr4y
+//   Initial Props / endpointID: GBsTCSr4y
 // --------------------------------------------------
 
 router.get('/common', upload.none(), async (req, res, next) => {
@@ -131,7 +134,7 @@ router.get('/common', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     if (req.isAuthenticated() && req.user) {
-      returnObj.usersLoginObj = req.user;
+      returnObj.loginUsersObj = req.user;
       returnObj.login = true;
     }
     
@@ -181,7 +184,7 @@ router.get('/common', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: P3ut9x3Fj
+//   Initial Props / endpointID: P3ut9x3Fj
 // --------------------------------------------------
 
 router.get('/pl/player', upload.none(), async (req, res, next) => {
@@ -250,11 +253,11 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     //   ログインしているユーザー情報
     // --------------------------------------------------
     
-    let usersLogin_id = '';
+    let loginUsers_id = '';
     
     if (req.isAuthenticated() && req.user) {
-      returnObj.usersLoginObj = req.user;
-      usersLogin_id = req.user._id;
+      returnObj.loginUsersObj = req.user;
+      loginUsers_id = req.user._id;
     }
     
     
@@ -293,7 +296,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
       users_id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;
@@ -391,7 +394,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: IXNCfSRLy
+//   endpointID: IXNCfSRLy
 // --------------------------------------------------
 
 router.get('/pl/settings', upload.none(), async (req, res, next) => {
@@ -410,13 +413,12 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'IXNCfSRLy';
-  
   let returnObj = {
     login: false
   };
   
-  
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
@@ -426,21 +428,13 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
     //   Login Check
     // --------------------------------------------------
     
-    let usersLogin_id = '';
-    
-    if (req.isAuthenticated()) {
-      
-      returnObj.usersLoginObj = req.user;
-      returnObj.login = true;
-      usersLogin_id = req.user._id;
-      
-    } else {
-      
+    if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['eex48Zjee'];
-      throw new Error();
-      
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'eex48Zjee', messageID: 'xLLNIpo6a' }] });
     }
+    
+    lodashSet(returnObj, ['loginUsersObj'], req.user);
+    lodashSet(returnObj, ['login'], true);
     
     
     // --------------------------------------------------
@@ -460,17 +454,21 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
     
     const usersObj = await ModelUsers.findOne({
       conditionObj: {
-        _id: usersLogin_id,
+        _id: loginUsers_id,
       }
     });
     
     
-    
     // --------------------------------------------------
-    //   E-Mail 復号 & 伏せ字化
+    //   Decrypt E-Mail
     // --------------------------------------------------
     
     const decryptedEmail = usersObj.emailObj.value ? decrypt(usersObj.emailObj.value) : '';
+    
+    
+    // --------------------------------------------------
+    //   Set Users Object
+    // --------------------------------------------------
     
     returnObj.usersObj = {
       loginID: usersObj.loginID,
@@ -501,11 +499,139 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
     
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'IXNCfSRLy',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   endpointID: R9AFOxwEK
+// --------------------------------------------------
+
+router.get('/email/confirmation', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+    
+    // if (!req.isAuthenticated()) {
+    //   statusCode = 401;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'eex48Zjee', messageID: 'xLLNIpo6a' }] });
+    // }
+    
+    lodashSet(returnObj, ['loginUsersObj'], req.user);
+    // lodashSet(returnObj, ['login'], true);
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Games
+    //   ヘッダーヒーローイメージ用
+    // --------------------------------------------------
+    
+    returnObj.headerObj = await ModelGames.findForHeroImage({
+      language: localeObj.language,
+      country: localeObj.country,
+    });
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Users
+    // --------------------------------------------------
+    
+    const usersObj = await ModelUsers.findOne({
+      conditionObj: {
+        _id: loginUsers_id,
+      }
+    });
+    
+    
+    // --------------------------------------------------
+    //   Set Users Object
+    // --------------------------------------------------
+    
+    // returnObj.usersObj = {
+    //   loginID: usersObj.loginID,
+    //   playerID: usersObj.playerID,
+    //   emailObj: {
+    //     secret: formatEmailSecret({ value: decryptedEmail }),
+    //     confirmation: usersObj.emailObj.confirmation,
+    //   }
+    // };
+    
+    // console.log(chalk`
+    //   emailHidden: {green ${emailHidden}}
+    // `);
+    
+    // console.log(`\n---------- usersObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(usersObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'R9AFOxwEK',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------

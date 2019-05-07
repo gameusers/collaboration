@@ -233,7 +233,7 @@ class Component extends React.Component {
       
       // if (
       //   this.props.statusCode !== 200 ||
-      //   // 'usersLoginObj' in props.initialPropsObj === false ||
+      //   // 'loginUsersObj' in props.initialPropsObj === false ||
       //   'usersObj' in props.initialPropsObj === false ||
       //   'cardPlayersObj' in props.initialPropsObj === false ||
       //   // 'cardGamesObj' in props.initialPropsObj === false ||

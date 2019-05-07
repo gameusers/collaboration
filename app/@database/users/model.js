@@ -270,10 +270,10 @@ const deleteMany = async ({ conditionObj }) => {
  * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
  * @param {Object} localeObj - ロケール
  * @param {Object} conditionObj - 検索条件
- * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
+const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -342,7 +342,7 @@ const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
     //   フォーマット
     // --------------------------------------------------
     
-    const returnObj = format({ arr: resultArr, usersLogin_id });
+    const returnObj = format({ arr: resultArr, loginUsers_id });
     
     
     // --------------------------------------------------
@@ -362,7 +362,7 @@ const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
     // `);
     
     // console.log(chalk`
-    //   usersLogin_id: {green ${usersLogin_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     // console.log(`
@@ -400,10 +400,10 @@ const findOneForUser = async ({ localeObj, conditionObj, usersLogin_id }) => {
 /**
  * フォーマットする / 現状、多言語に対応していない。localeObjを使用していない。
  * @param {Array} arr - 配列
- * @param {string} usersLogin_id - DB users _id / ログイン中のユーザーID
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const format = async ({ arr, usersLogin_id }) => {
+const format = async ({ arr, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -449,14 +449,14 @@ const format = async ({ arr, usersLogin_id }) => {
     //   Follow の処理
     // --------------------------------------------------
     
-    if (usersLogin_id) {
+    if (loginUsers_id) {
       
       const followedArr = lodashGet(valueObj, ['followedArr'], []);
       
       if (
-        usersLogin_id &&
-        _id !== usersLogin_id &&
-        followedArr.includes(usersLogin_id)
+        loginUsers_id &&
+        _id !== loginUsers_id &&
+        followedArr.includes(loginUsers_id)
       ) {
         returnObj[_id].followed = true;
       }
@@ -499,7 +499,7 @@ const format = async ({ arr, usersLogin_id }) => {
  * @param {String} select - 必要な情報を選択
  * @return {Object} 取得データ
  */
-const findFormatted = async (conditionObj, usersLogin_id) => {
+const findFormatted = async (conditionObj, loginUsers_id) => {
   
   
   // --------------------------------------------------
@@ -545,14 +545,14 @@ const findFormatted = async (conditionObj, usersLogin_id) => {
       //   Follow の処理
       // --------------------------------------------------
       
-      if (usersLogin_id) {
+      if (loginUsers_id) {
         
         copiedObj.followed = false;
         
         if (
-          usersLogin_id &&
-          copiedObj._id !== usersLogin_id &&
-          copiedObj.followedArr.includes(usersLogin_id)
+          loginUsers_id &&
+          copiedObj._id !== loginUsers_id &&
+          copiedObj.followedArr.includes(loginUsers_id)
         ) {
           copiedObj.followed = true;
         }
@@ -576,7 +576,7 @@ const findFormatted = async (conditionObj, usersLogin_id) => {
     
     
     // console.log(chalk`
-    //   usersLogin_id: {green ${usersLogin_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     // console.log(`
@@ -614,11 +614,11 @@ const findFormatted = async (conditionObj, usersLogin_id) => {
 
 /**
  * フォローする
- * @param {string} usersLogin_id - フォローするユーザーの_id
+ * @param {string} loginUsers_id - フォローするユーザーの_id
  * @param {string} users_id - フォローされるユーザーの_id
  * @return {Object} 
  */
-const updateForFollow = async (usersLogin_id, users_id) => {
+const updateForFollow = async (loginUsers_id, users_id) => {
   
   
   // --------------------------------------------------
@@ -653,7 +653,7 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     //   Find One
     // --------------------------------------------------
     
-    const conditionFindOne1Obj = { _id: usersLogin_id };
+    const conditionFindOne1Obj = { _id: loginUsers_id };
     const users1Obj = await SchemaUsers.findOne(conditionFindOne1Obj).exec();
     
     const conditionFindOne2Obj = { _id: users_id };
@@ -675,13 +675,13 @@ const updateForFollow = async (usersLogin_id, users_id) => {
       //   Update
       // --------------------------------------------------
       
-      const condition1Obj = { _id: usersLogin_id };
+      const condition1Obj = { _id: loginUsers_id };
       const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
       const option1Obj = { session: session };
       await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
       
       const condition2Obj = { _id: users_id };
-      const save2Obj = { $pull: { followedArr: usersLogin_id }, $inc: { followedCount: -1 }  };
+      const save2Obj = { $pull: { followedArr: loginUsers_id }, $inc: { followedCount: -1 }  };
       const option2Obj = { session: session };
       await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
       
@@ -697,13 +697,13 @@ const updateForFollow = async (usersLogin_id, users_id) => {
       //   Update
       // --------------------------------------------------
       
-      const condition1Obj = { _id: usersLogin_id };
+      const condition1Obj = { _id: loginUsers_id };
       const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
       const option1Obj = { session: session };
       await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
       
       const condition2Obj = { _id: users_id };
-      const save2Obj = { $addToSet: { followedArr: usersLogin_id }, $inc: { followedCount: 1 }  };
+      const save2Obj = { $addToSet: { followedArr: loginUsers_id }, $inc: { followedCount: 1 }  };
       const option2Obj = { session: session };
       await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
       
@@ -726,8 +726,8 @@ const updateForFollow = async (usersLogin_id, users_id) => {
     //   Model / Users / データ取得
     // --------------------------------------------------
     
-    const conditionObj = { _id: { $in: [usersLogin_id, users_id]} };
-    returnObj.usersObj = await findFormatted(conditionObj, usersLogin_id);
+    const conditionObj = { _id: { $in: [loginUsers_id, users_id]} };
+    returnObj.usersObj = await findFormatted(conditionObj, loginUsers_id);
     
     
     

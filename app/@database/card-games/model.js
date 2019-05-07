@@ -57,7 +57,7 @@ const find = async (argumentsObj) => {
     users_id,
     language,
     country,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -245,7 +245,7 @@ const find = async (argumentsObj) => {
     
     returnObj = format({
       arr: cardGamesArr,
-      usersLogin_id
+      loginUsers_id
     });
     
     
@@ -304,7 +304,7 @@ const findOneBy_id = async (argumentsObj) => {
     _id,
     language,
     country,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -312,7 +312,7 @@ const findOneBy_id = async (argumentsObj) => {
     _id: {green ${_id}}
     language: {green ${language}}
     country: {green ${country}}
-    usersLogin_id: {green ${usersLogin_id}}
+    loginUsers_id: {green ${loginUsers_id}}
   `);
   
   // --------------------------------------------------
@@ -495,7 +495,7 @@ const findOneBy_id = async (argumentsObj) => {
     
     returnObj = format({
       arr: cardGamesArr,
-      usersLogin_id
+      loginUsers_id
     });
     
     
@@ -552,7 +552,7 @@ const format = (argumentsObj) => {
   const {
     
     arr,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -614,15 +614,15 @@ const format = (argumentsObj) => {
     copiedObj.usersObj.follow = false;
     copiedObj.usersObj.followed = false;
     
-    if (usersLogin_id) {
+    if (loginUsers_id) {
       
-      if (copiedObj.users_id !== usersLogin_id) {
+      if (copiedObj.users_id !== loginUsers_id) {
         
-        if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
+        if (copiedObj.usersObj.followArr.includes(loginUsers_id)) {
           copiedObj.usersObj.follow = true;
         }
         
-        if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
+        if (copiedObj.usersObj.followedArr.includes(loginUsers_id)) {
           copiedObj.usersObj.followed = true;
         }
         
@@ -644,7 +644,7 @@ const format = (argumentsObj) => {
         tempObj.publicSetting === 2 && copiedObj.usersObj.followed ||
         tempObj.publicSetting === 3 && copiedObj.usersObj.follow ||
         tempObj.publicSetting === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed ||
-        tempObj.publicSetting === 5 && copiedObj.users_id === usersLogin_id
+        tempObj.publicSetting === 5 && copiedObj.users_id === loginUsers_id
       ) {
         copiedObj.idArr.push({
           type: tempObj.type,

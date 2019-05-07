@@ -96,7 +96,7 @@ const router = express.Router();
 // --------------------------------------------------
 
 let statusCode = 400;
-let usersLogin_id = '';
+let loginUsers_id = '';
 let logLevel = 'error';
 
 let errorArgumentsObj = {
@@ -105,7 +105,7 @@ let errorArgumentsObj = {
   messageCode: 'Error',
   errorCodeArr: ['Error'],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 // let logObj = {
@@ -396,18 +396,18 @@ passport.deserializeUser(async (id, done) => {
   const usersObj = await ModelUsers.findOneForUser({
     localeObj: {},
     conditionObj: { _id: id },
-    usersLogin_id: id
+    loginUsers_id: id
   });
   
-  let usersLoginObj = usersObj[id];
-  usersLoginObj._id = id;
+  let loginUsersObj = usersObj[id];
+  loginUsersObj._id = id;
   
-  // console.log(`\n---------- usersLoginObj ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(usersLoginObj)));
+  // console.log(`\n---------- loginUsersObj ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(loginUsersObj)));
   // console.log(`\n-----------------------------------\n`);
   
   
-  done(null, usersLoginObj);
+  done(null, loginUsersObj);
   
   
 });
@@ -420,7 +420,7 @@ passport.deserializeUser(async (id, done) => {
 // --------------------------------------------------
 
 // --------------------------------------------------
-//   Create Account / Function ID: y9FpGQjEA
+//   Create Account / endpointID: y9FpGQjEA
 // --------------------------------------------------
 
 router.post('/create-account', upload.none(), async (req, res, next) => {
@@ -718,7 +718,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Logout / Function ID: lpePrqvT4
+//   Logout / endpointID: lpePrqvT4
 // --------------------------------------------------
 
 router.post('/logout', upload.none(), function(req, res, next) {
@@ -799,7 +799,7 @@ router.post('/logout', upload.none(), function(req, res, next) {
 // --------------------------------------------------
 
 // --------------------------------------------------
-//   Edit Account / Function ID: svr_ZaIOk
+//   Edit Account / endpointID: svr_ZaIOk
 // --------------------------------------------------
 
 router.post('/edit-account', upload.none(), async (req, res, next) => {
@@ -809,14 +809,29 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'svr_ZaIOk';
-  
-  let returnObj = {};
-  
-  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { loginID, loginPassword } = req.body;
+    
+    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
+    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -825,29 +840,12 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['hGQuDAeuO'];
-      throw new Error();
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hGQuDAeuO', messageID: 'xLLNIpo6a' }] });
     }
     
-    const usersLogin_id = req.user._id;
-    
     
     // --------------------------------------------------
-    //   POST 取得
-    // --------------------------------------------------
-    
-    const { loginID, loginPassword } = req.body;
-    
-    
-    // ---------------------------------------------
-    //   CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   パスワードハッシュ化
+    //   Hash Password
     // --------------------------------------------------
     
     const hashedPassword = bcrypt.hashSync(loginPassword, 10);
@@ -857,39 +855,18 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     //   Validation
     // --------------------------------------------------
     
-    const val = async (func, argumentsObj, name) => {
-      
-      const validationObj = await func(argumentsObj);
-      
-      
-      const title = name ? `${name} / ` : '';
-      console.log(`\n---------- ${title}validationObj ----------\n`);
-      console.dir(validationObj);
-      console.log(`\n-----------------------------------\n`);
-      
-      
-      if (validationObj.error) {
-        errorArgumentsObj.messageCode = validationObj.messageCode;
-        errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-        throw new Error();
-      }
-      
-      return validationObj;
-      
-    };
-    
-    await val(validationUsersLoginIDServer, { value: loginID, usersLogin_id }, 'Login ID');
-    await val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
+    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
+    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
     
     
     // --------------------------------------------------
-    //   Insert For Account
+    //   Update
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
     const conditionObj = {
-      _id: usersLogin_id
+      _id: loginUsers_id
     }
     
     const saveObj = {
@@ -908,11 +885,11 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      loginID: {green ${loginID}}
-      loginPassword: {green ${loginPassword}}
-      hashedPassword: {green ${hashedPassword}}
-    `);
+    // console.log(chalk`
+    //   loginID: {green ${loginID}}
+    //   loginPassword: {green ${loginPassword}}
+    //   hashedPassword: {green ${hashedPassword}}
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -930,23 +907,18 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     
   } catch (errorObj) {
     
-    // console.log(`
-    //   ----- errorObj -----\n
-    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   errorObj.message: {green ${errorObj.message}}
-    // `);
-    
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'svr_ZaIOk',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------
@@ -964,7 +936,7 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   E-Mail登録 / Function ID: 14n6FEth2
+//   E-Mail登録 / endpointID: 14n6FEth2
 // --------------------------------------------------
 
 router.post('/email', upload.none(), async (req, res, next) => {
@@ -974,8 +946,8 @@ router.post('/email', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
-  let requestParametersObj = {};
+  const returnObj = {};
+  const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
@@ -997,7 +969,7 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     verifyCsrfToken(req, res);
     
-    // throw new Error('AAA');
+    
     // --------------------------------------------------
     //   Login Check
     // --------------------------------------------------
@@ -1020,11 +992,6 @@ router.post('/email', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
-    // const validationObj = await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
-    
-    // console.log(`\n---------- validationObj ----------\n`);
-    // console.dir(validationObj);
-    // console.log(`\n-----------------------------------\n`);
     
     
     // --------------------------------------------------
@@ -1045,12 +1012,8 @@ router.post('/email', upload.none(), async (req, res, next) => {
       //   Find One / DB email-confirmations
       // --------------------------------------------------
       
-      const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: usersLogin_id });
+      const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: loginUsers_id });
       const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
-      
-      // console.log(`\n---------- emailConfirmationsDocObj ----------\n`);
-      // console.dir(emailConfirmationsDocObj);
-      // console.log(`\n-----------------------------------\n`);
       
       
       // --------------------------------------------------
@@ -1167,18 +1130,6 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
   } catch (errorObj) {
     
-    // console.log(`
-    //   ----- errorObj -----\n
-    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   errorObj.message: {green ${errorObj.message}}
-    // `);
-    
-    // console.log(errorObj.stack);
-    
     
     // ---------------------------------------------
     //   Log
@@ -1186,18 +1137,11 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      // level: logLevel,
       endpointID: '14n6FEth2',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,
     });
-    
-    // console.log(`
-    //   ----- resultErrorObj -----\n
-    //   ${util.inspect(resultErrorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -1215,7 +1159,7 @@ router.post('/email', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Follow / Function ID: uXe64jfMh
+//   Follow / endpointID: uXe64jfMh
 // --------------------------------------------------
 
 router.post('/follow', upload.none(), async (req, res, next) => {
@@ -1261,7 +1205,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
       throw new Error();
     }
     
-    const usersLogin_id = req.user._id;
+    const loginUsers_id = req.user._id;
     
     
     // --------------------------------------------------
@@ -1287,7 +1231,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     //   Model / Users / Follow
     // --------------------------------------------------
     
-    returnObj = await ModelUsers.updateForFollow(usersLogin_id, users_id);
+    returnObj = await ModelUsers.updateForFollow(loginUsers_id, users_id);
     
     
     // --------------------------------------------------

@@ -390,7 +390,7 @@ export default injectIntl(class extends React.Component {
                   value: eventObj.target.value
                 })}
                 error={validationUsersEmailObj.error}
-                helperText={intl.formatMessage({ id: validationUsersEmailObj.messageCode }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
+                helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{

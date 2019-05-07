@@ -40,7 +40,7 @@ const findForCardPlayer = async (argumentsObj) => {
     
     language,
     country,
-    usersLogin_id,
+    loginUsers_id,
     arr,
     
   } = argumentsObj;
@@ -70,7 +70,7 @@ const findForCardPlayer = async (argumentsObj) => {
     
     const returnObj = formatToObject({
       arr: resultIDsArr,
-      usersLogin_id
+      loginUsers_id
     });
     
     
@@ -83,7 +83,7 @@ const findForCardPlayer = async (argumentsObj) => {
     // console.log(chalk`
     //   language: {green ${language}}
     //   country: {green ${country}}
-    //   usersLogin_id: {green ${usersLogin_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     // console.log(`
@@ -142,7 +142,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     
     language,
     country,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -161,7 +161,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     let resultIDsArr = await Model.aggregate([
       
       {
-        $match : { users_id: usersLogin_id }
+        $match : { users_id: loginUsers_id }
       },
       
       
@@ -270,7 +270,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     
     // const returnObj = formatToObject({
     //   arr: resultIDsArr,
-    //   usersLogin_id
+    //   loginUsers_id
     // });
     
     
@@ -283,7 +283,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     // console.log(chalk`
     //   language: {green ${language}}
     //   country: {green ${country}}
-    //   usersLogin_id: {green ${usersLogin_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     // console.log(`
@@ -341,7 +341,7 @@ const formatToObject = (argumentsObj) => {
     
     // ids_idsArr,
     arr,
-    usersLogin_id
+    loginUsers_id
     
   } = argumentsObj;
   
@@ -373,15 +373,15 @@ const formatToObject = (argumentsObj) => {
     copiedObj.usersObj.follow = false;
     copiedObj.usersObj.followed = false;
     
-    if (usersLogin_id) {
+    if (loginUsers_id) {
       
-      if (copiedObj.users_id !== usersLogin_id) {
+      if (copiedObj.users_id !== loginUsers_id) {
         
-        if (copiedObj.usersObj.followArr.includes(usersLogin_id)) {
+        if (copiedObj.usersObj.followArr.includes(loginUsers_id)) {
           copiedObj.usersObj.follow = true;
         }
         
-        if (copiedObj.usersObj.followedArr.includes(usersLogin_id)) {
+        if (copiedObj.usersObj.followedArr.includes(loginUsers_id)) {
           copiedObj.usersObj.followed = true;
         }
         
@@ -402,12 +402,12 @@ const formatToObject = (argumentsObj) => {
     // --------------------------------------------------
     
     if (
-      copiedObj.users_id === usersLogin_id ||
+      copiedObj.users_id === loginUsers_id ||
       valueObj.publicSetting === 1 ||
       valueObj.publicSetting === 2 && copiedObj.usersObj.followed ||
       valueObj.publicSetting === 3 && copiedObj.usersObj.follow ||
       valueObj.publicSetting === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed
-      // valueObj.publicSetting === 5 && copiedObj.users_id === usersLogin_id
+      // valueObj.publicSetting === 5 && copiedObj.users_id === loginUsers_id
     ) {
       
       let tempObj = {

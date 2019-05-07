@@ -107,7 +107,7 @@ class Store {
    * ログインユーザー情報を入れるオブジェクト
    * @type {Object}
    */
-  @observable usersLoginObj = {};
+  @observable loginUsersObj = {};
   
   
   /**
@@ -115,8 +115,8 @@ class Store {
    * @param {Object} obj - 置き換えるオブジェクト
    */
   @action.bound
-  replaceUsersLoginObj(obj) {
-    this.usersLoginObj = obj;
+  replaceLoginUsersObj(obj) {
+    this.loginUsersObj = obj;
   };
   
   

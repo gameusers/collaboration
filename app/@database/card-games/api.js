@@ -77,14 +77,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [500000],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   プレイヤーカードのデータを1件取得 / Function ID: -3d4En1t6
+//   プレイヤーカードのデータを1件取得 / endpointID: -3d4En1t6
 // --------------------------------------------------
 
 router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
@@ -136,10 +136,10 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     //   ログインしているユーザー情報
     // --------------------------------------------------
     
-    let usersLogin_id = '';
+    let loginUsers_id = '';
     
     if (req.user) {
-      usersLogin_id = req.user._id;
+      loginUsers_id = req.user._id;
     }
     
     
@@ -152,7 +152,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
       _id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj = cardGamesObj;

@@ -77,14 +77,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   サジェスト用のデータを取得 / Function ID: Bk8IioexW
+//   サジェスト用のデータを取得 / endpointID: Bk8IioexW
 // --------------------------------------------------
 
 router.post('/find-by-search-keywords-arr-for-suggestion', upload.none(), async (req, res, next) => {

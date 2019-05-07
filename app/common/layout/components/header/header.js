@@ -265,12 +265,12 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   usersLoginObj
+    //   loginUsersObj
     // --------------------------------------------------
     
-    const thumbnailSrc = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
-    const thumbnailSrcSet = lodashGet(stores, ['data', 'usersLoginObj', 'thumbnailObj', 'srcSet'], '');
-    const playerID = lodashGet(stores, ['data', 'usersLoginObj', 'playerID'], '');
+    const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
+    const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
+    const playerID = lodashGet(stores, ['data', 'loginUsersObj', 'playerID'], '');
     
     
     // --------------------------------------------------
@@ -284,8 +284,8 @@ export default class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- stores.data.usersLoginObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.usersLoginObj)), { colors: true, depth: null })}\n
+    //   ----- stores.data.loginUsersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.loginUsersObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

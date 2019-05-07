@@ -75,7 +75,7 @@ const router = express.Router();
 
 
 // --------------------------------------------------
-//   Initial Props / Function ID: zenm51Io4
+//   Initial Props / endpointID: zenm51Io4
 // --------------------------------------------------
 
 router.post('/insert', upload.none(), async (req, res, next) => {
@@ -93,7 +93,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
     functionID: 'zenm51Io4',
     errorCodeArr: [500000],
     errorObj: {},
-    usersLogin_id: ''
+    loginUsers_id: ''
   };
   
   
@@ -1641,21 +1641,21 @@ BotWはラストも楽しめて良かったです（まさか最後にシロと�
     // returnObj = await ModelCardGames.find({
     //   countryArr: ['JP', 'US'],
     //   languageArr: ['ja'],
-    //   usersLogin_id: 'P7UJMuUnx'
+    //   loginUsers_id: 'P7UJMuUnx'
     // });
     
     // const cardGamesObj = await ModelCardGames.find({
     //   users_id: 'jun-deE4J',
     //   language: localeObj.language,
     //   country: localeObj.country,
-    //   usersLogin_id: 'P7UJMuUnx'
+    //   loginUsers_id: 'P7UJMuUnx'
     // });
     
     // const cardPlayersObj = await ModelCardPlayers.find({
     //   users_id: 'jun-deE4J',
     //   language: localeObj.language,
     //   country: localeObj.country,
-    //   usersLogin_id: 'P7UJMuUnx'
+    //   loginUsers_id: 'P7UJMuUnx'
     // });
     
     

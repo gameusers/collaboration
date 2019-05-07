@@ -129,7 +129,7 @@ class Component extends React.Component {
     //   Check Access Right
     // --------------------------------------------------
     
-    const myPlayerID = lodashGet(initialPropsObj, ['usersLoginObj', 'playerID'], '');
+    const myPlayerID = lodashGet(initialPropsObj, ['loginUsersObj', 'playerID'], '');
     
     if (playerID !== myPlayerID) {
       statusCode = 403;
@@ -228,7 +228,7 @@ class Component extends React.Component {
       //   Update Data - Login User
       // --------------------------------------------------
       
-      this.stores.data.replaceUsersLoginObj(lodashGet(props, ['initialPropsObj', 'usersLoginObj'], {}));
+      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
       
       
       // --------------------------------------------------

@@ -104,14 +104,14 @@ let errorArgumentsObj = {
   functionID: '',
   errorCodeArr: [],
   errorObj: {},
-  usersLogin_id: ''
+  loginUsers_id: ''
 };
 
 
 
 
 // --------------------------------------------------
-//   プレイヤーカードのデータを1件取得 / Function ID: A8rggT8XW
+//   プレイヤーカードのデータを1件取得 / endpointID: A8rggT8XW
 // --------------------------------------------------
 
 router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
@@ -162,10 +162,10 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
     //   ログインしているユーザー情報
     // --------------------------------------------------
     
-    let usersLogin_id = '';
+    let loginUsers_id = '';
     
     if (req.user) {
-      usersLogin_id = req.user._id;
+      loginUsers_id = req.user._id;
     }
     
     
@@ -178,7 +178,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
       _id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj = cardPlayersObj;
@@ -250,7 +250,7 @@ router.post('/find-one-by-id', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   プレイヤーカードのデータを1件取得 / Function ID: 34KBpPcqT
+//   プレイヤーカードのデータを1件取得 / endpointID: 34KBpPcqT
 // --------------------------------------------------
 
 router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, next) => {
@@ -294,7 +294,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
       throw new Error();
     }
     
-    const usersLogin_id = req.user._id;
+    const loginUsers_id = req.user._id;
     
     
     // --------------------------------------------------
@@ -319,7 +319,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
       _id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj = cardPlayersObj;
@@ -391,7 +391,7 @@ router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, nex
 
 
 // --------------------------------------------------
-//   更新 / Function ID: PKbgf0qOq
+//   更新 / endpointID: PKbgf0qOq
 // --------------------------------------------------
 
 router.post('/update', upload.none(), async (req, res, next) => {
@@ -433,8 +433,8 @@ router.post('/update', upload.none(), async (req, res, next) => {
       throw new Error();
     }
     
-    const usersLogin_id = req.user._id;
-    errorArgumentsObj.usersLogin_id = usersLogin_id;
+    const loginUsers_id = req.user._id;
+    errorArgumentsObj.loginUsers_id = loginUsers_id;
     
     
     
@@ -609,7 +609,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   ID
     // --------------------------------------------------
     
-    validationObj = await val(validationCardPlayersIDArrServer, { valueArr: saveObj.idArr, usersLogin_id }, 'ID');
+    validationObj = await val(validationCardPlayersIDArrServer, { valueArr: saveObj.idArr, loginUsers_id }, 'ID');
     saveObj.idArr = validationObj.valueArr;
     
     
@@ -653,7 +653,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   _id
     // --------------------------------------------------
     
-    await val(validationCardPlayers_idServer, { value: saveObj._id, usersLogin_id }, '_id');
+    await val(validationCardPlayers_idServer, { value: saveObj._id, loginUsers_id }, '_id');
     const _id = saveObj._id;
     
     
@@ -759,7 +759,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   データ更新
     // --------------------------------------------------
     
-    const conditionObj = { _id, users_id: usersLogin_id, };
+    const conditionObj = { _id, users_id: loginUsers_id, };
     
     const setSaveObj = {
       $set: saveObj
@@ -786,10 +786,10 @@ router.post('/update', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
-      users_id: usersLogin_id,
+      users_id: loginUsers_id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;
@@ -804,7 +804,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
       _id,
       language: localeObj.language,
       country: localeObj.country,
-      usersLogin_id
+      loginUsers_id
     });
     
     returnObj.cardPlayersForEditFormObj = cardPlayersForEditFormObj;

@@ -23,6 +23,31 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconExpandLess from '@material-ui/icons/ExpandLess';
+import IconExpandMore from '@material-ui/icons/ExpandMore';
+import IconID from '@material-ui/icons/Person';
+import IconPassword from '@material-ui/icons/Lock';
+import IconVisibility from '@material-ui/icons/Visibility';
+import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
@@ -46,7 +71,6 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../../app/@stores/index';
-// import initStorePlayerSettings from '../../app/pl/settings/stores/store';
 
 
 // ---------------------------------------------
@@ -54,8 +78,7 @@ import initStoreIndex from '../../app/@stores/index';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-// import FormAccount from '../../app/pl/settings/components/form-account';
-// import FormEmail from '../../app/pl/settings/components/form-email';
+import Success from '../../app/email/confirmation/components/success';
 
 
 // ---------------------------------------------
@@ -107,7 +130,6 @@ class Component extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const emailConfirmationID = query.emailConfirmationID;
-    // const pathname = `/pl/${playerID}/settings`;
     
     
     // --------------------------------------------------
@@ -115,7 +137,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/email/confirmation`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/email/confirmation?emailConfirmationID=${emailConfirmationID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -132,9 +154,9 @@ class Component extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(chalk`
-      emailConfirmationID: {green ${emailConfirmationID}}
-    `);
+    // console.log(chalk`
+    //   emailConfirmationID: {green ${emailConfirmationID}}
+    // `);
     
     
     return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, emailConfirmationID };
@@ -220,24 +242,6 @@ class Component extends React.Component {
       this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
       
       
-      // --------------------------------------------------
-      //   Update
-      // --------------------------------------------------
-      
-      // const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
-      // const emailSecret = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'secret'], '');
-      // const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
-      
-      // this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
-      // this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
-      // this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
-      
-      // console.log(chalk`
-      //   loginID: {green ${loginID}}
-      // `);
-      
-      
-      
     } catch (e) {
       this.error = true;
     }
@@ -269,7 +273,10 @@ class Component extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const stores = this.stores;
+    const { stores } = this.props;
+    
+    
+    
     
     
     // --------------------------------------------------
@@ -278,14 +285,9 @@ class Component extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'プロフィール',
-        href: `/pl/player?playerID=${this.props.playerID}`,
-        as: `/pl/${this.props.playerID}`,
-      },
-      {
-        name: '設定',
-        href: `/pl/settings?playerID=${this.props.playerID}`,
-        as: `/pl/${this.props.playerID}/settings`,
+        name: 'E-Mail確認',
+        href: '/email/confirmation',
+        as: '/email/confirmation',
       }
     ];
     
@@ -309,15 +311,14 @@ class Component extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>設定 - Game Users</title>
+              <title>E-Mail確認 - Game Users</title>
             </Head>
             
             
             {/* Contents */}
             <Container>
               
-              
-              
+              <Success />
               
             </Container>
             

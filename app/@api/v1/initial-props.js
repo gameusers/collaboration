@@ -21,6 +21,7 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
+const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -32,6 +33,7 @@ const lodashSet = require('lodash/set');
 const ModelUsers = require('../../@database/users/model');
 const ModelGames = require('../../@database/games/model');
 const ModelCardPlayers = require('../../@database/card-players/model');
+const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
 
 
 // ---------------------------------------------
@@ -45,6 +47,7 @@ const { validationUsersPlayerID } = require('../../@database/users/validations/p
 //   Modules
 // ---------------------------------------------
 
+const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
@@ -98,7 +101,7 @@ let errorArgumentsObj = {
 
 
 // --------------------------------------------------
-//   Initial Props / endpointID: GBsTCSr4y
+//   endpointID: GBsTCSr4y
 // --------------------------------------------------
 
 router.get('/common', upload.none(), async (req, res, next) => {
@@ -184,7 +187,7 @@ router.get('/common', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Initial Props / endpointID: P3ut9x3Fj
+//   endpointID: P3ut9x3Fj
 // --------------------------------------------------
 
 router.get('/pl/player', upload.none(), async (req, res, next) => {
@@ -219,7 +222,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   GET 取得 & Validation
+    //   GET Data & Validation
     // --------------------------------------------------
     
     const playerID = req.query.playerID;
@@ -555,16 +558,28 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Login Check
+    //   GET Data
     // --------------------------------------------------
     
-    // if (!req.isAuthenticated()) {
-    //   statusCode = 401;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'eex48Zjee', messageID: 'xLLNIpo6a' }] });
-    // }
+    const emailConfirmationID = req.query.emailConfirmationID;
+    
+    lodashSet(requestParametersObj, ['emailConfirmationID'], emailConfirmationID);
+    // console.log(chalk`
+    //   emailConfirmationID: {green ${emailConfirmationID}}
+    // `);
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Login User Object
+    // --------------------------------------------------
     
     lodashSet(returnObj, ['loginUsersObj'], req.user);
-    // lodashSet(returnObj, ['login'], true);
     
     
     // --------------------------------------------------
@@ -579,35 +594,133 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   データ取得 / Users
+    //   データ取得 / Email Confirmations
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOne({
+    const emailConfirmationsObj = await ModelEmailConfirmations.findOne({
       conditionObj: {
-        _id: loginUsers_id,
+        emailConfirmationID,
       }
     });
     
+    const isSuccess = lodashGet(emailConfirmationsObj, ['isSuccess'], '');
+    const createdDate = lodashGet(emailConfirmationsObj, ['createdDate'], '');
+    const email = lodashGet(emailConfirmationsObj, ['email'], '');
+    const users_id = lodashGet(emailConfirmationsObj, ['users_id'], '');
+    
     
     // --------------------------------------------------
-    //   Set Users Object
+    //   必要な情報がない場合、エラー
     // --------------------------------------------------
     
-    // returnObj.usersObj = {
-    //   loginID: usersObj.loginID,
-    //   playerID: usersObj.playerID,
-    //   emailObj: {
-    //     secret: formatEmailSecret({ value: decryptedEmail }),
-    //     confirmation: usersObj.emailObj.confirmation,
+    if (!createdDate || !email || !users_id) {
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '8JJ4_hJyz', messageID: 'Error' }] });
+    }
+    
+    
+    // --------------------------------------------------
+    //   24時間以内にアクセスしたかチェック
+    // --------------------------------------------------
+    
+    const dateTimeLimit = moment(createdDate).utc().add(1, 'day');
+    const dateTimeNow = moment().utc();
+    
+    if (dateTimeLimit.isBefore(dateTimeNow)) {
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmu7nkZxS', messageID: 'Error' }] });
+    }
+    
+    
+    // --------------------------------------------------
+    //   DB Update
+    // --------------------------------------------------
+    
+    if (!isSuccess) {
+      
+      
+      const ISO8601 = moment().toISOString();
+    
+      const emailConfirmationsConditionObj = {
+        emailConfirmationID,
+      };
+      
+      const emailConfirmationsSaveObj = {
+        $set: {
+          isSuccess: true,
+        }
+      };
+      
+      const usersConditionObj = {
+        _id: users_id,
+        'emailObj.value': email,
+      };
+      
+      const usersSaveObj = {
+        $set: {
+          updatedDate: ISO8601,
+          accessDate: ISO8601,
+          emailObj: {
+            value: email,
+            confirmation: true,
+          },
+          
+        }
+      };
+      
+      
+      await ModelEmailConfirmations.transactionForEmailConfirmation({
+        emailConfirmationsConditionObj,
+        emailConfirmationsSaveObj,
+        usersConditionObj,
+        usersSaveObj,
+      });
+      
+      
+    }
+    
+    // const ISO8601 = moment().toISOString();
+    
+    // const emailConfirmationsConditionObj = {
+    //   emailConfirmationID,
+    // };
+    
+    // const usersConditionObj = {
+    //   _id: users_id,
+    //   'emailObj.value': email,
+    // };
+    
+    // const usersSaveObj = {
+    //   $set: {
+    //     updatedDate: ISO8601,
+    //     accessDate: ISO8601,
+    //     emailObj: {
+    //       value: email,
+    //       confirmation: true,
+    //     },
+        
     //   }
     // };
     
-    // console.log(chalk`
-    //   emailHidden: {green ${emailHidden}}
-    // `);
+    // await ModelEmailConfirmations.transactionForEmailConfirmation({
+    //   emailConfirmationsConditionObj,
+    //   usersConditionObj,
+    //   usersSaveObj,
+    // });
     
-    // console.log(`\n---------- usersObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(usersObj)));
+    
+    console.log(chalk`
+      isSuccess: {green ${isSuccess}}
+      createdDate: {green ${createdDate}}
+      email: {green ${email}}
+      users_id: {green ${users_id}}
+      dateTimeLimit: {green ${dateTimeLimit}}
+      dateTimeNow: {green ${dateTimeNow}}
+      dateTimeLimit.isBefore(dateTimeNow): {green ${dateTimeLimit.isBefore(dateTimeNow)}}
+    `);
+    
+    // console.log(`\n---------- emailConfirmationsObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(emailConfirmationsObj)));
     // console.log(`\n-----------------------------------\n`);
     
     

@@ -946,8 +946,8 @@ const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, ema
     //   DB Insert
     // --------------------------------------------------
     
-    await SchemaUsers.update(usersConditionObj, usersSaveObj, { session, upsert: true });
-    await SchemaEmailConfirmations.update(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
+    await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
+    await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
     
     // await SchemaUsers.create(usersSaveArr, { session });
     // throw new Error('Dy16VjjQL');

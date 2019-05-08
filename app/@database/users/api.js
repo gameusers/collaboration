@@ -1043,6 +1043,7 @@ router.post('/email', upload.none(), async (req, res, next) => {
       
       const emailConfirmationsSaveObj = {
         $set: {
+          isSuccess: false,
           createdDate: ISO8601,
           users_id: loginUsers_id,
           emailConfirmationID: `${shortid.generate()}${shortid.generate()}${shortid.generate()}`,

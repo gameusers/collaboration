@@ -154,6 +154,16 @@ const ja_JP = {
   
   
   
+  // ---------------------------------------------
+  //   E-mail / Confirmation
+  // ---------------------------------------------
+  
+  // /app/@api/v1/initial-props.js - endpointID: R9AFOxwEK
+  // 'iRVhYQpPU': '確認メールが期限切れです',
+  
+  
+  
+  
 };
 
 module.exports = ja_JP;

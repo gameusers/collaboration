@@ -14,7 +14,8 @@ const util = require('util');
 //   Model
 // ---------------------------------------------
 
-const SchemaUsers = require('./schema');
+const SchemaEmailConfirmations = require('./schema');
+const SchemaUsers = require('../users/schema');
 
 
 
@@ -42,7 +43,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaUsers.findOne(conditionObj).exec();
+    return await SchemaEmailConfirmations.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -76,7 +77,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.find(conditionObj).exec();
+    return await SchemaEmailConfirmations.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -109,7 +110,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.countDocuments(conditionObj).exec();
+    return await SchemaEmailConfirmations.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -142,7 +143,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaEmailConfirmations.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -175,7 +176,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaUsers.insertMany(saveArr);
+    return await SchemaEmailConfirmations.insertMany(saveArr);
     
     
   } catch (err) {
@@ -208,12 +209,145 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaUsers.deleteMany(conditionObj);
+    return await SchemaEmailConfirmations.deleteMany(conditionObj);
     
     
   } catch (err) {
     
     throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 挿入 / 更新する  アカウント情報編集用
+ * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
+ * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
+ * @return {Object} 
+ */
+const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj, emailConfirmationsSaveObj, usersConditionObj, usersSaveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await SchemaEmailConfirmations.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    // --------------------------------------------------
+    //   DB deleteOne & updateOne
+    // --------------------------------------------------
+    
+    // await SchemaEmailConfirmations.deleteMany(emailConfirmationsConditionObj, { session });
+    await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session });
+    // throw new Error();
+    await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- emailConfirmationsConditionObj -----\n
+    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsSaveObj -----\n
+    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
     
   }
   
@@ -233,4 +367,5 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
+  transactionForEmailConfirmation,
 };

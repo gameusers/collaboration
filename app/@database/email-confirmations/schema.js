@@ -16,6 +16,7 @@ const schema = mongoose.Schema({
   users_id: { type: String, required: true },
   emailConfirmationID: { type: String, required: true },
   email: { type: String, required: true },
+  count: { type: Number, required: true },
 });
 
 module.exports = mongoose.model('email-confirmations', schema);

@@ -23,31 +23,6 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import InputAdornment from '@material-ui/core/InputAdornment';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconID from '@material-ui/icons/Person';
-import IconPassword from '@material-ui/icons/Lock';
-import IconVisibility from '@material-ui/icons/Visibility';
-import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
-
-
-// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
@@ -145,7 +120,6 @@ class Component extends React.Component {
     
     let statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
-    
     
     
     // console.log(`
@@ -273,10 +247,7 @@ class Component extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
-    
-    
-    
+    // const { stores } = this.props;
     
     
     // --------------------------------------------------

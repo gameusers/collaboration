@@ -150,6 +150,7 @@ const ja_JP = {
   // /app/pl/settings/stores/store.js
   'nhn2yers2': 'ログイン情報を編集しました',
   '84FmVC7RZ': 'E-Mailを編集しました',
+  'hbRy4HpaP': 'E-Mailの登録を解除しました',
   
   
   
@@ -159,7 +160,11 @@ const ja_JP = {
   // ---------------------------------------------
   
   // /app/@api/v1/initial-props.js - endpointID: R9AFOxwEK
-  // 'iRVhYQpPU': '確認メールが期限切れです',
+  'EAvJztLfH': '確認メールは何度も送信できません。また後日お試しください。',
+  
+  // /app/@database/email-confirmations/api.js
+  'CquCU7BtA': '確認メールを再送信しました',
+  'IDT_ufsFV': 'メールアドレスの確認はすでに完了しています',
   
   
   

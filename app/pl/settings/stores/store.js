@@ -337,6 +337,7 @@ class Store {
       // ---------------------------------------------
       
       const email = lodashGet(this.dataObj, ['emailObj', 'value'], '');
+      const removeEmail = lodashGet(this.dataObj, ['removeEmail'], false);
       
       
       // ---------------------------------------------
@@ -352,6 +353,15 @@ class Store {
       
       if (validationUsersEmailObj.error) {
         throw new CustomError({ errorsArr: [{ code: '6cFcqgVgL', messageID: 'uwHIKBy7c' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   E-Mailも解除チェックボックスも空の場合、エラー
+      // ---------------------------------------------
+      
+      if (!email && !removeEmail) {
+        throw new CustomError({ errorsArr: [{ code: 'wVkjU5SCS', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -372,6 +382,7 @@ class Store {
       let formData = new FormData();
       
       formData.append('email', email);
+      if (removeEmail) formData.append('removeEmail', true);
       
       
       // ---------------------------------------------
@@ -408,16 +419,28 @@ class Store {
       lodashSet(this.dataObj, ['emailObj', 'value'], '');
       lodashSet(this.dataObj, ['emailObj', 'confirmation'], false);
       lodashSet(this.dataObj, ['emailObj', 'secret'], resultObj.data.emailSecret);
+      lodashSet(this.dataObj, ['removeEmail'], false);
       
       
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        message: storeData.intl.formatMessage({ id: '84FmVC7RZ' }),
-      });
+      if (removeEmail) {
+        
+        storeLayout.handleSnackbarOpen({
+          variant: 'success',
+          message: storeData.intl.formatMessage({ id: 'hbRy4HpaP' }),
+        });
+        
+      } else {
+        
+        storeLayout.handleSnackbarOpen({
+          variant: 'success',
+          message: storeData.intl.formatMessage({ id: '84FmVC7RZ' }),
+        });
+        
+      }
       
       
     } catch (errorObj) {
@@ -454,6 +477,98 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleButtonEnable({ _id: 'submitEmail' });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * 確認メールを再送信する
+   */
+  @action.bound
+  async handleSubmitConfirmation() {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ _id: 'submitConfirmation' });
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      let formData = new FormData();
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/email-confirmations/resend`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        message: storeData.intl.formatMessage({ id: 'CquCU7BtA' }),
+      });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        message: returnErrorMessage({ intl: storeData.intl, localeObj: storeData.localeObj, errorObj }),
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ _id: 'submitConfirmation' });
       
       
       // ---------------------------------------------

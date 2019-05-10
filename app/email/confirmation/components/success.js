@@ -224,7 +224,7 @@ export default injectIntl(class extends React.Component {
           <StyledExpansionPanelDetails>
             
             <Description>
-              E-Mailアドレスの確認に成功しました。
+              E-Mailアドレスの確認ができました。
             </Description>
             
           </StyledExpansionPanelDetails>

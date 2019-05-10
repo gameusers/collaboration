@@ -277,7 +277,7 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
     // --------------------------------------------------
     
     await session.commitTransaction();
-    console.log('--------コミット-----------');
+    // console.log('--------コミット-----------');
     
     session.endSession();
     
@@ -342,7 +342,7 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
     // --------------------------------------------------
     
     await session.abortTransaction();
-    console.log('--------ロールバック-----------');
+    // console.log('--------ロールバック-----------');
     
     session.endSession();
     

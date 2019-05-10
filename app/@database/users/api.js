@@ -40,6 +40,7 @@ const { encrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
+const { sendMail } = require('../../@modules/mail');
 
 
 // ---------------------------------------------
@@ -958,9 +959,11 @@ router.post('/email', upload.none(), async (req, res, next) => {
     //   POST Data
     // --------------------------------------------------
     
-    const { email } = req.body;
+    const { email, removeEmail } = req.body;
     
     lodashSet(requestParametersObj, ['email'], email ? '******' : '');
+    lodashSet(requestParametersObj, ['removeEmail'], removeEmail);
+    // console.log(typeof removeEmail);
     
     
     // ---------------------------------------------
@@ -1001,72 +1004,13 @@ router.post('/email', upload.none(), async (req, res, next) => {
     const ISO8601 = moment().toISOString();
     
     
-    // --------------------------------------------------
-    //   E-Mailアドレスを保存する場合
-    // --------------------------------------------------
     
-    if (email) {
-      
-      
-      // --------------------------------------------------
-      //   Find One / DB email-confirmations
-      // --------------------------------------------------
-      
-      const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: loginUsers_id });
-      const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
-      
-      
-      // --------------------------------------------------
-      //   Upsert 
-      //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
-      // --------------------------------------------------
-      
-      const usersConditionObj = {
-        _id: loginUsers_id
-      };
-      
-      const usersSaveObj = {
-        $set: {
-          updatedDate: ISO8601,
-          accessDate: ISO8601,
-          emailObj: {
-            value: encryptedEmail,
-            confirmation: false,
-          },
-        }
-      };
-      
-      
-      const emailConfirmationsConditionObj = {
-        _id: emailConfirmations_id
-      };
-      
-      const emailConfirmationsSaveObj = {
-        $set: {
-          isSuccess: false,
-          createdDate: ISO8601,
-          users_id: loginUsers_id,
-          emailConfirmationID: `${shortid.generate()}${shortid.generate()}${shortid.generate()}`,
-          email: encryptedEmail,
-        }
-      };
-      
-      
-      await ModelUsers.upsertForCreateEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
-      
-      
-      // --------------------------------------------------
-      //   E-Mail 伏せ字化
-      // --------------------------------------------------
-      
-      returnObj.emailSecret = formatEmailSecret({ value: email });
-      
-      
+    
     // --------------------------------------------------
     //   E-Mailアドレスを空にする場合
     // --------------------------------------------------
     
-    } else {
+    if (removeEmail) {
       
       
       // --------------------------------------------------
@@ -1096,6 +1040,109 @@ router.post('/email', upload.none(), async (req, res, next) => {
       // --------------------------------------------------
       
       returnObj.emailSecret = '';
+      
+      
+    // --------------------------------------------------
+    //   E-Mailアドレスを保存する場合
+    // --------------------------------------------------
+    
+    } else if (email) {
+      
+      
+      // --------------------------------------------------
+      //   Find One / DB email-confirmations
+      // --------------------------------------------------
+      
+      const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: loginUsers_id });
+      const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
+      const emailConfirmationsCount = lodashGet(emailConfirmationsDocObj, ['count'], 0);
+      
+      
+      // --------------------------------------------------
+      //   メールを送れるのは3回まで、それ以上はエラーにする
+      // --------------------------------------------------
+      
+      if (emailConfirmationsCount >= 3) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XzR7k_Fh3', messageID: 'EAvJztLfH' }] });
+      }
+      
+      
+      // --------------------------------------------------
+      //   Upsert 
+      //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
+      // --------------------------------------------------
+      
+      const usersConditionObj = {
+        _id: loginUsers_id
+      };
+      
+      const usersSaveObj = {
+        $set: {
+          updatedDate: ISO8601,
+          accessDate: ISO8601,
+          emailObj: {
+            value: encryptedEmail,
+            confirmation: false,
+          },
+        }
+      };
+      
+      
+      const emailConfirmationsConditionObj = {
+        _id: emailConfirmations_id
+      };
+      
+      const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
+      
+      const emailConfirmationsSaveObj = {
+        $set: {
+          isSuccess: false,
+          createdDate: ISO8601,
+          users_id: loginUsers_id,
+          emailConfirmationID,
+          email: encryptedEmail,
+          count: emailConfirmationsCount + 1,
+        }
+      };
+      
+      
+      await ModelUsers.upsertForCreateEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
+      
+      
+      // --------------------------------------------------
+      //   E-Mail 伏せ字化
+      // --------------------------------------------------
+      
+      returnObj.emailSecret = formatEmailSecret({ value: email });
+      
+      
+      // --------------------------------------------------
+      //   Send Mail
+      // --------------------------------------------------
+      
+      sendMail({
+        from: process.env.EMAIL_MESSAGE_FROM,
+        to: email,
+        subject: '[Game Users] E-Mailアドレス確認',
+        text:
+        `Game Users - E-Mailアドレス確認
+
+以下のURLにアクセスしてメールアドレスの確認を終了させてください。
+${process.env.URL_BASE}email/confirmation/${emailConfirmationID}
+
+E-Mailの登録後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
+
+こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。また同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡をいただけるとありがたいです。
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
+
+　Game Users
+
+　Email: mail@gameusers.org
+　URL: https://gameusers.org/
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+      });
       
       
     }

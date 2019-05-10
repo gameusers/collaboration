@@ -960,7 +960,7 @@ const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, ema
     // --------------------------------------------------
     
     await session.commitTransaction();
-    console.log('--------コミット-----------');
+    // console.log('--------コミット-----------');
     
     session.endSession();
     
@@ -1025,7 +1025,7 @@ const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, ema
     // --------------------------------------------------
     
     await session.abortTransaction();
-    console.log('--------ロールバック-----------');
+    // console.log('--------ロールバック-----------');
     
     session.endSession();
     

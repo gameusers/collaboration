@@ -47,7 +47,7 @@ const { validationUsersPlayerID } = require('../../@database/users/validations/p
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../@modules/csrf');
+// const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
@@ -572,7 +572,7 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
     //   Verify CSRF
     // ---------------------------------------------
     
-    verifyCsrfToken(req, res);
+    // verifyCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -709,15 +709,15 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
     // });
     
     
-    console.log(chalk`
-      isSuccess: {green ${isSuccess}}
-      createdDate: {green ${createdDate}}
-      email: {green ${email}}
-      users_id: {green ${users_id}}
-      dateTimeLimit: {green ${dateTimeLimit}}
-      dateTimeNow: {green ${dateTimeNow}}
-      dateTimeLimit.isBefore(dateTimeNow): {green ${dateTimeLimit.isBefore(dateTimeNow)}}
-    `);
+    // console.log(chalk`
+    //   isSuccess: {green ${isSuccess}}
+    //   createdDate: {green ${createdDate}}
+    //   email: {green ${email}}
+    //   users_id: {green ${users_id}}
+    //   dateTimeLimit: {green ${dateTimeLimit}}
+    //   dateTimeNow: {green ${dateTimeNow}}
+    //   dateTimeLimit.isBefore(dateTimeNow): {green ${dateTimeLimit.isBefore(dateTimeNow)}}
+    // `);
     
     // console.log(`\n---------- emailConfirmationsObj ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(emailConfirmationsObj)));

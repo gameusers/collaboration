@@ -32,6 +32,8 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -141,7 +143,7 @@ const RegisteredEmail = styled.div`
 `;
 
 const ConfirmationTrue = styled.span`
-  color: black;
+  color: green;
 `;
 
 const ConfirmationFalse = styled.span`
@@ -223,6 +225,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleSubmitEmail,
+      handleSubmitConfirmation,
       
     } = stores.playerSettings;
     
@@ -273,6 +276,14 @@ export default injectIntl(class extends React.Component {
       }
       
     }
+    
+    
+    
+    // --------------------------------------------------
+    //   Remove E-Mail Checkbox
+    // --------------------------------------------------
+    
+    const removeEmail = lodashGet(dataObj, ['removeEmail'], false);
     
     
     
@@ -349,10 +360,6 @@ export default injectIntl(class extends React.Component {
               メールは mail@gameusers.org こちらのアドレスから届きます。ドメイン指定をされている方は @gameusers.org を受信できるように設定してください。
             </Description>
             
-            <Description>
-              メールアドレスの登録を解除する場合はフォームを空欄にして送信してください。
-            </Description>
-            
             
             
             
@@ -367,7 +374,7 @@ export default injectIntl(class extends React.Component {
                 <Button
                   variant="contained"
                   color="secondary"
-                  // onClick={() => handlesubmitEmail()}
+                  onClick={() => handleSubmitConfirmation()}
                   disabled={buttonDisabled}
                   size="small"
                 >
@@ -405,6 +412,27 @@ export default injectIntl(class extends React.Component {
                 }}
               />
             </div>
+            
+            
+            
+            
+            {/* Remove E-Mail Checkbox */}
+            {emailSecret &&
+              <div>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={removeEmail}
+                      onChange={(eventObj) => handleEdit({
+                        pathArr: ['removeEmail'],
+                        value: eventObj.target.checked
+                      })}
+                    />
+                  }
+                  label="登録したメールアドレスを削除する"
+                />
+              </div>
+            }
             
             
             

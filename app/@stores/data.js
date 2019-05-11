@@ -63,6 +63,7 @@ class Store {
     
     this.localeObj = obj;
     
+    // 以下削除予定
     const intlProvider = new IntlProvider({
       locale: this.localeObj.languageArr[0],
       messages: this.localeObj.dataObj

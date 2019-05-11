@@ -25,13 +25,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// import { errorsArrIntoErrorMessage } from '../../../@format/error';
+import { CustomError } from '../../../@modules/error/custom';
 
 
 // ---------------------------------------------
@@ -41,6 +35,8 @@ import { fetchWrapper } from '../../../@modules/fetch';
 const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
 const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
 const { validationUsersEmail } = require('../../../@database/users/validations/email');
+
+
 
 
 // --------------------------------------------------
@@ -230,18 +226,6 @@ class Store {
       
       
       // ---------------------------------------------
-      //   I18n
-      // ---------------------------------------------
-      
-      const intlProvider = new IntlProvider({
-        locale: storeData.localeObj.languageArr[0],
-        messages: storeData.localeObj.dataObj
-      }, {});
-      
-      const { intl } = intlProvider.getChildContext();
-      
-      
-      // ---------------------------------------------
       //   Form Type Reset
       // ---------------------------------------------
       
@@ -265,7 +249,7 @@ class Store {
       // ---------------------------------------------
       
       if (createAccountTermsOfService === false) {
-        throw new Error('利用規約に同意してください');
+        throw new CustomError({ errorsArr: [{ code: 'qES1fpB_e', messageID: 'Gn_vVgSFY' }] });
       }
       
       
@@ -289,7 +273,7 @@ class Store {
         validationUsersLoginPasswordConfirmationObj.error ||
         validationUsersEmailObj.error
       ) {
-        throw new Error('フォームの入力内容に問題があります');
+        throw new CustomError({ errorsArr: [{ code: 'UN26lgIXU', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -316,7 +300,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   FormData
+      //   FormData - Create Account
       // ---------------------------------------------
       
       let formData = new FormData();
@@ -328,7 +312,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Fetch
+      //   Fetch - Create Account
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
@@ -350,18 +334,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(intl.formatMessage({ id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '') }));
-        
-        
-        // throw new Error(intl.formatMessage(
-        //   {
-        //     id: lodashGet(resultObj, ['errorsArr', 0, 'messageCode'], '')
-        //   },
-        //   {
-        //     code: lodashGet(resultObj, ['errorsArr', 0, 'code'], ''),
-        //   }
-        // ));
-        // throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -378,7 +351,10 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'アカウントを作成しました。プレイヤーページに移動します。');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'Jje25z6lV',
+      });
       
       
       
@@ -395,7 +371,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Fetch
+      //   Fetch - Login
       // ---------------------------------------------
       
       resultObj = await fetchWrapper({
@@ -428,7 +404,10 @@ class Store {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {
@@ -446,7 +425,6 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
-      // console.log('finally');
       
       
     }

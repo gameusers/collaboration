@@ -1,8 +1,4 @@
 // --------------------------------------------------
-//   File ID: EOnyUrk82
-// --------------------------------------------------
-
-// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -40,7 +36,7 @@ const { encrypt }  = require('../../@modules/crypto');
 const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
-const { sendMail } = require('../../@modules/mail');
+const { sendMailConfirmation } = require('../../@modules/email');
 
 
 // ---------------------------------------------
@@ -109,15 +105,11 @@ let errorArgumentsObj = {
   loginUsers_id: ''
 };
 
-// let logObj = {
-  
-// };
-
 
 
 
 // --------------------------------------------------
-//   ログイン Passport：Local（ID & Password）
+//   ログイン Passport：Local（ID & Password） / endpointID: ZVCmdUTHQ
 //   
 //   参考：
 //  　 http://www.passportjs.org/docs/username-password/
@@ -133,23 +125,37 @@ router.post('/login', upload.none(), (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Locale
+    //   Property
     // --------------------------------------------------
     
-    // const localeObj = locale({
-    //   acceptLanguage: req.headers['accept-language']
-    // });
-    
+    const requestParametersObj = {};
     
     
     try {
       
       
       // --------------------------------------------------
-      //   POST 取得
+      //   POST Data
       // --------------------------------------------------
       
       const { loginID, loginPassword, response } = req.body;
+      
+      lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
+      lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
+      
+      
+      // ---------------------------------------------
+      //   Verify CSRF
+      // ---------------------------------------------
+      
+      verifyCsrfToken(req, res);
+      
+      
+      // ---------------------------------------------
+      //   Verify reCAPTCHA
+      // ---------------------------------------------
+      
+      await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
       
       
       // --------------------------------------------------
@@ -158,13 +164,8 @@ router.post('/login', upload.none(), (req, res, next) => {
       
       if (req.isAuthenticated()) {
         statusCode = 401;
-        errorArgumentsObj.errorCodeArr = ['yyaAiB5f-'];
-        throw new Error();
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yyaAiB5f-', messageID: 'xLLNIpo6a' }] });
       }
-      
-      // if (req.isAuthenticated()) {
-      //   throw new Error('Login Already');
-      // }
       
       
       // --------------------------------------------------
@@ -179,35 +180,12 @@ router.post('/login', upload.none(), (req, res, next) => {
       // `);
       
       
-      
-      // ---------------------------------------------
-      //   CSRF & reCAPTCHA
-      // ---------------------------------------------
-      
-      verifyCsrfToken(req, res);
-      await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
-      
-      
       // --------------------------------------------------
       //   Validation
       // --------------------------------------------------
       
-      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
-      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: loginPassword, loginID });
-      
-      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error) {
-        errorArgumentsObj.errorCodeArr = ['jmFCQy90J'];
-        throw new Error();
-        // throw new Error('Validation');
-      }
+      await validationUsersLoginID({ throwError: true, required: true, value: loginID });
+      await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
       
       
       // ---------------------------------------------
@@ -215,39 +193,12 @@ router.post('/login', upload.none(), (req, res, next) => {
       // ---------------------------------------------
       
       if (err) {
-        errorArgumentsObj.errorCodeArr = ['BBoMlwE0o'];
-        throw new Error();
-        // throw new Error('Passport 1');
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'BBoMlwE0o-', messageID: 'Error' }] });
       }
       
-      
       if (!user) {
-        
-        
-        // --------------------------------------------------
-        //   Set Error Message
-        // --------------------------------------------------
-        
-        let message = info.message;
-        
-        if (process.env.NODE_ENV === 'production') {
-          message = 'ID、またはパスワードが間違っています';
-        }
-        
-        
-        // --------------------------------------------------
-        //   Return Error JSON
-        // --------------------------------------------------
-        
-        return res.status(401).json({
-          errorsArr: [
-            {
-              code: 'H0eMuApu6',
-              message
-            },
-          ]
-        });
-        
+        statusCode = 401;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'H0eMuApu6', messageID: 'RIj4SCt_s' }] });
       }
       
       
@@ -263,9 +214,7 @@ router.post('/login', upload.none(), (req, res, next) => {
         // ---------------------------------------------
         
         if (err) {
-          errorArgumentsObj.errorCodeArr = ['5PzzF23_V'];
-          throw new Error();
-          // throw new Error('Passport 2');
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: '5PzzF23_V', messageID: 'Error' }] });
         }
         
         
@@ -284,17 +233,17 @@ router.post('/login', upload.none(), (req, res, next) => {
     } catch (errorObj) {
       
       
-      // console.log(`\n---------- errorObj ----------\n`);
-      // console.dir(errorObj);
-      // console.log(`\n-----------------------------------\n`);
-      
-      
       // ---------------------------------------------
-      //   Error Object
+      //   Log
       // ---------------------------------------------
       
-      errorArgumentsObj.errorObj = errorObj;
-      const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+      const resultErrorObj = returnErrorsArr({
+        errorObj,
+        endpointID: 'ZVCmdUTHQ',
+        users_id: loginUsers_id,
+        ip: req.ip,
+        requestParametersObj,
+      });
       
       
       // --------------------------------------------------
@@ -345,7 +294,7 @@ passport.use(new LocalStrategy({
       // --------------------------------------------------
       
       if (!user) {
-        return done(null, false, { message: 'ID、またはパスワードが間違っています' });
+        return done(null, false, {});
       }
       
       
@@ -355,7 +304,7 @@ passport.use(new LocalStrategy({
       // --------------------------------------------------
       
       if (bcrypt.compareSync(password, user.loginPassword) === false) {
-        return done(null, false, { message: 'ID、またはパスワードが間違っています' });
+        return done(null, false, {});
       }
       
       
@@ -417,10 +366,6 @@ passport.deserializeUser(async (id, done) => {
 
 
 // --------------------------------------------------
-//   アカウント作成
-// --------------------------------------------------
-
-// --------------------------------------------------
 //   Create Account / endpointID: y9FpGQjEA
 // --------------------------------------------------
 
@@ -431,14 +376,37 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'y9FpGQjEA';
-  
-  let returnObj = {};
-  
-  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { loginID, loginPassword, email, response } = req.body;
+    
+    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
+    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
+    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // ---------------------------------------------
+    //   Verify reCAPTCHA
+    // ---------------------------------------------
+    
+    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
     
     
     // --------------------------------------------------
@@ -447,35 +415,19 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
     if (req.isAuthenticated()) {
       statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['L0w_PocQA'];
-      throw new Error();
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'L0w_PocQA', messageID: 'xLLNIpo6a' }] });
     }
     
     
     // --------------------------------------------------
-    //   POST 取得
-    // --------------------------------------------------
-    
-    const { loginID, loginPassword, email, response } = req.body;
-    
-    
-    // ---------------------------------------------
-    //   CSRF & reCAPTCHA
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
-    
-    
-    // --------------------------------------------------
-    //   パスワードハッシュ化
+    //   Hash Password
     // --------------------------------------------------
     
     const hashedPassword = bcrypt.hashSync(loginPassword, 10);
     
     
     // --------------------------------------------------
-    //   E-Mail 暗号化
+    //   Encrypt E-Mail
     // --------------------------------------------------
     
     const encryptedEmail = email ? encrypt(email) : '';
@@ -485,180 +437,171 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   Validation
     // --------------------------------------------------
     
-    const val = async (func, argumentsObj, name) => {
-      
-      const validationObj = await func(argumentsObj);
-      
-      
-      // const title = name ? `${name} / ` : '';
-      // console.log(`\n---------- ${title}validationObj ----------\n`);
-      // console.dir(validationObj);
-      // console.log(`\n-----------------------------------\n`);
-      
-      
-      if (validationObj.error) {
-        errorArgumentsObj.messageCode = validationObj.messageCode;
-        errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-        throw new Error();
-      }
-      
-      return validationObj;
-      
-    };
+    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
+    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
+    await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
     
     
     // --------------------------------------------------
-    //   Login ID
-    // --------------------------------------------------
-    
-    await val(validationUsersLoginIDServer, { value: loginID }, 'Login ID');
-    await val(validationUsersLoginPassword, { required: true, value: loginPassword, loginID }, 'Login Password');
-    await val(validationUsersEmailServer, { value: email, encryptedEmail }, 'E-Mail');
-    
-    
-    // --------------------------------------------------
-    //   Insert For Create Account
+    //   DB Insert
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     const users_id = shortid.generate();
     const playerID = shortid.generate();
+    const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
     
-    const usersSaveArr = [
-      {
-        _id: users_id,
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        accessDate: ISO8601,
-        playerID,
-        loginID,
-        loginPassword: hashedPassword,
-        emailObj: {
-          value: encryptedEmail,
-          confirmation: false,
-        },
-        country: 'JP',
-        termsOfServiceConfirmedDate: ISO8601,
-        experience: 0,
-        titleArr: [],
-        followArr: [],
-        followCount: 0,
-        followedArr: [],
-        followedCount: 0,
-        role: 'User'
+    
+    const usersSaveArr = [{
+      _id: users_id,
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      accessDate: ISO8601,
+      playerID,
+      loginID,
+      loginPassword: hashedPassword,
+      emailObj: {
+        value: encryptedEmail,
+        confirmation: false,
       },
-    ];
+      country: 'JP',
+      termsOfServiceConfirmedDate: ISO8601,
+      experience: 0,
+      titleArr: [],
+      followArr: [],
+      followCount: 0,
+      followedArr: [],
+      followedCount: 0,
+      role: 'User'
+    }];
     
-    const cardPlayersSaveArr = [
-      {
+    
+    const cardPlayersSaveArr = [{
+      _id: shortid.generate(),
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      users_id,
+      language: 'ja',
+      nameObj: {
+        value: 'Name',
+        search: true,
+      },
+      statusObj: {
+        value: 'Status',
+        search: true,
+      },
+      imagesAndVideosObj: {
+        thumbnailArr: [],
+        mainArr: [],
+      },
+      commentObj: {
+        value: '',
+        search: true,
+      },
+      ageObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      sexObj: {
+        value: 'empty',
+        alternativeText: '',
+        search: true,
+      },
+      addressObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      gamingExperienceObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      hobbiesObj: {
+        valueArr: [],
+        search: true,
+      },
+      specialSkillsObj: {
+        valueArr: [],
+        search: true,
+      },
+      smartphoneObj: {
+        model: '',
+        comment: '',
+        search: true,
+      },
+      tabletObj: {
+        model: '',
+        comment: '',
+        search: true,
+      },
+      pcObj: {
+        model: '',
+        comment: '',
+        specsObj: {
+          os: '',
+          cpu: '',
+          cpuCooler: '',
+          motherboard: '',
+          memory: '',
+          storage: '',
+          graphicsCard: '',
+          opticalDrive: '',
+          powerSupply: '',
+          pcCase: '',
+          monitor: '',
+          mouse: '',
+          keyboard: ''
+        },
+        search: true,
+      },
+      hardwareActiveObj: {
+        valueArr: [],
+        search: true,
+      },
+      hardwareInactiveObj: {
+        valueArr: [],
+        search: true,
+      },
+      idArr: [],
+      activityTimeObj: {
+        valueArr: [],
+        search: true,
+      },
+      lookingForFriendsObj: {
+        value: true,
+        icon: 'emoji_u263a',
+        comment: '',
+        search: true,
+      },
+      voiceChatObj: {
+        value: true,
+        comment: '',
+        search: true,
+      },
+      linkArr: []
+    }];
+    
+    
+    let emailConfirmationsSaveArr = [];
+    
+    if (email) {
+      
+      emailConfirmationsSaveArr = [{
         _id: shortid.generate(),
+        isSuccess: false,
         createdDate: ISO8601,
-        updatedDate: ISO8601,
         users_id,
-        language: 'ja',
-        nameObj: {
-          value: 'Name',
-          search: true,
-        },
-        statusObj: {
-          value: 'Status',
-          search: true,
-        },
-        imagesAndVideosObj: {
-          thumbnailArr: [],
-          mainArr: [],
-        },
-        commentObj: {
-          value: '',
-          search: true,
-        },
-        ageObj: {
-          value: '',
-          alternativeText: '',
-          search: true,
-        },
-        sexObj: {
-          value: 'empty',
-          alternativeText: '',
-          search: true,
-        },
-        addressObj: {
-          value: '',
-          alternativeText: '',
-          search: true,
-        },
-        gamingExperienceObj: {
-          value: '',
-          alternativeText: '',
-          search: true,
-        },
-        hobbiesObj: {
-          valueArr: [],
-          search: true,
-        },
-        specialSkillsObj: {
-          valueArr: [],
-          search: true,
-        },
-        smartphoneObj: {
-          model: '',
-          comment: '',
-          search: true,
-        },
-        tabletObj: {
-          model: '',
-          comment: '',
-          search: true,
-        },
-        pcObj: {
-          model: '',
-          comment: '',
-          specsObj: {
-            os: '',
-            cpu: '',
-            cpuCooler: '',
-            motherboard: '',
-            memory: '',
-            storage: '',
-            graphicsCard: '',
-            opticalDrive: '',
-            powerSupply: '',
-            pcCase: '',
-            monitor: '',
-            mouse: '',
-            keyboard: ''
-          },
-          search: true,
-        },
-        hardwareActiveObj: {
-          valueArr: [],
-          search: true,
-        },
-        hardwareInactiveObj: {
-          valueArr: [],
-          search: true,
-        },
-        idArr: [],
-        activityTimeObj: {
-          valueArr: [],
-          search: true,
-        },
-        lookingForFriendsObj: {
-          value: true,
-          icon: 'emoji_u263a',
-          comment: '',
-          search: true,
-        },
-        voiceChatObj: {
-          value: true,
-          comment: '',
-          search: true,
-        },
-        linkArr: []
-      },
-    ];
+        emailConfirmationID,
+        email: encryptedEmail,
+        count: 1,
+      }];
+      
+    }
     
-    await ModelUsers.insertForCreateAccount({ usersSaveArr, cardPlayersSaveArr });
+    
+    await ModelUsers.transactionForCreateAccount({ usersSaveArr, cardPlayersSaveArr, emailConfirmationsSaveArr });
     
     
     // --------------------------------------------------
@@ -689,19 +632,18 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
   } catch (errorObj) {
     
-    // console.log(`
-    //   ----- errorObj -----\n
-    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'y9FpGQjEA',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------
@@ -726,28 +668,19 @@ router.post('/logout', upload.none(), function(req, res, next) {
   
   
   // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
-  
-  
-  // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'lpePrqvT4';
-  
-  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
     
     
     // ---------------------------------------------
-    //   CSRF
+    //   Verify CSRF
     // ---------------------------------------------
     
     verifyCsrfToken(req, res);
@@ -764,20 +697,23 @@ router.post('/logout', upload.none(), function(req, res, next) {
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json({
-      success: true
-    });
+    return res.status(200).json(returnObj);
     
     
   } catch (errorObj) {
     
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'lpePrqvT4',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------
@@ -796,11 +732,7 @@ router.post('/logout', upload.none(), function(req, res, next) {
 
 
 // --------------------------------------------------
-//   ログイン情報編集
-// --------------------------------------------------
-
-// --------------------------------------------------
-//   Edit Account / endpointID: svr_ZaIOk
+//   ログイン情報編集 / endpointID: svr_ZaIOk
 // --------------------------------------------------
 
 router.post('/edit-account', upload.none(), async (req, res, next) => {
@@ -868,7 +800,7 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     
     const conditionObj = {
       _id: loginUsers_id
-    }
+    };
     
     const saveObj = {
       $set: {
@@ -931,6 +863,7 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     
   }
   
+  
 });
 
 
@@ -963,7 +896,6 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     lodashSet(requestParametersObj, ['email'], email ? '******' : '');
     lodashSet(requestParametersObj, ['removeEmail'], removeEmail);
-    // console.log(typeof removeEmail);
     
     
     // ---------------------------------------------
@@ -1106,7 +1038,7 @@ router.post('/email', upload.none(), async (req, res, next) => {
       };
       
       
-      await ModelUsers.upsertForCreateEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
+      await ModelUsers.transactionForEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
       
       
       // --------------------------------------------------
@@ -1117,37 +1049,16 @@ router.post('/email', upload.none(), async (req, res, next) => {
       
       
       // --------------------------------------------------
-      //   Send Mail
+      //   確認メール送信
       // --------------------------------------------------
       
-      sendMail({
-        from: process.env.EMAIL_MESSAGE_FROM,
+      sendMailConfirmation({
         to: email,
-        subject: '[Game Users] E-Mailアドレス確認',
-        text:
-        `Game Users - E-Mailアドレス確認
-
-以下のURLにアクセスしてメールアドレスの確認を終了させてください。
-${process.env.URL_BASE}email/confirmation/${emailConfirmationID}
-
-E-Mailの登録後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
-
-こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。また同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡をいただけるとありがたいです。
-
-＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
-
-　Game Users
-
-　Email: mail@gameusers.org
-　URL: https://gameusers.org/
-
-＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+        emailConfirmationID,
       });
       
       
     }
-    
-    
     
     
     // --------------------------------------------------
@@ -1165,8 +1076,6 @@ E-Mailの登録後、24時間以内にアクセスしてください。それ以
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     // ---------------------------------------------
@@ -1200,6 +1109,7 @@ E-Mailの登録後、24時間以内にアクセスしてください。それ以
     
     
   }
+  
   
 });
 
@@ -1334,6 +1244,7 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     
   }
+  
   
 });
 

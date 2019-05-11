@@ -14,7 +14,21 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const nodemailer = require("nodemailer");
+const { IntlProvider } = require('react-intl');
+const nodemailer = require('nodemailer');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+const { addLocaleData } = require('react-intl');
+const en = require('react-intl/locale-data/en');
+const ja = require('react-intl/locale-data/ja');
+addLocaleData([...en, ...ja]);
+
+const { locale } = require('../@locales/locale');
 
 
 
@@ -26,8 +40,11 @@ const nodemailer = require("nodemailer");
 /**
  * メールを送信する
  * https://nodemailer.com/about/
- * @param {Object} req - リクエスト
- * @param {Object} res - レスポンス
+ * @param {string} from - 送信元のメールアドレス
+ * @param {string} to - 送信先のメールアドレス
+ * @param {Array} bcc - 送信先のメールアドレスが入った配列
+ * @param {string} subject - メールタイトル
+ * @param {string} text - メール本文
  */
 const sendMail = async ({ from, to, bcc, subject, text }) => {
   
@@ -113,10 +130,68 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
 
 
 
+/**
+ * E-Mail確認メールを送信する
+ * @param {string} to - 送信先のメールアドレス
+ * @param {string} emailConfirmationID - メール確認ID
+ */
+const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
+  
+  
+  // --------------------------------------------------
+  //   Send Mail
+  // --------------------------------------------------
+  
+  sendMail({
+    from: process.env.EMAIL_MESSAGE_FROM,
+    to,
+    subject: '[Game Users] E-Mailアドレス確認',
+    text:
+    `Game Users - E-Mailアドレス確認
+
+以下のURLにアクセスしてメールアドレスの確認を終了させてください。
+${process.env.URL_BASE}email/confirmation/${emailConfirmationID}
+
+E-Mailの登録後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
+
+こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。また同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡をいただけるとありがたいです。
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
+
+　Game Users
+
+　Email: mail@gameusers.org
+　URL: https://gameusers.org/
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+  });
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`\n---------- infoObj ----------\n`);
+  // console.dir(infoObj);
+  // console.log(`\n-----------------------------------\n`);
+  
+  // console.log(chalk`
+  //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}
+  //   to: {green ${to}}
+  //   emailConfirmationID: {green ${emailConfirmationID}}
+  // `);
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
-  sendMail
+  sendMail,
+  sendMailConfirmation,
 };

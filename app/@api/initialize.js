@@ -147,6 +147,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         playerID: 'user1',
+        pagesArr: [
+          {
+            _id: '51WW1NG1r',
+            type: 'top',
+            title: '',
+            pageID: '',
+          },
+        ],
         loginID: '8OM0dhDak',
         loginPassword: '$2b$10$NsuOPWswqCkJ2STKfbKg/OMXfxdWabz1oy36HKOwRojHJ4S8FPsPS',
         emailObj: {
@@ -179,6 +187,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         playerID: 'user2',
+        pagesArr: [
+          {
+            _id: 'bZiZ-kQjo',
+            type: 'top',
+            title: '',
+            pageID: '',
+          },
+        ],
         loginID: 'enPLLYBBEg3y',
         loginPassword: '$2b$10$.O/ZmfEO2QOV6IRxxmQO1eSRMx8yhL83ISq9z/gyOpTCtbYL3j4B.',
         emailObj: {
@@ -203,6 +219,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         playerID: 'user3',
+        pagesArr: [
+          {
+            _id: 'bi3sKXZfL',
+            type: 'top',
+            title: '',
+            pageID: '',
+          },
+        ],
         loginID: 'nzPR7R9GO',
         loginPassword: '$2b$10$.qPAsMTPieChFehxF7TC2OXYWZdek0FKuJPABVxtBPo1UzrpOwZ6.',
         emailObj: {

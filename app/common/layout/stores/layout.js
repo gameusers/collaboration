@@ -381,10 +381,10 @@ class Store {
   
   
   /**
-   * メッセージ
+   * メッセージID
    * @type {string}
    */
-  @observable snackbarMessage = '';
+  @observable snackbarMessageID = 'qnWsuPcrJ';
   
   
   /**
@@ -409,6 +409,13 @@ class Store {
   
   
   /**
+   * Error Object
+   * @type {Object}
+   */
+  @observable snackbarErrorObj = {};
+  
+  
+  /**
    * キー
    * @type {string}
    */
@@ -425,17 +432,19 @@ class Store {
   /**
    * Snackbarを開く
    * @param {string} variant - 色
-   * @param {string} message - メッセージ
+   * @param {string} messageID - メッセージID
    * @param {string} vertical - 縦方向
    * @param {string} horizontal - 横方向
    * @param {string} autoHideDuration - 表示時間
+   * @param {Object} errorObj - Error Object
    */
   @action.bound
-  handleSnackbarOpen({ variant, message, vertical, horizontal, autoHideDuration }) {
+  handleSnackbarOpen({ variant, messageID, vertical, horizontal, autoHideDuration, errorObj }) {
     
     const object = {
       variant,
-      message,
+      messageID,
+      errorObj,
       key: `snackbar-${new Date().getTime()}`,
     };
     
@@ -450,6 +459,7 @@ class Store {
     if (autoHideDuration) {
       object.autoHideDuration = autoHideDuration;
     }
+    
     
     this.snackbarQueueArr.push(object);
     
@@ -471,6 +481,8 @@ class Store {
       const tempArr = this.snackbarQueueArr.shift();
       this.snackbarVariant = tempArr.variant;
       this.snackbarMessage = tempArr.message;
+      this.snackbarMessageID = tempArr.messageID;
+      this.snackbarErrorObj = tempArr.errorObj;
       this.snackbarKey = tempArr.key;
       
       this.snackbarOpen = true;

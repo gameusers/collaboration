@@ -15,6 +15,14 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, required: true },
   accessDate: { type: Date, required: true },
   playerID: { type: String, required: true, unique: true },
+  pagesArr: [
+    {
+      _id: { type: String, required: true },
+      type: { type: String, required: true },
+      title: { type: String },
+      pageID: { type: String },
+    },
+  ],
   loginID: { type: String, required: true },
   loginPassword: { type: String, required: true },
   emailObj: {

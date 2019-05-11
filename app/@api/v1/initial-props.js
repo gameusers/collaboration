@@ -120,13 +120,12 @@ router.get('/common', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'GBsTCSr4y';
-  
-  let returnObj = {
+  const returnObj = {
     login: false
   };
   
-  
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
@@ -164,11 +163,16 @@ router.get('/common', upload.none(), async (req, res, next) => {
     
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'GBsTCSr4y',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------

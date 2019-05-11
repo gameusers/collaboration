@@ -160,7 +160,7 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   Property / Error 判定用
+    //   Property / Error Flag
     // --------------------------------------------------
     
     this.error = false;
@@ -174,12 +174,10 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   Errorの場合
+      //   Error
       // --------------------------------------------------
       
-      if (
-        this.props.statusCode !== 200
-      ) {
+      if (this.props.statusCode !== 200) {
         throw new Error();
       }
       

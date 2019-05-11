@@ -789,7 +789,7 @@ const updateForFollow = async (loginUsers_id, users_id) => {
  * @param {Array} cardPlayersSaveArr - 保存用配列 Card Players
  * @return {Object} 
  */
-const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
+const transactionForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr, emailConfirmationsSaveArr }) => {
   
   
   // --------------------------------------------------
@@ -825,16 +825,25 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     // --------------------------------------------------
     
     await SchemaUsers.create(usersSaveArr, { session: session });
-    // throw new Error('Dy16VjjQL');
-    // throw new Error();
     await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
+    
+    // E-Mailが入力されたときだけ、メール確認データベースに挿入する
+    if (emailConfirmationsSaveArr.length > 0) {
+      await SchemaEmailConfirmations.create(emailConfirmationsSaveArr, { session: session });
+    }
+    
+    
+    
+    // await SchemaUsers.create(usersSaveArr, { session: session });
+    // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
+    // await SchemaEmailConfirmations.create(cardPlayersSaveArr, { session: session });
     
     
     // --------------------------------------------------
     //   Transaction / Commit
     // --------------------------------------------------
     
-    await session.commitTransaction(); // コミット
+    await session.commitTransaction();
     // console.log('--------コミット-----------');
     
     session.endSession();
@@ -876,12 +885,6 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
     
   } catch (errorObj) {
     
-    // console.log(`
-    //   ----- errorObj -----\n
-    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // --------------------------------------------------
     //   Transaction / Rollback
@@ -911,7 +914,7 @@ const insertForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr }) => {
  * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
  * @return {Object} 
  */
-const upsertForCreateEditAccount = async ({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj }) => {
+const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj }) => {
   
   
   // --------------------------------------------------
@@ -1053,6 +1056,6 @@ module.exports = {
   findOneForUser,
   findFormatted,
   updateForFollow,
-  insertForCreateAccount,
-  upsertForCreateEditAccount
+  transactionForCreateAccount,
+  transactionForEditAccount
 };

@@ -24,6 +24,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
+import { CustomError } from '../../../@modules/error/custom';
 
 
 // ---------------------------------------------
@@ -124,12 +125,20 @@ class Store {
   
   /**
    * フォームの送信ボタンを押すと呼び出される。reCAPTCHA をリセットしてトークンを取得する。
-   * @param {string} type - フォームのタイプ
+   * @param {Object} eventObj - イベントオブジェクト
+   * @param {string} formType - フォームのタイプ
    */
   @action.bound
   handleRecaptchaReset({ eventObj, formType }) {
     
+    
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
     eventObj.preventDefault();
+    
+    
     // ---------------------------------------------
     //   Loading 表示
     // ---------------------------------------------
@@ -166,7 +175,7 @@ class Store {
   
   /**
    * reCAPTCHA のトークンが取得できたら、フォームを送信する
-   * @param {string} recaptchaResponse - トークン
+   * @param {string} response - トークン
    * @param {Object} ref - <ReCaptcha /> このタグの ref
    */
   @action.bound
@@ -237,8 +246,11 @@ class Store {
       //   Validation Error
       // ---------------------------------------------
       
-      if (validationUsersLoginIDObj.error || validationUsersLoginPasswordObj.error) {
-        throw new Error('フォームの入力内容に問題があります');
+      if (
+        validationUsersLoginIDObj.error ||
+        validationUsersLoginPasswordObj.error
+      ) {
+        throw new CustomError({ errorsArr: [{ code: '0oSjjQhm3', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -295,7 +307,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -311,7 +323,10 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'ログインしました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: '5Gf730Gmz',
+      });
       
       
       // ---------------------------------------------
@@ -329,7 +344,10 @@ class Store {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {

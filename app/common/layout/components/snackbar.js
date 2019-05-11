@@ -17,6 +17,8 @@ import util from 'util';
 import React from 'react';
 import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
+import { injectIntl } from 'react-intl';
+import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
@@ -37,6 +39,13 @@ import IconError from '@material-ui/icons/Error';
 import IconWarning from '@material-ui/icons/Warning';
 import IconInfo from '@material-ui/icons/Info';
 import IconClose from '@material-ui/icons/Close';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { CustomError } from '../../../@modules/error/custom';
 
 
 
@@ -106,7 +115,6 @@ const SnackbarContentWrapper = (props) => {
   `;
   
   
-  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -153,7 +161,7 @@ const SnackbarContentWrapper = (props) => {
 
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
   
   
   // --------------------------------------------------
@@ -176,7 +184,44 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    const { stores, intl } = this.props;
+    
+    
+    // --------------------------------------------------
+    //   Message
+    // --------------------------------------------------
+    
+    let messageID = lodashGet(stores, ['layout', 'snackbarMessageID'], 'qnWsuPcrJ');
+    const errorObj = lodashGet(stores, ['layout', 'snackbarErrorObj'], null);
+    
+    let errorMessage = '';
+    let message = '';
+    
+    
+    if (errorObj) {
+      
+      if (errorObj instanceof CustomError) {
+        
+        errorMessage = lodashGet(errorObj, ['errorsArr', 0, 'code'], 'Error');
+        messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+        
+      } else {
+        
+        errorMessage = errorObj.message;
+        messageID = 'Error';
+        
+      }
+      
+    }
+    
+    
+    if (messageID === 'Error') {
+      message = `Error Message: ${errorMessage}`;
+    } else {
+      message = intl.formatMessage({ id: messageID });
+    }
+    
+    
     
     
     // let variant = null;
@@ -199,6 +244,10 @@ export default class extends React.Component {
     //   autoHideDuration = this.props.autoHideDuration;
     // }
     
+    
+    // --------------------------------------------------
+    //   Colors
+    // --------------------------------------------------
     
     const colorsObj = {
       success: {
@@ -239,11 +288,11 @@ export default class extends React.Component {
         <SnackbarContentWrapper
           onClose={stores.layout.handleSnackbarClose}
           variant={stores.layout.snackbarVariant}
-          message={stores.layout.snackbarMessage}
+          message={message}
           style={colorsObj[stores.layout.snackbarVariant]}
         />
       </Snackbar>
     );
   }
   
-};
+});

@@ -207,13 +207,13 @@ app.prepare().then(() => {
   //   Player
   // ---------------------------------------------
   
-  server.get('/pl/:playerID/settings', (req, res) => {
+  server.get('/pl/:playerID/settings', csrfToken, (req, res) => {
     const { playerID } = req.params;
     app.render(req, res, '/pl/settings', { playerID });
   });
   
   
-  server.get('/pl/:playerID*', (req, res) => {
+  server.get('/pl/:playerID*', csrfToken, (req, res) => {
     
     const { playerID } = req.params;
     

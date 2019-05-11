@@ -22,13 +22,7 @@ import { action } from 'mobx';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-import { errorsArrIntoErrorMessage } from '../../../@format/error';
+import { CustomError } from '../../../@modules/error/custom';
 
 
 
@@ -118,17 +112,18 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
-      
-      
       
       
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'ログアウトしました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'CKQQ_bjmW',
+      });
       
       
       // ---------------------------------------------
@@ -145,7 +140,10 @@ class Store {
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {

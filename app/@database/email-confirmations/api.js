@@ -31,7 +31,7 @@ const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
-const { sendMail } = require('../../@modules/mail');
+const { sendMailConfirmation } = require('../../@modules/email');
 
 
 // ---------------------------------------------
@@ -184,28 +184,9 @@ router.post('/resend', upload.none(), async (req, res, next) => {
     
     const decryptedEmail = decrypt(email);
     
-    sendMail({
-      from: process.env.EMAIL_MESSAGE_FROM,
+    sendMailConfirmation({
       to: decryptedEmail,
-      subject: '[Game Users] E-Mailアドレス確認',
-      text:
-      `Game Users - E-Mailアドレス確認
-
-以下のURLにアクセスしてメールアドレスの確認を終了させてください。
-${process.env.URL_BASE}email/confirmation/${emailConfirmationID}
-
-E-Mailの登録後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
-
-こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。また同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡をいただけるとありがたいです。
-
-＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
-
-　Game Users
-
-　Email: mail@gameusers.org
-　URL: https://gameusers.org/
-
-＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+      emailConfirmationID,
     });
     
     

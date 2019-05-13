@@ -15,7 +15,6 @@ const util = require('util');
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import { IntlProvider } from 'react-intl';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 

@@ -19,8 +19,8 @@ const schema = mongoose.Schema({
     {
       _id: { type: String, required: true },
       type: { type: String, required: true },
-      title: { type: String },
-      pageID: { type: String },
+      name: { type: String },
+      language: { type: String, enum: ['en', 'ja'], required: true },
     },
   ],
   loginID: { type: String, required: true },

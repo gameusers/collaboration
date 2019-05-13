@@ -47,7 +47,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 
 import initStoreIndex from '../../app/@stores/index';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
-import initStorePlayerPlayer from '../../app/pl/player/stores/store';
+import initStorePlPlayer from '../../app/pl/player/stores/store';
 import initStoreIDForm from '../../app/common/id/stores/form';
 import initStoreGameForm from '../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
@@ -196,7 +196,7 @@ class Component extends React.Component {
       
       this.stores = initStoreIndex(argumentsObj);
       this.stores.pathname = props.pathname;
-      this.stores.playerPlayer = initStorePlayerPlayer(argumentsObj, this.stores);
+      this.stores.plPlayer = initStorePlPlayer(argumentsObj, this.stores);
       this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
       this.stores.idForm = initStoreIDForm(argumentsObj, this.stores);
       this.stores.gameForm = initStoreGameForm(argumentsObj, this.stores);
@@ -238,6 +238,13 @@ class Component extends React.Component {
       // --------------------------------------------------
       
       this.stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Pages Array
+      // --------------------------------------------------
+      
+      this.stores.plPlayer.replacePagesArr(props.initialPropsObj.pagesArr);
       
       
     } catch (e) {
@@ -291,17 +298,6 @@ class Component extends React.Component {
       }
     ];
     
-    // const headerNavMainArr = [
-    //   {
-    //     name: 'プロフィール',
-    //     pathname: `/pl/${this.props.playerID}`
-    //   },
-    //   {
-    //     name: '設定',
-    //     pathname: `/pl/${this.props.playerID}/settings`
-    //   }
-    // ];
-    
     
     // --------------------------------------------------
     //   Player Card
@@ -334,6 +330,18 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
+    //   Header Title
+    // --------------------------------------------------
+    
+    const topPagesObj = stores.plPlayer.pagesArr.find((valueObj) => {
+      return valueObj.type === 'top';
+    });
+    
+    const topPageName = lodashGet(topPagesObj, ['name'], '');
+    const title = topPageName ? topPageName : `${userName} - Game Users`;
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
@@ -349,7 +357,7 @@ class Component extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>{userName} - Game Users</title>
+              <title>{title}</title>
             </Head>
             
             

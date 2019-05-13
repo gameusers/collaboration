@@ -33,3 +33,5 @@
 {"logID":"zPByPJYKlC","date":"2019-05-11T06:58:37.225Z","endpointID":"y9FpGQjEA","users_id":"","ip":"240b:250:38a1:8400:658a:2491:6cc6:199f","requestParametersObj":{"loginID":"******","loginPassword":"******","email":"******"},"errorsArr":[{"code":"zPByPJYKlC","messageID":"Error"}],"level":"error","message":"email-confirmations validation failed: users_id: Path `users_id` is required."}
 {"level":"error","message":""}
 {"level":"error","message":""}
+{"level":"error","message":""}
+{"level":"error","message":""}

@@ -141,6 +141,9 @@ const ja_JP = {
   'FQgx7kEJN': '現在、利用中のメールアドレスです',
   '5H8rr53kE': '入力したメールアドレスは利用できません',
   
+  // /app/@database/users/validations/player-id.js
+  '3VjugB9w9': 'プレイヤーページのURLになります。https://gameusers.org/pl/***',
+  
   
   
   

@@ -210,33 +210,25 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'P3ut9x3Fj';
-  
-  let returnObj = {
+  const returnObj = {
     usersObj: {},
-    cardsArr: []
+    cardsArr: [],
   };
   
-  let cardPlayersKeysArr = [];
-  
-  
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
     
     
     // --------------------------------------------------
-    //   GET Data & Validation
+    //   GET Data
     // --------------------------------------------------
     
     const playerID = req.query.playerID;
-    const validationUsersPlayerIDObj = validationUsersPlayerID(playerID);
     
-    if (validationUsersPlayerIDObj.error) {
-      statusCode = 400;
-      errorArgumentsObj.errorCodeArr = ['chDdoM5Hv'];
-      throw new Error();
-    }
+    lodashSet(requestParametersObj, ['playerID'], playerID);
     
     
     // --------------------------------------------------
@@ -260,18 +252,15 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     //   ログインしているユーザー情報
     // --------------------------------------------------
     
-    let loginUsers_id = '';
-    
     if (req.isAuthenticated() && req.user) {
       returnObj.loginUsersObj = req.user;
-      loginUsers_id = req.user._id;
     }
     
     
     // --------------------------------------------------
     //   データ取得 / Users
     //   アクセスしたページ所有者のユーザー情報
-    //   users_id を取得するためだけに使用
+    //   users_id を取得するために利用
     // --------------------------------------------------
     
     const usersObj = await ModelUsers.findOne({
@@ -289,9 +278,15 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     
     if (!users_id) {
       statusCode = 404;
-      errorArgumentsObj.errorCodeArr = ['IVX1dL1pJ'];
-      throw new Error();
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'IVX1dL1pJ', messageID: 'Error' }] });
     }
+    
+    
+    // --------------------------------------------------
+    //   pagesArr
+    // --------------------------------------------------
+    
+    returnObj.pagesArr = usersObj.pagesArr;
     
     
     // --------------------------------------------------
@@ -313,7 +308,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     //   カードを一覧で表示するための配列を作成する
     // --------------------------------------------------
     
-    cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    const cardPlayersKeysArr = Object.keys(cardPlayersObj);
     
     if (cardPlayersKeysArr.length > 0) {
       returnObj.cardsArr.push({
@@ -367,23 +362,17 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
   } catch (errorObj) {
     
     
-    // console.log(chalk`
-    //   errorObj.message: {green ${errorObj.message}}
-    // `);
-    
-    // console.log(`
-    //   ----- errorObj -----\n
-    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'P3ut9x3Fj',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------
@@ -483,7 +472,8 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
       emailObj: {
         secret: formatEmailSecret({ value: decryptedEmail }),
         confirmation: usersObj.emailObj.confirmation,
-      }
+      },
+      pagesArr: usersObj.pagesArr,
     };
     
     // console.log(chalk`

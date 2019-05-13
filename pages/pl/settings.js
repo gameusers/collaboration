@@ -56,6 +56,7 @@ import initStorePlayerSettings from '../../app/pl/settings/stores/store';
 import Layout from '../../app/common/layout/components/layout';
 import FormAccount from '../../app/pl/settings/components/form-account';
 import FormEmail from '../../app/pl/settings/components/form-email';
+import FormPage from '../../app/pl/settings/components/form-page';
 
 
 // ---------------------------------------------
@@ -236,10 +237,14 @@ class Component extends React.Component {
       const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
       const emailSecret = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'secret'], '');
       const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
+      const playerID = lodashGet(props, ['initialPropsObj', 'usersObj', 'playerID'], '');
+      const pagesArr = lodashGet(props, ['initialPropsObj', 'usersObj', 'pagesArr'], '');
       
       this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
       this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
       this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
+      this.stores.playerSettings.handleEdit({ pathArr: ['playerID'], value: playerID });
+      this.stores.playerSettings.handleEdit({ pathArr: ['pagesArr'], value: pagesArr });
       
       // console.log(chalk`
       //   loginID: {green ${loginID}}
@@ -332,6 +337,10 @@ class Component extends React.Component {
               
               {/* E-Mail */}
               <FormEmail />
+              
+              
+              {/* プレイヤーページ設定 */}
+              <FormPage />
               
               
             </Container>

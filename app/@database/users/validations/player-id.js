@@ -53,7 +53,7 @@ const validationUsersPlayerID = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Error',
+    messageID: '3VjugB9w9',
     error: false,
   };
   

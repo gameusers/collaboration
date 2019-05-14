@@ -177,7 +177,7 @@ export default class extends React.Component {
         componentLinkArr.push(
           <Item key={`link${index}`}>
             <a href={valueObj.url} target="_blank">
-              <IconBox alt={valueObj.type}>
+              <IconBox>
                 <SimpleIcons name={valueObj.type} />
               </IconBox>
             </a>

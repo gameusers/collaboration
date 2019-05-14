@@ -48,13 +48,6 @@ const findOne = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
@@ -65,23 +58,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docObj = await SchemaUsers.findOne(conditionObj).exec();
-    
-    if (docObj === null) {
-      return returnObj;
-    }
-    
-    
-    // console.log(`
-    //   docObj: \n${util.inspect(docObj, { colors: true, depth: null })}
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return docObj;
+    return await SchemaUsers.findOne(conditionObj).exec();
     
     
   } catch (err) {

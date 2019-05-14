@@ -56,6 +56,8 @@ const { validationUsersLoginID } = require('./validations/login-id');
 const { validationUsersLoginIDServer } = require('./validations/login-id-server');
 const { validationUsersLoginPassword } = require('./validations/login-password');
 const { validationUsersEmailServer } = require('./validations/email-server');
+const { validationUsersPlayerIDServer } = require('./validations/player-id-server');
+const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
 
 
 // ---------------------------------------------
@@ -805,7 +807,6 @@ router.post('/edit-account', upload.none(), async (req, res, next) => {
     const saveObj = {
       $set: {
         updatedDate: ISO8601,
-        accessDate: ISO8601,
         loginID,
         loginPassword: hashedPassword,
       }
@@ -956,7 +957,6 @@ router.post('/email', upload.none(), async (req, res, next) => {
       const saveObj = {
         $set: {
           updatedDate: ISO8601,
-          accessDate: ISO8601,
           emailObj: {
             value: '',
             confirmation: false,
@@ -1011,7 +1011,6 @@ router.post('/email', upload.none(), async (req, res, next) => {
       const usersSaveObj = {
         $set: {
           updatedDate: ISO8601,
-          accessDate: ISO8601,
           emailObj: {
             value: encryptedEmail,
             confirmation: false,
@@ -1095,6 +1094,180 @@ router.post('/email', upload.none(), async (req, res, next) => {
     const resultErrorObj = returnErrorsArr({
       errorObj,
       endpointID: '14n6FEth2',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   プレイヤーページ設定 / endpointID: OeLTc2B7G
+// --------------------------------------------------
+
+router.post('/pages', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {
+    pageTransition: false
+  };
+  
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { playerID, pagesArr } = req.body;
+    
+    lodashSet(requestParametersObj, ['playerID'], playerID);
+    lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
+    
+    const parsedPagesArr = JSON.parse(pagesArr);
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Login Check
+    // --------------------------------------------------
+    
+    if (!req.isAuthenticated()) {
+      statusCode = 401;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GTWHMVVkX', messageID: 'xLLNIpo6a' }] });
+    }
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    const newPagesArr = [];
+    
+    await validationUsersPlayerIDServer({ value: playerID, loginUsers_id });
+    
+    for (let valueObj of parsedPagesArr.values()) {
+      
+      await validationUsersPagesType({ throwError: true, value: valueObj.type });
+      await validationUsersPagesName({ throwError: true, value: valueObj.name });
+      await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
+      
+      newPagesArr.push({
+        _id: shortid.generate(),
+        type: valueObj.type,
+        name: valueObj.name,
+        language: valueObj.language,
+      });
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Find One - Page Transition
+    // --------------------------------------------------
+    
+    let conditionObj = {
+      _id: loginUsers_id
+    };
+    
+    let docObj = await ModelUsers.findOne({ conditionObj });
+    
+    if (docObj.playerID !== playerID) {
+      returnObj.pageTransition = true;
+    }
+    
+    // console.log(`
+    //   ----- docObj -----\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    conditionObj = {
+      _id: loginUsers_id
+    };
+    
+    const saveObj = {
+      $set: {
+        updatedDate: ISO8601,
+        // playerID,
+        pagesArr: newPagesArr,
+      }
+    };
+    
+    await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   playerID: {green ${playerID}}
+    // `);
+    
+    // console.log(`\n---------- parsedPagesArr ----------\n`);
+    // console.dir(parsedPagesArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   Return Json Object / Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'OeLTc2B7G',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

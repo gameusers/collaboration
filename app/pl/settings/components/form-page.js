@@ -32,8 +32,10 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
@@ -42,7 +44,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconMailOutline from '@material-ui/icons/MailOutline';
+import IconPlayerID from '@material-ui/icons/Mood';
 
 
 // ---------------------------------------------
@@ -50,6 +52,7 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 // ---------------------------------------------
 
 import { validationUsersPlayerID } from '../../../../app/@database/users/validations/player-id';
+import { validationUsersPagesName } from '../../../../app/@database/users/validations/pages';
 
 
 
@@ -82,6 +85,10 @@ const Heading = styled.h2`
   font-size: 18px;
 `;
 
+const Description = styled.p`
+  margin: 0 0 16px 0;
+`;
+
 const ExpandMoreBox = styled.div`
   margin: 0 0 0 auto;
   padding: 0 !important;
@@ -103,11 +110,24 @@ const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
 
 
 // ---------------------------------------------
-//   Description
+//   Form Box
 // ---------------------------------------------
 
-const Description = styled.p`
+const FormBox = styled.div`
+  margin: 48px 0 0 0;
+`;
+
+const FormHeading = styled.h3`
+  font-weight: bold;
+  margin: 0 0 6px 0;
+`;
+
+const FormDescription = styled.p`
   margin: 0 0 16px 0;
+`;
+
+const FormDescriptionBottom = styled.p`
+  margin: 0 0 24px 0;
 `;
 
 
@@ -118,7 +138,6 @@ const Description = styled.p`
 const StyledTextFieldWide = styled(TextField)`
   && {
     width: 400px;
-    margin: 32px 0 0 0;
     
     @media screen and (max-width: 480px) {
       width: 100%;
@@ -128,30 +147,21 @@ const StyledTextFieldWide = styled(TextField)`
 
 
 // ---------------------------------------------
-//   Registered Email
+//   Pages Array
 // ---------------------------------------------
 
-const RegisteredEmailBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 16px 0 8px 0;
-`;
-
-const RegisteredEmail = styled.div`
-  font-weight: bold;
-  margin: 0 8px 0 0;
-`;
-
-const ConfirmationTrue = styled.span`
-  color: green;
-`;
-
-const ConfirmationFalse = styled.span`
-  color: red;
-`;
-
-const RegisteredEmailButtonBox = styled.div`
+const PagesBox = styled.div`
   margin: 0;
+`;
+
+const StyledSelect = styled(Select)`
+  && {
+    width: 200px;
+  }
+`;
+
+const PagesTextFieldBox = styled.div`
+  margin: 8px 0 12px 0;
 `;
 
 
@@ -224,7 +234,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitEmail,
+      handleSubmitPages,
       
     } = stores.playerSettings;
     
@@ -257,11 +267,107 @@ export default injectIntl(class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
-    //   Remove E-Mail Checkbox
+    //   Component - Pages Array
     // --------------------------------------------------
     
-    // const removeEmail = lodashGet(dataObj, ['removeEmail'], false);
+    const pagesArr = lodashGet(dataObj, ['pagesArr'], []);
+    
+    
+    const componentsArr = [];
+    
+    for (const [index, valueObj] of pagesArr.entries()) {
+      
+      
+      // --------------------------------------------------
+      //   Validation
+      // --------------------------------------------------
+      
+      const name = lodashGet(valueObj, ['name'], '');
+      const validationUsersPagesNameObj = validationUsersPagesName({ value: name });
+      
+      
+      // --------------------------------------------------
+      //   Component
+      // --------------------------------------------------
+      
+      componentsArr.push(
+        
+        <PagesBox key={index}>
+          
+          <FormControl disabled={buttonDisabled}>
+            <InputLabel htmlFor="pageType">タイトルを変更するページ</InputLabel>
+            <StyledSelect
+              value={valueObj.type}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['pagesArr', 0, 'type'],
+                value: eventObj.target.value
+              })}
+              inputProps={{
+                name: 'pageType',
+                id: 'pageType',
+              }}
+            >
+              <MenuItem value={'top'}>トップページ</MenuItem>
+            </StyledSelect>
+          </FormControl>
+          
+          
+          <PagesTextFieldBox>
+            <StyledTextFieldWide
+              id="name"
+              label="タイトル"
+              value={validationUsersPagesNameObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['pagesArr', 0, 'name'],
+                value: eventObj.target.value
+              })}
+              error={validationUsersPagesNameObj.error}
+              helperText={intl.formatMessage({ id: validationUsersPagesNameObj.messageID }, { numberOfCharacters: validationUsersPagesNameObj.numberOfCharacters })}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 100,
+              }}
+            />
+          </PagesTextFieldBox>
+          
+          
+          <FormControl disabled={buttonDisabled}>
+            <InputLabel htmlFor="pageLanguage">タイトルの言語</InputLabel>
+            <StyledSelect
+              value={valueObj.language}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['pagesArr', 0, 'language'],
+                value: eventObj.target.value
+              })}
+              inputProps={{
+                name: 'pageLanguage',
+                id: 'pageLanguage',
+              }}
+            >
+              <MenuItem value={'ja'}>日本語</MenuItem>
+            </StyledSelect>
+          </FormControl>
+          
+        </PagesBox>
+        
+      );
+      
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- validationUsersPagesNameObj -----\n
+      //   ${util.inspect(validationUsersPagesNameObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
     
     
     
@@ -271,17 +377,14 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   email: {green ${email}}
-    //   emailSecret: {green ${emailSecret}}
-    //   emailConfirmation: {green ${emailConfirmation}}
+    //   topPageName: {green ${topPageName}}
     // `);
     
     // console.log(`
-    //   ----- validationUsersEmailObj -----\n
-    //   ${util.inspect(validationUsersEmailObj, { colors: true, depth: null })}\n
+    //   ----- topObj -----\n
+    //   ${util.inspect(topObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
     
     
     
@@ -330,39 +433,64 @@ export default injectIntl(class extends React.Component {
               プレイヤーページの設定を行います。プレイヤーページのURLや、タイトルを変更することができます。
             </Description>
             
-            <Description>
+            <p>
               プレイヤーページというのは各ユーザーごとに用意される固有のページで、こちらの設定ページもプレイヤーページの一部になります。
-            </Description>
+            </p>
             
             
             
             
             {/* Player ID */}
-            <div>
-              <StyledTextFieldWide
-                id="playerID"
-                label="Player ID"
-                value={validationUsersPlayerIDObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['playerID'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersPlayerIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersPlayerIDObj.messageID }, { numberOfCharacters: validationUsersPlayerIDObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 100,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconMailOutline />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </div>
+            <FormBox>
+              
+              <FormHeading>Player ID</FormHeading>
+              
+              <FormDescription>Player IDを入力してください。Player IDはプレイヤーページのURLになります。https://gameusers.org/pl/***</FormDescription>
+              
+              <FormDescription>利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。3文字以上、32文字以内。</FormDescription>
+              
+              
+              <div>
+                <StyledTextFieldWide
+                  id="playerID"
+                  label="Player ID"
+                  value={validationUsersPlayerIDObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: ['playerID'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersPlayerIDObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersPlayerIDObj.messageID }, { numberOfCharacters: validationUsersPlayerIDObj.numberOfCharacters })}
+                  disabled={buttonDisabled}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 100,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconPlayerID />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              
+            </FormBox>
+            
+            
+            
+            
+            {/* Pages Array */}
+            <FormBox>
+              
+              <FormHeading>タイトル変更</FormHeading>
+              
+              <FormDescriptionBottom>プレイヤーページのタイトルを変更できます。</FormDescriptionBottom>
+              
+              {componentsArr}
+            
+            </FormBox>
             
             
             
@@ -374,7 +502,7 @@ export default injectIntl(class extends React.Component {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => handleSubmitEmail()}
+                  onClick={() => handleSubmitPages()}
                   disabled={buttonDisabled}
                 >
                   送信する

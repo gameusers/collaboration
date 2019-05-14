@@ -41,11 +41,6 @@ const ja_JP = {
   // ---------------------------------------------
   
   'xLLNIpo6a': 'ログインする必要があります',
-  // 'WiQ3kBaeL': 'ログイン中は処理できません',
-  
-  
-  // /app/pl/settings/stores/store.js
-  
   
   
   // ---------------------------------------------
@@ -142,7 +137,10 @@ const ja_JP = {
   '5H8rr53kE': '入力したメールアドレスは利用できません',
   
   // /app/@database/users/validations/player-id.js
-  '3VjugB9w9': 'プレイヤーページのURLになります。https://gameusers.org/pl/***',
+  '3VjugB9w9': 'プレイヤーページのURLになります',
+  
+  // /app/@database/users/validations/player-id-server.1.js
+  'Xt11v41pR': '入力したプレイヤーIDは利用できません',
   
   
   

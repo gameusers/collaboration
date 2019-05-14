@@ -551,6 +551,119 @@ class Store {
   };
   
   
+  
+  
+  /**
+   * プレイヤーページ設定フォームを送信する
+   */
+  @action.bound
+  async handleSubmitPages() {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ _id: 'settingsFormPage' });
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const playerID = lodashGet(this.dataObj, ['playerID'], '');
+      const pagesArr = lodashGet(this.dataObj, ['pagesArr'], []);
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      let formData = new FormData();
+      
+      formData.append('playerID', playerID);
+      formData.append('pagesArr', JSON.stringify(pagesArr));
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/users/pages`,
+        methodType: 'POST',
+        formData: formData
+      });
+      console.log(`\n---------- resultObj ----------\n`);
+console.dir(resultObj);
+console.log(`\n-----------------------------------\n`);
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'CquCU7BtA',
+      });
+      
+      
+      // ---------------------------------------------
+      //   Page Transition
+      // ---------------------------------------------
+      
+      // const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
+      // window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ _id: 'settingsFormPage' });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
 }
 
 

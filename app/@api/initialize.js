@@ -155,11 +155,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             language: 'ja',
           },
         ],
-        // pagesObj: {
-        //   _id: '51WW1NG1r',
-        //   top: 'マリオのプロフィール',
-        //   diary: '',
-        // },
         loginID: '8OM0dhDak',
         loginPassword: '$2b$10$NsuOPWswqCkJ2STKfbKg/OMXfxdWabz1oy36HKOwRojHJ4S8FPsPS',
         emailObj: {
@@ -200,10 +195,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             language: 'ja',
           },
         ],
-        // pagesObj: {
-        //   _id: 'bZiZ-kQjo',
-        //   top: '',
-        // },
         loginID: 'enPLLYBBEg3y',
         loginPassword: '$2b$10$.O/ZmfEO2QOV6IRxxmQO1eSRMx8yhL83ISq9z/gyOpTCtbYL3j4B.',
         emailObj: {
@@ -236,10 +227,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             language: 'ja',
           },
         ],
-        // pagesObj: {
-        //   _id: '5UDVe_gui',
-        //   top: '',
-        // },
         loginID: 'nzPR7R9GO',
         loginPassword: '$2b$10$.qPAsMTPieChFehxF7TC2OXYWZdek0FKuJPABVxtBPo1UzrpOwZ6.',
         emailObj: {

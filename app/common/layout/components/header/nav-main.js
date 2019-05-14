@@ -18,7 +18,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import Scrollbar from 'react-smooth-scrollbar';
+// import Scrollbar from 'react-smooth-scrollbar';
 
 
 // ---------------------------------------------
@@ -66,12 +66,12 @@ const MenuButton = styled(Button)`
   }
 `;
       
-const StyledScrollbar = styled(Scrollbar)`
-  overflow-x: hidden;
-  overflow-y: hidden;
-  white-space: nowrap;
-  padding: 0 0 8px 0;
-`;
+// const StyledScrollbar = styled(Scrollbar)`
+//   overflow-x: hidden;
+//   overflow-y: hidden;
+//   white-space: nowrap;
+//   padding: 0 0 8px 0;
+// `;
 
 
 
@@ -162,9 +162,9 @@ export default class extends React.Component {
     return (
       <Container>
       
-        <StyledScrollbar alwaysShowTracks>
+        {/*<StyledScrollbar alwaysShowTracks>*/}
           {componentsArr}
-        </StyledScrollbar>
+        {/*</StyledScrollbar>*/}
         
       </Container>
     );

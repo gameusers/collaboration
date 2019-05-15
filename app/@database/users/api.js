@@ -1224,7 +1224,7 @@ router.post('/pages', upload.none(), async (req, res, next) => {
     const saveObj = {
       $set: {
         updatedDate: ISO8601,
-        // playerID,
+        playerID,
         pagesArr: newPagesArr,
       }
     };

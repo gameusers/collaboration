@@ -246,11 +246,6 @@ class Component extends React.Component {
       this.stores.playerSettings.handleEdit({ pathArr: ['playerID'], value: playerID });
       this.stores.playerSettings.handleEdit({ pathArr: ['pagesArr'], value: pagesArr });
       
-      // console.log(chalk`
-      //   loginID: {green ${loginID}}
-      // `);
-      
-      
       
     } catch (e) {
       this.error = true;
@@ -331,16 +326,16 @@ class Component extends React.Component {
             <Container>
               
               
+              {/* プレイヤーページ設定 */}
+              <FormPage />
+              
+              
               {/* アカウント編集 */}
               <FormAccount />
               
               
               {/* E-Mail */}
               <FormEmail />
-              
-              
-              {/* プレイヤーページ設定 */}
-              <FormPage />
               
               
             </Container>

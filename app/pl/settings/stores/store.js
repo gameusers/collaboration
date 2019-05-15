@@ -597,9 +597,9 @@ class Store {
         methodType: 'POST',
         formData: formData
       });
-      console.log(`\n---------- resultObj ----------\n`);
-console.dir(resultObj);
-console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- resultObj ----------\n`);
+      // console.dir(resultObj);
+      // console.log(`\n-----------------------------------\n`);
       
       // ---------------------------------------------
       //   Error
@@ -624,8 +624,11 @@ console.log(`\n-----------------------------------\n`);
       //   Page Transition
       // ---------------------------------------------
       
-      // const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
-      // window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      if (pageTransition) {
+        window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      }
       
       
     } catch (errorObj) {

@@ -17,6 +17,7 @@ import NProgress from 'nprogress';
 //   Components
 // ---------------------------------------------
 
+import HeaderNavTop from './header/nav-top';
 import Header from './header/header';
 import HeaderNavMain from './header/nav-main';
 import Footer from './footer';
@@ -129,6 +130,8 @@ export default class extends React.Component {
           <meta name="robots" content="noindex,nofollow" />
         </Head>
         
+        
+        {/*<HeaderNavTop />*/}
         
         {/* ヘッダー */}
         <Header />

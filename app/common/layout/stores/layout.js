@@ -36,161 +36,164 @@ class Store {
   //   Current Contents Id
   // ---------------------------------------------
   
-  @observable currentContentsId = '';
+  // @observable currentContentsId = '';
+  
+  
+  
   
   
   
   // ---------------------------------------------
-  //   アクセスしたページ
+  //   Header - Navigation / Top
   // ---------------------------------------------
   
-  // historyStateArr = [];
+  /**
+   * 通知ダイアログの表示・非表示を切り替える真偽値
+   * @type {boolean}
+   */
+  // @observable headerNavTopAnimating = false;
   
-  // historyStateArr = [
-  //   {
-  //     path: 'uc/az1979',
-  //     param1: 'uc',
-  //     param2: 'az1979',
-  //     param3: 'test',
-  //     param4: '',
-  //     param5: '',
-  //     file: 'uc/community.js',
-  //     id: 'p0V_RsaT1l8',
-  //     dateTime: '2017-07-24T20:45:20'
+  
+  /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavShow = true;
+  
+  
+  /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavTopHeight = 417;
+  
+  
+  /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavTopScrollY = 0;
+  
+  
+  /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavTopScrollYOffset = 0;
+  
+  
+  /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavTopScrollUp = false;
+  
+  
+  /**
+   * 通知ダイアログを開く
+   */
+  @action.bound
+  handleHeaderNavTopOnScroll() {
+    
+    this.headerNavTopScrollY = window.scrollY;
+    
+    if (this.headerNavTopScrollY > this.headerNavTopScrollYOffset) {
+      this.headerNavTopScrollUp = false;
+    } else {
+      this.headerNavTopScrollUp = true;
+    }
+    
+    if (this.headerNavTopHeight < this.headerNavTopScrollY) {
+      
+      if (this.headerNavTopScrollUp) {
+        this.headerNavShow = true;
+      } else {
+        this.headerNavShow = false;
+      }
+      
+    }
+    
+    this.headerNavTopScrollYOffset = this.headerNavTopScrollY;
+    
+    
+  };
+  
+  
+  // /**
+  // * 通知ダイアログを開く
+  // */
+  // @action.bound
+  // handleHeaderNavTopOnScroll() {
+    
+  //   this.headerNavTopScrollY = window.scrollY;
+  //   // let headerNavTopOffset = this.headerNavTopOffset;
+    
+  //   if (this.headerNavTopScrollY > this.headerNavTopScrollYOffset) {
+  //     this.headerNavTopScrollUp = false;
+  //   } else {
+  //     this.headerNavTopScrollUp = true;
   //   }
-  // ]
-  
-  // insertHistoryState(obj) {
     
-  //   // console.dir(obj);
+  //   this.headerNavTopScrollYOffset = this.headerNavTopScrollY;
     
-  //   this.historyStateArr.unshift(obj);
     
-  //   // 履歴を保存する数を指定する
-  //   this.historyStateArr.splice(30, 1);
+  //   // const scrollY = window.scrollY;
+  //   // let headerNavTopOffset = this.headerNavTopOffset;
+  //   // let headerNavTopHeight = this.headerNavTopHeight;
     
-  //   console.log(`insertHistoryState`);
-  //   console.dir(this.historyStateArr);
+  //   // if (!this.headerNavTopAnimating) {
+      
+  //   //   window.requestAnimationFrame(() => {
+        
+  //   //     // console.log('requestAnimationFrame');
+  //   //     // console.log(chalk`
+  //   //     //   scrollY: {green ${scrollY}}
+  //   //     //   this.headerNavTopHeight: {green ${this.headerNavTopHeight}}
+  //   //     // `);
+        
+        
+  //   //     if (scrollY > headerNavTopHeight) {
+          
+  //   //       // console.log(1);
+          
+  //   //       // Scroll Down
+  //   //       if (scrollY > headerNavTopOffset) {
+  //   //         // console.log(2);
+  //   //         this.headerNavTopShow = false;
+            
+  //   //       // Scroll Up
+  //   //       } else {
+  //   //         // console.log(3);
+  //   //         this.headerNavTopShow = true;
+            
+  //   //       }
+          
+  //   //       this.headerNavTopOffset = scrollY;
+          
+  //   //     }
+        
+  //   //     this.headerNavTopAnimating = false;
+        
+        
+  //   //     // console.log(chalk`
+  //   //     //   scrollY: {green ${scrollY}}
+  //   //     //   this.headerNavTopAnimating: {green ${this.headerNavTopAnimating}}
+  //   //     //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
+  //   //     //   this.headerNavTopOffset: {green ${this.headerNavTopOffset}}
+  //   //     // `);
+        
+        
+  //   //   });
+      
+  //   //   this.headerNavTopAnimating = true;
+      
+  //   // }
     
-  // };
-  
-  
-  
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   ヘッダー - ナビゲーション / メイン
-  // ---------------------------------------------
-  
-  // headerNavMainObj = {
-    
-  //   // index: [
-  //   //   {
-  //   //     name: 'フィード',
-  //   //     pathname: '/'
-  //   //   },
-  //   //   {
-  //   //     name: 'ゲーム',
-  //   //     pathname: '/gc'
-  //   //   },
-  //   //   {
-  //   //     name: 'ユーザー',
-  //   //     pathname: '/uc'
-  //   //   },
-  //   //   {
-  //   //     name: 'テスト1',
-  //   //     pathname: '/test'
-  //   //   },
-  //   //   {
-  //   //     name: 'テスト2',
-  //   //     pathname: '/test'
-  //   //   },
-  //   //   {
-  //   //     name: 'テスト3',
-  //   //     pathname: '/test'
-  //   //   },
-  //   //   {
-  //   //     name: 'テスト4',
-  //   //     pathname: '/test'
-  //   //   },
-  //   //   {
-  //   //     name: 'テスト5',
-  //   //     pathname: '/test'
-  //   //   },
-  //   //   {
-  //   //     name: 'テスト6',
-  //   //     pathname: '/test'
-  //   //   }
-  //   // ],
-    
-  //   index: [
-  //     {
-  //       name: 'フィード',
-  //       pathname: '/'
-  //     },
-  //     {
-  //       name: 'ゲーム',
-  //       pathname: '/gc'
-  //     },
-  //     {
-  //       name: 'ユーザー',
-  //       pathname: '/uc'
-  //     }
-  //   ],
-    
-  //   uc: [
-  //     {
-  //       name: 'トップ',
-  //       pathname: '/uc/community'
-  //     },
-  //     {
-  //       name: 'メンバー',
-  //       pathname: '/uc/community/member'
-  //     },
-  //     {
-  //       name: 'データ',
-  //       pathname: '/uc/community/data'
-  //     }
-  //   ],
-    
-  //   gc: [
-  //     {
-  //       name: 'BBS',
-  //       pathname: '/gc/community'
-  //     },
-  //     {
-  //       name: '募集',
-  //       pathname: '/uc/community/rec'
-  //     },
-  //     {
-  //       name: '設定',
-  //       pathname: '/uc/community/config'
-  //     }
-  //   ],
-    
-  //   login: [
-  //     {
-  //       name: 'ID & パスワード',
-  //       pathname: '/login'
-  //     },
-  //     {
-  //       name: 'ソーシャル',
-  //       pathname: '/login/social'
-  //     }
-  //   ],
-    
-  //   logout: [
-  //     {
-  //       name: 'ログアウト',
-  //       pathname: '/logout'
-  //     }
-  //   ],
+  //   // console.log(chalk`
+  //   //   scrollY: {green ${scrollY}}
+  //   // `);
     
   // };
-  
   
   
   
@@ -293,51 +296,6 @@ class Store {
   handleHeaderDataClose() {
     this.headerDataOpen = false;
   };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Header - ヒーローイメージ
-  // ---------------------------------------------
-  
-  // @observable headerGameNo = 1;
-  // @observable headerHeroImageArr = [1];
-  // // @observable headerHeroImageArr = null;
-  // @observable headerThumbnail = false;
-  // @observable headerDataTitle = 'Dead by Daylight';
-  // @observable headerDataHardware = 'PC, PS4, Xbox One';
-  // @observable headerDataGenre = 'アクション';
-  // @observable headerDataPlayersMax = '1-5人';
-  // @observable headerDataReleaseDate = '2016/6/14';
-  // @observable headerDataDeveloper = 'Behaviour Interactive';
-  // @observable headerDataLinkArr = [
-  //   {
-  //     type: 'Official',
-  //     name: null,
-  //     url: 'http://www.deadbydaylight.com/'
-  //   },
-  //   {
-  //     type: 'Twitter',
-  //     name: null,
-  //     url: 'https://twitter.com/deadByBHVR'
-  //   },
-  //   {
-  //     type: 'Facebook',
-  //     name: null,
-  //     url: 'https://www.facebook.com/DeadByDaylight/'
-  //   },
-  //   {
-  //     type: 'YouTube',
-  //     name: null,
-  //     url: 'https://www.youtube.com/channel/UCaSgsFdGbwjfdawl3rOXiwQ'
-  //   },
-  //   {
-  //     type: 'Steam',
-  //     name: null,
-  //     url: 'https://store.steampowered.com/app/381210/'
-  //   }
-  // ];
   
   
   

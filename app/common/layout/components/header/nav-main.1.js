@@ -18,8 +18,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import { VelocityComponent } from 'velocity-react';
-import lodashGet from 'lodash/get';
+// import Scrollbar from 'react-smooth-scrollbar';
 
 
 // ---------------------------------------------
@@ -41,11 +40,9 @@ const Container = styled.nav`
   height: 36px;
   text-align: center;
   background-color: #25283D;
-  // position: -webkit-sticky;
-  // position: sticky;
-  // top: -1px;
-  // position: fixed;
-  // top: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  top: -1px;
   z-index: 1000;
   margin: 0 0 8px 0;
   padding: 0;
@@ -68,6 +65,13 @@ const MenuButton = styled(Button)`
     margin: 0 10px 0 0;
   }
 `;
+      
+// const StyledScrollbar = styled(Scrollbar)`
+//   overflow-x: hidden;
+//   overflow-y: hidden;
+//   white-space: nowrap;
+//   padding: 0 0 8px 0;
+// `;
 
 
 
@@ -102,9 +106,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, headerNavMainArr } = this.props;
-    
-    
-    const headerNavShow = lodashGet(stores, ['layout', 'headerNavShow'], true);
     
     
     // --------------------------------------------------
@@ -159,19 +160,13 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <VelocityComponent
-        // animation={{ translateY: headerNavShow ? 0 : -36 }}
-        // animation={{ marginTop: headerNavShow ? 0 : 36 }}
-        // animation={{ top: headerNavShow ? 53 : 0 }}
-        // animation={{ translateY: headerNavShow ? 53 : 0 }}
-        duration={300}
-      >
-        
-        <Container>
+      <Container>
+      
+        {/*<StyledScrollbar alwaysShowTracks>*/}
           {componentsArr}
-        </Container>
+        {/*</StyledScrollbar>*/}
         
-      </VelocityComponent>
+      </Container>
     );
     
   }

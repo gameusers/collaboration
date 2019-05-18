@@ -42,8 +42,9 @@ const ContainerThumbnail = styled.div`
   align-items: flex-start;
   background: no-repeat center center url('/static/img/common/header-back.jpg');
   background-size: cover;
+  background-color: #25283D;
   padding: 15px;
-  margin-top: 53px;
+  // margin-top: 53px;
 `;
 
 const ThumbnailImg = styled.img`
@@ -79,26 +80,6 @@ export default class extends React.Component {
   
   constructor(props) {
     super(props);
-  }
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // --------------------------------------------------
-    //   スクロールされる度に呼び出される関数を設定する
-    // --------------------------------------------------
-    
-    let elHeight = document.getElementById('container-hero-image').clientHeight;
-    
-    console.log(chalk`
-      elHeight: {green ${elHeight}}
-    `);
-    
   }
   
   
@@ -216,14 +197,14 @@ export default class extends React.Component {
         background-color: #25283D;
         position: relative;
         padding-top: ${paddingTop}%;
-        margin-top: 53px;
+        // margin-top: 53px;
         
         ${mediaQueries}
       `;
       
       
       code = 
-        <Container id="container-hero-image">
+        <Container>
           <Data heroImage={true} />
         </Container>
       ;
@@ -240,7 +221,7 @@ export default class extends React.Component {
       const imgSrc = thumbnailSrc ? thumbnailSrc : '/static/img/common/thumbnail/none-game.jpg';
       
       code = 
-        <ContainerThumbnail id="container-hero-image">
+        <ContainerThumbnail>
           <ThumbnailImg src={imgSrc} />
           <Data heroImage={false} />
         </ContainerThumbnail>

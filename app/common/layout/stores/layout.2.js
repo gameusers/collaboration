@@ -89,12 +89,16 @@ class Store {
   // @observable headerNavTopAnimating = false;
   
   
-  
+  /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavTopShow = true;
   
   
   /**
    * 
-   * @type {number}
+   * @type {boolean}
    */
   headerNavTopHeight = 53;
   
@@ -103,12 +107,12 @@ class Store {
    * 
    * @type {boolean}
    */
-  // @observable headerScrollY = 0;
+  headerScrollY = 0;
   
   
   /**
    * 
-   * @type {number}
+   * @type {boolean}
    */
   headerScrollYOffset = 0;
   
@@ -124,7 +128,7 @@ class Store {
    * 
    * @type {boolean}
    */
-  @observable headerNavTopShow = true;
+  // @observable headerNavMainPositionFixed = false;
   
   
   /**
@@ -135,7 +139,14 @@ class Store {
   
   
   /**
-   * スクロールされる度に呼び出される関数
+   * 
+   * @type {boolean}
+   */
+  // @observable headerNavMainPositionStatic = true;
+  
+  
+  /**
+   * 通知ダイアログを開く
    */
   @action.bound
   handleHeaderNavOnScroll() {
@@ -145,15 +156,14 @@ class Store {
     //   Property
     // ---------------------------------------------
     
-    // this.headerScrollY = window.scrollY;
-    const headerScrollY = window.scrollY;
+    this.headerScrollY = window.scrollY;
     
     
     // ---------------------------------------------
     //   Check Scroll Up / Scroll Down
     // ---------------------------------------------
     
-    if (headerScrollY > this.headerScrollYOffset) {
+    if (this.headerScrollY > this.headerScrollYOffset) {
       this.headerScrollUp = false;
     } else {
       this.headerScrollUp = true;
@@ -164,7 +174,15 @@ class Store {
     //   Navigation Top Show
     // ---------------------------------------------
     
-    if (this.headerHeroImageHeight < headerScrollY) {
+    // if (this.headerScrollUp) {
+    //   console.log('headerNavTopShow = true');
+    //   this.headerNavTopShow = true;
+    // } else {
+    //   console.log('headerNavTopShow = false');
+    //   this.headerNavTopShow = false;
+    // }
+    
+    if (this.headerHeroImageHeight < this.headerScrollY) {
       
       if (this.headerScrollUp) {
         this.headerNavTopShow = true;
@@ -174,55 +192,85 @@ class Store {
       
     }
     
+    // if (this.headerHeroImageHeight - this.headerNavTopHeight < this.headerScrollY) {
+      
+    //   if (scrollUp) {
+    //     this.headerNavTopShow = true;
+    //   } else {
+    //     this.headerNavTopShow = false;
+    //   }
+      
+    // }
+    
+    // ---------------------------------------------
+    //   Navigation Main Position Static
+    // ---------------------------------------------
+    
+    // if (53 + this.headerHeroImageHeight > this.headerScrollY) {
+    //   this.headerNavMainPositionStatic = true;
+    // } else {
+    //   this.headerNavMainPositionStatic = false;
+    // }
+    
     
     // ---------------------------------------------
     //   Navigation Main Position Sticky
     // ---------------------------------------------
     
-    // if (this.headerHeroImageHeight < headerScrollY) {
-    //   this.headerNavMainPositionSticky = true;
-    // } else {
-    //   this.headerNavMainPositionSticky = false;
-    // }
-    
-    if (this.headerNavTopHeight + this.headerHeroImageHeight < headerScrollY) {
+    if (53 + this.headerHeroImageHeight < this.headerScrollY) {
       this.headerNavMainPositionSticky = true;
     } else {
       this.headerNavMainPositionSticky = false;
     }
     
-    // if ((53 + this.headerHeroImageHeight + 36) < headerScrollY) {
-    //   this.headerNavMainPositionSticky = true;
-    // } else {
-    //   this.headerNavMainPositionSticky = false;
-    // }
-    
-    // if (501 <= headerScrollY) {
-    //   this.headerNavMainPositionSticky = true;
-    // } else {
-    //   this.headerNavMainPositionSticky = false;
-    // }
-    
     // console.log(chalk`
     //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
     //   Top + HeroImage: {green ${53 + this.headerHeroImageHeight - 36}}
-    //   headerScrollY: {green ${headerScrollY}}
+    //   this.headerScrollY: {green ${this.headerScrollY}}
     // `);
+    
+    // if (this.headerHeroImageHeight < this.headerScrollY) {
+    //   this.headerNavMainPositionSticky = true;
+    // } else {
+    //   this.headerNavMainPositionSticky = false;
+    // }
+    
+    
+    // ---------------------------------------------
+    //   Navigation Main Position Fixed
+    // ---------------------------------------------
+    
+    // if (this.headerNavTopShow) {
+      
+    //   if (this.headerHeroImageHeight - this.headerNavTopHeight < this.headerScrollY) {
+    //     this.headerNavMainPositionFixed = true;
+    //   } else {
+    //     this.headerNavMainPositionFixed = false;
+    //   }
+      
+    // } else {
+      
+    //   if (this.headerHeroImageHeight < this.headerScrollY) {
+    //     this.headerNavMainPositionFixed = true;
+    //   } else {
+    //     this.headerNavMainPositionFixed = false;
+    //   }
+      
+    // }
     
     
     
     
     // console.log(chalk`
-    //   headerScrollY: {green ${headerScrollY}}
     //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
-    //   Header Height: {green ${53 + this.headerHeroImageHeight + 36}}
     //   this.headerScrollUp: {green ${this.headerScrollUp}}
+    //   this.headerScrollY: {green ${this.headerScrollY}}
     //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
-    //   this.headerNavMainPositionSticky: {green ${this.headerNavMainPositionSticky}}
+    //   this.headerNavMainPositionFixed: {green ${this.headerNavMainPositionFixed}}
     // `);
     
     
-    this.headerScrollYOffset = headerScrollY;
+    this.headerScrollYOffset = this.headerScrollY;
     
     
   };

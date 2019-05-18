@@ -7,6 +7,7 @@
 // ---------------------------------------------
 
 import React from 'react';
+import styled from 'styled-components';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import Router from 'next/router';
@@ -53,6 +54,21 @@ Router.events.on('routeChangeStart', url => {
 });
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
+
+
+
+
+// --------------------------------------------------
+//   styled-components でスタイルシートを書いてください
+//   参考: https://github.com/styled-components/styled-components
+// --------------------------------------------------
+
+const ContainerHeaderNavMain = styled.nav`
+  background-color: #151515;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+`;
 
 
 
@@ -131,24 +147,35 @@ export default class extends React.Component {
         </Head>
         
         
-        {/*<HeaderNavTop />*/}
-        
-        {/* ヘッダー */}
-        <Header />
         
         
-        {/* ヘッダー - メインナビゲーション */}
-        <HeaderNavMain
-          headerNavMainArr={this.props.headerNavMainArr}
-        />
+        {/* Header - Navigation Top */}
+        <HeaderNavTop />
+        
+        
+        {/* Header */}
+        <Header headerNavMainArr={this.props.headerNavMainArr} />
+        
+        
+        {/* Header - Navigation Main */}
+        <ContainerHeaderNavMain>
+          <HeaderNavMain
+            headerNavMainArr={this.props.headerNavMainArr}
+          />
+        </ContainerHeaderNavMain>
+        
         
         
         {/* コンテンツ */}
         {this.props.children}
         
         
+        
+        
         {/* フッター */}
         <Footer />
+        
+        
         
         
         {/* Snackbar 通知用 */}

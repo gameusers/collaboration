@@ -16,8 +16,9 @@ import util from 'util';
 
 import React from 'react';
 import styled from 'styled-components';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+import Measure from 'react-measure';
 // import lodashGet from 'lodash/get';
 
 
@@ -50,6 +51,7 @@ import IconClose from '@material-ui/icons/Close';
 
 import NavTop from '../header/nav-top';
 import HeroImage from '../header/hero-image';
+import NavMain from '../header/nav-main';
 import NavSub from '../header/nav-sub';
 
 
@@ -60,7 +62,7 @@ import NavSub from '../header/nav-sub';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Container = styled.header`
+const Container = styled.div`
   display: flex;
   flex-flow: column nowrap;
   background-color: #25283D;
@@ -85,6 +87,23 @@ export default class extends React.Component {
   
   constructor(props) {
     super(props);
+  }
+  
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount() {
+    
+    
+    // --------------------------------------------------
+    //   スクロールされる度に呼び出される関数を設定する
+    // --------------------------------------------------
+    
+    window.addEventListener('scroll', this.props.stores.layout.handleHeaderNavOnScroll);
+    
+    
   }
   
   
@@ -148,15 +167,30 @@ export default class extends React.Component {
       <Container>
         
         
-        {/* ナビゲーション - トップ */}
-        <NavTop />
+        {/* Navigation - Top */}
+        {/*<NavTop />*/}
         
         
-        {/* ヒーローイメージ（各ゲームの大きな画像） */}
-        <HeroImage />
+        {/* Hero Image（各ゲームの大きな画像） */}
+        <Measure
+          bounds
+          onResize={(contentRect) => {
+            stores.layout.handleHeaderHeroImageSize({ dimensionsObj: contentRect.bounds });
+          }}
+        >
+          {({ measureRef }) => (
+            <div ref={measureRef}>
+              <HeroImage />
+            </div>
+          )}
+        </Measure>
         
         
-        {/* ナビゲーション - フォロー＆コミュニティ参加用 */}
+        {/* Navigation - Main */}
+        {/*<NavMain headerNavMainArr={this.props.headerNavMainArr} />*/}
+        
+        
+        {/* Navigation - Sub / フォロー＆コミュニティ参加用 */}
         {showNavSub &&
           <NavSub />
         }

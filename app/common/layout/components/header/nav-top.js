@@ -18,7 +18,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import { VelocityComponent } from 'velocity-react';
+import {useSpring, animated} from 'react-spring';
 import lodashGet from 'lodash/get';
 
 
@@ -55,23 +55,21 @@ import IconEject from '@material-ui/icons/Eject';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-// let Container = '';
-
-const Container = styled.nav`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
+// const Container = styled(animated.nav)`
+//   display: flex;
+//   flex-flow: row nowrap;
+//   align-items: center;
   
-  background-color: white;
-  width: 100%;
-  height: 53px;
-  position: fixed;
-  // position: -webkit-sticky;
-  // position: sticky;
+//   background-color: white;
+//   width: 100%;
+//   height: 53px;
+//   // position: fixed;
+//   // position: -webkit-sticky;
+//   position: sticky;
   
-  top: 0;
-  z-index: 1001;
-`;
+//   top: 0;
+//   z-index: 1001;
+// `;
 
 // const Container = styled.nav`
 //   display: flex;
@@ -230,6 +228,36 @@ const LoginMenuListItemText = styled(ListItemText)`
 
 
 // --------------------------------------------------
+//   react-spring
+// --------------------------------------------------
+
+const Container = ({ children, headerNavTopShow }) => {
+  
+  const Header = styled(animated.header)`
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    background-color: white;
+    width: 100%;
+    height: 53px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+  `;
+  
+  const props = useSpring({
+    transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)'
+  });
+  
+  return <Header style={props}>{children}</Header>;
+  
+};
+
+
+
+
+// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -245,26 +273,6 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
   }
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // --------------------------------------------------
-    //   スクロールされる度に呼び出される関数を設定する
-    // --------------------------------------------------
-    
-    window.addEventListener('scroll', this.props.stores.layout.handleHeaderNavTopOnScroll);
-    
-    
-  }
-  
-  
-  
   
   
   // --------------------------------------------------
@@ -294,28 +302,57 @@ export default class extends React.Component {
     //   Component - Menu
     // --------------------------------------------------
     
-    const headerNavShow = lodashGet(stores, ['layout', 'headerNavShow'], true);
+    // const headerScrollUp = lodashGet(stores, ['layout', 'headerScrollUp'], false);
+    const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
     
-    // let show = true;
     
-    // const headerNavTopHeight = 417;
-    // const headerNavTopScrollY = lodashGet(stores, ['layout', 'headerNavTopScrollY'], 0);
-    // const headerNavTopScrollUp = lodashGet(stores, ['layout', 'headerNavTopScrollUp'], false);
-    
-    // if (headerNavTopHeight < headerNavTopScrollY) {
+    // const Container = (props) => {
       
-    //   if (headerNavTopScrollUp) {
-    //     show = true;
-    //   } else {
-    //     show = false;
-    //   }
+    //   const Nav = styled(animated.nav)`
+    //     display: flex;
+    //     flex-flow: row nowrap;
+    //     align-items: center;
+    //     background-color: white;
+    //     width: 100%;
+    //     height: 53px;
+    //     position: sticky;
+    //     top: 0;
+    //     z-index: 1001;
+    //   `;
       
-    // }
+    //   const style = useSpring({
+    //     transform: 'translateY(0)',
+    //     from: { transform: 'translateY(-100%)' }
+    //     // opacity: 1,
+    //     // from: { opacity: 0 }
+    //   });
+      
+    //   return <Nav style={style}>{props.children}</Nav>;
+      
+    // };
+    
+    // const Container = styled.nav`
+    //   display: flex;
+    //   flex-flow: row nowrap;
+    //   align-items: center;
+      
+    //   background-color: white;
+    //   width: 100%;
+    //   height: 53px;
+      
+    //   // position: fixed;
+    //   // position: -webkit-sticky;
+    //   position: sticky;
+      
+    //   // position: ${headerScrollUp ? 'sticky' : 'static'};
+    //   // transition: .3s cubic-bezier(.4, 0, .2, 1);
+    //   // transform: ${headerScrollUp ? 'translateY(-50%)' : 'translateY(0)'};
+    //   top: 0;
+    //   z-index: 1001;
+    // `;
     
     // console.log(chalk`
-    //   show: {green ${show}}
-    //   headerNavTopScrollY: {green ${headerNavTopScrollY}}
-    //   headerNavTopScrollUp: {green ${headerNavTopScrollUp}}
+    //   headerNavTopShow: {green ${headerNavTopShow}}
     // `);
     
     
@@ -324,13 +361,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <VelocityComponent
-        animation={{ translateY: headerNavShow ? 0 : -53 }}
-        // animation={{ opacity: show ? 1 : 0 }}
-        duration={300}
-      >
-      
-      <Container id="container">
+      <Container headerNavTopShow={headerNavTopShow}>
         
         
         {/* ロゴ */}
@@ -422,8 +453,6 @@ export default class extends React.Component {
         
         
       </Container>
-      
-      </VelocityComponent>
     );
     
   }

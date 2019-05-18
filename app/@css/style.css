@@ -22,6 +22,12 @@ a:hover {
 
 
 
+/*.header-nav-main {*/
+/*  transform: translateY(0px) !important;*/
+/*  top: 53px !important;*/
+/*}*/
+
+
 
 /* Swiper 上書き */
 .swiper-pagination {

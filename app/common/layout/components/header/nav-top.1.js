@@ -35,7 +35,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-// import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 
 // ---------------------------------------------
@@ -235,20 +235,14 @@ const LoginMenuListItemText = styled(ListItemText)`
 //   https://material-ui.com/customization/overrides/
 // --------------------------------------------------
 
-// const stylesObj = {
+const stylesObj = {
   
-//   paper: {
-//     // left: 'auto !important',
-//     // right: 0,
-//     // right: 32,
-//     // marginRight: 32,
-//     ['@media (max-width: 480px)']: {
-//       // right: 16,
-//       // marginRight: 16,
-//     }
-//   },
+  paper: {
+    left: 0,
+    right: 10,
+  },
   
-// };
+};
 
 
 
@@ -287,7 +281,6 @@ const Container = ({ children, headerNavTopShow }) => {
 //   Class
 // --------------------------------------------------
 
-// @withStyles(stylesObj)
 @inject('stores')
 @observer
 export default class extends React.Component {
@@ -305,26 +298,6 @@ export default class extends React.Component {
   
   
   // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  // componentDidMount() {
-    
-    
-  //   // --------------------------------------------------
-  //   //   ウィンドウの横幅が大きい場合、ヘッダーの情報を開く
-  //   // --------------------------------------------------
-    
-  //   console.log(chalk`
-  //     window.parent.screen.width: {green ${window.parent.screen.width}}
-  //     window.innerWidth: {green ${window.innerWidth}}
-  //   `);
-    
-    
-  // }
-  
-  
-  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -335,7 +308,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores } = this.props;
+    const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -362,9 +335,6 @@ export default class extends React.Component {
     // console.log(chalk`
     //   headerNavTopShow: {green ${headerNavTopShow}}
     // `);
-    
-    
-    
     
     
     // --------------------------------------------------
@@ -435,14 +405,11 @@ export default class extends React.Component {
           open={stores.layout.headerLoginMenuOpen}
           onClose={stores.layout.handleHeaderLoginMenuClose}
           disableAutoFocusItem={true}
-          // anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          // transformOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
           // anchorPosition={{ left: 600, right: 10, top: 0 }}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          // anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           getContentAnchorEl={null}
-          // classes={{
-          //   paper: classes.paper
-          // }}
           // anchorReference={'anchorPosition'}
         >
           

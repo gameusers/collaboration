@@ -173,7 +173,10 @@ class Store {
     // ---------------------------------------------
     
     const recaptchaRef = lodashGet(this.dataObj, ['recaptchaRef'], '');
-    recaptchaRef.execute();
+    
+    if (recaptchaRef) {
+      recaptchaRef.execute();
+    }
     
     
   }

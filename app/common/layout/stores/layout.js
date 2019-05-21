@@ -396,10 +396,26 @@ class Store {
    * @param {Object} eventObj - イベント
    */
   @action.bound
-  handleHeaderLoginMenuOpen(eventObj) {
+  handleHeaderLoginMenuOpen({ eventObj, loginMenuRef }) {
     this.headerLoginMenuAnchorEl = eventObj.currentTarget;
+    // this.headerLoginMenuAnchorEl = loginMenuRef;
+    
+    // console.log(`\n---------- eventObj.currentTarget ----------\n`);
+    // console.dir(eventObj.currentTarget);
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- loginMenuRef ----------\n`);
+    // console.dir(loginMenuRef);
+    // console.log(`\n-----------------------------------\n`);
+    
     this.headerLoginMenuOpen = true;
   };
+  // @action.bound
+  // handleHeaderLoginMenuOpen(eventObj) {
+  //   // this.headerLoginMenuAnchorEl = eventObj.currentTarget;
+  //   this.headerLoginMenuAnchorEl = loginMenuRef
+  //   this.headerLoginMenuOpen = true;
+  // };
   
   
   /**

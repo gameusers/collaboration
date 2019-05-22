@@ -23,6 +23,13 @@ import lodashGet from 'lodash/get';
 
 
 // ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import Drawer from '@material-ui/core/Drawer';
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
@@ -78,12 +85,48 @@ import withRoot from '../../lib/material-ui/withRoot';
 // --------------------------------------------------
 
 const Container = styled.div`
-  padding: 10px 10px 18px 10px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  margin: 0 auto;
+  padding: 10px;
+  // background-color: pink;
   
-  @media screen and (max-width: 480px) {
-    padding: 10px 0 18px 0;
+  @media screen and (max-width: 1110px) {
+    // display: block;
+    // justify-content: flex-start;
+    padding: 10px 0 10px 0;
+  }
+  
+`;
+
+const ColumnSidebar = styled.div`
+  width: 300px;
+  margin: 0 10px 0 0;
+  padding: 0;
+  // background-color: pink;
+  
+  @media screen and (max-width: 1110px) {
+    display: none;
   }
 `;
+
+const ColumnMain = styled.div`
+  width: 800px;
+  margin: 0;
+  padding: 0;
+  // background-color: green;
+`;
+
+
+
+// const ContainerMobile = styled.div`
+//   padding: 10px 10px 18px 10px;
+  
+//   @media screen and (max-width: 480px) {
+//     padding: 10px 0 18px 0;
+//   }
+// `;
 
 
 
@@ -361,15 +404,59 @@ class Component extends React.Component {
             </Head>
             
             
+            
+            
+            {/* 2 Column */}
             <Container>
               
-              {/* プレイヤーカード */}
-              {componentCardsArr}
               
-              {/* プレイヤーカードを表示するダイアログ */}
-              <CardPlayerDialog />
+              {/* Sidebar */}
+              <ColumnSidebar>
+                <img
+                  src="/static/img/common/advertisement/300x250.jpg"
+                  width="300"
+                  height="250"
+                />
+                
+                サイドメニュー
+              </ColumnSidebar>
+              
+              
+              {/* Main */}
+              <ColumnMain>
+                
+                {/* プレイヤーカード */}
+                {componentCardsArr}
+                
+              </ColumnMain>
+              
               
             </Container>
+            
+            
+            
+            
+            {/* プレイヤーカードを表示するダイアログ */}
+            <CardPlayerDialog />
+            
+            
+            
+            
+            {/* Drawer */}
+            <Drawer
+              // open={state.left}
+              // onClose={toggleDrawer('left', false)}
+            >
+              <div
+                tabIndex={0}
+                role="button"
+                // onClick={toggleDrawer('left', false)}
+                // onKeyDown={toggleDrawer('left', false)}
+              >
+                AAA
+              </div>
+            </Drawer>
+            
             
           </Layout>
           

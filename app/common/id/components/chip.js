@@ -73,6 +73,7 @@ const StyledAvatar = styled(Avatar)`
     height: 32px;
     line-height: 1;
     background-color: #003791;
+    // z-index: 0 !important;
   }
 `;
 

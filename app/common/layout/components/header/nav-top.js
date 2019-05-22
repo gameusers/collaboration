@@ -18,7 +18,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import {useSpring, animated} from 'react-spring';
+import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
 
 
@@ -35,7 +35,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
-// import { withStyles } from '@material-ui/core/styles';
 
 
 // ---------------------------------------------
@@ -56,55 +55,6 @@ import IconEject from '@material-ui/icons/Eject';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-// const Container = styled(animated.nav)`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   align-items: center;
-  
-//   background-color: white;
-//   width: 100%;
-//   height: 53px;
-//   // position: fixed;
-//   position: -webkit-sticky;
-//   position: sticky;
-  
-//   top: 0;
-//   z-index: 1001;
-// `;
-
-// const Container = styled.nav`
-//   display: flex;
-//   flex-flow: row nowrap;
-//   align-items: center;
-  
-//   background-color: white;
-//   width: 100%;
-//   height: 53px;
-//   position: fixed;
-//   transition: .3s cubic-bezier(.4, 0, .2, 1);
-//   // position: -webkit-sticky;
-//   // position: sticky;
-  
-//   top: 0;
-//   z-index: 1001;
-// `;
-
-// const Container = styled.nav`
-//   display: flex;
-//   flex-direction: row;
-//   align-items: center;
-  
-//   background-color: white;
-//   width: 100%;
-//   height: 53px;
-//   position: -webkit-sticky;
-//   position: sticky;
-  
-//   top: 0;
-//   z-index: 1000;
-// `;
-
-
 // ---------------------------------------------
 //   Logo
 // ---------------------------------------------
@@ -115,13 +65,13 @@ const Logo = styled.div`
   
   width: 138px;
   height: 43px;
-  background-image: url('/static/img/common/logo.png');
+  background-image: url('/static/img/common/header/logo.png');
   
   @media screen and (max-width: 480px) {
     width: 30px;
     min-width: 30px;
     height: 43px;
-    background-image: url('/static/img/common/logo-mobile.png');
+    background-image: url('/static/img/common/header/logo-mobile.png');
   }
 `;
 
@@ -231,29 +181,6 @@ const LoginMenuListItemText = styled(ListItemText)`
 
 
 // --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/customization/overrides/
-// --------------------------------------------------
-
-// const stylesObj = {
-  
-//   paper: {
-//     // left: 'auto !important',
-//     // right: 0,
-//     // right: 32,
-//     // marginRight: 32,
-//     ['@media (max-width: 480px)']: {
-//       // right: 16,
-//       // marginRight: 16,
-//     }
-//   },
-  
-// };
-
-
-
-
-// --------------------------------------------------
 //   react-spring
 // --------------------------------------------------
 
@@ -287,7 +214,6 @@ const Container = ({ children, headerNavTopShow }) => {
 //   Class
 // --------------------------------------------------
 
-// @withStyles(stylesObj)
 @inject('stores')
 @observer
 export default class extends React.Component {
@@ -299,29 +225,7 @@ export default class extends React.Component {
   
   constructor(props) {
     super(props);
-    
-    // this.loginMenuRef = React.createRef();
   }
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  // componentDidMount() {
-    
-    
-  //   // --------------------------------------------------
-  //   //   ウィンドウの横幅が大きい場合、ヘッダーの情報を開く
-  //   // --------------------------------------------------
-    
-  //   console.log(chalk`
-  //     window.parent.screen.width: {green ${window.parent.screen.width}}
-  //     window.innerWidth: {green ${window.innerWidth}}
-  //   `);
-    
-    
-  // }
   
   
   // --------------------------------------------------
@@ -335,7 +239,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores } = this.props;
+    const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -351,18 +255,7 @@ export default class extends React.Component {
     //   Component - Menu
     // --------------------------------------------------
     
-    // const headerScrollUp = lodashGet(stores, ['layout', 'headerScrollUp'], false);
     const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
-    
-    
-    // this.loginMenuRef = React.createRef();
-    const loginMenuRef = React.createRef();
-    
-    
-    // console.log(chalk`
-    //   headerNavTopShow: {green ${headerNavTopShow}}
-    // `);
-    
     
     
     
@@ -377,7 +270,7 @@ export default class extends React.Component {
         
         {/* ロゴ */}
         <Link href="/">
-          <Logo ref={loginMenuRef} />
+          <Logo />
         </Link>
         
         
@@ -412,9 +305,7 @@ export default class extends React.Component {
         {/* サムネイル */}
         { playerID ? (
           <ThumbnailIconButton
-            onClick={(eventObj) => stores.layout.handleHeaderLoginMenuOpen({ eventObj })}
-            // onClick={stores.layout.handleHeaderLoginMenuOpen()}
-            // onClick={(eventObj) => stores.layout.handleHeaderLoginMenuOpen({ eventObj, loginMenuRef })}
+            onClick={stores.layout.handleHeaderLoginMenuOpen}
           >
             <StyledAvatar
               alt="ログインメニュー"
@@ -431,19 +322,11 @@ export default class extends React.Component {
         
         {/* ログインメニュー */}
         <LoginMenu
-          // anchorEl={stores.layout.headerLoginMenuAnchorEl}
           open={stores.layout.headerLoginMenuOpen}
           onClose={stores.layout.handleHeaderLoginMenuClose}
           disableAutoFocusItem={true}
-          // anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          // transformOrigin={{ vertical: "top", horizontal: "right" }}
-          // anchorPosition={{ left: 600, right: 10, top: 0 }}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           getContentAnchorEl={null}
-          // classes={{
-          //   paper: classes.paper
-          // }}
-          // anchorReference={'anchorPosition'}
         >
           
           
@@ -471,6 +354,7 @@ export default class extends React.Component {
             </Link>
             
           </MenuItem>
+          
           
         </LoginMenu>
         

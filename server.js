@@ -246,29 +246,29 @@ app.prepare().then(() => {
   //   Game Community
   // ---------------------------------------------
   
-  server.get('/gc/:param1', (req, res) => {
+  // server.get('/gc/:param1', (req, res) => {
     
-    // console.log(`req.url = ${req.url}`);
-    // console.log(`parse(req.url).pathname = ${parse(req.url).pathname}`);
+  //   // console.log(`req.url = ${req.url}`);
+  //   // console.log(`parse(req.url).pathname = ${parse(req.url).pathname}`);
     
-    const { param1 } = req.params;
+  //   const { param1 } = req.params;
     
-    if (!param1) {
-      app.render(req, res, '/gc/index', req.query);
-    }
+  //   if (!param1) {
+  //     app.render(req, res, '/gc/index', req.query);
+  //   }
     
-    app.render(req, res, '/gc/community', { param1 });
-  });
+  //   app.render(req, res, '/gc/community', { param1 });
+  // });
   
-  server.get('/gc/:param1/:param2', (req, res) => {
-    const { param1, param2 } = req.params;
-    app.render(req, res, '/gc/community', { param1, param2 });
-  });
+  // server.get('/gc/:param1/:param2', (req, res) => {
+  //   const { param1, param2 } = req.params;
+  //   app.render(req, res, '/gc/community', { param1, param2 });
+  // });
   
-  server.get('/gc/:param1/:param2/:param3', (req, res) => {
-    const { param1, param2, param3 } = req.params;
-    app.render(req, res, '/gc/community', { param1, param2, param3 });
-  });
+  // server.get('/gc/:param1/:param2/:param3', (req, res) => {
+  //   const { param1, param2, param3 } = req.params;
+  //   app.render(req, res, '/gc/community', { param1, param2, param3 });
+  // });
   
   
   
@@ -277,44 +277,44 @@ app.prepare().then(() => {
   //   User Community
   // ---------------------------------------------
   
-  server.get('/uc/:param1*', (req, res) => {
+  // server.get('/uc/:param1*', (req, res) => {
     
     
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   Console 出力
+  //   // --------------------------------------------------
     
-    console.log(`
-      req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-    `);
+  //   console.log(`
+  //     req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+  //   `);
     
-    console.log(`
-      req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    `);
+  //   console.log(`
+  //     req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+  //   `);
     
-    console.log(chalk`
-      req.isAuthenticated(): {green ${req.isAuthenticated()}}
-    `);
+  //   console.log(chalk`
+  //     req.isAuthenticated(): {green ${req.isAuthenticated()}}
+  //   `);
     
     
-    const { param1 } = req.params;
+  //   const { param1 } = req.params;
     
-    if (!param1) {
-      app.render(req, res, '/uc/index', req.query);
-    }
+  //   if (!param1) {
+  //     app.render(req, res, '/uc/index', req.query);
+  //   }
     
-    const queryObj = {
-      param1
-    };
+  //   const queryObj = {
+  //     param1
+  //   };
     
-    app.render(req, res, '/uc/community', queryObj);
+  //   app.render(req, res, '/uc/community', queryObj);
     
-  });
+  // });
   
-  server.get('/uc/:param1/member', (req, res) => {
-    const { param1 } = req.params;
-    app.render(req, res, '/uc/community/member', { param1 });
-  });
+  // server.get('/uc/:param1/member', (req, res) => {
+  //   const { param1 } = req.params;
+  //   app.render(req, res, '/uc/community/member', { param1 });
+  // });
   
   
   

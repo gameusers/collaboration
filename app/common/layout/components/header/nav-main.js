@@ -18,7 +18,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import {useSpring, animated} from 'react-spring';
+import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
 
 
@@ -27,6 +27,14 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconMenu from '@material-ui/icons/Menu';
 
 
 
@@ -36,37 +44,48 @@ import Button from '@material-ui/core/Button';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-// const Container = styled.nav`
-//   width: 100%;
-//   height: 36px;
-//   text-align: center;
-//   background-color: #25283D;
-//   // position: -webkit-sticky;
-//   position: sticky;
-//   // top: -1px;
-//   // position: fixed;
-//   // top: 53px;
-//   top: 0;
-//   z-index: 1000;
-//   padding: 0;
-// `;
+const FlexBox = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 0 0;
+  padding: 0 12px;
+  // background-color: pink;
+  
+  @media screen and (max-width: 480px) {
+    
+    position: relative;
+    
+    // margin: 0 auto 0 0;
+  }
+`;
 
-// const Container = styled.nav`
-//   width: 100%;
-//   height: 28px;
-//   // height: 36px;
-//   text-align: center;
-//   background-color: #25283D;
-//   // position: -webkit-sticky;
-//   // position: sticky;
-//   // top: -1px;
-//   // position: fixed;
-//   // top: 0;
-//   z-index: 1000;
-//   margin: 0 0 8px 0;
-//   padding: 0;
-// `;
-      
+const DrawerMenuButtonBox = styled.div`
+  margin: 0 28px 0 0;
+  
+  @media screen and (max-width: 480px) {
+    position: absolute;
+    left: 12px;
+    
+    // margin: 0 auto 0 0;
+  }
+`;
+
+const StyledIconButton = styled(IconButton)`
+  && {
+    color: white;
+    width: 28px;
+    height: 28px;
+    // margin: 0 28px 0 0;
+    padding: 0;
+    
+    @media screen and (max-width: 480px) {
+      // margin: 0 28px 0 auto;
+    }
+  }
+`;
+
 const MenuActiveButton = styled(Button)`
   && {
     height: 36px;
@@ -94,11 +113,16 @@ const MenuButton = styled(Button)`
 
 const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPositionSticky }) => {
   
-  // console.log(chalk`
-  //   headerScrollUp: {green ${headerScrollUp}}
-  //   headerNavTopShow: {green ${headerNavTopShow}}
-  //   headerNavMainPositionSticky: {green ${headerNavMainPositionSticky}}
-  // `);
+  const Nav = styled(animated.nav)`
+    width: 100%;
+    height: 36px;
+    background-color: #25283D;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  `;
+  
   
   // const Nav = styled(animated.nav)`
   //   width: 100%;
@@ -107,138 +131,14 @@ const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPo
   //   background-color: #25283D;
   //   position: -webkit-sticky;
   //   position: sticky;
-  //   // top: 0;
-  //   top: 53px;
+  //   top: 0;
   //   z-index: 1000;
   // `;
-  
-  
-  // const props = useSpring({
-  //   transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
-  // });
-  
-  
-  const Nav = styled(animated.nav)`
-    width: 100%;
-    height: 36px;
-    text-align: center;
-    background-color: #25283D;
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    // top: 53px;
-    z-index: 1000;
-  `;
   
   const props = useSpring({
     transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
   });
   
-  
-  
-  
-  
-  // let props = {};
-  
-  // if (headerScrollUp && headerNavTopShow && !headerNavMainPositionSticky) {
-  
-  // if (headerScrollY > headerHeroImageHeight) {
-    
-  //   const translateY = headerScrollY - headerHeroImageHeight;
-    
-  //   Nav = styled(animated.nav)`
-  //     width: 100%;
-  //     height: 36px;
-  //     text-align: center;
-  //     background-color: #25283D;
-  //     // position: -webkit-sticky;
-  //     // position: sticky;
-  //     top: 0;
-  //     transform: translateY(${translateY}px)
-  //     z-index: 1000;
-  //   `;
-    
-  //   props = {};
-    
-  //   console.log(chalk`
-  //     headerScrollY: {green ${headerScrollY}}
-  //     headerHeroImageHeight: {green ${headerHeroImageHeight}}
-  //     translateY: {green ${translateY}}
-  //   `);
-    
-  // }
-  
-  // }
-  
-  
-  // if (headerScrollUp && headerNavTopShow && !headerNavMainPositionSticky) {
-    
-  //   Nav = styled(animated.nav)`
-  //     width: 100%;
-  //     height: 36px;
-  //     text-align: center;
-  //     background-color: #25283D;
-  //     position: -webkit-sticky;
-  //     position: sticky;
-  //     top: 0;
-  //     z-index: 1000;
-  //   `;
-    
-  //   props = {};
-    
-  // }
-  
-  
-  
-  // let props = useSpring({
-  //   // top: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? '53px' : '0px',
-  //   transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
-  //   // immediate: true,
-  //   onRest: () => {
-  //     // top: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? '53px' : '0px',
-      
-  //     // Nav = styled(animated.nav)`
-  //     //   width: 100%;
-  //     //   height: 36px;
-  //     //   text-align: center;
-  //     //   background-color: #25283D;
-  //     //   position: -webkit-sticky;
-  //     //   position: sticky;
-  //     //   top: 53px;
-  //     //   z-index: 1000;
-  //     // `;
-  //     if (headerScrollUp && headerNavTopShow && headerNavMainPositionSticky) {
-  //       document.getElementById('header-nav-main').classList.add('header-nav-main');
-  //     } else {
-  //       document.getElementById('header-nav-main').classList.remove('header-nav-main');
-  //     }
-      
-      
-      
-  //     console.log('finish');
-  //   }
-  // });
-  
-  
-  // props = useSpring({
-  //   transform: 'translateY(0px)',
-  // });
-  
-  
-  // const Nav = styled(animated.nav)`
-  //   width: 100%;
-  //   height: 36px;
-  //   text-align: center;
-  //   background-color: #25283D;
-  //   position: -webkit-sticky;
-  //   position: sticky;
-  //   top: 53px;
-  //   z-index: 1000;
-  // `;
-  
-  // const props = useSpring({
-  //   top: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? '53px' : '0px',
-  // });
   
   return <Nav style={props}>{children}</Nav>;
   
@@ -277,11 +177,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, headerNavMainArr } = this.props;
-    
-    
-    
-    // const headerHeroImageHeight = lodashGet(stores, ['layout', 'headerHeroImageHeight'], 0);
-    // const headerScrollY = lodashGet(stores, ['layout', 'headerScrollY'], 0);
     
     const headerScrollUp = lodashGet(stores, ['layout', 'headerScrollUp'], false);
     const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
@@ -336,13 +231,29 @@ export default class extends React.Component {
     
     return (
       <Container
-        // headerHeroImageHeight={headerHeroImageHeight}
-        // headerScrollY={headerScrollY}
         headerScrollUp={headerScrollUp}
         headerNavTopShow={headerNavTopShow}
         headerNavMainPositionSticky={headerNavMainPositionSticky}
-      > 
+      >
+        
+        <FlexBox>
+        
+        {/* Drawer Menu */}
+        <DrawerMenuButtonBox>
+          <StyledIconButton
+            // onClick={() => handlePanelExpand({ _id })}
+          >
+            <IconMenu />
+          </StyledIconButton>
+        </DrawerMenuButtonBox>
+        
+        
+        {/* Menu */}
         {componentsArr}
+        
+        </FlexBox>
+        
+        
       </Container>
     );
     

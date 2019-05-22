@@ -40,7 +40,7 @@ const ContainerThumbnail = styled.div`
   flex-flow: row nowrap;
   justify-content: center;
   align-items: flex-start;
-  background: no-repeat center center url('/static/img/common/header-back.jpg');
+  background: no-repeat center center url('/static/img/common/header/header-back.jpg');
   background-size: cover;
   background-color: #25283D;
   padding: 15px;

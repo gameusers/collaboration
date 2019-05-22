@@ -381,7 +381,7 @@ class Store {
    * メニューの位置を設定するために使用されるDOM要素
    * @type {string}
    */
-  @observable headerLoginMenuAnchorEl = null;
+  // @observable headerLoginMenuAnchorEl = null;
   
   
   /**
@@ -396,8 +396,8 @@ class Store {
    * @param {Object} eventObj - イベント
    */
   @action.bound
-  handleHeaderLoginMenuOpen({ eventObj, loginMenuRef }) {
-    this.headerLoginMenuAnchorEl = eventObj.currentTarget;
+  handleHeaderLoginMenuOpen() {
+    // this.headerLoginMenuAnchorEl = eventObj.currentTarget;
     // this.headerLoginMenuAnchorEl = loginMenuRef;
     
     // console.log(`\n---------- eventObj.currentTarget ----------\n`);
@@ -423,7 +423,7 @@ class Store {
    */
   @action.bound
   handleHeaderLoginMenuClose() {
-    this.headerLoginMenuAnchorEl = null;
+    // this.headerLoginMenuAnchorEl = null;
     this.headerLoginMenuOpen = false;
   };
   

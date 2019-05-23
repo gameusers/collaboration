@@ -130,10 +130,19 @@ const ActionsBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
   
   componentDidMount(){
     
@@ -150,6 +159,10 @@ export default class extends React.Component {
     
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     

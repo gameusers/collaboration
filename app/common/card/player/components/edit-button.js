@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -49,15 +49,36 @@ const Container = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
   
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-editButton`, false);
+    
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-editButton` });
+    
+    
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -72,11 +93,7 @@ export default class extends React.Component {
     
     const { loginUsersObj } = stores.data;
     
-    const {
-      
-      handleFormOpen
-      
-    } = stores.cardPlayer;
+    const { handleFormOpen } = stores.cardPlayer;
     
     
     
@@ -126,7 +143,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -141,6 +158,7 @@ export default class extends React.Component {
     //   followedCount: {green ${followedCount}}
     //   followed: {green ${followed}}
     // `);
+    
     
     
     

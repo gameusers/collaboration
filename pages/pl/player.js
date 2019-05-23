@@ -26,7 +26,7 @@ import lodashGet from 'lodash/get';
 //   Material UI
 // ---------------------------------------------
 
-import Drawer from '@material-ui/core/Drawer';
+// import Drawer from '@material-ui/core/Drawer';
 
 
 // ---------------------------------------------
@@ -66,6 +66,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
+import Drawer from '../../app/common/layout/components/drawer';
 import CardPlayer from '../../app/common/card/player/components/player';
 import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
@@ -89,30 +90,27 @@ const Container = styled.div`
   flex-flow: row nowrap;
   justify-content: center;
   margin: 0 auto;
-  padding: 10px;
+  padding: 16px;
   // background-color: pink;
   
-  @media screen and (max-width: 1110px) {
-    // display: block;
-    // justify-content: flex-start;
+  @media screen and (max-width: 947px) {
     padding: 10px 0 10px 0;
   }
-  
 `;
 
 const ColumnSidebar = styled.div`
   width: 300px;
-  margin: 0 10px 0 0;
+  margin: 0 16px 0 0;
   padding: 0;
   // background-color: pink;
   
-  @media screen and (max-width: 1110px) {
+  @media screen and (max-width: 947px) {
     display: none;
   }
 `;
 
 const ColumnMain = styled.div`
-  width: 800px;
+  max-width: 800px;
   margin: 0;
   padding: 0;
   // background-color: green;
@@ -323,6 +321,9 @@ class Component extends React.Component {
     
     const stores = this.stores;
     
+    // const drawerOpen = lodashGet(stores, ['layout', 'drawerOpen'], false);
+    // const handleDrawerClose = lodashGet(stores, ['layout', 'handleDrawerClose'], () => {});
+    
     
     // --------------------------------------------------
     //   Header Navigation
@@ -443,18 +444,8 @@ class Component extends React.Component {
             
             
             {/* Drawer */}
-            <Drawer
-              // open={state.left}
-              // onClose={toggleDrawer('left', false)}
-            >
-              <div
-                tabIndex={0}
-                role="button"
-                // onClick={toggleDrawer('left', false)}
-                // onKeyDown={toggleDrawer('left', false)}
-              >
-                AAA
-              </div>
+            <Drawer>
+              Drawer
             </Drawer>
             
             

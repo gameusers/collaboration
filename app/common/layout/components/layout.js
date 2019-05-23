@@ -63,11 +63,12 @@ Router.events.on('routeChangeError', () => NProgress.done());
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const ContainerHeaderNavMain = styled.nav`
+const ContainerHeaderNavMain = styled.div`
   background-color: #151515;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
+  z-index: 1000;
 `;
 
 
@@ -167,13 +168,13 @@ export default class extends React.Component {
         
         
         
-        {/* コンテンツ */}
+        {/* Contents */}
         {this.props.children}
         
         
         
         
-        {/* フッター */}
+        {/* Footer */}
         <Footer />
         
         

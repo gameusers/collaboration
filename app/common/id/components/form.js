@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -82,15 +82,36 @@ const SelectFormTypeButton = styled(Button)`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
   
-  componentDidMount() {
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props._id}-idForm`, false);
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount(){
+    
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idForm` });
+    
+    
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     

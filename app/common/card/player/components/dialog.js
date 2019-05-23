@@ -100,13 +100,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const {
-      
-      classes,
-      stores
-      
-    } = this.props;
-    
+    const { classes, stores } = this.props;
     
     const {
       

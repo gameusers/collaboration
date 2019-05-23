@@ -54,10 +54,7 @@ const FlexBox = styled.div`
   // background-color: pink;
   
   @media screen and (max-width: 480px) {
-    
     position: relative;
-    
-    // margin: 0 auto 0 0;
   }
 `;
 
@@ -67,8 +64,6 @@ const DrawerMenuButtonBox = styled.div`
   @media screen and (max-width: 480px) {
     position: absolute;
     left: 12px;
-    
-    // margin: 0 auto 0 0;
   }
 `;
 
@@ -114,14 +109,26 @@ const MenuButton = styled(Button)`
 const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPositionSticky }) => {
   
   const Nav = styled(animated.nav)`
-    width: 100%;
-    height: 36px;
-    background-color: #25283D;
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    && {
+      width: 100%;
+      height: 36px;
+      background-color: #25283D;
+      // position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
   `;
+  
+  // const Nav = styled(animated.nav)`
+  //   width: 100%;
+  //   height: 36px;
+  //   background-color: #25283D;
+  //   position: -webkit-sticky;
+  //   position: sticky;
+  //   top: 0;
+  //   z-index: 1000 !important;
+  // `;
   
   
   // const Nav = styled(animated.nav)`
@@ -134,6 +141,10 @@ const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPo
   //   top: 0;
   //   z-index: 1000;
   // `;
+  
+  // const props = useSpring({
+  //   transform: headerScrollUp && headerNavTopShow ? 'translateY(53px)' : 'translateY(0px)',
+  // });
   
   const props = useSpring({
     transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
@@ -182,9 +193,12 @@ export default class extends React.Component {
     const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
     const headerNavMainPositionSticky = lodashGet(stores, ['layout', 'headerNavMainPositionSticky'], false);
     
+    const drawerIconShow = lodashGet(stores, ['layout', 'drawerIconShow'], false);
+    const handleDrawerOpen = lodashGet(stores, ['layout', 'handleDrawerOpen'], () => {});
+    
     
     // --------------------------------------------------
-    //   Component - Menu
+    //   Component - Button
     // --------------------------------------------------
     
     const componentsArr = [];
@@ -239,13 +253,15 @@ export default class extends React.Component {
         <FlexBox>
         
         {/* Drawer Menu */}
-        <DrawerMenuButtonBox>
-          <StyledIconButton
-            // onClick={() => handlePanelExpand({ _id })}
-          >
-            <IconMenu />
-          </StyledIconButton>
-        </DrawerMenuButtonBox>
+        {drawerIconShow &&
+          <DrawerMenuButtonBox>
+            <StyledIconButton
+              onClick={() => handleDrawerOpen()}
+            >
+              <IconMenu />
+            </StyledIconButton>
+          </DrawerMenuButtonBox>
+        }
         
         
         {/* Menu */}

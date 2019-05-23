@@ -193,7 +193,7 @@ const Container = ({ children, headerNavTopShow }) => {
     background-color: white;
     width: 100%;
     height: 53px;
-    position: -webkit-sticky;
+    // position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1001;

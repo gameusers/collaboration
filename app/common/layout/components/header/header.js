@@ -49,9 +49,9 @@ import IconClose from '@material-ui/icons/Close';
 //   Components
 // ---------------------------------------------
 
-import NavTop from '../header/nav-top';
+// import NavTop from '../header/nav-top';
 import HeroImage from '../header/hero-image';
-import NavMain from '../header/nav-main';
+// import NavMain from '../header/nav-main';
 import NavSub from '../header/nav-sub';
 
 
@@ -65,6 +65,7 @@ import NavSub from '../header/nav-sub';
 const Container = styled.div`
   display: flex;
   flex-flow: column nowrap;
+  // background-color: pink;
   background-color: #25283D;
   // margin: 20px 0 0 0;
 `;
@@ -172,6 +173,8 @@ export default class extends React.Component {
         
         
         {/* Hero Image（各ゲームの大きな画像） */}
+        {/*<HeroImage />*/}
+        
         <Measure
           bounds
           onResize={(contentRect) => {

@@ -164,6 +164,12 @@ class Store {
     //   Navigation Top Show
     // ---------------------------------------------
     
+    // if (this.headerScrollUp) {
+    //     this.headerNavTopShow = true;
+    //   } else {
+    //     this.headerNavTopShow = false;
+    //   }
+    
     if (this.headerHeroImageHeight < headerScrollY) {
       
       if (this.headerScrollUp) {
@@ -230,118 +236,6 @@ class Store {
   
   
   
-  /**
-   * 通知ダイアログを開く
-   */
-  // @action.bound
-  // handleHeaderNavMainOnScroll() {
-    
-  //   console.log(chalk`
-  //     this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
-  //   `);
-    
-  //   this.headerScrollY = window.scrollY;
-    
-  //   if (this.headerScrollY > this.headerScrollYOffset) {
-  //     this.headerNavTopScrollUp = false;
-  //   } else {
-  //     this.headerNavTopScrollUp = true;
-  //   }
-    
-  //   if (this.headerHeroImageHeight < this.headerScrollY) {
-      
-  //     if (this.headerNavTopScrollUp) {
-  //       this.headerNavShow = true;
-  //     } else {
-  //       this.headerNavShow = false;
-  //     }
-      
-  //   }
-    
-  //   this.headerScrollYOffset = this.headerScrollY;
-    
-    
-  // };
-  
-  
-  // /**
-  // * 通知ダイアログを開く
-  // */
-  // @action.bound
-  // handleHeaderNavTopOnScroll() {
-    
-  //   this.headerScrollY = window.scrollY;
-  //   // let headerNavTopOffset = this.headerNavTopOffset;
-    
-  //   if (this.headerScrollY > this.headerScrollYOffset) {
-  //     this.headerNavTopScrollUp = false;
-  //   } else {
-  //     this.headerNavTopScrollUp = true;
-  //   }
-    
-  //   this.headerScrollYOffset = this.headerScrollY;
-    
-    
-  //   // const scrollY = window.scrollY;
-  //   // let headerNavTopOffset = this.headerNavTopOffset;
-  //   // let headerNavTopHeight = this.headerNavTopHeight;
-    
-  //   // if (!this.headerNavTopAnimating) {
-      
-  //   //   window.requestAnimationFrame(() => {
-        
-  //   //     // console.log('requestAnimationFrame');
-  //   //     // console.log(chalk`
-  //   //     //   scrollY: {green ${scrollY}}
-  //   //     //   this.headerNavTopHeight: {green ${this.headerNavTopHeight}}
-  //   //     // `);
-        
-        
-  //   //     if (scrollY > headerNavTopHeight) {
-          
-  //   //       // console.log(1);
-          
-  //   //       // Scroll Down
-  //   //       if (scrollY > headerNavTopOffset) {
-  //   //         // console.log(2);
-  //   //         this.headerNavTopShow = false;
-            
-  //   //       // Scroll Up
-  //   //       } else {
-  //   //         // console.log(3);
-  //   //         this.headerNavTopShow = true;
-            
-  //   //       }
-          
-  //   //       this.headerNavTopOffset = scrollY;
-          
-  //   //     }
-        
-  //   //     this.headerNavTopAnimating = false;
-        
-        
-  //   //     // console.log(chalk`
-  //   //     //   scrollY: {green ${scrollY}}
-  //   //     //   this.headerNavTopAnimating: {green ${this.headerNavTopAnimating}}
-  //   //     //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
-  //   //     //   this.headerNavTopOffset: {green ${this.headerNavTopOffset}}
-  //   //     // `);
-        
-        
-  //   //   });
-      
-  //   //   this.headerNavTopAnimating = true;
-      
-  //   // }
-    
-  //   // console.log(chalk`
-  //   //   scrollY: {green ${scrollY}}
-  //   // `);
-    
-  // };
-  
-  
-  
   // ---------------------------------------------
   //   Header - 通知ダイアログ
   // ---------------------------------------------
@@ -397,25 +291,8 @@ class Store {
    */
   @action.bound
   handleHeaderLoginMenuOpen() {
-    // this.headerLoginMenuAnchorEl = eventObj.currentTarget;
-    // this.headerLoginMenuAnchorEl = loginMenuRef;
-    
-    // console.log(`\n---------- eventObj.currentTarget ----------\n`);
-    // console.dir(eventObj.currentTarget);
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`\n---------- loginMenuRef ----------\n`);
-    // console.dir(loginMenuRef);
-    // console.log(`\n-----------------------------------\n`);
-    
     this.headerLoginMenuOpen = true;
   };
-  // @action.bound
-  // handleHeaderLoginMenuOpen(eventObj) {
-  //   // this.headerLoginMenuAnchorEl = eventObj.currentTarget;
-  //   this.headerLoginMenuAnchorEl = loginMenuRef
-  //   this.headerLoginMenuOpen = true;
-  // };
   
   
   /**
@@ -475,6 +352,46 @@ class Store {
   @action.bound
   handleHeaderNavSubDialogClose(id) {
     this.headerNavSubDialogOpenObj[id] = false;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Drawer
+  // ---------------------------------------------
+  
+  /**
+   * アイコンを表示するかどうかの真偽値
+   * @type {boolean}
+   */
+  @observable drawerIconShow = true;
+  
+  
+  /**
+   * ドロワーの開閉状態を決める真偽値
+   * @type {boolean}
+   */
+  @observable drawerOpen = false;
+  
+  
+  /**
+   * ドロワーを開く
+   */
+  @action.bound
+  handleDrawerOpen() {
+    // console.log('handleDrawerOpen');
+    this.drawerOpen = true;
+  };
+  
+  
+  /**
+   * ドロワーを閉じる
+   */
+  @action.bound
+  handleDrawerClose() {
+    // console.log('handleDrawerClose');
+    this.drawerOpen = false;
   };
   
   
@@ -667,30 +584,30 @@ class Store {
   
   
   
-  @action.bound
-  handlePanelExpanded(id) {
-    // console.log(`handlePanelExpanded`);
-    // console.dir(this.panelExpandedObj);
+  // @action.bound
+  // handlePanelExpanded(id) {
+  //   // console.log(`handlePanelExpanded`);
+  //   // console.dir(this.panelExpandedObj);
     
-    // console.log(`id = ${id}`);
-    // console.log(`this.historyStateArr[0].id = ${this.historyStateArr[0].id}`);
+  //   // console.log(`id = ${id}`);
+  //   // console.log(`this.historyStateArr[0].id = ${this.historyStateArr[0].id}`);
     
-    if (id in this.panelExpandedObj) {
-      this.panelExpandedObj[id] = !this.panelExpandedObj[id];
-    } else {
-      this.panelExpandedObj[id] = false;
-    }
+  //   if (id in this.panelExpandedObj) {
+  //     this.panelExpandedObj[id] = !this.panelExpandedObj[id];
+  //   } else {
+  //     this.panelExpandedObj[id] = false;
+  //   }
     
-  };
+  // };
   
-  returnPanelExpanded(id) {
-    // console.dir(this.panelExpandedObj);
-    return this.panelExpandedObj[id];
-  }
+  // returnPanelExpanded(id) {
+  //   // console.dir(this.panelExpandedObj);
+  //   return this.panelExpandedObj[id];
+  // }
   
-  insertPanelExpanded(dataObj) {
-    this.panelExpandedObj = Object.assign({}, dataObj, this.panelExpandedObj);
-  };
+  // insertPanelExpanded(dataObj) {
+  //   this.panelExpandedObj = Object.assign({}, dataObj, this.panelExpandedObj);
+  // };
   
   
   
@@ -780,9 +697,9 @@ class Store {
    * @param {string} _id - ID
    * @param {boolean} value - 利用禁止 true / 利用可能 false
    */
-  handleButtonDisabledObj(_id, value) {
-    this.buttonDisabledObj[_id] = value;
-  };
+  // handleButtonDisabledObj(_id, value) {
+  //   this.buttonDisabledObj[_id] = value;
+  // };
   // handleButtonDisabledObj(_id) {
   //   if (_id in this.buttonDisabledObj) {
   //     this.buttonDisabledObj[_id] = !this.buttonDisabledObj[_id];

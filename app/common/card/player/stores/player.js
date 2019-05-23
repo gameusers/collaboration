@@ -148,7 +148,7 @@ class Store {
           //   Button Disable
           // ---------------------------------------------
           
-          storeLayout.handleButtonDisabledObj(`${_id}-card-player`, true);
+          storeLayout.handleButtonDisable({ _id: `${_id}-card-player` });
           
           
           // ---------------------------------------------
@@ -247,7 +247,7 @@ class Store {
           //   Button Disable
           // ---------------------------------------------
           
-          storeLayout.handleButtonDisabledObj(`${_id}-card-game`, true);
+          storeLayout.handleButtonDisable({ _id: `${_id}-card-game` });
           
           
           // ---------------------------------------------
@@ -347,9 +347,9 @@ class Store {
       // ---------------------------------------------
       
       if (type === 'player') {
-        storeLayout.handleButtonDisabledObj(`${_id}-card-player`, false);
+        storeLayout.handleButtonEnable({ _id: `${_id}-card-player` });
       } else if (type === 'game') {
-        storeLayout.handleButtonDisabledObj(`${_id}-card-game`, false);
+        storeLayout.handleButtonEnable({ _id: `${_id}-card-game` });
       }
       
       
@@ -389,7 +389,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${users_id}-follow`, true);
+      storeLayout.handleButtonDisable({ _id: `${users_id}-follow` });
       
       
       // ---------------------------------------------
@@ -465,7 +465,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${users_id}-follow`, false);
+      storeLayout.handleButtonEnable({ _id: `${users_id}-follow` });
       
       
     }
@@ -651,7 +651,7 @@ class Store {
         //   Button Disable
         // ---------------------------------------------
         
-        storeLayout.handleButtonDisabledObj(`${_id}-editButton`, true);
+        storeLayout.handleButtonDisable({ _id: `${_id}-editButton` });
         
         
         // ---------------------------------------------
@@ -720,7 +720,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisabledObj(`${_id}-editButton`, false);
+      storeLayout.handleButtonEnable({ _id: `${_id}-editButton` });
       
       
     }

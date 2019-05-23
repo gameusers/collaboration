@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -36,11 +36,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 // ---------------------------------------------
 
 import IconFollowers from '@material-ui/icons/PermIdentity';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
 
 
 
@@ -88,15 +83,36 @@ const ButtonBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
   
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
   componentDidMount(){
-    this.props.stores.layout.handleButtonDisabledObj(`${this.props.users_id}-follow`, false);
+    
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-follow` });
+    
+    
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -193,7 +209,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`

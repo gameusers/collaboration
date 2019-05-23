@@ -44,7 +44,6 @@ const ContainerThumbnail = styled.div`
   background-size: cover;
   background-color: #25283D;
   padding: 15px;
-  // margin-top: 53px;
 `;
 
 const ThumbnailImg = styled.img`
@@ -136,7 +135,6 @@ export default class extends React.Component {
     
     if (mainArr.length > 0) {
       
-      // const imageObj = mainArr[Math.floor(Math.random() * mainArr.length)];
       const imageObj = mainArr[0];
       
       const srcSetArr = lodashGet(imageObj, ['srcSetArr'], []).slice().reverse();
@@ -163,7 +161,9 @@ export default class extends React.Component {
           mediaQueries += `
             @media screen and (max-width: 480px) {
               background: no-repeat center center url(${valueObj.src});
-              padding-top: ${headerDataOpen ? 0 : 'auto'};
+              padding-top: ${headerDataOpen ? '10px' : 'auto'};
+              padding-bottom: ${headerDataOpen ? '10px' : 'auto'};
+              // padding-top: ${headerDataOpen ? 0 : 'auto'};
             }
           `;
         }
@@ -177,18 +177,6 @@ export default class extends React.Component {
       }
       
       
-      // console.log(`\n---------- imageObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(imageObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(chalk`
-      //   backgroundUrl: {green ${backgroundUrl}}
-      //   paddingTop: {green ${paddingTop}}
-      // `);
-      
-      // console.log(mediaQueries);
-      
-      
        // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
       const Container = styled.div`
         width: 100%;
@@ -197,7 +185,6 @@ export default class extends React.Component {
         background-color: #25283D;
         position: relative;
         padding-top: ${paddingTop}%;
-        // margin-top: 53px;
         
         ${mediaQueries}
       `;

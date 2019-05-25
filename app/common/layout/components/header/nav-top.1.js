@@ -274,23 +274,7 @@ export default class extends React.Component {
         
         {/* ロゴ */}
         <Link href="/">
-          <div
-            css={css`
-              width: 138px;
-              height: 43px;
-              background-image: url('/static/img/common/header/logo.png');
-              cursor: pointer;
-              margin: 0 0 0 6px;
-              
-              @media screen and (max-width: 480px) {
-                width: 30px;
-                min-width: 30px;
-                height: 43px;
-                background-image: url('/static/img/common/header/logo-mobile.png');
-                margin: 0 0 0 10px;
-              }
-            `}
-          />
+          <Logo />
         </Link>
         
         
@@ -303,16 +287,7 @@ export default class extends React.Component {
         
         
         {/* 検索フォーム */}
-        <div
-          css={css`
-            display: flex;
-            flex-grow: 1;
-            justify-content: center;
-            
-            max-width: 63%;
-            margin-left: auto;
-          `}
-        >
+        <Search>
           <SearchTextField
             placeholder="検索"
             InputProps={{
@@ -326,7 +301,7 @@ export default class extends React.Component {
               autoComplete: "off"
             }}
           />
-        </div>
+        </Search>
         
         
         
@@ -343,24 +318,7 @@ export default class extends React.Component {
             />
           </ThumbnailIconButton>
         ) : (
-          <Link href="/login">
-            <div
-              css={css`
-                display: flex;
-                flex-direction: row;
-                color: #4000FF;
-                cursor: pointer;
-                white-space: nowrap;
-                margin: 0 16px 0 0;
-                
-                @media screen and (max-width: 480px) {
-                  margin: 0 10px 0 0;
-                }
-              `}
-            >
-              <LoginLinkIcon /> ログイン
-            </div>
-          </Link>
+          <Link href="/login"><LoginLinkBox><LoginLinkIcon /> ログイン</LoginLinkBox></Link>
         )}
         
         

@@ -11,14 +11,18 @@ module.exports = withCSS({
     return config;
   },
   
-  publicRuntimeConfig: {
-    environment: process.env.NODE_ENV,
-    recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
-    verifyRecaptcha: process.env.VERIFY_RECAPTCHA,
-    urlBase: process.env.URL_BASE,
-    urlApi: process.env.URL_API
-  },
+  // https://github.com/zeit/next-plugins/tree/master/packages/next-css
+  cssModules: true,
   
+  // publicRuntimeConfig: {
+  //   environment: process.env.NODE_ENV,
+  //   recaptchaSiteKey: process.env.RECAPTCHA_SITE_KEY,
+  //   verifyRecaptcha: process.env.VERIFY_RECAPTCHA,
+  //   urlBase: process.env.URL_BASE,
+  //   urlApi: process.env.URL_API
+  // },
+  
+  // https://github.com/zeit/next.js#exposing-configuration-to-the-server--client-side
   env: {
     ENVIRONMENT: process.env.NODE_ENV,
     VERIFY_RECAPTCHA: process.env.VERIFY_RECAPTCHA,

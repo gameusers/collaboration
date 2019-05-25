@@ -48,6 +48,10 @@ const Box = styled.div`
   @media screen and (max-width: 480px) {
     width: 300px;
   }
+  
+  @media screen and (max-width: 320px) {
+    width: 280px;
+  }
 `;
 
 

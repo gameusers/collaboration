@@ -7,7 +7,8 @@
 // ---------------------------------------------
 
 import React from 'react';
-import styled from 'styled-components';
+// import styled from 'styled-components';
+import styled from '@emotion/styled';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import Router from 'next/router';

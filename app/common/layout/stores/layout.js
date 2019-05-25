@@ -362,14 +362,14 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * アイコンを表示するかどうかの真偽値
+   * クリックでドロワーが開くアイコンを表示するかどうか [true 表示する / false 表示しない]
    * @type {boolean}
    */
   @observable drawerIconShow = true;
   
   
   /**
-   * ドロワーの開閉状態を決める真偽値
+   * ドロワーの開閉状態 [true 開く / false 閉じる]
    * @type {boolean}
    */
   @observable drawerOpen = false;

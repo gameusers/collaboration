@@ -50,13 +50,6 @@ import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
 
 // ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import Panel from '../../../../app/common/layout/components/panel';
-
-
-// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
@@ -317,111 +310,154 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        <Panel _id="panelLogin" heading="ログイン - ID & パスワード">
+        {/*<StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>*/}
+        {/*<ExpansionPanel className={classes.root} defaultExpanded={true} expanded={panelExpanded}>*/}
+        <ExpansionPanel
+          classes={{
+            expanded: classes.expansionPanelExpanded
+          }}
+          // className="components-form-login"
+          defaultExpanded={true}
+          expanded={panelExpanded}
+        >
+        {/*<ExpansionPanel className="components-form-login" defaultExpanded={true} expanded={panelExpanded}>*/}
           
           
-          <Description>
-            IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
-          </Description>
+          {/* Heading */}
+          <StyledExpansionPanelSummary>
           
-          
-          
-          
-          {/* Form */}
-          <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'login' })}>
+            <Heading>ログイン - ID & パスワード</Heading>
             
-            
-            {/* Login ID */}
-            <LoginIDBox>
-              <StyledTextFieldWide
-                id="loginID"
-                label="ID"
-                value={validationUsersLoginIDObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['loginID'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersLoginIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 32,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconID />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </LoginIDBox>
-            
-            
-            
-            
-            {/* Login Password */}
-            <LoginIDBox>
-              <StyledTextFieldWide
-                id="loginPassword"
-                label="パスワード"
-                type={loginPasswordShow ? 'text' : 'password'}
-                value={validationUsersLoginPasswordObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['loginPassword'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersLoginPasswordObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 32,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconPassword />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={handlePasswordShow}
-                        onMouseDown={handlePasswordMouseDown}
-                      >
-                        {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </LoginIDBox>
-            
-            
-            
-            
-            {/* Submit Button */}
-            <SubmitButtonBox>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                // onClick={() => handleRecaptchaReset({ formType: 'login' })}
+            {/* Expansion Button */}
+            <ExpandMoreBox>
+              <StyledIconButton
+                onClick={() => handlePanelExpand({ _id: 'login' })}
+                aria-expanded={panelExpanded}
+                aria-label="Show more"
                 disabled={buttonDisabled}
               >
-                ログイン
-              </Button>
-            </SubmitButtonBox>
+                {panelExpanded ? (
+                  <IconExpandLess />
+                ) : (
+                  <IconExpandMore />
+                )}
+              </StyledIconButton>
+            </ExpandMoreBox>
+            
+          </StyledExpansionPanelSummary>
+          
+          
+          
+          
+          {/* Contents */}
+          <StyledExpansionPanelDetails>
+            
+            <Description>
+              IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
+            </Description>
             
             
-          </form>
+            
+            
+            {/* Form */}
+            <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'login' })}>
+              
+              
+              {/* Login ID */}
+              <LoginIDBox>
+                <StyledTextFieldWide
+                  id="loginID"
+                  label="ID"
+                  value={validationUsersLoginIDObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: ['loginID'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersLoginIDObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
+                  disabled={buttonDisabled}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 32,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconID />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </LoginIDBox>
+              
+              
+              
+              
+              {/* Login Password */}
+              <LoginIDBox>
+                <StyledTextFieldWide
+                  id="loginPassword"
+                  label="パスワード"
+                  type={loginPasswordShow ? 'text' : 'password'}
+                  value={validationUsersLoginPasswordObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: ['loginPassword'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersLoginPasswordObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
+                  disabled={buttonDisabled}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 32,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconPassword />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={handlePasswordShow}
+                          onMouseDown={handlePasswordMouseDown}
+                        >
+                          {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </LoginIDBox>
+              
+              
+              
+              
+              {/* Submit Button */}
+              <SubmitButtonBox>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  // onClick={() => handleRecaptchaReset({ formType: 'login' })}
+                  disabled={buttonDisabled}
+                >
+                  ログイン
+                </Button>
+              </SubmitButtonBox>
+              
+              
+            </form>
+            
+            
+            
+            
+          </StyledExpansionPanelDetails>
           
-          
-          
-        </Panel>
+        </ExpansionPanel>
+        {/*</StyledExpansionPanel>*/}
         
         
       </React.Fragment>

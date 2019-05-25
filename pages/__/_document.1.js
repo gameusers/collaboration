@@ -12,6 +12,7 @@
 import React from 'react';
 import Document, { Head, Main, NextScript } from 'next/document';
 import { ServerStyleSheets } from '@material-ui/styles';
+// import { ServerStyleSheets } from 'styled-components';
 import flush from 'styled-jsx/server';
 // import theme from '../app/@css/material-ui/theme';
 
@@ -71,6 +72,7 @@ MyDocument.getInitialProps = async ctx => {
 
   ctx.renderPage = () =>
     originalRenderPage({
+    //   enhanceApp: App => props => sheets.collectStyles(<App {...props} />),
       enhanceApp: App => props => sheets.collect(<App {...props} />),
     });
 

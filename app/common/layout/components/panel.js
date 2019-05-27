@@ -16,22 +16,17 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-// import styled from 'styled-components';
-// import { makeStyles } from '@material-ui/styles';
-// import { styled } from '@material-ui/styles';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/styles';
 import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -46,53 +41,12 @@ import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 
 
-// ---------------------------------------------
-//   CSS
-// ---------------------------------------------
-
-// import css from '../../../../app/login/index/style.css';
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const stylesObj = {
-  
-  expansionPanelExpanded: {
-    margin: '0 !important',
-    // backgroundColor: 'pink',
-  },
-  
-  expansionPanelSummary: {
-    cursor: 'default !important',
-    paddingRight: '16px',
-    // backgroundColor: 'pink',
-  },
-  
-  iconButton: {
-    margin: 0,
-    padding: '4px',
-    // backgroundColor: 'pink',
-  },
-  
-  expansionPanelDetails: {
-    display: 'flex',
-    flexFlow: 'column wrap',
-  },
-  
-};
-
-
 
 
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@withStyles(stylesObj)
 @inject('stores')
 @observer
 export default injectIntl(class extends React.Component {
@@ -135,7 +89,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, _id, heading } = this.props;
+    const { stores, _id, heading } = this.props;
     
     
     // --------------------------------------------------
@@ -156,48 +110,26 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- validationUsersLoginIDObj -----\n
-    //   ${util.inspect(validationUsersLoginIDObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validationUsersLoginPasswordObj -----\n
-    //   ${util.inspect(validationUsersLoginPasswordObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   recaptchaRef: {green ${recaptchaRef}}
-    // `);
-    
-    // console.log(classes);
-    
-    
-    
-    
-    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
       <ExpansionPanel
-        classes={{
-          expanded: classes.expansionPanelExpanded
-        }}
+        css={css`
+          margin: 0 !important;
+        `}
         defaultExpanded={true}
         expanded={panelExpanded}
       >
         
         
         {/* Heading */}
-        <ExpansionPanelSummary className={classes.expansionPanelSummary}>
-        
-          {/*<h2 className={css.heading}>{heading}</h2>*/}
+        <ExpansionPanelSummary
+          css={css`
+            cursor: default !important;
+          `}
+        >
+          
           <h2
             css={css`
               font-weight: bold;
@@ -208,7 +140,6 @@ export default injectIntl(class extends React.Component {
           </h2>
           
           {/* Expansion Button */}
-          {/*<div className={css.expandMoreBox}>*/}
           <div
             css={css`
               margin: 0 0 0 auto;
@@ -216,7 +147,12 @@ export default injectIntl(class extends React.Component {
             `}
           >
             <IconButton
-              className={classes.iconButton}
+              css={css`
+                && {
+                  margin: 0;
+                  padding: 4px;
+                }
+              `}
               onClick={() => handlePanelExpand({ _id })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
@@ -236,7 +172,12 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Contents */}
-        <ExpansionPanelDetails className={classes.expansionPanelDetails}>
+        <ExpansionPanelDetails
+          css={css`
+            display: flex;
+            flex-flow: column wrap;
+          `}
+        >
           
           
           {/* Contents */}

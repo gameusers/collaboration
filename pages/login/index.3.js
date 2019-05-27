@@ -180,22 +180,22 @@ export default class extends React.Component {
       //   Update Data - Locale
       // --------------------------------------------------
       
-      // if (Object.keys(this.stores.data.localeObj).length === 0) {
+      if (Object.keys(this.stores.data.localeObj).length === 0) {
         
-      //   const localeObj = locale({
-      //     acceptLanguage: props.reqAcceptLanguage
-      //   });
+        const localeObj = locale({
+          acceptLanguage: props.reqAcceptLanguage
+        });
         
-      //   this.stores.data.replaceLocaleObj(localeObj);
+        this.stores.data.replaceLocaleObj(localeObj);
         
-      // }
+      }
       
       
       // --------------------------------------------------
       //   Update Data - Header
       // --------------------------------------------------
       
-      // this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
       
     } catch (e) {
@@ -277,49 +277,56 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider loginIndex={this.stores.loginIndex}>
-      
-      <Layout headerNavMainArr={headerNavMainArr}>
+      <Provider stores={this.stores}>
         
-        
-        {/* Head 内部のタグをここで追記する */}
-        <Head>
-          <title>ログイン - Game Users</title>
-        </Head>
-        
-        
-        {/* Contents */}
-        <div
-          css={css`
-            padding: 12px;
-            
-            @media screen and (max-width: 480px) {
-              padding: 12px 0;
-            }
-          `}
+        <IntlProvider 
+          locale={this.stores.data.localeObj.languageArr[0]}
+          messages={this.stores.data.localeObj.dataObj}
         >
           
+          <Layout headerNavMainArr={headerNavMainArr}>
+            
+            
+            {/* Head 内部のタグをここで追記する */}
+            <Head>
+              <title>ログイン - Game Users</title>
+            </Head>
+            
+            
+            {/* Contents */}
+            <div
+              css={css`
+                padding: 12px;
+                
+                @media screen and (max-width: 480px) {
+                  padding: 12px 0;
+                }
+              `}
+            >
+              
+              
+              {/* reCAPTCHA */}
+              <ReCaptcha
+                ref={ref => this.recaptcha = ref}
+                sitekey={process.env.RECAPTCHA_SITE_KEY}
+                action='login'
+                verifyCallback={(response) => stores.loginIndex.handleRecaptchaResponse({
+                  response,
+                  ref: this.recaptcha,
+                })}
+              />
+              
+              
+              {/* Login */}
+              <FormLogin />
+              
+              
+            </div>
+            
+          </Layout>
           
-          {/* reCAPTCHA */}
-          <ReCaptcha
-            ref={ref => this.recaptcha = ref}
-            sitekey={process.env.RECAPTCHA_SITE_KEY}
-            action='login'
-            verifyCallback={(response) => stores.loginIndex.handleRecaptchaResponse({
-              response,
-              ref: this.recaptcha,
-            })}
-          />
-          
-          
-          {/* Login */}
-          <FormLogin />
-          
-          
-        </div>
+        </IntlProvider>
         
-      </Layout>
-      
       </Provider>
     );
   }

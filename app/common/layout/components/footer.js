@@ -16,9 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import styled from '@emotion/styled';
-// import styled from 'styled-components';
 // import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -41,102 +43,22 @@ import IconNavigation from '@material-ui/icons/Navigation';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const Footer = styled.footer`
-  position: relative;
-  color: white;
-  background-color: black;
-  padding: 6px 0 6px;
-`;
-
-const MenuBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  font-size: 14px;
-  color: white;
-  margin: 0;
-`;
-
-const StyledIconLocalFlorist = styled(IconLocalFlorist)`
-  && {
-    font-size: 26px;
-    margin: 0 0 3px;
-    
-    @media screen and (max-width: 480px) {
-      margin: 0 0 2px 0;
-    }
-  }
-`;
-
-const ButtonGameUsers = styled(Button)`
-  && {
-    min-width: 30px;
-    min-height: 34px;
-    height: 34px;
-    font-size: 30px;
-    padding: 0 20px 0 8px;
-    
-    @media screen and (max-width: 480px) {
-      min-height: 30px;
-      height: 30px;
-      font-size: 18px;
-      padding: 0 14px 0 10px;
-    }
-  }
-`;
-
-const MenuTextBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  flex-grow: 2;
-  margin: 0 58px 0 0;
-  color: white;
-  
+const cssMenu = css`
   @media screen and (max-width: 480px) {
     font-size: 12px;
   }
 `;
 
-const Menu = styled.div`
-  @media screen and (max-width: 480px) {
-    font-size: 12px;
-  }
-`;
-
-const MenuVerticalBar = styled.div`
+const cssMenuVerticalBar = css`
   margin: 0 10px;
   
   @media screen and (max-width: 480px) {
     margin: 0 5px;
   }
-`;
-
-const MenuScrollToTop = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-`;
-
-
-const CopyrightBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const StyledIconCopyright = styled(IconCopyright)`
-  && {
-    font-size: 20px;
-    margin: 0 0 0 0;
-  }
-`;
-
-const Copyright = styled.div`
-  font-size: 12px;
-  margin: 0 0 0 4px;
 `;
 
 
@@ -146,14 +68,25 @@ const Copyright = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores') @observer
+@inject('stores')
+@observer
 export default class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
     
   }
-
+  
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
     
     
@@ -165,47 +98,136 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Components
-    //   ループや複雑な分岐が必要なコンポーネントはここに関数で書いてください
+    //   Return
     // --------------------------------------------------
     
-    
     return (
-      <Footer>
+      <footer
+        css={css`
+          position: relative;
+          color: white;
+          background-color: black;
+          padding: 6px 0 6px;
+        `}
+      >
         
         
-        {/* トップメニュー */}
-        <MenuBox>
-        
-          <ButtonGameUsers color="secondary">
-            <StyledIconLocalFlorist /> 
+        {/* Top */}
+        <div
+          css={css`
+            display: flex;
+            flex-direction: row;
+            font-size: 14px;
+            color: white;
+            margin: 0;
+          `}
+        >
+          
+          
+          {/* Logo Flower */}
+          <Button
+            css={css`
+              && {
+                font-size: 30px;
+                height: 34px;
+                min-width: 30px;
+                min-height: 34px;
+                padding: 0 20px 0 8px;
+                
+                @media screen and (max-width: 480px) {
+                  font-size: 18px;
+                  height: 30px;
+                  min-height: 30px;
+                  padding: 0 14px 0 10px;
+                }
+              }
+            `}
+            color="secondary"
+          >
+            <IconLocalFlorist
+              css={css`
+                font-size: 26px;
+                margin: 0 0 3px;
+                
+                @media screen and (max-width: 480px) {
+                  margin: 0 0 2px 0;
+                }
+              `}
+            /> 
             GU
-          </ButtonGameUsers>
+          </Button>
           
-          <MenuTextBox>
-            <Menu>公式コミュニティ</Menu>
-            <MenuVerticalBar>|</MenuVerticalBar>
-            <Menu>お問い合わせ</Menu>
-            <MenuVerticalBar>|</MenuVerticalBar>
-            {/*<Menu><img src="/static/img/common/social/twitter@2x.png" width="20" height="20" /></Menu>>*/}
-            <Menu>Twitter</Menu>
-          </MenuTextBox>
           
-          <MenuScrollToTop>
+          {/* Navigation */}
+          <nav
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              flex-grow: 2;
+              margin: 0 58px 0 0;
+              color: white;
+              
+              @media screen and (max-width: 480px) {
+                font-size: 12px;
+              }
+            `}
+          >
+            <div css={cssMenu}>公式コミュニティ</div>
+            <div css={cssMenuVerticalBar}>|</div>
+            <div css={cssMenu}>お問い合わせ</div>
+            <div css={cssMenuVerticalBar}>|</div>
+            <div css={cssMenu}>Twitter</div>
+          </nav>
+          
+          
+          {/* Scroll To Top Icon */}
+          <div
+            css={css`
+              position: absolute;
+              top: 10px;
+              right: 10px;
+            `}
+          >
             <Fab color="secondary" size="small">
               <IconNavigation />
             </Fab>
-          </MenuScrollToTop>
+          </div>
           
-        </MenuBox>
+        </div>
         
         
-        <CopyrightBox>
-          <StyledIconCopyright />
-          <Copyright>Game Users All Rights Reserved.</Copyright>
-        </CopyrightBox>
         
-      </Footer>
+        
+        {/* Bottom */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+          `}
+        >
+          
+          <IconCopyright
+            css={css`
+              && {
+                font-size: 20px;
+              }
+            `}
+          />
+          
+          <div
+            css={css`
+              font-size: 12px;
+              margin: 0 0 0 4px;
+            `}
+          >
+            Game Users All Rights Reserved.
+          </div>
+          
+        </div>
+        
+        
+      </footer>
     );
   }
   

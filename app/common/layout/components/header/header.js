@@ -15,13 +15,11 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-// import styled from 'styled-components';
-// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import Measure from 'react-measure';
-// import lodashGet from 'lodash/get';
 
-import styled from '@emotion/styled';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -64,13 +62,13 @@ import NavSub from '../header/nav-sub';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Container = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  // background-color: pink;
-  background-color: #25283D;
-  // margin: 20px 0 0 0;
-`;
+// const Container = styled.div`
+//   display: flex;
+//   flex-flow: column nowrap;
+//   // background-color: pink;
+//   background-color: #25283D;
+//   // margin: 20px 0 0 0;
+// `;
 
 
 
@@ -167,7 +165,15 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          && {
+            display: flex;
+            flex-flow: column nowrap;
+            background-color: #25283D;
+          }
+        `}
+      >
         
         
         {/* Navigation - Top */}
@@ -237,7 +243,7 @@ export default class extends React.Component {
         </Dialog>
         
         
-      </Container>
+      </div>
     );
   }
   

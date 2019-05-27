@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-// import styled from 'styled-components';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
@@ -55,136 +54,6 @@ import IconEject from '@material-ui/icons/Eject';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// ---------------------------------------------
-//   Logo
-// ---------------------------------------------
-
-const Logo = styled.div`
-  cursor: pointer;
-  margin: 0 0 0 6px;
-  
-  width: 138px;
-  height: 43px;
-  background-image: url('/static/img/common/header/logo.png');
-  
-  @media screen and (max-width: 480px) {
-    width: 30px;
-    min-width: 30px;
-    height: 43px;
-    background-image: url('/static/img/common/header/logo-mobile.png');
-  }
-`;
-
-
-// ---------------------------------------------
-//   Bell
-// ---------------------------------------------
-
-const BellIconButton = styled(IconButton)`
-  && {
-    margin: 6px 0 0 6px;
-    padding: 6px;
-    
-    @media screen and (max-width: 480px) {
-      width: 26px;
-    }
-  }
-`;
-
-const BellBadge = styled(Badge)`
-  && {
-    color: black;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Search
-// ---------------------------------------------
-
-const Search = styled.div`
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-  
-  max-width: 63%;
-  margin-left: auto !important;
-`;
-
-const SearchTextField = styled(TextField)`
-  && {
-    width: 80%;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Thumbnail / Login Menu
-// ---------------------------------------------
-
-const ThumbnailIconButton = styled(IconButton)`
-  && {
-    margin: 0 8px 0 auto;
-    padding: 0;
-  }
-`;
-
-const StyledAvatar = styled(Avatar)`
-  && {
-    
-  }
-`;
-
-const LoginLinkBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  color: #4000FF;
-  cursor: pointer;
-  white-space: nowrap;
-  margin: 0 16px 0 0;
-  
-  @media screen and (max-width: 480px) {
-    margin: 0 10px 0 0;
-  }
-`;
-
-const LoginLinkIcon = styled(IconLogin)`
-  && {
-    margin: 0 6px 0 0;
-  }
-`;
-
-
-const LoginMenu = styled(Menu)`
-  && {
-    // position: fixed !important;
-    // top: 10p;
-    // left: 0 !important;
-    // right: 10px !important;
-    // margin: 0 10px 0 0;
-  }
-`;
-
-const LoginMenuListItemIcon = styled(ListItemIcon)`
-  && {
-    margin: 0 8px 0 0;
-  }
-`;
-
-const LoginMenuListItemText = styled(ListItemText)`
-  && {
-    margin: 0 8px 0 0;
-  }
-`;
-
-
-
-
-// --------------------------------------------------
 //   react-spring
 // --------------------------------------------------
 
@@ -197,7 +66,6 @@ const Container = ({ children, headerNavTopShow }) => {
     background-color: white;
     width: 100%;
     height: 53px;
-    // position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 1001;
@@ -295,11 +163,29 @@ export default class extends React.Component {
         
         
         {/* ベル・通知 */}
-        <BellIconButton onClick={stores.layout.handleHeaderNotificationDialogOpen}>
-          <BellBadge badgeContent={5} color="primary">
-            <IconNotifications />
-          </BellBadge>
-        </BellIconButton>
+        {playerID &&
+          <IconButton
+            css={css`
+              margin: 6px 0 0 6px !important;
+              padding: 6px !important;
+              
+              @media screen and (max-width: 480px) {
+                width: 26px;
+              }
+            `}
+            onClick={stores.layout.handleHeaderNotificationDialogOpen}
+          >
+            <Badge
+              css={css`
+                color: black;
+              `}
+              badgeContent={5}
+              color="primary"
+            >
+              <IconNotifications />
+            </Badge>
+          </IconButton>
+        }
         
         
         {/* 検索フォーム */}
@@ -309,11 +195,14 @@ export default class extends React.Component {
             flex-grow: 1;
             justify-content: center;
             
-            max-width: 63%;
+            // max-width: 63%;
             margin-left: auto;
           `}
         >
-          <SearchTextField
+          <TextField
+            css={css`
+              width: 90%;
+            `}
             placeholder="検索"
             InputProps={{
               startAdornment: (
@@ -332,16 +221,20 @@ export default class extends React.Component {
         
         
         {/* サムネイル */}
-        { playerID ? (
-          <ThumbnailIconButton
+        {playerID ? (
+          <IconButton
+            css={css`
+              margin: 0 8px 0 auto;
+              padding: 0;
+            `}
             onClick={stores.layout.handleHeaderLoginMenuOpen}
           >
-            <StyledAvatar
+            <Avatar
               alt="ログインメニュー"
               src={thumbnailSrc}
               srcSet={thumbnailSrcSet}
             />
-          </ThumbnailIconButton>
+          </IconButton>
         ) : (
           <Link href="/login">
             <div
@@ -358,7 +251,11 @@ export default class extends React.Component {
                 }
               `}
             >
-              <LoginLinkIcon /> ログイン
+              <IconLogin
+                css={css`
+                  margin: 0 6px 0 0;
+                `}
+              /> ログイン
             </div>
           </Link>
         )}
@@ -367,7 +264,7 @@ export default class extends React.Component {
         
         
         {/* ログインメニュー */}
-        <LoginMenu
+        <Menu
           open={stores.layout.headerLoginMenuOpen}
           onClose={stores.layout.handleHeaderLoginMenuClose}
           disableAutoFocusItem={true}
@@ -378,12 +275,22 @@ export default class extends React.Component {
           
           <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
             
-            <LoginMenuListItemIcon>
+            <ListItemIcon
+              css={css`
+                margin: 0 8px 0 0;
+              `}
+            >
               <IconPerson />
-            </LoginMenuListItemIcon>
+            </ListItemIcon>
             
             <Link href={`/pl/${playerID}`}>
-              <LoginMenuListItemText inset primary="プレイヤー" />
+              <ListItemText
+                css={css`
+                  margin: 0 8px 0 0;
+                `}
+                inset
+                primary="プレイヤー"
+              />
             </Link>
             
           </MenuItem>
@@ -391,18 +298,28 @@ export default class extends React.Component {
           
           <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
             
-            <LoginMenuListItemIcon>
+            <ListItemIcon
+              css={css`
+                margin: 0 8px 0 0;
+              `}
+            >
               <IconEject />
-            </LoginMenuListItemIcon>
+            </ListItemIcon>
             
             <Link href="/logout">
-              <LoginMenuListItemText inset primary="ログアウト" />
+              <ListItemText
+                css={css`
+                  margin: 0 8px 0 0;
+                `}
+                inset
+                primary="ログアウト"
+              />
             </Link>
             
           </MenuItem>
           
           
-        </LoginMenu>
+        </Menu>
         
         
       </Container>

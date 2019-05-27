@@ -1,5 +1,6 @@
 // --------------------------------------------------
-//   _document.jsについて：https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
+//   _document.jsについて：https://github.com/zeit/next.js#custom-document
+//   日本語の記事：https://qiita.com/tetsutaroendo/items/c7171286137d963cdecf
 //   
 //   Next.jsでMaterial UIを利用する場合の_document.js
 //   参考：https://github.com/mui-org/material-ui/blob/master/examples/nextjs/pages/_document.js

@@ -15,11 +15,12 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+// import styled from 'styled-components';
+// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import lodashGet from 'lodash/get';
 
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
@@ -27,6 +28,40 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import Data from './data';
+
+
+
+
+// --------------------------------------------------
+//   styled-components でスタイルシートを書いてください
+//   参考: https://github.com/styled-components/styled-components
+// --------------------------------------------------
+
+const ContainerThumbnail = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  background: no-repeat center center url('/static/img/common/header/header-back.jpg');
+  background-size: cover;
+  background-color: #25283D;
+  padding: 15px;
+`;
+
+const ThumbnailImg = styled.img`
+  width: 128px;
+  border-radius: 8px;
+  box-shadow: 4px 4px 10px #383838;
+  margin: 0 15px 0 0;
+  
+  @media screen and (max-width: 480px) {
+    width: 96px;
+  }
+  
+  @media screen and (max-width: 320px) {
+    width: 64px;
+  }
+`;
 
 
 
@@ -137,8 +172,6 @@ export default class extends React.Component {
         
         if (index === 0) {
           backgroundUrl = valueObj.src;
-          
-          // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
           paddingTop = Math.floor(valueObj.height / valueObj.width * 100);
         }
         
@@ -146,21 +179,23 @@ export default class extends React.Component {
       }
       
       
+       // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
+      const Container = styled.div`
+        width: 100%;
+        background: no-repeat center center url(${backgroundUrl});
+        background-size: cover;
+        background-color: #25283D;
+        position: relative;
+        padding-top: ${paddingTop}%;
+        
+        ${mediaQueries}
+      `;
+      
+      
       code = 
-        <div
-          css={css`
-            width: 100%;
-            background: no-repeat center center url(${backgroundUrl});
-            background-size: cover;
-            background-color: #25283D;
-            position: relative;
-            padding-top: ${paddingTop}%;
-            
-            ${mediaQueries}
-          `}
-        >
+        <Container>
           <Data heroImage={true} />
-        </div>
+        </Container>
       ;
       
       
@@ -175,37 +210,10 @@ export default class extends React.Component {
       const imgSrc = thumbnailSrc ? thumbnailSrc : '/static/img/common/thumbnail/none-game.jpg';
       
       code = 
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row nowrap;
-            justify-content: center;
-            align-items: flex-start;
-            background: no-repeat center center url('/static/img/common/header/header-back.jpg');
-            background-size: cover;
-            background-color: #25283D;
-            padding: 15px;
-          `}
-        >
-          <img
-            css={css`
-              width: 128px;
-              border-radius: 8px;
-              box-shadow: 4px 4px 10px #383838;
-              margin: 0 15px 0 0;
-              
-              @media screen and (max-width: 480px) {
-                width: 96px;
-              }
-              
-              @media screen and (max-width: 320px) {
-                width: 64px;
-              }
-            `}
-            src={imgSrc}
-          />
+        <ContainerThumbnail>
+          <ThumbnailImg src={imgSrc} />
           <Data heroImage={false} />
-        </div>
+        </ContainerThumbnail>
       ;
       
     }

@@ -7,16 +7,6 @@
 // ---------------------------------------------
 
 import React from 'react';
-// const React = require('react');
-
-
-// ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
-
-// const { fetchWrapper } = require('../app/@modules/fetch');
-
-
 
 
 
@@ -44,17 +34,11 @@ class Component extends React.Component {
   
   constructor(props) {
     super(props);
-    
-    // fetchWrapper();
   }
   
   
   
   render() {
-    
-    
-    
-    
     
     
     // --------------------------------------------------
@@ -66,7 +50,10 @@ class Component extends React.Component {
         AAA
       </div>
     );
+    
+    
   }
+  
 }
 
 export default Component;

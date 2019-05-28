@@ -64,7 +64,7 @@ const { validationUsersLoginPassword } = require('../../../../app/@database/user
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeLoginIndex')
+@inject('loginIndex')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -106,7 +106,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeLoginIndex, intl } = this.props;
+    const { stores, intl } = this.props;
     
     const {
       
@@ -116,7 +116,7 @@ export default injectIntl(class extends React.Component {
       handlePasswordShow,
       handlePasswordMouseDown,
       
-    } = storeLoginIndex;
+    } = stores.loginIndex;
     
     
     // --------------------------------------------------
@@ -185,7 +185,7 @@ export default injectIntl(class extends React.Component {
         
         
         <p>
-          IDとパスワードでログインします。アカウントをお持ちでない場合は、こちらのページでアカウントを作成してください。
+          IDとパスワードでログインします。アカウントをお持ちでない場合は、アカウント作成フォームをご利用ください。
         </p>
         
         <Button
@@ -193,7 +193,7 @@ export default injectIntl(class extends React.Component {
           variant="contained"
           color="primary"
           disabled={buttonDisabled}
-          onClick={storeLoginIndex.handleTest}
+          onClick={stores.loginIndex.handleTest}
         >
           test
         </Button>

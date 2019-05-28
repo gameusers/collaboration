@@ -61,8 +61,12 @@ import { fetchWrapper } from '../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../app/@stores/index';
-import initStoreLoginIndex from '../app/login/index/stores/store';
+// import initStoreLayout from '../app/common/layout/stores/layout';
+// import initStoreData from '../app/@stores/data';
 
+// import initStoreLoginIndex from '../app/login/index/stores/store';
+
+// import store1 from '../app/@stores/test';
 
 
 
@@ -81,7 +85,7 @@ class MyApp extends App {
   
   static async getInitialProps({ Component, ctx }) {
     
-    
+    // console.log('_app.js / getInitialProps');
     // --------------------------------------------------
     //   pageProps
     // --------------------------------------------------
@@ -188,18 +192,9 @@ class MyApp extends App {
       //   Store
       // --------------------------------------------------
       
-      const argumentsObj = {
-        isServer: props.isServer,
-        pathname: props.pathname,
-      };
+      this.stores = initStoreIndex({});
       
-      this.stores = initStoreIndex(argumentsObj);
       this.stores.pathname = props.pathname;
-      
-      
-      
-      this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
-      
       
       
       // --------------------------------------------------
@@ -269,9 +264,7 @@ class MyApp extends App {
     //   Props
     // --------------------------------------------------
     
-    // const stores = this.stores;
-    
-    const { Component, pageProps, stores } = this.props;
+    const { Component, pageProps } = this.props;
     
     
     // --------------------------------------------------

@@ -3,11 +3,10 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console
+//   Console 出力用
 // ---------------------------------------------
 
 import chalk from 'chalk';
-import util from 'util';
 
 
 // ---------------------------------------------
@@ -15,21 +14,15 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-// import lodashGet from 'lodash/get';
-// import lodashSet from 'lodash/set';
-
-
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // --------------------------------------------------
-//   Property
+//   Store
 // --------------------------------------------------
-
-const isServer = !process.browser;
 
 let storeLayout = null;
-
-
 
 
 // --------------------------------------------------
@@ -39,34 +32,49 @@ let storeLayout = null;
 class Store {
   
   
-  @observable count = 0;
+  // ---------------------------------------------
+  //   Current Contents Id
+  // ---------------------------------------------
+  
+  // @observable currentContentsId = '';
   
   
-  @action
-  increment() {
-    ++this.count;
-    console.log(this.count);
-  }
+  
   
   
   
   // ---------------------------------------------
-  //   Header - Hero Image
+  //   Header - Navigation / Top
   // ---------------------------------------------
   
   /**
-   * ヒーローイメージの高さ
+   * 
+   * @type {number}
+   */
+  // @observable headerHeroImageWidth = 0;
+  
+  
+  /**
+   * 
    * @type {number}
    */
   @observable headerHeroImageHeight = 0;
   
   
   /**
-   * ヒーローイメージのサイズを設定する
+   * 
    */
   @action.bound
   handleHeaderHeroImageSize({ dimensionsObj }) {
+    
+    // this.headerHeroImageWidth = dimensionsObj.width;
     this.headerHeroImageHeight = dimensionsObj.height;
+    
+//     console.log(`\n---------- dimensions ----------\n`);
+// console.dir(dimensions);
+// console.log(`\n-----------------------------------\n`);
+    
+    
   };
   
   
@@ -75,36 +83,52 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * Navigation Topの高さ
+   * 通知ダイアログの表示・非表示を切り替える真偽値
+   * @type {boolean}
+   */
+  // @observable headerNavTopAnimating = false;
+  
+  
+  
+  
+  
+  /**
+   * 
    * @type {number}
    */
   headerNavTopHeight = 53;
   
   
   /**
-   * スクロールのオフセット
-   * 上スクロールか下スクロールを判定するために利用
+   * 
+   * @type {boolean}
+   */
+  // @observable headerScrollY = 0;
+  
+  
+  /**
+   * 
    * @type {number}
    */
   headerScrollYOffset = 0;
   
   
   /**
-   * 上スクロール中で true
+   * 
    * @type {boolean}
    */
   @observable headerScrollUp = false;
   
   
   /**
-   * Navigation Topが表示されている場合 true
+   * 
    * @type {boolean}
    */
   @observable headerNavTopShow = true;
   
   
   /**
-   * Navigation Main を position: sticky にする場合、true
+   * 
    * @type {boolean}
    */
   @observable headerNavMainPositionSticky = false;
@@ -248,6 +272,13 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * メニューの位置を設定するために使用されるDOM要素
+   * @type {string}
+   */
+  // @observable headerLoginMenuAnchorEl = null;
+  
+  
+  /**
    * ログインメニューの表示・非表示を切り替える真偽値
    * @type {boolean}
    */
@@ -269,6 +300,7 @@ class Store {
    */
   @action.bound
   handleHeaderLoginMenuClose() {
+    // this.headerLoginMenuAnchorEl = null;
     this.headerLoginMenuOpen = false;
   };
   
@@ -552,6 +584,34 @@ class Store {
   
   
   
+  // @action.bound
+  // handlePanelExpanded(id) {
+  //   // console.log(`handlePanelExpanded`);
+  //   // console.dir(this.panelExpandedObj);
+    
+  //   // console.log(`id = ${id}`);
+  //   // console.log(`this.historyStateArr[0].id = ${this.historyStateArr[0].id}`);
+    
+  //   if (id in this.panelExpandedObj) {
+  //     this.panelExpandedObj[id] = !this.panelExpandedObj[id];
+  //   } else {
+  //     this.panelExpandedObj[id] = false;
+  //   }
+    
+  // };
+  
+  // returnPanelExpanded(id) {
+  //   // console.dir(this.panelExpandedObj);
+  //   return this.panelExpandedObj[id];
+  // }
+  
+  // insertPanelExpanded(dataObj) {
+  //   this.panelExpandedObj = Object.assign({}, dataObj, this.panelExpandedObj);
+  // };
+  
+  
+  
+  
   // ---------------------------------------------
   //   Loading
   // ---------------------------------------------
@@ -624,6 +684,35 @@ class Store {
   
   
   
+  
+  /**
+   * ボタンの利用禁止判定
+   * @type {boolean}
+   */
+  // @observable buttonDisabledObj = {};
+  
+  
+  /**
+   * ボタンの利用禁止判定を更新する
+   * @param {string} _id - ID
+   * @param {boolean} value - 利用禁止 true / 利用可能 false
+   */
+  // handleButtonDisabledObj(_id, value) {
+  //   this.buttonDisabledObj[_id] = value;
+  // };
+  // handleButtonDisabledObj(_id) {
+  //   if (_id in this.buttonDisabledObj) {
+  //     this.buttonDisabledObj[_id] = !this.buttonDisabledObj[_id];
+  //   } else {
+  //     this.buttonDisabledObj[_id] = false;
+  //   }
+  // };
+  
+  
+  
+  
+  
+  
   // ---------------------------------------------
   //   Terms of Service（利用規約）
   // ---------------------------------------------
@@ -657,12 +746,14 @@ class Store {
 
 
 
-
 // --------------------------------------------------
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLayout({}) {
+export default function initStoreLayout(argumentsObj) {
+  
+  const isServer = argumentsObj.isServer;
+  
   
   if (isServer) {
     

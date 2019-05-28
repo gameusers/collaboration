@@ -27,18 +27,6 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
-
-import { locale } from '../../app/@locales/locale';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -49,7 +37,6 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../app/@stores/index';
 import initStoreLoginIndex from '../../app/login/index/stores/store';
 
 
@@ -78,7 +65,7 @@ export default class extends React.Component {
   
   static async getInitialProps({ pathname, req, res }) {
     
-    
+    // console.log('index.js / getInitialProps');
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
@@ -102,7 +89,11 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
-    
+    // console.log(`
+    //     ----- index.js / resultObj -----\n
+    //     ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
     // --------------------------------------------------
     //   ログインしている場合はログアウトページにリダイレクト
     // --------------------------------------------------
@@ -166,36 +157,7 @@ export default class extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const argumentsObj = {
-        isServer: props.isServer,
-        pathname: props.pathname,
-      };
-      
-      this.stores = initStoreIndex(argumentsObj);
-      this.stores.pathname = props.pathname;
-      this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Locale
-      // --------------------------------------------------
-      
-      // if (Object.keys(this.stores.data.localeObj).length === 0) {
-        
-      //   const localeObj = locale({
-      //     acceptLanguage: props.reqAcceptLanguage
-      //   });
-        
-      //   this.stores.data.replaceLocaleObj(localeObj);
-        
-      // }
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Header
-      // --------------------------------------------------
-      
-      // this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      this.storeLoginIndex = initStoreLoginIndex({});
       
       
     } catch (e) {
@@ -249,7 +211,18 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
+    // const stores = this.stores;
+    // console.log(`
+    //   ----- index.js / stores -----\n
+    //   ${util.inspect(stores, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- index.js / this.stores -----\n
+    //   ${util.inspect(this.stores, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -277,49 +250,49 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider loginIndex={this.stores.loginIndex}>
-      
-      <Layout headerNavMainArr={headerNavMainArr}>
+      <Provider storeLoginIndex={this.storeLoginIndex}>
         
-        
-        {/* Head 内部のタグをここで追記する */}
-        <Head>
-          <title>ログイン - Game Users</title>
-        </Head>
-        
-        
-        {/* Contents */}
-        <div
-          css={css`
-            padding: 12px;
+        <Layout headerNavMainArr={headerNavMainArr}>
+          
+          
+          {/* Head 内部のタグをここで追記する */}
+          <Head>
+            <title>ログイン - Game Users</title>
+          </Head>
+          
+          
+          {/* Contents */}
+          <div
+            css={css`
+              padding: 12px;
+              
+              @media screen and (max-width: 480px) {
+                padding: 12px 0;
+              }
+            `}
+          >
             
-            @media screen and (max-width: 480px) {
-              padding: 12px 0;
-            }
-          `}
-        >
+            
+            {/* reCAPTCHA */}
+            <ReCaptcha
+              ref={ref => this.recaptcha = ref}
+              sitekey={process.env.RECAPTCHA_SITE_KEY}
+              action='login'
+              verifyCallback={(response) => this.storeLoginIndex.handleRecaptchaResponse({
+                response,
+                ref: this.recaptcha,
+              })}
+            />
+            
+            
+            {/* Login */}
+            <FormLogin />
+            
+            
+          </div>
           
-          
-          {/* reCAPTCHA */}
-          <ReCaptcha
-            ref={ref => this.recaptcha = ref}
-            sitekey={process.env.RECAPTCHA_SITE_KEY}
-            action='login'
-            verifyCallback={(response) => stores.loginIndex.handleRecaptchaResponse({
-              response,
-              ref: this.recaptcha,
-            })}
-          />
-          
-          
-          {/* Login */}
-          <FormLogin />
-          
-          
-        </div>
+        </Layout>
         
-      </Layout>
-      
       </Provider>
     );
   }

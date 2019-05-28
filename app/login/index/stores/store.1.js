@@ -35,26 +35,15 @@ const { validationUsersLoginID } = require('../../../@database/users/validations
 const { validationUsersLoginPassword } = require('../../../@database/users/validations/login-password');
 
 
-
+import store1 from '../../../@stores/test';
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-// import store1 from '../../../@stores/test';
-import initStoreLayout from '../../../common/layout/stores/layout';
-
-
-
-
-// --------------------------------------------------
-//   Property
-// --------------------------------------------------
-
-const isServer = !process.browser;
-
 let storeLoginIndex = null;
-let storeLayout = initStoreLayout({});
+let storeLayout = null;
+let storeData = null;
 
 
 
@@ -72,16 +61,15 @@ class Store {
   
   constructor() {}
   
-  
-  
   @action.bound
   handleTest() {
     console.log('handleTest');
-    storeLayout.increment();
-    // store1.increment();
+    store1.increment();
+    store1.increment();
+    store1.increment();
+    store1.increment();
+    store1.increment();
   };
-  
-  
   
   
   // ---------------------------------------------
@@ -398,18 +386,18 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLoginIndex({}) {
+export default function initStoreLoginIndex(argumentsObj, storeInstanceObj) {
   
-  // const isServer = argumentsObj.isServer;
+  const isServer = argumentsObj.isServer;
   
   
-  // if ('layout' in storeInstanceObj) {
-  //   storeLayout = storeInstanceObj.layout;
-  // }
+  if ('layout' in storeInstanceObj) {
+    storeLayout = storeInstanceObj.layout;
+  }
   
-  // if ('data' in storeInstanceObj) {
-  //   storeData = storeInstanceObj.data;
-  // }
+  if ('data' in storeInstanceObj) {
+    storeData = storeInstanceObj.data;
+  }
   
   
   if (isServer) {

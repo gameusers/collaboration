@@ -3,19 +3,18 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
+import { IntlProvider } from 'react-intl';
+import lodashGet from 'lodash/get';
 
 
 
 
 // --------------------------------------------------
-//   Property
+//   Store
 // --------------------------------------------------
-
-const isServer = !process.browser;
 
 let storeData = null;
-
-
+// let storeLayout = null;
 
 
 // --------------------------------------------------
@@ -52,7 +51,7 @@ class Store {
    * intl.formatMessage 用
    * @type {Object}
    */
-  // @observable intl = {};
+  @observable intl = {};
   
   
   /**
@@ -61,16 +60,17 @@ class Store {
    */
   @action.bound
   replaceLocaleObj(obj) {
+    
     this.localeObj = obj;
     
     // 以下削除予定
-    // const intlProvider = new IntlProvider({
-    //   locale: this.localeObj.languageArr[0],
-    //   messages: this.localeObj.dataObj
-    // }, {});
+    const intlProvider = new IntlProvider({
+      locale: this.localeObj.languageArr[0],
+      messages: this.localeObj.dataObj
+    }, {});
     
-    // const { intl } = intlProvider.getChildContext();
-    // this.intl = intl;
+    const { intl } = intlProvider.getChildContext();
+    this.intl = intl;
     
   };
   
@@ -240,18 +240,21 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreData({}) {
+export default function initStoreData(argumentsObj) {
+  
+  const isServer = argumentsObj.isServer;
+  
   
   if (isServer) {
     // console.log('initStoreData / isServer');
-    return new Store();
+    return new Store(argumentsObj);
     
   } else {
     
     // console.log('initStoreData / client');
     if (storeData === null) {
       // console.log('initStoreData / client / storeData === null');
-      storeData = new Store();
+      storeData = new Store(argumentsObj);
     }
     
     return storeData;

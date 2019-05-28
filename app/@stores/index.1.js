@@ -10,11 +10,11 @@ import initStoreData from './data';
 //   共通で必要になるストアをここで作成して返す
 // --------------------------------------------------
 
-export default function({}) {
+export default function(argumentsObj) {
   
   const storeInstanceObj = {
-    layout: initStoreLayout({}),
-    data: initStoreData({}),
+    layout: new initStoreLayout(argumentsObj),
+    data: new initStoreData(argumentsObj),
   };
   
   return storeInstanceObj;

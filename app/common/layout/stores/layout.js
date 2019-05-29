@@ -71,7 +71,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Header - Navigation / Top
+  //   Header - Navigation / Top & Main / position: sticky
   // ---------------------------------------------
   
   /**
@@ -207,6 +207,46 @@ class Store {
     this.headerScrollYOffset = headerScrollY;
     
     
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Header - Navigation / Main
+  // ---------------------------------------------
+  
+  /**
+   * 現在アクセスしているページのpath
+   * @type {string}
+   */
+  @observable pathname = '';
+  
+  
+  /**
+  * 現在アクセスしているページのpathを置き換える
+  * @param {string} pathname - 置き換えるpath
+  */
+  @action.bound
+  replacePathname(pathname) {
+    this.pathname = pathname;
+  };
+  
+  
+  /**
+   * Navigation Main の情報を入れる配列
+   * @type {Array}
+   */
+  @observable headerNavMainArr = [];
+  
+  
+  /**
+  * Navigation Main の情報を置き換える
+  * @param {Array} arr - 置き換える配列
+  */
+  @action.bound
+  replaceHeaderNavMainArr(arr) {
+    this.headerNavMainArr = arr;
   };
   
   
@@ -664,18 +704,31 @@ class Store {
 
 export default function initStoreLayout({}) {
   
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (storeLayout === null) {
-      storeLayout = new Store();
-    }
-    
-    return storeLayout;
-    
+  console.log(`isServer = ${isServer}`);
+  
+  if (storeLayout === null) {
+    console.log('initStoreLayout / storeLayout === null');
+    storeLayout = new Store();
   }
+  
+  return storeLayout;
+  
+  
+  
+  // if (isServer) {
+  //   console.log('initStoreLayout / isServer');
+  //   return new Store();
+    
+  // } else {
+    
+  //   if (storeLayout === null) {
+  //     console.log('initStoreLayout / storeLayout === null');
+  //     storeLayout = new Store();
+  //   }
+    
+  //   console.log('initStoreLayout / storeLayout');
+  //   return storeLayout;
+    
+  // }
   
 }

@@ -37,6 +37,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
+import initStoreIndex from '../../app/@stores/index';
 import initStoreLoginIndex from '../../app/login/index/stores/store';
 
 
@@ -70,7 +71,6 @@ export default class extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     
@@ -94,27 +94,46 @@ export default class extends React.Component {
     //     ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //     --------------------\n
     //   `);
+    
+    // console.log(`
+    //     ----- index.js / stores -----\n
+    //     ${util.inspect(stores, { colors: true, depth: null })}\n
+    //     --------------------\n
+    //   `);
+    
+    
     // --------------------------------------------------
     //   ログインしている場合はログアウトページにリダイレクト
     // --------------------------------------------------
     
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    if (login) {
+    // if (login) {
       
-      if (isServer && res) {
-        res.writeHead(302, {
-          Location: '/logout'
-        });
-        res.end();
-      } else {
-        Router.replace('/logout');
-      }
+    //   if (isServer && res) {
+    //     res.writeHead(302, {
+    //       Location: '/logout'
+    //     });
+    //     res.end();
+    //   } else {
+    //     Router.replace('/logout');
+    //   }
       
-    }
+    // }
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    // const error = statusCode === 200 ? false : true;
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return { pathname, initialPropsObj, statusCode };
     
   }
   
@@ -137,10 +156,6 @@ export default class extends React.Component {
     this.error = false;
     
     
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
     try {
       
       
@@ -148,7 +163,7 @@ export default class extends React.Component {
       //   Error
       // --------------------------------------------------
       
-      if (this.props.statusCode !== 200) {
+      if (props.statusCode !== 200) {
         throw new Error();
       }
       
@@ -157,10 +172,48 @@ export default class extends React.Component {
       //   Store
       // --------------------------------------------------
       
+      const stores = initStoreIndex({});
       this.storeLoginIndex = initStoreLoginIndex({});
+      
+      // stores.layout.increment();
+      // stores.layout.increment();
+      
+      // console.log(`
+      //   ----- index.js / initStoreIndex({}) -----\n
+      //   ${util.inspect(initStoreIndex({}), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Pathname
+      // --------------------------------------------------
+      
+      stores.layout.replacePathname(props.pathname);
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Header Navigation Main
+      // --------------------------------------------------
+      
+      const headerNavMainArr = [
+        {
+          name: 'ログイン',
+          href: '/login',
+          as: '/login',
+        },
+        {
+          name: 'アカウント作成',
+          href: '/login/account',
+          as: '/login/account',
+        }
+      ];
+      
+      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
       
       
     } catch (e) {
+      // console.log(e.message);
       this.error = true;
     }
     
@@ -289,13 +342,18 @@ export default class extends React.Component {
             <FormLogin />
             
             
+            {/* Drawer */}
+            {/*<Drawer>
+              Drawer
+            </Drawer>*/}
+            
           </div>
           
         </Layout>
         
       </Provider>
     );
+    
   }
+  
 }
-
-// export default Component;

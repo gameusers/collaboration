@@ -166,7 +166,7 @@ router.post('/login', upload.none(), (req, res, next) => {
       
       if (req.isAuthenticated()) {
         statusCode = 401;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yyaAiB5f-', messageID: 'xLLNIpo6a' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yyaAiB5f-', messageID: 'ty7z0wml' }] });
       }
       
       

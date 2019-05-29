@@ -78,6 +78,7 @@ class Store {
   handleTest() {
     console.log('handleTest');
     storeLayout.increment();
+    // storeLayout.handleDrawerOpen();
     // store1.increment();
   };
   

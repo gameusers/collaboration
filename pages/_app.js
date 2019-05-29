@@ -61,12 +61,7 @@ import { fetchWrapper } from '../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../app/@stores/index';
-// import initStoreLayout from '../app/common/layout/stores/layout';
-// import initStoreData from '../app/@stores/data';
 
-// import initStoreLoginIndex from '../app/login/index/stores/store';
-
-// import store1 from '../app/@stores/test';
 
 
 
@@ -83,9 +78,100 @@ class MyApp extends App {
   //   https://spectrum.chat/next-js/general/getinitialprops-confusion-in-the-docs-about-parameters~07e9ab0e-0fae-43a8-8bc0-350c79e921a3
   // --------------------------------------------------
   
+  // static async getInitialProps(appContext) {
+    
+  //   // console.log('_app.js / getInitialProps');
+    
+    
+  //   // --------------------------------------------------
+  //   //   storesをctxの中に入れて、各ページのgetInitialPropsで読み込めるようにする
+  //   //   参考：https://github.com/zeit/next.js/blob/canary/examples/with-mobx/pages/_app.js
+  //   // --------------------------------------------------
+    
+  //   const stores = initStoreIndex({});
+  //   appContext.ctx.stores = stores;
+    
+  //   // console.log(`
+  //   //   ----- _app.js / stores -----\n
+  //   //   ${util.inspect(stores, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // --------------------------------------------------
+  //   //   pageProps
+  //   // --------------------------------------------------
+    
+  //   let appProps = await App.getInitialProps(appContext);
+    
+  //   // let pageProps = {};
+
+  //   // if (Component.getInitialProps) {
+  //   //   pageProps = await Component.getInitialProps(ctx);
+  //   // }
+    
+  //   const ctx = appProps.ctx;
+    
+    
+  //   // --------------------------------------------------
+  //   //   Property
+  //   // --------------------------------------------------
+    
+  //   const pathname = lodashGet(ctx, ['pathname'], '');
+  //   const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
+  //   const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
+    
+    
+  //   // --------------------------------------------------
+  //   //   Fetch
+  //   // --------------------------------------------------
+    
+  //   const resultObj = await fetchWrapper({
+  //     urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
+  //     methodType: 'GET',
+  //     reqHeadersCookie,
+  //     reqAcceptLanguage,
+  //   });
+    
+  //   const statusCode = resultObj.statusCode;
+  //   const initialPropsObj = resultObj.data;
+    
+    
+  //   // console.log(`
+  //   //   ----- resultObj -----\n
+  //   //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+  //   // console.log(chalk`
+  //   //   pathname: {green ${pathname}}
+  //   //   reqHeadersCookie: {green ${reqHeadersCookie}}
+  //   //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
+  //   // `);
+    
+    
+    
+  //   return { ...appProps, pathname, stores, initialPropsObj, statusCode, reqAcceptLanguage };
+    
+  // }
+  
   static async getInitialProps({ Component, ctx }) {
     
     // console.log('_app.js / getInitialProps');
+    
+    
+    // --------------------------------------------------
+    //   storesをctxの中に入れて、各ページのgetInitialPropsで読み込めるようにする
+    //   参考：https://github.com/zeit/next.js/blob/canary/examples/with-mobx/pages/_app.js
+    // --------------------------------------------------
+    
+    // const stores = initStoreIndex({});
+    // ctx.stores = stores;
+    // console.log(`
+    //   ----- _app.js / stores -----\n
+    //   ${util.inspect(stores, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // --------------------------------------------------
     //   pageProps
     // --------------------------------------------------
@@ -101,7 +187,6 @@ class MyApp extends App {
     //   Property
     // --------------------------------------------------
     
-    const isServer = !process.browser;
     const pathname = lodashGet(ctx, ['pathname'], '');
     const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
@@ -122,19 +207,6 @@ class MyApp extends App {
     const initialPropsObj = resultObj.data;
     
     
-    // --------------------------------------------------
-    //   ログインしている場合はログアウトページにリダイレクト
-    // --------------------------------------------------
-    
-    const login = lodashGet(resultObj, ['data', 'login'], false);
-    
-    
-    // console.log(`
-    //   ----- ctx -----\n
-    //   ${util.inspect(ctx, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
@@ -142,16 +214,14 @@ class MyApp extends App {
     // `);
     
     // console.log(chalk`
-    //   isServer: {green ${isServer}}
     //   pathname: {green ${pathname}}
     //   reqHeadersCookie: {green ${reqHeadersCookie}}
     //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
-    //   login: {green ${login}}
     // `);
     
     
     
-    return { pageProps, isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    return { pageProps, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
     
   }
   
@@ -192,9 +262,15 @@ class MyApp extends App {
       //   Store
       // --------------------------------------------------
       
-      this.stores = initStoreIndex({});
+      // const isServer = !process.browser;
       
+      // this.stores = isServer ? props.stores : initStoreIndex({});
+      
+      this.stores = initStoreIndex({});
       this.stores.pathname = props.pathname;
+      
+      // this.stores.layout.increment();
+      // this.stores.layout.increment();
       
       
       // --------------------------------------------------
@@ -217,6 +293,13 @@ class MyApp extends App {
       // --------------------------------------------------
       
       this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Login User
+      // --------------------------------------------------
+      
+      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
       
       
     } catch (e) {

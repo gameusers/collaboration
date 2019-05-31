@@ -59,6 +59,24 @@ import IconEject from '@material-ui/icons/Eject';
 
 const Container = ({ children, headerNavTopShow }) => {
   
+  // const cssHeader = css`
+  //   display: flex;
+  //   flex-flow: row nowrap;
+  //   align-items: center;
+  //   background-color: white;
+  //   width: 100%;
+  //   height: 53px;
+  //   position: sticky;
+  //   top: 0;
+  //   z-index: 1001;
+  // `;
+  
+  // const props = useSpring({
+  //   transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)'
+  // });
+  
+  // return <header css={cssHeader} style={props}>{children}</header>;
+  
   const Header = styled(animated.header)`
     display: flex;
     flex-flow: row nowrap;

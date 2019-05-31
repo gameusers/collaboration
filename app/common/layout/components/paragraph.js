@@ -3,25 +3,8 @@
 // --------------------------------------------------
 
 import React from 'react';
-import styled from 'styled-components';
-// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// const Footer = styled.footer`
-//   // display: flex;
-//   // flex-direction: column;
-//   position: relative;
-//   padding: 6px 0 6px;
-//   background-color: black;
-//   color: white;
-// `;
 
 
 
@@ -33,11 +16,20 @@ import { inject, observer } from 'mobx-react';
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
-
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
     
     
@@ -45,17 +37,12 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, text } = this.props;
-    // const { stores } = this.props;
-    
-    // console.dir(text.split('\n'));
-    // console.log(`text = ${text}`);
-    
-    // const text = 'One\nTwo\n\nThree\n\n\nFour';
-    // console.dir(test.split('\n'));
+    const { text } = this.props;
     
     
-    
+    // --------------------------------------------------
+    //   Component
+    // --------------------------------------------------
     
     let componentsArr = [];
     
@@ -64,9 +51,6 @@ export default class extends React.Component {
     if (text) {
       textArr = text.split('\n').reverse();
     }
-    
-    // console.dir(textArr);
-    
     
     
     let marginPx = 0;
@@ -88,7 +72,7 @@ export default class extends React.Component {
         } else {
           
           componentsArr.push(
-          <p style={{ marginBottom: marginPx }} key={index}>{value}</p>
+            <p style={{ marginBottom: marginPx }} key={index}>{value}</p>
           );
           
         }
@@ -102,11 +86,6 @@ export default class extends React.Component {
     
     componentsArr = componentsArr.reverse();
     
-    // lineHeight: `${marginPx}em`
-    // marginBottom: marginPx
-    // {test.split('\n').map((i, key) => {
-    //       return <p style={{ marginBottom: '20px' }} key>{i}</p>;
-    //     })}
     
     // --------------------------------------------------
     //   Return
@@ -117,6 +96,7 @@ export default class extends React.Component {
         {componentsArr}
       </React.Fragment>
     );
+    
   }
   
 };

@@ -15,8 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-// import lodashGet from 'lodash/get';
-// import lodashSet from 'lodash/set';
 
 
 
@@ -24,8 +22,6 @@ import { action, observable } from 'mobx';
 // --------------------------------------------------
 //   Property
 // --------------------------------------------------
-
-const isServer = !process.browser;
 
 let storeLayout = null;
 
@@ -39,14 +35,14 @@ let storeLayout = null;
 class Store {
   
   
-  @observable count = 0;
+  // @observable count = 0;
   
   
-  @action
-  increment() {
-    ++this.count;
-    console.log(this.count);
-  }
+  // @action
+  // increment() {
+  //   ++this.count;
+  //   console.log(this.count);
+  // }
   
   
   
@@ -373,7 +369,7 @@ class Store {
    * クリックでドロワーが開くアイコンを表示するかどうか [true 表示する / false 表示しない]
    * @type {boolean}
    */
-  @observable drawerIconShow = true;
+  @observable drawerIconShow = false;
   
   
   /**
@@ -702,33 +698,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLayout({}) {
-  
-  console.log(`isServer = ${isServer}`);
+export default function initStoreLayout() {
   
   if (storeLayout === null) {
-    console.log('initStoreLayout / storeLayout === null');
     storeLayout = new Store();
   }
   
   return storeLayout;
-  
-  
-  
-  // if (isServer) {
-  //   console.log('initStoreLayout / isServer');
-  //   return new Store();
-    
-  // } else {
-    
-  //   if (storeLayout === null) {
-  //     console.log('initStoreLayout / storeLayout === null');
-  //     storeLayout = new Store();
-  //   }
-    
-  //   console.log('initStoreLayout / storeLayout');
-  //   return storeLayout;
-    
-  // }
   
 }

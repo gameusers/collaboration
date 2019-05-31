@@ -66,7 +66,7 @@ export default class extends React.Component {
   
   static async getInitialProps({ pathname, req, res }) {
     
-    // console.log('index.js / getInitialProps');
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
@@ -108,25 +108,20 @@ export default class extends React.Component {
     
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    // if (login) {
+    if (login) {
       
-    //   if (isServer && res) {
-    //     res.writeHead(302, {
-    //       Location: '/logout'
-    //     });
-    //     res.end();
-    //   } else {
-    //     Router.replace('/logout');
-    //   }
+      const isServer = !process.browser;
       
-    // }
-    
-    
-    // --------------------------------------------------
-    //   Error
-    // --------------------------------------------------
-    
-    // const error = statusCode === 200 ? false : true;
+      if (isServer && res) {
+        res.writeHead(302, {
+          Location: '/logout'
+        });
+        res.end();
+      } else {
+        Router.replace('/logout');
+      }
+      
+    }
     
     
     // --------------------------------------------------
@@ -175,15 +170,6 @@ export default class extends React.Component {
       const stores = initStoreIndex({});
       this.storeLoginIndex = initStoreLoginIndex({});
       
-      // stores.layout.increment();
-      // stores.layout.increment();
-      
-      // console.log(`
-      //   ----- index.js / initStoreIndex({}) -----\n
-      //   ${util.inspect(initStoreIndex({}), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
       
       // --------------------------------------------------
       //   Update Data - Pathname
@@ -213,7 +199,6 @@ export default class extends React.Component {
       
       
     } catch (e) {
-      // console.log(e.message);
       this.error = true;
     }
     
@@ -278,24 +263,6 @@ export default class extends React.Component {
     // `);
     
     
-    // --------------------------------------------------
-    //   Header Navigation
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'ログイン',
-        href: '/login',
-        as: '/login',
-      },
-      {
-        name: 'アカウント作成',
-        href: '/login/account',
-        as: '/login/account',
-      }
-    ];
-    
-    
     
     
     // --------------------------------------------------
@@ -305,7 +272,7 @@ export default class extends React.Component {
     return (
       <Provider storeLoginIndex={this.storeLoginIndex}>
         
-        <Layout headerNavMainArr={headerNavMainArr}>
+        <Layout>
           
           
           {/* Head 内部のタグをここで追記する */}
@@ -342,12 +309,8 @@ export default class extends React.Component {
             <FormLogin />
             
             
-            {/* Drawer */}
-            {/*<Drawer>
-              Drawer
-            </Drawer>*/}
-            
           </div>
+          
           
         </Layout>
         

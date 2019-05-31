@@ -5,13 +5,23 @@
 import { action, observable } from 'mobx';
 
 
+// ---------------------------------------------
+//   Locales
+// ---------------------------------------------
+
+// import { addLocaleData } from 'react-intl';
+// import en from 'react-intl/locale-data/en';
+// import ja from 'react-intl/locale-data/ja';
+// addLocaleData([...en, ...ja]);
+
+// import { locale } from '../@locales/locale';
+
+
 
 
 // --------------------------------------------------
 //   Property
 // --------------------------------------------------
-
-const isServer = !process.browser;
 
 let storeData = null;
 
@@ -29,9 +39,17 @@ class Store {
   //   Constructor
   // ---------------------------------------------
   
-  // constructor(argumentsObj) {
-  //   console.log('constructor');
-  //   this.pathname = argumentsObj.pathname;
+  // constructor({ reqAcceptLanguage, headerObj, loginUsersObj }) {
+  //   console.log('data.js / constructor');
+  //   // this.pathname = argumentsObj.pathname;
+    
+    
+  //   const localeObj = locale({
+  //     acceptLanguage: reqAcceptLanguage
+  //   });
+    
+  //   this.replaceLocaleObj(localeObj);
+    
   // }
   
   
@@ -63,6 +81,7 @@ class Store {
   replaceLocaleObj(obj) {
     this.localeObj = obj;
     
+    // console.log('replaceLocaleObj');
     // 以下削除予定
     // const intlProvider = new IntlProvider({
     //   locale: this.localeObj.languageArr[0],
@@ -240,22 +259,59 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreData({}) {
+export default function initStoreData() {
   
-  if (isServer) {
-    // console.log('initStoreData / isServer');
-    return new Store();
-    
-  } else {
-    
-    // console.log('initStoreData / client');
-    if (storeData === null) {
-      // console.log('initStoreData / client / storeData === null');
-      storeData = new Store();
-    }
-    
-    return storeData;
-    
+  if (storeData === null) {
+    storeData = new Store();
   }
+  
+  return storeData;
+  
+  // --------------------------------------------------
+  //   new Store()
+  // --------------------------------------------------
+  
+  // if (storeData === null) {
+  //   storeData = new Store();
+  // }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Update Data - Locale
+  // --------------------------------------------------
+  
+//   const localeObj = locale({
+//     acceptLanguage: reqAcceptLanguage
+//   });
+  
+//   storeData.replaceLocaleObj(localeObj);
+  
+  
+//   // --------------------------------------------------
+//   //   Update Data - Header
+//   // --------------------------------------------------
+  
+//   storeData.replaceHeaderObj(headerObj);
+// //   console.log(`\n---------- headerObj ----------\n`);
+// // console.dir(headerObj);
+// // console.log(`\n-----------------------------------\n`);
+  
+//   // --------------------------------------------------
+//   //   Update Data - Login User
+//   // --------------------------------------------------
+  
+//   storeData.replaceLoginUsersObj(loginUsersObj);
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  // return storeData;
+  
   
 }

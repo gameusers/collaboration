@@ -44,18 +44,18 @@ import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
 
 // ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-import Panel from '../../../../app/common/layout/components/panel';
-
-
-// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
 const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
 const { validationUsersLoginPassword } = require('../../../../app/@database/users/validations/login-password');
+
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import Panel from '../../../../app/common/layout/components/panel';
 
 
 
@@ -187,16 +187,6 @@ export default injectIntl(class extends React.Component {
         <p>
           IDとパスワードでログインします。アカウントをお持ちでない場合は、こちらのページでアカウントを作成してください。
         </p>
-        
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={buttonDisabled}
-          onClick={storeLoginIndex.handleTest}
-        >
-          test
-        </Button>
         
         
         {/* Form */}

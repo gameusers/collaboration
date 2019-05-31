@@ -22,7 +22,6 @@ import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
@@ -48,7 +47,7 @@ import IconMenu from '@material-ui/icons/Menu';
 
 const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPositionSticky }) => {
   
-  const Nav = styled(animated.nav)`
+  const cssNav = css`
     width: 100%;
     height: 36px;
     background-color: #25283D;
@@ -61,8 +60,7 @@ const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPo
     transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
   });
   
-  
-  return <Nav style={props}>{children}</Nav>;
+  return <nav css={cssNav} style={props}>{children}</nav>;
   
 };
 
@@ -98,7 +96,10 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, headerNavMainArr } = this.props;
+    const { stores } = this.props;
+    
+    const pathname = lodashGet(stores, ['layout', 'pathname'], '');
+    const headerNavMainArr = lodashGet(stores, ['layout', 'headerNavMainArr'], []);
     
     const headerScrollUp = lodashGet(stores, ['layout', 'headerScrollUp'], false);
     const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
@@ -117,13 +118,13 @@ export default class extends React.Component {
     let active = false;
     
     
-    if (headerNavMainArr && headerNavMainArr.length > 0) {
+    if (headerNavMainArr.length > 0) {
       
       const reverseHeaderMenuArr = headerNavMainArr.slice().reverse();
       
       for (const [index, valueObj] of reverseHeaderMenuArr.entries()) {
         
-        if (valueObj.as === stores.pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
+        if (valueObj.as === pathname || (!active && index + 1 === reverseHeaderMenuArr.length)) {
           
           componentsArr.unshift(
             <Button
@@ -226,6 +227,7 @@ export default class extends React.Component {
           
           {/* Menu */}
           {componentsArr}
+          
           
         </div>
         

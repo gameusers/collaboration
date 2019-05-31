@@ -8,11 +8,14 @@
 
 import React from 'react';
 // import styled from 'styled-components';
-import styled from '@emotion/styled';
+// import styled from '@emotion/styled';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import Router from 'next/router';
 import NProgress from 'nprogress';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -55,22 +58,6 @@ Router.events.on('routeChangeStart', url => {
 });
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const ContainerHeaderNavMain = styled.div`
-  background-color: #151515;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-`;
 
 
 
@@ -156,15 +143,20 @@ export default class extends React.Component {
         
         
         {/* Header */}
-        <Header headerNavMainArr={this.props.headerNavMainArr} />
+        <Header />
         
         
         {/* Header - Navigation Main */}
-        <ContainerHeaderNavMain>
-          <HeaderNavMain
-            headerNavMainArr={this.props.headerNavMainArr}
-          />
-        </ContainerHeaderNavMain>
+        <div
+          css={css`
+            background-color: #151515;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+          `}
+        >
+          <HeaderNavMain />
+        </div>
         
         
         

@@ -15,9 +15,10 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-// import styled from 'styled-components';
-import styled from '@emotion/styled';
 import { observer } from 'mobx-react';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -30,25 +31,19 @@ import Button from '@material-ui/core/Button';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 6px 10px 1px 10px;
-`;
-
-const ButtonBox = styled.div`
+const cssButtonBox = css`
   margin: 0 12px 0 0;
 `;
 
-const Box = styled.div`
+const cssBox = css`
   margin: 4px 12px 0 0;
 `;
 
-const StyledButton = styled(Button)`
+const cssButton = css`
   && {
     font-size: 12px;
     min-width: 36px;
@@ -104,71 +99,91 @@ export default class extends React.Component {
       if (valueObj.type === 'Official') {
         
         codeArr.push(
-          <ButtonBox key={index}>
-            <StyledButton
+          <div
+            css={cssButtonBox}
+            key={index}
+          >
+            <Button
+              css={cssButton}
               variant="contained"
               color="secondary"
               href={valueObj.url}
               target="_blank"
             >
               公式
-            </StyledButton>
-          </ButtonBox>
+            </Button>
+          </div>
         );
         
       } else if (valueObj.type === 'Other') {
         
         codeArr.push(
-          <ButtonBox key={index}>
-            <StyledButton
+          <div
+            css={cssButtonBox}
+            key={index}
+          >
+            <Button
+              css={cssButton}
               variant="contained"
               color="secondary"
               href={valueObj.url}
               target="_blank"
             >
               {valueObj.label}
-            </StyledButton>
-          </ButtonBox>
+            </Button>
+          </div>
         );
         
       } else if (valueObj.type === 'Twitter') {
         
         codeArr.push(
-          <Box key={index}>
+          <div
+            css={cssBox}
+            key={index}
+          >
             <a href={valueObj.url} target="_blank">
               <img src="/static/img/common/social/twitter@2x.png" width="20" height="20" />
             </a>
-          </Box>
+          </div>
         );
         
       } else if (valueObj.type === 'Facebook') {
         
         codeArr.push(
-          <Box key={index}>
+          <div
+            css={cssBox}
+            key={index}
+          >
             <a href={valueObj.url} target="_blank">
               <img src="/static/img/common/social/facebook@2x.png" width="20" height="20" />
             </a>
-          </Box>
+          </div>
         );
         
       } else if (valueObj.type === 'YouTube') {
         
         codeArr.push(
-          <Box key={index}>
+          <div
+            css={cssBox}
+            key={index}
+          >
             <a href={valueObj.url} target="_blank">
               <img src="/static/img/common/social/youtube@2x.png" width="20" height="20" />
             </a>
-          </Box>
+          </div>
         );
         
       } else if (valueObj.type === 'Steam') {
         
         codeArr.push(
-          <Box key={index}>
+          <div
+            css={cssBox}
+            key={index}
+          >
             <a href={valueObj.url} target="_blank">
               <img src="/static/img/common/social/steam@2x.png" width="20" height="20" />
             </a>
-          </Box>
+          </div>
         );
         
       }
@@ -183,9 +198,15 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          padding: 6px 10px 1px 10px;
+        `}
+      >
         {codeArr}
-      </Container>
+      </div>
     );
     
     

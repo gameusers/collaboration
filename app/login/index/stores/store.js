@@ -38,20 +38,17 @@ const { validationUsersLoginPassword } = require('../../../@database/users/valid
 
 
 // --------------------------------------------------
-//   Store
+//   Stores
 // --------------------------------------------------
 
-// import store1 from '../../../@stores/test';
 import initStoreLayout from '../../../common/layout/stores/layout';
 
 
 
 
 // --------------------------------------------------
-//   Property
+//   Store
 // --------------------------------------------------
-
-const isServer = !process.browser;
 
 let storeLoginIndex = null;
 let storeLayout = initStoreLayout({});
@@ -64,25 +61,6 @@ let storeLayout = initStoreLayout({});
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
-  
-  @action.bound
-  handleTest() {
-    console.log('handleTest');
-    storeLayout.increment();
-    // storeLayout.handleDrawerOpen();
-    // store1.increment();
-  };
-  
-  
   
   
   // ---------------------------------------------
@@ -401,30 +379,10 @@ class Store {
 
 export default function initStoreLoginIndex({}) {
   
-  // const isServer = argumentsObj.isServer;
-  
-  
-  // if ('layout' in storeInstanceObj) {
-  //   storeLayout = storeInstanceObj.layout;
-  // }
-  
-  // if ('data' in storeInstanceObj) {
-  //   storeData = storeInstanceObj.data;
-  // }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (storeLoginIndex === null) {
-      storeLoginIndex = new Store();
-    }
-    
-    return storeLoginIndex;
-    
+  if (storeLoginIndex === null) {
+    storeLoginIndex = new Store();
   }
+  
+  return storeLoginIndex;
   
 }

@@ -17,22 +17,13 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
+import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
-import styled from 'styled-components';
 import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
 import lodashGet from 'lodash/get';
 
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
-
-import { locale } from '../../app/@locales/locale';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -58,29 +49,6 @@ import Layout from '../../app/common/layout/components/layout';
 import FormCreateAccount from '../../app/login/account/components/form-create-account';
 
 
-// ---------------------------------------------
-//   Material UI を Next.js で利用するため
-// ---------------------------------------------
-
-import withRoot from '../../lib/material-ui/withRoot';
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  padding: 0 10px 18px 10px;
-  
-  @media screen and (max-width: 480px) {
-    padding: 0 0 18px 0;
-  }
-`;
-
-
 
 
 // --------------------------------------------------
@@ -89,7 +57,7 @@ const Container = styled.div`
 // --------------------------------------------------
 
 @observer
-class Component extends React.Component {
+export default class extends React.Component {
   
   
   // --------------------------------------------------
@@ -103,7 +71,6 @@ class Component extends React.Component {
     //   Property
     // --------------------------------------------------
     
-    const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     
@@ -136,13 +103,26 @@ class Component extends React.Component {
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
     if (login) {
-      res.redirect('/logout');
-      res.end();
-      return {};
+      
+      const isServer = !process.browser;
+      
+      if (isServer && res) {
+        res.writeHead(302, {
+          Location: '/logout'
+        });
+        res.end();
+      } else {
+        Router.replace('/logout');
+      }
+      
     }
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return { pathname, initialPropsObj, statusCode };
     
   }
   
@@ -165,10 +145,6 @@ class Component extends React.Component {
     this.error = false;
     
     
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
     try {
       
       
@@ -176,7 +152,7 @@ class Component extends React.Component {
       //   Errorの場合
       // --------------------------------------------------
       
-      if (this.props.statusCode !== 200) {
+      if (props.statusCode !== 200) {
         throw new Error();
       }
       
@@ -185,36 +161,35 @@ class Component extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const argumentsObj = {
-        isServer: props.isServer,
-        pathname: props.pathname,
-      };
-      
-      this.stores = initStoreIndex(argumentsObj);
-      this.stores.pathname = props.pathname;
-      this.stores.loginAccount = initStoreLoginAccount(argumentsObj, this.stores);
+      const stores = initStoreIndex({});
+      this.storeLoginAccount = initStoreLoginAccount({});
       
       
       // --------------------------------------------------
-      //   Update Data - Locale
+      //   Update Data - Pathname
       // --------------------------------------------------
       
-      if (Object.keys(this.stores.data.localeObj).length === 0) {
-        
-        const localeObj = locale({
-          acceptLanguage: props.reqAcceptLanguage
-        });
-        
-        this.stores.data.replaceLocaleObj(localeObj);
-        
-      }
+      stores.layout.replacePathname(props.pathname);
       
       
       // --------------------------------------------------
-      //   Update Data - Header
+      //   Update Data - Header Navigation Main
       // --------------------------------------------------
       
-      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      const headerNavMainArr = [
+        {
+          name: 'ログイン',
+          href: '/login',
+          as: '/login',
+        },
+        {
+          name: 'アカウント作成',
+          href: '/login/account',
+          as: '/login/account',
+        }
+      ];
+      
+      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
       
       
     } catch (e) {
@@ -264,31 +239,6 @@ class Component extends React.Component {
     }
     
     
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    const stores = this.stores;
-    
-    
-    // --------------------------------------------------
-    //   Header Navigation
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'ログイン',
-        href: '/login',
-        as: '/login',
-      },
-      {
-        name: 'アカウント作成',
-        href: '/login/account',
-        as: '/login/account',
-      }
-    ];
-    
-    
     
     
     // --------------------------------------------------
@@ -296,51 +246,51 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider stores={this.stores}>
+      <Provider storeLoginAccount={this.storeLoginAccount}>
         
-        <IntlProvider 
-          locale={this.stores.data.localeObj.languageArr[0]}
-          messages={this.stores.data.localeObj.dataObj}
-        >
+        <Layout>
           
-          <Layout headerNavMainArr={headerNavMainArr}>
-            
-            
-            {/* Head 内部のタグをここで追記する */}
-            <Head>
-              <title>アカウント作成 - Game Users</title>
-            </Head>
-            
-            
-            {/* Contents */}
-            <Container>
-              
-              
-              {/* reCAPTCHA */}
-              <ReCaptcha
-                ref={ref => this.recaptcha = ref}
-                sitekey={process.env.RECAPTCHA_SITE_KEY}
-                action='createAccount'
-                verifyCallback={(response) => stores.loginAccount.handleRecaptchaResponse({
-                  response,
-                  ref: this.recaptcha,
-                })}
-              />
-              
-              
-              {/* アカウント作成 */}
-              <FormCreateAccount />
-              
-              
-            </Container>
-            
-          </Layout>
           
-        </IntlProvider>
+          {/* Head 内部のタグをここで追記する */}
+          <Head>
+            <title>アカウント作成 - Game Users</title>
+          </Head>
+          
+          
+          {/* Contents */}
+          <div
+            css={css`
+              padding: 12px;
+              
+              @media screen and (max-width: 480px) {
+                padding: 12px 0;
+              }
+            `}
+          >
+            
+            
+            {/* reCAPTCHA */}
+            <ReCaptcha
+              ref={ref => this.recaptcha = ref}
+              sitekey={process.env.RECAPTCHA_SITE_KEY}
+              action='createAccount'
+              verifyCallback={(response) => this.storeLoginAccount.handleRecaptchaResponse({
+                response,
+                ref: this.recaptcha,
+              })}
+            />
+            
+            
+            {/* アカウント作成 */}
+            <FormCreateAccount />
+            
+            
+          </div>
+          
+          
+        </Layout>
         
       </Provider>
     );
   }
 }
-
-export default withRoot(Component);

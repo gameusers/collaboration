@@ -36,6 +36,13 @@ const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation }
 const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
+
+import initStoreLayout from '../../../common/layout/stores/layout';
+
+
 
 
 // --------------------------------------------------
@@ -43,8 +50,7 @@ const { validationUsersEmail } = require('../../../@database/users/validations/e
 // --------------------------------------------------
 
 let storeLoginAccount = null;
-let storeLayout = null;
-let storeData = null;
+let storeLayout = initStoreLayout({});
 
 
 
@@ -54,15 +60,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
   
   
   // ---------------------------------------------
@@ -444,32 +441,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLoginAccount(argumentsObj, storeInstanceObj) {
+export default function initStoreLoginAccount({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storeLoginAccount === null) {
+    storeLoginAccount = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (storeLoginAccount === null) {
-      storeLoginAccount = new Store();
-    }
-    
-    return storeLoginAccount;
-    
-  }
+  return storeLoginAccount;
   
 }

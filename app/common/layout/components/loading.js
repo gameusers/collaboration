@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// const chalk = require('chalk');
-// const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,25 +16,16 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
+// ---------------------------------------------
+//   CSS
+// ---------------------------------------------
 
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  && {
-    position: fixed;
-    
-    bottom: 20px;
-    margin: 0;
-    padding: 0;
-  }
-`;
+import style from '../css/pacman.css';
 
 
 
@@ -47,10 +38,19 @@ const Container = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -83,9 +83,17 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container style={loadingLeft ? { left: '50px' } : { right: '50px' }}>
+      <div
+        css={css`
+          position: fixed;
+          bottom: 20px;
+          margin: 0;
+          padding: 0;
+        `}
+        style={loadingLeft ? { left: '50px' } : { right: '50px' }}
+      >
         
-        <div className="la-pacman">
+        <div className={style['la-pacman']}>
         	<div />
         	<div />
         	<div />
@@ -94,7 +102,7 @@ export default class extends React.Component {
         	<div />
         </div>
         
-      </Container>
+      </div>
     );
     
   }

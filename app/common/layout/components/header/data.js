@@ -15,12 +15,12 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import styled from '@emotion/styled';
-// import styled from 'styled-components';
-// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import moment from 'moment';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -48,44 +48,11 @@ import LinkIcons from './link-icons';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-// --------------------------------------------------
-//   Opened
-// --------------------------------------------------
-
-const HeroImageBoxOpened = styled.div`
-  width: 280px;
-  border-radius: 8px;
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
-  padding: 0 0 6px 0;
-  
-  @media screen and (max-width: 480px) {
-    position: static;
-    right: auto;
-    bottom: auto;
-    margin: 10px auto;
-  }
-`;
-
-const ThumbnailBoxOpened = styled.div`
-  min-width: 150px;
-  max-width: 300px;
-  border-radius: 8px;
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  padding: 0 0 6px 0;
-`;
-
-const TitleBox = styled.div`
+const cssTitleBox = css`
   display: flex;
   flex-flow: row nowrap;
   margin: 0 0 2px 0;
@@ -93,27 +60,7 @@ const TitleBox = styled.div`
   border-bottom: #d51a53 solid 1px;
 `;
 
-const Title = styled.h1`
-  margin: 6px 0 0 0;
-  flex-grow: 2;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.4em;
-`;
-
-const KeyboardArrowUpIconButton = styled(IconButton)`
-  && {
-    font-size: 12px;
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    min-height: 24px;
-    margin: 2px auto 0;
-    padding: 2px 0 0 0;
-  }
-`;
-
-const Info = styled.p`
+const cssInfo = css`
   padding: 6px 20px 0;
   font-size: 12px;
   line-height: 1.4em;
@@ -121,58 +68,28 @@ const Info = styled.p`
 
 
 // --------------------------------------------------
+//   Opened
+// --------------------------------------------------
+
+const cssTitle = css`
+  flex-grow: 2;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.4em;
+  margin: 6px 0 0 0;
+`;
+
+
+// --------------------------------------------------
 //   Closed
 // --------------------------------------------------
 
-const HeroImageBoxClosed = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  min-width: 150px;
-  max-width: 300px;
-  border-radius: 8px;
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  position: absolute;
-  right: 15px;
-  bottom: 15px;
-  padding: 0 2px 0 0;
-`;
-
-const ThumbnailBoxClosed = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  min-width: 150px;
-  max-width: 300px;
-  border-radius: 8px;
-  background-color: #000;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  padding: 0 2px 0 0;
-`;
-      
-const TitleClosed = styled.h1`
+const cssTitleClosed = css`
   font-size: 14px;
   font-weight: normal;
   line-height: 1.4em;
   margin: 0;
   padding: 4px 4px 4px 10px;
-`;
-      
-const KeyboardArrowDownIconButton = styled(IconButton)`
-  && {
-    font-size: 12px;
-    width: 24px;
-    height: 24px;
-    min-width: 24px;
-    min-height: 24px;
-    margin: 2px 0 0 0;
-    padding: 0;
-  }
 `;
 
 
@@ -339,31 +256,102 @@ export default class extends React.Component {
       if (headerDataOpen) {
         
         componentData = 
-          <HeroImageBoxOpened>
-            <TitleBox>
-              <Title>{name}</Title>
-              <KeyboardArrowUpIconButton color="secondary" onClick={stores.layout.handleHeaderDataClose}>
+          <div
+            css={css`
+              width: 280px;
+              border-radius: 8px;
+              background-color: #000;
+              background-color: rgba(0, 0, 0, 0.5);
+              color: #fff;
+              position: absolute;
+              right: 15px;
+              bottom: 15px;
+              padding: 0 0 6px 0;
+              
+              @media screen and (max-width: 480px) {
+                position: static;
+                right: auto;
+                bottom: auto;
+                margin: 10px auto;
+              }
+            `}
+          >
+            
+            <div css={cssTitleBox}>
+              <div css={cssTitle}>{name}</div>
+              <IconButton
+                css={css`
+                  && {
+                    font-size: 12px;
+                    width: 24px;
+                    height: 24px;
+                    min-width: 24px;
+                    min-height: 24px;
+                    margin: 2px auto 0;
+                    padding: 2px 0 0 0;
+                  }
+                `}
+                color="secondary"
+                onClick={stores.layout.handleHeaderDataClose}
+              >
                 <IconKeyboardArrowUp />
-              </KeyboardArrowUpIconButton>
-            </TitleBox>
-            <Info>ハード | {hardware}</Info>
-            <Info>ジャンル | {genre}</Info>
-            <Info>プレイ人数 | {players}</Info>
-            <Info>発売日 | {formattedReleaseData}</Info>
-            <Info>開発 | {developer}</Info>
+              </IconButton>
+            </div>
+            
+            <p css={cssInfo}>ハード | {hardware}</p>
+            <p css={cssInfo}>ジャンル | {genre}</p>
+            <p css={cssInfo}>プレイ人数 | {players}</p>
+            <p css={cssInfo}>発売日 | {formattedReleaseData}</p>
+            <p css={cssInfo}>開発 | {developer}</p>
+            
             <LinkIcons linkArr={linkArr} />
-          </HeroImageBoxOpened>
+            
+          </div>
         ;
         
       } else {
         
         componentData = 
-          <HeroImageBoxClosed>
-            <TitleClosed>{name}</TitleClosed>
-            <KeyboardArrowDownIconButton color="secondary" onClick={stores.layout.handleHeaderDataOpen}>
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              justify-content: center;
+              align-items: center;
+              min-width: 150px;
+              max-width: 300px;
+              border-radius: 8px;
+              background-color: #000;
+              background-color: rgba(0, 0, 0, 0.5);
+              color: #fff;
+              position: absolute;
+              right: 15px;
+              bottom: 15px;
+              padding: 0 2px 0 0;
+            `}
+          >
+            
+            <div css={cssTitleClosed}>{name}</div>
+            
+            <IconButton
+              css={css`
+                && {
+                  font-size: 12px;
+                  width: 24px;
+                  height: 24px;
+                  min-width: 24px;
+                  min-height: 24px;
+                  margin: 2px 0 0 0;
+                  padding: 0;
+                }
+              `}
+              color="secondary"
+              onClick={stores.layout.handleHeaderDataOpen}
+            >
               <IconKeyboardArrowDown />
-            </KeyboardArrowDownIconButton>
-          </HeroImageBoxClosed>
+            </IconButton>
+            
+          </div>
         ;
         
       }
@@ -378,25 +366,53 @@ export default class extends React.Component {
       if (headerDataOpen) {
         
         componentData = 
-          <ThumbnailBoxOpened>
-            <TitleBox>
-              <Title>{name}</Title>
-            </TitleBox>
-            <Info>ハード | {hardware}</Info>
-            <Info>ジャンル | {genre}</Info>
-            <Info>プレイ人数 | {players}</Info>
-            <Info>発売日 | {formattedReleaseData}</Info>
-            <Info>開発 | {developer}</Info>
+          <div
+            css={css`
+              min-width: 150px;
+              max-width: 300px;
+              border-radius: 8px;
+              background-color: #000;
+              background-color: rgba(0, 0, 0, 0.5);
+              color: #fff;
+              padding: 0 0 6px 0;
+            `}
+          >
+            
+            <div css={cssTitleBox}>
+              <div css={cssTitle}>{name}</div>
+            </div>
+            
+            <p css={cssInfo}>ハード | {hardware}</p>
+            <p css={cssInfo}>ジャンル | {genre}</p>
+            <p css={cssInfo}>プレイ人数 | {players}</p>
+            <p css={cssInfo}>発売日 | {formattedReleaseData}</p>
+            <p css={cssInfo}>開発 | {developer}</p>
+            
             <LinkIcons linkArr={linkArr} />
-          </ThumbnailBoxOpened>
+            
+          </div>
         ;
         
       } else {
         
         componentData = 
-          <ThumbnailBoxClosed>
-            <TitleClosed>{name}</TitleClosed>
-          </ThumbnailBoxClosed>
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              justify-content: center;
+              align-items: center;
+              min-width: 150px;
+              max-width: 300px;
+              border-radius: 8px;
+              background-color: #000;
+              background-color: rgba(0, 0, 0, 0.5);
+              color: #fff;
+              padding: 0 2px 0 0;
+            `}
+          >
+            <div css={cssTitleClosed}>{name}</div>
+          </div>
         ;
         
       }

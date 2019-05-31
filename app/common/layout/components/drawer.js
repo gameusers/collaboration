@@ -15,10 +15,11 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import styled from 'styled-components';
-import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -26,33 +27,6 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Drawer from '@material-ui/core/Drawer';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Box = styled.div`
-  width: 500px;
-  
-  @media screen and (max-width: 480px) {
-    width: 300px;
-  }
-  
-  @media screen and (max-width: 320px) {
-    width: 280px;
-  }
-`;
 
 
 
@@ -101,9 +75,21 @@ export default class extends React.Component {
         open={drawerOpen}
         onClose={handleDrawerClose}
       >
-        <Box>
+        <div
+          css={css`
+            width: 500px;
+            
+            @media screen and (max-width: 480px) {
+              width: 300px;
+            }
+            
+            @media screen and (max-width: 320px) {
+              width: 280px;
+            }
+          `}
+        >
           {this.props.children}
-        </Box>
+        </div>
       </Drawer>
     );
     

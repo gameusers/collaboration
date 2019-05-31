@@ -15,10 +15,12 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import styled from 'styled-components';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -51,9 +53,17 @@ import { CustomError } from '../../../@modules/error/custom';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
+
+const cssIcon = css`
+  && {
+    font-size: 20px;
+    opacity: 0.9;
+    margin: 0 6px 0 0;
+  }
+`;
 
 
 
@@ -73,49 +83,6 @@ const SnackbarContentWrapper = (props) => {
   
   
   // --------------------------------------------------
-  //   styled-components
-  // --------------------------------------------------
-  
-  const StyledSpan = styled.span`
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-  `;
-  
-  const StyledIconCheckCircle = styled(IconCheckCircle)`
-    && {
-      font-size: 20px;
-      opacity: 0.9;
-      margin: 0 6px 0 0;
-    }
-  `;
-  
-  const StyledIconError = styled(IconError)`
-    && {
-      font-size: 20px;
-      opacity: 0.9;
-      margin: 0 6px 0 0;
-    }
-  `;
-  
-  const StyledIconWarning = styled(IconWarning)`
-    && {
-      font-size: 20px;
-      opacity: 0.9;
-      margin: 0 6px 0 0;
-    }
-  `;
-  
-  const StyledIconInfo = styled(IconInfo)`
-    && {
-      font-size: 20px;
-      opacity: 0.9;
-      margin: 0 6px 0 0;
-    }
-  `;
-  
-  
-  // --------------------------------------------------
   //   Return
   // --------------------------------------------------
 
@@ -123,18 +90,25 @@ const SnackbarContentWrapper = (props) => {
     <SnackbarContent
       aria-describedby="client-snackbar"
       message={
-        <StyledSpan id="client-snackbar">
+        <span
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+          id="client-snackbar"
+        >
           {variant === 'success' ? (
-            <StyledIconCheckCircle />
+            <IconCheckCircle css={cssIcon} />
           ) : variant === 'error' ? (
-            <StyledIconError />
+            <IconError css={cssIcon} />
           ) : variant === 'warning' ? (
-            <StyledIconWarning />
+            <IconWarning css={cssIcon}/>
           ) : (
-            <StyledIconInfo />
+            <IconInfo css={cssIcon}/>
           )}
           {message}
-        </StyledSpan>
+        </span>
       }
       action={[
         <IconButton

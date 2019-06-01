@@ -20,17 +20,9 @@ import Head from 'next/head';
 import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
 import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
-import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from '../../app/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -64,49 +56,12 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res }) {
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-    });
-    
-    const statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
-    
-    // console.log(`
-    //     ----- index.js / resultObj -----\n
-    //     ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //     --------------------\n
-    //   `);
-    
-    // console.log(`
-    //     ----- index.js / stores -----\n
-    //     ${util.inspect(stores, { colors: true, depth: null })}\n
-    //     --------------------\n
-    //   `);
+  static async getInitialProps({ pathname, req, res, login }) {
     
     
     // --------------------------------------------------
     //   ログインしている場合はログアウトページにリダイレクト
     // --------------------------------------------------
-    
-    const login = lodashGet(resultObj, ['data', 'login'], false);
     
     if (login) {
       
@@ -128,7 +83,7 @@ export default class extends React.Component {
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode };
+    return { pathname, statusCode: 200 };
     
   }
   
@@ -202,7 +157,6 @@ export default class extends React.Component {
       this.error = true;
     }
     
-    
   }
   
   
@@ -243,26 +197,6 @@ export default class extends React.Component {
     if (this.error) {
       return <Error statusCode={this.props.statusCode} />;
     }
-    
-    
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    // const stores = this.stores;
-    // console.log(`
-    //   ----- index.js / stores -----\n
-    //   ${util.inspect(stores, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- index.js / this.stores -----\n
-    //   ${util.inspect(this.stores, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
     
     
     // --------------------------------------------------

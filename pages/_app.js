@@ -78,17 +78,6 @@ class MyApp extends App {
     
     
     // --------------------------------------------------
-    //   pageProps
-    // --------------------------------------------------
-    
-    let pageProps = {};
-
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
-    
-    
-    // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
@@ -125,28 +114,12 @@ class MyApp extends App {
     // `);
     
     
-    
     // --------------------------------------------------
     //   Stores
     // --------------------------------------------------
-    // console.log('getInitialProps');
-    // const stores = initStoreIndex({});
-    
-    // const stores = initStoreIndex({
-    //   reqAcceptLanguage,
-    //   headerObj: lodashGet(initialPropsObj, ['headerObj'], {}),
-    //   loginUsersObj: lodashGet(initialPropsObj, ['loginUsersObj'], {}),
-    // });
-    
     
     const stores = initStoreIndex();
-    // stores.data.replaceLocaleObj({ reqAcceptLanguage });
-    // stores.data.replaceHeaderObj(lodashGet(initialPropsObj, ['headerObj'], {}));
     
-    
-//     console.log(`\n---------- lodashGet(initialPropsObj, ['headerObj'], {}) ----------\n`);
-// console.dir(lodashGet(initialPropsObj, ['headerObj'], {}));
-// console.log(`\n-----------------------------------\n`);
     
     // --------------------------------------------------
     //   Update Data - Locale
@@ -180,6 +153,35 @@ class MyApp extends App {
     // console.log(chalk`
     //   _app.js / getInitialProps: {green ${lodashGet(stores, ['layout', 'handleHeaderHeroImageSize'], '')}}
     // `);
+    
+    
+    // console.log(chalk`
+    //   _app.js / getInitialProps: {green ${lodashGet(initialPropsObj, ['loginUsersObj'], '')}}
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   login情報(true / false)をctxの中に入れて、各ページのgetInitialPropsで読み込めるようにする
+    //   ログインせずにログインが必要なページにアクセスした場合、ログインページに飛ばすため
+    //   参考：https://github.com/zeit/next.js/blob/canary/examples/with-mobx/pages/_app.js
+    // --------------------------------------------------
+    
+    const login = lodashGet(initialPropsObj, ['login'], false);
+    ctx.login = login;
+    
+    
+    // --------------------------------------------------
+    //   pageProps
+    // --------------------------------------------------
+    
+    let pageProps = {};
+
+    if (Component.getInitialProps) {
+      pageProps = await Component.getInitialProps(ctx);
+    }
+    
     
     
     
@@ -356,15 +358,20 @@ class MyApp extends App {
         </Head>
         
         
+        {/* Mobx Provider */}
         <Provider stores={this.stores}>
           
+          {/* react-intl(i18n) Provider */}
           <IntlProvider 
             locale={this.stores.data.localeObj.languageArr[0]}
             messages={this.stores.data.localeObj.dataObj}
           >
-          
+            
+            {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
+              
               <Component {...pageProps} />
+              
             </ThemeProvider>
             
           </IntlProvider>
@@ -373,8 +380,8 @@ class MyApp extends App {
         
       </Container>
     );
+    
   }
-  
   
 }
 

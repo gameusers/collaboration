@@ -17,13 +17,9 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
-import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
-import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
+import styled from 'styled-components';
 import lodashGet from 'lodash/get';
-
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -50,7 +46,6 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreIndex from '../../app/@stores/index';
-import initStoreLoginIndex from '../../app/login/index/stores/store';
 
 
 // ---------------------------------------------
@@ -58,25 +53,48 @@ import initStoreLoginIndex from '../../app/login/index/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import FormLogin from '../../app/login/index/components/form-login';
+import Success from '../../app/email/confirmation/components/success';
+
+
+// ---------------------------------------------
+//   Material UI を Next.js で利用するため
+// ---------------------------------------------
+
+import withRoot from '../../lib/material-ui/withRoot';
+
+
+
+
+// --------------------------------------------------
+//   styled-components でスタイルシートを書いてください
+//   参考: https://github.com/styled-components/styled-components
+// --------------------------------------------------
+
+const Container = styled.div`
+  padding: 0 10px 18px 10px;
+  
+  @media screen and (max-width: 480px) {
+    padding: 0 0 18px 0;
+  }
+`;
 
 
 
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/login
+//   URL: http://dev-1.gameusers.org:8080/pl/***/settings
 // --------------------------------------------------
 
 @observer
-export default class extends React.Component {
+class Component extends React.Component {
   
   
   // --------------------------------------------------
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res }) {
+  static async getInitialProps({ pathname, req, res, query }) {
     
     
     // --------------------------------------------------
@@ -86,6 +104,7 @@ export default class extends React.Component {
     const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    const emailConfirmationID = query.emailConfirmationID;
     
     
     // --------------------------------------------------
@@ -93,37 +112,28 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/email/confirmation?emailConfirmationID=${emailConfirmationID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
     });
     
-    const statusCode = resultObj.statusCode;
+    let statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
     
-    // --------------------------------------------------
-    //   ログインしている場合はログアウトページにリダイレクト
-    // --------------------------------------------------
+    // console.log(`
+    //   ----- initialPropsObj -----\n
+    //   ${util.inspect(initialPropsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    const login = lodashGet(resultObj, ['data', 'login'], false);
-    
-    if (login) {
-      
-      if (isServer && res) {
-        res.writeHead(302, {
-          Location: '/logout'
-        });
-        res.end();
-      } else {
-        Router.replace('/logout');
-      }
-      
-    }
+    // console.log(chalk`
+    //   emailConfirmationID: {green ${emailConfirmationID}}
+    // `);
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, emailConfirmationID };
     
   }
   
@@ -140,7 +150,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Property / Error Flag
+    //   Property / Error 判定用
     // --------------------------------------------------
     
     this.error = false;
@@ -154,10 +164,12 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Error
+      //   Errorの場合
       // --------------------------------------------------
       
-      if (this.props.statusCode !== 200) {
+      if (
+        this.props.statusCode !== 200
+      ) {
         throw new Error();
       }
       
@@ -173,7 +185,6 @@ export default class extends React.Component {
       
       this.stores = initStoreIndex(argumentsObj);
       this.stores.pathname = props.pathname;
-      this.stores.loginIndex = initStoreLoginIndex(argumentsObj, this.stores);
       
       
       // --------------------------------------------------
@@ -198,29 +209,16 @@ export default class extends React.Component {
       this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
       
       
+      // --------------------------------------------------
+      //   Update Data - Login User
+      // --------------------------------------------------
+      
+      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
+      
+      
     } catch (e) {
       this.error = true;
     }
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // --------------------------------------------------
-    //   Initialize the ReCaptcha
-    //   https://github.com/codeep/react-recaptcha-v3
-    // --------------------------------------------------
-    
-    loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
     
     
   }
@@ -249,7 +247,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
+    // const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -258,14 +256,9 @@ export default class extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'ログイン',
-        href: '/login',
-        as: '/login',
-      },
-      {
-        name: 'アカウント作成',
-        href: '/login/account',
-        as: '/login/account',
+        name: 'E-Mail確認',
+        href: '/email/confirmation',
+        as: '/email/confirmation',
       }
     ];
     
@@ -289,39 +282,16 @@ export default class extends React.Component {
             
             {/* Head 内部のタグをここで追記する */}
             <Head>
-              <title>ログイン - Game Users</title>
+              <title>E-Mail確認 - Game Users</title>
             </Head>
             
             
             {/* Contents */}
-            <div
-              css={css`
-                padding: 12px;
-                
-                @media screen and (max-width: 480px) {
-                  padding: 12px 0;
-                }
-              `}
-            >
+            <Container>
               
+              <Success />
               
-              {/* reCAPTCHA */}
-              <ReCaptcha
-                ref={ref => this.recaptcha = ref}
-                sitekey={process.env.RECAPTCHA_SITE_KEY}
-                action='login'
-                verifyCallback={(response) => stores.loginIndex.handleRecaptchaResponse({
-                  response,
-                  ref: this.recaptcha,
-                })}
-              />
-              
-              
-              {/* Login */}
-              <FormLogin />
-              
-              
-            </div>
+            </Container>
             
           </Layout>
           
@@ -332,4 +302,4 @@ export default class extends React.Component {
   }
 }
 
-// export default Component;
+export default withRoot(Component);

@@ -16,9 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -26,71 +28,13 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
+//   Components
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const StyledExpansionPanel = styled(ExpansionPanel)`
-  && {
-    margin: 16px 0 0 0 !important;
-  }
-`;
-
-const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
-  && {
-    cursor: default !important;
-    padding-right: 16px;
-  }
-`;
-
-const Heading = styled.h2`
-  font-weight: bold;
-  font-size: 18px;
-`;
-
-const ExpandMoreBox = styled.div`
-  margin: 0 0 0 auto;
-  padding: 0 !important;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  && {
-    margin: 0;
-    padding: 4px;
-  }
-`;
-
-const Description = styled.p`
-  
-`;
-
-const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
-  && {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`;
-
-const SubmitButtonBox = styled.div`
-  margin: 20px 0 0 0;
-`;
+import Panel from '../../../../app/common/layout/components/panel';
 
 
 
@@ -99,7 +43,7 @@ const SubmitButtonBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeLogoutIndex')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -111,6 +55,8 @@ export default injectIntl(class extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -130,6 +76,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -141,15 +89,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl } = this.props;
-    
-    
-    // --------------------------------------------------
-    //   Panel
-    // --------------------------------------------------
-    
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'logout'], true);
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
+    const { stores, storeLogoutIndex, intl } = this.props;
     
     
     // --------------------------------------------------
@@ -159,95 +99,37 @@ export default injectIntl(class extends React.Component {
     const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'logout'], true);
     
     
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- validationUsersLoginIDObj -----\n
-    //   ${util.inspect(validationUsersLoginIDObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validationUsersLoginPasswordObj -----\n
-    //   ${util.inspect(validationUsersLoginPasswordObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
-    // `);
-    
-    
-    
-    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Panel _id="panelLogout" heading="ログアウト">
         
         
-        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
-          
-          
-          {/* Heading */}
-          <StyledExpansionPanelSummary>
-          
-            <Heading>ログアウト</Heading>
-            
-            {/* Expansion Button */}
-            <ExpandMoreBox>
-              <StyledIconButton
-                onClick={() => handlePanelExpand({ _id: 'logout' })}
-                aria-expanded={panelExpanded}
-                aria-label="Show more"
-                disabled={buttonDisabled}
-              >
-                {panelExpanded ? (
-                  <IconExpandLess />
-                ) : (
-                  <IconExpandMore />
-                )}
-              </StyledIconButton>
-            </ExpandMoreBox>
-            
-          </StyledExpansionPanelSummary>
-          
-          
-          
-          
-          {/* Contents */}
-          <StyledExpansionPanelDetails>
-            
-            <Description>
-              ログアウトする場合は以下のボタンを押してください。
-            </Description>
-            
-            
-            {/* Submit Button */}
-            <SubmitButtonBox>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => stores.logoutIndex.handleLogout()}
-                disabled={buttonDisabled}
-              >
-                ログアウト
-              </Button>
-            </SubmitButtonBox>
-            
-          </StyledExpansionPanelDetails>
-          
-          
-        </StyledExpansionPanel>
+        <p>
+          ログアウトする場合は以下のボタンを押してください。
+        </p>
         
         
-      </React.Fragment>
+        {/* Submit Button */}
+        <div
+          css={css`
+            margin: 20px 0 0 0;
+          `}
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={storeLogoutIndex.handleLogout}
+            disabled={buttonDisabled}
+          >
+            ログアウト
+          </Button>
+        </div>
+        
+        
+      </Panel>
     );
     
   }

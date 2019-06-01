@@ -21,13 +21,6 @@ import { inject, observer } from 'mobx-react';
 import { css, jsx } from '@emotion/core';
 
 
-// ---------------------------------------------
-//   CSS
-// ---------------------------------------------
-
-import style from '../css/pacman.css';
-
-
 
 
 // --------------------------------------------------
@@ -93,7 +86,7 @@ export default class extends React.Component {
         style={loadingLeft ? { left: '50px' } : { right: '50px' }}
       >
         
-        <div className={style['la-pacman']}>
+        <div className="la-pacman">
         	<div />
         	<div />
         	<div />

@@ -25,15 +25,21 @@ import { fetchWrapper } from '../../../@modules/fetch';
 import { CustomError } from '../../../@modules/error/custom';
 
 
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
+
+import initStoreLayout from '../../../common/layout/stores/layout';
+
+
 
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let storeLoginIndex = null;
-let storeLayout = null;
-let storeData = null;
+let storeLogoutIndex = null;
+let storeLayout = initStoreLayout({});
 
 
 
@@ -44,19 +50,6 @@ let storeData = null;
 
 class Store {
   
-  
-  // ---------------------------------------------
-  //   constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Logout
-  // ---------------------------------------------
   
   /**
    * ログアウトフォームで送信ボタンを押すと呼び出される
@@ -178,32 +171,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLogoutIndex(argumentsObj, storeInstanceObj) {
+export default function initStoreLogoutIndex({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storeLogoutIndex === null) {
+    storeLogoutIndex = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (storeLoginIndex === null) {
-      storeLoginIndex = new Store();
-    }
-    
-    return storeLoginIndex;
-    
-  }
+  return storeLogoutIndex;
   
 }

@@ -17,21 +17,11 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
-import { observer, Provider } from 'mobx-react';
-import styled from 'styled-components';
+import { observer } from 'mobx-react';
 import lodashGet from 'lodash/get';
 
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
-
-import { locale } from '../../app/@locales/locale';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -56,52 +46,28 @@ import Layout from '../../app/common/layout/components/layout';
 import Success from '../../app/email/confirmation/components/success';
 
 
-// ---------------------------------------------
-//   Material UI を Next.js で利用するため
-// ---------------------------------------------
-
-import withRoot from '../../lib/material-ui/withRoot';
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  padding: 0 10px 18px 10px;
-  
-  @media screen and (max-width: 480px) {
-    padding: 0 0 18px 0;
-  }
-`;
-
-
 
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/pl/***/settings
+//   URL: http://dev-1.gameusers.org:8080/email/confirmation/***
 // --------------------------------------------------
 
 @observer
-class Component extends React.Component {
+export default class extends React.Component {
   
   
   // --------------------------------------------------
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res, query }) {
+  static async getInitialProps({ pathname, req, res, query, login }) {
     
     
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
-    const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const emailConfirmationID = query.emailConfirmationID;
@@ -119,7 +85,7 @@ class Component extends React.Component {
     });
     
     let statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
+    // const initialPropsObj = resultObj.data;
     
     
     // console.log(`
@@ -133,7 +99,7 @@ class Component extends React.Component {
     // `);
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, emailConfirmationID };
+    return { pathname, statusCode };
     
   }
   
@@ -150,7 +116,7 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   Property / Error 判定用
+    //   Property / Error Flag
     // --------------------------------------------------
     
     this.error = false;
@@ -164,12 +130,10 @@ class Component extends React.Component {
       
       
       // --------------------------------------------------
-      //   Errorの場合
+      //   Error
       // --------------------------------------------------
       
-      if (
-        this.props.statusCode !== 200
-      ) {
+      if (props.statusCode !== 200) {
         throw new Error();
       }
       
@@ -178,42 +142,29 @@ class Component extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const argumentsObj = {
-        isServer: props.isServer,
-        pathname: props.pathname,
-      };
-      
-      this.stores = initStoreIndex(argumentsObj);
-      this.stores.pathname = props.pathname;
+      const stores = initStoreIndex({});
       
       
       // --------------------------------------------------
-      //   Update Data - Locale
+      //   Update Data - Pathname
       // --------------------------------------------------
       
-      if (Object.keys(this.stores.data.localeObj).length === 0) {
-        
-        const localeObj = locale({
-          acceptLanguage: props.reqAcceptLanguage
-        });
-        
-        this.stores.data.replaceLocaleObj(localeObj);
-        
-      }
+      stores.layout.replacePathname(props.pathname);
       
       
       // --------------------------------------------------
-      //   Update Data - Header
+      //   Update Data - Header Navigation Main
       // --------------------------------------------------
       
-      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      const headerNavMainArr = [
+        {
+          name: 'E-Mail確認',
+          href: '/email/confirmation',
+          as: '/email/confirmation',
+        }
+      ];
       
-      
-      // --------------------------------------------------
-      //   Update Data - Login User
-      // --------------------------------------------------
-      
-      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
+      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
       
       
     } catch (e) {
@@ -244,62 +195,38 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    // const { stores } = this.props;
-    
-    
-    // --------------------------------------------------
-    //   Header Navigation
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'E-Mail確認',
-        href: '/email/confirmation',
-        as: '/email/confirmation',
-      }
-    ];
-    
-    
-    
-    
-    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <Provider stores={this.stores}>
+      <Layout>
         
-        <IntlProvider 
-          locale={this.stores.data.localeObj.languageArr[0]}
-          messages={this.stores.data.localeObj.dataObj}
+        
+        {/* Head 内部のタグをここで追記する */}
+        <Head>
+          <title>E-Mail確認 - Game Users</title>
+        </Head>
+        
+        
+        {/* Contents */}
+        <div
+          css={css`
+            padding: 12px;
+            
+            @media screen and (max-width: 480px) {
+              padding: 12px 0;
+            }
+          `}
         >
           
-          <Layout headerNavMainArr={headerNavMainArr}>
-            
-            
-            {/* Head 内部のタグをここで追記する */}
-            <Head>
-              <title>E-Mail確認 - Game Users</title>
-            </Head>
-            
-            
-            {/* Contents */}
-            <Container>
-              
-              <Success />
-              
-            </Container>
-            
-          </Layout>
+          <Success />
           
-        </IntlProvider>
+        </div>
         
-      </Provider>
+        
+      </Layout>
     );
+    
   }
+  
 }
-
-export default withRoot(Component);

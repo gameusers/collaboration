@@ -19,27 +19,9 @@ import Error from 'next/error';
 import Head from 'next/head';
 import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
-import styled from 'styled-components';
-import lodashGet from 'lodash/get';
 
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
-
-import { locale } from '../../app/@locales/locale';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from '../../app/@modules/fetch';
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -58,29 +40,6 @@ import Layout from '../../app/common/layout/components/layout';
 import FormLogout from '../../app/logout/index/components/form-logout';
 
 
-// ---------------------------------------------
-//   Material UI を Next.js で利用するため
-// ---------------------------------------------
-
-import withRoot from '../../lib/material-ui/withRoot';
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  padding: 0 10px 18px 10px;
-  
-  @media screen and (max-width: 480px) {
-    padding: 0 0 18px 0;
-  }
-`;
-
-
 
 
 // --------------------------------------------------
@@ -89,47 +48,23 @@ const Container = styled.div`
 // --------------------------------------------------
 
 @observer
-class Component extends React.Component {
+export default class extends React.Component {
   
   
   // --------------------------------------------------
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res }) {
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const isServer = !process.browser;
-    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-    });
-    
-    const statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
+  static async getInitialProps({ pathname, req, res, login }) {
     
     
     // --------------------------------------------------
     //   ログインしていない時はログインページにリダイレクト
     // --------------------------------------------------
     
-    const login = lodashGet(resultObj, ['data', 'login'], false);
-    
     if (login === false) {
+      
+      const isServer = !process.browser;
       
       if (isServer && res) {
         res.writeHead(302, {
@@ -143,7 +78,11 @@ class Component extends React.Component {
     }
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return { pathname, statusCode: 200 };
     
   }
   
@@ -186,44 +125,30 @@ class Component extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const argumentsObj = {
-        isServer: props.isServer,
-        pathname: props.pathname,
-      };
-      
-      this.stores = initStoreIndex(argumentsObj);
-      this.stores.logoutIndex = initStoreLogoutIndex(argumentsObj, this.stores);
+      const stores = initStoreIndex({});
+      this.storeLogoutIndex = initStoreLogoutIndex({});
       
       
       // --------------------------------------------------
-      //   Update Data - Locale
+      //   Update Data - Pathname
       // --------------------------------------------------
       
-      if (Object.keys(this.stores.data.localeObj).length === 0) {
-        
-        const localeObj = locale({
-          acceptLanguage: props.reqAcceptLanguage
-        });
-        
-        this.stores.data.replaceLocaleObj(localeObj);
-        
-      }
+      stores.layout.replacePathname(props.pathname);
       
       
       // --------------------------------------------------
-      //   Update Data - Header
+      //   Update Data - Header Navigation Main
       // --------------------------------------------------
       
-      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      const headerNavMainArr = [
+        {
+          name: 'ログアウト',
+          href: '/logout',
+          as: '/logout',
+        },
+      ];
       
-      
-      // --------------------------------------------------
-      //   Update Data - Login User
-      // --------------------------------------------------
-      
-      if ('loginUsersObj' in props.initialPropsObj) {
-        this.stores.data.replaceLoginUsersObj(props.initialPropsObj.loginUsersObj);
-      }
+      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
       
       
     } catch (e) {
@@ -254,59 +179,41 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    // const stores = this.stores;
-    
-    
-    // --------------------------------------------------
-    //   Header Navigation
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'ログアウト',
-        href: '/logout',
-        as: '/logout',
-      },
-    ];
-    
-    
-    
-    
-    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <Provider stores={this.stores}>
+      <Provider storeLogoutIndex={this.storeLogoutIndex}>
         
-        <IntlProvider 
-          locale={this.stores.data.localeObj.languageArr[0]}
-          messages={this.stores.data.localeObj.dataObj}
-        >
+        <Layout>
           
-          <Layout headerNavMainArr={headerNavMainArr}>
-            
-            {/* Head 内部のタグをここで追記する */}
-            <Head>
-              <title>ログアウト - Game Users</title>
-            </Head>
-            
-            
-            <Container>
-              
-              
-              {/* ログアウト */}
-              <FormLogout />
-              
-              
-            </Container>
-            
-          </Layout>
           
-        </IntlProvider>
+          {/* Head 内部のタグをここで追記する */}
+          <Head>
+            <title>ログアウト - Game Users</title>
+          </Head>
+          
+          
+          {/* Contents */}
+          <div
+            css={css`
+              padding: 12px;
+              
+              @media screen and (max-width: 480px) {
+                padding: 12px 0;
+              }
+            `}
+          >
+            
+            
+            {/* ログアウト */}
+            <FormLogout />
+            
+            
+          </div>
+          
+          
+        </Layout>
         
       </Provider>
     );
@@ -314,5 +221,3 @@ class Component extends React.Component {
   }
   
 }
-
-export default withRoot(Component);

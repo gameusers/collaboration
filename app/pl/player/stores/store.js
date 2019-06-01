@@ -15,9 +15,7 @@ import { action, observable } from 'mobx';
 //   Store
 // --------------------------------------------------
 
-let storeLoginIndex = null;
-let storeLayout = null;
-let storeData = null;
+let storePlPlayer = null;
 
 
 
@@ -28,10 +26,6 @@ let storeData = null;
 
 class Store {
   
-  
-  // ---------------------------------------------
-  //   Header
-  // ---------------------------------------------
   
   /**
    * ページ情報を入れる配列
@@ -59,32 +53,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStorePlPlayer(argumentsObj, storeInstanceObj) {
+export default function initStorePlPlayer({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storePlPlayer === null) {
+    storePlPlayer = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (storeLoginIndex === null) {
-      storeLoginIndex = new Store();
-    }
-    
-    return storeLoginIndex;
-    
-  }
+  return storePlPlayer;
   
 }

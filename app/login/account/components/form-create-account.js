@@ -107,6 +107,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -122,6 +124,8 @@ export default injectIntl(class extends React.Component {
     
     
   }
+  
+  
   
   
   // --------------------------------------------------

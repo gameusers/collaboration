@@ -93,6 +93,14 @@ class Store {
   
   
   /**
+   * Navigation Topのアニメーションを行わない true / 行う false
+   * スクロールYがゼロのときはアニメーションを行わない
+   * @type {boolean}
+   */
+  headerNavTopImmediate = true;
+  
+  
+  /**
    * Navigation Topが表示されている場合 true
    * @type {boolean}
    */
@@ -117,87 +125,76 @@ class Store {
     //   Property
     // ---------------------------------------------
     
-    // this.headerScrollY = window.scrollY;
     const headerScrollY = window.scrollY;
     
     
-    // ---------------------------------------------
-    //   Check Scroll Up / Scroll Down
-    // ---------------------------------------------
-    
-    if (headerScrollY > this.headerScrollYOffset) {
-      this.headerScrollUp = false;
-    } else {
-      this.headerScrollUp = true;
-    }
-    
     
     // ---------------------------------------------
-    //   Navigation Top Show
+    //   headerScrollY === 0
     // ---------------------------------------------
     
-    // if (this.headerScrollUp) {
-    //     this.headerNavTopShow = true;
-    //   } else {
-    //     this.headerNavTopShow = false;
-    //   }
-    
-    if (this.headerHeroImageHeight < headerScrollY) {
+    if (headerScrollY === 0) {
       
-      if (this.headerScrollUp) {
-        this.headerNavTopShow = true;
+      this.headerNavTopImmediate = true;
+      this.headerScrollUp = false;
+      this.headerNavTopShow = true;
+      this.headerNavMainPositionSticky = false;
+      
+    } else {
+      
+      
+      this.headerNavTopImmediate = false;
+      
+      
+      // ---------------------------------------------
+      //   Check Scroll Up / Scroll Down
+      // ---------------------------------------------
+      
+      if (headerScrollY > this.headerScrollYOffset) {
+        this.headerScrollUp = false;
       } else {
-        this.headerNavTopShow = false;
+        this.headerScrollUp = true;
       }
       
+      
+      // ---------------------------------------------
+      //   Navigation Top Show
+      // ---------------------------------------------
+      
+      if (this.headerHeroImageHeight < headerScrollY) {
+        
+        if (this.headerScrollUp) {
+          this.headerNavTopShow = true;
+        } else {
+          this.headerNavTopShow = false;
+        }
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Navigation Main Position Sticky
+      // ---------------------------------------------
+      
+      if (this.headerNavTopHeight + this.headerHeroImageHeight < headerScrollY) {
+        this.headerNavMainPositionSticky = true;
+      } else {
+        this.headerNavMainPositionSticky = false;
+      }
+      
+    
     }
-    
-    
-    // ---------------------------------------------
-    //   Navigation Main Position Sticky
-    // ---------------------------------------------
-    
-    // if (this.headerHeroImageHeight < headerScrollY) {
-    //   this.headerNavMainPositionSticky = true;
-    // } else {
-    //   this.headerNavMainPositionSticky = false;
-    // }
-    
-    if (this.headerNavTopHeight + this.headerHeroImageHeight < headerScrollY) {
-      this.headerNavMainPositionSticky = true;
-    } else {
-      this.headerNavMainPositionSticky = false;
-    }
-    
-    // if ((53 + this.headerHeroImageHeight + 36) < headerScrollY) {
-    //   this.headerNavMainPositionSticky = true;
-    // } else {
-    //   this.headerNavMainPositionSticky = false;
-    // }
-    
-    // if (501 <= headerScrollY) {
-    //   this.headerNavMainPositionSticky = true;
-    // } else {
-    //   this.headerNavMainPositionSticky = false;
-    // }
-    
-    // console.log(chalk`
-    //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
-    //   Top + HeroImage: {green ${53 + this.headerHeroImageHeight - 36}}
-    //   headerScrollY: {green ${headerScrollY}}
-    // `);
-    
-    
     
     
     // console.log(chalk`
     //   headerScrollY: {green ${headerScrollY}}
+    //   this.headerNavTopImmediate: {green ${this.headerNavTopImmediate}}
     //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
-    //   Header Height: {green ${53 + this.headerHeroImageHeight + 36}}
     //   this.headerScrollUp: {green ${this.headerScrollUp}}
     //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
     //   this.headerNavMainPositionSticky: {green ${this.headerNavMainPositionSticky}}
     // `);
+    
     
     
     this.headerScrollYOffset = headerScrollY;

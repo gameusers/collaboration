@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -24,9 +25,7 @@ import lodashSet from 'lodash/set';
 //   Store
 // --------------------------------------------------
 
-let store = null;
-let storeLayout = null;
-let storeData = null;
+let storeImageAndVideo = null;
 
 
 
@@ -36,15 +35,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
   
   
   // ---------------------------------------------
@@ -161,32 +151,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreImageAndVideo(argumentsObj, storeInstanceObj) {
+export default function initStoreImageAndVideo({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storeImageAndVideo === null) {
+    storeImageAndVideo = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (store === null) {
-      store = new Store();
-    }
-    
-    return store;
-    
-  }
+  return storeImageAndVideo;
   
 }

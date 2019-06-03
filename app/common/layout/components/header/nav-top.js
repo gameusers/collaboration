@@ -57,7 +57,7 @@ import IconEject from '@material-ui/icons/Eject';
 //   react-spring
 // --------------------------------------------------
 
-const Container = ({ children, headerNavTopShow }) => {
+const Container = ({ children, headerNavTopImmediate, headerNavTopShow }) => {
   
   // const cssHeader = css`
   //   display: flex;
@@ -90,7 +90,8 @@ const Container = ({ children, headerNavTopShow }) => {
   `;
   
   const props = useSpring({
-    transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)'
+    transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)',
+    immediate: headerNavTopImmediate,
   });
   
   return <Header style={props}>{children}</Header>;
@@ -142,9 +143,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Menu
+    //   Store Value
     // --------------------------------------------------
     
+    const headerNavTopImmediate = lodashGet(stores, ['layout', 'headerNavTopImmediate'], true);
     const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
     
     
@@ -155,7 +157,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container headerNavTopShow={headerNavTopShow}>
+      <Container headerNavTopImmediate={headerNavTopImmediate} headerNavTopShow={headerNavTopShow}>
         
         
         {/* ロゴ */}

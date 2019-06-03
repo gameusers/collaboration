@@ -18,7 +18,6 @@ import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
-// import styled from 'styled-components';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -36,7 +35,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../app/@stores/index';
+import initStoreRoot from '../../app/@stores/root';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStorePlPlayer from '../../app/pl/player/stores/store';
 import initStoreIDForm from '../../app/common/id/stores/form';
@@ -109,8 +108,12 @@ export default class extends React.Component {
     // `);
     
     
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
     
     return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, playerID };
+    
     
   }
   
@@ -133,10 +136,6 @@ export default class extends React.Component {
     this.error = false;
     
     
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
     try {
       
       
@@ -157,14 +156,14 @@ export default class extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const stores = initStoreIndex({});
+      const stores = initStoreRoot({});
       
       this.storePlPlayer = initStorePlPlayer({});
-      this.stores.cardPlayer = initStoreCardPlayer(argumentsObj, this.stores);
-      this.stores.idForm = initStoreIDForm(argumentsObj, this.stores);
-      this.stores.gameForm = initStoreGameForm(argumentsObj, this.stores);
-      this.stores.imageAndVideo = initStoreImageAndVideo(argumentsObj, this.stores);
-      this.stores.imageAndVideoForm = initStoreImageAndVideoForm(argumentsObj, this.stores);
+      this.storeCardPlayer = initStoreCardPlayer({});
+      this.storeIDForm = initStoreIDForm({});
+      this.storeGameForm = initStoreGameForm({});
+      this.storeImageAndVideo = initStoreImageAndVideo({});
+      this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
       
       // --------------------------------------------------
@@ -209,6 +208,7 @@ export default class extends React.Component {
       
       
     } catch (e) {
+      // console.log(e.message);
       this.error = true;
     }
     
@@ -294,7 +294,10 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider storePlPlayer={this.storePlPlayer}>
+      <Provider
+        storePlPlayer={this.storePlPlayer}
+        storeCardPlayer={this.storeCardPlayer}
+      >
         
         <Layout>
           
@@ -303,7 +306,6 @@ export default class extends React.Component {
           <Head>
             <title>{title}</title>
           </Head>
-          
           
           
           
@@ -375,6 +377,8 @@ export default class extends React.Component {
           <Drawer>
             Drawer
           </Drawer>
+          
+          
           
           
         </Layout>

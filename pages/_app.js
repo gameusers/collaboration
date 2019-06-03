@@ -60,7 +60,7 @@ import { fetchWrapper } from '../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../app/@stores/index';
+import initStoreRoot from '../app/@stores/root';
 
 
 
@@ -118,7 +118,7 @@ class MyApp extends App {
     //   Stores
     // --------------------------------------------------
     
-    const stores = initStoreIndex();
+    const stores = initStoreRoot();
     
     
     // --------------------------------------------------
@@ -232,7 +232,7 @@ class MyApp extends App {
       
       const isServer = !process.browser;
       
-      // this.stores = isServer ? props.stores : initStoreIndex({});
+      // this.stores = isServer ? props.stores : initStoreRoot({});
       // console.log('_app.js / constructor');
       
       
@@ -244,7 +244,7 @@ class MyApp extends App {
       } else {
         
         // console.log('constructor / client');
-        this.stores = initStoreIndex({});
+        this.stores = initStoreRoot({});
         
         
         // --------------------------------------------------

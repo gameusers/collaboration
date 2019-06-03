@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,6 +16,7 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import keycode from 'keycode';
+import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
@@ -25,6 +26,7 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../../@modules/fetch';
+import { CustomError } from '../../../../@modules/error/custom';
 
 
 // ---------------------------------------------
@@ -44,15 +46,23 @@ const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@d
 const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
 
 
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
+
+import initStoreLayout from '../../../../common/layout/stores/layout';
+import initStoreData from '../../../../@stores/data';
+
+
 
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let store = null;
-let storeLayout = null;
-let storeData = null;
+let storeCardPlayer = null;
+let storeLayout = initStoreLayout({});
+let storeData = initStoreData({});
 
 
 
@@ -62,15 +72,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
   
   
   // ---------------------------------------------
@@ -1653,6 +1654,7 @@ class Store {
       
     }
     
+    
   };
   
   
@@ -1665,32 +1667,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreCardPlayer(argumentsObj, storeInstanceObj) {
+export default function initStoreCardPlayer({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storeCardPlayer === null) {
+    storeCardPlayer = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (store === null) {
-      store = new Store();
-    }
-    
-    return store;
-    
-  }
+  return storeCardPlayer;
   
 }

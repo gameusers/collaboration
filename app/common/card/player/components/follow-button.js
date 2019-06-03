@@ -16,7 +16,9 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -41,45 +43,10 @@ import IconFollowers from '@material-ui/icons/PermIdentity';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-const FollowersBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-  margin: 0 0 0 10px;
-`;
-
-const StyledIconFollowers = styled(IconFollowers)`
-  && {
-    font-size: 24px;
-    padding: 0;
-  }
-`;
-
-const ButtonBox = styled.div`
-  position: relative;
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeCardPlayer')
 @observer
 export default class extends React.Component {
   
@@ -91,6 +58,8 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -110,6 +79,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -121,7 +92,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, users_id, followedCount, followed } = this.props;
+    const { stores, storeCardPlayer, users_id, followedCount, followed } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -134,7 +105,7 @@ export default class extends React.Component {
       handleFollowDialogOpen,
       handleFollowDialogClose
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     
@@ -232,30 +203,64 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          align-items: center;
+          
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        <ButtonBox>
+        
+        {/* Button */}
+        <div
+          css={css`
+            position: relative;
+          `}
+        >
           {componentButton}
-        </ButtonBox>
+        </div>
         
         
-        <FollowersBox>
-          <StyledIconFollowers />{followedCount} 人
-        </FollowersBox>
+        {/* Followers */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            margin: 0 0 0 10px;
+          `}
+        >
+          <IconFollowers
+            css={css`
+              font-size: 24px;
+              padding: 0;
+            `}
+          />
+          {followedCount} 人
+        </div>
         
         
+        
+        
+        {/* Dialog */}
         <Dialog
           open={followDialogOpen}
           onClose={() => handleFollowDialogClose(users_id)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
+          
           <DialogTitle id="alert-dialog-title">フォロー解除</DialogTitle>
+          
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               このユーザーのフォローを解除しますか？
             </DialogContentText>
           </DialogContent>
+          
           <DialogActions>
             <Button onClick={() => handleFollowSubmit('unfollow', users_id)} color="primary" autoFocus>
               はい
@@ -265,9 +270,11 @@ export default class extends React.Component {
               いいえ
             </Button>
           </DialogActions>
+          
         </Dialog>
         
-      </Container>
+        
+      </div>
     );
     
   }

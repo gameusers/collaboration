@@ -10,7 +10,7 @@ import initStoreData from './data';
 //   共通で必要になるストアをここで作成して返す
 // --------------------------------------------------
 
-export default function initStoreIndex() {
+export default function initStoreRoot() {
 
   const storeInstanceObj = {
     layout: initStoreLayout({}),

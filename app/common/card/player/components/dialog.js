@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,7 +16,9 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -43,17 +45,17 @@ import CardGame from './game';
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Container = styled.div`
-  margin: 0;
-  padding: 0;
-`;
+// const Container = styled.div`
+//   margin: 0;
+//   padding: 0;
+// `;
 
 
 // --------------------------------------------------
 //   Dialog
 // --------------------------------------------------
 
-const StyledDialogContent = styled(DialogContent)`
+const cssDialogContent = css`
   && {
     margin: 0;
     padding: 0 !important;
@@ -84,14 +86,25 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores')
+@inject('stores', 'storeCardPlayer')
 @observer
 export default class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -100,7 +113,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores } = this.props;
+    const { classes, storeCardPlayer } = this.props;
     
     const {
       
@@ -108,7 +121,7 @@ export default class extends React.Component {
       cardPlayerDialog,
       handleCardPlayerDialogClose
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     // console.log(chalk`
@@ -139,14 +152,14 @@ export default class extends React.Component {
             paper: classes.paper
           }}
         >
-          <StyledDialogContent>
+          <DialogContent css={cssDialogContent}>
             <CardPlayer
               cardPlayers_id={cardPlayerDialogObj._id}
               showCardPlayerButton={false}
               showCardGameButton={false}
               showFollow={true}
             />
-          </StyledDialogContent>
+          </DialogContent>
         </Dialog>
       ;
     
@@ -175,7 +188,7 @@ export default class extends React.Component {
             paper: classes.paper
           }}
         >
-          <StyledDialogContent>
+          <DialogContent css={cssDialogContent}>
             <CardGame
               cardGames_id={cardPlayerDialogObj._id}
               showGameName={true}
@@ -183,7 +196,7 @@ export default class extends React.Component {
               showCardGameButton={false}
               showFollow={true}
             />
-          </StyledDialogContent>
+          </DialogContent>
         </Dialog>
       ;
       
@@ -202,9 +215,9 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <React.Fragment>
         {component}
-      </Container>
+      </React.Fragment>
     );
     
   }

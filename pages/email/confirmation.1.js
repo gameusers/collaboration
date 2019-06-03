@@ -45,7 +45,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../app/@stores/index';
+import initStoreRoot from '../../app/@stores/index';
 
 
 // ---------------------------------------------
@@ -183,7 +183,7 @@ class Component extends React.Component {
         pathname: props.pathname,
       };
       
-      this.stores = initStoreIndex(argumentsObj);
+      this.stores = initStoreRoot(argumentsObj);
       this.stores.pathname = props.pathname;
       
       

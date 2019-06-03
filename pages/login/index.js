@@ -29,7 +29,7 @@ import { css, jsx } from '@emotion/core';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../app/@stores/index';
+import initStoreRoot from '../../app/@stores/root';
 import initStoreLoginIndex from '../../app/login/index/stores/store';
 
 
@@ -85,6 +85,7 @@ export default class extends React.Component {
     
     return { pathname, statusCode: 200 };
     
+    
   }
   
   
@@ -122,7 +123,7 @@ export default class extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const stores = initStoreIndex({});
+      const stores = initStoreRoot({});
       this.storeLoginIndex = initStoreLoginIndex({});
       
       

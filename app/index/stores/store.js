@@ -2,7 +2,23 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+const chalk = require('chalk');
+const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import { action, observable } from 'mobx';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+
+
 
 
 // --------------------------------------------------
@@ -10,7 +26,8 @@ import { action, observable } from 'mobx';
 // --------------------------------------------------
 
 let storeIndex = null;
-let storeLayout = null;
+
+
 
 
 // --------------------------------------------------
@@ -21,49 +38,29 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Header Menu
+  //   Data
   // ---------------------------------------------
   
-  @observable headerMenuArr = [
-    {
-      name: 'フィード',
-      pathname: '/'
-    },
-    {
-      name: 'ゲーム',
-      pathname: '/gc'
-    },
-    {
-      name: 'ユーザー',
-      pathname: '/uc'
-    },
-    {
-      name: 'テスト1',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト2',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト3',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト4',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト5',
-      pathname: '/test'
-    },
-    {
-      name: 'テスト6',
-      pathname: '/test'
-    }
-  ]
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable dataObj = {};
+  
+  
+  /**
+   * フォーム用のデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleEdit({ pathArr, value }) {
+    lodashSet(this.dataObj, pathArr, value);
+  };
+  
   
 }
+
 
 
 
@@ -71,24 +68,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreIndex(isServer, storeLayoutInstance) {
+export default function initStoreIndex({}) {
   
-  if (storeLayout === null && storeLayoutInstance) {
-    storeLayout = storeLayoutInstance;
+  if (storeIndex === null) {
+    storeIndex = new Store();
   }
   
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (storeIndex === null) {
-      storeIndex = new Store();
-    }
-    
-    return storeIndex;
-    
-  }
+  return storeIndex;
   
 }

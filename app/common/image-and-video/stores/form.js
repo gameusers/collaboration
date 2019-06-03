@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -19,15 +20,21 @@ import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
 
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
+
+import initStoreLayout from '../../../common/layout/stores/layout';
+
+
 
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let store = null;
-let storeLayout = null;
-let storeData = null;
+let storeImageAndVideoForm = null;
+let storeLayout = initStoreLayout({});;
 
 
 
@@ -37,15 +44,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
   
   
   // ---------------------------------------------
@@ -94,17 +92,26 @@ class Store {
     }
     
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
-      storeLayout.handleSnackbarOpen('error', '最新のブラウザを利用してください。');
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'F8CN8ofG',
+      });
       return;
     }
     
     if (!fileObj.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
-      storeLayout.handleSnackbarOpen('error', 'アップロードできるのは JPEG, PNG, GIF, SVG の画像ファイルです。');
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: '7hEpil7k',
+      });
       return;
     }
     
     if (fileObj.size > process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT) {
-      storeLayout.handleSnackbarOpen('error', '画像のサイズが大きすぎます。');
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'kq3UNeWF',
+      });
       return;
     }
     
@@ -192,7 +199,10 @@ class Store {
     
     if (src === '') {
       
-      storeLayout.handleSnackbarOpen('error', '画像を選択してください。');
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'QzXkutIP',
+      });
       return;
       
       
@@ -202,7 +212,10 @@ class Store {
     
     } else if (duplication) {
       
-      storeLayout.handleSnackbarOpen('error', 'すでに同じ画像が追加されています。');
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'lisio9HB',
+      });
       return;
       
       
@@ -250,7 +263,10 @@ class Store {
         
       } else {
         
-        storeLayout.handleSnackbarOpen('error', `アップロードできる画像は${limit}枚までです`);
+        storeLayout.handleSnackbarOpen({
+          variant: 'error',
+          messageID: '9msxBlM4',
+        });
         return;
         
       }
@@ -299,32 +315,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreImageAndVideoForm(argumentsObj, storeInstanceObj) {
+export default function initStoreImageAndVideoForm({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storeImageAndVideoForm === null) {
+    storeImageAndVideoForm = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (store === null) {
-      store = new Store();
-    }
-    
-    return store;
-    
-  }
+  return storeImageAndVideoForm;
   
 }

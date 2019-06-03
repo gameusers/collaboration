@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -18,7 +18,6 @@ import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
-// import keycode from 'keycode';
 
 
 // ---------------------------------------------
@@ -26,24 +25,14 @@ import lodashHas from 'lodash/has';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
+import { CustomError } from '../../../@modules/error/custom';
 
 
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
 
-import { errorsArrIntoErrorMessage } from '../../../@format/error';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validation_id } = require('../../../@validations/_id');
-// const validationIDsPlatform = require('../../../@database/ids/validations/platform');
-// const validationIDsLabel = require('../../../@database/ids/validations/label');
-// const validationIDsID = require('../../../@database/ids/validations/id');
-// const validationIDsPublicSetting = require('../../../@database/ids/validations/public-setting');
+import initStoreLayout from '../../../common/layout/stores/layout';
 
 
 
@@ -52,9 +41,8 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 //   Store
 // --------------------------------------------------
 
-let store = null;
-let storeLayout = null;
-let storeData = null;
+let storeIDForm = null;
+let storeLayout = initStoreLayout({});
 
 
 
@@ -64,15 +52,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
   
   
   // ---------------------------------------------
@@ -163,7 +142,7 @@ class Store {
         // ---------------------------------------------
         
         if ('errorsArr' in resultObj) {
-          throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+          throw new CustomError({ errorsArr: resultObj.errorsArr });
         }
         
         
@@ -399,7 +378,10 @@ class Store {
     const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
     
     if (!form_id) {
-      storeLayout.handleSnackbarOpen('error', '削除するIDを選んでください');
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: '-agWH-z_',
+      });
       return;
     }
       
@@ -446,7 +428,7 @@ class Store {
       const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       
       if (!form_id) {
-        throw new Error('編集するIDを選んでください');
+        throw new CustomError({ errorsArr: [{ code: 'cOQptDp5', messageID: 'xCv6uxj7' }] });
       }
       
       
@@ -468,7 +450,7 @@ class Store {
       // ---------------------------------------------
       
       if (!formPlatform || !formID || !formPublicSetting) {
-        throw new Error('フォームに必要な情報が入力されていません');
+        throw new CustomError({ errorsArr: [{ code: '5Geof8YQ', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -498,18 +480,12 @@ class Store {
       });
       
       
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(resultObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      
-      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -572,7 +548,10 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'IDを編集しました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'qyzB8x1J',
+      });
       
       
       // ---------------------------------------------
@@ -588,19 +567,15 @@ class Store {
       
     } catch (errorObj) {
       
-      // console.log(`\n---------- errorObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(errorObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(chalk`
-      //   errorObj.message: {green ${errorObj.message}}
-      // `);
       
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {
@@ -639,8 +614,6 @@ class Store {
       storeLayout.handleButtonDisable({ _id: `${_id}-idFormDeleteSubmit` });
       
       
-      
-      
       // ---------------------------------------------
       //   編集するIDが選ばれていない場合、エラー
       // ---------------------------------------------
@@ -648,17 +621,8 @@ class Store {
       const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       
       if (!form_id) {
-        throw new Error('削除するIDを選んでください');
+        throw new CustomError({ errorsArr: [{ code: '-PQYNFlb', messageID: '-agWH-z_' }] });
       }
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   フォームのデータを取得
-      // ---------------------------------------------
-      
-      // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       
       
       // ---------------------------------------------
@@ -686,7 +650,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -737,7 +701,10 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'IDを削除しました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: '3q16I-ld',
+      });
       
       
       // ---------------------------------------------
@@ -753,17 +720,15 @@ class Store {
       
     } catch (errorObj) {
       
-      // console.log(`
-      //   ----- errorObj -----\n
-      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {
@@ -808,7 +773,6 @@ class Store {
       //   フォームのデータを取得
       // ---------------------------------------------
       
-      // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
       const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
       const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
@@ -822,7 +786,7 @@ class Store {
       // ---------------------------------------------
       
       if (!formPlatform || !formID || !formPublicSetting) {
-        throw new Error('フォームに必要な情報が入力されていません');
+        throw new CustomError({ errorsArr: [{ code: 'OHCO0_uv', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -834,7 +798,6 @@ class Store {
       
       const formData = new FormData();
       
-      // formData.append('_id', form_id);
       formData.append('platform', formPlatform);
       formData.append('gameID', formGameID);
       formData.append('label',  formLabel);
@@ -859,7 +822,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -903,7 +866,10 @@ class Store {
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', 'IDを新規登録しました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'IUvc-1VM',
+      });
       
       
       // ---------------------------------------------
@@ -919,17 +885,15 @@ class Store {
       
     } catch (errorObj) {
       
-      // console.log(`
-      //   ----- errorObj -----\n
-      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', errorObj.message);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {
@@ -976,32 +940,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreIDForm(argumentsObj, storeInstanceObj) {
+export default function initStoreIDForm({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (storeIDForm === null) {
+    storeIDForm = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
-  
-  
-  if (isServer) {
-    
-    return new Store();
-    
-  } else {
-    
-    if (store === null) {
-      store = new Store();
-    }
-    
-    return store;
-    
-  }
+  return storeIDForm;
   
 }

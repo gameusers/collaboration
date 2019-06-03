@@ -17,8 +17,10 @@ import util from 'util';
 import React from 'react';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import moment from 'moment';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -35,7 +37,7 @@ import Button from '@material-ui/core/Button';
 import IconHealing from '@material-ui/icons/Healing';
 import IconSchedule from '@material-ui/icons/Schedule';
 import IconStars from '@material-ui/icons/Stars';
-import IconCard1 from '@material-ui/icons/Layers';
+import IconLayers from '@material-ui/icons/Layers';
 
 
 
@@ -50,41 +52,17 @@ moment.locale('ja');
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
-
-const Container = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  line-height: 1.6em;
-  margin: 0;
-  padding: 0;
-  
-  @media screen and (max-width: 768px) {
-    flex-flow: row wrap;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Name And Status
-// ---------------------------------------------
-
-const TopBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-`;
-
 
 // ---------------------------------------------
 //   Name
 // ---------------------------------------------
 
-const NameNoColor = styled.div`
+const cssNameNoColor = css`
   font-size: 14px;
   margin: 0 2px 0 0;
-  padding: 0;
 `;
 
 
@@ -92,46 +70,19 @@ const NameNoColor = styled.div`
 //   Status
 // ---------------------------------------------
 
-const StatusBox = styled.div`
+const cssStatusBox = css`
   display: flex;
   flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-  // background-color: pink;
 `;
 
-const StyledIconHealing = styled(IconHealing)`
+const cssIconHealing = css`
   && {
     font-size: 18px;
     margin: 1px 2px 0 0;
   }
 `;
 
-const Status = styled.div`
-  font-size: 14px;
-  margin: 0 2px 0 0;
-`;
-
-
-// ---------------------------------------------
-//   Access Time
-// ---------------------------------------------
-
-const AccessTimeBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0;
-  padding: 0;
-`;
-
-const StyledIconSchedule = styled(IconSchedule)`
-  && {
-    font-size: 18px;
-    margin: 1px 3px 0 0;
-  }
-`;
-
-const AccessTime = styled.div`
+const cssStatus = css`
   font-size: 14px;
   margin: 0 2px 0 0;
 `;
@@ -141,21 +92,19 @@ const AccessTime = styled.div`
 //   Level
 // ---------------------------------------------
 
-const LevelBox = styled.div`
+const cssLevelBox = css`
   display: flex;
   flex-flow: row nowrap;
-  margin: 0;
-  padding: 0;
 `;
 
-const StyledIconStars = styled(IconStars)`
+const cssIconStars = css`
   && {
     font-size: 18px;
     margin: 1px 3px 0 0;
   }
 `;
 
-const Level = styled.div`
+const cssLevel = css`
   font-size: 14px;
   margin: 0 6px 0 0;
 `;
@@ -165,13 +114,7 @@ const Level = styled.div`
 //   Cards
 // ---------------------------------------------
 
-const BottomBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0 0 0 0;
-`;
-
-const StyledButton = styled(Button)`
+const cssButton = css`
   && {
     margin: 0 6px 0 0;
     padding: 0 6px 0 3px;
@@ -181,21 +124,8 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const StyledIconCard1 = styled(IconCard1)`
-  && {
-    font-size: 18px;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Game
-// ---------------------------------------------
-
-const GameBox = styled.div`
-  font-size: 14px;
-  margin: 0;
-  padding: 0;
+const cssIconLayers = css`
+  font-size: 18px;
 `;
 
 
@@ -205,7 +135,7 @@ const GameBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeCardPlayer')
 @observer
 export default class extends React.Component {
   
@@ -217,6 +147,8 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -237,6 +169,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -249,7 +183,9 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const {
+      
       stores,
+      storeCardPlayer,
       
       anonymity,
       
@@ -267,11 +203,12 @@ export default class extends React.Component {
       showCardPlayerButton,
       cardGames_id,
       showCardGameButton
+      
     } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
-    const { handleCardPlayerDialogOpen } = stores.cardPlayer;
+    const { handleCardPlayerDialogOpen } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -282,20 +219,20 @@ export default class extends React.Component {
     
     if (anonymity) {
       
-      componentName = <NameNoColor>ななしさん</NameNoColor>;
+      componentName = <div css={cssNameNoColor}>ななしさん</div>;
       
     } else if (name) {
       
       componentName =
-        <NameNoColor>
+        <div css={cssNameNoColor}>
           <Link href={`${stores.data.urlBase}pl/${playerID}`}>
             <a>{name}</a>
           </Link>
-        </NameNoColor>;
+        </div>;
       
     } else {
       
-      componentName = <NameNoColor>削除済みユーザー</NameNoColor>;
+      componentName = <div css={cssNameNoColor}>削除済みユーザー</div>;
       
     }
     
@@ -308,15 +245,15 @@ export default class extends React.Component {
     
     if (anonymity) {
       
-      componentStatus = <StatusBox><StyledIconHealing /><Status>774</Status></StatusBox>;
+      componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>774</div></div>;
       
     } else if (status) {
       
-      componentStatus = <StatusBox><StyledIconHealing /><Status>{status}</Status></StatusBox>;
+      componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>{status}</div></div>;
       
     } else {
       
-      componentStatus = <StatusBox><StyledIconHealing /><Status>deleted</Status></StatusBox>;
+      componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>deleted</div></div>;
       
     }
     
@@ -333,7 +270,31 @@ export default class extends React.Component {
       const datetimeAccess = moment(accessDate).utcOffset(0);
       const accessTime = datetimeAccess.from(datetimeNow);
       
-      componentAccessTime = <AccessTimeBox><StyledIconSchedule /><AccessTime>{accessTime}</AccessTime></AccessTimeBox>;
+      componentAccessTime =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+          `}
+        >
+          <IconSchedule
+            css={css`
+              && {
+                font-size: 18px;
+                margin: 1px 3px 0 0;
+              }
+            `}
+          />
+            <div
+              css={css`
+                font-size: 14px;
+                margin: 0 2px 0 0;
+              `}
+            >
+              {accessTime}
+            </div>
+        </div>
+      ;
       
     }
     
@@ -349,11 +310,16 @@ export default class extends React.Component {
     if (showGameName && gameName && gameUrlID) {
       
       componentBottomArr.push(
-        <GameBox key="gameBox">
+        <div
+          css={css`
+            font-size: 14px;
+          `}
+          key="gameBox"
+        >
           <Link href={`${stores.data.urlBase}gc/${gameUrlID}`}>
             <a>{gameName}</a>
           </Link>
-        </GameBox>
+        </div>
       );
       
     } else {
@@ -368,19 +334,19 @@ export default class extends React.Component {
         const level = Math.floor(experience / 10);
         
         componentBottomArr.push(
-          <LevelBox key="levelBox">
-            <StyledIconStars />
-            <Level>Lv.{level}</Level>
-          </LevelBox>
+          <div css={cssLevelBox} key="levelBox">
+            <IconStars css={cssIconStars} />
+            <div css={cssLevel}>Lv.{level}</div>
+          </div>
         );
         
       } else {
         
         componentBottomArr.push(
-          <LevelBox key="levelBox">
-            <StyledIconStars />
-            <Level>Lv.0</Level>
-          </LevelBox>
+          <div css={cssLevelBox} key="levelBox">
+            <IconStars css={cssIconStars} />
+            <div css={cssLevel}>Lv.0</div>
+          </div>
         );
         
       }
@@ -409,15 +375,16 @@ export default class extends React.Component {
         // --------------------------------------------------
         
         componentBottomArr.push(
-          <StyledButton
+          <Button
+            css={cssButton}
             variant="outlined"
             onClick={() => handleCardPlayerDialogOpen('player', cardPlayers_id)}
             disabled={buttonDisabledCardPlayer}
             key="cardPlayersButton"
           >
-            <StyledIconCard1 />
+            <IconLayers css={cssIconLayers} />
             Player
-          </StyledButton>
+          </Button>
         );
         
       }
@@ -446,15 +413,16 @@ export default class extends React.Component {
         // --------------------------------------------------
         
         componentBottomArr.push(
-          <StyledButton
+          <Button
+            css={cssButton}
             variant="outlined"
             onClick={() => handleCardPlayerDialogOpen('game', cardGames_id)}
             disabled={buttonDisabledCardGame}
             key="cardGamesButton"
           >
-            <StyledIconCard1 />
+            <IconLayers css={cssIconLayers} />
             Game
-          </StyledButton>
+          </Button>
         );
         
       }
@@ -468,17 +436,39 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
-        <TopBox>
+      <div
+        css={css`
+          display: flex;
+          flex-flow: column wrap;
+          line-height: 1.6em;
+          
+          @media screen and (max-width: 768px) {
+            flex-flow: row wrap;
+          }
+        `}
+      >
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+          `}
+        >
           {componentName}
           {componentStatus}
           {componentAccessTime}
-        </TopBox>
+        </div>
         
-        <BottomBox>
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+          `}
+        >
           {componentBottomArr}
-        </BottomBox>
-      </Container>
+        </div>
+        
+      </div>
     );
     
   }

@@ -22,6 +22,7 @@ import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
@@ -47,7 +48,7 @@ import IconMenu from '@material-ui/icons/Menu';
 
 const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPositionSticky }) => {
   
-  const cssNav = css`
+  const Nav = styled(animated.nav)`
     width: 100%;
     height: 36px;
     background-color: #25283D;
@@ -60,7 +61,22 @@ const Container = ({ children, headerScrollUp, headerNavTopShow, headerNavMainPo
     transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
   });
   
-  return <nav css={cssNav} style={props}>{children}</nav>;
+  return <Nav style={props}>{children}</Nav>;
+  
+  // const cssNav = css`
+  //   width: 100%;
+  //   height: 36px;
+  //   background-color: #25283D;
+  //   position: sticky;
+  //   top: 0;
+  //   z-index: 1000;
+  // `;
+  
+  // const props = useSpring({
+  //   transform: headerScrollUp && headerNavTopShow && headerNavMainPositionSticky ? 'translateY(53px)' : 'translateY(0px)',
+  // });
+  
+  // return <nav css={cssNav} style={props}>{children}</nav>;
   
 };
 

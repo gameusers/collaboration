@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -40,8 +41,7 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 // --------------------------------------------------
 
 let store = null;
-let storeLayout = null;
-let storeData = null;
+let storeGameForm = null;
 
 
 
@@ -51,15 +51,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
   
   
   // ---------------------------------------------
@@ -292,32 +283,38 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreGameForm(argumentsObj, storeInstanceObj) {
+export default function initStoreGameForm({}) {
   
-  const isServer = argumentsObj.isServer;
-  
-  
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  if (store === null) {
+    store = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
+  return store;
+  
+  // const isServer = argumentsObj.isServer;
   
   
-  if (isServer) {
+  // if ('layout' in storeInstanceObj) {
+  //   storeLayout = storeInstanceObj.layout;
+  // }
+  
+  // if ('data' in storeInstanceObj) {
+  //   storeData = storeInstanceObj.data;
+  // }
+  
+  
+  // if (isServer) {
     
-    return new Store();
+  //   return new Store();
     
-  } else {
+  // } else {
     
-    if (store === null) {
-      store = new Store();
-    }
+  //   if (store === null) {
+  //     store = new Store();
+  //   }
     
-    return store;
+  //   return store;
     
-  }
+  // }
   
 }

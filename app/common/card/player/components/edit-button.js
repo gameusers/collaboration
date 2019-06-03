@@ -16,7 +16,9 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -29,23 +31,10 @@ import Button from '@material-ui/core/Button';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeCardPlayer')
 @observer
 export default class extends React.Component {
   
@@ -57,6 +46,8 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -76,6 +67,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -87,13 +80,13 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, users_id } = this.props;
+    const { stores, storeCardPlayer, _id, users_id } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
     const { loginUsersObj } = stores.data;
     
-    const { handleFormOpen } = stores.cardPlayer;
+    const { handleFormOpen } = storeCardPlayer;
     
     
     
@@ -167,9 +160,13 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         {componentButton}
-      </Container>
+      </div>
     );
     
   }

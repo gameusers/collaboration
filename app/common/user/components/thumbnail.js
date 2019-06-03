@@ -16,20 +16,9 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const ThumbnailImg = styled.img`
-  border-radius: 6px;
-  width: 48px;
-`;
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 
@@ -42,10 +31,19 @@ const ThumbnailImg = styled.img`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -72,7 +70,15 @@ export default class extends React.Component {
     //   Img Size
     // --------------------------------------------------
     
-    let code = <ThumbnailImg src={src} />;
+    let code =
+      <img
+        css={css`
+          border-radius: 6px;
+          width: 48px;
+        `}
+        src={src}
+      />
+    ;
     
     
     // --------------------------------------------------

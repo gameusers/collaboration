@@ -18,9 +18,12 @@ import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
-import styled from 'styled-components';
 import Swiper from 'react-id-swiper';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
+import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
@@ -44,18 +47,6 @@ import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 
 
 // ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
-
-import { locale } from '../app/@locales/locale';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -66,7 +57,8 @@ import { fetchWrapper } from '../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../app/@stores/index';
+import initStoreRoot from '../app/@stores/root';
+import initStoreIndex from '../app/index/stores/store';
 
 
 // ---------------------------------------------
@@ -74,13 +66,6 @@ import initStoreIndex from '../app/@stores/index';
 // ---------------------------------------------
 
 import Layout from '../app/common/layout/components/layout';
-
-
-// ---------------------------------------------
-//   Material UI を Next.js で利用するため
-// ---------------------------------------------
-
-import withRoot from '../lib/material-ui/withRoot';
 
 
 
@@ -207,105 +192,25 @@ const StyledIconChatBubble = styled(IconChatBubble)`
 // --------------------------------------------------
 
 @observer
-class Component extends React.Component {
+export default class extends React.Component {
   
   
   // --------------------------------------------------
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res, query }) {
+  static async getInitialProps({ pathname, req, res, login }) {
     
     
     // --------------------------------------------------
-    //   Property
+    //   Return
     // --------------------------------------------------
     
-    const isServer = !process.browser;
-    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    return { pathname, statusCode: 200 };
     
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-    });
-    
-    let statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
-    
-    
-    // console.log(`
-    //   ----- initialPropsObj.usersObj -----\n
-    //   ${util.inspect(initialPropsObj.usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   playerID: {green ${playerID}}
-    //   myPlayerID: {green ${myPlayerID}}
-    // `);
-    
-    
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage };
     
   }
   
-  
-  // static getInitialProps({ pathname, req, res, query }) {
-    
-  //   const isServer = !!req;
-    
-    
-  //   // --------------------------------------------------
-  //   //   テスト用　初期データ
-  //   // --------------------------------------------------
-    
-  //   const id = 'p0V_RsaT1l8';
-    
-    
-  //   const initialData = {
-      
-  //     id,
-      
-      
-  //     // ---------------------------------------------
-  //     //   Layout - アクセス履歴
-  //     // ---------------------------------------------
-      
-  //     historyStateObj: {
-  //       path: '/',
-  //       param1: '/',
-  //       param2: '',
-  //       param3: '',
-  //       param4: '',
-  //       param5: '',
-  //       file: 'index.js',
-  //       id: 'index',
-  //       dateTime: '2017-07-31T14:36:00'
-  //     },
-      
-      
-  //     // ---------------------------------------------
-  //     //   Layout - Panel
-  //     // ---------------------------------------------
-      
-  //     // panelExpandedObj: {
-  //     //   'p0V_RsaT1l8': true, // BBS スレッド
-  //     //   'ks8WPvlQpbg': true // BBS
-  //     // },
-      
-  //   };
-    
-  //   return { isServer, pathname, id, initialData };
-    
-  // }
   
   
   
@@ -325,10 +230,6 @@ class Component extends React.Component {
     this.error = false;
     
     
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
     try {
       
       
@@ -336,7 +237,7 @@ class Component extends React.Component {
       //   Error
       // --------------------------------------------------
       
-      if (this.props.statusCode !== 200) {
+      if (props.statusCode !== 200) {
         throw new Error();
       }
       
@@ -345,107 +246,43 @@ class Component extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const argumentsObj = {
-        isServer: props.isServer,
-        pathname: props.pathname,
-      };
-      
-      this.stores = initStoreIndex(argumentsObj);
-      this.stores.pathname = props.pathname;
+      const stores = initStoreRoot({});
+      this.storeIndex = initStoreIndex({});
       
       
       // --------------------------------------------------
-      //   Update Data - Locale
+      //   Update Data - Pathname
       // --------------------------------------------------
       
-      if (Object.keys(this.stores.data.localeObj).length === 0) {
-        
-        const localeObj = locale({
-          acceptLanguage: props.reqAcceptLanguage
-        });
-        
-        this.stores.data.replaceLocaleObj(localeObj);
-        
-      }
+      stores.layout.replacePathname(props.pathname);
       
       
       // --------------------------------------------------
-      //   Update Data - Header
+      //   Update Data - Header Navigation Main
       // --------------------------------------------------
       
-      this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+      const headerNavMainArr = [
+        {
+          name: 'ゲームコミュニティ',
+          href: '/gc',
+          as: '/gc',
+        },
+        {
+          name: 'ユーザーコミュニティ',
+          href: '/uc',
+          as: '/uc',
+        }
+      ];
       
-      
-      // --------------------------------------------------
-      //   Update Data - Login User
-      // --------------------------------------------------
-      
-      this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
+      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
       
       
     } catch (e) {
       this.error = true;
     }
     
-    
   }
   
-  
-  // constructor(props) {
-    
-  //   super(props);
-    
-
-  //   // --------------------------------------------------
-  //   //   Store
-  //   // --------------------------------------------------
-    
-  //   // const storeLayoutInstance = initStoreLayout(props.isServer, props.initialData);
-    
-  //   // this.stores = {
-  //   //   layout: storeLayoutInstance,
-  //   //   current: initStoreIndex(props.isServer, storeLayoutInstance),
-  //   //   pathname: props.pathname
-  //   // };
-    
-    
-  //   try {
-      
-      
-  //     // --------------------------------------------------
-  //     //   Errorの場合
-  //     // --------------------------------------------------
-      
-  //     // if (
-  //     //   this.props.statusCode !== 200 ||
-  //     //   // 'loginUsersObj' in props.initialPropsObj === false ||
-  //     //   'usersObj' in props.initialPropsObj === false ||
-  //     //   'cardPlayersObj' in props.initialPropsObj === false ||
-  //     //   // 'cardGamesObj' in props.initialPropsObj === false ||
-  //     //   'cardsArr' in props.initialPropsObj === false
-  //     // ) {
-  //     //   throw new Error();
-  //     // }
-      
-      
-  //     // --------------------------------------------------
-  //     //   Store
-  //     // --------------------------------------------------
-      
-  //     const argumentsObj = {
-  //       isServer: props.isServer,
-  //       pathname: props.pathname,
-  //     };
-      
-  //     this.stores = initStoreIndex(argumentsObj);
-      
-      
-  //   } catch (e) {
-  //     this.error = true;
-  //   }
-    
-    
-  // }
   
   
   
@@ -489,532 +326,493 @@ class Component extends React.Component {
     
     
     // --------------------------------------------------
-    //   Header Navigation
-    // --------------------------------------------------
-    
-    const headerNavMainArr = [
-      {
-        name: 'ゲームコミュニティ',
-        href: '/gc',
-        as: '/gc',
-      },
-      {
-        name: 'ユーザーコミュニティ',
-        href: '/uc',
-        as: '/uc',
-      }
-    ];
-    
-    // const headerNavMainArr = [
-    //   {
-    //     name: 'ゲームコミュニティ',
-    //     href: '/gc',
-    //     as: '/gc',
-    //   },
-    //   {
-    //     name: 'ユーザーコミュニティ',
-    //     href: '/uc',
-    //     as: '/uc',
-    //   }
-    // ];
-    
-    
-    
-    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <Provider stores={this.stores}>
+      <Provider storeIndex={this.storeIndex}>
         
-        <IntlProvider 
-          locale={this.stores.data.localeObj.languageArr[0]}
-          messages={this.stores.data.localeObj.dataObj}
-        >
+        <Layout>
           
-          <Layout headerNavMainArr={headerNavMainArr}>
+          
+          {/* Head 内部のタグをここで追記する */}
+          <Head>
+            <title>Game Users</title>
+          </Head>
+          
+          
+          {/* Contents */}
+          <Container>
             
             
-            {/* Head 内部のタグをここで追記する */}
-            <Head>
-              <title>Game Users</title>
-            </Head>
-            
-            
-            {/* Contents */}
-            <Container>
+            <CardBox>
               
+              <CardCategory>BBS</CardCategory>
               
-              <CardBox>
-                
-                <CardCategory>BBS</CardCategory>
-                
-                <Swiper {...swiperSettingObj} style={{ margin: '0 0 10px 0' }}>
-                
-                  <StyledCard>
-                    
-                    <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
-                      <CardMedia
-                        image="/static/img/sample/0r8294vpatkc9nl1.jpg"
-                        title="Grand Theft Auto V"
-                        style={{ height: 0, paddingTop: '56.25%' }}
-                      />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>GTA5について語ろう！</CardTitle>
-                        <Typography component="p">
-                          5は面白かった！ストーリーで遊べるイベントも2種類用意されてたので、2週目も楽しめた。売れてるだけのことはある！出荷数7500万。本課金の純利益は2億4000万ドル。GTA5すげーな。
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>30 分前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>250</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          Grand Theft Auto V
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
+              <Swiper {...swiperSettingObj} style={{ margin: '0 0 10px 0' }}>
+              
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
+                    <CardMedia
+                      image="/static/img/sample/0r8294vpatkc9nl1.jpg"
+                      title="Grand Theft Auto V"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                  </CardMediaBox>
                   
                   
-                  
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox>
-                      <CardMedia
-                        image="/static/img/sample/thumbnail-1.jpg"
-                        title="Contemplative Reptile"
-                        style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
-                      />
-                    </CardMediaBox>
-                    
+                  <Link prefetch href="/test">
                     <StyledCardContent>
-                      <CardTitle>ダウンタウン熱血行進曲 それゆけ大運動会について語ろう！</CardTitle>
+                      <CardTitle>GTA5について語ろう！</CardTitle>
                       <Typography component="p">
-                        1990年に発売されたアクションゲーム、「ダウンタウン熱血行進曲 それゆけ大運動会」。当時は4種目の競技で競い合う、一見普通の運動会ながら「あらゆる場面で殴る、蹴るの妨害行為が可能」というハチャメチャ仕様のアクションパーティゲームとして話題に。
+                        5は面白かった！ストーリーで遊べるイベントも2種類用意されてたので、2週目も楽しめた。売れてるだけのことはある！出荷数7500万。本課金の純利益は2億4000万ドル。GTA5すげーな。
                       </Typography>
                       <CardInfoBox>
                         
                         <CardInfoLeft>
                           <CardInfoDateTimeBox>
                             <StyledIconSchedule />
-                            <CardInfoText>2 日前</CardInfoText>
+                            <CardInfoText>30 分前</CardInfoText>
                           </CardInfoDateTimeBox>
                         </CardInfoLeft>
                         
                         <CardInfoRight>
                           <CardInfoCommentsTotalBox>
                             <StyledIconChatBubble />
-                            <CardInfoText>3</CardInfoText>
+                            <CardInfoText>250</CardInfoText>
                           </CardInfoCommentsTotalBox>
                         </CardInfoRight>
                         
                       </CardInfoBox>
                     </StyledCardContent>
-                    
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
-                        ダウンタウン熱血行進曲 それゆけ大運動会
+                        Grand Theft Auto V
                       </Button>
                     </CardActions>
-                    
-                  </StyledCard>
+                  </Link>
                   
-                  
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
-                      <CardMedia
-                        image="/static/img/sample/g0dzjmsmuu32drqb.jpg"
-                        title="Metal Gear Solid V: The Phantom Pain"
-                        style={{ height: 0, paddingTop: '56.25%' }}
-                      />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>Metal Gear Solid Vについて語ろう！</CardTitle>
-                        <Typography component="p">
-                          ソ連のアフガニスタン侵攻以来、冷戦は新たな局面に移行していた。1984年、隻眼に義手の男がそのアフガニスタンに現れる。スネークと呼ばれるその男は、過去に米国の非政府諜報機関サイファーにより、歴史の表舞台から消された伝説の傭兵だった。
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>5 日前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>34</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          Metal Gear Solid V: The Phantom Pain
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
-                  
-                  
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}>
-                      <CardMedia
-                        image="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
-                        title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
-                        style={{ height: 0, paddingTop: '56.25%' }}
-                      />
-                      <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>ゼルダの伝説 ブレス オブ ザ ワイルドについて語ろう！</CardTitle>
-                        <Typography component="p">
-                          Nintendo Switch / Wii U　ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>6 日前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>100</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          ゼルダの伝説 ブレス オブ ザ ワイルド
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
+                </StyledCard>
                 
-                </Swiper>
                 
-              </CardBox>
-              
-              
-              
-              <CardBox>
                 
-                <CardCategory>募集</CardCategory>
                 
-                <Swiper {...swiperSettingObj}>
+                <StyledCard>
                   
-                  <StyledCard>
-                    
-                    <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
-                      <CardMedia
-                        image="https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg"
-                        title="フォーオナー"
-                        style={{ height: 0, paddingTop: '56.25%' }}
-                      />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>ギルドメンバーを募集しています</CardTitle>
-                        <Typography component="p">
-                          フォーオナーは、伝説の戦士たちの戦いを描いた、壮大なスケールのアクションゲームです。伝説の偉大な戦士―　勇猛なナイト、残忍なヴァイキング、冷酷な侍の中からヒーローを選び、大軍勢のAIが入り乱れる戦地で戦います。
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>5 分前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>310</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          フォーオナー
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
+                  <CardMediaBox>
+                    <CardMedia
+                      image="/static/img/sample/thumbnail-1.jpg"
+                      title="Contemplative Reptile"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  <StyledCardContent>
+                    <CardTitle>ダウンタウン熱血行進曲 それゆけ大運動会について語ろう！</CardTitle>
+                    <Typography component="p">
+                      1990年に発売されたアクションゲーム、「ダウンタウン熱血行進曲 それゆけ大運動会」。当時は4種目の競技で競い合う、一見普通の運動会ながら「あらゆる場面で殴る、蹴るの妨害行為が可能」というハチャメチャ仕様のアクションパーティゲームとして話題に。
+                    </Typography>
+                    <CardInfoBox>
+                      
+                      <CardInfoLeft>
+                        <CardInfoDateTimeBox>
+                          <StyledIconSchedule />
+                          <CardInfoText>2 日前</CardInfoText>
+                        </CardInfoDateTimeBox>
+                      </CardInfoLeft>
+                      
+                      <CardInfoRight>
+                        <CardInfoCommentsTotalBox>
+                          <StyledIconChatBubble />
+                          <CardInfoText>3</CardInfoText>
+                        </CardInfoCommentsTotalBox>
+                      </CardInfoRight>
+                      
+                    </CardInfoBox>
+                  </StyledCardContent>
+                  
+                  <CardActions>
+                    <Button size="small" color="primary">
+                      ダウンタウン熱血行進曲 それゆけ大運動会
+                    </Button>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
+                    <CardMedia
+                      image="/static/img/sample/g0dzjmsmuu32drqb.jpg"
+                      title="Metal Gear Solid V: The Phantom Pain"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                  </CardMediaBox>
                   
                   
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox>
-                      <CardMedia
-                        image="https://gameusers.org/assets/img/game/650/thumbnail.jpg"
-                        title="HEAVY RAIN"
-                        style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
-                      />
-                    </CardMediaBox>
-                    
+                  <Link prefetch href="/test">
                     <StyledCardContent>
-                      <CardTitle>アイテム交換希望</CardTitle>
+                      <CardTitle>Metal Gear Solid Vについて語ろう！</CardTitle>
                       <Typography component="p">
-                        愛は、どこまで貫けるのか——。人は、どこまで許されるのか———。小さな街で起きた、奇怪な連続誘拐殺人事件を題材にしたサスペンスアドベンチャーゲーム。4人の主人公の視点によって物語が展開され、わずかな手がかりをもとに犯人を追う。
+                        ソ連のアフガニスタン侵攻以来、冷戦は新たな局面に移行していた。1984年、隻眼に義手の男がそのアフガニスタンに現れる。スネークと呼ばれるその男は、過去に米国の非政府諜報機関サイファーにより、歴史の表舞台から消された伝説の傭兵だった。
                       </Typography>
                       <CardInfoBox>
                         
                         <CardInfoLeft>
                           <CardInfoDateTimeBox>
                             <StyledIconSchedule />
-                            <CardInfoText>1 日前</CardInfoText>
+                            <CardInfoText>5 日前</CardInfoText>
                           </CardInfoDateTimeBox>
                         </CardInfoLeft>
                         
                         <CardInfoRight>
                           <CardInfoCommentsTotalBox>
                             <StyledIconChatBubble />
-                            <CardInfoText>9</CardInfoText>
+                            <CardInfoText>34</CardInfoText>
                           </CardInfoCommentsTotalBox>
                         </CardInfoRight>
                         
                       </CardInfoBox>
                     </StyledCardContent>
-                    
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
-                        HEAVY RAIN -心の軋むとき-
+                        Metal Gear Solid V: The Phantom Pain
                       </Button>
                     </CardActions>
-                    
-                  </StyledCard>
+                  </Link>
                   
-                  
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox>
-                      <CardMedia
-                        image="https://gameusers.org/assets/img/game/647/thumbnail.jpg"
-                        title="どうぶつの森 ポケットキャンプ"
-                        style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
-                      />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>一緒に遊びましょう！</CardTitle>
-                        <Typography component="p">
-                          あなたは、キャンプ場の管理人。どうぶつたちの集まるにぎやかなキャンプ場を作ります。イベントも盛りだくさん。
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>3 日前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>16</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          どうぶつの森 ポケットキャンプ
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
-                  
-                  
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox onClick={() => stores.layout.handleModalVideoOpen('youtube', 'y-NkzONb2Bw')}>
-                      <CardMedia
-                        image="https://img.youtube.com/vi/y-NkzONb2Bw/mqdefault.jpg"
-                        title="マリオテニス エース"
-                        style={{ height: 0, paddingTop: '56.25%' }}
-                      />
-                      <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>フレンド募集</CardTitle>
-                        <Typography component="p">
-                          Nintendo 公式チャンネル / マリオテニス エース 紹介映像
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>10 日前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>5</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          マリオテニス エース
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
-                  
-                  
-                  
-                  <StyledCard>
-                    
-                    <CardMediaBox>
-                      <CardMedia
-                        image="https://gameusers.org/assets/img/game/639/thumbnail.jpg"
-                        title="アイスクライマー"
-                        style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
-                      />
-                    </CardMediaBox>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <StyledCardContent>
-                        <CardTitle>アイスクライマー配信視聴者募集！</CardTitle>
-                        <Typography component="p">
-                          HEAVY RAIN やります！クリアしたけど超モヤモヤするので全エンディングをYouTubeで見ます。謎はすべて解けるのか？見てや！
-                        </Typography>
-                        <CardInfoBox>
-                          
-                          <CardInfoLeft>
-                            <CardInfoDateTimeBox>
-                              <StyledIconSchedule />
-                              <CardInfoText>12 日前</CardInfoText>
-                            </CardInfoDateTimeBox>
-                          </CardInfoLeft>
-                          
-                          <CardInfoRight>
-                            <CardInfoCommentsTotalBox>
-                              <StyledIconChatBubble />
-                              <CardInfoText>80</CardInfoText>
-                            </CardInfoCommentsTotalBox>
-                          </CardInfoRight>
-                          
-                        </CardInfoBox>
-                      </StyledCardContent>
-                    </Link>
-                    
-                    
-                    <Link prefetch href="/test">
-                      <CardActions>
-                        <Button size="small" color="primary">
-                          アイスクライマー
-                        </Button>
-                      </CardActions>
-                    </Link>
-                    
-                  </StyledCard>
-                  
-                </Swiper>
+                </StyledCard>
                 
-              </CardBox>
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.layout.handleModalVideoOpen('youtube', '1yIHLQJNvDw')}>
+                    <CardMedia
+                      image="https://img.youtube.com/vi/1yIHLQJNvDw/mqdefault.jpg"
+                      title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                    <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>ゼルダの伝説 ブレス オブ ザ ワイルドについて語ろう！</CardTitle>
+                      <Typography component="p">
+                        Nintendo Switch / Wii U　ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>6 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>100</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <CardActions>
+                      <Button size="small" color="primary">
+                        ゼルダの伝説 ブレス オブ ザ ワイルド
+                      </Button>
+                    </CardActions>
+                  </Link>
+                  
+                </StyledCard>
               
+              </Swiper>
               
-            </Container>
+            </CardBox>
             
             
-          </Layout>
+            
+            <CardBox>
+              
+              <CardCategory>募集</CardCategory>
+              
+              <Swiper {...swiperSettingObj}>
+                
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg')}>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/u/4d7l2h4e7v35ov6s.jpg"
+                      title="フォーオナー"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>ギルドメンバーを募集しています</CardTitle>
+                      <Typography component="p">
+                        フォーオナーは、伝説の戦士たちの戦いを描いた、壮大なスケールのアクションゲームです。伝説の偉大な戦士―　勇猛なナイト、残忍なヴァイキング、冷酷な侍の中からヒーローを選び、大軍勢のAIが入り乱れる戦地で戦います。
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>5 分前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>310</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <CardActions>
+                      <Button size="small" color="primary">
+                        フォーオナー
+                      </Button>
+                    </CardActions>
+                  </Link>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/game/650/thumbnail.jpg"
+                      title="HEAVY RAIN"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  <StyledCardContent>
+                    <CardTitle>アイテム交換希望</CardTitle>
+                    <Typography component="p">
+                      愛は、どこまで貫けるのか——。人は、どこまで許されるのか———。小さな街で起きた、奇怪な連続誘拐殺人事件を題材にしたサスペンスアドベンチャーゲーム。4人の主人公の視点によって物語が展開され、わずかな手がかりをもとに犯人を追う。
+                    </Typography>
+                    <CardInfoBox>
+                      
+                      <CardInfoLeft>
+                        <CardInfoDateTimeBox>
+                          <StyledIconSchedule />
+                          <CardInfoText>1 日前</CardInfoText>
+                        </CardInfoDateTimeBox>
+                      </CardInfoLeft>
+                      
+                      <CardInfoRight>
+                        <CardInfoCommentsTotalBox>
+                          <StyledIconChatBubble />
+                          <CardInfoText>9</CardInfoText>
+                        </CardInfoCommentsTotalBox>
+                      </CardInfoRight>
+                      
+                    </CardInfoBox>
+                  </StyledCardContent>
+                  
+                  <CardActions>
+                    <Button size="small" color="primary">
+                      HEAVY RAIN -心の軋むとき-
+                    </Button>
+                  </CardActions>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/game/647/thumbnail.jpg"
+                      title="どうぶつの森 ポケットキャンプ"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>一緒に遊びましょう！</CardTitle>
+                      <Typography component="p">
+                        あなたは、キャンプ場の管理人。どうぶつたちの集まるにぎやかなキャンプ場を作ります。イベントも盛りだくさん。
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>3 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>16</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <CardActions>
+                      <Button size="small" color="primary">
+                        どうぶつの森 ポケットキャンプ
+                      </Button>
+                    </CardActions>
+                  </Link>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox onClick={() => stores.layout.handleModalVideoOpen('youtube', 'y-NkzONb2Bw')}>
+                    <CardMedia
+                      image="https://img.youtube.com/vi/y-NkzONb2Bw/mqdefault.jpg"
+                      title="マリオテニス エース"
+                      style={{ height: 0, paddingTop: '56.25%' }}
+                    />
+                    <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>フレンド募集</CardTitle>
+                      <Typography component="p">
+                        Nintendo 公式チャンネル / マリオテニス エース 紹介映像
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>10 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>5</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <CardActions>
+                      <Button size="small" color="primary">
+                        マリオテニス エース
+                      </Button>
+                    </CardActions>
+                  </Link>
+                  
+                </StyledCard>
+                
+                
+                
+                <StyledCard>
+                  
+                  <CardMediaBox>
+                    <CardMedia
+                      image="https://gameusers.org/assets/img/game/639/thumbnail.jpg"
+                      title="アイスクライマー"
+                      style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
+                    />
+                  </CardMediaBox>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <StyledCardContent>
+                      <CardTitle>アイスクライマー配信視聴者募集！</CardTitle>
+                      <Typography component="p">
+                        HEAVY RAIN やります！クリアしたけど超モヤモヤするので全エンディングをYouTubeで見ます。謎はすべて解けるのか？見てや！
+                      </Typography>
+                      <CardInfoBox>
+                        
+                        <CardInfoLeft>
+                          <CardInfoDateTimeBox>
+                            <StyledIconSchedule />
+                            <CardInfoText>12 日前</CardInfoText>
+                          </CardInfoDateTimeBox>
+                        </CardInfoLeft>
+                        
+                        <CardInfoRight>
+                          <CardInfoCommentsTotalBox>
+                            <StyledIconChatBubble />
+                            <CardInfoText>80</CardInfoText>
+                          </CardInfoCommentsTotalBox>
+                        </CardInfoRight>
+                        
+                      </CardInfoBox>
+                    </StyledCardContent>
+                  </Link>
+                  
+                  
+                  <Link prefetch href="/test">
+                    <CardActions>
+                      <Button size="small" color="primary">
+                        アイスクライマー
+                      </Button>
+                    </CardActions>
+                  </Link>
+                  
+                </StyledCard>
+                
+              </Swiper>
+              
+            </CardBox>
+            
+            
+          </Container>
           
-        </IntlProvider>
+          
+        </Layout>
         
       </Provider>
     );
+    
   }
+  
 }
-
-export default withRoot(Component);

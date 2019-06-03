@@ -35,7 +35,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 //   Stores
 // ---------------------------------------------
 
-import initStoreIndex from '../../app/@stores/index';
+import initStoreRoot from '../../app/@stores/root';
 
 
 // ---------------------------------------------
@@ -142,7 +142,7 @@ export default class extends React.Component {
       //   Store
       // --------------------------------------------------
       
-      const stores = initStoreIndex({});
+      const stores = initStoreRoot({});
       
       
       // --------------------------------------------------

@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,8 +16,10 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -45,61 +47,17 @@ import SimpleIcons from 'simple-icons-react-component';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const Container = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  color: #3f51b5;
-  border: 1px solid #3f51b5;
-  border-radius: 18px;
-  margin: 8px 8px 0 0;
-`;
-
-const AvatarMainBox = styled.div`
-  
-`;
-
-const AvatarSubBox = styled.div`
-  margin-left: auto;
-`;
-
-const StyledAvatar = styled(Avatar)`
+const cssAvatar = css`
   && {
     width: 32px;
     height: 32px;
     line-height: 1;
     background-color: #003791;
-    // z-index: 0 !important;
   }
-`;
-
-const StyledAvatarNoImage = styled(Avatar)`
-  && {
-    width: 32px;
-    height: 32px;
-    background-color: #3f51b5;
-  }
-`;
-
-const TextBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  font-size: 14px;
-  line-height: 1.4;
-  padding: 4px 14px 4px 6px;
-`;
-
-const Label = styled.span`
-  font-weight: bold;
-  padding: 0 4px 0 0;
-`;
-
-const ID = styled.span`
-  
 `;
 
 
@@ -113,10 +71,19 @@ const ID = styled.span`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -152,11 +119,11 @@ export default class extends React.Component {
     if (platform === 'PlayStation') {
       
       componentAvatar =
-        <StyledAvatar alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
+        <Avatar css={cssAvatar} alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
           <div style={{ 'width': '80%', 'marginTop': '4px' }}>
             <SimpleIcons name="PlayStation" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'PlayStation';
       
@@ -168,11 +135,11 @@ export default class extends React.Component {
     } else if (platform === 'Xbox') {
       
       componentAvatar =
-        <StyledAvatar alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
+        <Avatar css={cssAvatar} alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
           <div style={{ 'width': '75%', 'marginTop': '4px' }}>
             <SimpleIcons name="Xbox" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Xbox';
       
@@ -184,11 +151,11 @@ export default class extends React.Component {
     } else if (platform === 'Nintendo') {
       
       componentAvatar =
-        <StyledAvatar alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
+        <Avatar css={cssAvatar} alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
           <div style={{ 'width': '55%', 'marginTop': '4px' }}>
             <SimpleIcons name="Nintendo" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Nintendo';
       
@@ -200,9 +167,9 @@ export default class extends React.Component {
     } else if (platform === 'PC') {
       
       componentAvatar =
-        <StyledAvatar alt="PC" style={{ 'backgroundColor': '#000000' }}>
+        <Avatar css={cssAvatar} alt="PC" style={{ 'backgroundColor': '#000000' }}>
           <IconPC />
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = gamesName ? `PC [${gamesName}]` : 'PC';
       
@@ -214,11 +181,11 @@ export default class extends React.Component {
     } else if (platform === 'Android') {
       
       componentAvatar =
-        <StyledAvatar alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
+        <Avatar css={cssAvatar} alt="Android" style={{ 'backgroundColor': '#A4C639' }}>
           <div style={{ 'width': '75%', 'marginTop': '4px' }}>
             <SimpleIcons name="Android" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = gamesName ? `Android [${gamesName}]` : 'Android';
       
@@ -230,11 +197,11 @@ export default class extends React.Component {
     } else if (platform === 'iOS') {
       
       componentAvatar =
-        <StyledAvatar alt="Apple" style={{ 'backgroundColor': '#999999' }}>
+        <Avatar css={cssAvatar} alt="Apple" style={{ 'backgroundColor': '#999999' }}>
           <div style={{ 'width': '75%', 'marginTop': '2px' }}>
             <SimpleIcons name="Apple" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = gamesName ? `iOS [${gamesName}]` : 'iOS';
       
@@ -246,11 +213,11 @@ export default class extends React.Component {
     } else if (platform === 'Steam') {
       
       componentAvatar =
-        <StyledAvatar alt="Steam" style={{ 'backgroundColor': '#000000' }}>
+        <Avatar css={cssAvatar} alt="Steam" style={{ 'backgroundColor': '#000000' }}>
           <div style={{ 'width': '80%', 'marginTop': '4px' }}>
             <SimpleIcons name="Steam" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Steam';
       
@@ -262,11 +229,11 @@ export default class extends React.Component {
     } else if (platform === 'Origin') {
       
       componentAvatar =
-        <StyledAvatar alt="Origin" style={{ 'backgroundColor': '#F56C2D' }}>
+        <Avatar css={cssAvatar} alt="Origin" style={{ 'backgroundColor': '#F56C2D' }}>
           <div style={{ 'width': '80%', 'marginTop': '4px' }}>
             <SimpleIcons name="Origin" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Origin';
       
@@ -278,11 +245,11 @@ export default class extends React.Component {
     } else if (platform === 'Discord') {
       
       componentAvatar =
-        <StyledAvatar alt="Discord" style={{ 'backgroundColor': '#7289DA' }}>
+        <Avatar css={cssAvatar} alt="Discord" style={{ 'backgroundColor': '#7289DA' }}>
           <div style={{ 'width': '65%', 'marginTop': '5px', 'marginRight': '1px' }}>
             <SimpleIcons name="Discord" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Discord';
       
@@ -294,11 +261,11 @@ export default class extends React.Component {
     } else if (platform === 'Skype') {
       
       componentAvatar =
-        <StyledAvatar alt="Skype" style={{ 'backgroundColor': '#00AFF0' }}>
+        <Avatar css={cssAvatar} alt="Skype" style={{ 'backgroundColor': '#00AFF0' }}>
           <div style={{ 'width': '70%', 'marginTop': '4px' }}>
             <SimpleIcons name="Skype" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Skype';
       
@@ -310,11 +277,11 @@ export default class extends React.Component {
     } else if (platform === 'ICQ') {
       
       componentAvatar =
-        <StyledAvatar alt="ICQ" style={{ 'backgroundColor': '#7EBD00' }}>
+        <Avatar css={cssAvatar} alt="ICQ" style={{ 'backgroundColor': '#7EBD00' }}>
           <div style={{ 'width': '75%', 'marginTop': '4px' }}>
             <SimpleIcons name="ICQ" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'ICQ';
       
@@ -326,11 +293,11 @@ export default class extends React.Component {
     } else if (platform === 'Line') {
       
       componentAvatar =
-        <StyledAvatar alt="Line" style={{ 'backgroundColor': '#00C300' }}>
+        <Avatar css={cssAvatar} alt="Line" style={{ 'backgroundColor': '#00C300' }}>
           <div style={{ 'width': '75%', 'marginTop': '5px' }}>
             <SimpleIcons name="Line" color="white" />
           </div>
-        </StyledAvatar>
+        </Avatar>
       ;
       labelValue = 'Line';
       
@@ -342,9 +309,17 @@ export default class extends React.Component {
     } else if (platform === 'Other') {
       
       componentAvatar =
-        <StyledAvatarNoImage>
+        <Avatar
+          css={css`
+            && {
+              width: 32px;
+              height: 32px;
+              background-color: #3f51b5;
+            }
+          `}
+        >
           <IconGrade />
-        </StyledAvatarNoImage>
+        </Avatar>
       ;
       
     }
@@ -370,9 +345,13 @@ export default class extends React.Component {
       const src = lodashGet(gamesThumbnailArr, [0, 'srcSetArr', 0, 'src'], '');
       
       componentSubAvatar =
-        <AvatarSubBox>
-          <StyledAvatar alt={gamesName} src={src} />
-        </AvatarSubBox>
+        <div
+          css={css`
+            margin-left: auto;
+          `}
+        >
+          <Avatar css={cssAvatar} alt={gamesName} src={src} />
+        </div>
       ;
     }
     
@@ -399,22 +378,52 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          color: #3f51b5;
+          border: 1px solid #3f51b5;
+          border-radius: 18px;
+          margin: 8px 8px 0 0;
+        `}
+      >
         
-        <AvatarMainBox>
+        
+        <div>
           {componentAvatar}
-        </AvatarMainBox>
+        </div>
         
-        <TextBox
-          style={{ paddingRight: componentSubAvatar ? 6 : 14 }}
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            font-size: 14px;
+            line-height: 1.4;
+            padding: ${componentSubAvatar ? '4px 6px 4px 6px' : '4px 14px 4px 6px'}
+          `}
         >
-          <Label>{labelValue}:</Label>
-          <ID>{id}</ID>
-        </TextBox>
+          
+          <span
+            css={css`
+              font-weight: bold;
+              padding: 0 4px 0 0;
+            `}
+          >
+            {labelValue}:
+          </span>
+          
+          <span>{id}</span>
+          
+        </div>
+        
         
         {componentSubAvatar}
         
-      </Container>
+        
+      </div>
     );
     
   }

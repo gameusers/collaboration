@@ -263,8 +263,6 @@ export default class extends React.Component {
         componentCardsArr.push(
           <CardPlayer
             _id={valueObj.cardPlayers_id}
-            // cardGames_id="TzjNMDQyl"
-            // showCardGameButton={true}
             showFollow={true}
             key={index}
           />
@@ -297,6 +295,10 @@ export default class extends React.Component {
       <Provider
         storePlPlayer={this.storePlPlayer}
         storeCardPlayer={this.storeCardPlayer}
+        storeIDForm={this.storeIDForm}
+        storeGameForm={this.storeGameForm}
+        storeImageAndVideo={this.storeImageAndVideo}
+        storeImageAndVideoForm={this.storeImageAndVideoForm}
       >
         
         <Layout>

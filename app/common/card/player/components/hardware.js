@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,91 +16,38 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
+//   Material UI / Icon
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/Gamepad';
-
-
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
+import IconGamepad from '@material-ui/icons/Gamepad';
 
 
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-
-// ---------------------------------------------
-//   見出し
-// ---------------------------------------------
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
+const cssHeading = css`
   margin: 3px 0 0 4px;
 `;
 
-
-// ---------------------------------------------
-//   項目
-// ---------------------------------------------
-
-const ItemBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  // line-height: 2.0em;
-  margin: 4px 0 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-const Item = styled.div`
+const cssItem = css`
   margin: 0 20px 0 0;
-  padding: 0;
   
   @media screen and (max-width: 480px) {
     margin: 0;
   }
 `;
 
-// const ItemInactive = styled.div`
-//   margin: 0 20px 0 0;
-//   padding: 0;
-//   color: #FE2E64;
-  
-//   @media screen and (max-width: 480px) {
-//     margin: 0;
-//   }
-// `;
-
-const SpanColor = styled.span`
+const cssSpanColor = css`
   color: #088A08;
 `;
 
@@ -116,10 +63,19 @@ const SpanColor = styled.span`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -134,25 +90,17 @@ export default class extends React.Component {
     let tempArr = [];
     
     
-    // --------------------------------------------------
-    //   必要な情報がない場合、空のコンポーネントを返す
-    // --------------------------------------------------
-    
-    // if (!Array.isArray(hardwareArr) || hardwareArr.length === 0) {
-    //   return null;
-    // }
     
     
     // --------------------------------------------------
     //   見出し
     // --------------------------------------------------
     
-    let componentHeading = <Heading>所有ハードウェア<SpanColor>（昔所有）</SpanColor></Heading>;
+    let componentHeading = <h3 css={cssHeading}>所有ハードウェア<span css={cssSpanColor}>（昔所有）</span></h3>;
     
     if (hardwarePlayingArr) {
-      componentHeading = <Heading>ハードウェア</Heading>;
+      componentHeading = <h3 css={cssHeading}>ハードウェア</h3>;
     }
-    
     
     
     // ---------------------------------------------
@@ -166,7 +114,7 @@ export default class extends React.Component {
       }
       
       componentArr.push(
-        <Item key="hardwareActive">{tempArr.join(' / ')}</Item>
+        <div css={cssItem} key="hardwareActive">{tempArr.join(' / ')}</div>
       );
       
     }
@@ -185,7 +133,7 @@ export default class extends React.Component {
       }
       
       componentArr.push(
-        <Item key="hardwareInactive"><SpanColor>{tempArr.join(' / ')}</SpanColor></Item>
+        <div css={cssItem} key="hardwareInactive"><span css={cssSpanColor}>{tempArr.join(' / ')}</span></div>
       );
       
     }
@@ -202,7 +150,7 @@ export default class extends React.Component {
       }
       
       componentArr.push(
-        <Item key="hardwarePlaying">{tempArr.join(' / ')}</Item>
+        <div css={cssItem} key="hardwarePlaying">{tempArr.join(' / ')}</div>
       );
       
     }
@@ -221,11 +169,25 @@ export default class extends React.Component {
     //   コンポーネント作成
     // ---------------------------------------------
     
-    const componentBox = <ItemBox>{componentArr}</ItemBox>;
+    const componentBox =
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          margin: 4px 0 0 0;
+          
+          @media screen and (max-width: 480px) {
+            flex-flow: column wrap;
+          }
+        `}
+      >
+        {componentArr}
+      </div>
+    ;
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -243,18 +205,40 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
+        
+        
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
           
-        {/* 見出し */}
-        <HeadingBox>
-          <StyledIcon />
+          <IconGamepad
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
           {componentHeading}
-        </HeadingBox>
+          
+        </div>
+        
         
         {/* ハードウェア */}
         {componentBox}
-          
-      </Container>
+        
+        
+      </div>
     );
     
   }

@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,20 +16,19 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import moment from 'moment';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/Person';
+import IconPerson from '@material-ui/icons/Person';
 
 
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
 
 
 // ---------------------------------------------
@@ -42,55 +41,12 @@ moment.locale('ja');
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-
-// ---------------------------------------------
-//   見出し
-// ---------------------------------------------
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
-  margin: 3px 0 0 4px;
-`;
-
-
-// ---------------------------------------------
-//   項目
-// ---------------------------------------------
-
-const ItemBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 4px 0 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-const Item = styled.div`
+const cssItem = css`
   margin: 0 20px 0 0;
-  padding: 0;
   
   @media screen and (max-width: 480px) {
     margin: 0;
@@ -108,10 +64,19 @@ const Item = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -152,6 +117,8 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   コンポーネント作成 - プロフィール項目（年齢、性別など）
     // --------------------------------------------------
@@ -173,7 +140,7 @@ export default class extends React.Component {
     
     if (age) {
       componentBasicsArr.push(
-        <Item key="age"><strong>年齢:</strong> {age}</Item>
+        <div css={cssItem} key="age"><strong>年齢:</strong> {age}</div>
       );
     }
     
@@ -194,7 +161,7 @@ export default class extends React.Component {
     
     if (sex) {
       componentBasicsArr.push(
-        <Item key="sex"><strong>性別:</strong> {sex}</Item>
+        <div css={cssItem} key="sex"><strong>性別:</strong> {sex}</div>
       );
     }
     
@@ -205,7 +172,7 @@ export default class extends React.Component {
     
     if (addressAlternativeText) {
       componentBasicsArr.push(
-        <Item key="address"><strong>住所:</strong> {addressAlternativeText}</Item>
+        <div css={cssItem} key="address"><strong>住所:</strong> {addressAlternativeText}</div>
       );
     }
     
@@ -224,7 +191,7 @@ export default class extends React.Component {
     
     if (gamingExperience) {
       componentBasicsArr.push(
-        <Item key="gamingExperience"><strong>ゲーム歴:</strong> {gamingExperience}</Item>
+        <div css={cssItem} key="gamingExperience"><strong>ゲーム歴:</strong> {gamingExperience}</div>
       );
     }
     
@@ -235,7 +202,7 @@ export default class extends React.Component {
     
     if (Array.isArray(hobbiesValueArr) && hobbiesValueArr.length > 0) {
       componentBasicsArr.push(
-        <Item key="hobbie"><strong>趣味:</strong> {hobbiesValueArr.join(' / ')}</Item>
+        <div css={cssItem} key="hobbie"><strong>趣味:</strong> {hobbiesValueArr.join(' / ')}</div>
       );
     }
     
@@ -246,7 +213,7 @@ export default class extends React.Component {
     
     if (Array.isArray(specialSkillsValueArr) && specialSkillsValueArr.length > 0) {
       componentBasicsArr.push(
-        <Item key="specialSkills"><strong>特技:</strong> {specialSkillsValueArr.join(' / ')}</Item>
+        <div css={cssItem} key="specialSkills"><strong>特技:</strong> {specialSkillsValueArr.join(' / ')}</div>
       );
     }
     
@@ -258,9 +225,27 @@ export default class extends React.Component {
     let componentBasicsBox = '';
     
     if (componentBasicsArr.length > 0) {
-       componentBasicsBox = <ItemBox>{componentBasicsArr}</ItemBox>;
+      
+      componentBasicsBox =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 4px 0 0 0;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+            }
+          `}
+        >
+          {componentBasicsArr}
+        </div>
+      ;
+      
     } else {
+      
       return null;
+      
     }
     
     
@@ -281,17 +266,46 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        <HeadingBox>
-          <StyledIcon />
-          <Heading>プロフィール</Heading>
-        </HeadingBox>
+        
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
+          
+          <IconPerson
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
+          <h3
+            css={css`
+              margin: 3px 0 0 4px;
+            `}
+          >
+            プロフィール
+          </h3>
+          
+        </div>
+        
         
         {/* 各項目 */}
         {componentBasicsBox}
         
-      </Container>
+        
+      </div>
     );
     
   }

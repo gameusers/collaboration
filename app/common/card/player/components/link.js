@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,7 +16,10 @@ import chalk from 'chalk';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import SimpleIcons from 'simple-icons-react-component';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -30,80 +33,7 @@ import Button from '@material-ui/core/Button';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/Public';
-
-
-// ---------------------------------------------
-//   Simple Icons
-// ---------------------------------------------
-
-import SimpleIcons from 'simple-icons-react-component';
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-`;
-
-
-// ---------------------------------------------
-//   Heading
-// ---------------------------------------------
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
-  margin: 2px 0 0 4px;
-`;
-
-
-// ---------------------------------------------
-//   Link
-// ---------------------------------------------
-
-const Box = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-`;
-
-const Item = styled.div`
-  margin: 10px 14px 0 0;
-`;
-
-const OtherBox = styled.div`
-  margin: 10px 12px 0 0;
-`;
-
-const OtherButton = styled(Button)`
-  && {
-    font-size: 14px;
-    min-width: 36px;
-    min-height: 26px
-    margin: 0;
-    padding: 0 6px;
-  }
-`;
-
-const IconBox = styled.div`
-  width: 24px;
-  height: 24px;
-`;
+import IconPublic from '@material-ui/icons/Public';
 
 
 
@@ -160,56 +90,79 @@ export default class extends React.Component {
       if (valueObj.type === 'Other') {
         
         componentLinkArr.push(
-          <OtherBox key={index}>
-            <OtherButton
+          <div
+            css={css`
+              margin: 10px 12px 0 0;
+            `}
+            key={index}
+          >
+            <Button
+              css={css`
+                && {
+                  font-size: 14px;
+                  min-width: 36px;
+                  min-height: 26px
+                  margin: 0;
+                  padding: 0 6px;
+                }
+              `}
               variant="outlined"
               color="secondary"
               href={valueObj.url}
               target="_blank"
             >
               {valueObj.label}
-            </OtherButton>
-          </OtherBox>
+            </Button>
+          </div>
         );
         
       } else if (valueObj.url) {
         
         componentLinkArr.push(
-          <Item key={`link${index}`}>
+          <div
+            css={css`
+              margin: 10px 14px 0 0;
+            `}
+            key={`link${index}`}
+          >
             <a href={valueObj.url} target="_blank">
-              <IconBox>
+              <div
+                css={css`
+                  width: 24px;
+                  height: 24px;
+                `}
+              >
                 <SimpleIcons name={valueObj.type} />
-              </IconBox>
+              </div>
             </a>
-          </Item>
+          </div>
         );
         
       }
       
     }
     
+    
     let componentLinkBox = '';
     
     if (componentLinkArr.length > 0) {
-       componentLinkBox = <Box>{componentLinkArr}</Box>;
+      
+      componentLinkBox =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+          `}
+        >
+          {componentLinkArr}
+        </div>
+      ;
+      
     } else {
+      
       return null;
+      
     }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
-    // `);
-    
-    // console.log(`
-    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
-    // `);
     
     
     
@@ -219,16 +172,47 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        <HeadingBox>
-          <StyledIcon />
-          <Heading>リンク</Heading>
-        </HeadingBox>
         
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
+          
+          <IconPublic
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
+          
+          <h3
+            css={css`
+              margin: 2px 0 0 4px;
+            `}
+          >
+            リンク
+          </h3>
+          
+        </div>
+        
+        
+        {/* Link */}
         {componentLinkBox}
         
-      </Container>
+        
+      </div>
     );
     
     

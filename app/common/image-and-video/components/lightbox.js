@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -32,14 +33,23 @@ const { formatImagesAndVideosArr } = require('../../../@format/image');
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('storeImageAndVideo')
 @observer
 export default class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -48,7 +58,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, imagesAndVideosArr } = this.props;
+    const { storeImageAndVideo, _id, imagesAndVideosArr } = this.props;
     
     const {
       
@@ -57,7 +67,7 @@ export default class extends React.Component {
       handleLightboxPrevious,
       handleLightboxNext,
       
-    } = stores.imageAndVideo;
+    } = storeImageAndVideo;
     
     const currentNo = lodashGet(lightboxObj, [_id, 'currentNo'], 0);
     const open = lodashGet(lightboxObj, [_id, 'open'], false);

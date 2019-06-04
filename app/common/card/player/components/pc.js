@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,19 +16,16 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Material UI
+//   Material UI / Icon
 // ---------------------------------------------
 
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-import Icon from '@material-ui/icons/LaptopMac';
+import IconLaptopMac from '@material-ui/icons/LaptopMac';
 
 
 // ---------------------------------------------
@@ -36,73 +33,6 @@ import Icon from '@material-ui/icons/LaptopMac';
 // ---------------------------------------------
 
 import Paragraph from '../../../layout/components/paragraph';
-
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-
-// ---------------------------------------------
-//   見出し
-// ---------------------------------------------
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
-  margin: 0 0 0 4px;
-`;
-
-const CommentBox = styled.div`
-  margin: 6px 0 0 0;
-  padding: 0 0 0 0;
-`;
-
-
-// ---------------------------------------------
-//   PC Specs
-// ---------------------------------------------
-
-const SpecsBox = styled.ul`
-  margin: 16px 0 0 0;
-  padding: 0 0 0 0;
-`;
-
-const SpecsTitle = styled.p`
-  font-weight: bold;
-`;
-
-const SpecsUl = styled.ul`
-  list-style-type: disc;
-  // line-height: 1.8em;
-  margin: 3px 0 0 20px;
-  padding: 0 0 0 0;
-`;
-
-const SpecsLi = styled.li`
-  margin: 0;
-  padding: 0;
-`;
-
 
 
 
@@ -115,10 +45,19 @@ const SpecsLi = styled.li`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -189,7 +128,17 @@ export default class extends React.Component {
     let componentComment = '';
     
     if (pcComment) {
-      componentComment = <CommentBox><Paragraph text={pcComment} /></CommentBox>;
+      
+      componentComment =
+        <div
+          css={css`
+            margin: 6px 0 0 0;
+          `}
+        >
+          <Paragraph text={pcComment} />
+        </div>
+      ;
+      
     }
     
     
@@ -206,7 +155,7 @@ export default class extends React.Component {
     
     if (pcOs) {
       componentSpecsArr.push(
-        <SpecsLi key="os"><strong>OS:</strong> {pcOs}</SpecsLi>
+        <li key="os"><strong>OS:</strong> {pcOs}</li>
       );
     }
     
@@ -217,7 +166,7 @@ export default class extends React.Component {
     
     if (pcCpu) {
       componentSpecsArr.push(
-        <SpecsLi key="cpu"><strong>CPU:</strong> {pcCpu}</SpecsLi>
+        <li key="cpu"><strong>CPU:</strong> {pcCpu}</li>
       );
     }
     
@@ -228,7 +177,7 @@ export default class extends React.Component {
     
     if (pcCpuCooler) {
       componentSpecsArr.push(
-        <SpecsLi key="cpuCooler"><strong>CPUクーラー:</strong> {pcCpuCooler}</SpecsLi>
+        <li key="cpuCooler"><strong>CPUクーラー:</strong> {pcCpuCooler}</li>
       );
     }
     
@@ -239,7 +188,7 @@ export default class extends React.Component {
     
     if (pcMotherboard) {
       componentSpecsArr.push(
-        <SpecsLi key="motherboard"><strong>マザーボード:</strong> {pcMotherboard}</SpecsLi>
+        <li key="motherboard"><strong>マザーボード:</strong> {pcMotherboard}</li>
       );
     }
     
@@ -250,7 +199,7 @@ export default class extends React.Component {
     
     if (pcMemory) {
       componentSpecsArr.push(
-        <SpecsLi key="memory"><strong>メモリ:</strong> {pcMemory}</SpecsLi>
+        <li key="memory"><strong>メモリ:</strong> {pcMemory}</li>
       );
     }
     
@@ -261,7 +210,7 @@ export default class extends React.Component {
     
     if (pcStorage) {
       componentSpecsArr.push(
-        <SpecsLi key="storage"><strong>ストレージ:</strong> {pcStorage}</SpecsLi>
+        <li key="storage"><strong>ストレージ:</strong> {pcStorage}</li>
       );
     }
     
@@ -272,7 +221,7 @@ export default class extends React.Component {
     
     if (pcGraphicsCard) {
       componentSpecsArr.push(
-        <SpecsLi key="graphicsCard"><strong>グラフィックス:</strong> {pcGraphicsCard}</SpecsLi>
+        <li key="graphicsCard"><strong>グラフィックス:</strong> {pcGraphicsCard}</li>
       );
     }
     
@@ -283,7 +232,7 @@ export default class extends React.Component {
     
     if (pcOpticalDrive) {
       componentSpecsArr.push(
-        <SpecsLi key="opticalDrive"><strong>光学ドライブ:</strong> {pcOpticalDrive}</SpecsLi>
+        <li key="opticalDrive"><strong>光学ドライブ:</strong> {pcOpticalDrive}</li>
       );
     }
     
@@ -294,7 +243,7 @@ export default class extends React.Component {
     
     if (pcPowerSupply) {
       componentSpecsArr.push(
-        <SpecsLi key="powerSupply"><strong>電源:</strong> {pcPowerSupply}</SpecsLi>
+        <li key="powerSupply"><strong>電源:</strong> {pcPowerSupply}</li>
       );
     }
     
@@ -305,7 +254,7 @@ export default class extends React.Component {
     
     if (pcCase) {
       componentSpecsArr.push(
-        <SpecsLi key="pcCase"><strong>ケース:</strong> {pcCase}</SpecsLi>
+        <li key="pcCase"><strong>ケース:</strong> {pcCase}</li>
       );
     }
     
@@ -316,7 +265,7 @@ export default class extends React.Component {
     
     if (pcMonitor) {
       componentSpecsArr.push(
-        <SpecsLi key="monitor"><strong>モニター:</strong> {pcMonitor}</SpecsLi>
+        <li key="monitor"><strong>モニター:</strong> {pcMonitor}</li>
       );
     }
     
@@ -327,7 +276,7 @@ export default class extends React.Component {
     
     if (pcMouse) {
       componentSpecsArr.push(
-        <SpecsLi key="mouse"><strong>マウス:</strong> {pcMouse}</SpecsLi>
+        <li key="mouse"><strong>マウス:</strong> {pcMouse}</li>
       );
     }
     
@@ -338,7 +287,7 @@ export default class extends React.Component {
     
     if (pcKeyboard) {
       componentSpecsArr.push(
-        <SpecsLi key="keyboard"><strong>キーボード:</strong> {pcKeyboard}</SpecsLi>
+        <li key="keyboard"><strong>キーボード:</strong> {pcKeyboard}</li>
       );
     }
     
@@ -350,9 +299,38 @@ export default class extends React.Component {
     let componentSpecsBox = '';
     
     if (componentSpecsArr.length > 0) {
-       componentSpecsBox = <SpecsBox><SpecsTitle>スペック</SpecsTitle><SpecsUl>{componentSpecsArr}</SpecsUl></SpecsBox>;
+      
+      componentSpecsBox =
+        <div
+          css={css`
+            margin: 16px 0 0 0;
+          `}
+        >
+          
+          <p
+            css={css`
+              font-weight: bold;
+            `}
+          >
+            スペック
+          </p>
+          
+          <ul
+            css={css`
+              list-style-type: disc;
+              margin: 3px 0 0 20px;
+            `}
+          >
+            {componentSpecsArr}
+          </ul>
+          
+        </div>
+      ;
+      
     } else {
+      
       return null;
+      
     }
     
     
@@ -361,21 +339,51 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        {/* 見出し */}
-        <HeadingBox>
-          <StyledIcon />
-          <Heading>{componentModel}</Heading>
-        </HeadingBox>
+        
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
+          
+          <IconLaptopMac
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
+          
+          <h3
+            css={css`
+              margin: 0 0 0 4px;
+            `}
+          >
+            {componentModel}
+          </h3>
+          
+        </div>
+        
         
         {/* コメント */}
         {componentComment}
         
+        
         {/* PCスペック */}
         {componentSpecsBox}
         
-      </Container>
+        
+      </div>
     );
     
   }

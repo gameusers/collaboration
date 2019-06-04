@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,7 +16,9 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -29,38 +31,6 @@ import Paragraph from '../../../layout/components/paragraph';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const Heading = styled.h3`
-  margin: 2px 0 0 4px;
-`;
-
-const FriendIcon = styled.div`
-  margin: 0;
-`;
-
-const CommentBox = styled.div`
-  margin: 6px 0 0 0;
-  padding: 0;
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -68,10 +38,19 @@ const CommentBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -96,24 +75,7 @@ export default class extends React.Component {
     //   募集中 / 募集していません
     // --------------------------------------------------
     
-    let text = '募集していません';
-    
-    if (value) {
-      text = '募集中';
-    }
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
-    // `);
-    
-    // console.log(`
-    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
-    // `);
+    const text = value ? '募集中' : '募集していません';
     
     
     // --------------------------------------------------
@@ -121,22 +83,53 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        <HeadingBox>
-          <FriendIcon>
+        
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
+          
+          <div>
             <img
               src={`/static/img/common/blob-emoji/${icon}.png`}
               width="26"
               height="26"
             />
-          </FriendIcon>
-          <Heading>フレンド: {text}</Heading>
-        </HeadingBox>
+          </div>
+          
+          
+          <h3
+            css={css`
+              margin: 2px 0 0 4px;
+            `}
+          >
+            フレンド: {text}
+          </h3>
+          
+        </div>
         
-        <CommentBox><Paragraph text={comment} /></CommentBox>
         
-      </Container>
+        {/* Comment */}
+        <div
+          css={css`
+            margin: 6px 0 0 0;
+          `}
+        >
+          <Paragraph text={comment} />
+        </div>
+        
+        
+      </div>
     );
     
   }

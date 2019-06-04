@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-const util = require('util');
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,9 +16,11 @@ const util = require('util');
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -26,11 +28,15 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import TextField from '@material-ui/core/TextField';
-
 import Button from '@material-ui/core/Button';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
+
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
 
 import IconClose from '@material-ui/icons/Close';
 import IconDescription from '@material-ui/icons/Description';
@@ -61,84 +67,16 @@ import LightboxWrapper from '../../image-and-video/components/lightbox';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-// ---------------------------------------------
-//   Form
-// ---------------------------------------------
-
-const Description = styled.p`
-  font-size: 12px;
-  margin: 10px 0 0 0;
-`;
-
-const ImageInputFileBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 10px 0 6px;
-`;
-
-const ImageInputFile = styled.input`
-  padding: 4px 0 0 0;
-`;
-
-const ImageTextField = styled(TextField)`
-  && {
-    width: 100%;
-    max-width: 500px;
-    margin: 10px 0 0 0;
-    
-    @media screen and (max-width: 480px) {
-      max-width: auto;
-    }
-  }
-`;
-
-const CaptionDescription = styled.p`
-  font-size: 12px;
-  margin: 10px 0 0 0;
-`;
-
-
-// ---------------------------------------------
-//   Preview
-// ---------------------------------------------
-
-const PreviewContainer = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 10px 0 0 0;
-`;
-
-const PreviewBox = styled.div`
+const cssPreviewBox = css`
   position: relative;
   margin: 10px 12px 10px 0;
 `;
 
-const PreviewImg = styled.img`
-  max-height: 108px;
-  
-  @media screen and (max-width: 480px) {
-    max-height: 54px;
-  }
-`;
-
-const PreviewSVG = styled.div`
-  background-repeat: no-repeat;
-  background-position: center center;
-  
-  max-width: 108px;
-  max-height: 108px;
-  
-  @media screen and (max-width: 480px) {
-    max-width: 54px;
-    max-height: 54px;
-  }
-`;
-
-const PreviewRemoveFab = styled(Fab)`
+const cssPreviewRemoveFab = css`
   && {
     background-color: ${cyan[500]};
     &:hover {
@@ -154,12 +92,7 @@ const PreviewRemoveFab = styled(Fab)`
   }
 `;
 
-
-// ---------------------------------------------
-//   Common
-// ---------------------------------------------
-
-const FontRed = styled.span`
+const cssFontRed = css`
   color: #FE2E2E;
 `;
 
@@ -170,14 +103,23 @@ const FontRed = styled.span`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeImageAndVideo', 'storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -186,7 +128,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, func, imagesAndVideosArr, caption, limit } = this.props;
+    const { stores, storeImageAndVideo, storeImageAndVideoForm, intl, _id, func, imagesAndVideosArr, caption, limit } = this.props;
     
     const {
       
@@ -196,9 +138,9 @@ export default injectIntl(class extends React.Component {
       handleAddImage,
       handleRemoveImage,
       
-    } = stores.imageAndVideoForm;
+    } = storeImageAndVideoForm;
     
-    const { handleLightboxOpen } = stores.imageAndVideo;
+    const { handleLightboxOpen } = storeImageAndVideo;
     
     const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
     const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
@@ -255,37 +197,64 @@ export default injectIntl(class extends React.Component {
           if (src.indexOf('data:image/svg') === -1) {
             
             componentsPreviewArr.push(
-              <PreviewBox key={index}>
-                <PreviewImg
+              <div css={cssPreviewBox} key={index}>
+                
+                <img
+                  css={css`
+                    max-height: 108px;
+                    
+                    @media screen and (max-width: 480px) {
+                      max-height: 54px;
+                    }
+                  `}
                   src={src}
                   onClick={() => handleLightboxOpen({ _id, currentNo })}
                 />
                 
-                <PreviewRemoveFab
+                <Fab
+                  css={cssPreviewRemoveFab}
                   color="primary"
                   onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
                 >
                   <IconClose />
-                </PreviewRemoveFab>
-              </PreviewBox>
+                </Fab>
+                
+              </div>
             );
             
           } else {
             
             componentsPreviewArr.push(
-              <PreviewBox key={index}>
-                <PreviewSVG
-                  style={{ width: `${calculatedObj.width}px`, height: `${calculatedObj.height}px`, 'backgroundImage': `url(${src})` }}
+              <div css={cssPreviewBox} key={index}>
+                
+                <div
+                  css={css`
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    
+                    max-width: 108px;
+                    max-height: 108px;
+                    width: ${calculatedObj.width}px;
+                    height: ${calculatedObj.height}px;
+                    background-image: url(${src});
+                    
+                    @media screen and (max-width: 480px) {
+                      max-width: 54px;
+                      max-height: 54px;
+                    }
+                  `}
                   onClick={() => handleLightboxOpen({ _id, currentNo })}
                 />
                 
-                <PreviewRemoveFab
+                <Fab
+                  css={cssPreviewRemoveFab}
                   color="primary"
                   onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
                 >
                   <IconClose />
-                </PreviewRemoveFab>
-              </PreviewBox>
+                </Fab>
+                
+              </div>
             );
             
           }
@@ -353,15 +322,30 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Preview */}
-        <PreviewContainer>
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 10px 0 0 0;
+          `}
+        >
           {componentsPreviewArr}
-        </PreviewContainer>
+        </div>
         
         
         {/* Input file */}
-        <ImageInputFileBox>
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            margin: 10px 0 6px;
+          `}
+        >
           
-          <ImageInputFile
+          <input
+            css={css`
+              padding: 4px 0 0 0;
+            `}
             type="file"
             onChange={(eventObj) => handleSelectImage({ _id, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
           />
@@ -375,12 +359,23 @@ export default injectIntl(class extends React.Component {
             追加
           </Button>
           
-        </ImageInputFileBox>
+        </div>
         
         
         {/* Caption */}
         {caption &&
-          <ImageTextField
+          <TextField
+            css={css`
+              && {
+                width: 100%;
+                max-width: 500px;
+                margin: 10px 0 0 0;
+                
+                @media screen and (max-width: 480px) {
+                  max-width: auto;
+                }
+              }
+            `}
             placeholder="画像名・簡単な解説を入力"
             value={imageCaption}
             onChange={(eventObj) => handleEdit({
@@ -412,16 +407,26 @@ export default injectIntl(class extends React.Component {
         
         {/* Captionについての解説 */}
         {imageCaptionOpen &&
-          <CaptionDescription>
+          <p
+            css={css`
+              font-size: 12px;
+              margin: 10px 0 0 0;
+            `}
+          >
             アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力して追加すると、拡大された画像の下部に入力した文字が表示されるようになります。<strong>基本的には未入力で問題ありません</strong>が、アップロードした画像について、説明を加えたい場合に利用してください。
-          </CaptionDescription>
+          </p>
         }
         
         
         {/* アップロードできる画像の解説 */}
-        <Description>
-          アップロードできる画像の種類は JPEG, PNG, GIF, SVG で、ファイルサイズが5MB以内のものです。<FontRed>画像を選択したら追加ボタンを押してください。</FontRed>
-        </Description>
+        <p
+          css={css`
+            font-size: 12px;
+            margin: 10px 0 0 0;
+          `}
+        >
+          アップロードできる画像の種類は JPEG, PNG, GIF, SVG で、ファイルサイズが5MB以内のものです。<span css={cssFontRed}>画像を選択したら追加ボタンを押してください。</span>
+        </p>
         
         
         {/* Lightbox */}

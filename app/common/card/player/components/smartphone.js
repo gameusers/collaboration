@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,14 +16,16 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
+//   Material UI / Icon
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/PhoneIphone';
+import IconPhoneIphone from '@material-ui/icons/PhoneIphone';
 
 
 // ---------------------------------------------
@@ -31,42 +33,6 @@ import Icon from '@material-ui/icons/PhoneIphone';
 // ---------------------------------------------
 
 import Paragraph from '../../../layout/components/paragraph';
-
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
-  margin: 0 0 0 4px;
-`;
-
-const CommentBox = styled.div`
-  margin: 6px 0 0 0;
-  padding: 0;
-`;
-
 
 
 
@@ -79,10 +45,19 @@ const CommentBox = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -124,7 +99,17 @@ export default class extends React.Component {
     let componentComment = '';
     
     if (smartphoneComment) {
-      componentComment = <CommentBox><Paragraph text={smartphoneComment} /></CommentBox>;
+      
+      componentComment =
+        <div
+          css={css`
+            margin: 6px 0 0 0;
+          `}
+        >
+          <Paragraph text={smartphoneComment} />
+        </div>
+      ;
+      
     }
     
     
@@ -133,18 +118,47 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
+        
+        
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
           
-        {/* 見出し */}
-        <HeadingBox>
-          <StyledIcon />
-          <Heading>{componentModel}</Heading>
-        </HeadingBox>
+          <IconPhoneIphone
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
+          
+          <h3
+            css={css`
+              margin: 0 0 0 4px;
+            `}
+          >
+            {componentModel}
+          </h3>
+          
+        </div>
+        
         
         {/* コメント */}
         {componentComment}
+        
           
-      </Container>
+      </div>
     );
     
   }

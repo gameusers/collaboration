@@ -25,9 +25,9 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import { withStyles } from '@material-ui/core/styles';
 
 
 // ---------------------------------------------
@@ -35,7 +35,7 @@ import { withStyles } from '@material-ui/core/styles';
 // ---------------------------------------------
 
 import CardPlayer from './player';
-import CardGame from './game';
+// import CardGame from './game';
 
 
 
@@ -67,7 +67,7 @@ const cssDialogContent = css`
 
 // --------------------------------------------------
 //   Material UI Style Overrides
-//   https://material-ui.com/customization/overrides/
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
 const stylesObj = {
@@ -179,26 +179,26 @@ export default class extends React.Component {
       //   Component
       // --------------------------------------------------
       
-      component =
-        <Dialog
-          open={cardPlayerDialog}
-          onClose={() => handleCardPlayerDialogClose()}
-          scroll="paper"
-          classes={{
-            paper: classes.paper
-          }}
-        >
-          <DialogContent css={cssDialogContent}>
-            <CardGame
-              cardGames_id={cardPlayerDialogObj._id}
-              showGameName={true}
-              showCardPlayerButton={false}
-              showCardGameButton={false}
-              showFollow={true}
-            />
-          </DialogContent>
-        </Dialog>
-      ;
+      // component =
+      //   <Dialog
+      //     open={cardPlayerDialog}
+      //     onClose={() => handleCardPlayerDialogClose()}
+      //     scroll="paper"
+      //     classes={{
+      //       paper: classes.paper
+      //     }}
+      //   >
+      //     <DialogContent css={cssDialogContent}>
+      //       <CardGame
+      //         cardGames_id={cardPlayerDialogObj._id}
+      //         showGameName={true}
+      //         showCardPlayerButton={false}
+      //         showCardGameButton={false}
+      //         showFollow={true}
+      //       />
+      //     </DialogContent>
+      //   </Dialog>
+      // ;
       
       
     } else {

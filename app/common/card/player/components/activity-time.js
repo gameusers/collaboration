@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,74 +16,16 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
+//   Material UI / Icon
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/Alarm';
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-  padding: 0;
-`;
-
-
-// ---------------------------------------------
-//   見出し
-// ---------------------------------------------
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
-  margin: 2px 0 0 4px;
-`;
-
-
-// ---------------------------------------------
-//   活動時間
-// ---------------------------------------------
-
-const Box = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  // line-height: 1.8em;
-  margin: 4px 0 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-const ActivityTime = styled.div`
-  margin: 0 20px 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    margin: 0;
-  }
-`;
+import IconAlarm from '@material-ui/icons/Alarm';
 
 
 
@@ -96,10 +38,19 @@ const ActivityTime = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -109,8 +60,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { arr } = this.props;
-    
-    
     
     
     // --------------------------------------------------
@@ -150,9 +99,18 @@ export default class extends React.Component {
       
       
       componentsArr.push(
-        <ActivityTime key={`activityTime${index}`}>
+        <div
+          css={css`
+            margin: 0 20px 0 0;
+            
+            @media screen and (max-width: 480px) {
+              margin: 0;
+            }
+          `}
+          key={`activityTime${index}`}
+        >
           {value.beginTime} ～ {value.endTime}{week}
-        </ActivityTime>
+        </div>
       );
       
     }
@@ -161,7 +119,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -180,16 +138,58 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        <HeadingBox>
-          <StyledIcon />
-          <Heading>活動時間</Heading>
-        </HeadingBox>
         
-        <Box>{componentsArr}</Box>
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
+          
+          <IconAlarm
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
+          
+          <h3
+            css={css`
+              margin: 2px 0 0 4px;
+            `}
+          >
+            活動時間
+          </h3>
+          
+        </div>
         
-      </Container>
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 4px 0 0 0;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+            }
+          `}
+        >
+          {componentsArr}
+        </div>
+        
+        
+      </div>
     );
     
   }

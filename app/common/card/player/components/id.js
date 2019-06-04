@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
-// import chalk from 'chalk';
-// import util from 'util';
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,13 +16,10 @@
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
 
-
-// ---------------------------------------------
-//   Material UI
-// ---------------------------------------------
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -42,55 +39,6 @@ import IDChip from '../../../id/components/chip';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Container = styled.div`
-  margin: 28px 0 0 0;
-`;
-
-
-// ---------------------------------------------
-//   見出し
-// ---------------------------------------------
-
-const HeadingBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-`;
-
-const StyledIcon = styled(IconStyle)`
-  && {
-    font-size: 24px;
-  }
-`;
-
-const Heading = styled.h3`
-  margin: 2px 0 0 4px;
-`;
-
-
-// ---------------------------------------------
-//   ID
-// ---------------------------------------------
-
-const Box = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 4px 0 0 0;
-  padding: 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -98,10 +46,19 @@ const Box = styled.div`
 @observer
 export default class extends React.Component {
   
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
+  
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -111,8 +68,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { arr } = this.props;
-    
-    
     
     
     // --------------------------------------------------
@@ -138,10 +93,6 @@ export default class extends React.Component {
       const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
       const gamesName = lodashGet(valueObj, ['gamesName'], '');
       
-      // let games_id = 'games_id' in valueObj ? valueObj.games_id : '';
-      // let gamesThumbnail = 'gamesThumbnail' in valueObj ? valueObj.gamesThumbnail : '';
-      // let gamesName = 'gamesName' in valueObj ? valueObj.gamesName : '';
-      
       componentsArr.push(
         <IDChip
           key={index}
@@ -160,7 +111,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -179,16 +130,59 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          margin: 28px 0 0 0;
+        `}
+      >
         
-        <HeadingBox>
-          <StyledIcon />
-          <Heading>ID</Heading>
-        </HeadingBox>
         
-        <Box>{componentsArr}</Box>
+        {/* Heading */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+          `}
+        >
+          
+          <IconStyle
+            css={css`
+              && {
+                font-size: 24px;
+              }
+            `}
+          />
+          
+          
+          <h3
+            css={css`
+              margin: 2px 0 0 4px;
+            `}
+          >
+            ID
+          </h3>
+          
+        </div>
         
-      </Container>
+        
+        {/* ID */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 4px 0 0 0;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+            }
+          `}
+        >
+          {componentsArr}
+        </div>
+        
+        
+      </div>
     );
     
   }

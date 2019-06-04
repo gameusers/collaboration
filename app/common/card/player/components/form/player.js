@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,8 +16,10 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -65,79 +67,24 @@ import ImageAndVideoForm from '../../../../image-and-video/components/form';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-// ---------------------------------------------
-//   Content / Card Content
-// ---------------------------------------------
-
-const StyledCardContent = styled(CardContent)`
-  && {
-    
-  }
-`;
-
-
-// ----------------------------------------
-//   見出し
-// ----------------------------------------
-
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 6px 0;
-`;
-
-const Description = styled.p`
-  font-size: 14px;
-  margin: 0 0 24px 0;
-`;
-
-
-// ----------------------------------------
-//   共通
-// ----------------------------------------
-
-const Box = styled.div`
+const cssBox = css`
   margin: 36px 0 0 0;
 `;
 
-
-// ----------------------------------------
-//   画像
-// ----------------------------------------
-
-const ImageBox = styled.div`
+const cssImageBox = css`
   margin: 24px 0 0 0;
 `;
 
-const ImageTitle = styled.div`
+const cssImageTitle = css`
   font-weight: bold;
   margin: 0 0 2px 0;
 `;
 
-const ImageDescription = styled.p`
-  
-`;
-
-
-// ---------------------------------------------
-//   Bottom / Card Actions
-// ---------------------------------------------
-
-const StyledCardActions = styled(CardActions)`
-  && {
-    margin: 6px;
-  }
-`;
-
-const ButtonBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-`;
-
-const CloseButtonBox = styled.div`
+const cssCloseButtonBox = css`
   margin: 0 0 0 16px;
 `;
 
@@ -148,16 +95,28 @@ const CloseButtonBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeCardPlayer')
 @observer
 export default class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
   
+  
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
   componentDidMount(){
+    
     
     // --------------------------------------------------
     //   Button - Enable
@@ -165,8 +124,15 @@ export default class extends React.Component {
     
     this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-form` });
     
+    
   }
   
+  
+  
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -175,7 +141,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id } = this.props;
+    const { stores, storeCardPlayer, _id } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -192,7 +158,7 @@ export default class extends React.Component {
       handleImagesAndVideosObjMainArr,
       handleEditFormSubmit
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -296,11 +262,26 @@ export default class extends React.Component {
     return (
       <form>
         
-        <StyledCardContent>
+        <CardContent>
           
-          <Heading>プレイヤーカード</Heading>
           
-          <Description>プレイヤーカードというのは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になりますので、いろいろ入力してみてください。</Description>
+          <h3
+            css={css`
+              font-weight: bold;
+              margin: 0 0 6px 0;
+            `}
+          >
+            プレイヤーカード
+          </h3>
+          
+          
+          <p
+            css={css`
+              margin: 0 0 24px 0;
+            `}
+          >
+            プレイヤーカードというのは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になりますので、いろいろ入力してみてください。
+          </p>
           
           
           {/* ハンドルネーム */}
@@ -318,9 +299,12 @@ export default class extends React.Component {
           
           
           {/* サムネイル */}
-          <ImageBox>
-            <ImageTitle>サムネイル</ImageTitle>
-            <ImageDescription>ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。</ImageDescription>
+          <div css={cssImageBox}>
+            
+            <div css={cssImageTitle}>サムネイル</div>
+            
+            <p>ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。</p>
+            
             <ImageAndVideoForm
               _id={`${_id}-thumbnail`}
               func={handleImagesAndVideosObjThumbnailArr}
@@ -328,14 +312,17 @@ export default class extends React.Component {
               caption={false}
               limit={1}
             />
-          </ImageBox>
-          
+            
+          </div>
           
           
           {/* メイン画像 */}
-          <ImageBox>
-            <ImageTitle>メイン画像</ImageTitle>
-            <ImageDescription>プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。</ImageDescription>
+          <div css={cssImageBox}>
+            
+            <div css={cssImageTitle}>メイン画像</div>
+            
+            <p>プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。</p>
+            
             <ImageAndVideoForm
               _id={`${_id}-main`}
               func={handleImagesAndVideosObjMainArr}
@@ -343,140 +330,141 @@ export default class extends React.Component {
               caption={true}
               limit={1}
             />
-          </ImageBox>
+            
+          </div>
           
           
           {/* コメント */}
-          <Box>
+          {/*<div css={cssBox}>
             <Comment
               _id={_id}
               commentObj={commentObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 年齢 */}
-          <Box>
+          {/*<div css={cssBox}>
             <Age
               _id={_id}
               ageObj={ageObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 性別 */}
-          <Box>
+          {/*<div css={cssBox}>
             <Sex
               _id={_id}
               sexObj={sexObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 住所 */}
-          <Box>
+          {/*<div css={cssBox}>
             <Address
               _id={_id}
               addressObj={addressObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* ゲーム歴 */}
-          <Box>
+          {/*<div css={cssBox}>
             <GamingExperience
               _id={_id}
               gamingExperienceObj={gamingExperienceObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 趣味 */}
-          <Box>
+          {/*<div css={cssBox}>
             <Hobby
               _id={_id}
               hobbiesObj={hobbiesObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 特技 */}
-          <Box>
+          {/*<div css={cssBox}>
             <SpecialSkill
               _id={_id}
               specialSkillsObj={specialSkillsObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* スマートフォン */}
-          <Box>
+          {/*<div css={cssBox}>
             <Smartphone
               _id={_id}
               smartphoneObj={smartphoneObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* タブレット */}
-          <Box>
+          {/*<div css={cssBox}>
             <Tablet
               _id={_id}
               tabletObj={tabletObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* PC */}
-          <Box>
+          {/*<div css={cssBox}>
             <PC
               _id={_id}
               pcObj={pcObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 所有ハードウェア */}
-          <Box>
+          {/*<div css={cssBox}>
             <HardwareActive
               _id={_id}
               arr={hardwareActiveArr}
               search={hardwareActiveObj.search}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 昔、所有していたハードウェア */}
-          <Box>
+          {/*<div css={cssBox}>
             <HardwareInactive
               _id={_id}
               arr={hardwareInactiveArr}
               search={hardwareInactiveObj.search}
             />
-          </Box>
+          </div>*/}
           
           
           {/* ID */}
-          <Box>
+          {/*<div css={cssBox}>
             <ID
               _id={_id}
               idArr={idArr}
               func={handleCardPlayerEditID}
             />
-          </Box>
+          </div>*/}
           
           
           {/* 活動時間 */}
-          <Box>
+          {/*<div css={cssBox}>
             <ActivityTime
               _id={_id}
               activityTimeObj={activityTimeObj}
             />
-          </Box>
+          </div>*/}
           
           
           {/* フレンド */}
-          <Box>
+          {/*<div css={cssBox}>
             <LookingForFriends
               _id={_id}
               value={lookingForFriendsObj.value}
@@ -484,34 +472,48 @@ export default class extends React.Component {
               comment={lookingForFriendsObj.comment}
               search={lookingForFriendsObj.search}
             />
-          </Box>
+          </div>*/}
           
           
           {/* ボイスチャット */}
-          <Box>
+          {/*<div css={cssBox}>
             <VoiceChat
               _id={_id}
               value={voiceChatObj.value}
               comment={voiceChatObj.comment}
               search={voiceChatObj.search}
             />
-          </Box>
+          </div>*/}
           
           
           {/* Link */}
-          <Box>
+          {/*<div css={cssBox}>
             <FormLink
               _id={_id}
               arr={linkArr}
             />
-          </Box>
+          </div>*/}
           
           
-        </StyledCardContent>
+        </CardContent>
         
         
-        <StyledCardActions>
-          <ButtonBox>
+        
+        
+        <CardActions
+          css={css`
+            && {
+              margin: 6px;
+            }
+          `}
+        >
+          
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+            `}
+          >
             
             <Button
               variant="outlined"
@@ -523,7 +525,7 @@ export default class extends React.Component {
             </Button>
             
             
-            <CloseButtonBox>
+            <div css={cssCloseButtonBox}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -532,10 +534,10 @@ export default class extends React.Component {
               >
                 元に戻す
               </Button>
-            </CloseButtonBox>
+            </div>
             
             
-            <CloseButtonBox>
+            <div css={cssCloseButtonBox}>
               <Button
                 variant="outlined"
                 color="primary"
@@ -544,10 +546,13 @@ export default class extends React.Component {
               >
                 閉じる
               </Button>
-            </CloseButtonBox>
+            </div>
             
-          </ButtonBox>
-        </StyledCardActions>
+          </div>
+          
+        </CardActions>
+        
+        
         
         
         {/* フォームの内容を元に戻すか尋ねるダイアログ */}
@@ -573,6 +578,7 @@ export default class extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+        
         
       </form>
     );

@@ -168,7 +168,7 @@ class Store {
           // ---------------------------------------------
           
           if ('errorsArr' in resultObj) {
-            throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+            throw new CustomError({ errorsArr: resultObj.errorsArr });
           }
           
           
@@ -267,7 +267,7 @@ class Store {
           // ---------------------------------------------
           
           if ('errorsArr' in resultObj) {
-            throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+            throw new CustomError({ errorsArr: resultObj.errorsArr });
           }
           
           
@@ -416,7 +416,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -614,7 +614,9 @@ class Store {
    */
   @action.bound
   async handleFormOpen({ _id }) {
-    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
     
     try {
       
@@ -627,7 +629,10 @@ class Store {
       if (_id in this.cardPlayerEditFormDataObj) {
         
         this.formOpenObj[_id] = true;
-        
+        // console.log(chalk`
+        //   2 this.formOpenObj[_id]: {green ${this.formOpenObj[_id]}}
+        // `);
+      
       
       // ---------------------------------------------
       //   編集フォームに表示するデータがまだ読み込まれていない場合
@@ -671,7 +676,7 @@ class Store {
         // ---------------------------------------------
         
         if ('errorsArr' in resultObj) {
-          throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+          throw new CustomError({ errorsArr: resultObj.errorsArr });
         }
         
         
@@ -688,13 +693,15 @@ class Store {
         // ---------------------------------------------
         
         this.formOpenObj[_id] = true;
+        // console.log(chalk`
+        //   1 this.formOpenObj[_id]: {green ${this.formOpenObj[_id]}}
+        // `);
         
-        
-        console.log(`
-          ----- resultObj -----\n
-          ${util.inspect(resultObj, { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        // console.log(`
+        //   ----- resultObj -----\n
+        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         // console.log(`
         //   ----- this.cardPlayerEditFormDataObj -----\n
@@ -1110,7 +1117,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -1329,7 +1336,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -1595,7 +1602,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       

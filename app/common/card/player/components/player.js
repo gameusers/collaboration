@@ -17,8 +17,10 @@ import util from 'util';
 import React from 'react';
 import { toJS } from 'mobx';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -64,69 +66,10 @@ import FormPlayer from './form/player';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// ---------------------------------------------
-//   Top / Container
-// ---------------------------------------------
-
-const CardTopBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  margin: 0;
-  padding: 12px 4px 12px 12px;
-`;
-
-
-// ---------------------------------------------
-//   Top / Expand More Button
-// ---------------------------------------------
-
-const ExpandMoreBox = styled.div`
-  margin: 0 0 0 auto;
-  padding: 0;
-`;
-
-
-// ---------------------------------------------
-//   Content / Card Content
-// ---------------------------------------------
-
-const StyledCardContent = styled(CardContent)`
-  && {
-    font-size: 14px;
-    padding-bottom: 0;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Bottom / Card Actions
-// ---------------------------------------------
-
-const StyledCardActions = styled(CardActions)`
-  && {
-    margin: 0 6px 6px 6px;
-    padding-top: 0;
-  }
-`;
-
-const ActionsBox = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeCardPlayer')
 @observer
 export default class extends React.Component {
   
@@ -138,6 +81,8 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -155,9 +100,11 @@ export default class extends React.Component {
     
     
     // フォームを表示する、あとで消すように
-    // this.props.stores.cardPlayer.handleFormOpen({ _id: 'zaoOWw89g' });
+    this.props.storeCardPlayer.handleFormOpen({ _id: 'zaoOWw89g' });
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -174,6 +121,7 @@ export default class extends React.Component {
     const {
       
       stores,
+      storeCardPlayer,
       _id,
       // cardGames_id,
       // showCardGameButton,
@@ -233,24 +181,7 @@ export default class extends React.Component {
     const name = lodashGet(cardPlayersObj, ['nameObj', 'value'], '');
     const status = lodashGet(cardPlayersObj, ['statusObj', 'value'], '');
     const comment = lodashGet(cardPlayersObj, ['commentObj', 'value'], '');
-    
-    // const thumbnailArr = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr'.slice()], []);
-    // const thumbnailSrc = lodashGet(thumbnailArr, [0, 'src'], '');
-    
-    
-    
-    // console.log(`\n---------- toJS(cardPlayersObj) ----------\n`);
-    // console.log(toJS(cardPlayersObj));
-    // console.dir(toJS(cardPlayersObj));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`\n---------- thumbnailArr ----------\n`);
-    // console.log(thumbnailArr);
-    // console.dir(thumbnailArr);
-    // console.log(`\n-----------------------------------\n`);
-    
     const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
-    // return null;
     const experience = lodashGet(cardPlayersObj, ['usersObj', 'experience'], 0);
     const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
     const playerID = lodashGet(cardPlayersObj, ['usersObj', 'playerID'], '');
@@ -371,9 +302,11 @@ export default class extends React.Component {
     //   Edit Form
     // --------------------------------------------------
     
-    const formOpen = lodashGet(stores, ['cardPlayer', 'formOpenObj', _id], false);
+    const formOpen = lodashGet(storeCardPlayer, ['formOpenObj', _id], false);
     
-    
+    // console.log(chalk`
+    //   formOpen: {green ${formOpen}}
+    // `);
     
     
     // --------------------------------------------------
@@ -404,27 +337,34 @@ export default class extends React.Component {
         
         
         {/* カード上部 */}
-        <CardTopBox>
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: center;
+            margin: 0;
+            padding: 12px 4px 12px 12px;
+          `}
+        >
+          
           
           {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
           <User
             thumbnailSrc={thumbnailSrc}
-            
             name={name}
             playerID={playerID}
             status={status}
             accessDate={accessDate}
-            
             experience={experience}
-            // cardPlayers_id={_id}
-            // showCardPlayerButton={false}
-            // cardGames_id={cardGames_id}
-            // showCardGameButton={showCardGameButton}
           />
           
           
           {/* 右上に設置されているパネル開閉用のボタン */}
-          <ExpandMoreBox>
+          <div
+            css={css`
+              margin: 0 0 0 auto;
+            `}
+          >
             <IconButton
               onClick={() => handlePanelExpand({ _id })}
               aria-expanded={panelExpanded}
@@ -437,9 +377,10 @@ export default class extends React.Component {
                 <IconExpandMore />
               )}
             </IconButton>
-          </ExpandMoreBox>
+          </div>
           
-        </CardTopBox>
+          
+        </div>
         
         
         
@@ -460,7 +401,7 @@ export default class extends React.Component {
             <React.Fragment>
               
               
-              {/* 大きな画像 */}
+              {/* Big Image */}
               {imageSrc &&
                 <img
                   srcSet={imageSrcSet}
@@ -471,8 +412,15 @@ export default class extends React.Component {
               }
               
               
-              {/* プロフィール*/}
-              <StyledCardContent>
+              {/* Contents */}
+              <CardContent
+                css={css`
+                  && {
+                    font-size: 14px;
+                    padding-bottom: 16px !important;
+                  }
+                `}
+              >
                 
                 
                 {/* コメント */}
@@ -561,33 +509,27 @@ export default class extends React.Component {
                 />
                 
                 
-              </StyledCardContent>
-              
-              
-              <StyledCardActions>
-                <ActionsBox>
+                {/* Link */}
+                <Link linkArr={linkArr} />
                 
-                  {/* Link */}
-                  <Link linkArr={linkArr} />
-                  
-                  
-                  {/* フォローボタン */}
-                  {showFollow &&
-                    <FollowButton
-                      users_id={users_id}
-                      followedCount={followedCount}
-                      followed={followed}
-                    />
-                  }
-                  
-                  {/* 編集ボタン */}
-                  <EditButton
-                    _id={_id}
+                
+                {/* フォローボタン */}
+                {showFollow &&
+                  <FollowButton
                     users_id={users_id}
+                    followedCount={followedCount}
+                    followed={followed}
                   />
-                  
-                </ActionsBox>
-              </StyledCardActions>
+                }
+                
+                {/* 編集ボタン */}
+                <EditButton
+                  _id={_id}
+                  users_id={users_id}
+                />
+                
+                
+              </CardContent>
               
               
             </React.Fragment>

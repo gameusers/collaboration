@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,18 +16,21 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import moment from 'moment';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { injectIntl } from 'react-intl';
 
 
 // ---------------------------------------------
@@ -37,38 +40,20 @@ import { injectIntl } from 'react-intl';
 const { validationCardPlayersAge, validationCardPlayersAgeAlternativeText } = require('../../../../../@database/card-players/validations/age');
 
 
-// ---------------------------------------------
-//   Moment Locale
-// ---------------------------------------------
-
-moment.locale('ja');
-
-
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -77,14 +62,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -93,7 +88,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, ageObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, ageObj } = this.props;
     
     const {
       
@@ -101,7 +96,7 @@ export default injectIntl(class extends React.Component {
       handleCardPlayerEditAge,
       handleCardPlayerEditAgeAlternativeText,
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -160,40 +155,72 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>年齢</Heading>
         
-        <Description>入力すると年齢が表示されます。誕生日か、年齢（固定値）のどちらかを入力してください。</Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          年齢
+        </h3>
         
         
-        <StyledTextField
+        <p>入力すると年齢が表示されます。誕生日か、年齢（固定値）のどちらかを入力してください。</p>
+        
+        
+        <TextField
+          css={css`
+            && {
+              width: 400px;
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+              }
+            }
+          `}
           id="age"
           label="誕生日"
           type="date"
           value={formattedDate}
           onChange={(eventObj) => handleCardPlayerEditAge({ _id, value: eventObj.target.value })}
           error={validationValueObj.error}
-          helperText={intl.formatMessage({ id: validationValueObj.messageCode }, { numberOfCharacters: validationValueObj.numberOfCharacters })}
+          helperText={intl.formatMessage({ id: validationValueObj.messageID }, { numberOfCharacters: validationValueObj.numberOfCharacters })}
           margin="normal"
           InputLabelProps={{
             shrink: true,
           }}
         />
         
-        <StyledTextField
+        
+        <TextField
+          css={css`
+            && {
+              width: 400px;
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+              }
+            }
+          `}
           id="ageAlternativeText"
           label="年齢（固定値）"
           value={validationAlternativeTextObj.value}
           onChange={(eventObj) => handleCardPlayerEditAgeAlternativeText({ _id, value: eventObj.target.value })}
           error={validationAlternativeTextObj.error}
-          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
+          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageID }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
           }}
         />
         
-        <SearchBox>
+        
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={ageObj.search}
@@ -205,7 +232,8 @@ export default injectIntl(class extends React.Component {
             }
             label="年齢で検索可能にする"
           />
-        </SearchBox>
+        </div>
+        
         
       </React.Fragment>
     );

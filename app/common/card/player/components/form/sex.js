@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,14 +16,17 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -42,32 +45,17 @@ const { validationCardPlayersSex, validationCardPlayersSexAlternativeText } = re
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const SelectBox = styled.div`
-  margin: 12px 0 0 0;
-`;
-
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -76,14 +64,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -92,7 +90,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, sexObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, sexObj } = this.props;
     
     const {
       
@@ -100,7 +98,7 @@ export default injectIntl(class extends React.Component {
       handleCardPlayerEditSex,
       handleCardPlayerEditSexAlternativeText,
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -109,7 +107,6 @@ export default injectIntl(class extends React.Component {
     
     const validationValueObj = validationCardPlayersSex({ value: sexObj.value });
     const validationAlternativeTextObj = validationCardPlayersSexAlternativeText({ value: sexObj.alternativeText });
-    
     
     
     // --------------------------------------------------
@@ -138,12 +135,24 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        <Heading>性別</Heading>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          性別
+        </h3>
         
-        <Description>性別を選択してください。選択すると性別が表示されます。選択肢以外の値を入力したい場合は、その他のフォームに入力してください。</Description>
+        
+        <p>性別を選択してください。選択すると性別が表示されます。選択肢以外の値を入力したい場合は、その他のフォームに入力してください。</p>
         
         
-        <SelectBox>
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
           <FormControl>
             <Select
               value={validationValueObj.value}
@@ -158,16 +167,25 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'female'}>女性</MenuItem>
             </Select>
           </FormControl>
-        </SelectBox>
+        </div>
         
         
-        <StyledTextField
+        <TextField
+          css={css`
+            && {
+              width: 400px;
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+              }
+            }
+          `}
           id="sexAlternativeText"
           label="性別（その他）"
           value={validationAlternativeTextObj.value}
           onChange={(eventObj) => handleCardPlayerEditSexAlternativeText({ _id, value: eventObj.target.value })}
           error={validationAlternativeTextObj.error}
-          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
+          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageID }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -175,11 +193,14 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
-                checked={sexObj.earch}
+                checked={sexObj.search}
                 onChange={(eventObj) => handleCardPlayerEditFormData({
                   pathArr: [_id, 'sexObj', 'search'],
                   value: eventObj.target.checked
@@ -188,7 +209,7 @@ export default injectIntl(class extends React.Component {
             }
             label="性別で検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
       </React.Fragment>

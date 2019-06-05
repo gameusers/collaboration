@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -15,15 +15,26 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * 趣味
- * @param {string} valueArr - 配列
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} valueArr - 配列
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersHobby = ({ valueArr }) => {
+const validationCardPlayersHobby = ({ throwError = false, required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -38,13 +49,10 @@ const validationCardPlayersHobby = ({ valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const messageCodeArr = [];
-  
   let resultObj = {
     valueArr: [],
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -52,33 +60,53 @@ const validationCardPlayersHobby = ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   配列チェック
     // ---------------------------------------------
     
-    // 配列ではない
     if (!Array.isArray(valueArr)) {
-      messageCodeArr.unshift('c9T-0LONy');
-      resultObj.errorCodeArr.push('6KiMskRbE');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'MK7WoAseF', messageID: 'qnWsuPcrJ' }] });
     }
     
-    // 配列が空の場合、処理停止
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
     if (valueArr.length === 0) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XcwFIx-7Q', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
+    
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
     
     for (let value of valueArr.values()) {
       
-      // 空でない
+      
+      // ---------------------------------------------
+      //   空でない
+      // ---------------------------------------------
+      
       if (!validator.isEmpty(value)) {
         
-        // 文字数エラー
+        
+        // ---------------------------------------------
+        //   文字数チェック
+        // ---------------------------------------------
+        
         if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-          messageCodeArr.unshift('xdAU7SgoO');
-          resultObj.errorCodeArr.push('w146uQJnZ');
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: '0u9KVfoOc', messageID: 'xdAU7SgoO' }] });
         } else {
           resultObj.valueArr.push(value);
         }
+        
         
       }
       
@@ -89,38 +117,35 @@ const validationCardPlayersHobby = ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('N4Sev_H63');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

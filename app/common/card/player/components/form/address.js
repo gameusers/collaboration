@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,14 +16,17 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -39,28 +42,17 @@ const { validationCardPlayersAddressAlternativeText } = require('../../../../../
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -69,14 +61,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -85,9 +87,9 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, addressObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, addressObj } = this.props;
     
-    const { handleCardPlayerEditFormData } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -123,12 +125,29 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        <Heading>住所</Heading>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          住所
+        </h3>
         
-        <Description>入力すると住所が表示されます。公開される情報なので、あまり詳しい情報は載せないようにしましょう。</Description>
+        
+        <p>入力すると住所が表示されます。公開される情報なので、あまり詳しい情報は載せないようにしましょう。</p>
         
         
-        <StyledTextField
+        <TextField
+          css={css`
+            && {
+              width: 400px;
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+              }
+            }
+          `}
           id="addressAlternativeText"
           label="住所"
           value={validationAlternativeTextObj.value}
@@ -137,7 +156,7 @@ export default injectIntl(class extends React.Component {
             value: eventObj.target.value
           })}
           error={validationAlternativeTextObj.error}
-          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageCode }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
+          helperText={intl.formatMessage({ id: validationAlternativeTextObj.messageID }, { numberOfCharacters: validationAlternativeTextObj.numberOfCharacters })}
           margin="normal"
           inputProps={{
             maxLength: 20,
@@ -145,8 +164,11 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={addressObj.search}
@@ -158,7 +180,7 @@ export default injectIntl(class extends React.Component {
             }
             label="住所で検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
       </React.Fragment>

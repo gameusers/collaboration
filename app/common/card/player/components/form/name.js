@@ -62,7 +62,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeCardPlayer')
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
   

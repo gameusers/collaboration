@@ -94,7 +94,7 @@ class Store {
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
       storeLayout.handleSnackbarOpen({
         variant: 'error',
-        messageID: 'F8CN8ofG',
+        messageID: 'aSErb-9vc',
       });
       return;
     }
@@ -102,7 +102,7 @@ class Store {
     if (!fileObj.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
       storeLayout.handleSnackbarOpen({
         variant: 'error',
-        messageID: '7hEpil7k',
+        messageID: 'sdHI6gvbB',
       });
       return;
     }
@@ -110,7 +110,7 @@ class Store {
     if (fileObj.size > process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT) {
       storeLayout.handleSnackbarOpen({
         variant: 'error',
-        messageID: 'kq3UNeWF',
+        messageID: 'ihxQ34x1L',
       });
       return;
     }
@@ -201,7 +201,7 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
-        messageID: 'QzXkutIP',
+        messageID: 'kcnBnLcoV',
       });
       return;
       
@@ -214,7 +214,7 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
-        messageID: 'lisio9HB',
+        messageID: 'cPw2kZIqY',
       });
       return;
       
@@ -265,7 +265,7 @@ class Store {
         
         storeLayout.handleSnackbarOpen({
           variant: 'error',
-          messageID: '9msxBlM4',
+          messageID: 'MansOH_XH',
         });
         return;
         

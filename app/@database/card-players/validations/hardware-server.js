@@ -3,11 +3,19 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
 const util = require('util');
+
+
+// ---------------------------------------------
+//   Validation
+// ---------------------------------------------
+
+const validator = require('validator');
+const lodashGet = require('lodash/get');
 
 
 // ---------------------------------------------
@@ -18,19 +26,21 @@ const ModelHardwares = require('../../hardwares/model');
 
 
 // ---------------------------------------------
-//   Validation
+//   Modules
 // ---------------------------------------------
 
-const validator = require('validator');
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * 所有ハードウェア
- * @param {string} valueArr - 検証する配列
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} valueArr - 配列
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
+const validationCardPlayersHardwareActiveArrServer = async ({ required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -45,12 +55,12 @@ const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  let hardwareIDArr = [];
+  const hardwareIDArr = [];
   
   let resultObj = {
     valueArr: [],
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -58,35 +68,73 @@ const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   配列チェック
     // ---------------------------------------------
     
-    for (let dataObj of valueArr.values()) {
+    if (!Array.isArray(valueArr)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmbxqcNfu', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (valueArr.length === 0) {
       
-      const error = false;
-      const hardwareID = dataObj.hardwareID;
-      
-      // 文字数チェック
-      if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
-        resultObj.errorCodeArr.push('tFlEEjxSS');
-        error = true;
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yWiqPYgmc', messageID: 'cFbXmuFVh' }] });
       }
       
-      // 英数と -_ のみ
-      if (hardwareID.match(/^[\w\-]+$/) === null) {
-        resultObj.errorCodeArr.push('IFiJBqjtV');
-        error = true;
-      }
-      
-      if (!error) {
-        hardwareIDArr.push(hardwareID);
-      }
+      return resultObj;
       
     }
     
     
-    // データベースを検索
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
+    
+    for (let dataObj of valueArr.values()) {
+      
+      
+      const hardwareID = dataObj.hardwareID;
+      
+      
+      // ---------------------------------------------
+      //   文字数チェック
+      // ---------------------------------------------
+      
+      if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'NLlPVoAFH', messageID: 'Pp_CFyt_3' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   英数と -_ のみ
+      // ---------------------------------------------
+      
+      if (hardwareID.match(/^[\w\-]+$/) === null) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Mtpgc1ixH', messageID: 'JBkjlGQMh' }] });
+      }
+      
+      
+      hardwareIDArr.push(hardwareID);
+      
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   Database
+    // ---------------------------------------------
+    
     if (hardwareIDArr.length > 0) {
+      
+      
+      // ---------------------------------------------
+      //   find
+      // ---------------------------------------------
       
       const docArr = await ModelHardwares.find({
         conditionObj: {
@@ -94,7 +142,11 @@ const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
         }
       });
       
-      // ループしてデータベースに存在している hardwareID のみ resultObj.valueArr に追加する
+      
+      // ---------------------------------------------
+      //   ループしてデータベースに存在している hardwareID のみ resultObj.valueArr に追加する
+      // ---------------------------------------------
+      
       for (let value of hardwareIDArr.values()) {
         
         const tempObj = docArr.find((valueObj) => {
@@ -107,6 +159,7 @@ const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
         
       }
       
+      
     }
     
     
@@ -114,28 +167,20 @@ const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('xXG98ZiUb');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //  Error
-    // ---------------------------------------------
-    
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
-    }
-    
-    
-    return resultObj;
+    throw errorObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -145,9 +190,11 @@ const validationCardPlayersHardwareActiveArrServer = async ({ valueArr }) => {
 
 /**
  * 昔、所有していたハードウェア
- * @param {string} valueArr - 検証する配列
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} valueArr - 配列
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersHardwareInactiveArrServer = async ({ valueArr }) => {
+const validationCardPlayersHardwareInactiveArrServer = async ({ required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -162,12 +209,12 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  let hardwareIDArr = [];
+  const hardwareIDArr = [];
   
   let resultObj = {
     valueArr: [],
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -175,35 +222,73 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   配列チェック
     // ---------------------------------------------
     
-    for (let dataObj of valueArr.values()) {
+    if (!Array.isArray(valueArr)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'wQR9x-6zw', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (valueArr.length === 0) {
       
-      const error = false;
-      const hardwareID = dataObj.hardwareID;
-      
-      // 文字数チェック
-      if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
-        resultObj.errorCodeArr.push('hJBw3xw77');
-        error = true;
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mojXqeQ7N', messageID: 'cFbXmuFVh' }] });
       }
       
-      // 英数と -_ のみ
-      if (hardwareID.match(/^[\w\-]+$/) === null) {
-        resultObj.errorCodeArr.push('bBg-IbHg0');
-        error = true;
-      }
-      
-      if (!error) {
-        hardwareIDArr.push(hardwareID);
-      }
+      return resultObj;
       
     }
     
     
-    // データベースを検索
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
+    
+    for (let dataObj of valueArr.values()) {
+      
+      
+      const hardwareID = dataObj.hardwareID;
+      
+      
+      // ---------------------------------------------
+      //   文字数チェック
+      // ---------------------------------------------
+      
+      if (!validator.isLength(hardwareID, { min: minLength, max: maxLength })) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jrMILi8Qk', messageID: 'Pp_CFyt_3' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   英数と -_ のみ
+      // ---------------------------------------------
+      
+      if (hardwareID.match(/^[\w\-]+$/) === null) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '0HVY-JnkI', messageID: 'JBkjlGQMh' }] });
+      }
+      
+      
+      hardwareIDArr.push(hardwareID);
+      
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   Database
+    // ---------------------------------------------
+    
     if (hardwareIDArr.length > 0) {
+      
+      
+      // ---------------------------------------------
+      //   find
+      // ---------------------------------------------
       
       const docArr = await ModelHardwares.find({
         conditionObj: {
@@ -211,7 +296,11 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ valueArr }) => {
         }
       });
       
-      // ループしてデータベースに存在している hardwareID のみ resultObj.valueArr に追加する
+      
+      // ---------------------------------------------
+      //   ループしてデータベースに存在している hardwareID のみ resultObj.valueArr に追加する
+      // ---------------------------------------------
+      
       for (let value of hardwareIDArr.values()) {
         
         const tempObj = docArr.find((valueObj) => {
@@ -224,6 +313,7 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ valueArr }) => {
         
       }
       
+      
     }
     
     
@@ -231,28 +321,20 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('TL7SiUXLa');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //  Error
-    // ---------------------------------------------
-    
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
-    }
-    
-    
-    return resultObj;
+    throw errorObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

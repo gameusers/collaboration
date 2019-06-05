@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,15 +16,18 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -33,58 +36,32 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
+  label: {
+    fontSize: 14
+  },
+  
+};
 
-const StyledTextFieldWide = styled(TextField)`
+
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssTextField = css`
   && {
     width: 400px;
-    margin-right: 16px;
     
     @media screen and (max-width: 480px) {
       width: 100%;
-      margin-right: initial;
     }
   }
-`;
-
-const TextareaBox = styled.div`
-  margin: 12px 0 0 0;
-`;
-
-const StyledTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 600px;
-    max-width: 600px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    padding: 8px 12px;
-    line-height: 1.8;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      max-width: auto;
-      resize: none;
-    }
-  }
-`;
-
-const SearchBox = styled.div`
-  
 `;
 
 
@@ -94,14 +71,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -110,9 +97,9 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, pcObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, pcObj } = this.props;
     
-    const { handleCardPlayerEditFormData } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -137,13 +124,23 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>PC</Heading>
         
-        <Description>入力するとPCについての情報が表示されます。現在、利用しているPCの情報を入力してください。</Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          PC
+        </h3>
+        
+        
+        <p>入力するとPCについての情報が表示されます。現在、利用しているPCの情報を入力してください。</p>
         
         
         {/* モデル */}
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="pcModel"
           label="モデル・機種名"
           value={pcObj.model}
@@ -158,23 +155,42 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        {/* コメント */}
-        <TextareaBox>
-          <StyledTextareaAutosize
-            rows={5}
-            placeholder="コメントを入力してください"
-            value={pcObj.comment}
-            onChange={(eventObj) => handleCardPlayerEditFormData({
-              pathArr: [_id, 'pcObj', 'comment'],
-              value: eventObj.target.value
-            })}
-            maxLength={3000}
-          />
-        </TextareaBox>
+        <TextareaAutosize
+          css={css`
+            && {
+              width: 600px;
+              max-width: 600px;
+              border-radius: 4px;
+              box-sizing: border-box;
+              line-height: 1.8;
+              margin: 6px 0 0 0;
+              padding: 8px 12px;
+              
+              &:focus {
+                outline: 1px #A9F5F2 solid;
+              }
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+                max-width: auto;
+                resize: none;
+              }
+            }
+          `}
+          rows={5}
+          placeholder="コメントを入力してください"
+          value={pcObj.comment}
+          onChange={(eventObj) => handleCardPlayerEditFormData({
+            pathArr: [_id, 'pcObj', 'comment'],
+            value: eventObj.target.value
+          })}
+          maxLength={3000}
+        />
         
         
         {/* スペック */}
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specOS"
           label="OS"
           value={pcObj.specsObj.os}
@@ -189,7 +205,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specCPU"
           label="CPU"
           value={pcObj.specsObj.cpu}
@@ -204,7 +221,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specCPUCooler"
           label="CPUクーラー"
           value={pcObj.specsObj.cpuCooler}
@@ -219,7 +237,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specMotherboard"
           label="マザーボード"
           value={pcObj.specsObj.motherboard}
@@ -234,7 +253,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specMemory"
           label="メモリー"
           value={pcObj.specsObj.memory}
@@ -249,7 +269,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specStorage"
           label="ストレージ"
           value={pcObj.specsObj.storage}
@@ -264,7 +285,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specGraphicsCard"
           label="グラフィックカード"
           value={pcObj.specsObj.graphicsCard}
@@ -279,7 +301,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specOpticalDrive"
           label="光学ドライブ"
           value={pcObj.specsObj.opticalDrive}
@@ -294,7 +317,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specPowerSupply"
           label="電源"
           value={pcObj.specsObj.powerSupply}
@@ -309,7 +333,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specCase"
           label="ケース"
           value={pcObj.specsObj.pcCase}
@@ -324,7 +349,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specMonitor"
           label="モニター"
           value={pcObj.specsObj.monitor}
@@ -339,7 +365,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specMouse"
           label="マウス"
           value={pcObj.specsObj.mouse}
@@ -354,7 +381,8 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <StyledTextFieldWide
+        <TextField
+          css={cssTextField}
           id="specKeyboard"
           label="キーボード"
           value={pcObj.specsObj.keyboard}
@@ -369,8 +397,11 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={pcObj.search}
@@ -382,7 +413,7 @@ export default injectIntl(class extends React.Component {
             }
             label="PCの情報で検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
       </React.Fragment>

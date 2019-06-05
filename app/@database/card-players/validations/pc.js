@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -15,15 +15,26 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * PC（モデル）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersPCModel = ({ value }) => {
+const validationCardPlayersPCModel = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -40,14 +51,12 @@ const validationCardPlayersPCModel = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'KGJvD0Fj3',
+    messageID: 'KGJvD0Fj3',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -55,18 +64,26 @@ const validationCardPlayersPCModel = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'A9s-j4hy_', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('yhgyXHqZu');
-      resultObj.errorCodeArr.push('LwyyiMp9o');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '9sBeMj586', messageID: 'yhgyXHqZu' }] });
     }
     
     
@@ -74,38 +91,35 @@ const validationCardPlayersPCModel = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('DK86cuiZ5');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -115,9 +129,12 @@ const validationCardPlayersPCModel = ({ value }) => {
 
 /**
  * PC（コメント）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersPCComment = ({ value }) => {
+const validationCardPlayersPCComment = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -134,14 +151,12 @@ const validationCardPlayersPCComment = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -149,18 +164,26 @@ const validationCardPlayersPCComment = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '9sBeMj586', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('pLES2ZGM2');
-      resultObj.errorCodeArr.push('MyP66xx_9');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '5hh1TMxbY', messageID: 'pLES2ZGM2' }] });
     }
     
     
@@ -168,38 +191,35 @@ const validationCardPlayersPCComment = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('eAvDP1eBH');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -209,9 +229,12 @@ const validationCardPlayersPCComment = ({ value }) => {
 
 /**
  * PC（スペック）
- * @param {string} value - 値
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Object} valueObj - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersPCSpec = ({ valueObj }) => {
+const validationCardPlayersPCSpec = ({ throwError = false, required = false, valueObj }) => {
   
   
   // ---------------------------------------------
@@ -226,13 +249,10 @@ const validationCardPlayersPCSpec = ({ valueObj }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const messageCodeArr = [];
-  
   let resultObj = {
     valueObj,
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -240,22 +260,43 @@ const validationCardPlayersPCSpec = ({ valueObj }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   配列チェック
     // ---------------------------------------------
     
-    for (let data of Object.values(valueObj)) {
+    // for (let data of Object.values(valueObj)) {
       
-      // 文字数チェック
-      if (!validator.isEmpty(data) && !validator.isLength(data, { min: minLength, max: maxLength })) {
-        messageCodeArr.unshift('Uh3rnK7Dk');
-        resultObj.errorCodeArr.push('fwq9KZOmc');
+    //   // 文字数チェック
+    //   if (!validator.isEmpty(data) && !validator.isLength(data, { min: minLength, max: maxLength })) {
+    //     messageCodeArr.unshift('Uh3rnK7Dk');
+    //     resultObj.errorCodeArr.push('fwq9KZOmc');
+    //   }
+      
+    // }
+    
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
+    
+    for (let value of Object.values(valueObj)) {
+      
+      
+      // ---------------------------------------------
+      //   空でない
+      // ---------------------------------------------
+      
+      if (!validator.isEmpty(value)) {
+        
+        
+        // ---------------------------------------------
+        //   文字数チェック
+        // ---------------------------------------------
+        
+        if (!validator.isLength(value, { min: minLength, max: maxLength })) {
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: '1qDh5ZcUs', messageID: 'Uh3rnK7Dk' }] });
+        }
+        
+        
       }
-      
-      // 文字数チェック
-      // if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      //   messageCodeArr.unshift('Uh3rnK7Dk');
-      //   resultObj.errorCodeArr.push('fwq9KZOmc');
-      // }
       
     }
     
@@ -264,38 +305,35 @@ const validationCardPlayersPCSpec = ({ valueObj }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('L15FgzNiK');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

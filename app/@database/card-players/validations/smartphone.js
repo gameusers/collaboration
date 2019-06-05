@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -15,15 +15,26 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * スマートフォン（モデル）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersSmartphoneModel = ({ value }) => {
+const validationCardPlayersSmartphoneModel = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -40,14 +51,12 @@ const validationCardPlayersSmartphoneModel = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'KGJvD0Fj3',
+    messageID: 'KGJvD0Fj3',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -55,18 +64,26 @@ const validationCardPlayersSmartphoneModel = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jXbSQW6RU', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('yhgyXHqZu');
-      resultObj.errorCodeArr.push('vqwP2KKvk');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'd8Wt_qbvP', messageID: 'yhgyXHqZu' }] });
     }
     
     
@@ -74,38 +91,35 @@ const validationCardPlayersSmartphoneModel = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('yiF_DL-q8');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -115,9 +129,12 @@ const validationCardPlayersSmartphoneModel = ({ value }) => {
 
 /**
  * スマートフォン（コメント）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersSmartphoneComment = ({ value }) => {
+const validationCardPlayersSmartphoneComment = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -134,14 +151,12 @@ const validationCardPlayersSmartphoneComment = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -149,18 +164,26 @@ const validationCardPlayersSmartphoneComment = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '5yvYUo4wC', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('pLES2ZGM2');
-      resultObj.errorCodeArr.push('RSu26TFS8');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'tONqA-sif', messageID: 'pLES2ZGM2' }] });
     }
     
     
@@ -168,38 +191,35 @@ const validationCardPlayersSmartphoneComment = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('oDWXxWMz_');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,14 +16,17 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -42,34 +45,17 @@ import IconRemoveCircle from '@material-ui/icons/RemoveCircle';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const TextFieldBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  align-items: center;
-`;
-
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -78,14 +64,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -94,7 +90,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, specialSkillsObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, specialSkillsObj } = this.props;
     
     const {
       
@@ -102,7 +98,9 @@ export default injectIntl(class extends React.Component {
       handleCardPlayerAddSpecialSkillForm,
       handleCardPlayerRemoveSpecialSkillForm,
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
+    
+    
     
     
     // --------------------------------------------------
@@ -114,7 +112,18 @@ export default injectIntl(class extends React.Component {
     for (const [index, value] of specialSkillsObj.valueArr.entries()) {
       
       componentsArr.push(
-        <StyledTextField
+        <TextField
+          css={css`
+            && {
+              width: 48%;
+              margin-right: 12px;
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+                margin-right: 0;
+              }
+            }
+          `}
           id={`specialSkill-${index}`}
           value={value}
           onChange={(eventObj) => handleCardPlayerEditFormData({
@@ -159,6 +168,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -166,11 +177,27 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>特技</Heading>
-        <Description>入力すると特技が表示されます。</Description>
+        
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          特技
+        </h3>
         
         
-        <TextFieldBox>
+        <p>入力すると特技が表示されます。</p>
+        
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+          `}
+        >
           
           {/* フォーム */}
           {componentsArr}
@@ -183,12 +210,15 @@ export default injectIntl(class extends React.Component {
             <IconAddCircle />
           </IconButton>
           
-        </TextFieldBox>
+        </div>
         
         
         {/* 検索可能チェックボックス */}
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={specialSkillsObj.search}
@@ -200,7 +230,8 @@ export default injectIntl(class extends React.Component {
             }
             label="特技で検索可能にする"
           />
-        </SearchBox>
+        </div>
+        
         
       </React.Fragment>
     );

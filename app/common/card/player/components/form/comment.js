@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,15 +16,18 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import TextareaAutosize from 'react-autosize-textarea';
 import { injectIntl } from 'react-intl';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -39,40 +42,17 @@ const { validationCardPlayersComment } = require('../../../../../@database/card-
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const StyledTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 600px;
-    max-width: 600px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin: 6px 0 0 0;
-    padding: 8px 12px;
-    line-height: 1.8;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      max-width: auto;
-      resize: none;
-    }
-  }
-`;
-
-const SearchBox = styled.div`
-  margin: 0 0 10px 0;
-`;
+const stylesObj = {
+  
+  label: {
+    fontSize: 14
+  },
+  
+};
 
 
 
@@ -81,14 +61,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -97,9 +87,9 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, commentObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, commentObj } = this.props;
     
-    const { handleCardPlayerEditFormData } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -109,6 +99,8 @@ export default injectIntl(class extends React.Component {
     const validationObj = validationCardPlayersComment({ value: commentObj.value });
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -116,10 +108,39 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>コメント</Heading>
+        
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          コメント
+        </h3>
         
         
-        <StyledTextareaAutosize
+        <TextareaAutosize
+          css={css`
+            && {
+              width: 600px;
+              max-width: 600px;
+              border-radius: 4px;
+              box-sizing: border-box;
+              line-height: 1.8;
+              margin: 6px 0 0 0;
+              padding: 8px 12px;
+              
+              &:focus {
+                outline: 1px #A9F5F2 solid;
+              }
+              
+              @media screen and (max-width: 480px) {
+                width: 100%;
+                max-width: auto;
+                resize: none;
+              }
+            }
+          `}
           rows={5}
           placeholder="コメントを入力してください"
           value={validationObj.value}
@@ -131,8 +152,15 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <SearchBox>
+        <div
+          css={css`
+            margin: 0 0 10px 0;
+          `}
+        >
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={commentObj.search}
@@ -144,7 +172,8 @@ export default injectIntl(class extends React.Component {
             }
             label="コメントで検索可能にする"
           />
-        </SearchBox>
+        </div>
+        
         
       </React.Fragment>
     );

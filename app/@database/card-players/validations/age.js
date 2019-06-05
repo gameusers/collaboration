@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -15,55 +15,67 @@ const util = require('util');
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * 年齢（誕生日）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersAge = ({ value }) => {
+const validationCardPlayersAge = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
-  const data = value ? String(value) : '';
+  const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: '4T_kAMjFU',
+    messageID: '4T_kAMjFU',
     error: false,
-    errorCodeArr: []
   };
-  
-  // console.log(chalk`
-  //   data: {green ${data}}
-  //   validator.isEmpty(data): {green ${validator.isEmpty(data)}}
-  // `);
   
   
   try {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '8si9jEi9g', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 日付チェック
+    
+    // ---------------------------------------------
+    //   日付チェック
+    // ---------------------------------------------
+    
     if (!validator.isISO8601(data)) {
-      messageCodeArr.unshift('bT9TGtVck');
-      resultObj.errorCodeArr.push('XEscDUq2G');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ma3S_LNoY', messageID: 'bT9TGtVck' }] });
     }
     
     
@@ -71,38 +83,35 @@ const validationCardPlayersAge = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('azPaxbHWj');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -112,9 +121,12 @@ const validationCardPlayersAge = ({ value }) => {
 
 /**
  * 年齢（固定値）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersAgeAlternativeText = ({ value }) => {
+const validationCardPlayersAgeAlternativeText = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -131,14 +143,12 @@ const validationCardPlayersAgeAlternativeText = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Qo5IGidJY',
+    messageID: 'Qo5IGidJY',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -146,18 +156,26 @@ const validationCardPlayersAgeAlternativeText = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y9Gj-_F8T', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('xdAU7SgoO');
-      resultObj.errorCodeArr.push('PzpI1ewb8');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zqAbLvEGe', messageID: 'xdAU7SgoO' }] });
     }
     
     
@@ -165,38 +183,35 @@ const validationCardPlayersAgeAlternativeText = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('wqiY1QZQQ');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

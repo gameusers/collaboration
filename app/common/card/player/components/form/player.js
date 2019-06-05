@@ -335,113 +335,113 @@ export default class extends React.Component {
           
           
           {/* コメント */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Comment
               _id={_id}
               commentObj={commentObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* 年齢 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Age
               _id={_id}
               ageObj={ageObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* 性別 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Sex
               _id={_id}
               sexObj={sexObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* 住所 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Address
               _id={_id}
               addressObj={addressObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* ゲーム歴 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <GamingExperience
               _id={_id}
               gamingExperienceObj={gamingExperienceObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* 趣味 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Hobby
               _id={_id}
               hobbiesObj={hobbiesObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* 特技 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <SpecialSkill
               _id={_id}
               specialSkillsObj={specialSkillsObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* スマートフォン */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Smartphone
               _id={_id}
               smartphoneObj={smartphoneObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* タブレット */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <Tablet
               _id={_id}
               tabletObj={tabletObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* PC */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <PC
               _id={_id}
               pcObj={pcObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* 所有ハードウェア */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <HardwareActive
               _id={_id}
               arr={hardwareActiveArr}
               search={hardwareActiveObj.search}
             />
-          </div>*/}
+          </div>
           
           
           {/* 昔、所有していたハードウェア */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <HardwareInactive
               _id={_id}
               arr={hardwareInactiveArr}
               search={hardwareInactiveObj.search}
             />
-          </div>*/}
+          </div>
           
           
           {/* ID */}

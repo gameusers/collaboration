@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,13 +16,17 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -35,44 +39,17 @@ import Chip from '@material-ui/core/Chip';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const HardwareBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 24px 0 0 0;
-`;
-
-const StyledChip = styled(Chip)`
-  && {
-    margin: 0 6px 6px 0;
-  }
-`;
-
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -81,14 +58,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -97,7 +84,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, arr, search } = this.props;
+    const { classes, storeCardPlayer, intl, _id, arr, search } = this.props;
     
     const {
       
@@ -113,7 +100,7 @@ export default class extends React.Component {
       handleCardPlayerHardwareActiveTextFieldOnBlur,
       handleCardPlayerEditHardwareActiveSearch
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     
@@ -130,7 +117,12 @@ export default class extends React.Component {
       for (const [index, valueObj] of arr.entries()) {
         
         componentHardwareArr.push(
-          <StyledChip
+          <Chip
+            css={css`
+              && {
+                margin: 0 6px 6px 0;
+              }
+            `}
             key={index}
             label={valueObj.name}
             color="primary"
@@ -143,7 +135,19 @@ export default class extends React.Component {
       
       
       if (componentHardwareArr.length > 0) {
-        componentHardware = <HardwareBox>{componentHardwareArr}</HardwareBox>;
+        
+        componentHardware =
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 24px 0 0 0;
+            `}
+          >
+            {componentHardwareArr}
+          </div>
+        ;
+        
       }
       
     }
@@ -273,12 +277,21 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>所有ハードウェア</Heading>
         
-        <Description>入力すると所有ハードウェアが表示されます。ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。<br /><br />
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          所有ハードウェア
+        </h3>
+        
+        
+        <p>入力すると所有ハードウェアが表示されます。ハードウェア名（またはSFC、N64などの略称）の一部を入力すると、入力フォームの下に一覧でハードウェアの正式名称が表示されます。一覧上でハードウェアをクリック（タップ）すると入力は完了です。この欄では複数のハードウェアを入力することが可能です。<br /><br />
         
           ゲームのハードウェア名だけでなく、「Android」「iOS」「PC」などもハードウェアとして入力できます。
-        </Description>
+        </p>
         
         
         {componentHardware}
@@ -289,7 +302,16 @@ export default class extends React.Component {
           onBlur={()=> handleCardPlayerHardwareActiveTextFieldOnBlur({ _id })}
         >
           
-          <StyledTextFieldWide
+          <TextField
+            css={css`
+              && {
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              }
+            `}
             id="hardwareActive"
             label="ハードウェア名"
             value={inputValue}
@@ -313,8 +335,11 @@ export default class extends React.Component {
         </div>
         
         
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={search}
@@ -323,7 +348,7 @@ export default class extends React.Component {
             }
             label="所有ハードウェアで検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
       </React.Fragment>
@@ -331,4 +356,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

@@ -67,7 +67,7 @@ const validationCardPlayersStatus = ({ throwError = false, value }) => {
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lkVgpEBbK', messageID: 'xdAU7SgoO' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sioCZZxDF', messageID: 'xdAU7SgoO' }] });
     }
     
     

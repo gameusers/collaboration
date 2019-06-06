@@ -8,6 +8,7 @@ const ja_JP = {
   // 共通
   'Error': 'Error Code: { code }',
   'qnWsuPcrJ': 'その他のエラー',
+  'cvS0qSAlE': 'データベースエラー',
   
   'uwHIKBy7c': 'フォームの入力内容に問題があります',
   'Gn_vVgSFY': '利用規約に同意してください',

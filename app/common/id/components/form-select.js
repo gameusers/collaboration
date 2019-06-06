@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -15,8 +16,10 @@ import chalk from 'chalk';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -36,42 +39,27 @@ import IDChip from './chip';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const Container = styled.div`
-  padding: 8px 14px 16px 14px;
-`;
-
-const Description = styled.p`
-  margin: 12px 0 0 0;
-`;
-
-const Heading = styled.div`
+const cssHeading = css`
   font-weight: bold;
   margin: 24px 0 0 0;
 `;
 
-const SelectedBox = styled.div`
+const cssBox = css`
   display: flex;
   flex-flow: row wrap;
   margin: 4px 0 8px 0;
-  padding: 0;
   
   @media screen and (max-width: 480px) {
     flex-flow: column wrap;
   }
 `;
 
-const IDBox = styled.div`
+const cssIDBox = css`
   cursor: pointer;
-`;
-
-const FuncButton = styled(Button)`
-  && {
-    margin: 24px 0 0 0;
-  }
 `;
 
 
@@ -81,16 +69,26 @@ const FuncButton = styled(Button)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeIDForm')
 @observer
 export default class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
   
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
   componentDidMount() {
+    
     
     // --------------------------------------------------
     //   Button - Enable
@@ -98,8 +96,13 @@ export default class extends React.Component {
     
     this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormSelect` });
     
+    
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -108,7 +111,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, func } = this.props;
+    const { stores, storeIDForm, _id, func } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -119,7 +122,7 @@ export default class extends React.Component {
       handleMoveUnselected,
       handleSelectButton
       
-    } = stores.idForm;
+    } = storeIDForm;
     
     
     // --------------------------------------------------
@@ -157,7 +160,8 @@ export default class extends React.Component {
         const gamesName = lodashGet(tempObj, ['gamesName'], '');
         
         componentsSelectedArr.push(
-          <IDBox
+          <div
+            css={cssIDBox}
             key={index}
             onClick={() => handleMoveSelected({ _id, index })}
           >
@@ -169,7 +173,7 @@ export default class extends React.Component {
               gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
             />
-          </IDBox>
+          </div>
         );
         
       }
@@ -198,7 +202,8 @@ export default class extends React.Component {
         const gamesName = lodashGet(tempObj, ['gamesName'], '');
         
         componentsUnselectedArr.push(
-          <IDBox
+          <div
+            css={cssIDBox}
             key={index}
             onClick={() => handleMoveUnselected({ _id, index })}
           >
@@ -210,7 +215,7 @@ export default class extends React.Component {
               gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
             />
-          </IDBox>
+          </div>
         );
         
       }
@@ -236,34 +241,53 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          padding: 8px 14px 16px 14px;
+        `}
+      >
         
         
-        <Description>
+        <p
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
           Game Usersでは、何度も同じIDを入力しなくていいように、IDを登録してから利用するシステムになっています。IDを登録したことがない方は、上部の「登録」ボタンを押してIDを登録してみてください。次回からはIDの利用がとても簡単になります。<br /><br />
           
           選択したいIDをクリック（タップ）して、[ 選択ID ] の欄に入れてください。「選択を確定する」ボタンを押すと、IDの選択は完了します。
-          </Description>
+        </p>
+        
+        
         
         
         {/* 選択ID */}
-        <Heading>[ 選択ID ]</Heading>
+        <h4 css={cssHeading}>[ 選択ID ]</h4>
         
-        <SelectedBox>
+        <div css={cssBox}>
           {componentsSelectedArr}
-        </SelectedBox>
+        </div>
+        
+        
         
         
         {/* 未選択ID */}
-        <Heading>[ 未選択ID ]</Heading>
+        <h4 css={cssHeading}>[ 未選択ID ]</h4>
         
-        <SelectedBox>
+        <div css={cssBox}>
           {componentsUnselectedArr}
-        </SelectedBox>
+        </div>
+        
+        
         
         
         {/* 「選択を確定する」ボタン */}
-        <FuncButton
+        <Button
+          css={css`
+            && {
+              margin: 24px 0 0 0;
+            }
+          `}
           variant="outlined"
           color="primary"
           onClick={() => handleSelectButton({
@@ -274,10 +298,10 @@ export default class extends React.Component {
           disabled={buttonDisabled}
         >
           選択を確定する
-        </FuncButton>
+        </Button>
         
         
-      </Container>
+      </div>
     );
     
   }

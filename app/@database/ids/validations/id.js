@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -14,15 +15,25 @@ const chalk = require('chalk');
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * ID
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationIDsID = ({ value }) => {
+const validationIDsID = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -39,14 +50,12 @@ const validationIDsID = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'oWwTCtWxC',
+    messageID: 'oWwTCtWxC',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -54,13 +63,11 @@ const validationIDsID = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   文字数チェック
     // ---------------------------------------------
     
-    // 文字数チェック
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      messageCodeArr.unshift('oWwTCtWxC');
-      resultObj.errorCodeArr.push('nkIty98Qk');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'nkIty98Qk', messageID: 'oWwTCtWxC' }] });
     }
     
     
@@ -68,38 +75,35 @@ const validationIDsID = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('sFPZwUC4M');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

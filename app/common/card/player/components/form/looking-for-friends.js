@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,13 +16,18 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
+
+import { withStyles } from '@material-ui/core/styles';
 
 import IconButton from '@material-ui/core/IconButton';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -35,78 +40,17 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const IconButtonBox = styled.div`
-  margin: 12px 0 0 0;
-`;
-
-const IconButtonImg = styled.img`
-  width: 26px;
-  height: 26px;
-`;
-
-const SelectBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 24px 0 0 0;
-`;
-
-const IconBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0;
-`;
-
-const IconSelectedImg = styled.img`
-  width: 26px;
-  height: 26px;
-  padding: 0 6px 0 0;
-`;
-
-const IconText = styled.div`
-  margin: 0 4px 0 0;
-`;
-
-const TextareaBox = styled.div`
-  margin: 12px 0 0 0;
-`;
-
-const StyledTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 600px;
-    max-width: 600px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    padding: 8px 12px;
-    line-height: 1.8;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      max-width: auto;
-      resize: none;
-    }
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -115,14 +59,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -131,9 +85,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, icon, comment, search } = this.props;
+    const { classes, storeCardPlayer, _id, value, icon, comment, search } = this.props;
     
-    const { handleCardPlayerEditFormData } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -154,7 +108,11 @@ export default class extends React.Component {
             value
           })}
         >
-          <IconButtonImg
+          <img
+            css={css`
+              width: 26px;
+              height: 26px;
+            `}
             src={`/static/img/common/blob-emoji/${value}.png`}
           />
         </IconButton>
@@ -189,25 +147,61 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>フレンド</Heading>
         
-        <Description>入力するとフレンド募集についての情報が表示されます。</Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          フレンド
+        </h3>
         
         
-        <IconButtonBox>
+        <p>入力するとフレンド募集についての情報が表示されます。</p>
+        
+        
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
           {componentIconArr}
-        </IconButtonBox>
+        </div>
         
         
-        <SelectBox>
-        
-          <IconBox>
-            <IconSelectedImg
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 24px 0 0 0;
+          `}
+        >
+          
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              margin: 3px 0 0 0;
+            `}
+          >
+            <img
+              css={css`
+                width: 26px;
+                height: 26px;
+                padding: 0 6px 0 0;
+              `}
               src={`/static/img/common/blob-emoji/${icon}.png`}
             />
             
-            <IconText>フレンド: </IconText>
-          </IconBox>
+            <div
+              css={css`
+                margin: 0 6px 0 0;
+              `}
+            >
+              フレンド:
+            </div>
+          </div>
         
           
           <FormControl>
@@ -227,11 +221,35 @@ export default class extends React.Component {
             </Select>
           </FormControl>
           
-        </SelectBox>
+        </div>
         
         
-        <TextareaBox>
-          <StyledTextareaAutosize
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
+          <TextareaAutosize
+            css={css`
+              && {
+                width: 600px;
+                max-width: 600px;
+                border-radius: 4px;
+                box-sizing: border-box;
+                padding: 8px 12px;
+                line-height: 1.8;
+                
+                &:focus {
+                  outline: 1px #A9F5F2 solid;
+                }
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                  max-width: auto;
+                  resize: none;
+                }
+              }
+            `}
             rows={5}
             placeholder="コメントを入力してください"
             value={comment}
@@ -241,11 +259,14 @@ export default class extends React.Component {
             })}
             maxLength={3000}
           />
-        </TextareaBox>
+        </div>
         
         
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={search}
@@ -257,7 +278,7 @@ export default class extends React.Component {
             }
             label="フレンド欄の入力情報で検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
       </React.Fragment>
@@ -265,4 +286,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

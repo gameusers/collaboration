@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -15,8 +16,11 @@ import chalk from 'chalk';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -39,45 +43,26 @@ import GameChip from './chip';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const SelectedGamesBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 12px 0 0 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('storeGameForm')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -86,7 +71,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, gamesArr, func, funcDelete } = this.props;
+    const { storeGameForm, _id, gamesArr, func, funcDelete } = this.props;
     
     const {
       
@@ -97,7 +82,7 @@ export default class extends React.Component {
       handleKeyword,
       handleSuggestionOnKeyDown,
       
-    } = stores.gameForm;
+    } = storeGameForm;
     
     
     
@@ -139,7 +124,21 @@ export default class extends React.Component {
         
       }
       
-      componentSelected = <SelectedGamesBox>{componentSelectedArr}</SelectedGamesBox>;
+      componentSelected =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 12px 0 0 0;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+            }
+          `}
+        >
+          {componentSelectedArr}
+        </div>
+      ;
       
     }
     
@@ -284,7 +283,16 @@ export default class extends React.Component {
           })}
         >
           
-          <StyledTextFieldWide
+          <TextField
+            css={css`
+              && {
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              }
+            `}
             id="hardwareActive"
             label="ゲーム"
             value={keyword}
@@ -308,4 +316,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

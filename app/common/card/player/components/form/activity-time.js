@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,14 +16,18 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
-// import lodashGet from 'lodash/get';
+import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
+
+import { withStyles } from '@material-ui/core/styles';
 
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
@@ -50,47 +54,75 @@ const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../..
 
 
 
+
+// --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const stylesObj = {
+  
+  label: {
+    fontSize: 14
+  },
+  
+};
+
+
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssTextField = css`
+  && {
+    margin-right: 16px;
+  }
+`;
+
+
+
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
+// const Heading = styled.div`
+//   font-weight: bold;
+//   margin: 0 0 2px 0;
+// `;
 
-const Description = styled.p`
+// const Description = styled.p`
   
-`;
+// `;
 
-const Box = styled.div`
+// const Box = styled.div`
   
-`;
+// `;
 
-const TextFieldBox = styled.div`
-  margin: 12px 0 0 0;
-`;
+// const TextFieldBox = styled.div`
+//   margin: 12px 0 0 0;
+// `;
 
-const StyledTextField = styled(TextField)`
-  && {
-    margin-right: 16px;
-  }
-`;
+// const StyledTextField = styled(TextField)`
+//   && {
+//     margin-right: 16px;
+//   }
+// `;
 
-const IconButtonBox = styled.div`
-  margin: 12px 0 0 0;
-`;
+// const IconButtonBox = styled.div`
+//   margin: 12px 0 0 0;
+// `;
 
-const StyledIconButton = styled(IconButton)`
-  && {
-    margin-right: 16px;
-  }
-`;
+// const StyledIconButton = styled(IconButton)`
+//   && {
+//     margin-right: 16px;
+//   }
+// `;
 
-const SearchBox = styled.div`
+// const SearchBox = styled.div`
   
-`;
+// `;
 
 
 
@@ -99,14 +131,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -115,7 +157,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, activityTimeObj } = this.props;
+    const { classes, storeCardPlayer, intl, _id, activityTimeObj } = this.props;
     
     const {
       
@@ -124,8 +166,7 @@ export default injectIntl(class extends React.Component {
       handleCardPlayerEditActivityTimeAddForm,
       handleCardPlayerEditActivityTimeRemoveForm,
       
-    } = stores.cardPlayer;
-    
+    } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -133,12 +174,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const validationObj = validationCardPlayersActivityTimeObjValueArr({ required: false, valueArr: activityTimeObj.valueArr });
-    
-    // console.log(`
-    //   ----- validationObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -149,25 +184,30 @@ export default injectIntl(class extends React.Component {
     
     for (const [index, valueObj] of activityTimeObj.valueArr.entries()) {
       
-      const beginTime = 'beginTime' in valueObj ? valueObj.beginTime : '';
-      const beginTimeError = validationObj.formArr[index].beginTimeObj.error;
-      const beginTimeMessageCode = validationObj.formArr[index].beginTimeObj.messageCode;
+      const beginTime = lodashGet(valueObj, ['beginTime'], '');
+      const beginTimeError = lodashGet(validationObj, ['formArr', index, 'beginTimeObj', 'error'], false);
+      const beginTimeMessageID = lodashGet(validationObj, ['formArr', index, 'beginTimeObj', 'messageID'], 'qnWsuPcrJ');
       
-      const endTime = 'endTime' in valueObj ? valueObj.endTime : '';
-      const endTimeError = validationObj.formArr[index].endTimeObj.error;
-      const endTimeMessageCode = validationObj.formArr[index].endTimeObj.messageCode;
+      const endTime = lodashGet(valueObj, ['endTime'], '');
+      const endTimeError = lodashGet(validationObj, ['formArr', index, 'endTimeObj', 'error'], false);
+      const endTimeMessageID = lodashGet(validationObj, ['formArr', index, 'endTimeObj', 'messageID'], 'qnWsuPcrJ');
       
-      const weekArr = 'weekArr' in valueObj ? valueObj.weekArr : [];
-      const weekError = validationObj.formArr[index].weekObj.error;
-      const weekMessageCode = validationObj.formArr[index].weekObj.messageCode;
+      const weekArr = lodashGet(valueObj, ['weekArr'], '');
+      const weekError = lodashGet(validationObj, ['formArr', index, 'weekObj', 'error'], false);
+      const weekMessageID = lodashGet(validationObj, ['formArr', index, 'weekObj', 'messageID'], 'qnWsuPcrJ');
       
       
       componentsArr.push(
-        <Box key={index}>
+        <div key={index}>
           
-          <TextFieldBox>
+          <div
+            css={css`
+              margin: 12px 0 0 0;
+            `}
+          >
             
-            <StyledTextField
+            <TextField
+              css={cssTextField}
               id="beginTime"
               label="開始時間"
               type="time"
@@ -177,14 +217,15 @@ export default injectIntl(class extends React.Component {
                 value: eventObj.target.value
               })}
               error={beginTimeError}
-              helperText={intl.formatMessage({ id: beginTimeMessageCode })}
+              helperText={intl.formatMessage({ id: beginTimeMessageID })}
               margin="normal"
               InputLabelProps={{
                 shrink: true,
               }}
             />
             
-            <StyledTextField
+            <TextField
+              css={cssTextField}
               id="endTime"
               label="終了時間"
               type="time"
@@ -194,14 +235,14 @@ export default injectIntl(class extends React.Component {
                 value: eventObj.target.value
               })}
               error={endTimeError}
-              helperText={intl.formatMessage({ id: endTimeMessageCode })}
+              helperText={intl.formatMessage({ id: endTimeMessageID })}
               margin="normal"
               InputLabelProps={{
                 shrink: true,
               }}
             />
             
-          </TextFieldBox>
+          </div>
           
           
           <FormControl required error={weekError} component="fieldset">
@@ -315,11 +356,11 @@ export default injectIntl(class extends React.Component {
               
             </FormGroup>
             
-            <FormHelperText>{intl.formatMessage({ id: weekMessageCode })}</FormHelperText>
+            <FormHelperText>{intl.formatMessage({ id: weekMessageID })}</FormHelperText>
             
           </FormControl>
           
-        </Box>
+        </div>
       );
       
     }
@@ -352,23 +393,47 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>活動時間</Heading>
         
-        <Description>入力すると活動時間が表示されます。開始時間と終了時間、曜日を入力してください。</Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          活動時間
+        </h3>
         
         
+        <p>入力すると活動時間が表示されます。開始時間と終了時間、曜日を入力してください。</p>
+        
+        
+        
+        
+        {/* Form */}
         {componentsArr}
         
         
+        
+        
         {/* フォーム追加・削除ボタン */}
-        <IconButtonBox>
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
+          
           
           {/* - ボタン */}
-          <StyledIconButton
+          <IconButton
+            css={css`
+              && {
+                margin-right: 16px;
+              }
+            `}
             onClick={() => handleCardPlayerEditActivityTimeRemoveForm({ _id })}
           >
             <IconRemoveCircle />
-          </StyledIconButton>
+          </IconButton>
           
           
           {/* + ボタン */}
@@ -378,12 +443,18 @@ export default injectIntl(class extends React.Component {
             <IconAddCircle />
           </IconButton>
           
-        </IconButtonBox>
+          
+        </div>
+        
+        
         
         
         {/* 検索チェックボックス */}
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={activityTimeObj.search}
@@ -395,7 +466,8 @@ export default injectIntl(class extends React.Component {
             }
             label="活動時間で検索可能にする"
           />
-        </SearchBox>
+        </div>
+        
         
       </React.Fragment>
     );

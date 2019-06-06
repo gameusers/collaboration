@@ -16,8 +16,10 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -26,7 +28,6 @@ import lodashGet from 'lodash/get';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -52,20 +53,11 @@ import FormRegister from './form-register';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Emotion
+//   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const ButtonBox = styled.div`
-  margin: 88px 0 0 12px;
-  
-  @media screen and (max-width: 480px) {
-    margin: 76px 0 0 12px;
-  }
-  
-`;
-
-const SelectFormTypeButton = styled(Button)`
+const cssButton = css`
   && {
     margin: 0 16px 0 0;
   }
@@ -78,7 +70,7 @@ const SelectFormTypeButton = styled(Button)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeIDForm')
 @observer
 export default class extends React.Component {
   
@@ -120,7 +112,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, idArr, func } = this.props;
+    const { stores, storeIDForm, _id, idArr, func } = this.props;
     
     const { buttonDisabledObj } = stores.layout;
     
@@ -130,7 +122,7 @@ export default class extends React.Component {
       handleEdit,
       handleDialogOpen,
       
-    } = stores.idForm;
+    } = storeIDForm;
     
     
     
@@ -256,9 +248,18 @@ export default class extends React.Component {
           
           
           {/* ボタン */}
-          <ButtonBox>
+          <div
+            css={css`
+              margin: 88px 0 0 12px;
+              
+              @media screen and (max-width: 480px) {
+                margin: 76px 0 0 12px;
+              }
+            `}
+          >
             
-            <SelectFormTypeButton
+            <Button
+              css={cssButton}
               variant="outlined"
               color="primary"
               onClick={() => handleEdit({
@@ -268,9 +269,10 @@ export default class extends React.Component {
               disabled={buttonDisabled}
             >
               選択
-            </SelectFormTypeButton>
+            </Button>
             
-            <SelectFormTypeButton
+            <Button
+              css={cssButton}
               variant="outlined"
               color="primary"
               onClick={() => handleEdit({
@@ -280,9 +282,10 @@ export default class extends React.Component {
               disabled={buttonDisabled}
             >
               編集
-            </SelectFormTypeButton>
+            </Button>
             
-            <SelectFormTypeButton
+            <Button
+              css={cssButton}
               variant="outlined"
               color="primary"
               onClick={() => handleEdit({
@@ -292,9 +295,9 @@ export default class extends React.Component {
               disabled={buttonDisabled}
             >
               登録
-            </SelectFormTypeButton>
+            </Button>
             
-          </ButtonBox>
+          </div>
           
           
           {/* コンテンツ */}

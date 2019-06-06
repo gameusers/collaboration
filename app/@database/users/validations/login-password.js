@@ -73,7 +73,7 @@ const validationUsersLoginPassword = ({ throwError = false, required = false, va
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'LJGO1br5z', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yb5NVHn9Q', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;

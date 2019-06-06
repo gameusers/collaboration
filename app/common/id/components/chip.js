@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -67,7 +67,6 @@ const cssAvatar = css`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
 @observer
 export default class extends React.Component {
   

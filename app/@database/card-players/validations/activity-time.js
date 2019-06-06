@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
-// const util = require('util');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -15,22 +15,27 @@ const chalk = require('chalk');
 // ---------------------------------------------
 
 const shortid = require('shortid');
-
-
-// ---------------------------------------------
-//   Validation
-// ---------------------------------------------
-
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * Activity Time Object / Value Array
- * @param {string} valueArr - 検証する配列
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} valueArr - 配列
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
+const validationCardPlayersActivityTimeObjValueArr = ({ throwError = false, required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -45,13 +50,11 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const errorCodeSet = new Set();
-  
-  let resultObj = {
+  const resultObj = {
     valueArr: [],
     formArr: [],
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -59,42 +62,63 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   配列チェック
     // ---------------------------------------------
     
-    for (let dataObj of Object.values(valueArr)) {
+    if (!Array.isArray(valueArr)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '3NAm-ySR8', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (valueArr.length === 0) {
       
-      const error = false;
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '-_L7KAmti', messageID: 'cFbXmuFVh' }] });
+      }
       
-      const _id = dataObj._id ? dataObj._id : shortid.generate();
-      const beginTime = dataObj.beginTime ? dataObj.beginTime : '';
-      const endTime = dataObj.endTime ? dataObj.endTime : '';
-      const weekArr = dataObj.weekArr ? dataObj.weekArr : [];
+      return resultObj;
       
+    }
+    
+    
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
+    
+    for (let valueObj of valueArr.values()) {
+      
+      let error = false;
+      
+      const _id = lodashGet(valueObj, ['_id'], shortid.generate());
+      const beginTime = lodashGet(valueObj, ['beginTime'], '');
+      const endTime = lodashGet(valueObj, ['endTime'], '');
+      const weekArr = lodashGet(valueObj, ['weekArr'], []);
       
       const formObj = {
         beginTimeObj: {
-          messageCode: 'vKhuy_98i',
+          messageID: 'vKhuy_98i',
           error: false
         },
         endTimeObj: {
-          messageCode: 'h7yr2vkyk',
+          messageID: 'h7yr2vkyk',
           error: false
         },
         weekObj: {
-          messageCode: 'vplWXcVvo',
+          messageID: 'vplWXcVvo',
           error: false
         },
       };
       
       
       // ---------------------------------------------
-      //   _id
+      //   _id / 英数と -_ のみ
       // ---------------------------------------------
       
-      // 英数と -_ のみ
       if (_id.match(/^[\w\-]+$/) === null) {
-        errorCodeSet.add('qBOC809TB');
         error = true;
       }
       
@@ -106,16 +130,14 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
       // 時間チェック
       if (beginTime.match(/^([0-1][0-9]|2[0-3]):[0-5][0-9]+$/) === null) {
         formObj.beginTimeObj.error = true;
-        formObj.beginTimeObj.messageCode = 'McbWUO45b';
-        errorCodeSet.add('umBDyFGBI');
+        formObj.beginTimeObj.messageID = 'McbWUO45b';
         error = true;
       }
       
       // 存在チェック
       if (validator.isEmpty(beginTime)) {
         formObj.beginTimeObj.error = true;
-        formObj.beginTimeObj.messageCode = 'cFbXmuFVh';
-        errorCodeSet.add('vv5WHKoBd');
+        formObj.beginTimeObj.messageID = 'cFbXmuFVh';
         error = true;
       }
       
@@ -127,16 +149,14 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
       // 時間チェック
       if (endTime.match(/^([0-1][0-9]|2[0-3]):[0-5][0-9]+$/) === null) {
         formObj.endTimeObj.error = true;
-        formObj.endTimeObj.messageCode = 'McbWUO45b';
-        errorCodeSet.add('7zsdduAfk');
+        formObj.endTimeObj.messageID = 'McbWUO45b';
         error = true;
       }
       
       // 存在チェック
       if (validator.isEmpty(endTime)) {
         formObj.endTimeObj.error = true;
-        formObj.endTimeObj.messageCode = 'cFbXmuFVh';
-        errorCodeSet.add('QxNZyKS6K');
+        formObj.endTimeObj.messageID = 'cFbXmuFVh';
         error = true;
       }
       
@@ -149,20 +169,22 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
       if (weekArr.length > 0) {
         
         for (let week of weekArr.values()) {
+          
           if (!validator.isInt(String(week), { min: minNumber, max: maxNumber })) {
             formObj.weekObj.error = true;
-            formObj.weekObj.messageCode = 'PH8jcw-VF';
-            errorCodeSet.add('Vgawt5hJ5');
+            formObj.weekObj.messageID = 'PH8jcw-VF';
             error = true;
           }
+          
         }
         
       // 曜日が選ばれていない場合
       } else {
+        
         formObj.weekObj.error = true;
-        formObj.weekObj.messageCode = 'dmja16xDh';
-        errorCodeSet.add('goXfxvMKa');
+        formObj.weekObj.messageID = 'dmja16xDh';
         error = true;
+        
       }
       
       
@@ -183,6 +205,7 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
         });
       }
       
+      
     }
     
     
@@ -190,29 +213,29 @@ const validationCardPlayersActivityTimeObjValueArr = ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    errorCodeSet.add('kiWVCUNgA');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Error
-    // ---------------------------------------------
-    
-    if (errorCodeSet.size > 0) {
-      resultObj.error = true;
-      resultObj.errorCodeArr = Array.from(errorCodeSet);
+    if (throwError) {
+      throw errorObj;
     }
     
     
-    return resultObj;
+    // ---------------------------------------------
+    //   Result Error
+    // ---------------------------------------------
+    
+    resultObj.error = true;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,8 +16,10 @@ import chalk from 'chalk';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -31,48 +33,25 @@ import IDForm from '../../../../id/components/form';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
-  
-`;
-
-const Box = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 12px 0 8px 0;
-  
-  @media screen and (max-width: 480px) {
-    flex-flow: column wrap;
-  }
-`;
-
-const IDFormBox = styled.div`
-  margin: 24px 0 0 0;
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
 @observer
 export default class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -138,27 +117,49 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>ID</Heading>
         
-        <Description>
-          ゲームや連絡先のIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。
-        </Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          ID
+        </h3>
+        
+        
+        <p>ゲームや連絡先のIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。</p>
         
         
         {/* 選択済みID */}
-        <Box>
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 12px 0 8px 0;
+            
+            @media screen and (max-width: 480px) {
+              flex-flow: column wrap;
+            }
+          `}
+        >
           {componentsSelectedArr}
-        </Box>
+        </div>
         
         
         {/* ID選択・編集フォーム */}
-        <IDFormBox>
+        <div
+          css={css`
+            margin: 24px 0 0 0;
+          `}
+        >
           <IDForm
             _id={_id}
             idArr={idArr}
             func={func}
           />
-        </IDFormBox>
+        </div>
+        
         
       </React.Fragment>
     );

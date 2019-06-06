@@ -25,13 +25,7 @@ import lodashSet from 'lodash/set';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-import { errorsArrIntoErrorMessage } from '../../../@format/error';
+import { CustomError } from '../../../@modules/error/custom';
 
 
 
@@ -40,7 +34,6 @@ import { errorsArrIntoErrorMessage } from '../../../@format/error';
 //   Store
 // --------------------------------------------------
 
-let store = null;
 let storeGameForm = null;
 
 
@@ -247,7 +240,7 @@ class Store {
       // ---------------------------------------------
       
       if ('errorsArr' in resultObj) {
-        throw new Error(errorsArrIntoErrorMessage(resultObj.errorsArr));
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
@@ -285,36 +278,10 @@ class Store {
 
 export default function initStoreGameForm({}) {
   
-  if (store === null) {
-    store = new Store();
+  if (storeGameForm === null) {
+    storeGameForm = new Store();
   }
   
-  return store;
-  
-  // const isServer = argumentsObj.isServer;
-  
-  
-  // if ('layout' in storeInstanceObj) {
-  //   storeLayout = storeInstanceObj.layout;
-  // }
-  
-  // if ('data' in storeInstanceObj) {
-  //   storeData = storeInstanceObj.data;
-  // }
-  
-  
-  // if (isServer) {
-    
-  //   return new Store();
-    
-  // } else {
-    
-  //   if (store === null) {
-  //     store = new Store();
-  //   }
-    
-  //   return store;
-    
-  // }
+  return storeGameForm;
   
 }

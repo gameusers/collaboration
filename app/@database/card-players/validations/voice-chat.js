@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -11,19 +11,29 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * ボイスチャット（できる / できない）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersVoiceChatValue = ({ value }) => {
+const validationCardPlayersVoiceChatValue = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -34,11 +44,10 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
-    value,
+    value: data,
     numberOfCharacters,
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -46,12 +55,11 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   Booleanチェック
     // ---------------------------------------------
     
-    // Booleanチェック
     if (!validator.isBoolean(data)) {
-      resultObj.errorCodeArr.push('hpz55PqlZ');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jma2KUQIg', messageID: 'qnWsuPcrJ' }] });
     }
     
     
@@ -59,28 +67,35 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('W6PoyD7Su');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //  Error
-    // ---------------------------------------------
-    
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    if (throwError) {
+      throw errorObj;
     }
     
     
-    return resultObj;
+    // ---------------------------------------------
+    //   Result Error
+    // ---------------------------------------------
+    
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
+    }
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };
@@ -90,9 +105,12 @@ const validationCardPlayersVoiceChatValue = ({ value }) => {
 
 /**
  * ボイスチャット（コメント）
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersVoiceChatComment = ({ value }) => {
+const validationCardPlayersVoiceChatComment = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -113,9 +131,8 @@ const validationCardPlayersVoiceChatComment = ({ value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'Error',
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -123,17 +140,26 @@ const validationCardPlayersVoiceChatComment = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   空の場合、処理停止
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
     if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'o25q3UXUy', messageID: 'cFbXmuFVh' }] });
+      }
+      
       return resultObj;
+      
     }
     
-    // 文字数チェック
+    
+    // ---------------------------------------------
+    //   文字数チェック
+    // ---------------------------------------------
+    
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      resultObj.errorCodeArr.push('rXpHOv1ph');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'iUqrQ7Mms', messageID: 'pLES2ZGM2' }] });
     }
     
     
@@ -141,28 +167,35 @@ const validationCardPlayersVoiceChatComment = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('mJsZDkHpv');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //  Error
-    // ---------------------------------------------
-    
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    if (throwError) {
+      throw errorObj;
     }
     
     
-    return resultObj;
+    // ---------------------------------------------
+    //   Result Error
+    // ---------------------------------------------
+    
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
+    }
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

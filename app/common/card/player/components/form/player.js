@@ -445,26 +445,26 @@ export default class extends React.Component {
           
           
           {/* ID */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <ID
               _id={_id}
               idArr={idArr}
               func={handleCardPlayerEditID}
             />
-          </div>*/}
+          </div>
           
           
           {/* 活動時間 */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <ActivityTime
               _id={_id}
               activityTimeObj={activityTimeObj}
             />
-          </div>*/}
+          </div>
           
           
           {/* フレンド */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <LookingForFriends
               _id={_id}
               value={lookingForFriendsObj.value}
@@ -472,27 +472,27 @@ export default class extends React.Component {
               comment={lookingForFriendsObj.comment}
               search={lookingForFriendsObj.search}
             />
-          </div>*/}
+          </div>
           
           
           {/* ボイスチャット */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <VoiceChat
               _id={_id}
               value={voiceChatObj.value}
               comment={voiceChatObj.comment}
               search={voiceChatObj.search}
             />
-          </div>*/}
+          </div>
           
           
           {/* Link */}
-          {/*<div css={cssBox}>
+          <div css={cssBox}>
             <FormLink
               _id={_id}
               arr={linkArr}
             />
-          </div>*/}
+          </div>
           
           
         </CardContent>

@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
-// import util from 'util';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,14 +16,18 @@ import chalk from 'chalk';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
+
+import { withStyles } from '@material-ui/core/styles';
 
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -53,69 +57,17 @@ const { validationCardPlayersLinkArr } = require('../../../../../@database/card-
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const FormBox = styled.div`
-  border-bottom: 1px dashed #d0d0d0;
-  padding: 24px 0;
-`;
-
-const SelectBox = styled.div`
-  margin: 12px 0 0 0;
-`;
-
-const StyledSelect = styled(Select)`
-  && {
-    width: 200px;
-  }
-`;
-
-const IconButtonForSelect = styled(IconButton)`
-  && {
-    margin-left: 24px;
-  }
-`;
-
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-const StyledTextField100Per = styled(TextField)`
-  && {
-    width: 100%;
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
-
-const ButtonBox = styled.div`
-  margin: 12px;
-`;
-
-const IconButtonForButtonBox = styled(IconButton)`
-  && {
-    margin-right: 16px;
-  }
-`;
+};
 
 
 
@@ -124,14 +76,24 @@ const IconButtonForButtonBox = styled(IconButton)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -140,7 +102,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, arr } = this.props;
+    const { classes, storeCardPlayer, intl, _id, arr } = this.props;
     
     const {
       
@@ -148,7 +110,7 @@ export default injectIntl(class extends React.Component {
       handleCardPlayerAddLinkForm,
       handleCardPlayerRemoveLinkForm
       
-    } = stores.cardPlayer;
+    } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -171,25 +133,40 @@ export default injectIntl(class extends React.Component {
       
       const label = lodashGet(valueObj, ['label'], '');
       const labelError = lodashGet(validationObj, ['formArr', index, 'labelObj', 'error'], false);
-      const labelMessageCode = lodashGet(validationObj, ['formArr', index, 'labelObj', 'messageCode'], 'Error');
+      const labelMessageID = lodashGet(validationObj, ['formArr', index, 'labelObj', 'messageID'], 'sOgKU3gS9');
       
       const url = lodashGet(valueObj, ['url'], '');
       const urlError = lodashGet(validationObj, ['formArr', index, 'urlObj', 'error'], false);
-      const urlMessageCode = lodashGet(validationObj, ['formArr', index, 'urlObj', 'messageCode'], 'Error');
+      const urlMessageID = lodashGet(validationObj, ['formArr', index, 'urlObj', 'messageID'], 'CAhUTCx7B');
       
-      const search = lodashGet(valueObj, ['search'], '');
-      
-      
+      const search = lodashGet(valueObj, ['search'], true);
       
       
       componentsArr.push(
         
-        <FormBox key={index}>
+        <div
+          css={css`
+            border-bottom: 1px dashed #d0d0d0;
+            padding: 24px 0;
+          `}
+          key={index}
+        >
           
-          <SelectBox>
+          <div
+            css={css`
+              margin: 12px 0 0 0;
+            `}
+          >
             <FormControl>
+              
               <InputLabel htmlFor="linkType">ウェブサイトの種類</InputLabel>
-              <StyledSelect
+              
+              <Select
+                css={css`
+                  && {
+                    width: 200px;
+                  }
+                `}
                 value={type}
                 onChange={(eventObj) => handleCardPlayerEditFormData({
                   pathArr: [_id, 'linkArr', index, 'type'],
@@ -211,22 +188,37 @@ export default injectIntl(class extends React.Component {
                 <MenuItem value={'Tumblr'}>Tumblr</MenuItem>
                 <MenuItem value={'Pinterest'}>Pinterest</MenuItem>
                 <MenuItem value={'Other'}>その他</MenuItem>
-              </StyledSelect>
+              </Select>
+              
             </FormControl>
             
             
             {/* - ボタン */}
-            <IconButtonForSelect
+            <IconButton
+              css={css`
+                && {
+                  margin-left: 24px;
+                }
+              `}
               onClick={() => handleCardPlayerRemoveLinkForm({ _id, index })}
             >
               <IconRemoveCircle />
-            </IconButtonForSelect>
+            </IconButton>
             
-          </SelectBox>
+          </div>
           
           
           {valueObj.type === 'Other' &&
-            <StyledTextFieldWide
+            <TextField
+              css={css`
+                && {
+                  width: 400px;
+                  
+                  @media screen and (max-width: 480px) {
+                    width: 100%;
+                  }
+                }
+              `}
               id="linkLabel"
               label="リンクのタイトル"
               value={label}
@@ -235,7 +227,7 @@ export default injectIntl(class extends React.Component {
                 value: eventObj.target.value
               })}
               error={labelError}
-              helperText={intl.formatMessage({ id: labelMessageCode })}
+              helperText={intl.formatMessage({ id: labelMessageID })}
               margin="normal"
               inputProps={{
                 maxLength: 20,
@@ -244,7 +236,12 @@ export default injectIntl(class extends React.Component {
           }
           
           
-          <StyledTextField100Per
+          <TextField
+            css={css`
+              && {
+                width: 100%;
+              }
+            `}
             id="linkURL"
             label="URL"
             value={url}
@@ -253,7 +250,7 @@ export default injectIntl(class extends React.Component {
               value: eventObj.target.value
             })}
             error={urlError}
-            helperText={intl.formatMessage({ id: urlMessageCode })}
+            helperText={intl.formatMessage({ id: urlMessageID })}
             margin="normal"
             inputProps={{
               maxLength: 500,
@@ -261,8 +258,11 @@ export default injectIntl(class extends React.Component {
           />
           
           
-          <SearchBox>
+          <div>
             <FormControlLabel
+              classes={{
+                label: classes.label
+              }}
               control={
                 <Checkbox
                   checked={search}
@@ -274,9 +274,9 @@ export default injectIntl(class extends React.Component {
               }
               label="このリンクを検索可能にする"
             />
-          </SearchBox>
+          </div>
           
-        </FormBox>
+        </div>
         
         
       );
@@ -311,22 +311,40 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>リンク</Heading>
         
-        <Description>入力するとリンクが表示されます。</Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          リンク
+        </h3>
+        
+        
+        <p>入力するとリンクが表示されます。</p>
         
         
         {componentsArr}
         
         
-        <ButtonBox>
+        <div
+          css={css`
+            margin: 12px;
+          `}
+        >
           
           {/* - ボタン */}
-          <IconButtonForButtonBox
+          <IconButton
+            css={css`
+              && {
+                margin-right: 16px;
+              }
+            `}
             onClick={() => handleCardPlayerRemoveLinkForm({ _id, index: 999 })}
           >
             <IconRemoveCircle />
-          </IconButtonForButtonBox>
+          </IconButton>
           
           
           {/* + ボタン */}
@@ -336,7 +354,7 @@ export default injectIntl(class extends React.Component {
             <IconAddCircle />
           </IconButton>
           
-        </ButtonBox>
+        </div>
         
         
       </React.Fragment>

@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -14,15 +15,25 @@ const chalk = require('chalk');
 // ---------------------------------------------
 
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * Platform
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
+ * @return {Object} バリデーション結果
  */
-const validationIDsPlatform = ({ value }) => {
+const validationIDsPlatform = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -31,14 +42,12 @@ const validationIDsPlatform = ({ value }) => {
   
   const data = String(value);
   const numberOfCharacters = data ? data.length : 0;
-  const messageCodeArr = [];
   
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageCode: 'dJzAwAva3',
+    messageID: 'dJzAwAva3',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -46,13 +55,11 @@ const validationIDsPlatform = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    // 適切な値が選択されているかチェック
     if (!validator.isIn(value, ['PlayStation', 'Xbox', 'Nintendo', 'PC', 'Android', 'iOS', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line', 'Other'])) {
-      messageCodeArr.unshift('dJzAwAva3');
-      resultObj.errorCodeArr.push('Pm5xt5BQr');
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Pm5xt5BQr', messageID: 'dJzAwAva3' }] });
     }
     
     
@@ -60,38 +67,35 @@ const validationIDsPlatform = ({ value }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    messageCodeArr.unshift('qnWsuPcrJ');
-    resultObj.errorCodeArr.push('VvfGAOHW6');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Message Code
-    // ---------------------------------------------
-    
-    if (messageCodeArr.length > 0) {
-      resultObj.messageCode = messageCodeArr[0];
+    if (throwError) {
+      throw errorObj;
     }
     
     
     // ---------------------------------------------
-    //  Error
+    //   Result Error
     // ---------------------------------------------
     
-    if (resultObj.errorCodeArr.length > 0) {
-      resultObj.error = true;
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
     }
-    
-    
-    return resultObj;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

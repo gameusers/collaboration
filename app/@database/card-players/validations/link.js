@@ -3,11 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
-// const util = require('util');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -15,22 +15,27 @@ const chalk = require('chalk');
 // ---------------------------------------------
 
 const shortid = require('shortid');
-
-
-// ---------------------------------------------
-//   Validation
-// ---------------------------------------------
-
 const validator = require('validator');
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
  * Link Array
- * @param {string} valueArr - 検証する配列
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
+ * @param {Array} valueArr - 配列
+ * @return {Object} バリデーション結果
  */
-const validationCardPlayersLinkArr = ({ valueArr }) => {
+const validationCardPlayersLinkArr = ({ throwError = false, required = false, valueArr }) => {
   
   
   // ---------------------------------------------
@@ -48,13 +53,11 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
   //   Result Object
   // ---------------------------------------------
   
-  const errorCodeSet = new Set();
-  
-  let resultObj = {
+  const resultObj = {
     valueArr: [],
     formArr: [],
+    messageID: 'Error',
     error: false,
-    errorCodeArr: []
   };
   
   
@@ -62,43 +65,64 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   Validation
+    //   配列チェック
     // ---------------------------------------------
     
-    for (let dataObj of Object.values(valueArr)) {
+    if (!Array.isArray(valueArr)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '3NAm-ySR8', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (valueArr.length === 0) {
       
-      const error = false;
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '-_L7KAmti', messageID: 'cFbXmuFVh' }] });
+      }
       
-      const _id = dataObj._id ? dataObj._id : shortid.generate();
-      const type = dataObj.type ? dataObj.type : '';
-      const label = dataObj.label ? dataObj.label : '';
-      const url = dataObj.url ? dataObj.url : '';
-      const search = dataObj.search ? dataObj.search : true;
+      return resultObj;
       
+    }
+    
+    
+    // ---------------------------------------------
+    //   Loop
+    // ---------------------------------------------
+    
+    for (let valueObj of valueArr.values()) {
+      
+      let error = false;
+      
+      const _id = lodashGet(valueObj, ['_id'], shortid.generate());
+      const type = lodashGet(valueObj, ['type'], '');
+      const label = lodashGet(valueObj, ['label'], '');
+      const url = lodashGet(valueObj, ['url'], '');
+      const search = lodashGet(valueObj, ['search'], true);
       
       const formObj = {
         typeObj: {
-          messageCode: 'Error',
+          messageID: 'Error',
           error: false
         },
         labelObj: {
-          messageCode: 'sOgKU3gS9',
+          messageID: 'sOgKU3gS9',
           error: false
         },
         urlObj: {
-          messageCode: 'CAhUTCx7B',
+          messageID: 'CAhUTCx7B',
           error: false
         },
       };
       
       
       // ---------------------------------------------
-      //   ID
+      //   _id / 英数と -_ のみ
       // ---------------------------------------------
       
-      // 英数と -_ のみ
       if (_id.match(/^[\w\-]+$/) === null) {
-        errorCodeSet.add('uTHUXw0Li');
         error = true;
       }
       
@@ -107,11 +131,9 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       //   Type
       // ---------------------------------------------
       
-      // 適切な値が選択されているかチェック
       if (!validator.isIn(type, ['Twitter', 'Facebook', 'Instagram', 'YouTube', 'Twitch', 'Steam', 'Discord', 'Flickr', 'Tumblr', 'Pinterest', 'Other'])) {
         formObj.typeObj.error = true;
-        formObj.typeObj.messageCode = 'PH8jcw-VF';
-        errorCodeSet.add('gLkbRV4v-');
+        formObj.typeObj.messageID = 'PH8jcw-VF';
         error = true;
       }
       
@@ -122,17 +144,15 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       
       // Type が Other の場合、Label の入力が必要
       if (type === 'Other' && validator.isEmpty(label)) {
-        formObj.labelObj.error = true;
-        formObj.labelObj.messageCode = 'cFbXmuFVh';
-        errorCodeSet.add('V_j_folkh');
+        formObj.endTimeObj.error = true;
+        formObj.endTimeObj.messageID = 'cFbXmuFVh';
         error = true;
       }
       
       // 文字数チェック
       if (!validator.isEmpty(label) && !validator.isLength(label, { min: minLengthLabel, max: maxLengthLabel })) {
-        formObj.labelObj.error = true;
-        formObj.labelObj.messageCode = 'xdAU7SgoO';
-        errorCodeSet.add('z6TMmqmA7');
+        formObj.endTimeObj.error = true;
+        formObj.endTimeObj.messageID = 'xdAU7SgoO';
         error = true;
       }
       
@@ -144,16 +164,14 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       // 文字数チェック
       if (!validator.isLength(url, { min: minLengthURL, max: maxLengthURL })) {
         formObj.urlObj.error = true;
-        formObj.urlObj.messageCode = 'eASl8OdnD';
-        errorCodeSet.add('PjVGliScE');
+        formObj.urlObj.messageID = 'eASl8OdnD';
         error = true;
       }
       
       // URLチェック
       if (!validator.isURL(url)) {
         formObj.urlObj.error = true;
-        formObj.urlObj.messageCode = 'Bv79Cmo2s';
-        errorCodeSet.add('Zq1czsL9E');
+        formObj.urlObj.messageID = 'Bv79Cmo2s';
         error = true;
       }
       
@@ -164,9 +182,9 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
       
       // Booleanチェック
       if (!validator.isBoolean(String(search))) {
-        errorCodeSet.add('mUuHS5wy-');
         error = true;
       }
+      
       
       
       // ---------------------------------------------
@@ -195,29 +213,29 @@ const validationCardPlayersLinkArr = ({ valueArr }) => {
     
     
     // ---------------------------------------------
-    //   その他のエラー
+    //   Throw Error
     // ---------------------------------------------
     
-    errorCodeSet.add('_cLCLfYVB');
-    
-    
-  } finally {
-    
-    
-    // ---------------------------------------------
-    //   Error
-    // ---------------------------------------------
-    
-    if (errorCodeSet.size > 0) {
-      resultObj.error = true;
-      resultObj.errorCodeArr = Array.from(errorCodeSet);
+    if (throwError) {
+      throw errorObj;
     }
     
     
-    return resultObj;
+    // ---------------------------------------------
+    //   Result Error
+    // ---------------------------------------------
+    
+    resultObj.error = true;
     
     
   }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
   
   
 };

@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
@@ -16,15 +16,19 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
-import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -36,75 +40,23 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Icon from '@material-ui/icons/HeadsetMic';
+import IconHeadsetMic from '@material-ui/icons/HeadsetMic';
 
 
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Heading = styled.div`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
-
-const Description = styled.p`
+const stylesObj = {
   
-`;
-
-const SelectBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 24px 0 0 0;
-`;
-
-const IconBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-`;
-
-const StyledIcon = styled(Icon)`
-  && {
-    font-size: 24px;
-    margin: 0 6px 0 0;
-  }
-`;
-
-const IconText = styled.div`
-  margin: 0 4px 0 0;
-`;
-
-const TextareaBox = styled.div`
-  margin: 12px 0 0 0;
-`;
-
-const StyledTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 600px;
-    max-width: 600px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    padding: 8px 12px;
-    line-height: 1.8;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      max-width: auto;
-      resize: none;
-    }
-  }
-`;
-
-const SearchBox = styled.div`
+  label: {
+    fontSize: 14
+  },
   
-`;
+};
 
 
 
@@ -113,14 +65,24 @@ const SearchBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('storeCardPlayer')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -129,9 +91,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, value, comment, search } = this.props;
+    const { classes, storeCardPlayer, _id, value, comment, search } = this.props;
     
-    const { handleCardPlayerEditFormData } = stores.cardPlayer;
+    const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
     // --------------------------------------------------
@@ -160,17 +122,51 @@ export default class extends React.Component {
     return (
       <React.Fragment>
         
-        <Heading>ボイスチャット</Heading>
         
-        <Description>入力するとボイスチャットについての情報が表示されます。</Description>
+        <h3
+          css={css`
+            font-weight: bold;
+            margin: 0 0 2px 0;
+          `}
+        >
+          ボイスチャット
+        </h3>
         
         
-        <SelectBox>
+        <p>入力するとボイスチャットについての情報が表示されます。</p>
         
-          <IconBox>
-            <StyledIcon />
-            <IconText>ボイスチャット: </IconText>
-          </IconBox>
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 24px 0 0 0;
+          `}
+        >
+        
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              margin: 3px 0 0 0;
+            `}
+          >
+            <IconHeadsetMic
+              css={css`
+                && {
+                  font-size: 24px;
+                  margin: 0 6px 0 0;
+                }
+              `}
+            />
+            <div
+              css={css`
+                margin: 0 6px 0 0;
+              `}
+            >
+              ボイスチャット:
+            </div>
+          </div>
         
         
           <FormControl>
@@ -190,11 +186,35 @@ export default class extends React.Component {
             </Select>
           </FormControl>
           
-        </SelectBox>
+        </div>
         
         
-        <TextareaBox>
-          <StyledTextareaAutosize
+        <div
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
+          <TextareaAutosize
+            css={css`
+              && {
+                width: 600px;
+                max-width: 600px;
+                border-radius: 4px;
+                box-sizing: border-box;
+                padding: 8px 12px;
+                line-height: 1.8;
+                
+                &:focus {
+                  outline: 1px #A9F5F2 solid;
+                }
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                  max-width: auto;
+                  resize: none;
+                }
+              }
+            `}
             rows={5}
             placeholder="コメントを入力してください"
             value={comment}
@@ -204,11 +224,14 @@ export default class extends React.Component {
             })}
             maxLength={3000}
           />
-        </TextareaBox>
+        </div>
         
         
-        <SearchBox>
+        <div>
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={search}
@@ -220,7 +243,7 @@ export default class extends React.Component {
             }
             label="ボイスチャット欄の入力情報で検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
       </React.Fragment>
@@ -228,4 +251,4 @@ export default class extends React.Component {
     
   }
   
-};
+});

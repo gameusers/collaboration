@@ -3,10 +3,11 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -15,9 +16,11 @@ import chalk from 'chalk';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -33,6 +36,8 @@ const { validationIDsPublicSetting } = require('../../../@database/ids/validatio
 // ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
+
+import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -62,62 +67,54 @@ import GameForm from '../../game/components/form';
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
-const Container = styled.div`
-  padding: 8px 14px 16px 14px;
-`;
+const stylesObj = {
+  
+  label: {
+    fontSize: 14
+  },
+  
+};
 
-const Description = styled.p`
-  margin: 12px 0 0 0;
-`;
 
-const Heading = styled.div`
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssHeading = css`
   font-weight: bold;
   margin: 24px 0 0 0;
 `;
 
-const IDsBox = styled.div`
+const cssBox = css`
   display: flex;
   flex-flow: row wrap;
-  margin: 4px 0 24px 0;
+  margin: 4px 0 8px 0;
   
   @media screen and (max-width: 480px) {
     flex-flow: column wrap;
   }
 `;
 
-const IDBox = styled.div`
+const cssIDBox = css`
   cursor: pointer;
 `;
 
-const PlatformBox = styled.div`
+const cssPlatformBox = css`
   margin: 12px 0 0 0;
 `;
 
-const StyledTextFieldWide = styled(TextField)`
+const cssTextField = css`
   && {
     width: 400px;
     
     @media screen and (max-width: 480px) {
       width: 100%;
     }
-  }
-`;
-
-const SearchBox = styled.div`
-  margin: 24px 0 0 0;
-`;
-
-const SendButtonBox = styled.div`
-  margin: 24px 0 0 0;
-`;
-
-const StyledButton = styled(Button)`
-  && {
-    margin: 0 12px 0 0;
   }
 `;
 
@@ -128,14 +125,24 @@ const StyledButton = styled(Button)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@withStyles(stylesObj)
+@inject('stores', 'storeIDForm')
 @observer
 export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
   
   componentDidMount() {
     
@@ -148,6 +155,10 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
+  
   render() {
     
     
@@ -155,28 +166,23 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, _id, func, idArr } = this.props;
+    const { classes, stores, storeIDForm, intl, _id, func, idArr } = this.props;
+    
     const { buttonDisabledObj } = stores.layout;
     
     const {
       
       dataObj,
       handleEdit,
-      
       handleSetEditForm,
-      
       handleGame,
       handleGameDelete,
-      
       handleDeleteDialogOpen,
       handleDeleteDialogClose,
-      
       handleEditSubmit,
       handleDeleteSubmit
       
-    } = stores.idForm;
-    
-    
+    } = storeIDForm;
     
     
     // --------------------------------------------------
@@ -202,7 +208,8 @@ export default injectIntl(class extends React.Component {
       const gamesName = lodashGet(valueObj, ['gamesName'], '');
       
       componentsIDArr.push(
-        <IDBox
+        <div
+          css={cssIDBox}
           key={index}
           onClick={() => handleSetEditForm({ _id, ids_id: valueObj._id })}
         >
@@ -214,7 +221,7 @@ export default injectIntl(class extends React.Component {
             gamesThumbnailArr={gamesThumbnailArr}
             gamesName={gamesName}
           />
-        </IDBox>
+        </div>
       );
       
     }
@@ -311,39 +318,52 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <div
+        css={css`
+          padding: 8px 14px 16px 14px;
+        `}
+      >
         
         
-        <Description>
+        <p
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+        >
           編集したいIDを押してから、フォームの内容を編集してください。「編集する」ボタンを押すとIDの編集が完了します。<br /><br />
           
           IDは「<strong>ラベル:</strong> ID」という並びで表示されます。ラベルが未入力の場合はプラットフォーム、選択したゲームの名前が代わりに表示されます。
-        </Description>
+        </p>
         
         
         
         
         {/* 編集可能なID */}
-        <Heading>[ 編集可能なID ]</Heading>
+        <h4 css={cssHeading}>[ 編集可能なID ]</h4>
         
-        <IDsBox>
+        <div css={cssBox}>
           {componentsIDArr}
-        </IDsBox>
+        </div>
         
         
         
         
         {/* 編集フォーム */}
-        <Heading>[ 編集フォーム ]</Heading>
+        <h4 css={cssHeading}>[ 編集フォーム ]</h4>
+        
+        
         
         
         {/* プラットフォーム */}
-        <PlatformBox>
+        <div css={cssPlatformBox}>
+          
           <FormControl
             style={{ minWidth: 300 }}
             error={validationPlatformObj.error}
           >
+            
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
+            
             <Select
               value={validationPlatformObj.value}
               onChange={(eventObj) => handleEdit({
@@ -365,9 +385,14 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'Line'}>Line</MenuItem>
               <MenuItem value={'Other'}>その他</MenuItem>
             </Select>
-            <FormHelperText>{intl.formatMessage({ id: validationPlatformObj.messageCode })}</FormHelperText>
+            
+            <FormHelperText>{intl.formatMessage({ id: validationPlatformObj.messageID })}</FormHelperText>
+            
           </FormControl>
-        </PlatformBox>
+          
+        </div>
+        
+        
         
         
         {/* ゲーム選択 */}
@@ -381,9 +406,12 @@ export default injectIntl(class extends React.Component {
         }
         
         
+        
+        
         {/* ラベル */}
         <div>
-          <StyledTextFieldWide
+          <TextField
+            css={cssTextField}
             id="label"
             label="ラベル"
             value={validationLabelObj.value}
@@ -392,7 +420,7 @@ export default injectIntl(class extends React.Component {
               value: eventObj.target.value
             })}
             error={validationLabelObj.error}
-            helperText={intl.formatMessage({ id: validationLabelObj.messageCode }, { numberOfCharacters: validationLabelObj.numberOfCharacters })}
+            helperText={intl.formatMessage({ id: validationLabelObj.messageID }, { numberOfCharacters: validationLabelObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
               maxLength: 30,
@@ -403,7 +431,8 @@ export default injectIntl(class extends React.Component {
         
         {/* ID */}
         <div>
-          <StyledTextFieldWide
+          <TextField
+            css={cssTextField}
             id="label"
             label="ID"
             value={validationIDObj.value}
@@ -412,7 +441,7 @@ export default injectIntl(class extends React.Component {
               value: eventObj.target.value
             })}
             error={validationIDObj.error}
-            helperText={intl.formatMessage({ id: validationIDObj.messageCode }, { numberOfCharacters: validationIDObj.numberOfCharacters })}
+            helperText={intl.formatMessage({ id: validationIDObj.messageID }, { numberOfCharacters: validationIDObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
               maxLength: 128,
@@ -422,12 +451,15 @@ export default injectIntl(class extends React.Component {
         
         
         {/* 公開設定 */}
-        <PlatformBox>
+        <div css={cssPlatformBox}>
+          
           <FormControl
             style={{ minWidth: 300 }}
             error={validationPublicSettingObj.error}
           >
+            
             <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
+            
             <Select
               value={validationPublicSettingObj.value}
               onChange={(eventObj) => handleEdit({
@@ -445,14 +477,24 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={4}>相互フォローで公開</MenuItem>
               <MenuItem value={5}>自分以外には公開しない</MenuItem>
             </Select>
-            <FormHelperText>{intl.formatMessage({ id: validationPublicSettingObj.messageCode })}</FormHelperText>
+            
+            <FormHelperText>{intl.formatMessage({ id: validationPublicSettingObj.messageID })}</FormHelperText>
+            
           </FormControl>
-        </PlatformBox>
+          
+        </div>
         
         
         {/* 検索可能 */}
-        <SearchBox>
+        <div
+          css={css`
+            margin: 24px 0 0 0;
+          `}
+        >
           <FormControlLabel
+            classes={{
+              label: classes.label
+            }}
             control={
               <Checkbox
                 checked={search}
@@ -464,15 +506,24 @@ export default injectIntl(class extends React.Component {
             }
             label="このIDを検索可能にする"
           />
-        </SearchBox>
+        </div>
         
         
         
         
         {/* 「編集する」ボタン */}
-        <SendButtonBox>
+        <div
+          css={css`
+            margin: 24px 0 0 0;
+          `}
+        >
           
-          <StyledButton
+          <Button
+            css={css`
+              && {
+                margin: 0 12px 0 0;
+              }
+            `}
             variant="outlined"
             color="primary"
             onClick={() => handleEditSubmit({
@@ -483,7 +534,7 @@ export default injectIntl(class extends React.Component {
             disabled={buttonDisabled}
           >
             編集する
-          </StyledButton>
+          </Button>
           
           
           <Button
@@ -497,7 +548,8 @@ export default injectIntl(class extends React.Component {
             削除する
           </Button>
           
-        </SendButtonBox>
+        </div>
+        
         
         
         
@@ -508,12 +560,15 @@ export default injectIntl(class extends React.Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
+          
           <DialogTitle id="alert-dialog-title">ID削除</DialogTitle>
+          
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               このIDを削除しますか？
             </DialogContentText>
           </DialogContent>
+          
           <DialogActions>
             <Button
               onClick={() => handleDeleteSubmit({
@@ -534,10 +589,11 @@ export default injectIntl(class extends React.Component {
               いいえ
             </Button>
           </DialogActions>
+          
         </Dialog>
         
         
-      </Container>
+      </div>
     );
     
   }

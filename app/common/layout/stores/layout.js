@@ -275,10 +275,54 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   Header - ログインメニュー
+  // ---------------------------------------------
+  
+  /**
+   * メニューの位置を設定するために使用されるDOM要素
+   * @type {string}
+   */
+  // @observable headerLoginMenuAnchorEl = null;
+  
+  
+  /**
+   * ログインメニューの表示・非表示を切り替える真偽値
+   * @type {boolean}
+   */
+  // @observable headerLoginMenuOpen = false;
+  
+  
+  // /**
+  // * ログインメニューを開く
+  // * @param {Object} eventObj - イベント
+  // */
+  // @action.bound
+  // handleHeaderLoginMenuOpen() {
+  //   this.headerLoginMenuOpen = true;
+  // };
+  
+  
+  // /**
+  // * ログインメニューを閉じる
+  // */
+  // @action.bound
+  // handleHeaderLoginMenuClose() {
+  //   // this.headerLoginMenuAnchorEl = null;
+  //   this.headerLoginMenuOpen = false;
+  // };
+  
   
   // ---------------------------------------------
   //   Header - ログインメニュー
   // ---------------------------------------------
+  
+  /**
+   * メニューの位置を設定するために使用されるDOM要素
+   * @type {string}
+   */
+  // @observable headerLoginMenuAnchorEl = null;
+  
   
   /**
    * ログインメニューの表示・非表示を切り替える真偽値
@@ -295,6 +339,11 @@ class Store {
   handleHeaderLoginMenuOpen() {
     this.headerLoginMenuOpen = true;
   };
+  // @action.bound
+  // handleHeaderLoginMenuOpen({ eventObj }) {
+  //   this.headerLoginMenuAnchorEl = eventObj.currentTarget;
+  //   this.headerLoginMenuOpen = true;
+  // };
   
   
   /**
@@ -302,6 +351,7 @@ class Store {
    */
   @action.bound
   handleHeaderLoginMenuClose() {
+    // this.headerLoginMenuAnchorEl = null;
     this.headerLoginMenuOpen = false;
   };
   

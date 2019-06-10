@@ -277,6 +277,22 @@ app.prepare().then(() => {
   //   User Community
   // ---------------------------------------------
   
+  server.get('/uc/:userCommunityID*', csrfToken, (req, res) => {
+    
+    const { userCommunityID } = req.params;
+    
+    console.log(chalk`
+      userCommunityID: {green ${userCommunityID}}
+    `);
+    
+    // if (!userCommunityID) {
+    //   app.render(req, res, '/uc/index', req.query);
+    // }
+    
+    app.render(req, res, '/uc/community', { userCommunityID });
+    
+  });
+  
   // server.get('/uc/:param1*', (req, res) => {
     
     
@@ -284,24 +300,24 @@ app.prepare().then(() => {
   //   //   Console 出力
   //   // --------------------------------------------------
     
-  //   console.log(`
-  //     req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-  //   `);
+  //   // console.log(`
+  //   //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
+  //   // `);
     
-  //   console.log(`
-  //     req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-  //   `);
+  //   // console.log(`
+  //   //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+  //   // `);
     
-  //   console.log(chalk`
-  //     req.isAuthenticated(): {green ${req.isAuthenticated()}}
-  //   `);
+  //   // console.log(chalk`
+  //   //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
+  //   // `);
     
     
   //   const { param1 } = req.params;
     
-  //   if (!param1) {
-  //     app.render(req, res, '/uc/index', req.query);
-  //   }
+  //   // if (!param1) {
+  //   //   app.render(req, res, '/uc/index', req.query);
+  //   // }
     
   //   const queryObj = {
   //     param1

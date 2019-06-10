@@ -29,16 +29,11 @@ import styled from '@emotion/styled';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
-
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -59,29 +54,28 @@ import IconEject from '@material-ui/icons/Eject';
 
 
 // --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const stylesObj = {
-  
-  paper: {
-    top: 0,
-    right: 0,
-    marginTop: 14,
-    marginRight: 14,
-  },
-  
-};
-
-
-
-
-// --------------------------------------------------
 //   react-spring
 // --------------------------------------------------
 
 const Container = ({ children, headerNavTopImmediate, headerNavTopShow }) => {
+  
+  // const cssHeader = css`
+  //   display: flex;
+  //   flex-flow: row nowrap;
+  //   align-items: center;
+  //   background-color: white;
+  //   width: 100%;
+  //   height: 53px;
+  //   position: sticky;
+  //   top: 0;
+  //   z-index: 1001;
+  // `;
+  
+  // const props = useSpring({
+  //   transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)'
+  // });
+  
+  // return <header css={cssHeader} style={props}>{children}</header>;
   
   const Header = styled(animated.header)`
     display: flex;
@@ -111,7 +105,6 @@ const Container = ({ children, headerNavTopImmediate, headerNavTopShow }) => {
 //   Class
 // --------------------------------------------------
 
-@withStyles(stylesObj)
 @inject('stores')
 @observer
 export default class extends React.Component {
@@ -137,7 +130,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores } = this.props;
+    const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -193,13 +186,11 @@ export default class extends React.Component {
         {playerID &&
           <IconButton
             css={css`
-              && {
-                margin: 6px 0 0 6px !important;
-                padding: 6px !important;
-                
-                @media screen and (max-width: 480px) {
-                  width: 26px;
-                }
+              margin: 6px 0 0 6px !important;
+              padding: 6px !important;
+              
+              @media screen and (max-width: 480px) {
+                width: 26px;
               }
             `}
             onClick={stores.layout.handleHeaderNotificationDialogOpen}
@@ -230,9 +221,7 @@ export default class extends React.Component {
         >
           <TextField
             css={css`
-              && {
-                width: 90%;
-              }
+              width: 90%;
             `}
             placeholder="検索"
             InputProps={{
@@ -255,13 +244,10 @@ export default class extends React.Component {
         {playerID ? (
           <IconButton
             css={css`
-              && {
-                margin: 0 8px 0 auto;
-                padding: 0;
-              }
+              margin: 0 8px 0 auto;
+              padding: 0;
             `}
             onClick={stores.layout.handleHeaderLoginMenuOpen}
-            // onClick={(eventObj) => stores.layout.handleHeaderLoginMenuOpen({ eventObj })}
           >
             <Avatar
               alt="ログインメニュー"
@@ -287,9 +273,7 @@ export default class extends React.Component {
             >
               <IconLogin
                 css={css`
-                  && {
-                    margin: 0 6px 0 0;
-                  }
+                  margin: 0 6px 0 0;
                 `}
               /> ログイン
             </div>
@@ -301,35 +285,11 @@ export default class extends React.Component {
         
         {/* ログインメニュー */}
         <Menu
-          // css={css`
-          //   && {
-          //     top: 14px;
-          //     right: 14px;
-          //     margin: 0 8px 0 0;
-          //   }
-          // `}
-          classes={{
-            paper: classes.paper
-          }}
-          // id="customized-menu"
-          // anchorEl={null}
-          // anchorEl={stores.layout.headerLoginMenuAnchorEl}
-          // keepMounted
           open={stores.layout.headerLoginMenuOpen}
           onClose={stores.layout.handleHeaderLoginMenuClose}
           disableAutoFocusItem={true}
-          // anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          // anchorOrigin={{
-          //   vertical: 'top',
-          //   horizontal: 'right',
-          // }}
-          // transformOrigin={{
-          //   vertical: 'top',
-          //   horizontal: 'right',
-          // }}
-          // anchorPosition={{ left: 800, top: 0 }}
-          anchorReference="none"
-          // getContentAnchorEl={null}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          getContentAnchorEl={null}
         >
           
           
@@ -337,9 +297,7 @@ export default class extends React.Component {
             
             <ListItemIcon
               css={css`
-                && {
-                  margin: 0 8px 0 0;
-                }
+                margin: 0 8px 0 0;
               `}
             >
               <IconPerson />
@@ -348,10 +306,9 @@ export default class extends React.Component {
             <Link href={`/pl/${playerID}`}>
               <ListItemText
                 css={css`
-                  && {
-                    margin: 0 8px 0 0;
-                  }
+                  margin: 0 8px 0 0;
                 `}
+                inset
                 primary="プレイヤー"
               />
             </Link>
@@ -363,9 +320,7 @@ export default class extends React.Component {
             
             <ListItemIcon
               css={css`
-                && {
-                  margin: 0 8px 0 0;
-                }
+                margin: 0 8px 0 0;
               `}
             >
               <IconEject />
@@ -374,10 +329,9 @@ export default class extends React.Component {
             <Link href="/logout">
               <ListItemText
                 css={css`
-                  && {
-                    margin: 0 8px 0 0;
-                  }
+                  margin: 0 8px 0 0;
                 `}
+                inset
                 primary="ログアウト"
               />
             </Link>

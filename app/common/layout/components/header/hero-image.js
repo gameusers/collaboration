@@ -107,21 +107,31 @@ export default class extends React.Component {
       const srcSetArr = lodashGet(imageObj, ['srcSetArr'], []).slice().reverse();
       
       let backgroundUrl = '';
-      let paddingTop = '56.25%';
+      let paddingTop = '56.25';
       let mediaQueries = '';
       
+      
       for (const [index, valueObj] of srcSetArr.entries()) {
+        
+        if (index === 0) {
+          backgroundUrl = valueObj.src;
+          
+          // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
+          paddingTop = Math.floor(valueObj.height / valueObj.width * 100);
+        }
         
         if (valueObj.w === '800w') {
           mediaQueries += `
             @media screen and (max-width: 800px) {
               background: no-repeat center center url(${valueObj.src});
+              padding-top: ${paddingTop}%;
             }
           `;
         } else if (valueObj.w === '640w') {
           mediaQueries += `
             @media screen and (max-width: 640px) {
-              background: no-repeat center center url(${valueObj.src});
+              background: no-repeat center center url(${valueObj.src})
+              padding-top: ${paddingTop}%;
             }
           `;
         } else if (valueObj.w === '480w') {
@@ -135,14 +145,6 @@ export default class extends React.Component {
           `;
         }
         
-        if (index === 0) {
-          backgroundUrl = valueObj.src;
-          
-          // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
-          paddingTop = Math.floor(valueObj.height / valueObj.width * 100);
-        }
-        
-        
       }
       
       
@@ -154,7 +156,7 @@ export default class extends React.Component {
             background-size: cover;
             background-color: #25283D;
             position: relative;
-            padding-top: ${paddingTop}%;
+            padding-top: ${paddingTop > 56.25 ? 56.25 : paddingTop}%;
             
             ${mediaQueries}
           `}

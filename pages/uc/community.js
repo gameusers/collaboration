@@ -50,8 +50,8 @@ import initStoreRoot from '../../app/@stores/root';
 
 import Layout from '../../app/common/layout/components/layout';
 import Drawer from '../../app/common/layout/components/drawer';
-import CardPlayer from '../../app/common/card/player/components/player';
-import CardPlayerDialog from '../../app/common/card/player/components/dialog';
+import BBSNavigation from '../../app/common/bbs/components/navigation';
+// import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 
 
@@ -360,8 +360,13 @@ export default class extends React.Component {
               `}
             >
               
+              
+              <BBSNavigation />
+              
+              
               {/* プレイヤーカード */}
               {componentCardsArr}
+              
               
             </div>
             

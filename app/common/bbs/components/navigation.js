@@ -2,10 +2,35 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
+
+
+import styled from 'styled-components';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,6 +42,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -30,6 +56,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconList from '@material-ui/icons/List';
 import IconNew from '@material-ui/icons/FiberNew';
@@ -40,73 +71,76 @@ import IconSearch from '@material-ui/icons/Search';
 
 
 
+
+// --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const stylesObj = {
+  
+  label: {
+    fontSize: 14
+  },
+  
+};
+
+
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssIconButton = css`
+  && {
+    width: 28px;
+    height: 28px;
+    margin: 0 10px 0 0;
+    padding: 0;
+  }
+`;
+
+
+
+
 // --------------------------------------------------
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-// const BbsTitleBox = styled.div`
-//   display: flex;
-//   flex-flow: column nowrap;
-//   // margin: 0;
-//   // width: 100%;
-//   // padding: 0 0 6px 0;
-//   // border-bottom: 1px solid #d0d0d0;
-//   // background-color: pink;
+// const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
+//   && {
+//     display: inline;
+//     margin: 0;
+//     padding: 0;
+//   }
 // `;
-
-
-const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
-  && {
-    display: inline;
-    margin: 0;
-    padding: 0;
-  }
-`;
 
 
 // --------------------------------------------------
 //   Title
 // --------------------------------------------------
 
-const TitleBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0;
-  // background-color: pink;
-`;
-
-const Title = styled.h2`
-  font-size: 18px;
-  margin: 3px 0 0 0;
-`;
-
-const ButtonsBox = styled.div`
-  margin: 0 0 0 14px;
-  padding: 0;
-  // background-color: pink;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  && {
-    margin: 0 4px 0 0;
-    padding: 0;
-    width: 28px;
-    height: 28px;
-  }
-`;
+// const StyledIconButton = styled(IconButton)`
+//   && {
+//     margin: 0 4px 0 0;
+//     padding: 0;
+//     width: 28px;
+//     height: 28px;
+//   }
+// `;
 
 
 // --------------------------------------------------
 //   Tab
 // --------------------------------------------------
 
-const TabsPaper = styled(Paper)`
-  && {
-    margin: 0 16px 0;
-    padding: 0;
-  }
-`;
+// const TabsPaper = styled(Paper)`
+//   && {
+//     margin: 0 16px 0;
+//     padding: 0;
+//   }
+// `;
 
 
 // --------------------------------------------------
@@ -251,14 +285,24 @@ const SearchCheckBox = styled.div`
 //   Class
 // --------------------------------------------------
 
+@withStyles(stylesObj)
 @inject('stores')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
     super(props);
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -267,59 +311,59 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, id } = this.props;
+    const { classes, intl, stores, id } = this.props;
     
     
-    const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
+    // const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
     
-    const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
-    const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
-    const threadListCount = stores.bbsNavigation.threadListCountObj[id];
-    const threadListRowsPerPage = stores.bbsNavigation.threadListRowsPerPageObj[id];
-    const threadListPage = stores.bbsNavigation.threadListPageObj[id];
-    const threadListArr = stores.bbsNavigation.threadListObj[id];
+    // const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
+    // const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
+    // const threadListCount = stores.bbsNavigation.threadListCountObj[id];
+    // const threadListRowsPerPage = stores.bbsNavigation.threadListRowsPerPageObj[id];
+    // const threadListPage = stores.bbsNavigation.threadListPageObj[id];
+    // const threadListArr = stores.bbsNavigation.threadListObj[id];
     
-    const createThreadName = stores.bbsNavigation.createThreadNameObj[id];
-    const createThreadRule = stores.bbsNavigation.createThreadRuleObj[id];
+    // const createThreadName = stores.bbsNavigation.createThreadNameObj[id];
+    // const createThreadRule = stores.bbsNavigation.createThreadRuleObj[id];
     
-    const searchKeyword = stores.bbsNavigation.searchKeywordObj[id];
-    const searchDateTimeStart = stores.bbsNavigation.searchDateTimeStartObj[id];
-    const searchDateTimeEnd = stores.bbsNavigation.searchDateTimeEndObj[id];
-    const searchThreadChecked = stores.bbsNavigation.searchThreadCheckedObj[id];
-    const searchCommentChecked = stores.bbsNavigation.searchCommentCheckedObj[id];
-    const searchReplyChecked = stores.bbsNavigation.searchReplyCheckedObj[id];
-    const searchImageChecked = stores.bbsNavigation.searchImageCheckedObj[id];
-    const searchVideoChecked = stores.bbsNavigation.searchVideoCheckedObj[id];
-    const searchMineChecked = stores.bbsNavigation.searchMineCheckedObj[id];
+    // const searchKeyword = stores.bbsNavigation.searchKeywordObj[id];
+    // const searchDateTimeStart = stores.bbsNavigation.searchDateTimeStartObj[id];
+    // const searchDateTimeEnd = stores.bbsNavigation.searchDateTimeEndObj[id];
+    // const searchThreadChecked = stores.bbsNavigation.searchThreadCheckedObj[id];
+    // const searchCommentChecked = stores.bbsNavigation.searchCommentCheckedObj[id];
+    // const searchReplyChecked = stores.bbsNavigation.searchReplyCheckedObj[id];
+    // const searchImageChecked = stores.bbsNavigation.searchImageCheckedObj[id];
+    // const searchVideoChecked = stores.bbsNavigation.searchVideoCheckedObj[id];
+    // const searchMineChecked = stores.bbsNavigation.searchMineCheckedObj[id];
     
     
-    const {
-      handleMenuButtonThreadList,
-      handleMenuButtonNew,
-      handleMenuButtonImage,
-      handleMenuButtonVideo,
+    // const {
+    //   handleMenuButtonThreadList,
+    //   handleMenuButtonNew,
+    //   handleMenuButtonImage,
+    //   handleMenuButtonVideo,
       
-      handleOpenedTabNo,
+    //   handleOpenedTabNo,
       
-      handleReadThread,
-      handleThreadListSort,
-      handleThreadListRowsPerPage,
-      handleThreadListPage,
+    //   handleReadThread,
+    //   handleThreadListSort,
+    //   handleThreadListRowsPerPage,
+    //   handleThreadListPage,
       
-      handleCreateThreadNameObj,
-      handleCreateThreadRuleObj,
-      handleCreateThread,
+    //   handleCreateThreadNameObj,
+    //   handleCreateThreadRuleObj,
+    //   handleCreateThread,
       
-      handleSearchKeyword,
-      handleSearchDateTimeStart,
-      handleSearchDateTimeEnd,
-      handleSearchThreadChecked,
-      handleSearchCommentChecked,
-      handleSearchReplyChecked,
-      handleSearchImageChecked,
-      handleSearchVideoChecked,
-      handleSearchMineChecked
-    } = stores.bbsNavigation;
+    //   handleSearchKeyword,
+    //   handleSearchDateTimeStart,
+    //   handleSearchDateTimeEnd,
+    //   handleSearchThreadChecked,
+    //   handleSearchCommentChecked,
+    //   handleSearchReplyChecked,
+    //   handleSearchImageChecked,
+    //   handleSearchVideoChecked,
+    //   handleSearchMineChecked
+    // } = stores.bbsNavigation;
     
     
     
@@ -329,132 +373,132 @@ export default class extends React.Component {
     
     let componentThreadListArr = [];
     
-    if (threadListArr) {
+    // if (threadListArr) {
       
       
-      // --------------------------------------------------
-      //   テーブルの中身
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   テーブルの中身
+    //   // --------------------------------------------------
       
-      let componentTableDataArr = [];
+    //   let componentTableDataArr = [];
       
-      for (const [index, value] of threadListArr.entries()) {
+    //   for (const [index, value] of threadListArr.entries()) {
         
-        componentTableDataArr.push(
-          <TableRow key={index}>
-            <ThreadListNameTableCell
-              component="th"
-              scope="row"
-              onClick={() => handleReadThread(value.id)}
-            >
-              {value.name}
-            </ThreadListNameTableCell>
-            <TableCell>{value.updatedDate}</TableCell>
-            <TableCell numeric>{value.comment}</TableCell>
-            <TableCell numeric>{value.reply}</TableCell>
-            <TableCell numeric>{value.image}</TableCell>
-            <TableCell numeric>{value.video}</TableCell>
-          </TableRow>
-        );
+    //     componentTableDataArr.push(
+    //       <TableRow key={index}>
+    //         <ThreadListNameTableCell
+    //           component="th"
+    //           scope="row"
+    //           onClick={() => handleReadThread(value.id)}
+    //         >
+    //           {value.name}
+    //         </ThreadListNameTableCell>
+    //         <TableCell>{value.updatedDate}</TableCell>
+    //         <TableCell numeric>{value.comment}</TableCell>
+    //         <TableCell numeric>{value.reply}</TableCell>
+    //         <TableCell numeric>{value.image}</TableCell>
+    //         <TableCell numeric>{value.video}</TableCell>
+    //       </TableRow>
+    //     );
         
-      }
+    //   }
       
       
-      componentThreadListArr.push(
-        <div key="threadList">
+    //   componentThreadListArr.push(
+    //     <div key="threadList">
           
-          <ThreadListTableWrapper>
+    //       <ThreadListTableWrapper>
             
-            <Table>
+    //         <Table>
               
-              <TableHead>
-                <TableRow>
+    //           <TableHead>
+    //             <TableRow>
                 
-                  <ThreadListTableCell>
-                    名前
-                  </ThreadListTableCell>
+    //               <ThreadListTableCell>
+    //                 名前
+    //               </ThreadListTableCell>
                   
-                  <ThreadListTableCell>
-                    <TableSortLabel
-                      active={threadListOrderBy === 'updatedDate'}
-                      direction={threadListOrder}
-                      onClick={() => handleThreadListSort(id, 'updatedDate')}
-                    >
-                      最終更新日
-                    </TableSortLabel>
-                  </ThreadListTableCell>
+    //               <ThreadListTableCell>
+    //                 <TableSortLabel
+    //                   active={threadListOrderBy === 'updatedDate'}
+    //                   direction={threadListOrder}
+    //                   onClick={() => handleThreadListSort(id, 'updatedDate')}
+    //                 >
+    //                   最終更新日
+    //                 </TableSortLabel>
+    //               </ThreadListTableCell>
                   
-                  <ThreadListTableCell numeric>
-                    <TableSortLabel
-                      active={threadListOrderBy === 'comment'}
-                      direction={threadListOrder}
-                      onClick={() => handleThreadListSort(id, 'comment')}
-                    >
-                      コメント
-                    </TableSortLabel>
-                  </ThreadListTableCell>
+    //               <ThreadListTableCell numeric>
+    //                 <TableSortLabel
+    //                   active={threadListOrderBy === 'comment'}
+    //                   direction={threadListOrder}
+    //                   onClick={() => handleThreadListSort(id, 'comment')}
+    //                 >
+    //                   コメント
+    //                 </TableSortLabel>
+    //               </ThreadListTableCell>
                   
-                  <ThreadListTableCell numeric>
-                    <TableSortLabel
-                      active={threadListOrderBy === 'reply'}
-                      direction={threadListOrder}
-                      onClick={() => handleThreadListSort(id, 'reply')}
-                    >
-                      返信
-                    </TableSortLabel>
-                  </ThreadListTableCell>
+    //               <ThreadListTableCell numeric>
+    //                 <TableSortLabel
+    //                   active={threadListOrderBy === 'reply'}
+    //                   direction={threadListOrder}
+    //                   onClick={() => handleThreadListSort(id, 'reply')}
+    //                 >
+    //                   返信
+    //                 </TableSortLabel>
+    //               </ThreadListTableCell>
                   
-                  <ThreadListTableCell numeric>
-                    <TableSortLabel
-                      active={threadListOrderBy === 'image'}
-                      direction={threadListOrder}
-                      onClick={() => handleThreadListSort(id, 'image')}
-                    >
-                      画像
-                    </TableSortLabel>
-                  </ThreadListTableCell>
+    //               <ThreadListTableCell numeric>
+    //                 <TableSortLabel
+    //                   active={threadListOrderBy === 'image'}
+    //                   direction={threadListOrder}
+    //                   onClick={() => handleThreadListSort(id, 'image')}
+    //                 >
+    //                   画像
+    //                 </TableSortLabel>
+    //               </ThreadListTableCell>
                   
-                  <ThreadListTableCell numeric>
-                    <TableSortLabel
-                      active={threadListOrderBy === 'video'}
-                      direction={threadListOrder}
-                      onClick={() => handleThreadListSort(id, 'video')}
-                    >
-                      動画
-                    </TableSortLabel>
-                  </ThreadListTableCell>
+    //               <ThreadListTableCell numeric>
+    //                 <TableSortLabel
+    //                   active={threadListOrderBy === 'video'}
+    //                   direction={threadListOrder}
+    //                   onClick={() => handleThreadListSort(id, 'video')}
+    //                 >
+    //                   動画
+    //                 </TableSortLabel>
+    //               </ThreadListTableCell>
                   
-                </TableRow>
-              </TableHead>
+    //             </TableRow>
+    //           </TableHead>
               
-              <TableBody>
-                {componentTableDataArr}
-              </TableBody>
+    //           <TableBody>
+    //             {componentTableDataArr}
+    //           </TableBody>
               
-            </Table>
+    //         </Table>
             
-          </ThreadListTableWrapper>
+    //       </ThreadListTableWrapper>
         
-          <TablePagination
-            component="div"
-            count={threadListCount}
-            rowsPerPage={threadListRowsPerPage}
-            page={threadListPage}
-            labelRowsPerPage=""
-            backIconButtonProps={{
-              'aria-label': 'Previous Page',
-            }}
-            nextIconButtonProps={{
-              'aria-label': 'Next Page',
-            }}
-            onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event, id)}
-            onChangePage={(event, value) => handleThreadListPage(event, value, id)}
-          />
+    //       <TablePagination
+    //         component="div"
+    //         count={threadListCount}
+    //         rowsPerPage={threadListRowsPerPage}
+    //         page={threadListPage}
+    //         labelRowsPerPage=""
+    //         backIconButtonProps={{
+    //           'aria-label': 'Previous Page',
+    //         }}
+    //         nextIconButtonProps={{
+    //           'aria-label': 'Next Page',
+    //         }}
+    //         onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event, id)}
+    //         onChangePage={(event, value) => handleThreadListPage(event, value, id)}
+    //       />
           
-        </div>
-      );
+    //     </div>
+    //   );
       
-    }
+    // }
     
     
     
@@ -464,258 +508,149 @@ export default class extends React.Component {
     
     return (
       <ExpansionPanel
-        expanded={stores.layout.returnPanelExpanded(id)}
+        // expanded={stores.layout.returnPanelExpanded(id)}
+        expanded={true}
       >
         
-        {/* Title */}
+        
+        {/* Summary */}
         <ExpansionPanelSummary
+          css={css`
+            cursor: default !important;
+          `}
           expandIcon={
             <IconExpandMore
-              onClick={() => stores.layout.handlePanelExpanded(id)}
+              // onClick={() => stores.layout.handlePanelExpanded(id)}
             />
           }
         >
           
-          <TitleBox>
-            
-            <Title>BBS</Title>
-            
-            <ButtonsBox>
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              align-items: center;
               
-              <Tooltip id="tooltip-list" title="スレッド一覧">
-                <StyledIconButton
-                  onClick={handleMenuButtonThreadList}
+            `}
+          >
+            
+            
+            {/* Heading */}
+            <div
+              css={css`
+                height: 28px;
+              `}
+            >
+              <h2
+                css={css`
+                  font-size: 18px;
+                  line-height: 1;
+                  padding: 7px 0 0 0;
+                `}
+              >
+                BBS
+              </h2>
+            </div>
+            
+            
+            {/* Icon */}
+            <div
+              css={css`
+                margin: 0 0 0 14px;
+                // background-color: green;
+              `}
+            >
+              
+              
+              <Tooltip title="すべてのコメント">
+                <IconButton
+                  css={cssIconButton}
+                  // onClick={handleMenuButtonThreadList}
                 >
                   <IconList />
-                </StyledIconButton>
+                </IconButton>
               </Tooltip>
               
-              <Tooltip id="tooltip-new" title="新しいコメント">
-                <StyledIconButton
-                  onClick={handleMenuButtonNew}
+              
+              <Tooltip title="新しいコメント">
+                <IconButton
+                  css={cssIconButton}
+                  // onClick={handleMenuButtonNew}
                 >
                   <IconNew />
-                </StyledIconButton>
+                </IconButton>
               </Tooltip>
               
-              <Tooltip id="tooltip-image" title="画像付きのコメント">
-                <StyledIconButton
-                  onClick={handleMenuButtonImage}
+              
+              <Tooltip title="画像付きのコメント">
+                <IconButton
+                  css={cssIconButton}
+                  // onClick={handleMenuButtonImage}
                 >
                   <IconImage />
-                </StyledIconButton>
+                </IconButton>
               </Tooltip>
               
-              <Tooltip id="tooltip-video" title="動画付きのコメント">
-                <StyledIconButton
-                  onClick={handleMenuButtonVideo}
+              
+              <Tooltip title="動画付きのコメント">
+                <IconButton
+                  css={cssIconButton}
+                  // onClick={handleMenuButtonVideo}
                 >
                   <IconOndemandVideo />
-                </StyledIconButton>
+                </IconButton>
               </Tooltip>
               
-            </ButtonsBox>
+              
+            </div>
             
-          </TitleBox>
+          </div>
           
         </ExpansionPanelSummary>
         
         
-        {/* Contents */}
-        <ExpansionPanelDetailsBbsMenu>
+        
+         {/* Contents */}
+        <ExpansionPanelDetails
+          css={css`
+            && {
+              // display: inline;
+              // margin: 0;
+              padding: 0;
+            }
+          `}
+        >
+          
           
           {/* Tab */}
-          <TabsPaper>
+          <Paper
+            css={css`
+              && {
+                // margin: 0 16px 0;
+                // padding: 0;
+              }
+            `}
+          >
             <Tabs
-              value={openedTabNo}
+              // value={openedTabNo}
+              value={0}
               indicatorColor="primary"
               textColor="primary"
-              onChange={(event, value) => handleOpenedTabNo(event, value, id)}
+              // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
             >
               <Tab label="スレッド一覧" />
               <Tab label="スレッド作成" />
               <Tab label="検索" />
             </Tabs>
-          </TabsPaper>
+          </Paper>
           
-          
-          {/* スレッド一覧 */}
-          {openedTabNo === 0 &&
-            <ThreadListTabBox>
-              {componentThreadListArr}
-            </ThreadListTabBox>
-          }
-          
-          
-          {/* スレッド作成 */}
-          {openedTabNo === 1 &&
-            <CreateThreadTabTypography component="div">
-              
-              {/* Input Thread Name */}
-              <CreateThreadNameTextField
-                placeholder="スレッド名"
-                value={createThreadName}
-                onChange={(event) => handleCreateThreadNameObj(event, id)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconEventNote />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              
-              
-              {/* Textarea */}
-              <CreateThreadTextareaAutosize
-                rows={5}
-                placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください"
-                value={createThreadRule}
-                onChange={(event) => handleCreateThreadRuleObj(event, id)}
-              />
-              
-              
-              {/* Send Button */}
-              <CreateThreadButtonBox>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleCreateThread(id)}
-                >
-                  スレッドを作成する
-                </Button>
-              </CreateThreadButtonBox>
-              
-            </CreateThreadTabTypography>
-          }
-          
-          
-          {/* 検索 */}
-          {openedTabNo === 2 &&
-            <SearchTabTypography>
-              
-              {/* 検索フォーム */}
-              <SearchBox>
-                <SearchTextField
-                  placeholder="検索キーワード"
-                  value={searchKeyword}
-                  onChange={(event) => handleSearchKeyword(event, id)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconSearch />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                
-                <SearchDateTimeBox>
-                  <SearchDateTimeTextField
-                    id="datetime-local-start"
-                    label="開始日時"
-                    type="datetime-local"
-                    value={searchDateTimeStart}
-                    onChange={(event) => handleSearchDateTimeStart(event, id)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                  
-                  <SearchDateTimeTextField
-                    id="datetime-local-end"
-                    label="終了日時"
-                    type="datetime-local"
-                    value={searchDateTimeEnd}
-                    onChange={(event) => handleSearchDateTimeEnd(event, id)}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                </SearchDateTimeBox>
-                
-                
-                <SearchCheckBox>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={searchThreadChecked}
-                        onChange={() => handleSearchThreadChecked(id)}
-                      />
-                    }
-                    label="スレッド"
-                  />
-                  
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={searchCommentChecked}
-                        onChange={() => handleSearchCommentChecked(id)}
-                      />
-                    }
-                    label="コメント"
-                  />
-                  
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={searchReplyChecked}
-                        onChange={() => handleSearchReplyChecked(id)}
-                      />
-                    }
-                    label="返信"
-                  />
-                
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={searchImageChecked}
-                        onChange={() => handleSearchImageChecked(id)}
-                        color="primary"
-                      />
-                    }
-                    label="画像あり"
-                  />
-                  
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={searchVideoChecked}
-                        onChange={() => handleSearchVideoChecked(id)}
-                        color="primary"
-                      />
-                    }
-                    label="動画あり"
-                  />
-                  
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={searchMineChecked}
-                        onChange={() => handleSearchMineChecked(id)}
-                        color="primary"
-                      />
-                    }
-                    label="自分の書き込み"
-                  />
-                </SearchCheckBox>
-                
-              </SearchBox>
-              
-              <Button
-                variant="contained"
-                color="primary"
-              >
-                検索
-              </Button>
-              
-            </SearchTabTypography>
-          }
-          
-        </ExpansionPanelDetailsBbsMenu>
+        </ExpansionPanelDetails>
+        
+        
         
       </ExpansionPanel>
     );
     
   }
   
-};
+});

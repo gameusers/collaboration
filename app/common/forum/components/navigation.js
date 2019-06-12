@@ -18,9 +18,10 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
+import lodashGet from 'lodash/get';
 
 
-import styled from 'styled-components';
+import styled from '@emotion/styled';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -91,6 +92,8 @@ const stylesObj = {
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
+// Tooltip内のIconButtonにemotionでスタイルを当てると、ビルド時にエラーがでるため、強引にstyleで当てている。
+// 将来的にバグ？が解消するかもしれないので、以下は消さないように
 const cssIconButton = css`
   && {
     width: 28px;
@@ -99,6 +102,15 @@ const cssIconButton = css`
     padding: 0;
   }
 `;
+
+// const StyledIconButton = styled(IconButton)`
+//   && {
+//     width: 28px;
+//     height: 28px;
+//     margin: 0 10px 0 0;
+//     padding: 0;
+//   }
+// `;
 
 
 
@@ -311,7 +323,22 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, intl, stores, id } = this.props;
+    const { classes, stores, intl, _id } = this.props;
+    
+    
+    // --------------------------------------------------
+    //   Panel
+    // --------------------------------------------------
+    
+    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', _id], true);
+    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
+    
+    
+    // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', _id], true);
     
     
     // const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
@@ -562,9 +589,17 @@ export default injectIntl(class extends React.Component {
             >
               
               
+              {/* Tooltip内のIconButtonにemotionでスタイルを当てると、ビルド時にエラーがでるため、強引にstyleで当てている */}
               <Tooltip title="すべてのコメント">
                 <IconButton
-                  css={cssIconButton}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    margin: '0 10px 0 0',
+                    padding: 0,
+                  }}
+                  // css={cssIconButton}
+                  // onClick={() => handlePanelExpand({ _id: 'test' })}
                   // onClick={handleMenuButtonThreadList}
                 >
                   <IconList />
@@ -574,7 +609,13 @@ export default injectIntl(class extends React.Component {
               
               <Tooltip title="新しいコメント">
                 <IconButton
-                  css={cssIconButton}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    margin: '0 10px 0 0',
+                    padding: 0,
+                  }}
+                  // css={cssIconButton}
                   // onClick={handleMenuButtonNew}
                 >
                   <IconNew />
@@ -584,7 +625,13 @@ export default injectIntl(class extends React.Component {
               
               <Tooltip title="画像付きのコメント">
                 <IconButton
-                  css={cssIconButton}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    margin: '0 10px 0 0',
+                    padding: 0,
+                  }}
+                  // css={cssIconButton}
                   // onClick={handleMenuButtonImage}
                 >
                   <IconImage />
@@ -594,7 +641,13 @@ export default injectIntl(class extends React.Component {
               
               <Tooltip title="動画付きのコメント">
                 <IconButton
-                  css={cssIconButton}
+                  style={{
+                    width: '28px',
+                    height: '28px',
+                    margin: '0 10px 0 0',
+                    padding: 0,
+                  }}
+                  // css={cssIconButton}
                   // onClick={handleMenuButtonVideo}
                 >
                   <IconOndemandVideo />

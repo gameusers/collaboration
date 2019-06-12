@@ -2809,6 +2809,120 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     
+    
+    // --------------------------------------------------
+    //   DB / Forum
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'qNiOLKdRt',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        userCommunityID: 'cxO8tEGty',
+        users_id: 'jun-deE4J',
+        name: '雑談スレッド',
+        description: 'みんなで気になる話題について話し合いましょう！ゲームの話は特に大歓迎です。おすすめの作品などがあったら、ぜひ紹介してください。',
+        posts: 780,
+        images: 108,
+        videos: 50
+      },
+    ];
+    
+    
+    saveArr = [
+      {
+        id: '8_AsHN1fm',
+        createdDate: '2018-08-24T00:40:00Z',
+        updatedDate: '2018-08-24T00:40:00Z',
+        userCommunities_id: 'QD7Ve7yND',
+        forums_id: 'qNiOLKdRt',
+        replyPosts_id: '',
+        users_id: '',
+        name: '動画＋画像',
+        comment: '動画＋画像のテスト',
+        imagesAndVideosObj: {
+          mainArr: [
+            {
+              _id: '0Q4HnJTGa',
+              type: 'video',
+              videoChannel: 'youtube',
+              videoID: '1yIHLQJNvDw',
+            },
+            {
+              _id: 'rlEoEK75y',
+              type: 'image',
+              caption: '動画＋画像のテスト',
+              srcSetArr: [
+                {
+                  _id: 'Jtb7GDwTO',
+                  src: '/static/img/forum/8_AsHN1fm/main/rlEoEK75y/320w.jpg',
+                  w: '320w',
+                  width: 128,
+                  height: 85,
+                },
+              ],
+            },
+            {
+              _id: 'dFnadiGia',
+              type: 'image',
+              caption: '猫',
+              srcSetArr: [
+                {
+                  _id: 'Jtb7GDwTO',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/320w.jpg',
+                  w: '320w',
+                  width: 213,
+                  height: 320,
+                },
+                {
+                  _id: 'Jtb7GDwTO',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/480w.jpg',
+                  w: '480w',
+                  width: 320,
+                  height: 480,
+                },
+                {
+                  _id: 'Jtb7GDwTO',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/640w.jpg',
+                  w: '640w',
+                  width: 427,
+                  height: 640,
+                },
+                {
+                  _id: 'Jtb7GDwTO',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/800w.jpg',
+                  w: '800w',
+                  width: 533,
+                  height: 800,
+                },
+              ],
+            },
+          ],
+        },
+        goods: 0,
+        replies: 0,
+      },
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Upsert
+    // ---------------------------------------------
+    
+    // await ModelUsers.deleteMany({});
+    // returnObj = await ModelUsers.insertMany({ saveArr });
+    
+    
+    
+    
+    
+    
+    
     // --------------------------------------------------
     //   DB / Card Games
     // --------------------------------------------------

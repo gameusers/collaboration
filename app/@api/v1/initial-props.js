@@ -34,6 +34,7 @@ const ModelUsers = require('../../@database/users/model');
 const ModelGames = require('../../@database/games/model');
 const ModelCardPlayers = require('../../@database/card-players/model');
 const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
+const ModelForumThreads = require('../../@database/forum-threads/model');
 
 
 // ---------------------------------------------
@@ -88,14 +89,14 @@ const router = express.Router();
 
 let statusCode = 400;
 
-let errorArgumentsObj = {
-  fileID: 'DvfCyR-SZ',
-  functionID: '',
-  messageCode: 'Error',
-  errorCodeArr: ['Error'],
-  errorObj: {},
-  loginUsers_id: ''
-};
+// let errorArgumentsObj = {
+//   fileID: 'DvfCyR-SZ',
+//   functionID: '',
+//   messageCode: 'Error',
+//   errorCodeArr: ['Error'],
+//   errorObj: {},
+//   loginUsers_id: ''
+// };
 
 
 
@@ -735,6 +736,123 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
     const resultErrorObj = returnErrorsArr({
       errorObj,
       endpointID: 'R9AFOxwEK',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   endpointID: GBsTCSr4y
+// --------------------------------------------------
+
+router.get('/uc/community', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   GET Data
+    // --------------------------------------------------
+    
+    const userCommunityID = req.query.userCommunityID;
+    
+    lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    // console.log(chalk`
+    //   emailConfirmationID: {green ${emailConfirmationID}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   ログインしているユーザー情報＆ログインチェック
+    // --------------------------------------------------
+    
+    if (req.isAuthenticated() && req.user) {
+      returnObj.loginUsersObj = req.user;
+      returnObj.login = true;
+    }
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Games
+    //   ヘッダーヒーローイメージ用
+    // --------------------------------------------------
+    
+    returnObj.headerObj = await ModelGames.findForHeroImage({
+      language: localeObj.language,
+      country: localeObj.country,
+    });
+    
+    
+    
+    
+    const testObj = await ModelForumThreads.findForThreadsAndComments({
+      localeObj: {},
+      conditionObj: {
+        userCommunities_id: 'cxO8tEGty',
+      },
+    });
+    
+    console.log(`\n---------- testObj ----------\n`);
+    console.dir(testObj);
+    console.log(`\n-----------------------------------\n`);
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'GBsTCSr4y',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

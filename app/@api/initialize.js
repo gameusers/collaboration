@@ -29,7 +29,6 @@ const moment = require('moment');
 //   Modules
 // ---------------------------------------------
 
-// const { verifyCsrfToken } = require('../@modules/csrf');
 const { errorCodeIntoErrorObj } = require('../@modules/error/error-obj');
 
 
@@ -37,15 +36,17 @@ const { errorCodeIntoErrorObj } = require('../@modules/error/error-obj');
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../@database/users/model');
-const ModelGames = require('../@database/games/model');
-const ModelIDs = require('../@database/ids/model');
-const ModelCardPlayers = require('../@database/card-players/model');
-const ModelCardGames = require('../@database/card-games/model');
-const ModelGameGenres = require('../@database/game-genres/model');
-const ModelHardwares = require('../@database/hardwares/model');
-const ModelDevelopersPublishers = require('../@database/developers-publishers/model');
-const ModelEmailConfirmations = require('../@database/email-confirmations/model');
+const SchemaUsers = require('../@database/users/model');
+const SchemaGames = require('../@database/games/model');
+const SchemaIDs = require('../@database/ids/model');
+const SchemaCardPlayers = require('../@database/card-players/model');
+// const SchemaCardGames = require('../@database/card-games/model');
+const SchemaGameGenres = require('../@database/game-genres/model');
+const SchemaHardwares = require('../@database/hardwares/model');
+const SchemaDevelopersPublishers = require('../@database/developers-publishers/model');
+const SchemaEmailConfirmations = require('../@database/email-confirmations/model');
+const SchemaForumThreads = require('../@database/forum-threads/model');
+const SchemaForumComments = require('../@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -250,8 +251,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    await ModelUsers.deleteMany({});
-    returnObj = await ModelUsers.insertMany({ saveArr });
+    await SchemaUsers.deleteMany({});
+    returnObj = await SchemaUsers.insertMany({ saveArr });
     
     
     
@@ -1003,8 +1004,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    await ModelGames.deleteMany({});
-    returnObj = await ModelGames.insertMany({ saveArr });
+    await SchemaGames.deleteMany({});
+    returnObj = await SchemaGames.insertMany({ saveArr });
     
     
     
@@ -1283,8 +1284,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await ModelGameGenres.deleteMany({});
-    returnObj = await ModelGameGenres.insertMany({ saveArr });
+    await SchemaGameGenres.deleteMany({});
+    returnObj = await SchemaGameGenres.insertMany({ saveArr });
     
     
     
@@ -2091,8 +2092,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await ModelHardwares.deleteMany({});
-    returnObj = await ModelHardwares.insertMany({ saveArr });
+    await SchemaHardwares.deleteMany({});
+    returnObj = await SchemaHardwares.insertMany({ saveArr });
     
     
     
@@ -2163,8 +2164,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await ModelDevelopersPublishers.deleteMany({});
-    returnObj = await ModelDevelopersPublishers.insertMany({ saveArr });
+    await SchemaDevelopersPublishers.deleteMany({});
+    returnObj = await SchemaDevelopersPublishers.insertMany({ saveArr });
     
     
     
@@ -2377,8 +2378,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await ModelIDs.deleteMany({});
-    returnObj = await ModelIDs.insertMany({ saveArr });
+    await SchemaIDs.deleteMany({});
+    returnObj = await SchemaIDs.insertMany({ saveArr });
     
     
     
@@ -2789,8 +2790,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await ModelCardPlayers.deleteMany({});
-    returnObj = await ModelCardPlayers.insertMany({ saveArr });
+    await SchemaCardPlayers.deleteMany({});
+    returnObj = await SchemaCardPlayers.insertMany({ saveArr });
     
     
     
@@ -2803,7 +2804,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   deleteMany
     // --------------------------------------------------
     
-    await ModelEmailConfirmations.deleteMany({});
+    await SchemaEmailConfirmations.deleteMany({});
     
     
     
@@ -2811,40 +2812,92 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   DB / Forum
+    //   DB / Forum Threads
     // --------------------------------------------------
     
     // ---------------------------------------------
     //   Save Object
     // ---------------------------------------------
     
+    // スレッド　userCommunities_id: 'cxO8tEGty'で検索
     saveArr = [
       {
         _id: 'qNiOLKdRt',
-        createdDate: ISO8601,
-        updatedDate: ISO8601,
-        userCommunityID: 'cxO8tEGty',
+        createdDate: '2019-01-01T00:00:00Z',
+        updatedDate: '2019-01-01T00:00:00Z',
+        userCommunities_id: 'cxO8tEGty',
         users_id: 'jun-deE4J',
-        name: '雑談スレッド',
+        name: 'Thread 1: 雑談スレッド',
         description: 'みんなで気になる話題について話し合いましょう！ゲームの話は特に大歓迎です。おすすめの作品などがあったら、ぜひ紹介してください。',
-        posts: 780,
+        comments: 780,
         images: 108,
-        videos: 50
+        videos: 50,
+      },
+      {
+        _id: '_XDDSTWV_',
+        createdDate: '2019-01-02T00:00:00Z',
+        updatedDate: '2019-01-02T00:00:00Z',
+        userCommunities_id: 'cxO8tEGty',
+        users_id: '',
+        name: 'Thread 2: カムパネルラ',
+        description: `「ではみなさんは、そういうふうに川だと言いわれたり、乳ちちの流ながれたあとだと言いわれたりしていた、このぼんやりと白いものがほんとうは何かご承知しょうちですか」先生は、黒板こくばんにつるした大きな黒い星座せいざの図の、上から下へ白くけぶった銀河帯ぎんがたいのようなところを指さしながら、みんなに問といをかけました。
+        
+        カムパネルラが手をあげました。それから四、五人手をあげました。ジョバンニも手をあげようとして、急いそいでそのままやめました。たしかにあれがみんな星だと、いつか雑誌ざっしで読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
+        comments: 5,
+        images: 4,
+        videos: 3,
+      },
+      {
+        _id: 'HpzNGyKQE',
+        createdDate: '2019-01-03T00:00:00Z',
+        updatedDate: '2019-01-03T00:00:00Z',
+        userCommunities_id: 'cxO8tEGty',
+        users_id: 'P7UJMuUnx',
+        name: 'Thread 3: ジョバンニ',
+        description: `ジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
+        comments: 0,
+        images: 0,
+        videos: 0,
       },
     ];
     
     
+    // ユーザーコミュニティIDでスレッドを検索（20件）× 1
+    // スレッドIDでコメントを検索（20件）× 20　コメント総数 400
+    // コメントIDで返信を検索（20件）× 20　返信総数 8000
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaForumThreads.deleteMany({});
+    returnObj = await SchemaForumThreads.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Forum Comments
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    // コメント1　forumThreads_id: 'qNiOLKdRt'で検索
     saveArr = [
       {
-        id: '8_AsHN1fm',
-        createdDate: '2018-08-24T00:40:00Z',
-        updatedDate: '2018-08-24T00:40:00Z',
+        _id: '8_AsHN1fm',
+        createdDate: '2019-01-01T00:00:00Z',
+        updatedDate: '2019-01-01T00:00:00Z',
         userCommunities_id: 'QD7Ve7yND',
-        forums_id: 'qNiOLKdRt',
-        replyPosts_id: '',
+        forumThreads_id: 'qNiOLKdRt',
+        forumComments_id: '',
+        replyToForumComments_id: '',
         users_id: '',
         name: '動画＋画像',
-        comment: '動画＋画像のテスト',
+        comment: 'Comment 1: 動画＋画像のテスト',
         imagesAndVideosObj: {
           mainArr: [
             {
@@ -2904,18 +2957,81 @@ router.post('/db', upload.none(), async (req, res, next) => {
             },
           ],
         },
-        goods: 0,
+        goods: 100,
+        replies: 2,
+      },
+      
+      
+      // コメント1に対する返信　forumComments_id: '8_AsHN1fm'で検索
+      {
+        _id: 'HJut0iubX',
+        createdDate: '2019-01-02T00:00:00Z',
+        updatedDate: '2019-01-02T00:00:00Z',
+        userCommunities_id: 'QD7Ve7yND',
+        forumThreads_id: 'qNiOLKdRt',
+        forumComments_id: '8_AsHN1fm',
+        replyToForumComments_id: '',
+        users_id: '',
+        name: '勢',
+        comment: 'Comment 2: ジョバンニは勢いよく立ちあがりましたが、立ってみるともうはっきりとそれを答えることができないのでした。',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
+        goods: 50,
+        replies: 1,
+      },
+      
+      
+      // コメント1に対する返信への返信　forumComments_id: '8_AsHN1fm'で検索
+      {
+        _id: 'R2hdDidB6',
+        createdDate: '2019-01-03T00:00:00Z',
+        updatedDate: '2019-01-03T00:00:00Z',
+        userCommunities_id: 'QD7Ve7yND',
+        forumThreads_id: 'qNiOLKdRt',
+        forumComments_id: '8_AsHN1fm',
+        replyToForumComments_id: 'HJut0iubX',
+        users_id: '',
+        name: '天川',
+        comment: 'Comment 3: ですからもしもこの天あまの川がわがほんとうに川だと考えるなら、その一つ一つの小さな星はみんなその川のそこの砂や砂利じゃりの粒つぶにもあたるわけです。',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
+        goods: 25,
         replies: 0,
       },
+      
+      
+      
+      // コメント2　forumThreads_id: 'qNiOLKdRt'で検索
+      {
+        _id: 'm2N3ijR3A',
+        createdDate: '2019-01-04T00:00:00Z',
+        updatedDate: '2019-01-04T00:00:00Z',
+        userCommunities_id: 'QD7Ve7yND',
+        forumThreads_id: 'qNiOLKdRt',
+        forumComments_id: '',
+        replyToForumComments_id: '',
+        users_id: '',
+        name: '',
+        comment: `Comment 4: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ、そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
+        goods: 50,
+        replies: 0,
+      },
+      
+      
     ];
     
     
     // ---------------------------------------------
-    //   Upsert
+    //   Insert
     // ---------------------------------------------
     
-    // await ModelUsers.deleteMany({});
-    // returnObj = await ModelUsers.insertMany({ saveArr });
+    await SchemaForumComments.deleteMany({});
+    returnObj = await SchemaForumComments.insertMany({ saveArr });
     
     
     
@@ -3226,8 +3342,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // --------------------------------------------------
     
-    // await ModelCardGames.deleteMany({});
-    // returnObj = await ModelCardGames.insertMany({ saveArr });
+    // await SchemaCardGames.deleteMany({});
+    // returnObj = await SchemaCardGames.insertMany({ saveArr });
     
     
     
@@ -3236,20 +3352,20 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   DB / Test
     // --------------------------------------------------
     
-    // returnObj = await ModelCardGames.find({
+    // returnObj = await SchemaCardGames.find({
     //   countryArr: ['JP', 'US'],
     //   languageArr: ['ja'],
     //   loginUsers_id: 'P7UJMuUnx'
     // });
     
-    // const cardGamesObj = await ModelCardGames.find({
+    // const cardGamesObj = await SchemaCardGames.find({
     //   users_id: 'jun-deE4J',
     //   language: localeObj.language,
     //   country: localeObj.country,
     //   loginUsers_id: 'P7UJMuUnx'
     // });
     
-    // const cardPlayersObj = await ModelCardPlayers.find({
+    // const cardPlayersObj = await SchemaCardPlayers.find({
     //   users_id: 'jun-deE4J',
     //   language: localeObj.language,
     //   country: localeObj.country,

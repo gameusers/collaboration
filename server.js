@@ -285,7 +285,7 @@ app.prepare().then(() => {
       userCommunityID: {green ${userCommunityID}}
     `);
     
-    // if (!userCommunityID) {
+    // if (!userCommunities_id) {
     //   app.render(req, res, '/uc/index', req.query);
     // }
     

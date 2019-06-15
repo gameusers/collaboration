@@ -81,17 +81,21 @@ export default class extends React.Component {
     const userCommunityID = query.userCommunityID;
     const pathname = `/uc/${userCommunityID}`;
     
+    console.log(chalk`
+      getInitialProps
+      userCommunityID: {green ${userCommunityID}}
+    `);
     
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
-    // const resultObj = await fetchWrapper({
-    //   urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/pl/player/?playerID=${playerID}`),
-    //   methodType: 'GET',
-    //   reqHeadersCookie,
-    //   reqAcceptLanguage,
-    // });
+    const resultObj = await fetchWrapper({
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/uc/community/?userCommunityID=${userCommunityID}`),
+      methodType: 'GET',
+      reqHeadersCookie,
+      reqAcceptLanguage,
+    });
     
     // const statusCode = resultObj.statusCode;
     // const initialPropsObj = resultObj.data;
@@ -286,6 +290,7 @@ export default class extends React.Component {
     // const title = topPageName ? topPageName : `${userName} - Game Users`;
     
     const title = 'ユーザーコミュニティ';
+    
     
     
     

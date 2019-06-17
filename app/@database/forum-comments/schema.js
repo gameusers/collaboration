@@ -13,11 +13,13 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
+  commentID: { type: String, required: true },
   userCommunities_id: { type: String },
-  forumThreads_id: { type: String, required: true },
+  forumThreads_id: { type: String },
   forumComments_id: { type: String },
   replyToForumComments_id: { type: String },
   users_id: { type: String },
+  language: { type: String, enum: ['en', 'ja'], required: true },
   name: { type: String },
   comment: { type: String, required: true },
   imagesAndVideosObj: {
@@ -38,6 +40,7 @@ const schema = mongoose.Schema({
       },
     ],
   },
+  anonymity: { type: Boolean, required: true },
   goods: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
 });

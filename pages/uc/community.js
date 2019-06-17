@@ -81,10 +81,10 @@ export default class extends React.Component {
     const userCommunityID = query.userCommunityID;
     const pathname = `/uc/${userCommunityID}`;
     
-    console.log(chalk`
-      getInitialProps
-      userCommunityID: {green ${userCommunityID}}
-    `);
+    // console.log(chalk`
+    //   getInitialProps
+    //   userCommunityID: {green ${userCommunityID}}
+    // `);
     
     // --------------------------------------------------
     //   Fetch

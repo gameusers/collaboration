@@ -829,11 +829,12 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
       conditionObj: {
         userCommunities_id: 'cxO8tEGty',
       },
+      loginUsers_id,
     });
     
-    console.log(`\n---------- testObj ----------\n`);
-    console.dir(testObj);
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- testObj ----------\n`);
+    // console.dir(testObj);
+    // console.log(`\n-----------------------------------\n`);
     
     
     // ---------------------------------------------

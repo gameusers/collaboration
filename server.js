@@ -281,9 +281,9 @@ app.prepare().then(() => {
     
     const { userCommunityID } = req.params;
     
-    console.log(chalk`
-      userCommunityID: {green ${userCommunityID}}
-    `);
+    // console.log(chalk`
+    //   userCommunityID: {green ${userCommunityID}}
+    // `);
     
     // if (!userCommunities_id) {
     //   app.render(req, res, '/uc/index', req.query);

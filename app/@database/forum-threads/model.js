@@ -15,6 +15,8 @@ const util = require('util');
 // ---------------------------------------------
 
 const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
@@ -22,6 +24,7 @@ const lodashGet = require('lodash/get');
 // ---------------------------------------------
 
 const SchemaForumThreads = require('./schema');
+const SchemaForumComments = require('../forum-comments/schema');
 
 
 // ---------------------------------------------
@@ -246,11 +249,12 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {Object} localeObj - ロケール
  * @param {Object} conditionObj - 検索条件
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @return {Object} 取得データ
+ * @return {Array} 取得データ
  */
-const findForThreadsAndComments = async ({ localeObj, conditionObj }) => {
+const findForThreadsAndComments = async ({ localeObj, conditionObj, loginUsers_id }) => {
   
   console.log('findForThreadsAndComments');
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -259,10 +263,10 @@ const findForThreadsAndComments = async ({ localeObj, conditionObj }) => {
     
     
     // --------------------------------------------------
-    //   データ取得
+    //   Forum Threads & Comments データ取得
     // --------------------------------------------------
     
-    let resultArr = await SchemaForumThreads.aggregate([
+    let resultThreadsCommentsArr = await SchemaForumThreads.aggregate([
       
       {
         $match : conditionObj
@@ -284,68 +288,175 @@ const findForThreadsAndComments = async ({ localeObj, conditionObj }) => {
                   },
                 }
               },
-              { '$sort': { 'updatedDate': -1 }},
+              { '$sort': { 'updatedDate': -1 } },
               { $skip: 0 },
               { $limit: 10 },
-              // { $project:
-              //   {
-              //     createdDate: 0,
-              //     // nameObj: 1,
-              //     // statusObj: 1,
-              //     // imagesAndVideosObj: 1,
-              //   }
-              // }
+              { $project:
+                {
+                  // _id: 1,
+                  createdDate: 0,
+                  __v: 0,
+                  // nameObj: 1,
+                  // statusObj: 1,
+                  // imagesAndVideosObj: 1,
+                }
+              }
             ],
             as: 'forumCommentsArr'
           }
       },
       
       
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'forum-comments',
-      //       let: { forumComments_id: 'forumCommentsArr.forumComments_id' },
-      //       pipeline: [
-      //         { $match:
-      //           { $expr:
-      //             { $and:
-      //               [
-      //                 { $eq: ['$forumComments_id', '$$forumComments_id'] }
-      //               ]
-      //             },
-      //           }
-      //         },
-      //         // { '$sort': { 'updatedDate': -1 }},
-      //         // { $skip: 1 },
-      //         // { $limit: 1 },
-      //         // { $project:
-      //         //   {
-      //         //     _id: 0,
-      //         //     nameObj: 1,
-      //         //     statusObj: 1,
-      //         //     imagesAndVideosObj: 1,
-      //         //   }
-      //         // }
-      //       ],
-      //       as: 'forumComments2Arr'
-      //     }
-      // },
+      { $project:
+        {
+          createdDate: 0,
+          __v: 0,
+        }
+      },
       
       
-      // {
-      //   $project: {
-      //     __v: 0,
-      //     createdDate: 0,
-      //     updatedDate: 0,
-      //     loginID: 0,
-      //     loginPassword: 0,
-      //     emailObj: 0,
-      //     country: 0,
-      //   }
-      // },
+      { '$sort': { 'updatedDate': -1 } },
+      { $skip: 0 },
+      { $limit: 10 },
       
     ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   forumComments_id を取得して配列に追加する
+    // --------------------------------------------------
+    
+    const forumComments_idArr = [];
+    
+    for (let value1Obj of resultThreadsCommentsArr.values()) {
+      
+      // console.log(index);
+      
+      // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+      // console.dir(value1Obj.forumCommentsArr);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      for (let value2Obj of value1Obj.forumCommentsArr.values()) {
+        
+        // console.log(`\n---------- value2Obj ----------\n`);
+        // console.dir(value2Obj);
+        // console.log(`\n-----------------------------------\n`);
+        
+        if (value2Obj._id) {
+          forumComments_idArr.push(value2Obj._id);
+        }
+        
+      }
+      
+    }
+    
+    // console.log(`\n---------- forumComments_idArr ----------\n`);
+    // console.dir(forumComments_idArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // --------------------------------------------------
+    //   コメントに対する返信　データ取得
+    // --------------------------------------------------
+    
+    let resultRepliessArr = await SchemaForumComments.aggregate([
+      
+      {
+        $match : { forumComments_id: { $in: forumComments_idArr } }
+      },
+      
+      
+      { $project:
+        {
+          __v: 0,
+        }
+      },
+      
+      
+      { '$sort': { 'updatedDate': -1 } },
+      { $skip: 0 },
+      { $limit: 10 },
+      
+    ]).exec();
+    
+    
+    // --------------------------------------------------
+    //   コメントに対する返信　データを整える
+    // --------------------------------------------------
+    // loginUsers_id = 'jun-deE4J';
+    const repliesObj = {};
+    
+    for (const [index, valueObj] of resultRepliessArr.entries()) {
+      
+      
+      // 匿名の場合はユーザー情報を削除する
+      if (valueObj.anonymity && loginUsers_id !== valueObj.users_id) {
+        lodashSet(resultRepliessArr, [index, 'users_id'], '');
+      }
+      
+      // 匿名の項目を削除
+      delete valueObj.anonymity;
+      
+      
+      // 
+      if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
+        repliesObj[valueObj.forumComments_id] = [];
+      }
+      
+      repliesObj[valueObj.forumComments_id].push(valueObj);
+      
+      
+      // console.log(chalk`
+      //   index: {green ${index}}
+      //   valueObj.anonymity: {green ${valueObj.anonymity}}
+      // `);
+      
+    }
+    
+    // console.log(`\n---------- repliesObj ----------\n`);
+    // console.dir(repliesObj);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   フォーラムデータ生成
+    // --------------------------------------------------
+    
+    for (const [index1, value1Obj] of resultThreadsCommentsArr.entries()) {
+      
+      // console.log(chalk`
+      //   index1: {green ${index1}}
+      // `);
+      
+      // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+      // console.dir(value1Obj.forumCommentsArr);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      
+      
+      for (const [index2, value2Obj] of value1Obj.forumCommentsArr.entries()) {
+        
+        // console.log(chalk`
+        //   index2: {green ${index2}}
+        // `);
+        
+        // console.log(`\n---------- value2Obj ----------\n`);
+        // console.dir(value2Obj);
+        // console.log(`\n-----------------------------------\n`);
+        
+        lodashSet(resultThreadsCommentsArr, [index1, 'forumCommentsArr', index2, 'forumRepliesArr'], repliesObj[value2Obj._id]);
+        
+      }
+      
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -358,21 +469,23 @@ const findForThreadsAndComments = async ({ localeObj, conditionObj }) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     console.log(`
-      ----- resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      ----- resultThreadsCommentsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultThreadsCommentsArr)), { colors: true, depth: null })}\n
       --------------------\n
     `);
+    
+    // console.log(`
+    //   ----- resultRepliessArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultRepliessArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -384,8 +497,8 @@ const findForThreadsAndComments = async ({ localeObj, conditionObj }) => {
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    const returnObj = {};
-    return returnObj;
+    // const returnObj = {};
+    return resultThreadsCommentsArr;
     
     
   } catch (err) {

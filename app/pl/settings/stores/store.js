@@ -42,7 +42,7 @@ const { validationUsersEmail } = require('../../../@database/users/validations/e
 //   Store
 // --------------------------------------------------
 
-let storeLoginAccount = null;
+let storePlSettings = null;
 let storeLayout = null;
 let storeData = null;
       
@@ -696,11 +696,11 @@ export default function initStorePlayerSettings(argumentsObj, storeInstanceObj) 
     
   } else {
     
-    if (storeLoginAccount === null) {
-      storeLoginAccount = new Store();
+    if (storePlSettings === null) {
+      storePlSettings = new Store();
     }
     
-    return storeLoginAccount;
+    return storePlSettings;
     
   }
   

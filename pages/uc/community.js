@@ -36,12 +36,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreRoot from '../../app/@stores/root';
-// import initStoreCardPlayer from '../../app/common/card/player/stores/player';
-// import initStorePlPlayer from '../../app/pl/player/stores/store';
-// import initStoreIDForm from '../../app/common/id/stores/form';
-// import initStoreGameForm from '../../app/common/game/stores/form';
-// import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
-// import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
+import initStoreForum from '../../app/common/forum/stores/store';
 
 
 // ---------------------------------------------
@@ -97,27 +92,26 @@ export default class extends React.Component {
       reqAcceptLanguage,
     });
     
-    // const statusCode = resultObj.statusCode;
-    // const initialPropsObj = resultObj.data;
+    const statusCode = resultObj.statusCode;
+    const initialPropsObj = resultObj.data;
     
     // console.log(chalk`
     //   isServer: {green ${isServer}}
     //   pathname: {green ${pathname}}
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, reqAcceptLanguage, userCommunityID };
-    // return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID };
     
     
   }
@@ -163,12 +157,7 @@ export default class extends React.Component {
       
       const stores = initStoreRoot({});
       
-      // this.storePlPlayer = initStorePlPlayer({});
-      // this.storeCardPlayer = initStoreCardPlayer({});
-      // this.storeIDForm = initStoreIDForm({});
-      // this.storeGameForm = initStoreGameForm({});
-      // this.storeImageAndVideo = initStoreImageAndVideo({});
-      // this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+      this.storeForum = initStoreForum({});
       
       
       // --------------------------------------------------
@@ -199,17 +188,10 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Update Data - Card Players
+      //   Update Data - Forum
       // --------------------------------------------------
       
-      // stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Pages Array
-      // --------------------------------------------------
-      
-      // this.storePlPlayer.replacePagesArr(props.initialPropsObj.pagesArr);
+      this.storeForum.handleEdit(['forumArr', props.initialPropsObj.forumArr]);
       
       
     } catch (e) {

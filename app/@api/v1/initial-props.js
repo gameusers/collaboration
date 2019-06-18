@@ -758,7 +758,7 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   endpointID: GBsTCSr4y
+//   endpointID: hc7YMP_C8
 // --------------------------------------------------
 
 router.get('/uc/community', upload.none(), async (req, res, next) => {
@@ -772,10 +772,6 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     acceptLanguage: req.headers['accept-language']
   });
   
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
   
   // --------------------------------------------------
   //   Property
@@ -796,13 +792,10 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     const userCommunityID = req.query.userCommunityID;
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
-    // console.log(chalk`
-    //   emailConfirmationID: {green ${emailConfirmationID}}
-    // `);
     
     
     // --------------------------------------------------
-    //   ログインしているユーザー情報＆ログインチェック
+    //   Login Check / Login User Data
     // --------------------------------------------------
     
     if (req.isAuthenticated() && req.user) {
@@ -812,8 +805,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   データ取得 / Games
-    //   ヘッダーヒーローイメージ用
+    //   DB find / Games / Header Hero Image
     // --------------------------------------------------
     
     returnObj.headerObj = await ModelGames.findForHeroImage({
@@ -822,9 +814,11 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     });
     
     
+    // --------------------------------------------------
+    //   DB find / Forum
+    // --------------------------------------------------
     
-    
-    const testObj = await ModelForumThreads.findForThreadsAndComments({
+    returnObj.forumArr = await ModelForumThreads.findForForum({
       localeObj: {},
       conditionObj: {
         userCommunities_id: 'cxO8tEGty',
@@ -853,7 +847,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'GBsTCSr4y',
+      endpointID: 'hc7YMP_C8',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

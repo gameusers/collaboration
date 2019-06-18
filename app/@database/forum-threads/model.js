@@ -251,9 +251,9 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Array} 取得データ
  */
-const findForThreadsAndComments = async ({ localeObj, conditionObj, loginUsers_id }) => {
+const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
   
-  console.log('findForThreadsAndComments');
+  // console.log('findForForum');
   
   // --------------------------------------------------
   //   Database
@@ -401,11 +401,12 @@ const findForThreadsAndComments = async ({ localeObj, conditionObj, loginUsers_i
       delete valueObj.anonymity;
       
       
-      // 
+      // 配列を作成する
       if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
         repliesObj[valueObj.forumComments_id] = [];
       }
       
+      // 配列に追加
       repliesObj[valueObj.forumComments_id].push(valueObj);
       
       
@@ -475,11 +476,11 @@ const findForThreadsAndComments = async ({ localeObj, conditionObj, loginUsers_i
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- resultThreadsCommentsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultThreadsCommentsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultThreadsCommentsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultThreadsCommentsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- resultRepliessArr -----\n
@@ -524,5 +525,5 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
-  findForThreadsAndComments,
+  findForForum,
 };

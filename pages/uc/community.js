@@ -100,11 +100,11 @@ export default class extends React.Component {
     //   pathname: {green ${pathname}}
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

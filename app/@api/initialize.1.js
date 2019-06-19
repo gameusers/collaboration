@@ -2825,16 +2825,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'qNiOLKdRt',
         createdDate: '2019-01-01T00:00:00Z',
         updatedDate: '2019-01-01T00:00:00Z',
+        threadID: 'dUGNLISrT',
         userCommunities_id: 'cxO8tEGty',
         users_id: 'jun-deE4J',
-        localesArr: [
-          {
-            _id: 'qhpRQ_fGB',
-            language: 'ja',
-            name: 'Thread 1: 雑談スレッド',
-            description: 'みんなで気になる話題について話し合いましょう！ゲームの話は特に大歓迎です。おすすめの作品などがあったら、ぜひ紹介してください。',
-          }
-        ],
+        language: 'ja',
+        name: 'Thread 1: 雑談スレッド',
+        description: 'みんなで気になる話題について話し合いましょう！ゲームの話は特に大歓迎です。おすすめの作品などがあったら、ぜひ紹介してください。',
         imagesAndVideosObj: {
           mainArr: [],
         },
@@ -2847,18 +2843,14 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: '_XDDSTWV_',
         createdDate: '2019-01-02T00:00:00Z',
         updatedDate: '2019-01-02T00:00:00Z',
+        threadID: 'GpsGToc7T',
         userCommunities_id: 'cxO8tEGty',
         users_id: '',
-        localesArr: [
-          {
-            _id: 'bV1gwPnYs',
-            language: 'ja',
-            name: 'Thread 2: カムパネルラ',
-            description: `「ではみなさんは、そういうふうに川だと言いわれたり、乳ちちの流ながれたあとだと言いわれたりしていた、このぼんやりと白いものがほんとうは何かご承知しょうちですか」先生は、黒板こくばんにつるした大きな黒い星座せいざの図の、上から下へ白くけぶった銀河帯ぎんがたいのようなところを指さしながら、みんなに問といをかけました。
+        language: 'ja',
+        name: 'Thread 2: カムパネルラ',
+        description: `「ではみなさんは、そういうふうに川だと言いわれたり、乳ちちの流ながれたあとだと言いわれたりしていた、このぼんやりと白いものがほんとうは何かご承知しょうちですか」先生は、黒板こくばんにつるした大きな黒い星座せいざの図の、上から下へ白くけぶった銀河帯ぎんがたいのようなところを指さしながら、みんなに問といをかけました。
         
         カムパネルラが手をあげました。それから四、五人手をあげました。ジョバンニも手をあげようとして、急いそいでそのままやめました。たしかにあれがみんな星だと、いつか雑誌ざっしで読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
-          }
-        ],
         imagesAndVideosObj: {
           mainArr: [],
         },
@@ -2871,16 +2863,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'HpzNGyKQE',
         createdDate: '2019-01-03T00:00:00Z',
         updatedDate: '2019-01-03T00:00:00Z',
+        threadID: 'gfFZgu9ti',
         userCommunities_id: 'cxO8tEGty',
         users_id: 'P7UJMuUnx',
-        localesArr: [
-          {
-            _id: 'avaUoJn0L',
-            language: 'ja',
-            name: 'Thread 3: ジョバンニ',
-            description: `ジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
-          }
-        ],
+        language: 'ja',
+        name: 'Thread 3: ジョバンニ',
+        description: `ジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
         imagesAndVideosObj: {
           mainArr: [],
         },
@@ -2921,19 +2909,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: '8_AsHN1fm',
         createdDate: '2019-01-01T00:00:00Z',
         updatedDate: '2019-01-01T00:00:00Z',
+        commentID: 'D7tHiCdC-',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '',
         replyToForumComments_id: '',
         users_id: '',
-        localesArr: [
-          {
-            _id: '2DagvbZ4q',
-            language: 'ja',
-            name: '動画＋画像',
-            comment: `Comment 1: 動画＋画像のテスト`,
-          }
-        ],
+        language: 'ja',
+        name: '動画＋画像',
+        comment: 'Comment 1: 動画＋画像のテスト',
         imagesAndVideosObj: {
           mainArr: [
             {
@@ -2945,13 +2929,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'rlEoEK75y',
               type: 'image',
-              localesArr: [
-                {
-                  _id: 'vw934dMWp',
-                  language: 'ja',
-                  caption: '動画＋画像のテスト',
-                }
-              ],
+              caption: '動画＋画像のテスト',
               srcSetArr: [
                 {
                   _id: 'Jtb7GDwTO',
@@ -2965,37 +2943,31 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'dFnadiGia',
               type: 'image',
-              localesArr: [
-                {
-                  _id: 'x30n1i1O1',
-                  language: 'ja',
-                  caption: '猫',
-                }
-              ],
+              caption: '猫',
               srcSetArr: [
                 {
-                  _id: 'PCD799h1p',
+                  _id: 'Jtb7GDwTO',
                   src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/320w.jpg',
                   w: '320w',
                   width: 213,
                   height: 320,
                 },
                 {
-                  _id: 'mzixmZhKn',
+                  _id: 'Jtb7GDwTO',
                   src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/480w.jpg',
                   w: '480w',
                   width: 320,
                   height: 480,
                 },
                 {
-                  _id: 'et6Jk4aja',
+                  _id: 'Jtb7GDwTO',
                   src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/640w.jpg',
                   w: '640w',
                   width: 427,
                   height: 640,
                 },
                 {
-                  _id: 'JUEZB9zJb',
+                  _id: 'Jtb7GDwTO',
                   src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/800w.jpg',
                   w: '800w',
                   width: 533,
@@ -3016,19 +2988,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'HJut0iubX',
         createdDate: '2019-01-02T00:00:00Z',
         updatedDate: '2019-01-02T00:00:00Z',
+        commentID: 'XYLz8wcGy',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: '',
         forumComments_id: '8_AsHN1fm',
         replyToForumComments_id: '',
         users_id: 'jun-deE4J',
-        localesArr: [
-          {
-            _id: 'Z2x6S7Sua',
-            language: 'ja',
-            name: '',
-            comment: 'Comment 2: ジョバンニは勢いよく立ちあがりましたが、立ってみるともうはっきりとそれを答えることができないのでした。',
-          }
-        ],
+        language: 'ja',
+        name: '',
+        comment: 'Comment 2: ジョバンニは勢いよく立ちあがりましたが、立ってみるともうはっきりとそれを答えることができないのでした。',
         imagesAndVideosObj: {
           mainArr: [],
         },
@@ -3043,19 +3011,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'R2hdDidB6',
         createdDate: '2019-01-03T00:00:00Z',
         updatedDate: '2019-01-03T00:00:00Z',
+        commentID: '4kYP-HhEy',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: '',
         forumComments_id: '8_AsHN1fm',
         replyToForumComments_id: 'HJut0iubX',
         users_id: '',
-        localesArr: [
-          {
-            _id: 's6z-LtF6x',
-            language: 'ja',
-            name: '天川',
-            comment: 'Comment 3: ですからもしもこの天あまの川がわがほんとうに川だと考えるなら、その一つ一つの小さな星はみんなその川のそこの砂や砂利じゃりの粒つぶにもあたるわけです。',
-          }
-        ],
+        language: 'ja',
+        name: '天川',
+        comment: 'Comment 3: ですからもしもこの天あまの川がわがほんとうに川だと考えるなら、その一つ一つの小さな星はみんなその川のそこの砂や砂利じゃりの粒つぶにもあたるわけです。',
         imagesAndVideosObj: {
           mainArr: [],
         },
@@ -3071,52 +3035,21 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'm2N3ijR3A',
         createdDate: '2019-01-04T00:00:00Z',
         updatedDate: '2019-01-04T00:00:00Z',
+        commentID: 'cDPy0oC19',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '',
         replyToForumComments_id: '',
         users_id: 'P7UJMuUnx',
-        localesArr: [
-          {
-            _id: 'MWXoBzBVk',
-            language: 'ja',
-            name: '',
-            comment: `Comment 4: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ、そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
-          }
-        ],
+        language: 'ja',
+        name: '',
+        comment: `Comment 4: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ、そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
         imagesAndVideosObj: {
           mainArr: [],
         },
         anonymity: true,
         goods: 50,
         replies: 0,
-      },
-      
-      
-      // コメント2に対する返信　forumComments_id: 'm2N3ijR3A'で検索
-      {
-        _id: 'XDDd61fux',
-        createdDate: '2019-01-05T00:00:00Z',
-        updatedDate: '2019-01-05T00:00:00Z',
-        userCommunities_id: 'QD7Ve7yND',
-        forumThreads_id: '',
-        forumComments_id: 'm2N3ijR3A',
-        replyToForumComments_id: '',
-        users_id: '',
-        localesArr: [
-          {
-            _id: '8AmTHEgzD',
-            language: 'ja',
-            name: '',
-            comment: 'Comment 5: test',
-          }
-        ],
-        imagesAndVideosObj: {
-          mainArr: [],
-        },
-        anonymity: false,
-        goods: 25,
-        replies: 5,
       },
       
       

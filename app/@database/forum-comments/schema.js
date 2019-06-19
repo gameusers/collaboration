@@ -13,21 +13,32 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
-  commentID: { type: String, required: true },
+  // commentID: { type: String, required: true },
   userCommunities_id: { type: String },
   forumThreads_id: { type: String },
   forumComments_id: { type: String },
   replyToForumComments_id: { type: String },
   users_id: { type: String },
-  language: { type: String, enum: ['en', 'ja'], required: true },
-  name: { type: String },
-  comment: { type: String, required: true },
+  localesArr: [
+    {
+      _id: { type: String, required: true },
+      language: { type: String, enum: ['en', 'ja'] },
+      name: { type: String },
+      comment: { type: String, required: true },
+    }
+  ],
   imagesAndVideosObj: {
     mainArr: [
       {
         _id: { type: String, required: true },
         type: { type: String, enum: ['image', 'video'], required: true },
-        caption: String,
+        localesArr: [
+          {
+            _id: { type: String, required: true },
+            language: { type: String, enum: ['en', 'ja'] },
+            caption: { type: String, required: true },
+          }
+        ],
         srcSetArr: [
           {
             _id: { type: String, required: true },
@@ -37,6 +48,8 @@ const schema = mongoose.Schema({
             height: { type: Number, required: true },
           }
         ],
+        videoChannel: { type: String, enum: ['youtube'] },
+        videoID: String,
       },
     ],
   },

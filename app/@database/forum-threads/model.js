@@ -242,16 +242,13 @@ const deleteMany = async ({ conditionObj }) => {
 
 
 
-
-
 /**
  * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
  * @param {Object} localeObj - ロケール
- * @param {Object} conditionObj - 検索条件
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Array} 取得データ
  */
-const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
+const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit }) => {
   
   // console.log('findForForum');
   
@@ -263,13 +260,91 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
     
     
     // --------------------------------------------------
+    //   Condition
+    // --------------------------------------------------
+    
+    const conditionObj = {
+      userCommunities_id: 'cxO8tEGty',
+    };
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    let resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(limit).exec();
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      userCommunities_id: {green ${userCommunities_id}}
+    `);
+    
+    console.log(`
+      ----- resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return resultArr;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
+ * @param {Object} localeObj - ロケール
+ * @param {Object} conditionObj - 検索条件
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @return {Array} 取得データ
+ */
+const findForForum = async ({ localeObj, loginUsers_id, forumThreads_idArr }) => {
+  
+  // console.log('findForForum');
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Condition
+    // --------------------------------------------------
+    
+    // const conditionObj = {
+    //   forumThreads_idArr,
+    // };
+    
+    
+    // --------------------------------------------------
     //   Forum Threads & Comments データ取得
     // --------------------------------------------------
     
-    let resultThreadsCommentsArr = await SchemaForumThreads.aggregate([
+    let resultArr = await SchemaForumComments.aggregate([
       
       {
-        $match : conditionObj
+        $match: { forumThreads_id: { $in: forumThreads_idArr } }
       },
       
       
@@ -277,13 +352,13 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
         $lookup:
           {
             from: 'forum-comments',
-            let: { forumThreads_id: '$_id' },
+            let: { forumComments_id: '$_id' },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$forumThreads_id', '$$forumThreads_id'] }
+                      { $eq: ['$forumComments_id', '$$forumComments_id'] }
                     ]
                   },
                 }
@@ -293,16 +368,12 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
               { $limit: 10 },
               { $project:
                 {
-                  // _id: 1,
                   createdDate: 0,
                   __v: 0,
-                  // nameObj: 1,
-                  // statusObj: 1,
-                  // imagesAndVideosObj: 1,
                 }
               }
             ],
-            as: 'forumCommentsArr'
+            as: 'forumRepliesArr'
           }
       },
       
@@ -324,138 +395,138 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
     
     
     
-    // --------------------------------------------------
-    //   forumComments_id を取得して配列に追加する
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   forumComments_id を取得して配列に追加する
+    // // --------------------------------------------------
     
-    const forumComments_idArr = [];
+    // const forumComments_idArr = [];
     
-    for (let value1Obj of resultThreadsCommentsArr.values()) {
+    // for (let value1Obj of resultThreadsCommentsArr.values()) {
       
-      // console.log(index);
+    //   // console.log(index);
       
-      // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
-      // console.dir(value1Obj.forumCommentsArr);
-      // console.log(`\n-----------------------------------\n`);
+    //   // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+    //   // console.dir(value1Obj.forumCommentsArr);
+    //   // console.log(`\n-----------------------------------\n`);
       
       
-      for (let value2Obj of value1Obj.forumCommentsArr.values()) {
+    //   for (let value2Obj of value1Obj.forumCommentsArr.values()) {
         
-        // console.log(`\n---------- value2Obj ----------\n`);
-        // console.dir(value2Obj);
-        // console.log(`\n-----------------------------------\n`);
+    //     // console.log(`\n---------- value2Obj ----------\n`);
+    //     // console.dir(value2Obj);
+    //     // console.log(`\n-----------------------------------\n`);
         
-        if (value2Obj._id) {
-          forumComments_idArr.push(value2Obj._id);
-        }
+    //     if (value2Obj._id) {
+    //       forumComments_idArr.push(value2Obj._id);
+    //     }
         
-      }
+    //   }
       
-    }
+    // }
     
-    // console.log(`\n---------- forumComments_idArr ----------\n`);
-    // console.dir(forumComments_idArr);
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // --------------------------------------------------
-    //   コメントに対する返信　データ取得
-    // --------------------------------------------------
-    
-    let resultRepliessArr = await SchemaForumComments.aggregate([
-      
-      {
-        $match : { forumComments_id: { $in: forumComments_idArr } }
-      },
-      
-      
-      { $project:
-        {
-          __v: 0,
-        }
-      },
-      
-      
-      { '$sort': { 'updatedDate': -1 } },
-      { $skip: 0 },
-      { $limit: 10 },
-      
-    ]).exec();
+    // // console.log(`\n---------- forumComments_idArr ----------\n`);
+    // // console.dir(forumComments_idArr);
+    // // console.log(`\n-----------------------------------\n`);
     
     
-    // --------------------------------------------------
-    //   コメントに対する返信　データを整える
-    // --------------------------------------------------
-    // loginUsers_id = 'jun-deE4J';
-    const repliesObj = {};
+    // // --------------------------------------------------
+    // //   コメントに対する返信　データ取得
+    // // --------------------------------------------------
     
-    for (const [index, valueObj] of resultRepliessArr.entries()) {
+    // let resultRepliesArr = await SchemaForumComments.aggregate([
+      
+    //   {
+    //     $match : { forumComments_id: { $in: forumComments_idArr } }
+    //   },
       
       
-      // 匿名の場合はユーザー情報を削除する
-      if (valueObj.anonymity && loginUsers_id !== valueObj.users_id) {
-        lodashSet(resultRepliessArr, [index, 'users_id'], '');
-      }
-      
-      // 匿名の項目を削除
-      delete valueObj.anonymity;
+    //   { $project:
+    //     {
+    //       __v: 0,
+    //     }
+    //   },
       
       
-      // 配列を作成する
-      if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
-        repliesObj[valueObj.forumComments_id] = [];
-      }
+    //   { '$sort': { 'updatedDate': -1 } },
+    //   { $skip: 0 },
+    //   { $limit: 1 },
       
-      // 配列に追加
-      repliesObj[valueObj.forumComments_id].push(valueObj);
-      
-      
-      // console.log(chalk`
-      //   index: {green ${index}}
-      //   valueObj.anonymity: {green ${valueObj.anonymity}}
-      // `);
-      
-    }
-    
-    // console.log(`\n---------- repliesObj ----------\n`);
-    // console.dir(repliesObj);
-    // console.log(`\n-----------------------------------\n`);
+    // ]).exec();
     
     
+    // // --------------------------------------------------
+    // //   コメントに対する返信　データを整える
+    // // --------------------------------------------------
+    // // loginUsers_id = 'jun-deE4J';
+    // const repliesObj = {};
+    
+    // for (const [index, valueObj] of resultRepliesArr.entries()) {
+      
+      
+    //   // 匿名の場合はユーザー情報を削除する
+    //   if (valueObj.anonymity && loginUsers_id !== valueObj.users_id) {
+    //     lodashSet(resultRepliesArr, [index, 'users_id'], '');
+    //   }
+      
+    //   // 匿名の項目を削除
+    //   delete valueObj.anonymity;
+      
+      
+    //   // 配列を作成する
+    //   if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
+    //     repliesObj[valueObj.forumComments_id] = [];
+    //   }
+      
+    //   // 配列に追加
+    //   repliesObj[valueObj.forumComments_id].push(valueObj);
+      
+      
+    //   // console.log(chalk`
+    //   //   index: {green ${index}}
+    //   //   valueObj.anonymity: {green ${valueObj.anonymity}}
+    //   // `);
+      
+    // }
+    
+    // // console.log(`\n---------- repliesObj ----------\n`);
+    // // console.dir(repliesObj);
+    // // console.log(`\n-----------------------------------\n`);
     
     
-    // --------------------------------------------------
-    //   フォーラムデータ生成
-    // --------------------------------------------------
     
-    for (const [index1, value1Obj] of resultThreadsCommentsArr.entries()) {
+    
+    // // --------------------------------------------------
+    // //   フォーラムデータ生成
+    // // --------------------------------------------------
+    
+    // for (const [index1, value1Obj] of resultThreadsCommentsArr.entries()) {
       
-      // console.log(chalk`
-      //   index1: {green ${index1}}
-      // `);
+    //   // console.log(chalk`
+    //   //   index1: {green ${index1}}
+    //   // `);
       
-      // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
-      // console.dir(value1Obj.forumCommentsArr);
-      // console.log(`\n-----------------------------------\n`);
-      
-      
+    //   // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+    //   // console.dir(value1Obj.forumCommentsArr);
+    //   // console.log(`\n-----------------------------------\n`);
       
       
-      for (const [index2, value2Obj] of value1Obj.forumCommentsArr.entries()) {
+      
+      
+    //   for (const [index2, value2Obj] of value1Obj.forumCommentsArr.entries()) {
         
-        // console.log(chalk`
-        //   index2: {green ${index2}}
-        // `);
+    //     // console.log(chalk`
+    //     //   index2: {green ${index2}}
+    //     // `);
         
-        // console.log(`\n---------- value2Obj ----------\n`);
-        // console.dir(value2Obj);
-        // console.log(`\n-----------------------------------\n`);
+    //     // console.log(`\n---------- value2Obj ----------\n`);
+    //     // console.dir(value2Obj);
+    //     // console.log(`\n-----------------------------------\n`);
         
-        lodashSet(resultThreadsCommentsArr, [index1, 'forumCommentsArr', index2, 'forumRepliesArr'], repliesObj[value2Obj._id]);
+    //     lodashSet(resultThreadsCommentsArr, [index1, 'forumCommentsArr', index2, 'forumRepliesArr'], repliesObj[value2Obj._id]);
         
-      }
+    //   }
       
-    }
+    // }
     
     
     
@@ -482,11 +553,11 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- resultRepliessArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultRepliessArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -498,8 +569,8 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    // const returnObj = {};
-    return resultThreadsCommentsArr;
+    const returnObj = {};
+    return returnObj;
     
     
   } catch (err) {
@@ -510,6 +581,276 @@ const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
   
   
 };
+
+
+
+
+/**
+ * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
+ * @param {Object} localeObj - ロケール
+ * @param {Object} conditionObj - 検索条件
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @return {Array} 取得データ
+ */
+// const findForForum = async ({ localeObj, conditionObj, loginUsers_id }) => {
+  
+//   // console.log('findForForum');
+  
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   Forum Threads & Comments データ取得
+//     // --------------------------------------------------
+    
+//     let resultThreadsCommentsArr = await SchemaForumThreads.aggregate([
+      
+//       {
+//         $match : conditionObj
+//       },
+      
+      
+//       {
+//         $lookup:
+//           {
+//             from: 'forum-comments',
+//             let: { forumThreads_id: '$_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $and:
+//                     [
+//                       { $eq: ['$forumThreads_id', '$$forumThreads_id'] }
+//                     ]
+//                   },
+//                 }
+//               },
+//               { '$sort': { 'updatedDate': -1 } },
+//               { $skip: 0 },
+//               { $limit: 10 },
+//               { $project:
+//                 {
+//                   // _id: 1,
+//                   createdDate: 0,
+//                   __v: 0,
+//                   // nameObj: 1,
+//                   // statusObj: 1,
+//                   // imagesAndVideosObj: 1,
+//                 }
+//               }
+//             ],
+//             as: 'forumCommentsArr'
+//           }
+//       },
+      
+      
+//       { $project:
+//         {
+//           createdDate: 0,
+//           __v: 0,
+//         }
+//       },
+      
+      
+//       { '$sort': { 'updatedDate': -1 } },
+//       { $skip: 0 },
+//       { $limit: 10 },
+      
+//     ]).exec();
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   forumComments_id を取得して配列に追加する
+//     // --------------------------------------------------
+    
+//     const forumComments_idArr = [];
+    
+//     for (let value1Obj of resultThreadsCommentsArr.values()) {
+      
+//       // console.log(index);
+      
+//       // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+//       // console.dir(value1Obj.forumCommentsArr);
+//       // console.log(`\n-----------------------------------\n`);
+      
+      
+//       for (let value2Obj of value1Obj.forumCommentsArr.values()) {
+        
+//         // console.log(`\n---------- value2Obj ----------\n`);
+//         // console.dir(value2Obj);
+//         // console.log(`\n-----------------------------------\n`);
+        
+//         if (value2Obj._id) {
+//           forumComments_idArr.push(value2Obj._id);
+//         }
+        
+//       }
+      
+//     }
+    
+//     // console.log(`\n---------- forumComments_idArr ----------\n`);
+//     // console.dir(forumComments_idArr);
+//     // console.log(`\n-----------------------------------\n`);
+    
+    
+//     // --------------------------------------------------
+//     //   コメントに対する返信　データ取得
+//     // --------------------------------------------------
+    
+//     let resultRepliesArr = await SchemaForumComments.aggregate([
+      
+//       {
+//         $match : { forumComments_id: { $in: forumComments_idArr } }
+//       },
+      
+      
+//       { $project:
+//         {
+//           __v: 0,
+//         }
+//       },
+      
+      
+//       { '$sort': { 'updatedDate': -1 } },
+//       { $skip: 0 },
+//       { $limit: 1 },
+      
+//     ]).exec();
+    
+    
+//     // --------------------------------------------------
+//     //   コメントに対する返信　データを整える
+//     // --------------------------------------------------
+//     // loginUsers_id = 'jun-deE4J';
+//     const repliesObj = {};
+    
+//     for (const [index, valueObj] of resultRepliesArr.entries()) {
+      
+      
+//       // 匿名の場合はユーザー情報を削除する
+//       if (valueObj.anonymity && loginUsers_id !== valueObj.users_id) {
+//         lodashSet(resultRepliesArr, [index, 'users_id'], '');
+//       }
+      
+//       // 匿名の項目を削除
+//       delete valueObj.anonymity;
+      
+      
+//       // 配列を作成する
+//       if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
+//         repliesObj[valueObj.forumComments_id] = [];
+//       }
+      
+//       // 配列に追加
+//       repliesObj[valueObj.forumComments_id].push(valueObj);
+      
+      
+//       // console.log(chalk`
+//       //   index: {green ${index}}
+//       //   valueObj.anonymity: {green ${valueObj.anonymity}}
+//       // `);
+      
+//     }
+    
+//     // console.log(`\n---------- repliesObj ----------\n`);
+//     // console.dir(repliesObj);
+//     // console.log(`\n-----------------------------------\n`);
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   フォーラムデータ生成
+//     // --------------------------------------------------
+    
+//     for (const [index1, value1Obj] of resultThreadsCommentsArr.entries()) {
+      
+//       // console.log(chalk`
+//       //   index1: {green ${index1}}
+//       // `);
+      
+//       // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+//       // console.dir(value1Obj.forumCommentsArr);
+//       // console.log(`\n-----------------------------------\n`);
+      
+      
+      
+      
+//       for (const [index2, value2Obj] of value1Obj.forumCommentsArr.entries()) {
+        
+//         // console.log(chalk`
+//         //   index2: {green ${index2}}
+//         // `);
+        
+//         // console.log(`\n---------- value2Obj ----------\n`);
+//         // console.dir(value2Obj);
+//         // console.log(`\n-----------------------------------\n`);
+        
+//         lodashSet(resultThreadsCommentsArr, [index1, 'forumCommentsArr', index2, 'forumRepliesArr'], repliesObj[value2Obj._id]);
+        
+//       }
+      
+//     }
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(`
+//     //   ----- localeObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- conditionObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- resultThreadsCommentsArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(resultThreadsCommentsArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- resultRepliesArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(resultRepliesArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+//     // const returnObj = {};
+//     return resultThreadsCommentsArr;
+    
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
+  
+  
+// };
 
 
 
@@ -525,5 +866,6 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
+  findForForumThreads,
   findForForum,
 };

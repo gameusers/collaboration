@@ -818,12 +818,33 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     //   DB find / Forum
     // --------------------------------------------------
     
+    // returnObj.forumArr = await ModelForumThreads.findForForum({
+    //   localeObj: {},
+    //   conditionObj: {
+    //     userCommunities_id: 'cxO8tEGty',
+    //   },
+    //   loginUsers_id,
+    // });
+    
+    
     returnObj.forumArr = await ModelForumThreads.findForForum({
       localeObj: {},
-      conditionObj: {
-        userCommunities_id: 'cxO8tEGty',
-      },
       loginUsers_id,
+      forumThreads_idArr: ['qNiOLKdRt'],
+    });
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    returnObj.forumArr = await ModelForumThreads.findForForumThreads({
+      localeObj: {},
+      loginUsers_id,
+      userCommunities_id: 'cxO8tEGty',
+      page: 1,
+      limit: 1,
     });
     
     // console.log(`\n---------- testObj ----------\n`);

@@ -21,9 +21,7 @@ const lodashGet = require('lodash/get');
 //   Model
 // ---------------------------------------------
 
-const SchemaUsers = require('./schema');
-const SchemaEmailConfirmations = require('../email-confirmations/schema');
-const SchemaCardPlayers = require('../card-players/schema');
+const SchemaForumComments = require('./schema');
 
 
 // ---------------------------------------------
@@ -58,7 +56,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaUsers.findOne(conditionObj).exec();
+    return await SchemaForumComments.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -92,7 +90,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.find(conditionObj).exec();
+    return await SchemaForumComments.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -125,7 +123,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.countDocuments(conditionObj).exec();
+    return await SchemaForumComments.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -158,7 +156,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaForumComments.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -191,7 +189,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaUsers.insertMany(saveArr);
+    return await SchemaForumComments.insertMany(saveArr);
     
     
   } catch (err) {
@@ -224,7 +222,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaUsers.deleteMany(conditionObj);
+    return await SchemaForumComments.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -239,19 +237,16 @@ const deleteMany = async ({ conditionObj }) => {
 
 
 
-
-
-
-
 /**
  * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
  * @param {Object} localeObj - ロケール
  * @param {Object} conditionObj - 検索条件
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @return {Object} 取得データ
+ * @return {Array} 取得データ
  */
-const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
+const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumThreads_idArr, commentsPage, commentsLimit = process.env.FORUM_COMMENTS_LIMIT, repliesPage, repliesLimit = process.env.FORUM_REPLIES_LIMIT }) => {
   
+  // console.log('findForForum');
   
   // --------------------------------------------------
   //   Database
@@ -261,65 +256,206 @@ const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
     
     
     // --------------------------------------------------
-    //   データ取得
+    //   Condition
     // --------------------------------------------------
     
-    let resultArr = await SchemaUsers.aggregate([
+    // const conditionObj = {
+    //   forumThreads_idArr,
+    // };
+    
+    
+    // --------------------------------------------------
+    //   Forum Threads & Comments データ取得
+    // --------------------------------------------------
+    
+    let resultArr = await SchemaForumComments.aggregate([
       
       {
-        $match : conditionObj
+        $match: { forumThreads_id: { $in: forumThreads_idArr } }
       },
       
       
       {
         $lookup:
           {
-            from: 'card-players',
-            let: { users_id: '$_id' },
+            from: 'forum-comments',
+            let: { forumComments_id: '$_id' },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$users_id', '$$users_id'] }
+                      { $eq: ['$forumComments_id', '$$forumComments_id'] }
                     ]
                   },
                 }
               },
+              { '$sort': { 'updatedDate': -1 } },
+              { $skip: (repliesPage - 1) * repliesLimit },
+              { $limit: parseInt(repliesLimit, 10) },
               { $project:
                 {
-                  _id: 0,
-                  nameObj: 1,
-                  statusObj: 1,
-                  imagesAndVideosObj: 1,
+                  createdDate: 0,
+                  __v: 0,
                 }
               }
             ],
-            as: 'cardPlayersArr'
+            as: 'forumRepliesArr'
           }
       },
       
       
-      {
-        $project: {
-          __v: 0,
+      { $project:
+        {
           createdDate: 0,
-          updatedDate: 0,
-          loginID: 0,
-          loginPassword: 0,
-          emailObj: 0,
-          country: 0,
+          __v: 0,
         }
       },
+      
+      
+      { '$sort': { 'updatedDate': -1 } },
+      { $skip: (commentsPage - 1) * commentsLimit },
+      { $limit: parseInt(commentsLimit, 10) },
       
     ]).exec();
     
     
-    // --------------------------------------------------
-    //   フォーマット
-    // --------------------------------------------------
     
-    const returnObj = format({ arr: resultArr, loginUsers_id });
+    
+    // // --------------------------------------------------
+    // //   forumComments_id を取得して配列に追加する
+    // // --------------------------------------------------
+    
+    // const forumComments_idArr = [];
+    
+    // for (let value1Obj of resultThreadsCommentsArr.values()) {
+      
+    //   // console.log(index);
+      
+    //   // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+    //   // console.dir(value1Obj.forumCommentsArr);
+    //   // console.log(`\n-----------------------------------\n`);
+      
+      
+    //   for (let value2Obj of value1Obj.forumCommentsArr.values()) {
+        
+    //     // console.log(`\n---------- value2Obj ----------\n`);
+    //     // console.dir(value2Obj);
+    //     // console.log(`\n-----------------------------------\n`);
+        
+    //     if (value2Obj._id) {
+    //       forumComments_idArr.push(value2Obj._id);
+    //     }
+        
+    //   }
+      
+    // }
+    
+    // // console.log(`\n---------- forumComments_idArr ----------\n`);
+    // // console.dir(forumComments_idArr);
+    // // console.log(`\n-----------------------------------\n`);
+    
+    
+    // // --------------------------------------------------
+    // //   コメントに対する返信　データ取得
+    // // --------------------------------------------------
+    
+    // let resultRepliesArr = await SchemaForumComments.aggregate([
+      
+    //   {
+    //     $match : { forumComments_id: { $in: forumComments_idArr } }
+    //   },
+      
+      
+    //   { $project:
+    //     {
+    //       __v: 0,
+    //     }
+    //   },
+      
+      
+    //   { '$sort': { 'updatedDate': -1 } },
+    //   { $skip: 0 },
+    //   { $limit: 1 },
+      
+    // ]).exec();
+    
+    
+    // // --------------------------------------------------
+    // //   コメントに対する返信　データを整える
+    // // --------------------------------------------------
+    // // loginUsers_id = 'jun-deE4J';
+    // const repliesObj = {};
+    
+    // for (const [index, valueObj] of resultRepliesArr.entries()) {
+      
+      
+    //   // 匿名の場合はユーザー情報を削除する
+    //   if (valueObj.anonymity && loginUsers_id !== valueObj.users_id) {
+    //     lodashSet(resultRepliesArr, [index, 'users_id'], '');
+    //   }
+      
+    //   // 匿名の項目を削除
+    //   delete valueObj.anonymity;
+      
+      
+    //   // 配列を作成する
+    //   if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
+    //     repliesObj[valueObj.forumComments_id] = [];
+    //   }
+      
+    //   // 配列に追加
+    //   repliesObj[valueObj.forumComments_id].push(valueObj);
+      
+      
+    //   // console.log(chalk`
+    //   //   index: {green ${index}}
+    //   //   valueObj.anonymity: {green ${valueObj.anonymity}}
+    //   // `);
+      
+    // }
+    
+    // // console.log(`\n---------- repliesObj ----------\n`);
+    // // console.dir(repliesObj);
+    // // console.log(`\n-----------------------------------\n`);
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   フォーラムデータ生成
+    // // --------------------------------------------------
+    
+    // for (const [index1, value1Obj] of resultThreadsCommentsArr.entries()) {
+      
+    //   // console.log(chalk`
+    //   //   index1: {green ${index1}}
+    //   // `);
+      
+    //   // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
+    //   // console.dir(value1Obj.forumCommentsArr);
+    //   // console.log(`\n-----------------------------------\n`);
+      
+      
+      
+      
+    //   for (const [index2, value2Obj] of value1Obj.forumCommentsArr.entries()) {
+        
+    //     // console.log(chalk`
+    //     //   index2: {green ${index2}}
+    //     // `);
+        
+    //     // console.log(`\n---------- value2Obj ----------\n`);
+    //     // console.dir(value2Obj);
+    //     // console.log(`\n-----------------------------------\n`);
+        
+    //     lodashSet(resultThreadsCommentsArr, [index1, 'forumCommentsArr', index2, 'forumRepliesArr'], repliesObj[value2Obj._id]);
+        
+    //   }
+      
+    // }
+    
+    
     
     
     // --------------------------------------------------
@@ -338,12 +474,14 @@ const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
     //   --------------------\n
     // `);
     
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
+    // console.log(`
+    //   ----- resultThreadsCommentsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultThreadsCommentsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- resultArr -----\n
+    //   ----- Comments And Replies -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
@@ -358,7 +496,7 @@ const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    
+    const returnObj = {};
     return returnObj;
     
     
@@ -368,651 +506,6 @@ const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
     
   }
   
-  
-};
-
-
-
-
-/**
- * フォーマットする / 現状、多言語に対応していない。localeObjを使用していない。
- * @param {Array} arr - 配列
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @return {Object} 取得データ
- */
-const format = async ({ arr, loginUsers_id }) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Loop
-  // --------------------------------------------------
-  
-  for (let valueObj of arr.values()) {
-    
-    
-    // --------------------------------------------------
-    //   _id
-    // --------------------------------------------------
-    
-    const _id = lodashGet(valueObj, ['_id'], '');
-    
-    
-    // --------------------------------------------------
-    //   Return Object
-    // --------------------------------------------------
-    
-    returnObj[_id] = {
-      // _id,
-      name: lodashGet(valueObj, ['cardPlayersArr', 0, 'nameObj', 'value'], ''),
-      status: lodashGet(valueObj, ['cardPlayersArr', 0, 'statusObj', 'value'], ''),
-      experience: lodashGet(valueObj, ['experience'], 0),
-      followCount: lodashGet(valueObj, ['followCount'], 0),
-      followedCount: lodashGet(valueObj, ['followedCount'], 0),
-      followed: false,
-      accessDate: lodashGet(valueObj, ['accessDate'], ''),
-      playerID: lodashGet(valueObj, ['playerID'], ''),
-      role: lodashGet(valueObj, ['role'], 'User'),
-    };
-    
-    
-    // --------------------------------------------------
-    //   Follow の処理
-    // --------------------------------------------------
-    
-    if (loginUsers_id) {
-      
-      const followedArr = lodashGet(valueObj, ['followedArr'], []);
-      
-      if (
-        loginUsers_id &&
-        _id !== loginUsers_id &&
-        followedArr.includes(loginUsers_id)
-      ) {
-        returnObj[_id].followed = true;
-      }
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   画像の処理
-    // --------------------------------------------------
-    
-    const thumbnailArr = lodashGet(valueObj, ['cardPlayersArr', 0, 'imagesAndVideosObj', 'thumbnailArr'], []);
-    const formattedArr = formatImagesAndVideosArr({ arr: thumbnailArr });
-    
-    if (formattedArr.length > 0) {
-      returnObj[_id].thumbnailObj = formattedArr[0];
-    }
-    
-    
-    // console.log(valueObj);
-    
-  }
-  
-  
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
-  
-  return returnObj;
-  
-  
-};
-
-
-
-
-/**
- * 検索してデータを取得する / 1件だけ
- * @param {Object} conditionObj - 検索条件
- * @param {String} select - 必要な情報を選択
- * @return {Object} 取得データ
- */
-const findFormatted = async (conditionObj, loginUsers_id) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   FindOne
-    // --------------------------------------------------
-    
-    const docArr = await SchemaUsers.find(conditionObj).select('_id accessDate name status playerId experience followArr followCount followedArr followedCount role').exec();
-    
-    if (docArr === null) {
-      return returnObj;
-    }
-    
-    
-    // --------------------------------------------------
-    //   Loop
-    // --------------------------------------------------
-    
-    for (let value of docArr.values()) {
-      
-      
-      // --------------------------------------------------
-      //   コピー
-      // --------------------------------------------------
-      
-      const copiedObj = JSON.parse(JSON.stringify(value));
-      
-      
-      // --------------------------------------------------
-      //   Follow の処理
-      // --------------------------------------------------
-      
-      if (loginUsers_id) {
-        
-        copiedObj.followed = false;
-        
-        if (
-          loginUsers_id &&
-          copiedObj._id !== loginUsers_id &&
-          copiedObj.followedArr.includes(loginUsers_id)
-        ) {
-          copiedObj.followed = true;
-        }
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   _id をキーにして削除する
-      // --------------------------------------------------
-      
-      delete copiedObj._id;
-      delete copiedObj.followArr;
-      delete copiedObj.followedArr;
-      returnObj[value._id] = copiedObj;
-      
-    }
-    
-    
-    
-    
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-  
-};
-
-
-
-
-/**
- * フォローする
- * @param {string} loginUsers_id - フォローするユーザーの_id
- * @param {string} users_id - フォローされるユーザーの_id
- * @return {Object} 
- */
-const updateForFollow = async (loginUsers_id, users_id) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Transaction / Session
-  // --------------------------------------------------
-  
-  const session = await SchemaUsers.startSession();
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Start
-    // --------------------------------------------------
-    
-    await session.startTransaction();
-    
-    
-    // --------------------------------------------------
-    //   Find One
-    // --------------------------------------------------
-    
-    const conditionFindOne1Obj = { _id: loginUsers_id };
-    const users1Obj = await SchemaUsers.findOne(conditionFindOne1Obj).exec();
-    
-    const conditionFindOne2Obj = { _id: users_id };
-    const users2Obj = await SchemaUsers.findOne(conditionFindOne2Obj).exec();
-    
-    if (users1Obj === null || users2Obj === null) {
-      throw new Error('必要なユーザーが存在しません。');
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォロー解除
-    // --------------------------------------------------
-    
-    if (users1Obj.followArr.includes(users_id)) {
-      
-      
-      // --------------------------------------------------
-      //   Update
-      // --------------------------------------------------
-      
-      const condition1Obj = { _id: loginUsers_id };
-      const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
-      const option1Obj = { session: session };
-      await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
-      
-      const condition2Obj = { _id: users_id };
-      const save2Obj = { $pull: { followedArr: loginUsers_id }, $inc: { followedCount: -1 }  };
-      const option2Obj = { session: session };
-      await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
-      
-      
-    // --------------------------------------------------
-    //   フォロー
-    // --------------------------------------------------
-    
-    } else {
-      
-      
-      // --------------------------------------------------
-      //   Update
-      // --------------------------------------------------
-      
-      const condition1Obj = { _id: loginUsers_id };
-      const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
-      const option1Obj = { session: session };
-      await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
-      
-      const condition2Obj = { _id: users_id };
-      const save2Obj = { $addToSet: { followedArr: loginUsers_id }, $inc: { followedCount: 1 }  };
-      const option2Obj = { session: session };
-      await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
-      
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Commit
-    // --------------------------------------------------
-    
-    await session.commitTransaction(); // コミット
-    // console.log('--------コミット-----------');
-    
-    session.endSession();
-    
-    
-    
-    // --------------------------------------------------
-    //   Model / Users / データ取得
-    // --------------------------------------------------
-    
-    const conditionObj = { _id: { $in: [loginUsers_id, users_id]} };
-    returnObj.usersObj = await findFormatted(conditionObj, loginUsers_id);
-    
-    
-    
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   usersObj.followArr.includes(users_id): {green ${usersObj.followArr.includes(users_id)}}
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Rollback
-    // --------------------------------------------------
-    
-    await session.abortTransaction();
-    // console.log('--------ロールバック-----------');
-    
-    session.endSession();
-    
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * アカウントを作成する
- * @param {Array} usersSaveArr - 保存用配列 Users
- * @param {Array} cardPlayersSaveArr - 保存用配列 Card Players
- * @return {Object} 
- */
-const transactionForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr, emailConfirmationsSaveArr }) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Transaction / Session
-  // --------------------------------------------------
-  
-  const session = await SchemaUsers.startSession();
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Start
-    // --------------------------------------------------
-    
-    await session.startTransaction();
-    
-    
-    // --------------------------------------------------
-    //   DB Insert
-    // --------------------------------------------------
-    
-    await SchemaUsers.create(usersSaveArr, { session: session });
-    await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
-    
-    // E-Mailが入力されたときだけ、メール確認データベースに挿入する
-    if (emailConfirmationsSaveArr.length > 0) {
-      await SchemaEmailConfirmations.create(emailConfirmationsSaveArr, { session: session });
-    }
-    
-    
-    
-    // await SchemaUsers.create(usersSaveArr, { session: session });
-    // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
-    // await SchemaEmailConfirmations.create(cardPlayersSaveArr, { session: session });
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Commit
-    // --------------------------------------------------
-    
-    await session.commitTransaction();
-    // console.log('--------コミット-----------');
-    
-    session.endSession();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
-    //   email: {green ${email}}
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (errorObj) {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Rollback
-    // --------------------------------------------------
-    
-    await session.abortTransaction();
-    // console.log('--------ロールバック-----------');
-    
-    session.endSession();
-    
-    
-    throw errorObj;
-    
-  }
-  
-};
-
-
-
-
-
-/**
- * 挿入 / 更新する  アカウント情報編集用
- * @param {Object} usersConditionObj - DB users 検索条件
- * @param {Object} usersSaveObj - DB users 保存データ
- * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
- * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
- * @return {Object} 
- */
-const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Transaction / Session
-  // --------------------------------------------------
-  
-  const session = await SchemaUsers.startSession();
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Start
-    // --------------------------------------------------
-    
-    await session.startTransaction();
-    
-    
-    // --------------------------------------------------
-    //   DB Insert
-    // --------------------------------------------------
-    
-    await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
-    await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
-    
-    // await SchemaUsers.create(usersSaveArr, { session });
-    // throw new Error('Dy16VjjQL');
-    // throw new Error();
-    // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Commit
-    // --------------------------------------------------
-    
-    await session.commitTransaction();
-    // console.log('--------コミット-----------');
-    
-    session.endSession();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsConditionObj -----\n
-    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsSaveObj -----\n
-    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (errorObj) {
-    
-    // console.log(`
-    //   ----- errorObj -----\n
-    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Rollback
-    // --------------------------------------------------
-    
-    await session.abortTransaction();
-    // console.log('--------ロールバック-----------');
-    
-    session.endSession();
-    
-    
-    throw errorObj;
-    
-  }
   
 };
 
@@ -1030,9 +523,5 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
-  findOneForUser,
-  findFormatted,
-  updateForFollow,
-  transactionForCreateAccount,
-  transactionForEditAccount
+  findForForumCommentsAndReplies,
 };

@@ -191,11 +191,17 @@ export default class extends React.Component {
       //   Update Data - Forum
       // --------------------------------------------------
       
-      this.storeForum.handleEdit(['forumArr', props.initialPropsObj.forumArr]);
+      this.storeForum.handleEdit({
+        pathArr: ['cxO8tEGty', 'forumThreadsArr'],
+        value: props.initialPropsObj.forumThreadsArr,
+      });
       
-      
+      // console.log(`
+      //   ----- props.initialPropsObj.forumThreadsArr -----\n
+      //   ${util.inspect(props.initialPropsObj.forumThreadsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
     } catch (e) {
-      // console.log(e.message);
       this.error = true;
     }
     
@@ -282,12 +288,7 @@ export default class extends React.Component {
     
     return (
       <Provider
-        storePlPlayer={this.storePlPlayer}
-        storeCardPlayer={this.storeCardPlayer}
-        storeIDForm={this.storeIDForm}
-        storeGameForm={this.storeGameForm}
-        storeImageAndVideo={this.storeImageAndVideo}
-        storeImageAndVideoForm={this.storeImageAndVideoForm}
+        storeForum={this.storeForum}
       >
         
         <Layout>

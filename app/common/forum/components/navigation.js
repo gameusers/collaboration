@@ -159,14 +159,14 @@ const cssIconButton = css`
 //   Thread List
 // --------------------------------------------------
 
-const ThreadListTabBox = styled.div`
-  margin: 0;
-  padding: 10px 16px 0;
-`;
+// const ThreadListTabBox = styled.div`
+//   margin: 0;
+//   padding: 10px 16px 0;
+// `;
 
-const ThreadListTableWrapper = styled.div`
-  overflow-x: auto;
-`;
+// const ThreadListTableWrapper = styled.div`
+//   overflow-x: auto;
+// `;
 
 const ThreadListNameTableCell = styled(TableCell)`
   && {
@@ -298,7 +298,7 @@ const SearchCheckBox = styled.div`
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores')
+@inject('stores', 'storeForum')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -323,7 +323,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, intl, _id } = this.props;
+    const { classes, stores, storeForum, intl, _id } = this.props;
     
     
     // --------------------------------------------------
@@ -341,7 +341,24 @@ export default injectIntl(class extends React.Component {
     const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', _id], true);
     
     
-    // const openedTabNo = stores.bbsNavigation.openedTabNoObj[id];
+    
+    const userCommunities_id = 'cxO8tEGty';
+    
+    const openedTabNo = lodashGet(storeForum, ['dataObj', userCommunities_id, 'openedTabNo'], 0);
+    const forumThreadsArr = lodashGet(storeForum, ['dataObj', userCommunities_id, 'forumThreadsArr'], []);
+    
+    // console.log(chalk`
+    //   openedTabNo: {green ${openedTabNo}}
+    // `);
+    
+    console.log(`\n---------- forumThreadsArr ----------\n`);
+    console.dir(JSON.parse(JSON.stringify(forumThreadsArr)));
+    console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- forumThreadsArr ----------\n`);
+    // console.dir(forumThreadsArr);
+    // console.log(`\n-----------------------------------\n`);
+    
     
     // const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
     // const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
@@ -400,132 +417,144 @@ export default injectIntl(class extends React.Component {
     
     let componentThreadListArr = [];
     
-    // if (threadListArr) {
+    if (forumThreadsArr.length > 0) {
       
       
-    //   // --------------------------------------------------
-    //   //   テーブルの中身
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   テーブルの中身
+      // --------------------------------------------------
       
-    //   let componentTableDataArr = [];
+      let componentTableDataArr = [];
       
-    //   for (const [index, value] of threadListArr.entries()) {
+      for (const [index, valueObj] of forumThreadsArr.entries()) {
         
-    //     componentTableDataArr.push(
-    //       <TableRow key={index}>
-    //         <ThreadListNameTableCell
-    //           component="th"
-    //           scope="row"
-    //           onClick={() => handleReadThread(value.id)}
-    //         >
-    //           {value.name}
-    //         </ThreadListNameTableCell>
-    //         <TableCell>{value.updatedDate}</TableCell>
-    //         <TableCell numeric>{value.comment}</TableCell>
-    //         <TableCell numeric>{value.reply}</TableCell>
-    //         <TableCell numeric>{value.image}</TableCell>
-    //         <TableCell numeric>{value.video}</TableCell>
-    //       </TableRow>
-    //     );
+        componentTableDataArr.push(
+          <TableRow key={index}>
+            <TableCell
+              css={css`
+                && {
+                  // white-space: nowrap;
+                  // min-width: 280px;
+                  cursor: pointer;
+                }
+              `}
+              component="th"
+              scope="row"
+              // onClick={() => handleReadThread(value.id)}
+            >
+              {valueObj.name}
+            </TableCell>
+            <TableCell>{valueObj.updatedDate}</TableCell>
+            <TableCell numeric>{valueObj.comments}</TableCell>
+            <TableCell numeric>{valueObj.images}</TableCell>
+            <TableCell numeric>{valueObj.videos}</TableCell>
+          </TableRow>
+        );
         
-    //   }
+      }
       
       
-    //   componentThreadListArr.push(
-    //     <div key="threadList">
+      componentThreadListArr.push(
+        <div key="threadList">
           
-    //       <ThreadListTableWrapper>
+          <div
+            css={css`
+              overflow-x: auto;
+            `}
+          >
             
-    //         <Table>
+            <Table>
               
-    //           <TableHead>
-    //             <TableRow>
+              <TableHead>
+                <TableRow>
                 
-    //               <ThreadListTableCell>
-    //                 名前
-    //               </ThreadListTableCell>
+                  <TableCell>
+                    名前
+                  </TableCell>
                   
-    //               <ThreadListTableCell>
-    //                 <TableSortLabel
-    //                   active={threadListOrderBy === 'updatedDate'}
-    //                   direction={threadListOrder}
-    //                   onClick={() => handleThreadListSort(id, 'updatedDate')}
-    //                 >
-    //                   最終更新日
-    //                 </TableSortLabel>
-    //               </ThreadListTableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      // active={threadListOrderBy === 'updatedDate'}
+                      // direction={threadListOrder}
+                      // onClick={() => handleThreadListSort(id, 'updatedDate')}
+                    >
+                      最終更新日
+                    </TableSortLabel>
+                  </TableCell>
                   
-    //               <ThreadListTableCell numeric>
-    //                 <TableSortLabel
-    //                   active={threadListOrderBy === 'comment'}
-    //                   direction={threadListOrder}
-    //                   onClick={() => handleThreadListSort(id, 'comment')}
-    //                 >
-    //                   コメント
-    //                 </TableSortLabel>
-    //               </ThreadListTableCell>
+                  <TableCell numeric>
+                    <TableSortLabel
+                      // active={threadListOrderBy === 'comment'}
+                      // direction={threadListOrder}
+                      // onClick={() => handleThreadListSort(id, 'comment')}
+                    >
+                      コメント
+                    </TableSortLabel>
+                  </TableCell>
                   
-    //               <ThreadListTableCell numeric>
-    //                 <TableSortLabel
-    //                   active={threadListOrderBy === 'reply'}
-    //                   direction={threadListOrder}
-    //                   onClick={() => handleThreadListSort(id, 'reply')}
-    //                 >
-    //                   返信
-    //                 </TableSortLabel>
-    //               </ThreadListTableCell>
+                  {/*<ThreadListTableCell numeric>
+                    <TableSortLabel
+                      // active={threadListOrderBy === 'reply'}
+                      // direction={threadListOrder}
+                      // onClick={() => handleThreadListSort(id, 'reply')}
+                    >
+                      返信
+                    </TableSortLabel>
+                  </ThreadListTableCell>*/}
                   
-    //               <ThreadListTableCell numeric>
-    //                 <TableSortLabel
-    //                   active={threadListOrderBy === 'image'}
-    //                   direction={threadListOrder}
-    //                   onClick={() => handleThreadListSort(id, 'image')}
-    //                 >
-    //                   画像
-    //                 </TableSortLabel>
-    //               </ThreadListTableCell>
+                  <TableCell numeric>
+                    <TableSortLabel
+                      // active={threadListOrderBy === 'image'}
+                      // direction={threadListOrder}
+                      // onClick={() => handleThreadListSort(id, 'image')}
+                    >
+                      画像
+                    </TableSortLabel>
+                  </TableCell>
                   
-    //               <ThreadListTableCell numeric>
-    //                 <TableSortLabel
-    //                   active={threadListOrderBy === 'video'}
-    //                   direction={threadListOrder}
-    //                   onClick={() => handleThreadListSort(id, 'video')}
-    //                 >
-    //                   動画
-    //                 </TableSortLabel>
-    //               </ThreadListTableCell>
+                  <TableCell numeric>
+                    <TableSortLabel
+                      // active={threadListOrderBy === 'video'}
+                      // direction={threadListOrder}
+                      // onClick={() => handleThreadListSort(id, 'video')}
+                    >
+                      動画
+                    </TableSortLabel>
+                  </TableCell>
                   
-    //             </TableRow>
-    //           </TableHead>
+                </TableRow>
+              </TableHead>
               
-    //           <TableBody>
-    //             {componentTableDataArr}
-    //           </TableBody>
               
-    //         </Table>
+              <TableBody>
+                {componentTableDataArr}
+              </TableBody>
+              
+            </Table>
             
-    //       </ThreadListTableWrapper>
-        
-    //       <TablePagination
-    //         component="div"
-    //         count={threadListCount}
-    //         rowsPerPage={threadListRowsPerPage}
-    //         page={threadListPage}
-    //         labelRowsPerPage=""
-    //         backIconButtonProps={{
-    //           'aria-label': 'Previous Page',
-    //         }}
-    //         nextIconButtonProps={{
-    //           'aria-label': 'Next Page',
-    //         }}
-    //         onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event, id)}
-    //         onChangePage={(event, value) => handleThreadListPage(event, value, id)}
-    //       />
+          </div>
           
-    //     </div>
-    //   );
+          
+          {/*<TablePagination
+            component="div"
+            count={threadListCount}
+            rowsPerPage={threadListRowsPerPage}
+            page={threadListPage}
+            labelRowsPerPage=""
+            backIconButtonProps={{
+              'aria-label': 'Previous Page',
+            }}
+            nextIconButtonProps={{
+              'aria-label': 'Next Page',
+            }}
+            onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event, id)}
+            onChangePage={(event, value) => handleThreadListPage(event, value, id)}
+          />*/}
+          
+        </div>
+      );
       
-    // }
+    }
     
     
     
@@ -684,9 +713,10 @@ export default injectIntl(class extends React.Component {
               }
             `}
           >
+            
+            
             <Tabs
-              // value={openedTabNo}
-              value={0}
+              value={openedTabNo}
               indicatorColor="primary"
               textColor="primary"
               // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
@@ -695,7 +725,25 @@ export default injectIntl(class extends React.Component {
               <Tab label="スレッド作成" />
               <Tab label="検索" />
             </Tabs>
+            
+            
+            {/* スレッド一覧 */}
+            {openedTabNo === 0 &&
+              <div
+                css={css`
+                  padding: 10px 16px 0;
+                `}
+              >
+                {componentThreadListArr}
+              </div>
+            }
+            
+            
           </Paper>
+          
+          
+          
+          
           
         </ExpansionPanelDetails>
         

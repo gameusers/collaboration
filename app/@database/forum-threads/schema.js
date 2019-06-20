@@ -49,7 +49,6 @@ const schema = mongoose.Schema({
       },
     ],
   },
-  anonymity: { type: Boolean, required: true },
   comments: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },

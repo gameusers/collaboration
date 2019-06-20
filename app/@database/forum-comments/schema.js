@@ -13,7 +13,6 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
-  // commentID: { type: String, required: true },
   userCommunities_id: { type: String },
   forumThreads_id: { type: String },
   forumComments_id: { type: String },

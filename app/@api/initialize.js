@@ -2833,12 +2833,17 @@ router.post('/db', upload.none(), async (req, res, next) => {
             language: 'ja',
             name: 'Thread 1: 雑談スレッド',
             description: 'みんなで気になる話題について話し合いましょう！ゲームの話は特に大歓迎です。おすすめの作品などがあったら、ぜひ紹介してください。',
+          },
+          {
+            _id: '_Ov63CsHc',
+            language: 'en',
+            name: 'Thread 1: English',
+            description: 'English',
           }
         ],
         imagesAndVideosObj: {
           mainArr: [],
         },
-        anonymity: false,
         comments: 780,
         images: 108,
         videos: 50,
@@ -2862,7 +2867,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        anonymity: false,
         comments: 5,
         images: 4,
         videos: 3,
@@ -2884,7 +2888,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        anonymity: false,
         comments: 0,
         images: 0,
         videos: 0,

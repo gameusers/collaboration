@@ -35,6 +35,7 @@ const ModelGames = require('../../@database/games/model');
 const ModelCardPlayers = require('../../@database/card-players/model');
 const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
 const ModelForumThreads = require('../../@database/forum-threads/model');
+const ModelForumComments = require('../../@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -814,24 +815,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     });
     
     
-    // --------------------------------------------------
-    //   DB find / Forum
-    // --------------------------------------------------
     
-    // returnObj.forumArr = await ModelForumThreads.findForForum({
-    //   localeObj: {},
-    //   conditionObj: {
-    //     userCommunities_id: 'cxO8tEGty',
-    //   },
-    //   loginUsers_id,
-    // });
-    
-    
-    returnObj.forumArr = await ModelForumThreads.findForForum({
-      localeObj: {},
-      loginUsers_id,
-      forumThreads_idArr: ['qNiOLKdRt'],
-    });
     
     
     
@@ -839,17 +823,26 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    returnObj.forumArr = await ModelForumThreads.findForForumThreads({
-      localeObj: {},
+    returnObj.forumThreadsArr = await ModelForumThreads.findForForumThreads({
+      localeObj,
       loginUsers_id,
       userCommunities_id: 'cxO8tEGty',
       page: 1,
-      limit: 1,
+      // limit: 1,
     });
     
-    // console.log(`\n---------- testObj ----------\n`);
-    // console.dir(testObj);
-    // console.log(`\n-----------------------------------\n`);
+    
+    // --------------------------------------------------
+    //   DB find / Forum Comments & Replies
+    // --------------------------------------------------
+    
+    returnObj.forumCommentsAndRepliesArr = await ModelForumComments.findForForumCommentsAndReplies({
+      localeObj,
+      loginUsers_id,
+      forumThreads_idArr: ['qNiOLKdRt'],
+      commentsPage: 1,
+      repliesPage: 1,
+    });
     
     
     // ---------------------------------------------

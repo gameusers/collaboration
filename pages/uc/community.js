@@ -111,7 +111,7 @@ export default class extends React.Component {
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id: 'cxO8tEGty' };
     
     
   }
@@ -192,7 +192,7 @@ export default class extends React.Component {
       // --------------------------------------------------
       
       this.storeForum.handleEdit({
-        pathArr: ['cxO8tEGty', 'forumThreadsArr'],
+        pathArr: [props.userCommunities_id, 'forumThreadsArr'],
         value: props.initialPropsObj.forumThreadsArr,
       });
       
@@ -300,17 +300,17 @@ export default class extends React.Component {
           </Head>
           
           
-          
           {/* 2 Column */}
           <div
             css={css`
               display: flex;
               flex-flow: row nowrap;
               justify-content: center;
+              // width: 100%;
               margin: 0 auto;
               padding: 16px;
               
-              @media screen and (max-width: 947px) {
+              @media screen and (max-width: 947px) {//989px　947px
                 padding: 10px 0 10px 0;
               }
             `}
@@ -335,21 +335,31 @@ export default class extends React.Component {
                 height="250"
               />
               
-              Sidebar
+              
+              <div style={{ marginTop: '14px' }}></div>
+              
+              
+              <ForumNavigation
+                _id={this.props.userCommunities_id}
+                sidebar={true}
+              />
+              
             </div>
             
             
             {/* Main */}
             <div
               css={css`
-                max-width: 800px;
-                margin: 0;
-                padding: 0;
+                width: 100%;
+                // overflow-x: auto;
+                // max-width: 800px;
+                // margin: 0;
+                // padding: 0;
               `}
             >
               
               
-              <ForumNavigation />
+              <ForumNavigation _id={this.props.userCommunities_id} />
               
               
               {/* プレイヤーカード */}

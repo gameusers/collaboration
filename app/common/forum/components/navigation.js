@@ -62,12 +62,14 @@ import Checkbox from '@material-ui/core/Checkbox';
 //   Material UI / Icons
 // ---------------------------------------------
 
+import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconList from '@material-ui/icons/List';
 import IconNew from '@material-ui/icons/FiberNew';
 import IconImage from '@material-ui/icons/Image';
 import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
-import IconEventNote from '@material-ui/icons/EventNote';
+import IconListAlt from '@material-ui/icons/ListAlt';
+import IconCreate from '@material-ui/icons/Create';
 import IconSearch from '@material-ui/icons/Search';
 
 
@@ -102,6 +104,20 @@ const cssIconButton = css`
     padding: 0;
   }
 `;
+
+const cssTableCell = css`
+  && {
+    white-space: nowrap;
+    padding: 14px 16px 14px 16px !important;
+  }
+`;
+
+const cssTabIcon = css`
+  && {
+    min-width: 92px;
+  }
+`;
+
 
 // const StyledIconButton = styled(IconButton)`
 //   && {
@@ -176,11 +192,7 @@ const ThreadListNameTableCell = styled(TableCell)`
   }
 `;
 
-const ThreadListTableCell = styled(TableCell)`
-  && {
-    white-space: nowrap;
-  }
-`;
+
 
 
 // --------------------------------------------------
@@ -313,6 +325,23 @@ export default injectIntl(class extends React.Component {
   
   
   // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount(){
+    
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-forumNavigation` });
+    
+    
+  }
+  
+  
+  // --------------------------------------------------
   //   render
   // --------------------------------------------------
   
@@ -323,14 +352,14 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, _id } = this.props;
+    const { classes, stores, storeForum, intl, _id, sidebar } = this.props;
     
     
     // --------------------------------------------------
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', _id], true);
+    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-forumNavigation`], true);
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
@@ -338,26 +367,44 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', _id], true);
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forumNavigation`], true);
     
     
     
-    const userCommunities_id = 'cxO8tEGty';
     
-    const openedTabNo = lodashGet(storeForum, ['dataObj', userCommunities_id, 'openedTabNo'], 0);
-    const forumThreadsArr = lodashGet(storeForum, ['dataObj', userCommunities_id, 'forumThreadsArr'], []);
+    
+    const {
+      
+      dataObj,
+      handleEdit,
+      
+    } = storeForum;
+    
+    
+    // const userCommunities_id = 'cxO8tEGty';
+    
+    
+    // --------------------------------------------------
+    //   Forum Navigation
+    // --------------------------------------------------
+    
+    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
+    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsArr'], []);
+    
+    const threadListCount = lodashGet(dataObj, [_id, 'threadListCount'], 30);
+    const threadListRowsPerPage = lodashGet(dataObj, [_id, 'threadListRowsPerPage'], 10);
+    const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1);
+    
     
     // console.log(chalk`
+    //   _id: {green ${_id}}
     //   openedTabNo: {green ${openedTabNo}}
     // `);
     
-    console.log(`\n---------- forumThreadsArr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(forumThreadsArr)));
-    console.log(`\n-----------------------------------\n`);
-    
     // console.log(`\n---------- forumThreadsArr ----------\n`);
-    // console.dir(forumThreadsArr);
+    // console.dir(JSON.parse(JSON.stringify(forumThreadsArr)));
     // console.log(`\n-----------------------------------\n`);
+    
     
     
     // const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
@@ -410,12 +457,85 @@ export default injectIntl(class extends React.Component {
     // } = stores.bbsNavigation;
     
     
+    // --------------------------------------------------
+    //   コンポーネント作成 - Tab
+    // --------------------------------------------------
+    
+    let componentTabs = '';
+    
+    if (sidebar) {
+      
+      componentTabs =
+        <Tabs
+          css={css`
+            && {
+              padding: 0 12px;
+            }
+          `}
+          value={openedTabNo}
+          indicatorColor="primary"
+          textColor="primary"
+          // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
+        >
+          <Tooltip title="スレッド一覧">
+            <Tab
+              style={{
+                minWidth: '92px',
+              }}
+              icon={<IconListAlt />}
+            />
+          </Tooltip>
+          
+          <Tooltip title="スレッド作成">
+            <Tab
+              style={{
+                minWidth: '92px',
+              }}
+              icon={<IconCreate />}
+            />
+          </Tooltip>
+          
+          <Tooltip title="検索">
+            <Tab
+              style={{
+                minWidth: '92px',
+              }}
+              icon={<IconSearch />}
+            />
+          </Tooltip>
+        </Tabs>
+      ;
+      
+    } else {
+      
+      componentTabs =
+        <Tabs
+          css={css`
+            && {
+              padding: 0 12px;
+            }
+          `}
+          value={openedTabNo}
+          indicatorColor="primary"
+          textColor="primary"
+          // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
+        >
+          <Tab label="スレッド一覧" />
+          <Tab label="スレッド作成" />
+          <Tab label="検索" />
+        </Tabs>
+      ;
+      
+    }
+    
+    
+    
     
     // --------------------------------------------------
     //   コンポーネント作成 - スレッド一覧
     // --------------------------------------------------
     
-    let componentThreadListArr = [];
+    let componentThreadList = '';
     
     if (forumThreadsArr.length > 0) {
       
@@ -434,108 +554,66 @@ export default injectIntl(class extends React.Component {
               css={css`
                 && {
                   // white-space: nowrap;
+                  // min-width: 60%;
+                  // min-width: 268px;
                   // min-width: 280px;
+                  // width: 280px;
+                  ${sidebar && 'min-width: 268px;'}
                   cursor: pointer;
+                  padding: 14px 0 14px 16px;
+                  
+                  @media screen and (max-width: 640px) {
+                    min-width: 268px;
+                  }
                 }
               `}
+              padding="none"
               component="th"
               scope="row"
               // onClick={() => handleReadThread(value.id)}
             >
               {valueObj.name}
             </TableCell>
-            <TableCell>{valueObj.updatedDate}</TableCell>
-            <TableCell numeric>{valueObj.comments}</TableCell>
-            <TableCell numeric>{valueObj.images}</TableCell>
-            <TableCell numeric>{valueObj.videos}</TableCell>
+            <TableCell css={cssTableCell}>{valueObj.updatedDate}</TableCell>
+            <TableCell css={cssTableCell} align="right">{valueObj.comments}</TableCell>
+            <TableCell css={cssTableCell} align="right">{valueObj.images}</TableCell>
+            <TableCell css={cssTableCell} align="right">{valueObj.videos}</TableCell>
           </TableRow>
         );
         
       }
       
       
-      componentThreadListArr.push(
-        <div key="threadList">
+      componentThreadList =
+        <React.Fragment>
           
-          <div
-            css={css`
-              overflow-x: auto;
-            `}
-          >
+          
+          {/* Table */}
+          <Table>
             
-            <Table>
-              
-              <TableHead>
-                <TableRow>
-                
-                  <TableCell>
-                    名前
-                  </TableCell>
-                  
-                  <TableCell>
-                    <TableSortLabel
-                      // active={threadListOrderBy === 'updatedDate'}
-                      // direction={threadListOrder}
-                      // onClick={() => handleThreadListSort(id, 'updatedDate')}
-                    >
-                      最終更新日
-                    </TableSortLabel>
-                  </TableCell>
-                  
-                  <TableCell numeric>
-                    <TableSortLabel
-                      // active={threadListOrderBy === 'comment'}
-                      // direction={threadListOrder}
-                      // onClick={() => handleThreadListSort(id, 'comment')}
-                    >
-                      コメント
-                    </TableSortLabel>
-                  </TableCell>
-                  
-                  {/*<ThreadListTableCell numeric>
-                    <TableSortLabel
-                      // active={threadListOrderBy === 'reply'}
-                      // direction={threadListOrder}
-                      // onClick={() => handleThreadListSort(id, 'reply')}
-                    >
-                      返信
-                    </TableSortLabel>
-                  </ThreadListTableCell>*/}
-                  
-                  <TableCell numeric>
-                    <TableSortLabel
-                      // active={threadListOrderBy === 'image'}
-                      // direction={threadListOrder}
-                      // onClick={() => handleThreadListSort(id, 'image')}
-                    >
-                      画像
-                    </TableSortLabel>
-                  </TableCell>
-                  
-                  <TableCell numeric>
-                    <TableSortLabel
-                      // active={threadListOrderBy === 'video'}
-                      // direction={threadListOrder}
-                      // onClick={() => handleThreadListSort(id, 'video')}
-                    >
-                      動画
-                    </TableSortLabel>
-                  </TableCell>
-                  
-                </TableRow>
-              </TableHead>
-              
-              
-              <TableBody>
-                {componentTableDataArr}
-              </TableBody>
-              
-            </Table>
+            {/* Head */}
+            <TableHead>
+              <TableRow>
+                <TableCell css={cssTableCell}>名前</TableCell>
+                <TableCell css={cssTableCell}>最終更新日</TableCell>
+                <TableCell css={cssTableCell} align="right">コメント</TableCell>
+                <TableCell css={cssTableCell} align="right">画像</TableCell>
+                <TableCell css={cssTableCell} align="right">動画</TableCell>
+              </TableRow>
+            </TableHead>
             
-          </div>
+            
+            {/* Body */}
+            <TableBody>
+              {componentTableDataArr}
+            </TableBody>
+            
+            
+          </Table>
           
           
-          {/*<TablePagination
+          {/* Pagination */}
+          <TablePagination
             component="div"
             count={threadListCount}
             rowsPerPage={threadListRowsPerPage}
@@ -547,12 +625,18 @@ export default injectIntl(class extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangeRowsPerPage={(event) => handleThreadListRowsPerPage(event, id)}
-            onChangePage={(event, value) => handleThreadListPage(event, value, id)}
-          />*/}
+            onChangeRowsPerPage={(eventObj) => handleEdit({
+              pathArr: [_id, 'threadListRowsPerPage'],
+              value: eventObj.target.value
+            })}
+            onChangePage={(eventObj, value) => handleEdit({
+              pathArr: [_id, 'threadListPage'],
+              value
+            })}
+          />
           
-        </div>
-      );
+        </React.Fragment>
+      ;
       
     }
     
@@ -564,8 +648,10 @@ export default injectIntl(class extends React.Component {
     
     return (
       <ExpansionPanel
-        // expanded={stores.layout.returnPanelExpanded(id)}
-        expanded={true}
+        css={css`
+          margin: 0 !important;
+        `}
+        expanded={panelExpanded}
       >
         
         
@@ -573,12 +659,8 @@ export default injectIntl(class extends React.Component {
         <ExpansionPanelSummary
           css={css`
             cursor: default !important;
+            padding-right: 14px !important;
           `}
-          expandIcon={
-            <IconExpandMore
-              // onClick={() => stores.layout.handlePanelExpanded(id)}
-            />
-          }
         >
           
           <div
@@ -586,7 +668,6 @@ export default injectIntl(class extends React.Component {
               display: flex;
               flex-flow: row nowrap;
               align-items: center;
-              
             `}
           >
             
@@ -688,6 +769,34 @@ export default injectIntl(class extends React.Component {
             
           </div>
           
+          
+          {/* Expansion Button */}
+          <div
+            css={css`
+              margin: 0 0 0 auto;
+            `}
+          >
+            <IconButton
+              css={css`
+                && {
+                  margin: 0;
+                  padding: 4px;
+                }
+              `}
+              onClick={() => handlePanelExpand({ _id: `${_id}-forumNavigation` })}
+              aria-expanded={panelExpanded}
+              aria-label="Show more"
+              disabled={buttonDisabled}
+            >
+              {panelExpanded ? (
+                <IconExpandLess />
+              ) : (
+                <IconExpandMore />
+              )}
+            </IconButton>
+          </div>
+          
+          
         </ExpansionPanelSummary>
         
         
@@ -696,8 +805,6 @@ export default injectIntl(class extends React.Component {
         <ExpansionPanelDetails
           css={css`
             && {
-              // display: inline;
-              // margin: 0;
               padding: 0;
             }
           `}
@@ -708,33 +815,26 @@ export default injectIntl(class extends React.Component {
           <Paper
             css={css`
               && {
-                // margin: 0 16px 0;
-                // padding: 0;
+                width: 100%;
+                overflow-x: auto;
               }
             `}
           >
             
             
-            <Tabs
-              value={openedTabNo}
-              indicatorColor="primary"
-              textColor="primary"
-              // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
-            >
-              <Tab label="スレッド一覧" />
-              <Tab label="スレッド作成" />
-              <Tab label="検索" />
-            </Tabs>
+            {/* Tabs */}
+            {componentTabs}
             
             
             {/* スレッド一覧 */}
             {openedTabNo === 0 &&
               <div
                 css={css`
-                  padding: 10px 16px 0;
+                  overflow-x: auto;
+                  padding: 4px 0 0;
                 `}
               >
-                {componentThreadListArr}
+                {componentThreadList}
               </div>
             }
             
@@ -742,11 +842,7 @@ export default injectIntl(class extends React.Component {
           </Paper>
           
           
-          
-          
-          
         </ExpansionPanelDetails>
-        
         
         
       </ExpansionPanel>

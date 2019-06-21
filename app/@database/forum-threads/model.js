@@ -327,129 +327,6 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
 
 
 /**
- * DBから取得した情報をフォーマットする
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} arr - 配列
- * @return {Array} フォーマット後のデータ
- */
-// const format = ({ localeObj, loginUsers_id, arr }) => {
-  
-//   // console.log(`
-//   //     ----- localeObj -----\n
-//   //     ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-//   //     --------------------\n
-//   //   `);
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnArr = [];
-  
-  
-//   // --------------------------------------------------
-//   //   Loop
-//   // --------------------------------------------------
-  
-//   for (let valueObj of arr.values()) {
-    
-    
-//     // --------------------------------------------------
-//     //   ディープコピー
-//     // --------------------------------------------------
-    
-//     // let cloneObj = lodashCloneDeep(valueObj);
-    
-    
-//     // --------------------------------------------------
-//     //   Datetime
-//     // --------------------------------------------------
-    
-//     valueObj.updatedDate = moment(valueObj.updatedDate).format('YYYY-MM-DD hh:mm:ss');
-    
-    
-//     // --------------------------------------------------
-//     //   画像の処理
-//     // --------------------------------------------------
-    
-//     valueObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
-    
-    
-//     // --------------------------------------------------
-//     //   スレッドを作成した本人以外の場合、users_idを削除する
-//     // --------------------------------------------------
-    
-//     if (valueObj.users_id !== loginUsers_id) {
-//       valueObj.users_id = '';
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Locale
-//     // --------------------------------------------------
-    
-//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
-//       return filterObj.language === localeObj.language;
-//     });
-    
-    
-//     if (lodashHas(filteredArr, [0])) {
-      
-//       valueObj.name = lodashGet(filteredArr, [0, 'name'], '');;
-//       valueObj.description = lodashGet(filteredArr, [0, 'description'], '');
-      
-//     } else {
-      
-//       valueObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-//       valueObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
-      
-//     }
-    
-    
-    
-//     // console.log(`
-//     //   ----- filteredArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // --------------------------------------------------
-//     //   不要な項目を削除する
-//     // --------------------------------------------------
-//     // console.log(chalk`
-//     //   cloneObj.images: {green ${cloneObj.images}}
-//     // `);
-//     delete valueObj.createdDate;
-//     delete valueObj.localesArr;
-//     delete valueObj.__v;
-    
-//     console.log(`\n---------- valueObj ----------\n`);
-//     console.dir(valueObj.toJSON());
-//     console.log(`\n-----------------------------------\n`);
-    
-    
-//     // --------------------------------------------------
-//     //   push
-//     // --------------------------------------------------
-    
-//     returnArr.push(valueObj);
-    
-    
-//   }
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return returnArr;
-  
-  
-// };
-
-
-
-/**
 * DBから取得した情報をフォーマットする
 * @param {Object} localeObj - ロケール
 * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -546,9 +423,9 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     delete cloneObj.localesArr;
     delete cloneObj.__v;
     
-    console.log(`\n---------- cloneObj ----------\n`);
-    console.dir(cloneObj);
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- cloneObj ----------\n`);
+    // console.dir(cloneObj);
+    // console.log(`\n-----------------------------------\n`);
     
     
     // --------------------------------------------------

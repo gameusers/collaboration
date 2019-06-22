@@ -192,13 +192,13 @@ export default class extends React.Component {
       // --------------------------------------------------
       
       this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumThreadsArr'],
-        value: props.initialPropsObj.forumThreadsArr,
+        pathArr: [props.userCommunities_id, 'forumThreadsObj'],
+        value: props.initialPropsObj.forumThreadsObj,
       });
       
       // console.log(`
-      //   ----- props.initialPropsObj.forumThreadsArr -----\n
-      //   ${util.inspect(props.initialPropsObj.forumThreadsArr, { colors: true, depth: null })}\n
+      //   ----- props.initialPropsObj.forumThreadsObj -----\n
+      //   ${util.inspect(props.initialPropsObj.forumThreadsObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
     } catch (e) {

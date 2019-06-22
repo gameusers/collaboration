@@ -130,8 +130,8 @@ export default class extends React.Component {
         
         {/* Head 内部のタグをここで追記する */}
         <Head>
-          <meta charSet='utf-8' />
-          <meta name='viewport' content='initial-scale=1.0, width=device-width' />
+          {/*<meta charSet='utf-8' />
+          <meta name='viewport' content='initial-scale=1.0, width=device-width' />*/}
           <meta name="robots" content="noindex,nofollow" />
         </Head>
         

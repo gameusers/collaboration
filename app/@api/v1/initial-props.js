@@ -34,6 +34,7 @@ const ModelUsers = require('../../@database/users/model');
 const ModelGames = require('../../@database/games/model');
 const ModelCardPlayers = require('../../@database/card-players/model');
 const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
+const ModelUserCommunities = require('../../@database/user-communities/model');
 const ModelForumThreads = require('../../@database/forum-threads/model');
 const ModelForumComments = require('../../@database/forum-comments/model');
 
@@ -796,6 +797,30 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
+    //   DB find / User Community
+    // --------------------------------------------------
+    
+    const userCommunityObj = await ModelUserCommunities.find({
+      conditionObj: {
+        userCommunityID
+      }
+    });
+    
+    const userCommunities_id = lodashGet(userCommunityObj, [0, '_id'], '');
+    
+    if (!userCommunities_id) {
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
+    }
+    
+    
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // --------------------------------------------------
     //   Login Check / Login User Data
     // --------------------------------------------------
     
@@ -815,20 +840,16 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     });
     
     
-    
-    
-    
-    
     // --------------------------------------------------
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    returnObj.forumThreadsArr = await ModelForumThreads.findForForumThreads({
+    returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
       localeObj,
       loginUsers_id,
-      userCommunities_id: 'cxO8tEGty',
+      userCommunities_id,
       page: 1,
-      // limit: 1,
+      limit: 1,
     });
     
     

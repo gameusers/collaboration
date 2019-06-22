@@ -381,19 +381,18 @@ export default injectIntl(class extends React.Component {
     } = storeForum;
     
     
-    // const userCommunities_id = 'cxO8tEGty';
-    
-    
     // --------------------------------------------------
-    //   Forum Navigation
+    //   Thread List
     // --------------------------------------------------
     
     const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
-    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsArr'], []);
     
-    const threadListCount = lodashGet(dataObj, [_id, 'threadListCount'], 30);
-    const threadListRowsPerPage = lodashGet(dataObj, [_id, 'threadListRowsPerPage'], 10);
-    const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1);
+    const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
+    const threadListRowsPerPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], 10);
+    const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1) - 1;
+    
+    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', threadListPage + 1, 'dataArr'], []);
+    
     
     
     // console.log(chalk`
@@ -401,18 +400,23 @@ export default injectIntl(class extends React.Component {
     //   openedTabNo: {green ${openedTabNo}}
     // `);
     
+    console.log(chalk`
+      threadListCount: {green ${threadListCount}}
+      threadListRowsPerPage: {green ${threadListRowsPerPage}}
+      threadListPage: {green ${threadListPage}}
+    `);
+    
+    console.log(`
+      ----- dataObj[_id].forumThreadsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
     // console.log(`\n---------- forumThreadsArr ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(forumThreadsArr)));
     // console.log(`\n-----------------------------------\n`);
     
     
-    
-    // const threadListOrderBy = stores.bbsNavigation.threadListOrderByObj[id];
-    // const threadListOrder = stores.bbsNavigation.threadListOrderObj[id];
-    // const threadListCount = stores.bbsNavigation.threadListCountObj[id];
-    // const threadListRowsPerPage = stores.bbsNavigation.threadListRowsPerPageObj[id];
-    // const threadListPage = stores.bbsNavigation.threadListPageObj[id];
-    // const threadListArr = stores.bbsNavigation.threadListObj[id];
     
     // const createThreadName = stores.bbsNavigation.createThreadNameObj[id];
     // const createThreadRule = stores.bbsNavigation.createThreadRuleObj[id];
@@ -615,6 +619,7 @@ export default injectIntl(class extends React.Component {
           {/* Pagination */}
           <TablePagination
             component="div"
+            rowsPerPageOptions={[1, 10, 20, 50]}
             count={threadListCount}
             rowsPerPage={threadListRowsPerPage}
             page={threadListPage}

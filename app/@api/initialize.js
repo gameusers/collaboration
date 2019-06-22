@@ -45,6 +45,7 @@ const SchemaGameGenres = require('../@database/game-genres/model');
 const SchemaHardwares = require('../@database/hardwares/model');
 const SchemaDevelopersPublishers = require('../@database/developers-publishers/model');
 const SchemaEmailConfirmations = require('../@database/email-confirmations/model');
+const SchemaUserCommunities = require('../@database/user-communities/model');
 const SchemaForumThreads = require('../@database/forum-threads/model');
 const SchemaForumComments = require('../@database/forum-comments/model');
 
@@ -2810,6 +2811,52 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     
+    // --------------------------------------------------
+    //   DB / User Community
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'cxO8tEGty',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        userCommunityID: 'community1',
+        users_id: 'jun-deE4J',
+        localesArr: [
+          {
+            _id: 'qFJnYnMDA',
+            language: 'ja',
+            name: 'User Community 1',
+            description: 'RPG好きが集まるコミュニティです。新旧問わず名作・駄作について話し合いましょう！',
+            descriptionShort: 'descriptionShort',
+          },
+        ],
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
+        gameIDArr: [],
+        memberObj: {
+          count: 0,
+          membersArr: [],
+        }
+      },
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaUserCommunities.deleteMany({});
+    returnObj = await SchemaUserCommunities.insertMany({ saveArr });
+    
+    
+    
     
     // --------------------------------------------------
     //   DB / Forum Threads
@@ -2891,6 +2938,48 @@ router.post('/db', upload.none(), async (req, res, next) => {
         comments: 0,
         images: 0,
         videos: 0,
+      },
+      {
+        _id: 'KQ_FuEYRu',
+        createdDate: '2019-01-04T00:00:00Z',
+        updatedDate: '2019-01-04T00:00:00Z',
+        userCommunities_id: 'cxO8tEGty',
+        users_id: '',
+        localesArr: [
+          {
+            _id: 'qhpRQ_fGB',
+            language: 'ja',
+            name: 'Thread 4: test4',
+            description: 'test4',
+          },
+        ],
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
+        comments: 4,
+        images: 4,
+        videos: 4,
+      },
+      {
+        _id: '8xJS6lZCm',
+        createdDate: '2019-01-05T00:00:00Z',
+        updatedDate: '2019-01-05T00:00:00Z',
+        userCommunities_id: 'cxO8tEGty',
+        users_id: '',
+        localesArr: [
+          {
+            _id: '6-g2SWieU',
+            language: 'ja',
+            name: 'Thread 5: test5',
+            description: 'test5',
+          },
+        ],
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
+        comments: 5,
+        images: 5,
+        videos: 5,
       },
     ];
     

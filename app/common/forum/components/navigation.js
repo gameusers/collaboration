@@ -377,21 +377,24 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleReadThreadsList,
       
     } = storeForum;
+    
+    
+    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
     
     
     // --------------------------------------------------
     //   Thread List
     // --------------------------------------------------
     
-    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
-    
     const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
-    const threadListRowsPerPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], 10);
+    // const threadListRowsPerPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], 10);
     const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1) - 1;
+    const threadListLimit = lodashGet(dataObj, [_id, 'threadListLimit'], 1);
     
-    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', threadListPage + 1, 'dataArr'], []);
+    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}`, 'dataArr'], []);
     
     
     
@@ -400,17 +403,17 @@ export default injectIntl(class extends React.Component {
     //   openedTabNo: {green ${openedTabNo}}
     // `);
     
-    console.log(chalk`
-      threadListCount: {green ${threadListCount}}
-      threadListRowsPerPage: {green ${threadListRowsPerPage}}
-      threadListPage: {green ${threadListPage}}
-    `);
+    // console.log(chalk`
+    //   threadListCount: {green ${threadListCount}}
+    //   threadListRowsPerPage: {green ${threadListRowsPerPage}}
+    //   threadListPage: {green ${threadListPage}}
+    // `);
     
-    console.log(`
-      ----- dataObj[_id].forumThreadsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- dataObj[_id].forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`\n---------- forumThreadsArr ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(forumThreadsArr)));
@@ -557,11 +560,6 @@ export default injectIntl(class extends React.Component {
             <TableCell
               css={css`
                 && {
-                  // white-space: nowrap;
-                  // min-width: 60%;
-                  // min-width: 268px;
-                  // min-width: 280px;
-                  // width: 280px;
                   ${sidebar && 'min-width: 268px;'}
                   cursor: pointer;
                   padding: 14px 0 14px 16px;
@@ -621,7 +619,7 @@ export default injectIntl(class extends React.Component {
             component="div"
             rowsPerPageOptions={[1, 10, 20, 50]}
             count={threadListCount}
-            rowsPerPage={threadListRowsPerPage}
+            rowsPerPage={threadListLimit}
             page={threadListPage}
             labelRowsPerPage=""
             backIconButtonProps={{
@@ -631,13 +629,20 @@ export default injectIntl(class extends React.Component {
               'aria-label': 'Next Page',
             }}
             onChangeRowsPerPage={(eventObj) => handleEdit({
-              pathArr: [_id, 'threadListRowsPerPage'],
+              pathArr: [_id, 'threadListLimit'],
               value: eventObj.target.value
             })}
-            onChangePage={(eventObj, value) => handleEdit({
-              pathArr: [_id, 'threadListPage'],
-              value
+            onChangePage={(eventObj, value) => handleReadThreadsList({
+              _id,
+              userCommunities_id: _id,
+              page: value + 1,
+              limit: threadListLimit,
             })}
+            
+            // onChangePage={(eventObj, value) => handleEdit({
+            //   pathArr: [_id, 'threadListPage'],
+            //   value
+            // })}
           />
           
         </React.Fragment>

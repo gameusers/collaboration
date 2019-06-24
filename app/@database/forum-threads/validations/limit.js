@@ -28,20 +28,13 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Player ID
+ * E-Mail
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersPlayerID = ({ throwError = false, value }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 3;
-  const maxLength = 32;
+const validationForumThreadsLimit = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -54,7 +47,7 @@ const validationUsersPlayerID = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: '3VjugB9w9',
+    messageID: 'Error',
     error: false,
   };
   
@@ -63,20 +56,11 @@ const validationUsersPlayerID = ({ throwError = false, value }) => {
     
     
     // ---------------------------------------------
-    //   文字数チェック
+    //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CWOOoA9F1', messageID: 'ilE2NcYjI' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   英数と -_ のみ
-    // ---------------------------------------------
-    
-    if (data.match(/^[\w\-]+$/) === null) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'gSft1rXje', messageID: 'JBkjlGQMh' }] });
+    if (!validator.isIn(data, ['1', '10', '20', '50'])) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CeqE4ulYz', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -125,5 +109,5 @@ const validationUsersPlayerID = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersPlayerID,
+  validationForumThreadsLimit
 };

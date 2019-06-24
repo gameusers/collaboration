@@ -17,6 +17,7 @@ const util = require('util');
 import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashMerge from 'lodash/merge';
 
 
 // ---------------------------------------------
@@ -36,6 +37,11 @@ import { CustomError } from '../../../@modules/error/custom';
 // const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
+
+import initStoreLayout from '../../layout/stores/layout';
 
 
 // --------------------------------------------------
@@ -43,8 +49,7 @@ import { CustomError } from '../../../@modules/error/custom';
 // --------------------------------------------------
 
 let storeForum = null;
-let storeLayout = null;
-let storeData = null;
+let storeLayout = initStoreLayout({});
       
 
 
@@ -80,119 +85,146 @@ class Store {
   
   
   
-  
-  // /**
-  // * プレイヤーページ設定フォームを送信する
-  // */
-  // @action.bound
-  // async handleSubmitPages() {
+  /**
+   * スレッド一覧を読み込む
+   */
+  @action.bound
+  async handleReadThreadsList({ _id, userCommunities_id, page, limit }) {
+    
+    console.log('handleReadThreadsList');
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ _id: `${_id}-forumNavigation` });
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      // const playerID = lodashGet(this.dataObj, ['playerID'], '');
+      // const pagesArr = lodashGet(this.dataObj, ['pagesArr'], []);
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      let formData = new FormData();
+      
+      formData.append('userCommunities_id', userCommunities_id);
+      formData.append('page', parseInt(page, 10));
+      formData.append('limit', parseInt(limit, 10));
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/forum-threads/user-community/list`,
+        methodType: 'POST',
+        formData: formData,
+      });
+      // console.log(`\n---------- resultObj ----------\n`);
+      // console.dir(resultObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      // this.dataObj[_id] = Object.assign({}, this.dataObj[_id], resultObj.data);
+      
+      const oldForumThreadsObj = lodashGet(this.dataObj, [_id, 'forumThreadsObj'], {});
+      const newForumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      
+      console.log(`
+        ----- oldForumThreadsObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(oldForumThreadsObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- newForumThreadsObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(newForumThreadsObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      const mergedObj = lodashMerge(oldForumThreadsObj, newForumThreadsObj);
+      
+      
+      
+      console.log(`
+        ----- mergedObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      this.handleEdit({
+        pathArr: [_id, 'threadListPage'],
+        value: page
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      // storeLayout.handleSnackbarOpen({
+      //   variant: 'success',
+      //   messageID: 'CquCU7BtA',
+      // });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      // storeLayout.handleSnackbarOpen({
+      //   variant: 'error',
+      //   errorObj,
+      // });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ _id: `${_id}-forumNavigation` });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
     
     
-  //   try {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Button Disable
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleButtonDisable({ _id: 'settingsFormPage' });
-      
-      
-  //     // ---------------------------------------------
-  //     //   Property
-  //     // ---------------------------------------------
-      
-  //     const playerID = lodashGet(this.dataObj, ['playerID'], '');
-  //     const pagesArr = lodashGet(this.dataObj, ['pagesArr'], []);
-      
-      
-  //     // ---------------------------------------------
-  //     //   FormData
-  //     // ---------------------------------------------
-      
-  //     let formData = new FormData();
-      
-  //     formData.append('playerID', playerID);
-  //     formData.append('pagesArr', JSON.stringify(pagesArr));
-      
-      
-  //     // ---------------------------------------------
-  //     //   Fetch
-  //     // ---------------------------------------------
-      
-  //     let resultObj = await fetchWrapper({
-  //       urlApi: `${process.env.URL_API}/v1/users/pages`,
-  //       methodType: 'POST',
-  //       formData: formData
-  //     });
-  //     // console.log(`\n---------- resultObj ----------\n`);
-  //     // console.dir(resultObj);
-  //     // console.log(`\n-----------------------------------\n`);
-      
-  //     // ---------------------------------------------
-  //     //   Error
-  //     // ---------------------------------------------
-      
-  //     if ('errorsArr' in resultObj) {
-  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
-  //     }
-      
-      
-  //     // ---------------------------------------------
-  //     //   Snackbar: Success
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleSnackbarOpen({
-  //       variant: 'success',
-  //       messageID: 'CquCU7BtA',
-  //     });
-      
-      
-  //     // ---------------------------------------------
-  //     //   Page Transition
-  //     // ---------------------------------------------
-      
-  //     const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-      
-  //     if (pageTransition) {
-  //       window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
-  //     }
-      
-      
-  //   } catch (errorObj) {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Snackbar: Error
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleSnackbarOpen({
-  //       variant: 'error',
-  //       errorObj,
-  //     });
-      
-      
-  //   } finally {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Button Enable
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleButtonEnable({ _id: 'settingsFormPage' });
-      
-      
-  //     // ---------------------------------------------
-  //     //   Loading 非表示
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleLoadingHide({});
-      
-      
-  //   }
-    
-    
-  // };
+  };
   
   
 }

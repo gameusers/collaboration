@@ -1,8 +1,4 @@
 // --------------------------------------------------
-//   File ID: DvfCyR-SZ
-// --------------------------------------------------
-
-// --------------------------------------------------
 //   Require
 // --------------------------------------------------
 
@@ -52,7 +48,7 @@ const { validationUsersPlayerID } = require('../../@database/users/validations/p
 
 // const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
-const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
+// const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
 
@@ -90,15 +86,6 @@ const router = express.Router();
 // --------------------------------------------------
 
 let statusCode = 400;
-
-// let errorArgumentsObj = {
-//   fileID: 'DvfCyR-SZ',
-//   functionID: '',
-//   messageCode: 'Error',
-//   errorCodeArr: ['Error'],
-//   errorObj: {},
-//   loginUsers_id: ''
-// };
 
 
 
@@ -800,25 +787,26 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityObj = await ModelUserCommunities.find({
-      conditionObj: {
-        userCommunityID
-      }
+    const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
+      localeObj,
+      loginUsers_id,
+      userCommunityID,
     });
     
-    const userCommunities_id = lodashGet(userCommunityObj, [0, '_id'], '');
+    // console.log(`
+    //   ----- userCommunityArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    if (!userCommunities_id) {
+    if (userCommunityArr.length === 0) {
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
     }
     
+    const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
+    returnObj.userCommunityObj = userCommunityArr[0];
     
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // --------------------------------------------------
     //   Login Check / Login User Data

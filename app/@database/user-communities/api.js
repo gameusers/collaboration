@@ -100,7 +100,7 @@ let statusCode = 400;
 
 
 // --------------------------------------------------
-//   Logout / endpointID: lpePrqvT4
+//   Logout / endpointID: 1UwvSqoD9
 // --------------------------------------------------
 
 router.post('/test', upload.none(), function(req, res, next) {
@@ -148,7 +148,7 @@ router.post('/test', upload.none(), function(req, res, next) {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'lpePrqvT4',
+      endpointID: '1UwvSqoD9',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

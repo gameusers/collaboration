@@ -19,6 +19,7 @@ const games = require('../../@database/games/api');
 const hardwares = require('../../@database/hardwares/api');
 const ids = require('../../@database/ids/api');
 const emailConfirmations = require('../../@database/email-confirmations/api');
+const forumThreads = require('../../@database/forum-threads/api');
 
 
 // --------------------------------------------------
@@ -45,5 +46,6 @@ router.use('/games', games);
 router.use('/hardwares', hardwares);
 router.use('/ids', ids);
 router.use('/email-confirmations', emailConfirmations);
+router.use('/forum-threads', forumThreads);
 
 module.exports = router;

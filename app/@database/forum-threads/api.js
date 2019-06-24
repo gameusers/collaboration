@@ -17,9 +17,6 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({ dest: 'static/' });
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcryptjs');
 const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
@@ -31,42 +28,29 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../@modules/csrf');
-const { verifyRecaptcha } = require('../../@modules/recaptcha');
-const { encrypt }  = require('../../@modules/crypto');
-const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
-const { sendMailConfirmation } = require('../../@modules/email');
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-const { formatEmailSecret } = require('../../@format/email');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validation_id } = require('../../@validations/_id');
+const { validationInteger } = require('../../@validations/integer');
 
-const { validationUsersLoginID } = require('./validations/login-id');
-const { validationUsersLoginIDServer } = require('./validations/login-id-server');
-const { validationUsersLoginPassword } = require('./validations/login-password');
-const { validationUsersEmailServer } = require('./validations/email-server');
-const { validationUsersPlayerIDServer } = require('./validations/player-id-server');
-const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
+const { validationForumThreadsIDServer } = require('./validations/_id-server');
+const { validationForumThreadsLimit } = require('./validations/limit');
+// const { validationUsersEmailServer } = require('./validations/email-server');
+// const { validationUsersPlayerIDServer } = require('./validations/player-id-server');
+// const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('./model');
-const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
-const SchemaUsers = require('../../@database/users/schema');
+const ModelForumThreads = require('./model');
+// const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
 
 
 // ---------------------------------------------
@@ -100,10 +84,19 @@ let statusCode = 400;
 
 
 // --------------------------------------------------
-//   Logout / endpointID: lpePrqvT4
+//   Logout / endpointID: WM1-TR3MY
 // --------------------------------------------------
 
-router.post('/test', upload.none(), function(req, res, next) {
+router.post('/user-community/list', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
   
   
   // --------------------------------------------------
@@ -118,6 +111,26 @@ router.post('/test', upload.none(), function(req, res, next) {
   try {
     
     
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { userCommunities_id, page, limit } = req.body;
+    
+    const pageInt = parseInt(page, 10);
+    const limitInt = parseInt(limit, 10);
+    
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['page'], pageInt);
+    lodashSet(requestParametersObj, ['limit'], limitInt);
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${pageInt} / ${typeof pageInt}}
+    //   limit: {green ${limitInt} / ${typeof limitInt}}
+    // `);
+    
+    
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
@@ -125,9 +138,26 @@ router.post('/test', upload.none(), function(req, res, next) {
     verifyCsrfToken(req, res);
     
     
-    // ---------------------------------------------
-    //   ログアウト処理
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    await validationForumThreadsIDServer({ value: userCommunities_id });
+    await validationInteger({ throwError: true, required: true, value: pageInt });
+    await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+      page: pageInt,
+      limit: limitInt,
+    });
     
     
     
@@ -148,7 +178,7 @@ router.post('/test', upload.none(), function(req, res, next) {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'lpePrqvT4',
+      endpointID: 'WM1-TR3MY',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

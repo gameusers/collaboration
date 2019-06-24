@@ -663,7 +663,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   Logout / endpointID: lpePrqvT4
+//   Logout / endpointID: hl4ZBunaB
 // --------------------------------------------------
 
 router.post('/logout', upload.none(), function(req, res, next) {
@@ -711,7 +711,7 @@ router.post('/logout', upload.none(), function(req, res, next) {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'lpePrqvT4',
+      endpointID: 'hl4ZBunaB',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

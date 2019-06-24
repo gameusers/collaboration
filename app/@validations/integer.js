@@ -22,27 +22,19 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../../../@modules/error/custom');
+const { CustomError } = require('../@modules/error/custom');
 
 
 
 
 /**
- * Login ID
+ * 整数
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersLoginID = ({ throwError = false, required = false, value }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 6;
-  const maxLength = 32;
+const validationInteger = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -55,10 +47,13 @@ const validationUsersLoginID = ({ throwError = false, required = false, value })
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Xrf-TLIEN',
+    messageID: 'Error',
     error: false,
   };
-  
+  // console.log(chalk`
+  //   value: {green ${value} / ${typeof value}}
+  //   data: {green ${data} / ${typeof data}}
+  // `);
   
   try {
     
@@ -70,7 +65,7 @@ const validationUsersLoginID = ({ throwError = false, required = false, value })
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'xLp-ObT7q', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HmFa7vdKa', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -79,20 +74,11 @@ const validationUsersLoginID = ({ throwError = false, required = false, value })
     
     
     // ---------------------------------------------
-    //   文字数チェック
+    //   整数チェック
     // ---------------------------------------------
     
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M4fBF4b4P', messageID: 'yKjojKAxy' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   英数と -_ のみ
-    // ---------------------------------------------
-    
-    if (data.match(/^[\w\-]+$/) === null) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'rRvP75Hnw', messageID: 'JBkjlGQMh' }] });
+    if (!Number.isInteger(value)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '2dSCYnE7M', messageID: 'f_YBnQcfW' }] });
     }
     
     
@@ -141,5 +127,5 @@ const validationUsersLoginID = ({ throwError = false, required = false, value })
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersLoginID
+  validationInteger
 };

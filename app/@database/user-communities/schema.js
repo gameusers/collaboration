@@ -70,6 +70,9 @@ const schema = mongoose.Schema({
     count: { type: Number, default: 0, required: true },
     membersArr: [String],
   },
+  forumObj: {
+    threadsCount: { type: Number, default: 0, required: true },
+  },
 });
 
 module.exports = mongoose.model('user-communities', schema);

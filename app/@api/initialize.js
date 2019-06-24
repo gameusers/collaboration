@@ -2843,6 +2843,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         memberObj: {
           count: 0,
           membersArr: [],
+        },
+        forumObj: {
+          threadsCount: 5,
         }
       },
     ];

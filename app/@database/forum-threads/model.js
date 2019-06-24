@@ -26,7 +26,8 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaForumThreads = require('./schema');
-const SchemaForumComments = require('../forum-comments/schema');
+// const SchemaForumComments = require('../forum-comments/schema');
+const ModelUserCommunities = require('../user-communities/model');
 
 
 // ---------------------------------------------
@@ -249,7 +250,6 @@ const deleteMany = async ({ conditionObj }) => {
  */
 const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREADS_LIMIT }) => {
   
-  // console.log('findForForum');
   
   // --------------------------------------------------
   //   Database
@@ -291,7 +291,18 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
     //   Count
     // --------------------------------------------------
     
-    const count = await SchemaForumThreads.countDocuments(conditionObj).exec();
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    // console.log(`
+    //   ----- userCommunityArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    const count = lodashGet(userCommunityArr, [0, 'forumObj', 'threadsCount'], 0);
+    // const count = await SchemaForumThreads.countDocuments(conditionObj).exec();
     
     
     // --------------------------------------------------
@@ -300,17 +311,18 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
     
     const ISO8601 = moment().toISOString();
     
-    return {
+    const returnObj = {
       count,
       limit: intLimit,
-      dataObj: {
-        1: {
-          datetime: ISO8601,
-          dataArr: formattedArr,
-        },
-      },
+      // dataObj: {
+      //   'page': {
+      //     datetime: ISO8601,
+      //     dataArr: formattedArr,
+      //   },
+      // },
     };
     
+    lodashSet(returnObj, ['dataObj', `page${page}`], { datetime: ISO8601, dataArr: formattedArr });
     
     
     
@@ -321,17 +333,13 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${page}}
+    //   limit: {green ${limit}}
     // `);
     
     // console.log(`
     //   ----- Threads -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- Threads -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnArr)), { colors: true, depth: null })}\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -340,7 +348,7 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
     //   Return
     // --------------------------------------------------
     
-    // return returnObj;
+    return returnObj;
     
     
   } catch (err) {

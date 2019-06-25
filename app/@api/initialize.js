@@ -2845,6 +2845,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           membersArr: [],
         },
         forumObj: {
+          updatedDate: ISO8601,
           threadsCount: 5,
         }
       },

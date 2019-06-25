@@ -71,6 +71,7 @@ const schema = mongoose.Schema({
     membersArr: [String],
   },
   forumObj: {
+    updatedDate: { type: Date, required: true },
     threadsCount: { type: Number, default: 0, required: true },
   },
 });

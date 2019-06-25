@@ -390,11 +390,10 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
-    // const threadListRowsPerPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], 10);
     const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1) - 1;
     const threadListLimit = lodashGet(dataObj, [_id, 'threadListLimit'], 1);
     
-    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}`, 'dataArr'], []);
+    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Arr`], []);
     
     
     
@@ -405,7 +404,7 @@ export default injectIntl(class extends React.Component {
     
     // console.log(chalk`
     //   threadListCount: {green ${threadListCount}}
-    //   threadListRowsPerPage: {green ${threadListRowsPerPage}}
+    //   threadListLimit: {green ${threadListLimit}}
     //   threadListPage: {green ${threadListPage}}
     // `);
     

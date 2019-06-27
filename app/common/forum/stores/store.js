@@ -91,7 +91,7 @@ class Store {
    * スレッド一覧を読み込む
    */
   @action.bound
-  async handleReadThreadsList({ _id, userCommunities_id, page, limit }) {
+  async handleReadThreadsList({ _id, userCommunities_id, page }) {
     
     // console.log('handleReadThreadsList');
     
@@ -99,26 +99,29 @@ class Store {
       
       
       // ---------------------------------------------
-      //   最後の読み込みから10分以上経っていたら再読込する
+      //   最後の読み込みから特定時間経っていたら再読込する
       // ---------------------------------------------
       
-      const loadedDate = lodashGet(this.dataObj, [_id, 'forumThreadsObj', 'loadedDate'], '0000-00-00T00:00:00Z');
+      const loadedDate = lodashGet(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'loadedDate'], '0000-01-01T00:00:00Z');
       const datetimeNow = moment().utcOffset(0);
-      const datetimeReloadLimit = moment(loadedDate).add(process.env.FORUM_THREADS_RELOAD_MINUTES, 'm').utcOffset(0);
+      const datetimeReloadLimit = moment(loadedDate).add(20, 's').utcOffset(0);
       
-      let reload = false;
+      // process.env.FORUM_THREADS_RELOAD_MINUTES, 'm'
       
-      if (datetimeNow.isAfter(datetimeReloadLimit)) {
-        console.log('reload');
-        reload = true;
-      }
+      const reload = datetimeNow.isAfter(datetimeReloadLimit) ? true : false;
+      
+      // let reload = false;
+      
+      // if (datetimeNow.isAfter(datetimeReloadLimit)) {
+      //   reload = true;
+      // }
       
       
       // ---------------------------------------------
       //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
       // ---------------------------------------------
       
-      if (!reload && lodashHas(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Arr`])) {
+      if (!reload && lodashHas(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'])) {
         
         console.log('store');
         
@@ -129,34 +132,25 @@ class Store {
         
         return;
         
-      } else {
-        console.log('fetch');
       }
       
+      
+      console.log('fetch');
+      
       console.log(chalk`
+        _id  : {green ${_id}}
+        userCommunities_id  : {green ${userCommunities_id}}
+        page  : {green ${page}}
+        
+        loadedDate  : {green ${loadedDate}}
         process.env.FORUM_THREADS_RELOAD_MINUTES  : {green ${process.env.FORUM_THREADS_RELOAD_MINUTES}}
+        reload  : {green ${reload}}
+        
         datetimeNow  : {green ${datetimeNow}}
         datetimeReloadLimit: {green ${datetimeReloadLimit}}
         datetimeNow.isAfter(datetimeReloadLimit): {green ${datetimeNow.isAfter(datetimeReloadLimit)}}
-        arrayName  : {green ${`page${page}Arr`}}
         lodashHas: {green ${lodashHas(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Arr`])}}
       `);
-      
-      // const oneArr = lodashGet(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', 'page1Arr'], []);
-      
-      // console.log(`
-      //   ----- oneArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(oneArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // const twoArr = lodashGet(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', 'page2Arr'], []);
-      
-      // console.log(`
-      //   ----- twoArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(twoArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       // console.log(`
       //   ----- lodashGet(this.dataObj, [_id, 'forumThreadsObj']) -----\n
@@ -178,9 +172,11 @@ class Store {
       
       let formData = new FormData();
       
+      const limit = lodashGet(this.dataObj, [_id, 'threadListLimit'], process.env.FORUM_THREADS_LIMIT);
+      
       formData.append('userCommunities_id', userCommunities_id);
-      formData.append('page', parseInt(page, 10));
-      formData.append('limit', parseInt(limit, 10));
+      formData.append('page', page);
+      formData.append('limit', limit);
       
       
       // ---------------------------------------------
@@ -192,9 +188,11 @@ class Store {
         methodType: 'POST',
         formData: formData,
       });
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
+      
+      console.log(`\n---------- resultObj ----------\n`);
+      console.dir(resultObj);
+      console.log(`\n-----------------------------------\n`);
+      
       
       // ---------------------------------------------
       //   Error
@@ -211,22 +209,22 @@ class Store {
       //   Merge & Renew
       // ---------------------------------------------
       
-      const oldForumThreadsObj = lodashGet(this.dataObj, [_id, 'forumThreadsObj'], {});
-      const newForumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      const oldObj = lodashGet(this.dataObj, [_id, 'forumThreadsObj'], {});
+      const newObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
       // console.log(`
-      //   ----- oldForumThreadsObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(oldForumThreadsObj)), { colors: true, depth: null })}\n
+      //   ----- oldObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(oldObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- newForumThreadsObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(newForumThreadsObj)), { colors: true, depth: null })}\n
+      //   ----- newObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
-      const mergedObj = lodashMerge(oldForumThreadsObj, newForumThreadsObj);
+      const mergedObj = lodashMerge(oldObj, newObj);
       
       this.handleEdit({
         pathArr: [_id, 'forumThreadsObj'],

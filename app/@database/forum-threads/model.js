@@ -299,27 +299,20 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
       }
     });
     
-    // const updatedDate = lodashGet(userCommunityArr, [0, 'forumObj', 'updatedDate'], '0000-00-00T00:00:00Z');
-    const count = lodashGet(userCommunityArr, [0, 'forumObj', 'threadsCount'], 0);
-    // const count = await SchemaForumThreads.countDocuments(conditionObj).exec();
-    
     
     // --------------------------------------------------
-    //   Return
+    //   Return Object
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
     const returnObj = {
-      loadedDate: ISO8601,
-      // updatedDate,
-      count,
+      count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
       limit: intLimit,
     };
     
-    lodashSet(returnObj, ['dataObj', `page${page}Arr`], formattedArr);
-    // lodashSet(returnObj, ['dataObj', `page${page}`], { dataArr: formattedArr });
-    
+    lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
+    lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], formattedArr);
     
     
     // --------------------------------------------------

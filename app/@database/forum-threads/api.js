@@ -40,9 +40,6 @@ const { validationInteger } = require('../../@validations/integer');
 
 const { validationForumThreadsIDServer } = require('./validations/_id-server');
 const { validationForumThreadsLimit } = require('./validations/limit');
-// const { validationUsersEmailServer } = require('./validations/email-server');
-// const { validationUsersPlayerIDServer } = require('./validations/player-id-server');
-// const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
 
 
 // ---------------------------------------------
@@ -50,7 +47,7 @@ const { validationForumThreadsLimit } = require('./validations/limit');
 // ---------------------------------------------
 
 const ModelForumThreads = require('./model');
-// const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
+const ModelUserCommunities = require('../../@database/user-communities/model');
 
 
 // ---------------------------------------------
@@ -159,6 +156,18 @@ router.post('/user-community/list', upload.none(), async (req, res, next) => {
       limit: limitInt,
     });
     
+    
+    // --------------------------------------------------
+    //   DB find / User Communities
+    // --------------------------------------------------
+    
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

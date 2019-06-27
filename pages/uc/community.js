@@ -106,6 +106,12 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
+    console.log(`
+      ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
+      ${util.inspect(initialPropsObj.userCommunityObj.updatedDateObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
     
     // --------------------------------------------------
     //   Return

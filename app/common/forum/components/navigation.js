@@ -391,11 +391,15 @@ export default injectIntl(class extends React.Component {
     
     const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
     const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1) - 1;
-    const threadListLimit = lodashGet(dataObj, [_id, 'threadListLimit'], 1);
+    const threadListLimit = lodashGet(dataObj, [_id, 'threadListLimit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
     
-    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Arr`], []);
+    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     
+    // const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Arr`], []);
     
+    // console.log(chalk`
+    //   process.env.FORUM_THREADS_LIMIT: {green ${process.env.FORUM_THREADS_LIMIT}}
+    // `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -635,13 +639,7 @@ export default injectIntl(class extends React.Component {
               _id,
               userCommunities_id: _id,
               page: value + 1,
-              limit: threadListLimit,
             })}
-            
-            // onChangePage={(eventObj, value) => handleEdit({
-            //   pathArr: [_id, 'threadListPage'],
-            //   value
-            // })}
           />
           
         </React.Fragment>

@@ -71,9 +71,13 @@ const schema = mongoose.Schema({
     membersArr: [String],
   },
   forumObj: {
-    updatedDate: { type: Date, required: true },
-    threadsCount: { type: Number, default: 0, required: true },
+    threadCount: { type: Number, default: 0, required: true },
   },
+  updatedDateObj: {
+    notification: { type: Date, required: true },
+    thread: { type: Date, required: true },
+    comment: { type: Date, required: true },
+  }
 });
 
 module.exports = mongoose.model('user-communities', schema);

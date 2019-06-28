@@ -19,6 +19,7 @@ import moment from 'moment';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
+import lodashCloneDeep from 'lodash/cloneDeep';
 import lodashMerge from 'lodash/merge';
 
 
@@ -44,6 +45,7 @@ import { CustomError } from '../../../@modules/error/custom';
 // --------------------------------------------------
 
 import initStoreLayout from '../../layout/stores/layout';
+import initStoreUserCommunity from '../../../uc/community/stores/store';
 
 
 // --------------------------------------------------
@@ -52,6 +54,7 @@ import initStoreLayout from '../../layout/stores/layout';
 
 let storeForum = null;
 let storeLayout = initStoreLayout({});
+let storeUserCommunity = initStoreUserCommunity({});
       
 
 
@@ -88,46 +91,149 @@ class Store {
   
   
   /**
-   * スレッド一覧を読み込む
+   * スレッド一覧の1ページに表示する件数を変更する
+   * @param {string} _id -  / userCommunities_id
+   * @param {number} page - スレッド一覧のページ
+   * @param {string} threadUpdatedDate - スレッドの最終更新日時
    */
   @action.bound
-  async handleReadThreadsList({ _id, userCommunities_id, page }) {
+  async handleChangeThreadRowsPerPage({ _id, threadUpdatedDate, limit }) {
     
-    // console.log('handleReadThreadsList');
     
     try {
       
+      // ---------------------------------------------
+      //   Update Page
+      // ---------------------------------------------
+      
+      // this.handleEdit({
+      //   pathArr: [_id, 'forumThreadsObj', 'page'],
+      //   value: 1
+      // });
+      // ---------------------------------------------
+      //   1ページに表示する件数を変更
+      // ---------------------------------------------
+      
+      // this.handleEdit({
+      //   pathArr: [_id, 'forumThreadsObj', 'limit'],
+      //   value
+      // });
+      
       
       // ---------------------------------------------
-      //   最後の読み込みから特定時間経っていたら再読込する
+      //   スレッド一覧を読み込む
       // ---------------------------------------------
       
-      const loadedDate = lodashGet(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'loadedDate'], '0000-01-01T00:00:00Z');
-      const datetimeNow = moment().utcOffset(0);
-      const datetimeReloadLimit = moment(loadedDate).add(20, 's').utcOffset(0);
+      this.handleReadThreadsList({
+        _id,
+        page: 1,
+        threadUpdatedDate,
+        limit,
+      });
       
-      // process.env.FORUM_THREADS_RELOAD_MINUTES, 'm'
       
-      const reload = datetimeNow.isAfter(datetimeReloadLimit) ? true : false;
+    } catch (errorObj) {
       
-      // let reload = false;
+    } finally {
       
-      // if (datetimeNow.isAfter(datetimeReloadLimit)) {
-      //   reload = true;
-      // }
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * スレッド一覧を読み込む
+   * @param {string} _id -  / userCommunities_id
+   * @param {number} page - スレッド一覧のページ
+   * @param {string} threadUpdatedDate - スレッドの最終更新日時
+   */
+  @action.bound
+  async handleReadThreadsList({ _id, page, threadUpdatedDate, limit }) {
+    
+    
+    try {
+      
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const forumThreadsObj = lodashGet(this.dataObj, [_id, 'forumThreadsObj'], {});
+      let cloneforumThreadsObj = lodashCloneDeep(forumThreadsObj);
+      
+      const loadedDate = lodashGet(forumThreadsObj, ['dataObj', `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(forumThreadsObj, ['dataObj', `page${page}Obj`, 'arr'], []);
+      
+      // console.log(`
+      //   ----- cloneforumThreadsObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(cloneforumThreadsObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      // ---------------------------------------------
+      //   最後の読み込み以降にスレッドの更新があった場合
+      //   最後の読み込みから特定時間経っていた場合、再読込する
+      // ---------------------------------------------
+      
+      let reload = false;
+      
+      if (limit) {
+        
+        reload = true;
+        
+      } else if (loadedDate) {
+        
+        const datetimeLoaded = moment(loadedDate).utcOffset(0);
+        const datetimeThreadUpdated = moment(threadUpdatedDate).utcOffset(0);
+        const datetimeNow = moment().utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.FORUM_THREADS_RELOAD_MINUTES, 'm').utcOffset(0);
+        // const datetimeReloadLimit = moment(loadedDate).add(20, 's').utcOffset(0);
+        
+        if (
+          datetimeThreadUpdated.isAfter(datetimeLoaded) ||
+          datetimeNow.isAfter(datetimeReloadLimit)
+        ) {
+          reload = true;
+        }
+        
+        
+        // console.log(chalk`
+        //   datetimeLoaded: {green ${datetimeLoaded.format('YYYY/MM/DD hh:mm')}}
+        //   datetimeThreadUpdated: {green ${datetimeThreadUpdated.format('YYYY/MM/DD hh:mm')}}
+        //   datetimeNow: {green ${datetimeNow.format('YYYY/MM/DD hh:mm')}}
+        //   datetimeReloadLimit: {green ${datetimeReloadLimit.format('YYYY/MM/DD hh:mm')}}
+          
+        //   datetimeThreadUpdated.isAfter(datetimeLoaded): {green ${datetimeThreadUpdated.isAfter(datetimeLoaded)}}
+        //   datetimeNow.isAfter(datetimeReloadLimit): {green ${datetimeNow.isAfter(datetimeReloadLimit)}}
+        // `);
+        
+      }
       
       
       // ---------------------------------------------
       //   すでにデータを読み込んでいる場合は、ストアのデータを表示する
       // ---------------------------------------------
       
-      if (!reload && lodashHas(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'])) {
+      if (!reload && arr.length > 0) {
         
         console.log('store');
         
+        cloneforumThreadsObj.page = page;
+        
         this.handleEdit({
-          pathArr: [_id, 'threadListPage'],
-          value: page
+          pathArr: [_id, 'forumThreadsObj'],
+          value: cloneforumThreadsObj
         });
         
         return;
@@ -137,20 +243,15 @@ class Store {
       
       console.log('fetch');
       
-      console.log(chalk`
-        _id  : {green ${_id}}
-        userCommunities_id  : {green ${userCommunities_id}}
-        page  : {green ${page}}
+      // console.log(chalk`
+      //   _id  : {green ${_id}}
+      //   page  : {green ${page}}
+      //   threadUpdatedDate  : {green ${threadUpdatedDate}}
         
-        loadedDate  : {green ${loadedDate}}
-        process.env.FORUM_THREADS_RELOAD_MINUTES  : {green ${process.env.FORUM_THREADS_RELOAD_MINUTES}}
-        reload  : {green ${reload}}
+      //   reload  : {green ${reload}}
         
-        datetimeNow  : {green ${datetimeNow}}
-        datetimeReloadLimit: {green ${datetimeReloadLimit}}
-        datetimeNow.isAfter(datetimeReloadLimit): {green ${datetimeNow.isAfter(datetimeReloadLimit)}}
-        lodashHas: {green ${lodashHas(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Arr`])}}
-      `);
+      //   lodashHas: {green ${lodashHas(this.dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Arr`])}}
+      // `);
       
       // console.log(`
       //   ----- lodashGet(this.dataObj, [_id, 'forumThreadsObj']) -----\n
@@ -174,7 +275,7 @@ class Store {
       
       const limit = lodashGet(this.dataObj, [_id, 'threadListLimit'], process.env.FORUM_THREADS_LIMIT);
       
-      formData.append('userCommunities_id', userCommunities_id);
+      formData.append('userCommunities_id', _id);
       formData.append('page', page);
       formData.append('limit', limit);
       
@@ -189,9 +290,9 @@ class Store {
         formData: formData,
       });
       
-      console.log(`\n---------- resultObj ----------\n`);
-      console.dir(resultObj);
-      console.log(`\n-----------------------------------\n`);
+      // console.log(`\n---------- resultObj ----------\n`);
+      // console.dir(resultObj);
+      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
@@ -206,10 +307,10 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Merge & Renew
+      //   Update Thread Data
       // ---------------------------------------------
       
-      const oldObj = lodashGet(this.dataObj, [_id, 'forumThreadsObj'], {});
+      // const oldObj = lodashGet(this.dataObj, [_id, 'forumThreadsObj'], {});
       const newObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
       // console.log(`
@@ -224,37 +325,65 @@ class Store {
       //   --------------------\n
       // `);
       
-      const mergedObj = lodashMerge(oldObj, newObj);
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const mergedObj = reload ? newObj : lodashMerge(cloneforumThreadsObj, newObj);
+      
+      cloneforumThreadsObj = mergedObj;
+      
+      // this.handleEdit({
+      //   pathArr: [_id, 'forumThreadsObj'],
+      //   value: mergedObj
+      // });
+      
+      // console.log(`
+      //   ----- mergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   page: {green ${page}}
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Update Page
+      // ---------------------------------------------
+      
+      cloneforumThreadsObj.page = page;
+      
+      // this.handleEdit({
+      //   pathArr: [_id, 'forumThreadsObj', 'page'],
+      //   value: page
+      // });
       
       this.handleEdit({
         pathArr: [_id, 'forumThreadsObj'],
-        value: mergedObj
+        value: cloneforumThreadsObj
       });
       
       
-      console.log(`
-        ----- mergedObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- cloneforumThreadsObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(cloneforumThreadsObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-      this.handleEdit({
-        pathArr: [_id, 'threadListPage'],
-        value: page
+      // --------------------------------------------------
+      //   Update UpdatedDateObj
+      // --------------------------------------------------
+      
+      const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      storeUserCommunity.handleEdit({
+        pathArr: [_id, 'updatedDateObj'],
+        value: updatedDateObj,
       });
       
-      
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
-      
-      // storeLayout.handleSnackbarOpen({
-      //   variant: 'success',
-      //   messageID: 'CquCU7BtA',
-      // });
+      // console.log(`\n---------- updatedDateObj ----------\n`);
+      // console.dir(updatedDateObj);
+      // console.log(`\n-----------------------------------\n`);
       
       
     } catch (errorObj) {
@@ -284,7 +413,7 @@ class Store {
       //   Loading 非表示
       // ---------------------------------------------
       
-      storeLayout.handleLoadingHide({});
+      // storeLayout.handleLoadingHide({});
       
       
     }

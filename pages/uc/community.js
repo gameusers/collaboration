@@ -36,6 +36,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreRoot from '../../app/@stores/root';
+import initStoreUserCommunity from '../../app/uc/community/stores/store';
 import initStoreForum from '../../app/common/forum/stores/store';
 
 
@@ -106,11 +107,11 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
-      ${util.inspect(initialPropsObj.userCommunityObj.updatedDateObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
+    //   ${util.inspect(initialPropsObj.userCommunityObj.updatedDateObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -163,6 +164,7 @@ export default class extends React.Component {
       
       const stores = initStoreRoot({});
       
+      this.storeUserCommunity = initStoreUserCommunity({});
       this.storeForum = initStoreForum({});
       
       
@@ -194,7 +196,17 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Update Data - Forum
+      //   Update Data - UpdatedDateObj
+      // --------------------------------------------------
+      
+      this.storeUserCommunity.handleEdit({
+        pathArr: [props.userCommunities_id, 'updatedDateObj'],
+        value: props.initialPropsObj.userCommunityObj.updatedDateObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumThreadsObj
       // --------------------------------------------------
       
       this.storeForum.handleEdit({
@@ -202,11 +214,7 @@ export default class extends React.Component {
         value: props.initialPropsObj.forumThreadsObj,
       });
       
-      // console.log(`
-      //   ----- props.initialPropsObj.forumThreadsObj -----\n
-      //   ${util.inspect(props.initialPropsObj.forumThreadsObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      
     } catch (e) {
       this.error = true;
     }
@@ -294,6 +302,7 @@ export default class extends React.Component {
     
     return (
       <Provider
+        storeUserCommunity={this.storeUserCommunity}
         storeForum={this.storeForum}
       >
         

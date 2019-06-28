@@ -308,6 +308,7 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
     
     const returnObj = {
       count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+      page,
       limit: intLimit,
     };
     

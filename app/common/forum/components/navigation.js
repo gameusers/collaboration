@@ -310,7 +310,7 @@ const SearchCheckBox = styled.div`
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeForum')
+@inject('stores', 'storeUserCommunity', 'storeForum')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -352,7 +352,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, _id, sidebar } = this.props;
+    const { classes, stores, storeUserCommunity, storeForum, intl, _id, sidebar } = this.props;
     
     
     // --------------------------------------------------
@@ -377,6 +377,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleChangeThreadRowsPerPage,
       handleReadThreadsList,
       
     } = storeForum;
@@ -389,17 +390,13 @@ export default injectIntl(class extends React.Component {
     //   Thread List
     // --------------------------------------------------
     
+    const threadUpdatedDate = lodashGet(storeUserCommunity, ['dataObj', _id, 'updatedDateObj', 'thread'], '0000-01-01T00:00:00Z');
+    
     const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
-    const threadListPage = lodashGet(dataObj, [_id, 'threadListPage'], 1) - 1;
-    const threadListLimit = lodashGet(dataObj, [_id, 'threadListLimit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
+    const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1) - 1;
+    const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
     
     const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
-    
-    // const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Arr`], []);
-    
-    // console.log(chalk`
-    //   process.env.FORUM_THREADS_LIMIT: {green ${process.env.FORUM_THREADS_LIMIT}}
-    // `);
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -407,6 +404,11 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
+    //   threadListPage: {green ${threadListPage}}
+    // `);
+    
+    // console.log(chalk`
+    //   threadUpdatedDate: {green ${threadUpdatedDate}}
     //   threadListCount: {green ${threadListCount}}
     //   threadListLimit: {green ${threadListLimit}}
     //   threadListPage: {green ${threadListPage}}
@@ -418,9 +420,11 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(`\n---------- forumThreadsArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(forumThreadsArr)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(`
+    //   ----- storeUserCommunity -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(storeUserCommunity)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -620,7 +624,7 @@ export default injectIntl(class extends React.Component {
           {/* Pagination */}
           <TablePagination
             component="div"
-            rowsPerPageOptions={[1, 10, 20, 50]}
+            rowsPerPageOptions={[1, 2, 3, 4, 5, 10, 20, 50]}
             count={threadListCount}
             rowsPerPage={threadListLimit}
             page={threadListPage}
@@ -631,14 +635,15 @@ export default injectIntl(class extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangeRowsPerPage={(eventObj) => handleEdit({
-              pathArr: [_id, 'threadListLimit'],
-              value: eventObj.target.value
+            onChangeRowsPerPage={(eventObj) => handleChangeThreadRowsPerPage({
+              _id,
+              threadUpdatedDate,
+              limit: eventObj.target.value,
             })}
             onChangePage={(eventObj, value) => handleReadThreadsList({
               _id,
-              userCommunities_id: _id,
               page: value + 1,
+              threadUpdatedDate,
             })}
           />
           

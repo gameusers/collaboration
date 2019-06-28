@@ -59,7 +59,7 @@ const validationForumThreadsLimit = ({ throwError = false, required = false, val
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(data, ['1', '10', '20', '50'])) {
+    if (!validator.isIn(data, ['1', '2', '3', '4', '5', '10', '20', '50'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CeqE4ulYz', messageID: 'PH8jcw-VF' }] });
     }
     

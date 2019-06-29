@@ -103,7 +103,7 @@ const cssFontRed = css`
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeImageAndVideo', 'storeImageAndVideoForm')
+@inject('storeImageAndVideo', 'storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -128,7 +128,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeImageAndVideo, storeImageAndVideoForm, intl, _id, func, imagesAndVideosArr = [], caption, limit } = this.props;
+    const { storeImageAndVideo, storeImageAndVideoForm, intl, _id, heading, description, func, imagesAndVideosArr = [], caption, limit } = this.props;
     
     const {
       
@@ -260,34 +260,6 @@ export default injectIntl(class extends React.Component {
           }
           
           imageIndex += 1;
-        
-        
-        // ---------------------------------------------
-        //   動画
-        // ---------------------------------------------
-        
-        } else {
-          
-          // componentsPreviewArr.push(
-          //   <PreviewBox key={index}>
-          //     <PreviewImg
-          //       src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-          //       onClick={() => handleModalVideoOpen(value.videoChannel, value.videoId)}
-          //     />
-              
-          //     <PreviewVideoPlayButtonImg
-          //       src="/static/img/common/video-play-button.png"
-          //     />
-              
-          //     <PreviewRemoveFab
-          //       color="primary"
-          //       onClick={() => handleImageVideoDelete(id, index)}
-          //     >
-          //       <IconClose />
-          //     </PreviewRemoveFab>
-              
-          //   </PreviewBox>
-          // );
           
         }
         
@@ -321,6 +293,25 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
+        {/* Heading */}
+        {heading &&
+          <div
+            css={css`
+              font-weight: bold;
+              margin: 0 0 2px 0;
+            `}
+          >
+            {heading}
+          </div>
+        }
+        
+        
+        {/* Description */}
+        {description &&
+          <p>{description}</p>
+        }
+        
+        
         {/* Preview */}
         <div
           css={css`
@@ -337,27 +328,34 @@ export default injectIntl(class extends React.Component {
         <div
           css={css`
             display: flex;
-            flex-flow: row nowrap;
-            margin: 10px 0 6px;
+            flex-flow: row wrap;
+            margin: 0 0 6px;
           `}
         >
           
           <input
             css={css`
-              padding: 4px 0 0 0;
+              margin: 14px 0 0 0;
             `}
             type="file"
             onChange={(eventObj) => handleSelectImage({ _id, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
           />
           
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            onClick={() => handleAddImage({ _id, func, imagesAndVideosArr, limit })}
+          <div
+            css={css`
+              margin: 12px 0 0 0;
+            `}
           >
-            追加
-          </Button>
+            <Button
+              
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={() => handleAddImage({ _id, func, imagesAndVideosArr, limit })}
+            >
+              追加
+            </Button>
+          </div>
           
         </div>
         
@@ -376,7 +374,7 @@ export default injectIntl(class extends React.Component {
                 }
               }
             `}
-            placeholder="画像名・簡単な解説を入力"
+            placeholder="画像名・簡単な解説"
             value={imageCaption}
             onChange={(eventObj) => handleEdit({
               pathArr: [_id, 'imageCaption'],

@@ -38,6 +38,8 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 import initStoreRoot from '../../app/@stores/root';
 import initStoreUserCommunity from '../../app/uc/community/stores/store';
 import initStoreForum from '../../app/common/forum/stores/store';
+import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
+import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
 
 
 // ---------------------------------------------
@@ -95,11 +97,6 @@ export default class extends React.Component {
     
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
-    
-    // console.log(chalk`
-    //   isServer: {green ${isServer}}
-    //   pathname: {green ${pathname}}
-    // `);
     
     // console.log(`
     //   ----- resultObj -----\n
@@ -166,6 +163,8 @@ export default class extends React.Component {
       
       this.storeUserCommunity = initStoreUserCommunity({});
       this.storeForum = initStoreForum({});
+      this.storeImageAndVideo = initStoreImageAndVideo({});
+      this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
       
       // --------------------------------------------------
@@ -199,7 +198,7 @@ export default class extends React.Component {
       //   Update Data - UpdatedDateObj
       // --------------------------------------------------
       
-      this.storeUserCommunity.handleEdit({
+      this.storeForum.handleEdit({
         pathArr: [props.userCommunities_id, 'updatedDateObj'],
         value: props.initialPropsObj.userCommunityObj.updatedDateObj,
       });
@@ -304,6 +303,8 @@ export default class extends React.Component {
       <Provider
         storeUserCommunity={this.storeUserCommunity}
         storeForum={this.storeForum}
+        storeImageAndVideo={this.storeImageAndVideo}
+        storeImageAndVideoForm={this.storeImageAndVideoForm}
       >
         
         <Layout>

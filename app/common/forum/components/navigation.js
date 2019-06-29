@@ -73,6 +73,13 @@ import IconCreate from '@material-ui/icons/Create';
 import IconSearch from '@material-ui/icons/Search';
 
 
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
+import ImageAndVideoForm from '../../image-and-video/components/form-image';
+
+
 
 
 // --------------------------------------------------
@@ -112,21 +119,14 @@ const cssTableCell = css`
   }
 `;
 
-const cssTabIcon = css`
-  && {
-    min-width: 92px;
-  }
+const cssImageBox = css`
+  margin: 24px 0 0 0;
 `;
 
-
-// const StyledIconButton = styled(IconButton)`
-//   && {
-//     width: 28px;
-//     height: 28px;
-//     margin: 0 10px 0 0;
-//     padding: 0;
-//   }
-// `;
+const cssImageTitle = css`
+  font-weight: bold;
+  margin: 0 0 2px 0;
+`;
 
 
 
@@ -136,125 +136,9 @@ const cssTabIcon = css`
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
 
-// const ExpansionPanelDetailsBbsMenu = styled(ExpansionPanelDetails)`
-//   && {
-//     display: inline;
-//     margin: 0;
-//     padding: 0;
-//   }
-// `;
-
-
-// --------------------------------------------------
-//   Title
-// --------------------------------------------------
-
-// const StyledIconButton = styled(IconButton)`
-//   && {
-//     margin: 0 4px 0 0;
-//     padding: 0;
-//     width: 28px;
-//     height: 28px;
-//   }
-// `;
-
-
-// --------------------------------------------------
-//   Tab
-// --------------------------------------------------
-
-// const TabsPaper = styled(Paper)`
-//   && {
-//     margin: 0 16px 0;
-//     padding: 0;
-//   }
-// `;
-
-
-// --------------------------------------------------
-//   Thread List
-// --------------------------------------------------
-
-// const ThreadListTabBox = styled.div`
-//   margin: 0;
-//   padding: 10px 16px 0;
-// `;
-
-// const ThreadListTableWrapper = styled.div`
-//   overflow-x: auto;
-// `;
-
-const ThreadListNameTableCell = styled(TableCell)`
-  && {
-    white-space: nowrap;
-    min-width: 280px;
-    cursor: pointer;
-  }
-`;
-
-
-
-
 // --------------------------------------------------
 //   Create Thread
 // --------------------------------------------------
-
-// const CreateThreadTabBox = styled.div`
-//   && {
-//     width: 100%;
-//     // padding: 22px 14px 20px 14px;
-//   }
-
-//   // width: 100%;
-//   // margin: 0;
-//   // padding: 22px 14px 20px 14px;
-//   // margin: 0 14px 0 0;
-//   // background-color: pink;
-// `;
-
-const CreateThreadTabTypography = styled(Typography)`
-  // width: 100%;
-  // margin: 0;
-  padding: 22px 16px 16px 16px;
-  // margin: 0 14px 0 0;
-  // background-color: pink;
-`;
-
-
-
-const CreateThreadNameTextField = styled(TextField)`
-  && {
-    width: 300px;
-    margin: 0 0 4px 0;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      // min-width: 100%;
-    }
-  }
-`;
-
-const CreateThreadTextareaAutosize = styled(TextareaAutosize)`
-  && {
-    width: 600px;
-    max-width: 600px;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin: 10px 0 10px 0;
-    padding: 8px 12px;
-    line-height: 1.6em;
-    
-    &:focus {
-      outline: 1px #A9F5F2 solid;
-    }
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-      max-width: auto;
-      resize: none;
-    }
-  }
-`;
 
 const CreateThreadButtonBox = styled.div`
   margin: 0 0 0 0;
@@ -310,7 +194,7 @@ const SearchCheckBox = styled.div`
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeUserCommunity', 'storeForum')
+@inject('stores', 'storeForum')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -352,7 +236,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeUserCommunity, storeForum, intl, _id, sidebar } = this.props;
+    const { classes, stores, storeForum, intl, _id, sidebar } = this.props;
     
     
     // --------------------------------------------------
@@ -383,14 +267,12 @@ export default injectIntl(class extends React.Component {
     } = storeForum;
     
     
-    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
+    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 1);
     
     
     // --------------------------------------------------
     //   Thread List
     // --------------------------------------------------
-    
-    const threadUpdatedDate = lodashGet(storeUserCommunity, ['dataObj', _id, 'updatedDateObj', 'thread'], '0000-01-01T00:00:00Z');
     
     const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
     const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1) - 1;
@@ -532,6 +414,10 @@ export default injectIntl(class extends React.Component {
           value={openedTabNo}
           indicatorColor="primary"
           textColor="primary"
+          onChange={(eventObj, value) => handleEdit({
+            pathArr: [_id, 'openedTabNo'],
+            value
+          })}
           // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
         >
           <Tab label="スレッド一覧" />
@@ -637,13 +523,11 @@ export default injectIntl(class extends React.Component {
             }}
             onChangeRowsPerPage={(eventObj) => handleChangeThreadRowsPerPage({
               _id,
-              threadUpdatedDate,
               limit: eventObj.target.value,
             })}
             onChangePage={(eventObj, value) => handleReadThreadsList({
               _id,
               page: value + 1,
-              threadUpdatedDate,
             })}
           />
           
@@ -838,7 +722,7 @@ export default injectIntl(class extends React.Component {
             {componentTabs}
             
             
-            {/* スレッド一覧 */}
+            {/* Thread List */}
             {openedTabNo === 0 &&
               <div
                 css={css`
@@ -847,6 +731,111 @@ export default injectIntl(class extends React.Component {
                 `}
               >
                 {componentThreadList}
+              </div>
+            }
+            
+            
+            {/* Thread Create Form */}
+            {openedTabNo === 1 &&
+              <div
+                css={css`
+                  padding: 0 12px 16px;
+                `}
+              >
+                
+                
+                {/* Thread Name */}
+                <TextField
+                  css={css`
+                    && {
+                      width: 100%;
+                      max-width: 500px;
+                    }
+                  `}
+                  id="name"
+                  label="スレッド名"
+                  // value={validationObj.value}
+                  // onChange={(eventObj) => handleCardPlayerEditFormData({
+                  //   pathArr: [_id, 'nameObj', 'value'],
+                  //   value: eventObj.target.value
+                  // })}
+                  // error={validationObj.error}
+                  // helperText={intl.formatMessage({ id: validationObj.messageID }, { numberOfCharacters: validationObj.numberOfCharacters })}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 100,
+                  }}
+                />
+                
+                
+                {/* Textarea */}
+                <div
+                  css={css`
+                    margin: 12px 0 0 0;
+                  `}
+                >
+                  
+                  <TextareaAutosize
+                    css={css`
+                      && {
+                        width: 100%;
+                        border-radius: 4px;
+                        box-sizing: border-box;
+                        padding: 8px 12px;
+                        line-height: 1.8;
+                        
+                        &:focus {
+                          outline: 1px #A9F5F2 solid;
+                        }
+                        
+                        resize: none;
+                      }
+                    `}
+                    rows={5}
+                    placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
+                    // value={comment}
+                    // onChange={(eventObj) => handleCardPlayerEditFormData({
+                    //   pathArr: [_id, 'lookingForFriendsObj', 'comment'],
+                    //   value: eventObj.target.value
+                    // })}
+                    maxLength={3000}
+                  />
+                  
+                </div>
+                
+                
+                {/* 画像 */}
+                <div css={cssImageBox}>
+                  
+                  <ImageAndVideoForm
+                    _id={`${_id}-createThreadMain`}
+                    heading="画像"
+                    description="スレッドに表示される画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。"
+                    // func={handleImagesAndVideosObjMainArr}
+                    // imagesAndVideosArr={imagesAndVideosObj.mainArr}
+                    caption={true}
+                    limit={1}
+                  />
+                  
+                </div>
+                
+                
+                {/* Send Button */}
+                <div
+                  css={css`
+                    margin: 24px 0 0 0;
+                  `}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    // onClick={() => handleCreateThread(id)}
+                  >
+                    スレッドを作成する
+                  </Button>
+                </div>
+                
+                
               </div>
             }
             

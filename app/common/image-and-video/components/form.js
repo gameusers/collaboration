@@ -27,11 +27,8 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import Fab from '@material-ui/core/Fab';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 
 // ---------------------------------------------
@@ -51,17 +48,18 @@ import cyan from '@material-ui/core/colors/cyan';
 
 
 // ---------------------------------------------
-//   Modules
+//   Stores
 // ---------------------------------------------
 
-import { imageCalculateSize } from '../../../@modules/image';
+import initStoreImageAndVideo from '../stores/image-and-video';
+import initStoreImageAndVideoForm from '../stores/form';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import LightboxWrapper from '../../image-and-video/components/lightbox';
+import ImageAndVideoFormImage from './form-image';
 
 
 
@@ -103,7 +101,6 @@ const cssFontRed = css`
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeImageAndVideo', 'storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -114,6 +111,15 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    this.storeImageAndVideo = initStoreImageAndVideo({});
+    this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+    
   }
   
   
@@ -128,173 +134,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeImageAndVideo, storeImageAndVideoForm, intl, _id, func, imagesAndVideosArr = [], caption, limit } = this.props;
+    const { intl, _id, func, imagesAndVideosArr = [], caption, limit } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
-      handleSelectImage,
-      handleAddImage,
-      handleRemoveImage,
+      handleFormImageShow,
+      handleFormVideoShow,
       
-    } = storeImageAndVideoForm;
+    } = this.storeImageAndVideoForm;
     
-    const { handleLightboxOpen } = storeImageAndVideo;
-    
-    const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
-    const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Preview Thumbnail Image & Video
-    // --------------------------------------------------
-    
-    const componentsPreviewArr = [];
-    
-    if (imagesAndVideosArr.length > 0) {
-      
-      let imageIndex = 0;
-      
-      for (const [index, valueObj] of imagesAndVideosArr.entries()) {
-        
-        
-        // ---------------------------------------------
-        //   画像
-        // ---------------------------------------------
-        
-        if (valueObj.type === 'image') {
-          
-          // Lightboxで開く画像Noを設定する
-          const currentNo = imageIndex;
-          
-          const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
-          const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
-          const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
-          
-          
-          // ---------------------------------------------
-          //   横幅・高さを計算する
-          // ---------------------------------------------
-          
-          const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
-          
-          // console.log(`
-          //   ----- calculatedObj -----\n
-          //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          // console.log(chalk`
-          //   src: {green ${src}}
-          //   width: {green ${width}}
-          //   height: {green ${height}}
-          // `);
-          
-          
-          if (src.indexOf('data:image/svg') === -1) {
-            
-            componentsPreviewArr.push(
-              <div css={cssPreviewBox} key={index}>
-                
-                <img
-                  css={css`
-                    max-height: 108px;
-                    
-                    @media screen and (max-width: 480px) {
-                      max-height: 54px;
-                    }
-                  `}
-                  src={src}
-                  onClick={() => handleLightboxOpen({ _id, currentNo })}
-                />
-                
-                <Fab
-                  css={cssPreviewRemoveFab}
-                  color="primary"
-                  onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
-                >
-                  <IconClose />
-                </Fab>
-                
-              </div>
-            );
-            
-          } else {
-            
-            componentsPreviewArr.push(
-              <div css={cssPreviewBox} key={index}>
-                
-                <div
-                  css={css`
-                    background-repeat: no-repeat;
-                    background-position: center center;
-                    
-                    max-width: 108px;
-                    max-height: 108px;
-                    width: ${calculatedObj.width}px;
-                    height: ${calculatedObj.height}px;
-                    background-image: url(${src});
-                    
-                    @media screen and (max-width: 480px) {
-                      max-width: 54px;
-                      max-height: 54px;
-                    }
-                  `}
-                  onClick={() => handleLightboxOpen({ _id, currentNo })}
-                />
-                
-                <Fab
-                  css={cssPreviewRemoveFab}
-                  color="primary"
-                  onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
-                >
-                  <IconClose />
-                </Fab>
-                
-              </div>
-            );
-            
-          }
-          
-          imageIndex += 1;
-        
-        
-        // ---------------------------------------------
-        //   動画
-        // ---------------------------------------------
-        
-        } else {
-          
-          // componentsPreviewArr.push(
-          //   <PreviewBox key={index}>
-          //     <PreviewImg
-          //       src={`https://img.youtube.com/vi/${value.videoId}/mqdefault.jpg`}
-          //       onClick={() => handleModalVideoOpen(value.videoChannel, value.videoId)}
-          //     />
-              
-          //     <PreviewVideoPlayButtonImg
-          //       src="/static/img/common/video-play-button.png"
-          //     />
-              
-          //     <PreviewRemoveFab
-          //       color="primary"
-          //       onClick={() => handleImageVideoDelete(id, index)}
-          //     >
-          //       <IconClose />
-          //     </PreviewRemoveFab>
-              
-          //   </PreviewBox>
-          // );
-          
-        }
-        
-      };
-      
-    }
-    
+    const formImageShow = lodashGet(dataObj, [_id, 'formImageShow'], false);
+    const formVideoShow = lodashGet(dataObj, [_id, 'formVideoShow'], false);
     
     
     
@@ -322,118 +174,42 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Preview */}
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            margin: 10px 0 0 0;
-          `}
-        >
-          {componentsPreviewArr}
-        </div>
+        <ButtonGroup color="primary">
+          <Button onClick={() => handleFormImageShow({ _id })}>画像</Button>
+          <Button onClick={() => handleFormVideoShow({ _id })}>動画</Button>
+        </ButtonGroup>
         
         
-        {/* Input file */}
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row nowrap;
-            margin: 10px 0 6px;
-          `}
-        >
-          
-          <input
+        {/* Form Image */}
+        {formImageShow &&
+          <div
             css={css`
-              padding: 4px 0 0 0;
+              margin: 14px 0 0 0;
             `}
-            type="file"
-            onChange={(eventObj) => handleSelectImage({ _id, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
-          />
-          
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            onClick={() => handleAddImage({ _id, func, imagesAndVideosArr, limit })}
           >
-            追加
-          </Button>
-          
-        </div>
-        
-        
-        {/* Caption */}
-        {caption &&
-          <TextField
-            css={css`
-              && {
-                width: 100%;
-                max-width: 500px;
-                margin: 10px 0 0 0;
-                
-                @media screen and (max-width: 480px) {
-                  max-width: auto;
-                }
-              }
-            `}
-            placeholder="画像名・簡単な解説を入力"
-            value={imageCaption}
-            onChange={(eventObj) => handleEdit({
-              pathArr: [_id, 'imageCaption'],
-              value: eventObj.target.value
-            })}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconDescription />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => handleEdit({
-                      pathArr: [_id, 'imageCaptionOpen'],
-                      value: !imageCaptionOpen
-                    })}
-                  >
-                    <IconHelpOutline />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+            <ImageAndVideoFormImage
+              _id={`${_id}-createThreadMain`}
+              // heading="画像"
+              description="スレッドに表示する画像をアップロードできます。"
+              // func={handleImagesAndVideosObjMainArr}
+              // imagesAndVideosArr={imagesAndVideosObj.mainArr}
+              caption={true}
+              limit={1}
+            />
+          </div>
         }
         
         
-        {/* Captionについての解説 */}
-        {imageCaptionOpen &&
-          <p
+        {/* Form Video */}
+        {formVideoShow &&
+          <div
             css={css`
-              font-size: 12px;
-              margin: 10px 0 0 0;
+              margin: 14px 0 0 0;
             `}
           >
-            アップロードした画像をクリック（タップ）すると、画像が拡大表示されますが、上記フォームに文字を入力して追加すると、拡大された画像の下部に入力した文字が表示されるようになります。<strong>基本的には未入力で問題ありません</strong>が、アップロードした画像について、説明を加えたい場合に利用してください。
-          </p>
+            AAA
+          </div>
         }
-        
-        
-        {/* アップロードできる画像の解説 */}
-        <p
-          css={css`
-            font-size: 12px;
-            margin: 10px 0 0 0;
-          `}
-        >
-          アップロードできる画像の種類は JPEG, PNG, GIF, SVG で、ファイルサイズが5MB以内のものです。<span css={cssFontRed}>画像を選択したら追加ボタンを押してください。</span>
-        </p>
-        
-        
-        {/* Lightbox */}
-        <LightboxWrapper
-          _id={_id}
-          imagesAndVideosArr={imagesAndVideosArr}
-        />
         
         
       </React.Fragment>

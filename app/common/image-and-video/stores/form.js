@@ -71,6 +71,43 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Form Open - Image
+  // ---------------------------------------------
+  
+  /**
+   * 画像投稿フォームを表示する
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleFormImageShow({ _id }) {
+    
+    const formImageShow = lodashGet(this.dataObj, [_id, 'formImageShow'], false);
+    
+    lodashSet(this.dataObj, [_id, 'formImageShow'], !formImageShow);
+    lodashSet(this.dataObj, [_id, 'formVideoShow'], false);
+    
+  };
+  
+  
+  /**
+   * 動画投稿フォームを表示する
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleFormVideoShow({ _id }) {
+    
+    const formVideoShow = lodashGet(this.dataObj, [_id, 'formVideoShow'], false);
+    
+    lodashSet(this.dataObj, [_id, 'formVideoShow'], !formVideoShow);
+    lodashSet(this.dataObj, [_id, 'formImageShow'], false);
+    
+  };
+  
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Form - Image
   // ---------------------------------------------
   

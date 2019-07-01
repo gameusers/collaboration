@@ -61,7 +61,7 @@ import LookingForFriends from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import FormLink from './link';
 
-import ImageAndVideoForm from '../../../../image-and-video/components/form';
+import ImageAndVideoFormImage from '../../../../image-and-video/components/form-image';
 
 
 
@@ -301,12 +301,10 @@ export default class extends React.Component {
           {/* サムネイル */}
           <div css={cssImageBox}>
             
-            <div css={cssImageTitle}>サムネイル</div>
-            
-            <p>ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。</p>
-            
-            <ImageAndVideoForm
+            <ImageAndVideoFormImage
               _id={`${_id}-thumbnail`}
+              heading="サムネイル"
+              description="ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。"
               func={handleImagesAndVideosObjThumbnailArr}
               imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
               caption={false}
@@ -319,12 +317,10 @@ export default class extends React.Component {
           {/* メイン画像 */}
           <div css={cssImageBox}>
             
-            <div css={cssImageTitle}>メイン画像</div>
-            
-            <p>プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。</p>
-            
-            <ImageAndVideoForm
+            <ImageAndVideoFormImage
               _id={`${_id}-main`}
+              heading="メイン画像"
+              description="プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。"
               func={handleImagesAndVideosObjMainArr}
               imagesAndVideosArr={imagesAndVideosObj.mainArr}
               caption={true}

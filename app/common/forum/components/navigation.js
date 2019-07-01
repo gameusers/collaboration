@@ -77,7 +77,8 @@ import IconSearch from '@material-ui/icons/Search';
 //   Components
 // ---------------------------------------------
 
-import ImageAndVideoForm from '../../image-and-video/components/form-image';
+import ImageAndVideoForm from '../../image-and-video/components/form';
+// import ImageAndVideoForm from '../../image-and-video/components/form-image';
 
 
 
@@ -119,14 +120,14 @@ const cssTableCell = css`
   }
 `;
 
-const cssImageBox = css`
-  margin: 24px 0 0 0;
-`;
+// const cssImageBox = css`
+//   margin: 24px 0 0 0;
+// `;
 
-const cssImageTitle = css`
-  font-weight: bold;
-  margin: 0 0 2px 0;
-`;
+// const cssImageTitle = css`
+//   font-weight: bold;
+//   margin: 0 0 2px 0;
+// `;
 
 
 
@@ -805,7 +806,11 @@ export default injectIntl(class extends React.Component {
                 
                 
                 {/* 画像 */}
-                <div css={cssImageBox}>
+                <div
+                  css={css`
+                    margin: 12px 0 0 0;
+                  `}
+                >
                   
                   <ImageAndVideoForm
                     _id={`${_id}-createThreadMain`}

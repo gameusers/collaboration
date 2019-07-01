@@ -79,9 +79,11 @@ const cssPreviewBox = css`
 const cssPreviewRemoveFab = css`
   && {
     background-color: ${cyan[500]};
+    
     &:hover {
       background-color: ${cyan[700]};
     }
+    
     width: 24px;
     height: 24px;
     min-width: 24px;

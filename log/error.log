@@ -153,3 +153,4 @@
 {"logID":"PhXAzLOYA","date":"2019-06-24T09:32:39.833Z","endpointID":"WM1-TR3MY","users_id":"","ip":"240b:250:38a1:8400:a9ea:b24b:48cc:faf","requestParametersObj":{"userCommunities_id":"cxO8tEGty","page":2,"limit":1},"errorsArr":[{"code":"PhXAzLOYA","messageID":"Error"}],"level":"error","message":"Assignment to constant variable."}
 {"level":"error","message":"2019-06-29T08:36:20.371Z\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nLogin User: \nMessage: "}
 {"level":"error","message":""}
+{"logID":"wUM9jItt7","date":"2019-07-03T13:30:39.149Z","endpointID":"P3ut9x3Fj","users_id":"","ip":"::ffff:133.167.108.234","requestParametersObj":{"playerID":"undefinedpl"},"errorsArr":[{"code":"wUM9jItt7","messageID":"Error"}],"level":"error","message":"Cannot read property '_id' of null"}

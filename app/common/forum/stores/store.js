@@ -102,25 +102,6 @@ class Store {
     
     try {
       
-      // ---------------------------------------------
-      //   Update Page
-      // ---------------------------------------------
-      
-      // this.handleEdit({
-      //   pathArr: [_id, 'forumThreadsObj', 'page'],
-      //   value: 1
-      // });
-      // ---------------------------------------------
-      //   1ページに表示する件数を変更
-      // ---------------------------------------------
-      
-      // this.handleEdit({
-      //   pathArr: [_id, 'forumThreadsObj', 'limit'],
-      //   value
-      // });
-      // console.log(chalk`
-      //   handleChangeThreadRowsPerPage limit: {green ${limit}}
-      // `);
       
       // ---------------------------------------------
       //   スレッド一覧を読み込む
@@ -158,11 +139,11 @@ class Store {
     
     try {
       
-      console.log(`
-        ----- this.dataObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -385,17 +366,47 @@ class Store {
       storeLayout.handleButtonEnable({ _id: `${_id}-forumNavigation` });
       
       
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      // storeLayout.handleLoadingHide({});
-      
-      
     }
     
     
   };
+  
+  
+  
+  
+  /**
+   * スレッド作成 - メイン画像を変更する
+   * @param {string} _id - ID
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleImagesAndVideosObjMainArr({ _id, value }) {
+    
+    // console.log('handleImagesAndVideosObjMainArr');
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
+    
+    // console.log(`\n---------- value ----------\n`);
+    // console.dir(value);
+    // console.log(`\n-----------------------------------\n`);
+    
+    let clonedValue = lodashCloneDeep(value);
+    
+    
+    lodashSet(this.dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], clonedValue);
+    
+    // if (value && value.length > 0) {
+    //   lodashSet(this.dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], []);
+    // } else {
+    //   lodashSet(this.dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], value);
+    // }
+    
+    
+    
+  };
+  
   
   
 }

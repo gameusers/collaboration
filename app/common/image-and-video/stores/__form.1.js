@@ -18,7 +18,6 @@ import { action, observable } from 'mobx';
 import shortid from 'shortid';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
-import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // --------------------------------------------------
@@ -185,19 +184,17 @@ class Store {
    * 選択した画像を追加する
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
    * @param {string} _id - ID
-   * @param {string} arrayName - 操作する配列名
+   * @param {function} func - 実行する関数
+   * @param {Array} imagesAndVideosArr - 画像と動画の情報が入った配列
    * @param {number} limit - 画像を追加できる上限
    */
   @action.bound
-  handleAddImage({ _id, arrayName, limit }) {
+  handleAddImage({ _id, func, imagesAndVideosArr, limit }) {
     
     
     // ---------------------------------------------
     //   Get Data
     // ---------------------------------------------
-    
-    const imagesAndVideosArr = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
-    let clonedArr = lodashCloneDeep(imagesAndVideosArr);
     
     const src = lodashGet(this.dataObj, [_id, 'imageObj', 'src'], '');
     const width = lodashGet(this.dataObj, [_id, 'imageObj', 'width'], '');
@@ -284,9 +281,9 @@ class Store {
       
       if (limit === 1) {
         
-        clonedArr.splice(0, 1);
+        imagesAndVideosArr.splice(0, 1);
         
-        clonedArr.push({
+        imagesAndVideosArr.push({
           _id: shortid.generate(),
           type: 'image',
           localesArr: [
@@ -299,9 +296,9 @@ class Store {
           srcSetArr,
         });
         
-      } else if (limit > clonedArr.length) {
+      } else if (limit > imagesAndVideosArr.length) {
         
-        clonedArr.push({
+        imagesAndVideosArr.push({
           _id: shortid.generate(),
           type: 'image',
           localesArr: [
@@ -327,10 +324,22 @@ class Store {
       
       
       // ---------------------------------------------
-      //   更新
+      //   受け渡された関数を実行する
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
+      if (func) {
+        func({ _id, value: imagesAndVideosArr });
+      }
+      
+      // console.log(chalk`
+      //   func: {green ${func}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -345,207 +354,40 @@ class Store {
   };
   
   
-  
-  
   /**
-   * 入力した動画を追加する
-   * 追加すると動画のサムネイルがフォーム内に表示される（プレビューできる）
-   * @param {string} _id - ID
-   * @param {string} arrayName - 操作する配列名
-   * @param {number} limit - 動画を追加できる上限
+   * 画像を削除する
+   * @param {string} id - ID
+   * @param {number} index - 削除する画像番号
+   * @param {function} func - 実行する関数
+   * @param {Array} imagesAndVideosArr - 画像と動画の情報が入った配列
    */
   @action.bound
-  handleAddVideo({ _id, arrayName, limit }) {
-    
-    
-    // ---------------------------------------------
-    //   Get Data
-    // ---------------------------------------------
-    
-    const imagesAndVideosArr = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
-    let clonedArr = lodashCloneDeep(imagesAndVideosArr);
-    
-    const videoChannel = lodashGet(this.dataObj, [_id, 'videoChannel'], 'youtube');
-    const videoURL = lodashGet(this.dataObj, [_id, 'videoURL'], '');
-    
-    console.log(`\n---------- imagesAndVideosArr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(imagesAndVideosArr)));
-    console.log(`\n-----------------------------------\n`);
+  handleRemoveImage({ _id, index, func, imagesAndVideosArr }) {
     
     console.log(chalk`
       _id: {green ${_id}}
-      arrayName: {green ${arrayName}}
-      limit: {green ${limit}}
+      index: {green ${index}}
+      func: {green ${func}}
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosArr1 -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosArr)), { colors: true, depth: null })}\n
+      --------------------\n
     `);
     
     
-    // ---------------------------------------------
-    //   すでに同じ動画が追加されていないかチェックする
-    // ---------------------------------------------
+    imagesAndVideosArr.splice(index, 1);
     
-    let duplication = false;
-    
-    // if (imagesAndVideosArr.length > 0) {
-      
-    //   for (const valueObj of imagesAndVideosArr.values()) {
-        
-    //     if (valueObj.type === 'video') {
-          
-    //       duplication = valueObj.srcSetArr.find((valueObj) => {
-    //         return (valueObj.src === src);
-    //       });
-          
-    //       if (duplication) {
-    //         break;
-    //       }
-          
-    //     }
-        
-    //   }
-      
-    // }
+    console.log(`
+      ----- imagesAndVideosArr2 -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
-    // ---------------------------------------------
-    //   動画URLが入力されていない場合、処理停止
-    // ---------------------------------------------
-    
-    if (videoURL === '') {
-      console.log('AAA');
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        messageID: 'kcnBnLcoV',
-      });
-      
-      return;
-      
-      
-    // ---------------------------------------------
-    //   同じ動画を追加しようとしている場合、処理停止
-    // ---------------------------------------------  
-    
-    } else if (duplication) {
-      console.log('BBB');
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        messageID: 'cPw2kZIqY',
-      });
-      
-      return;
-      
-      
-    // ---------------------------------------------
-    //   srcset 用のデータを生成する
-    // ---------------------------------------------
-      
-    } else {
-      
-      
-      // ---------------------------------------------
-      //   imagesAndVideosArr に追加する
-      // ---------------------------------------------
-      
-      if (limit === 1) {
-        
-        clonedArr.splice(0, 1);
-        
-        clonedArr.push({
-          _id: shortid.generate(),
-          type: 'video',
-          videoChannel,
-          videoURL,
-        });
-        
-      } else if (limit > clonedArr.length) {
-        
-        clonedArr.push({
-          _id: shortid.generate(),
-          type: 'video',
-          videoChannel,
-          videoURL,
-        });
-        
-      } else {
-        
-        storeLayout.handleSnackbarOpen({
-          variant: 'error',
-          messageID: 'MansOH_XH',
-        });
-        
-        return;
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   更新
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
-      
-      
-      // ---------------------------------------------
-      //   Caption 入力フォームをリセット
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [_id, 'videoChannel'], 'youtube');
-      lodashSet(this.dataObj, [_id, 'videoURL'], '');
-      
-      
-    }
-    
-  };
-  
-  
-  
-  
-  /**
-   * プレビューを削除する
-   * @param {string} id - ID
-   * @param {string} arrayName - 操作する配列名
-   * @param {number} index - 削除するプレビュー番号
-   */
-  @action.bound
-  handleRemovePreview({ _id, arrayName, index }) {
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   index: {green ${index}}
-    // `);
-    
-    // ---------------------------------------------
-    //   データ取得＆クローン
-    // ---------------------------------------------
-    
-    const imagesAndVideosArr = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
-    let clonedArr = lodashCloneDeep(imagesAndVideosArr);
-    
-    
-    // console.log(`
-    //   ----- clonedArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   削除
-    // ---------------------------------------------
-    
-    clonedArr.splice(index, 1);
-    
-    
-    // ---------------------------------------------
-    //   更新
-    // ---------------------------------------------
-    
-    lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
-    
-    // console.log(`
-    //   ----- clonedArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // 受け渡された関数を実行する
+    func({ _id, value: imagesAndVideosArr });
     
   };
   

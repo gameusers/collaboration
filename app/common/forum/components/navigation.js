@@ -20,7 +20,6 @@ import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 import lodashGet from 'lodash/get';
 
-
 import styled from '@emotion/styled';
 
 /** @jsx jsx */
@@ -78,7 +77,6 @@ import IconSearch from '@material-ui/icons/Search';
 // ---------------------------------------------
 
 import ImageAndVideoForm from '../../image-and-video/components/form';
-// import ImageAndVideoForm from '../../image-and-video/components/form-image';
 
 
 
@@ -120,15 +118,6 @@ const cssTableCell = css`
   }
 `;
 
-// const cssImageBox = css`
-//   margin: 24px 0 0 0;
-// `;
-
-// const cssImageTitle = css`
-//   font-weight: bold;
-//   margin: 0 0 2px 0;
-// `;
-
 
 
 
@@ -136,15 +125,6 @@ const cssTableCell = css`
 //   styled-components でスタイルシートを書いてください
 //   参考: https://github.com/styled-components/styled-components
 // --------------------------------------------------
-
-// --------------------------------------------------
-//   Create Thread
-// --------------------------------------------------
-
-const CreateThreadButtonBox = styled.div`
-  margin: 0 0 0 0;
-`;
-
 
 // --------------------------------------------------
 //   Search
@@ -187,6 +167,7 @@ const SearchCheckBox = styled.div`
   flex-flow: row wrap;
   margin: 15px 0 0 0;
 `;
+
 
 
 
@@ -257,6 +238,9 @@ export default injectIntl(class extends React.Component {
     
     
     
+    // --------------------------------------------------
+    //   Forum
+    // --------------------------------------------------
     
     const {
       
@@ -264,9 +248,9 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleChangeThreadRowsPerPage,
       handleReadThreadsList,
+      // handleImagesAndVideosObjMainArr,
       
     } = storeForum;
-    
     
     const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 1);
     
@@ -281,9 +265,10 @@ export default injectIntl(class extends React.Component {
     
     const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     
+    // const imagesAndVideosArr = lodashGet(dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], []);
+    
     // console.log(chalk`
     //   _id: {green ${_id}}
-    //   openedTabNo: {green ${openedTabNo}}
     // `);
     
     // console.log(chalk`
@@ -298,14 +283,14 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- dataObj[_id].forumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
+    //   ----- dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- storeUserCommunity -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(storeUserCommunity)), { colors: true, depth: null })}\n
+    //   ----- dataObj[_id].forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -814,12 +799,11 @@ export default injectIntl(class extends React.Component {
                   
                   <ImageAndVideoForm
                     _id={`${_id}-createThreadMain`}
-                    heading="画像"
-                    description="スレッドに表示される画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。"
-                    // func={handleImagesAndVideosObjMainArr}
-                    // imagesAndVideosArr={imagesAndVideosObj.mainArr}
+                    descriptionImage="スレッドに表示する画像をアップロードできます。"
+                    descriptionVideo="スレッドに表示する動画を登録できます。"
+                    arrayName="mainArr"
                     caption={true}
-                    limit={1}
+                    limit={3}
                   />
                   
                 </div>

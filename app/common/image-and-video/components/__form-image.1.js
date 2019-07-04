@@ -29,6 +29,7 @@ import { css, jsx } from '@emotion/core';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
@@ -37,13 +38,38 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 //   Material UI / Icons
 // ---------------------------------------------
 
+import IconClose from '@material-ui/icons/Close';
 import IconDescription from '@material-ui/icons/Description';
 import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
+//   Material UI / Color
+// ---------------------------------------------
+
+import cyan from '@material-ui/core/colors/cyan';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { imageCalculateSize } from '../../../@modules/image';
+
+
+// ---------------------------------------------
+//   Stores
+// ---------------------------------------------
+
+// import initStoreImageAndVideo from '../stores/image-and-video';
+// import initStoreImageAndVideoForm from '../stores/form';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
+
+import LightboxWrapper from '../../image-and-video/components/lightbox';
 
 
 
@@ -52,6 +78,29 @@ import IconHelpOutline from '@material-ui/icons/HelpOutline';
 //   Emotion
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
+
+const cssPreviewBox = css`
+  position: relative;
+  margin: 10px 12px 10px 0;
+`;
+
+const cssPreviewRemoveFab = css`
+  && {
+    background-color: ${cyan[500]};
+    
+    &:hover {
+      background-color: ${cyan[700]};
+    }
+    
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+  }
+`;
 
 const cssFontRed = css`
   color: #FE2E2E;
@@ -74,7 +123,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    // this.storeImageAndVideo = initStoreImageAndVideo({});
+    // this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+    
   }
   
   
@@ -89,7 +148,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, _id, heading, description, caption, limit, arrayName = 'mainArr' } = this.props;
+    const { storeForum, storeImageAndVideo, storeImageAndVideoForm, intl, _id, heading, description, func, caption, limit } = this.props;
     
     const {
       
@@ -97,14 +156,153 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleSelectImage,
       handleAddImage,
+      handleRemoveImage,
       
     } = storeImageAndVideoForm;
+    
+    const { handleLightboxOpen } = storeImageAndVideo;
     
     const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
     const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
     
-    const imagesAndVideosArr = lodashGet(dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
     
+    const imagesAndVideosArr = lodashGet(storeForum, ['dataObj', _id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], []);
+    
+    // --------------------------------------------------
+    //   Component - Preview Thumbnail Image & Video
+    // --------------------------------------------------
+    
+    const componentsPreviewArr = [];
+    
+    
+    // console.log(chalk`
+    //   /app/common/image-and-video/components/form-image.js
+    //   _id: {green ${_id}}
+    //   description: {green ${description}}
+    // `);
+    
+    // console.log(`
+    //   ----- form-image / imagesAndVideosArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (imagesAndVideosArr.length > 0) {
+      
+      let imageIndex = 0;
+      
+      for (const [index, valueObj] of imagesAndVideosArr.entries()) {
+        
+        
+        // ---------------------------------------------
+        //   画像
+        // ---------------------------------------------
+        
+        if (valueObj.type === 'image') {
+          
+          // Lightboxで開く画像Noを設定する
+          const currentNo = imageIndex;
+          
+          const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
+          const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
+          const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
+          
+          
+          // ---------------------------------------------
+          //   横幅・高さを計算する
+          // ---------------------------------------------
+          
+          const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
+          
+          // console.log(`
+          //   ----- calculatedObj -----\n
+          //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          // console.log(chalk`
+          //   src: {green ${src}}
+          //   width: {green ${width}}
+          //   height: {green ${height}}
+          // `);
+          
+          
+          if (src.indexOf('data:image/svg') === -1) {
+            
+            componentsPreviewArr.push(
+              <div css={cssPreviewBox} key={index}>
+                
+                <img
+                  css={css`
+                    max-height: 108px;
+                    
+                    @media screen and (max-width: 480px) {
+                      max-height: 54px;
+                    }
+                  `}
+                  src={src}
+                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                />
+                
+                <Fab
+                  css={cssPreviewRemoveFab}
+                  color="primary"
+                  onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
+                >
+                  <IconClose />
+                </Fab>
+                
+              </div>
+            );
+            
+          } else {
+            
+            componentsPreviewArr.push(
+              <div css={cssPreviewBox} key={index}>
+                
+                <div
+                  css={css`
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                    
+                    max-width: 108px;
+                    max-height: 108px;
+                    width: ${calculatedObj.width}px;
+                    height: ${calculatedObj.height}px;
+                    background-image: url(${src});
+                    
+                    @media screen and (max-width: 480px) {
+                      max-width: 54px;
+                      max-height: 54px;
+                    }
+                  `}
+                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                />
+                
+                <Fab
+                  css={cssPreviewRemoveFab}
+                  color="primary"
+                  onClick={() => handleRemoveImage({ _id, index, func, imagesAndVideosArr })}
+                >
+                  <IconClose />
+                </Fab>
+                
+              </div>
+            );
+            
+          }
+          
+          imageIndex += 1;
+          
+        }
+        
+      };
+      
+    }
+    
+//     console.log(`\n---------- componentsPreviewArr ----------\n`);
+// console.dir(componentsPreviewArr);
+// console.log(`\n-----------------------------------\n`);
     
     
     
@@ -150,6 +348,18 @@ export default injectIntl(class extends React.Component {
         }
         
         
+        {/* Preview */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 10px 0 0 0;
+          `}
+        >
+          {componentsPreviewArr}
+        </div>
+        
+        
         {/* Input file */}
         <div
           css={css`
@@ -177,7 +387,7 @@ export default injectIntl(class extends React.Component {
               variant="contained"
               color="secondary"
               size="small"
-              onClick={() => handleAddImage({ _id, arrayName, limit })}
+              onClick={() => handleAddImage({ _id, func, imagesAndVideosArr, limit })}
             >
               追加
             </Button>
@@ -251,6 +461,13 @@ export default injectIntl(class extends React.Component {
         >
           アップロードできる画像の種類は JPEG, PNG, GIF, SVG で、ファイルサイズが5MB以内のものです。<span css={cssFontRed}>画像を選択したら追加ボタンを押してください。</span>
         </p>
+        
+        
+        {/* Lightbox */}
+        <LightboxWrapper
+          _id={_id}
+          imagesAndVideosArr={imagesAndVideosArr}
+        />
         
         
       </React.Fragment>

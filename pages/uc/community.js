@@ -355,10 +355,10 @@ export default class extends React.Component {
               <div style={{ marginTop: '14px' }}></div>
               
               
-              <ForumNavigation
+              {/*<ForumNavigation
                 _id={this.props.userCommunities_id}
                 sidebar={true}
-              />
+              />*/}
               
             </div>
             

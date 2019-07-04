@@ -35,33 +35,31 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 //   Material UI / Icons
 // ---------------------------------------------
 
-// import IconClose from '@material-ui/icons/Close';
-// import IconDescription from '@material-ui/icons/Description';
-// import IconHelpOutline from '@material-ui/icons/HelpOutline';
+import IconClose from '@material-ui/icons/Close';
+import IconDescription from '@material-ui/icons/Description';
+import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
 // ---------------------------------------------
 //   Material UI / Color
 // ---------------------------------------------
 
-// import cyan from '@material-ui/core/colors/cyan';
+import cyan from '@material-ui/core/colors/cyan';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-// import initStoreImageAndVideo from '../stores/image-and-video';
-// import initStoreImageAndVideoForm from '../stores/form';
+import initStoreImageAndVideo from '../stores/image-and-video';
+import initStoreImageAndVideoForm from '../stores/form';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import FormPreview from './form-preview';
-import FormImage from './form-image';
-import FormVideo from './form-video';
+import ImageAndVideoFormImage from './form-image';
 
 
 
@@ -71,7 +69,30 @@ import FormVideo from './form-video';
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
+const cssPreviewBox = css`
+  position: relative;
+  margin: 10px 12px 10px 0;
+`;
 
+const cssPreviewRemoveFab = css`
+  && {
+    background-color: ${cyan[500]};
+    &:hover {
+      background-color: ${cyan[700]};
+    }
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+  }
+`;
+
+const cssFontRed = css`
+  color: #FE2E2E;
+`;
 
 
 
@@ -80,7 +101,7 @@ import FormVideo from './form-video';
 //   Class
 // --------------------------------------------------
 
-@inject('storeImageAndVideoForm')
+@inject('storeImageAndVideo', 'storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -90,7 +111,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    // this.storeImageAndVideo = initStoreImageAndVideo({});
+    // this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+    
   }
   
   
@@ -105,7 +136,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, _id, descriptionImage, descriptionVideo, arrayName, caption, limit } = this.props;
+    const { storeImageAndVideo, storeImageAndVideoForm, intl, _id, descriptionImage, descriptionVideo, func, imagesAndVideosArr = [], caption, limit } = this.props;
     
     const {
       
@@ -118,7 +149,6 @@ export default injectIntl(class extends React.Component {
     
     const formImageShow = lodashGet(dataObj, [_id, 'formImageShow'], false);
     const formVideoShow = lodashGet(dataObj, [_id, 'formVideoShow'], false);
-    
     
     
     
@@ -145,33 +175,27 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* Buttons */}
+        {/* Preview */}
         <ButtonGroup color="primary">
           <Button onClick={() => handleFormImageShow({ _id })}>画像</Button>
           <Button onClick={() => handleFormVideoShow({ _id })}>動画</Button>
         </ButtonGroup>
         
         
-        {/* Preview */}
-        <FormPreview
-          _id={_id}
-          arrayName={arrayName}
-        />
-        
-        
         {/* Form Image */}
         {formImageShow &&
           <div
             css={css`
-              margin: 8px 0 0 0;
+              margin: 14px 0 0 0;
             `}
           >
-            <FormImage
+            <ImageAndVideoFormImage
               _id={_id}
               description={descriptionImage}
-              arrayName={arrayName}
-              caption={caption}
-              limit={limit}
+              func={func}
+              imagesAndVideosArr={imagesAndVideosArr}
+              caption={true}
+              limit={1}
             />
           </div>
         }
@@ -181,15 +205,10 @@ export default injectIntl(class extends React.Component {
         {formVideoShow &&
           <div
             css={css`
-              margin: 8px 0 0 0;
+              margin: 14px 0 0 0;
             `}
           >
-            <FormVideo
-              _id={_id}
-              description={descriptionVideo}
-              arrayName={arrayName}
-              limit={limit}
-            />
+            AAA
           </div>
         }
         

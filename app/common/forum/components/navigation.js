@@ -73,6 +73,13 @@ import IconSearch from '@material-ui/icons/Search';
 
 
 // ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -248,7 +255,7 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleChangeThreadRowsPerPage,
       handleReadThreadsList,
-      // handleImagesAndVideosObjMainArr,
+      handleSubmitCreateThread,
       
     } = storeForum;
     
@@ -265,7 +272,23 @@ export default injectIntl(class extends React.Component {
     
     const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     
-    // const imagesAndVideosArr = lodashGet(dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], []);
+    
+    // --------------------------------------------------
+    //   Create Thread
+    // --------------------------------------------------
+    
+    const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
+    const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
+    
+    const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
+    
+    
+    // console.log(`
+    //   ----- validationForumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -738,15 +761,15 @@ export default injectIntl(class extends React.Component {
                       max-width: 500px;
                     }
                   `}
-                  id="name"
+                  id="createTreadName"
                   label="スレッド名"
-                  // value={validationObj.value}
-                  // onChange={(eventObj) => handleCardPlayerEditFormData({
-                  //   pathArr: [_id, 'nameObj', 'value'],
-                  //   value: eventObj.target.value
-                  // })}
-                  // error={validationObj.error}
-                  // helperText={intl.formatMessage({ id: validationObj.messageID }, { numberOfCharacters: validationObj.numberOfCharacters })}
+                  value={validationForumThreadsObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [_id, 'createThreadObj', 'name'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationForumThreadsObj.error}
+                  helperText={intl.formatMessage({ id: validationForumThreadsObj.messageID }, { numberOfCharacters: validationForumThreadsObj.numberOfCharacters })}
                   margin="normal"
                   inputProps={{
                     maxLength: 100,
@@ -779,11 +802,11 @@ export default injectIntl(class extends React.Component {
                     `}
                     rows={5}
                     placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
-                    // value={comment}
-                    // onChange={(eventObj) => handleCardPlayerEditFormData({
-                    //   pathArr: [_id, 'lookingForFriendsObj', 'comment'],
-                    //   value: eventObj.target.value
-                    // })}
+                    value={createThreadDescription}
+                    onChange={(eventObj) => handleEdit({
+                    pathArr: [_id, 'createThreadObj', 'description'],
+                    value: eventObj.target.value
+                  })}
                     maxLength={3000}
                   />
                   
@@ -798,7 +821,7 @@ export default injectIntl(class extends React.Component {
                 >
                   
                   <ImageAndVideoForm
-                    _id={`${_id}-createThreadMain`}
+                    _id={`${_id}-createThread`}
                     descriptionImage="スレッドに表示する画像をアップロードできます。"
                     descriptionVideo="スレッドに表示する動画を登録できます。"
                     arrayName="mainArr"
@@ -818,7 +841,7 @@ export default injectIntl(class extends React.Component {
                   <Button
                     variant="contained"
                     color="primary"
-                    // onClick={() => handleCreateThread(id)}
+                    onClick={() => handleSubmitCreateThread({ _id: `${_id}-createThread` })}
                   >
                     スレッドを作成する
                   </Button>

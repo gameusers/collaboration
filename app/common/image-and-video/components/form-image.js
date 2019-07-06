@@ -41,11 +41,6 @@ import IconDescription from '@material-ui/icons/Description';
 import IconHelpOutline from '@material-ui/icons/HelpOutline';
 
 
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-
 
 
 // --------------------------------------------------
@@ -64,7 +59,7 @@ const cssFontRed = css`
 //   Class
 // --------------------------------------------------
 
-@inject('storeForum', 'storeImageAndVideo', 'storeImageAndVideoForm')
+@inject('storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
   

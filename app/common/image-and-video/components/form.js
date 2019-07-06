@@ -67,16 +67,6 @@ import FormVideo from './form-video';
 
 
 // --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -90,7 +80,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    // this.storeImageAndVideo = initStoreImageAndVideo({});
+    // this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+    
   }
   
   
@@ -110,7 +110,6 @@ export default injectIntl(class extends React.Component {
     const {
       
       dataObj,
-      handleEdit,
       handleFormImageShow,
       handleFormVideoShow,
       

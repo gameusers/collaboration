@@ -55,6 +55,12 @@ class Store {
    */
   @action.bound
   handleLightboxOpen({ _id, currentNo }) {
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   currentNo: {green ${currentNo}}
+    // `);
+    
     lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo);
     lodashSet(this.lightboxObj, [_id, 'open'], true);
   };

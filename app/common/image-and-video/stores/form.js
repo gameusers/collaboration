@@ -72,6 +72,35 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Get
+  // ---------------------------------------------
+  
+  /**
+   * imagesAndVideosObjを取得する
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleGetImagesAndVideosObj({ _id }) {
+    const imagesAndVideosObj = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj'], {});
+    
+    console.log(chalk`
+      \n---------- handleGetImagesAndVideosObj ----------\n
+      _id: {green ${_id}}
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    return imagesAndVideosObj;
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Form Show
   // ---------------------------------------------
   
@@ -368,50 +397,23 @@ class Store {
     const videoChannel = lodashGet(this.dataObj, [_id, 'videoChannel'], 'youtube');
     const videoURL = lodashGet(this.dataObj, [_id, 'videoURL'], '');
     
-    console.log(`\n---------- imagesAndVideosArr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(imagesAndVideosArr)));
-    console.log(`\n-----------------------------------\n`);
     
-    console.log(chalk`
-      _id: {green ${_id}}
-      arrayName: {green ${arrayName}}
-      limit: {green ${limit}}
-    `);
+    // ---------------------------------------------
+    //   videoID取得
+    //   正規表現参考：https://stackoverflow.com/questions/2936467/parse-youtube-video-id-using-preg-match
+    // ---------------------------------------------
+    
+    const regex = new RegExp('(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})', 'i');
+    const resultMatchObj = videoURL.match(regex);
+    const videoID = lodashGet(resultMatchObj, [1], '');
     
     
     // ---------------------------------------------
-    //   すでに同じ動画が追加されていないかチェックする
-    // ---------------------------------------------
-    
-    let duplication = false;
-    
-    // if (imagesAndVideosArr.length > 0) {
-      
-    //   for (const valueObj of imagesAndVideosArr.values()) {
-        
-    //     if (valueObj.type === 'video') {
-          
-    //       duplication = valueObj.srcSetArr.find((valueObj) => {
-    //         return (valueObj.src === src);
-    //       });
-          
-    //       if (duplication) {
-    //         break;
-    //       }
-          
-    //     }
-        
-    //   }
-      
-    // }
-    
-    
-    // ---------------------------------------------
-    //   動画URLが入力されていない場合、処理停止
+    //   videoIDが存在しない場合、処理停止
     // ---------------------------------------------
     
     if (videoURL === '') {
-      console.log('AAA');
+      
       storeLayout.handleSnackbarOpen({
         variant: 'error',
         messageID: 'kcnBnLcoV',
@@ -419,80 +421,106 @@ class Store {
       
       return;
       
-      
+    }
+    
+    
+    // console.log(`\n---------- resultMatchObj ----------\n`);
+    // console.dir(resultMatchObj);
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- imagesAndVideosArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosArr)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   arrayName: {green ${arrayName}}
+    //   limit: {green ${limit}}
+    //   videoChannel: {green ${videoChannel}}
+    //   videoURL: {green ${videoURL}}
+    //   videoID: {green ${videoID}}
+    // `);
+    
+    
     // ---------------------------------------------
     //   同じ動画を追加しようとしている場合、処理停止
     // ---------------------------------------------  
     
-    } else if (duplication) {
-      console.log('BBB');
+    const resultObj = imagesAndVideosArr.find((valueObj) => {
+      return valueObj.videoID === videoID;
+    });
+    
+    if (resultObj) {
+      
       storeLayout.handleSnackbarOpen({
         variant: 'error',
-        messageID: 'cPw2kZIqY',
+        messageID: 'Qd5d74x-3',
       });
       
       return;
       
+    }
+    
+    
+    // console.log(`\n---------- resultObj ----------\n`);
+    // console.dir(resultObj);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // ---------------------------------------------
+    //   imagesAndVideosArr に追加する
+    // ---------------------------------------------
+    
+    if (limit === 1) {
       
-    // ---------------------------------------------
-    //   srcset 用のデータを生成する
-    // ---------------------------------------------
+      clonedArr.splice(0, 1);
+      
+      clonedArr.push({
+        _id: shortid.generate(),
+        type: 'video',
+        videoChannel,
+        videoID,
+      });
+      
+    } else if (limit > clonedArr.length) {
+      
+      clonedArr.push({
+        _id: shortid.generate(),
+        type: 'video',
+        videoChannel,
+        videoID,
+      });
       
     } else {
       
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'fWrKN58iV',
+      });
       
-      // ---------------------------------------------
-      //   imagesAndVideosArr に追加する
-      // ---------------------------------------------
-      
-      if (limit === 1) {
-        
-        clonedArr.splice(0, 1);
-        
-        clonedArr.push({
-          _id: shortid.generate(),
-          type: 'video',
-          videoChannel,
-          videoURL,
-        });
-        
-      } else if (limit > clonedArr.length) {
-        
-        clonedArr.push({
-          _id: shortid.generate(),
-          type: 'video',
-          videoChannel,
-          videoURL,
-        });
-        
-      } else {
-        
-        storeLayout.handleSnackbarOpen({
-          variant: 'error',
-          messageID: 'MansOH_XH',
-        });
-        
-        return;
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   更新
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
-      
-      
-      // ---------------------------------------------
-      //   Caption 入力フォームをリセット
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [_id, 'videoChannel'], 'youtube');
-      lodashSet(this.dataObj, [_id, 'videoURL'], '');
-      
+      return;
       
     }
+    
+    
+    // ---------------------------------------------
+    //   更新
+    // ---------------------------------------------
+    
+    lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
+    
+    
+    // ---------------------------------------------
+    //   入力フォームをリセット
+    // ---------------------------------------------
+    
+    lodashSet(this.dataObj, [_id, 'videoChannel'], 'youtube');
+    lodashSet(this.dataObj, [_id, 'videoURL'], '');
+    
+    
+    // console.log(`\n---------- clonedArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(clonedArr)));
+    // console.log(`\n-----------------------------------\n`);
     
   };
   

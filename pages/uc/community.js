@@ -49,6 +49,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 import Layout from '../../app/common/layout/components/layout';
 import Drawer from '../../app/common/layout/components/drawer';
 import ForumNavigation from '../../app/common/forum/components/navigation';
+import VideoModal from '../../app/common/image-and-video/components/video-modal';
 // import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 
@@ -401,6 +402,9 @@ export default class extends React.Component {
             Drawer
           </Drawer>
           
+          
+          
+          <VideoModal />
           
           
           

@@ -85,6 +85,7 @@ const cssPreviewRemoveFab = css`
     position: absolute;
     top: -10px;
     right: -10px;
+    z-index: 2;
   }
 `;
 
@@ -122,14 +123,9 @@ export default injectIntl(class extends React.Component {
     
     const { storeImageAndVideo, storeImageAndVideoForm, intl, _id, arrayName = 'mainArr' } = this.props;
     
-    const { handleLightboxOpen } = storeImageAndVideo;
+    const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
-    const {
-      
-      dataObj,
-      handleRemovePreview,
-      
-    } = storeImageAndVideoForm;
+    const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
     
     const imagesAndVideosArr = lodashGet(dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
     
@@ -141,6 +137,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const componentsPreviewArr = [];
+    const imagesArr = [];
     
     if (imagesAndVideosArr.length > 0) {
       
@@ -148,6 +145,12 @@ export default injectIntl(class extends React.Component {
       
       for (const [index, valueObj] of imagesAndVideosArr.entries()) {
         
+        
+        // console.log(`
+        //   ----- valueObj -----\n
+        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         // ---------------------------------------------
         //   画像
@@ -248,6 +251,60 @@ export default injectIntl(class extends React.Component {
           }
           
           imageIndex += 1;
+          imagesArr.push(valueObj);
+          
+          
+        // ---------------------------------------------
+        //   動画
+        // ---------------------------------------------
+        
+        } else if (valueObj.type === 'video') {
+          
+          componentsPreviewArr.push(
+            <div css={cssPreviewBox} key={index}>
+              
+              <div
+                css={css`
+                  width: 192px;
+                  height: 108px;
+                  background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
+                  background-size: 192px 108px;
+                  position: relative;
+                  
+                  @media screen and (max-width: 480px) {
+                    width: 96px;
+                    height: 54px;
+                    background-size: 96px 54px;
+                  }
+                `}
+              />
+              
+              <Fab
+                css={cssPreviewRemoveFab}
+                color="primary"
+                onClick={() => handleRemovePreview({ _id, arrayName, index })}
+              >
+                <IconClose />
+              </Fab>
+              
+              <img
+                css={css`
+                  width: 192px;
+                  height: 108px;
+                  position: absolute;
+                  top: 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    width: 96px;
+                    height: 54px;
+                  }
+                `}
+                src="/static/img/common/video-play-button.png"
+                onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+              />
+              
+            </div>
+          );
           
         }
         
@@ -296,7 +353,7 @@ export default injectIntl(class extends React.Component {
         {/* Lightbox */}
         <LightboxWrapper
           _id={_id}
-          imagesAndVideosArr={imagesAndVideosArr}
+          imagesAndVideosArr={imagesArr}
         />
         
         

@@ -32,12 +32,11 @@ import { CustomError } from '../../../@modules/error/custom';
 
 
 // ---------------------------------------------
-//   Validation
+//   Validations
 // ---------------------------------------------
 
-// const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-// const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
-// const { validationUsersEmail } = require('../../../@database/users/validations/email');
+const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+const { validationForumThreadsDescription } = require('../../../@database/forum-threads/validations/description');
 
 
 // --------------------------------------------------
@@ -45,7 +44,7 @@ import { CustomError } from '../../../@modules/error/custom';
 // --------------------------------------------------
 
 import initStoreLayout from '../../layout/stores/layout';
-// import initStoreUserCommunity from '../../../uc/community/stores/store';
+import initStoreImageAndVideoForm from '../../image-and-video/stores/form';
 
 
 // --------------------------------------------------
@@ -54,7 +53,7 @@ import initStoreLayout from '../../layout/stores/layout';
 
 let storeForum = null;
 let storeLayout = initStoreLayout({});
-// let storeUserCommunity = initStoreUserCommunity({});
+let storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
 
 
@@ -375,38 +374,181 @@ class Store {
   
   
   /**
-   * スレッド作成 - メイン画像を変更する
-   * @param {string} _id - ID
-   * @param {string} value - 値
+   * スレッド作成フォームを送信する
    */
   @action.bound
-  handleImagesAndVideosObjMainArr({ _id, value }) {
-    
-    // console.log('handleImagesAndVideosObjMainArr');
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    // `);
-    
-    // console.log(`\n---------- value ----------\n`);
-    // console.dir(value);
-    // console.log(`\n-----------------------------------\n`);
-    
-    let clonedValue = lodashCloneDeep(value);
+  async handleSubmitCreateThread({ _id }) {
     
     
-    lodashSet(this.dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], clonedValue);
-    
-    // if (value && value.length > 0) {
-    //   lodashSet(this.dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], []);
-    // } else {
-    //   lodashSet(this.dataObj, [_id, 'createThreadObj', 'imagesAndVideosObj', 'mainArr'], value);
-    // }
-    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const name = lodashGet(this.dataObj, [_id, 'createThreadObj', 'name'], '');
+      const description = lodashGet(this.dataObj, [_id, 'createThreadObj', 'description'], '');
+      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ _id });;
+      
+      
+      // ---------------------------------------------
+      //   Validation
+      // ---------------------------------------------
+      
+      const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
+      const validationForumThreadsDescriptionObj = validationForumThreadsDescription({ value: description });
+      
+      console.log(chalk`
+        \n---------- handleSubmitCreateThread ----------\n
+        name: {green ${name}}
+        description: {green ${description}}
+      `);
+      
+      console.log(`
+        ----- imagesAndVideosObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- validationForumThreadsNameObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- validationForumThreadsDescriptionObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsDescriptionObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // ---------------------------------------------
+      //   Validation Error
+      // ---------------------------------------------
+      
+      if (
+        validationForumThreadsNameObj.error ||
+        validationForumThreadsDescriptionObj.error
+      ) {
+        throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
+      }
+      
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ _id: `${_id}-forumNavigation` });
+      
+      
+      
+      
+      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
+      // console.log(`\n-----------------------------------\n`);
+      
+      // return;
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      // const formData = new FormData();
+      
+      // formData.append('loginID', loginID);
+      // formData.append('loginPassword', loginPassword);
+      // formData.append('response', recaptchaResponse);
+      
+      // formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
+      
+      
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
+      
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${process.env.URL_API}/v1/forum-threads/create-thread`,
+      //   methodType: 'POST',
+      //   formData: formData
+      // });
+      
+      
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
+      
+      
+      // // ---------------------------------------------
+      // //   Form Reset
+      // // ---------------------------------------------
+      
+      // lodashSet(this.dataObj, 'loginID', '');
+      // lodashSet(this.dataObj, 'loginPassword', '');
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: '5Gf730Gmz',
+      });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ _id: `${_id}-forumNavigation` });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
     
     
   };
-  
   
   
 }

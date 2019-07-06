@@ -42,11 +42,6 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
 
 
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-
 
 
 // --------------------------------------------------
@@ -168,7 +163,6 @@ export default injectIntl(class extends React.Component {
               }}
             >
               <MenuItem value="youtube">YouTube</MenuItem>
-              <MenuItem value="test">test</MenuItem>
             </Select>
           </FormControl>
         </div>

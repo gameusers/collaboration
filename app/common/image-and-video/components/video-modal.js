@@ -15,8 +15,15 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 import ModalVideo from 'react-modal-video';
+
+
+// ---------------------------------------------
+//   Stores
+// ---------------------------------------------
+
+import initStoreImageAndVideo from '../stores/image-and-video';
 
 
 
@@ -25,7 +32,6 @@ import ModalVideo from 'react-modal-video';
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
 @observer
 export default class extends React.Component {
   
@@ -35,7 +41,16 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
+    
+    this.storeImageAndVideo = initStoreImageAndVideo({});
+    
   }
   
   
@@ -47,22 +62,15 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    const { stores } = this.props;
-    
-    
-    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
       <ModalVideo
-        channel={stores.imageAndVideo.modalVideoChannel}
-        isOpen={stores.imageAndVideo.modalVideoOpen}
-        videoId={stores.imageAndVideo.modalVideoId}
-        onClose={stores.imageAndVideo.handleModalVideoClose}
+        channel={this.storeImageAndVideo.modalVideoChannel}
+        isOpen={this.storeImageAndVideo.modalVideoOpen}
+        videoId={this.storeImageAndVideo.modalVideoID}
+        onClose={this.storeImageAndVideo.handleModalVideoClose}
       />
     );
     

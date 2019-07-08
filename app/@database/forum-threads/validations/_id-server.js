@@ -38,7 +38,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationForumThreadsIDServer = async ({ value }) => {
+const validationForumThreads_idServer = async ({ value }) => {
   
   
   // ---------------------------------------------
@@ -112,5 +112,5 @@ const validationForumThreadsIDServer = async ({ value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationForumThreadsIDServer
+  validationForumThreads_idServer
 };

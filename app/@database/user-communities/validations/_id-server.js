@@ -34,20 +34,19 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Player ID
+ * _id
  * @param {string} value - 値
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} バリデーション結果
  */
-const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
+const validationUserCommunities_idServer = async ({ value }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 3;
-  const maxLength = 32;
+  const minLength = 7;
+  const maxLength = 14;
   
   
   // ---------------------------------------------
@@ -68,7 +67,7 @@ const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
   // ---------------------------------------------
   
   if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'oqrqupZ3J', messageID: 'ilE2NcYjI' }] });
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'l8-myxsT5', messageID: 'Pp_CFyt_3' }] });
   }
   
   
@@ -77,23 +76,22 @@ const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
   // ---------------------------------------------
   
   if (data.match(/^[\w\-]+$/) === null) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JQLZtHZ49', messageID: 'JBkjlGQMh' }] });
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'YWcSSkio6', messageID: 'JBkjlGQMh' }] });
   }
   
   
   // ---------------------------------------------
-  //   データベースに存在しているかチェック
+  //   データベースに存在していない場合、エラー
   // ---------------------------------------------
   
   const count = await Model.count({
     conditionObj: {
-      _id: { '$ne': loginUsers_id },
-      playerID: value,
+      _id: value,
     }
   });
   
-  if (count === 1) {
-    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'aCaDRxR2g', messageID: 'Xt11v41pR' }] });
+  if (count === 0) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FFauG_RbE', messageID: 'cvS0qSAlE' }] });
   }
   
   
@@ -114,5 +112,5 @@ const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersPlayerIDServer
+  validationUserCommunities_idServer
 };

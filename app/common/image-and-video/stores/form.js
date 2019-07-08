@@ -83,16 +83,16 @@ class Store {
   handleGetImagesAndVideosObj({ _id }) {
     const imagesAndVideosObj = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj'], {});
     
-    console.log(chalk`
-      \n---------- handleGetImagesAndVideosObj ----------\n
-      _id: {green ${_id}}
-    `);
+    // console.log(chalk`
+    //   \n---------- handleGetImagesAndVideosObj ----------\n
+    //   _id: {green ${_id}}
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     return imagesAndVideosObj;
   };

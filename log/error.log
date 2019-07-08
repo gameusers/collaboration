@@ -154,3 +154,4 @@
 {"level":"error","message":"2019-06-29T08:36:20.371Z\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nLogin User: \nMessage: "}
 {"level":"error","message":""}
 {"logID":"wUM9jItt7","date":"2019-07-03T13:30:39.149Z","endpointID":"P3ut9x3Fj","users_id":"","ip":"::ffff:133.167.108.234","requestParametersObj":{"playerID":"undefinedpl"},"errorsArr":[{"code":"wUM9jItt7","messageID":"Error"}],"level":"error","message":"Cannot read property '_id' of null"}
+{"logID":"u4H0UNt8N","date":"2019-07-08T14:46:26.474Z","endpointID":"XfDc_r3br","users_id":"","ip":"240b:250:38a1:8400:65ed:5a:1424:8afd","requestParametersObj":{"gameCommunities_id":"undefined","userCommunities_id":"cxO8tEGty","name":"aaa","description":"bbb","imagesAndVideosObj":"{}"},"errorsArr":[{"code":"u4H0UNt8N","messageID":"Error"}],"level":"error","message":"Chalk template literal is missing 1 closing bracket (`}`)"}

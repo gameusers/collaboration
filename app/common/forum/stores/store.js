@@ -35,8 +35,8 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
-const { validationForumThreadsDescription } = require('../../../@database/forum-threads/validations/description');
+import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
+import { validationForumThreadsDescription } from '../../../@database/forum-threads/validations/description';
 
 
 // --------------------------------------------------
@@ -96,7 +96,7 @@ class Store {
    * @param {string} threadUpdatedDate - スレッドの最終更新日時
    */
   @action.bound
-  async handleChangeThreadRowsPerPage({ _id, threadUpdatedDate, limit }) {
+  async handleChangeThreadRowsPerPage({ gameCommunities_id, userCommunities_id, threadUpdatedDate, limit }) {
     
     
     try {
@@ -107,7 +107,8 @@ class Store {
       // ---------------------------------------------
       
       this.handleReadThreadsList({
-        _id,
+        gameCommunities_id,
+        userCommunities_id,
         page: 1,
         threadUpdatedDate,
         limit,
@@ -133,7 +134,10 @@ class Store {
    * @param {string} threadUpdatedDate - スレッドの最終更新日時
    */
   @action.bound
-  async handleReadThreadsList({ _id, page, threadUpdatedDate, limit }) {
+  async handleReadThreadsList({ gameCommunities_id, userCommunities_id, page, limit, threadUpdatedDate }) {
+    
+    
+    const _id = gameCommunities_id || userCommunities_id;
     
     
     try {
@@ -264,7 +268,8 @@ class Store {
       
       let formData = new FormData();
       
-      formData.append('userCommunities_id', _id);
+      formData.append('gameCommunities_id', gameCommunities_id);
+      formData.append('userCommunities_id', userCommunities_id);
       formData.append('page', page);
       formData.append('limit', threadListLimit);
       
@@ -273,11 +278,23 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/forum-threads/user-community/list`,
-        methodType: 'POST',
-        formData: formData,
-      });
+      let resultObj = {};
+      
+      if (gameCommunities_id) {
+        
+        
+        
+      } else {
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v1/forum-threads/list/user-community`,
+          methodType: 'POST',
+          formData: formData,
+        });
+        
+      }
+      
+      
       
       // console.log(`\n---------- resultObj ----------\n`);
       // console.dir(resultObj);
@@ -377,7 +394,14 @@ class Store {
    * スレッド作成フォームを送信する
    */
   @action.bound
-  async handleSubmitCreateThread({ _id }) {
+  async handleSubmitCreateThread({ gameCommunities_id, userCommunities_id }) {
+    
+    
+    // ---------------------------------------------
+    //   Common Property
+    // ---------------------------------------------
+    
+    const _id = gameCommunities_id || userCommunities_id;
     
     
     try {
@@ -392,36 +416,23 @@ class Store {
       const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ _id });;
       
       
+      
+      
+      // ---------------------------------------------
+      //   _id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!_id) {
+        throw new CustomError({ errorsArr: [{ code: '8319EqfHo', messageID: '1YJnibkmh' }] });
+      }
+      
+      
       // ---------------------------------------------
       //   Validation
       // ---------------------------------------------
       
       const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
       const validationForumThreadsDescriptionObj = validationForumThreadsDescription({ value: description });
-      
-      console.log(chalk`
-        \n---------- handleSubmitCreateThread ----------\n
-        name: {green ${name}}
-        description: {green ${description}}
-      `);
-      
-      console.log(`
-        ----- imagesAndVideosObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationForumThreadsNameObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- validationForumThreadsDescriptionObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsDescriptionObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
       
       
       // ---------------------------------------------
@@ -437,6 +448,14 @@ class Store {
       
       
       
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
@@ -446,13 +465,30 @@ class Store {
       
       
       
-      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      // console.log(`\n-----------------------------------\n`);
+      // console.log(chalk`
+      //   \n---------- handleSubmitCreateThread ----------\n
+      //   _id: {green ${_id}}
+      //   name: {green ${name}}
+      //   description: {green ${description}}
+      // `);
       
-      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      // console.log(`\n-----------------------------------\n`);
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- validationForumThreadsNameObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- validationForumThreadsDescriptionObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsDescriptionObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // return;
       
@@ -461,31 +497,41 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      // const formData = new FormData();
+      const formData = new FormData();
       
-      // formData.append('loginID', loginID);
-      // formData.append('loginPassword', loginPassword);
-      // formData.append('response', recaptchaResponse);
-      
-      // formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
-      
-      
-      // // ---------------------------------------------
-      // //   Fetch
-      // // ---------------------------------------------
-      
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${process.env.URL_API}/v1/forum-threads/create-thread`,
-      //   methodType: 'POST',
-      //   formData: formData
-      // });
+      formData.append('gameCommunities_id', gameCommunities_id);
+      formData.append('userCommunities_id', userCommunities_id);
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('imagesAndVideosObj', JSON.stringify(imagesAndVideosObj));
       
       
-      // // console.log(`
-      // //   ----- resultObj -----\n
-      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = {};
+      
+      if (gameCommunities_id) {
+        
+        
+        
+      } else {
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v1/forum-threads/create/user-community`,
+          methodType: 'POST',
+          formData: formData
+        });
+        
+      }
+      
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // // ---------------------------------------------
@@ -511,7 +557,7 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: '5Gf730Gmz',
+        messageID: 'pInPmleQh',
       });
       
       

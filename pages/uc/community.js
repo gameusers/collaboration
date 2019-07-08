@@ -368,15 +368,11 @@ export default class extends React.Component {
             <div
               css={css`
                 width: 100%;
-                // overflow-x: auto;
-                // max-width: 800px;
-                // margin: 0;
-                // padding: 0;
               `}
             >
               
               
-              <ForumNavigation _id={this.props.userCommunities_id} />
+              <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
               
               
               {/* プレイヤーカード */}

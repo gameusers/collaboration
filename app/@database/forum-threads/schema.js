@@ -13,6 +13,7 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
+  gameCommunities_id: { type: String },
   userCommunities_id: { type: String },
   users_id: { type: String },
   localesArr: [
@@ -52,6 +53,8 @@ const schema = mongoose.Schema({
   comments: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
+  ip: { type: String, required: true },
+  userAgent: { type: String, required: true },
 });
 
 module.exports = mongoose.model('forum-threads', schema);

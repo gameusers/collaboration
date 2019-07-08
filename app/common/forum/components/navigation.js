@@ -225,7 +225,10 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, _id, sidebar } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, sidebar } = this.props;
+    
+    const _id = gameCommunities_id || userCommunities_id;
+    
     
     
     // --------------------------------------------------
@@ -277,10 +280,14 @@ export default injectIntl(class extends React.Component {
     //   Create Thread
     // --------------------------------------------------
     
+    // const createThreadShowError = lodashGet(dataObj, [_id, 'createThreadObj', 'showError'], false);
+    
     const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
     const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
     
     const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
+    
+    
     
     
     // console.log(`
@@ -295,7 +302,7 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   threadListPage: {green ${threadListPage}}
+    //   createThreadName: {green ${createThreadName} / ${typeof createThreadName}}
     // `);
     
     // console.log(chalk`
@@ -531,11 +538,13 @@ export default injectIntl(class extends React.Component {
               'aria-label': 'Next Page',
             }}
             onChangeRowsPerPage={(eventObj) => handleChangeThreadRowsPerPage({
-              _id,
+              gameCommunities_id,
+              userCommunities_id,
               limit: eventObj.target.value,
             })}
             onChangePage={(eventObj, value) => handleReadThreadsList({
-              _id,
+              gameCommunities_id,
+              userCommunities_id,
               page: value + 1,
             })}
           />
@@ -841,7 +850,7 @@ export default injectIntl(class extends React.Component {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleSubmitCreateThread({ _id: `${_id}-createThread` })}
+                    onClick={() => handleSubmitCreateThread({ userCommunities_id: _id })}
                   >
                     スレッドを作成する
                   </Button>

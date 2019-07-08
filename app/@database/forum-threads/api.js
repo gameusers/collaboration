@@ -30,6 +30,7 @@ const lodashSet = require('lodash/set');
 const { verifyCsrfToken } = require('../../@modules/csrf');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
+const { imageSave } = require('../../@modules/image-server');
 
 
 // ---------------------------------------------
@@ -37,9 +38,14 @@ const { CustomError } = require('../../@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../@validations/integer');
+const { validationIP } = require('../../@validations/ip');
 
-const { validationForumThreadsIDServer } = require('./validations/_id-server');
+const { validationUserCommunities_idServer } = require('../user-communities/validations/_id-server');
+
+const { validationForumThreads_idServer } = require('./validations/_id-server');
 const { validationForumThreadsLimit } = require('./validations/limit');
+const { validationForumThreadsName } = require('./validations/name');
+const { validationForumThreadsDescription } = require('./validations/description');
 
 
 // ---------------------------------------------
@@ -81,10 +87,10 @@ let statusCode = 400;
 
 
 // --------------------------------------------------
-//   Logout / endpointID: WM1-TR3MY
+//   スレッド一覧 読み込み / ユーザーコミュニティ用 / endpointID: WM1-TR3MY
 // --------------------------------------------------
 
-router.post('/user-community/list', upload.none(), async (req, res, next) => {
+router.post('/list/user-community', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -139,7 +145,7 @@ router.post('/user-community/list', upload.none(), async (req, res, next) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationForumThreadsIDServer({ value: userCommunities_id });
+    await validationUserCommunities_idServer({ value: userCommunities_id });
     await validationInteger({ throwError: true, required: true, value: pageInt });
     await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
     
@@ -188,6 +194,222 @@ router.post('/user-community/list', upload.none(), async (req, res, next) => {
     const resultErrorObj = returnErrorsArr({
       errorObj,
       endpointID: 'WM1-TR3MY',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   スレッド作成 / endpointID: XfDc_r3br
+// --------------------------------------------------
+
+router.post('/create/user-community', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { userCommunities_id, forumThreads_id, name, description, imagesAndVideosObj } = req.body;
+    
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
+    lodashSet(requestParametersObj, ['name'], name);
+    lodashSet(requestParametersObj, ['description'], description);
+    lodashSet(requestParametersObj, ['imagesAndVideosObj'], imagesAndVideosObj);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    if (userCommunities_id) {
+      await validationUserCommunities_idServer({ value: userCommunities_id });
+    } else {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WNajTF52g', messageID: '1YJnibkmh' }] });
+    }
+    
+    await validationForumThreadsName({ throwError: true, value: name });
+    await validationForumThreadsDescription({ throwError: true, value: description });
+    await validationIP({ throwError: true, value: req.ip });
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads / スレッドがすでに存在するかチェック
+    // --------------------------------------------------
+    
+    const count = await ModelForumThreads.count({
+      conditionObj: {
+        userCommunities_id,
+        'localesArr.name': name,
+        'localesArr.description': description,
+      }
+    });
+    
+    console.log(chalk`
+      count: {green ${count}}
+    `);
+    
+    if (count > 0) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Save Object
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    const saveObj = {
+      _id: shortid.generate(),
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      userCommunities_id,
+      users_id: loginUsers_id,
+      localesArr: [
+        {
+          _id: shortid.generate(),
+          language: localeObj.language,
+          name,
+          description,
+        }
+      ],
+      imagesAndVideosObj: {},
+      comments: 0,
+      images: 0,
+      videos: 0,
+      ip: req.ip,
+      userAgent: req.headers['user-agent'],
+    };
+    
+    
+    console.log(chalk`
+      userCommunities_id: {green ${userCommunities_id}}
+      name: {green ${name} / ${typeof name}}
+      description: {green ${description} / ${typeof description}}
+      IP: {green ${req.ip}}
+      User Agent: {green ${req.headers['user-agent']}}
+    `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    console.log(`
+      ----- saveObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- localeObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // JSON.parse(imagesAndVideosObj);
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    // returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    //   page: pageInt,
+    //   limit: limitInt,
+    // });
+    
+    
+    // --------------------------------------------------
+    //   DB find / User Communities
+    // --------------------------------------------------
+    
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'XfDc_r3br',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

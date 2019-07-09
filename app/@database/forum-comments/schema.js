@@ -57,4 +57,19 @@ const schema = mongoose.Schema({
   replies: { type: Number, default: 0, required: true },
 });
 
-module.exports = mongoose.model('forum-comments', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['forum-comments']) {
+  model = mongoose.model('forum-comments');
+} else {
+  model = mongoose.model('forum-comments', schema);
+}
+
+module.exports = model;
+
+// module.exports = mongoose.model('forum-comments', schema);

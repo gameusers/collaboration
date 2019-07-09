@@ -26,6 +26,8 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaForumThreads = require('./schema');
+const SchemaUserCommunities = require('../user-communities/schema');
+
 // const SchemaForumComments = require('../forum-comments/schema');
 const ModelUserCommunities = require('../user-communities/model');
 
@@ -485,6 +487,138 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
 
 
 
+/**
+ * 挿入 / 更新する  スレッド用
+ * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
+ * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
+ * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
+ * @return {Object} 
+ */
+const transactionForThread = async ({ forumThreadsConditionObj, forumThreadsSaveObj, userCommunitiesConditionObj, userCommunitiesSaveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await SchemaForumThreads.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    // --------------------------------------------------
+    //   DB updateOne
+    // --------------------------------------------------
+    
+    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    // throw new Error();
+    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----- forumThreadsConditionObj -----\n
+      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumThreadsSaveObj -----\n
+      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- userCommunitiesConditionObj -----\n
+      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- userCommunitiesSaveObj -----\n
+      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -497,4 +631,5 @@ module.exports = {
   insertMany,
   deleteMany,
   findForForumThreads,
+  transactionForThread,
 };

@@ -80,4 +80,20 @@ const schema = mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('user-communities', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['user-communities']) {
+  model = mongoose.model('user-communities');
+} else {
+  model = mongoose.model('user-communities', schema);
+}
+
+module.exports = model;
+
+
+// module.exports = mongoose.model('user-communities', schema);

@@ -287,7 +287,9 @@ class Store {
       } else {
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v1/forum-threads/list/user-community`,
+          // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=community1`),
+          // urlApi: `${process.env.URL_API}/v2/db/forum-threads/list-uc`,
+          urlApi: `${process.env.URL_API}/v1/forum-threads/list-uc`,
           methodType: 'POST',
           formData: formData,
         });
@@ -519,7 +521,7 @@ class Store {
       } else {
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v1/forum-threads/create/user-community`,
+          urlApi: `${process.env.URL_API}/v1/forum-threads/create-uc`,
           methodType: 'POST',
           formData: formData
         });
@@ -534,13 +536,13 @@ class Store {
       `);
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
       // // ---------------------------------------------

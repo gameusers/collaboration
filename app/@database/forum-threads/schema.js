@@ -57,4 +57,19 @@ const schema = mongoose.Schema({
   userAgent: { type: String, required: true },
 });
 
-module.exports = mongoose.model('forum-threads', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['forum-threads']) {
+  model = mongoose.model('forum-threads');
+} else {
+  model = mongoose.model('forum-threads', schema);
+}
+
+module.exports = model;
+
+// module.exports = mongoose.model('forum-threads', schema);

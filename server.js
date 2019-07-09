@@ -277,21 +277,21 @@ app.prepare().then(() => {
   //   User Community
   // ---------------------------------------------
   
-  server.get('/uc/:userCommunityID*', csrfToken, (req, res) => {
+  // server.get('/uc/:userCommunityID*', csrfToken, (req, res) => {
     
-    const { userCommunityID } = req.params;
+  //   const { userCommunityID } = req.params;
     
-    // console.log(chalk`
-    //   userCommunityID: {green ${userCommunityID}}
-    // `);
+  //   // console.log(chalk`
+  //   //   userCommunityID: {green ${userCommunityID}}
+  //   // `);
     
-    // if (!userCommunities_id) {
-    //   app.render(req, res, '/uc/index', req.query);
-    // }
+  //   // if (!userCommunities_id) {
+  //   //   app.render(req, res, '/uc/index', req.query);
+  //   // }
     
-    app.render(req, res, '/uc/community', { userCommunityID });
+  //   app.render(req, res, '/uc/community', { userCommunityID });
     
-  });
+  // });
   
   // server.get('/uc/:param1*', (req, res) => {
     

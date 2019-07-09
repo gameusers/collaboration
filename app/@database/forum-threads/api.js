@@ -90,7 +90,7 @@ let statusCode = 400;
 //   スレッド一覧 読み込み / ユーザーコミュニティ用 / endpointID: WM1-TR3MY
 // --------------------------------------------------
 
-router.post('/list/user-community', upload.none(), async (req, res, next) => {
+router.post('/list-uc', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -176,7 +176,6 @@ router.post('/list/user-community', upload.none(), async (req, res, next) => {
     returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
-    
     // ---------------------------------------------
     //   Success
     // ---------------------------------------------
@@ -219,7 +218,7 @@ router.post('/list/user-community', upload.none(), async (req, res, next) => {
 //   スレッド作成 / endpointID: XfDc_r3br
 // --------------------------------------------------
 
-router.post('/create/user-community', upload.none(), async (req, res, next) => {
+router.post('/create-uc', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -304,13 +303,18 @@ router.post('/create/user-community', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Save Object
+    //   forum-threads
     // --------------------------------------------------
+    
+    const forumThreadsConditionObj = {
+      _id: shortid.generate(),
+    };
+    
     
     const ISO8601 = moment().toISOString();
     
-    const saveObj = {
-      _id: shortid.generate(),
+    const forumThreadsSaveObj = {
+      // _id: userCommunities_id,
       createdDate: ISO8601,
       updatedDate: ISO8601,
       userCommunities_id,
@@ -332,13 +336,29 @@ router.post('/create/user-community', upload.none(), async (req, res, next) => {
     };
     
     
-    console.log(chalk`
-      userCommunities_id: {green ${userCommunities_id}}
-      name: {green ${name} / ${typeof name}}
-      description: {green ${description} / ${typeof description}}
-      IP: {green ${req.ip}}
-      User Agent: {green ${req.headers['user-agent']}}
-    `);
+    // --------------------------------------------------
+    //   user-communities
+    // --------------------------------------------------
+    
+    const userCommunitiesConditionObj = {
+      _id: userCommunities_id,
+    };
+    
+    
+    const userCommunitiesSaveObj = {
+      updatedDate: ISO8601,
+      'updatedDateObj.thread': ISO8601,
+      $inc: { 'forumObj.threadCount': 1 }
+    };
+    
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   name: {green ${name} / ${typeof name}}
+    //   description: {green ${description} / ${typeof description}}
+    //   IP: {green ${req.ip}}
+    //   User Agent: {green ${req.headers['user-agent']}}
+    // `);
     
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
@@ -346,11 +366,11 @@ router.post('/create/user-community', upload.none(), async (req, res, next) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsSaveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- localeObj -----\n
@@ -360,6 +380,18 @@ router.post('/create/user-community', upload.none(), async (req, res, next) => {
     
     
     // JSON.parse(imagesAndVideosObj);
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    await ModelForumThreads.transactionForThread({
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
+      userCommunitiesConditionObj,
+      userCommunitiesSaveObj,
+    });
     
     
     

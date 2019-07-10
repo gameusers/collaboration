@@ -20,7 +20,9 @@ const util = require('util');
  * 画像のサイズを計算する、リサイズする場合などに利用
  * @param {number} width - 横幅
  * @param {number} height - 高さ
- * @param {number} maxSize - リサイズする横幅、または高さ
+ * @param {number} minSize - リサイズする最小サイズ指定　横幅、または高さ
+ * @param {number} maxSize - リサイズする最大サイズ指定　横幅、または高さ
+ * @param {boolean} square - 正方形にする場合 true
  * @return {Object} 横幅、高さの入ったオブジェクト
  */
 const imageCalculateSize = ({ width, height, specifiedWidth, specifiedHeight, minSize, maxSize, square }) => {

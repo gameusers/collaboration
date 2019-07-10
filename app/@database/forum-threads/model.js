@@ -551,29 +551,29 @@ const transactionForThread = async ({ forumThreadsConditionObj, forumThreadsSave
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- forumThreadsConditionObj -----\n
-      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumThreadsSaveObj -----\n
-      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- userCommunitiesConditionObj -----\n
-      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- userCommunitiesSaveObj -----\n
-      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunitiesSaveObj -----\n
+    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

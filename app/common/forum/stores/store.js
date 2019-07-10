@@ -90,6 +90,22 @@ class Store {
   
   
   /**
+   * 開くタブを変更する
+   * @param {string} _id -  / userCommunities_id
+   * @param {number} page - スレッド一覧のページ
+   * @param {string} threadUpdatedDate - スレッドの最終更新日時
+   */
+  // @action.bound
+  // async handleChangeOpenedTabNo({ _id, value }) {
+    
+  //   lodashSet(this.dataObj, [_id, 'openedTabNo'], value);
+    
+  // };
+  
+  
+  
+  
+  /**
    * スレッド一覧の1ページに表示する件数を変更する
    * @param {string} _id -  / userCommunities_id
    * @param {number} page - スレッド一覧のページ
@@ -110,8 +126,8 @@ class Store {
         gameCommunities_id,
         userCommunities_id,
         page: 1,
-        threadUpdatedDate,
         limit,
+        threadUpdatedDate,
       });
       
       
@@ -184,6 +200,9 @@ class Store {
       if (limit) {
         
         reload = true;
+        
+        // 表示件数変更
+        clonedObj.forumThreadsObj.limit = limit;
         
       } else if (loadedDate) {
         
@@ -396,7 +415,7 @@ class Store {
    * スレッド作成フォームを送信する
    */
   @action.bound
-  async handleSubmitCreateThread({ gameCommunities_id, userCommunities_id }) {
+  async handleSubmitCreateThread({ gameCommunities_id, userCommunities_id, limit }) {
     
     
     // ---------------------------------------------
@@ -415,9 +434,15 @@ class Store {
       
       const name = lodashGet(this.dataObj, [_id, 'createThreadObj', 'name'], '');
       const description = lodashGet(this.dataObj, [_id, 'createThreadObj', 'description'], '');
-      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ _id });;
+      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ _id: `${_id}-createThread` });
       
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
+      // return;
       
       
       // ---------------------------------------------
@@ -481,6 +506,12 @@ class Store {
       // `);
       
       // console.log(`
+      //   ----- storeImageAndVideoForm.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
       //   ----- validationForumThreadsNameObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
       //   --------------------\n
@@ -506,6 +537,7 @@ class Store {
       formData.append('name', name);
       formData.append('description', description);
       formData.append('imagesAndVideosObj', JSON.stringify(imagesAndVideosObj));
+      // formData.append('limit', limit);
       
       
       // ---------------------------------------------
@@ -529,11 +561,11 @@ class Store {
       }
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -545,12 +577,57 @@ class Store {
       }
       
       
-      // // ---------------------------------------------
-      // //   Form Reset
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Update Thread List
+      // ---------------------------------------------
       
-      // lodashSet(this.dataObj, 'loginID', '');
-      // lodashSet(this.dataObj, 'loginPassword', '');
+      const threadUpdatedDate = lodashGet(resultObj, ['data', 'updatedDateObj', 'thread'], '0000-01-01T00:00:00Z');
+      
+      const threadListLimit = lodashGet(this.dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
+      
+      await this.handleReadThreadsList({
+        gameCommunities_id,
+        userCommunities_id,
+        page: 1,
+        limit: threadListLimit,
+        threadUpdatedDate,
+      });
+      
+      
+      // ---------------------------------------------
+      //   Set openedTabNo 0
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [_id, 'openedTabNo'],
+        value: 0,
+      });
+      
+      // this.handleChangeOpenedTabNo({ _id, value: 0 });
+      
+      // const openedTabNo = lodashGet(this.dataObj, [_id, 'openedTabNo'], 0);
+      
+      // console.log(chalk`
+      //   handleSubmitCreateThread
+      //   _id  : {green ${_id}}
+      //   openedTabNo  : {green ${openedTabNo}}
+      // `);
+      
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Form Reset
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [_id, 'createThreadObj', 'name'], '');
+      lodashSet(this.dataObj, [_id, 'createThreadObj', 'description'], '');
+      
+      storeImageAndVideoForm.handleResetForm({ _id: `${_id}-createThread` });
       
       
       // ---------------------------------------------

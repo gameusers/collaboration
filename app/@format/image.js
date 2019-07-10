@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 // const chalk = require('chalk');
@@ -12,6 +12,8 @@
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
+
+const lodashGet = require('lodash/get');
 
 
 
@@ -55,9 +57,11 @@ const formatImagesAndVideosArr = ({ arr }) => {
         // 初期値
         const srcSetArr = [];
         
+        const caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
+        
         returnArr[index] = {
           src: '',
-          caption: valueObj.caption,
+          caption,
           srcSet: '',
         };
         

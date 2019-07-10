@@ -101,6 +101,27 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Reset
+  // ---------------------------------------------
+  
+  /**
+   * imagesAndVideosObjをリセットする
+   * @param {string} _id - ID
+   */
+  @action.bound
+  handleResetForm({ _id }) {
+    lodashSet(this.dataObj, [_id, 'imagesAndVideosObj'], {});
+    
+    lodashSet(this.dataObj, [_id, 'imageCaption'], '');
+    
+    lodashSet(this.dataObj, [_id, 'videoChannel'], 'youtube');
+    lodashSet(this.dataObj, [_id, 'videoURL'], '');
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Form Show
   // ---------------------------------------------
   
@@ -354,7 +375,9 @@ class Store {
         
       }
       
-      
+//       console.log(`\n---------- clonedArr ----------\n`);
+// console.dir(clonedArr);
+// console.log(`\n-----------------------------------\n`);
       // ---------------------------------------------
       //   更新
       // ---------------------------------------------
@@ -367,6 +390,9 @@ class Store {
       // ---------------------------------------------
       
       lodashSet(this.dataObj, [_id, 'imageCaption'], '');
+      
+      
+      
       
       
     }

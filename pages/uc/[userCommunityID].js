@@ -29,7 +29,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
-import { createCsrfToken } from '../../app/@modules/csrf';
+// import { createCsrfToken } from '../../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -76,7 +76,7 @@ export default class extends React.Component {
     //   CSRF
     // --------------------------------------------------
     
-    createCsrfToken(req, res);
+    // createCsrfToken(req, res);
     
     
     // --------------------------------------------------

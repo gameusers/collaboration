@@ -208,7 +208,8 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-forumNavigation` });
+    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumNavigation` });
     
     
   }
@@ -280,8 +281,6 @@ export default injectIntl(class extends React.Component {
     //   Create Thread
     // --------------------------------------------------
     
-    // const createThreadShowError = lodashGet(dataObj, [_id, 'createThreadObj', 'showError'], false);
-    
     const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
     const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
     
@@ -298,7 +297,15 @@ export default injectIntl(class extends React.Component {
     
     
     // console.log(chalk`
+    //   navigation.js
     //   _id: {green ${_id}}
+    //   openedTabNo  : {green ${openedTabNo}}
+    // `);
+    
+    // console.log(`
+    //   ----- dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(chalk`
@@ -430,11 +437,15 @@ export default injectIntl(class extends React.Component {
           value={openedTabNo}
           indicatorColor="primary"
           textColor="primary"
+          
+          // onChange={(eventObj, value) => handleChangeOpenedTabNo({
+          //   _id,
+          //   value,
+          // })}
           onChange={(eventObj, value) => handleEdit({
             pathArr: [_id, 'openedTabNo'],
             value
           })}
-          // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
         >
           <Tab label="スレッド一覧" />
           <Tab label="スレッド作成" />
@@ -850,7 +861,8 @@ export default injectIntl(class extends React.Component {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => handleSubmitCreateThread({ userCommunities_id: _id })}
+                    onClick={() => handleSubmitCreateThread({ userCommunities_id: _id, limit: threadListLimit })}
+                    disabled={buttonDisabled}
                   >
                     スレッドを作成する
                   </Button>

@@ -45,22 +45,12 @@ const { imageCalculateSize } = require('./image');
  * @param {Array} newArr - 新しい画像情報の入った配列
  * @param {Array} oldArr - 古い（データベースから取得した）画像情報の入った配列
  * @param {string} directoryPath - 保存先のディレクトリーのパス
+ * @param {number} minSize - 画像の最小サイズ指定
+ * @param {boolean} square - 正方形にする場合 true
  * @return {Array} 画像情報の入った配列
  */
-const imageSave = async ({ newArr, oldArr, directoryPath, minSize, square }) => {
+const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }) => {
   
-  
-  // console.log(`
-  //   ----- newObj -----\n
-  //   ${util.inspect(newObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- oldObj -----\n
-  //   ${util.inspect(oldObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
   
   // console.log(`
   //   ----- newArr -----\n
@@ -76,6 +66,8 @@ const imageSave = async ({ newArr, oldArr, directoryPath, minSize, square }) => 
   
   // console.log(chalk`
   //   directoryPath: {green ${directoryPath}}
+  //   minSize: {green ${minSize}}
+  //   square: {green ${square}}
   // `);
   
   
@@ -120,6 +112,13 @@ const imageSave = async ({ newArr, oldArr, directoryPath, minSize, square }) => 
     //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    if (valueObj.type !== 'image') {
+      // console.log('continue');
+      returnArr.push(valueObj);
+      continue;
+    }
+    
     
     // ---------------------------------------------
     //   Return Object

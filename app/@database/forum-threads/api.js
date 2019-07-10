@@ -15,8 +15,13 @@ const util = require('util');
 // ---------------------------------------------
 
 const express = require('express');
+
 const multer  = require('multer');
-const upload = multer({ dest: 'static/' });
+const upload = multer({
+  dest: 'static/',
+  limits: { fieldSize: 5 * 1024 * 1024 },
+});
+
 const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
@@ -252,7 +257,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['description'], description);
-    lodashSet(requestParametersObj, ['imagesAndVideosObj'], imagesAndVideosObj);
+    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     
     
     
@@ -291,13 +296,18 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       }
     });
     
-    console.log(chalk`
-      count: {green ${count}}
-    `);
+    // console.log(chalk`
+    //   count: {green ${count}}
+    // `);
     
     if (count > 0) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
     }
+    
+    
+    
+    
+    
     
     
     
@@ -311,10 +321,11 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     };
     
     
+    const parsedImagesAndVideosObj = JSON.parse(imagesAndVideosObj);
+    
     const ISO8601 = moment().toISOString();
     
     const forumThreadsSaveObj = {
-      // _id: userCommunities_id,
       createdDate: ISO8601,
       updatedDate: ISO8601,
       userCommunities_id,
@@ -327,13 +338,72 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
           description,
         }
       ],
-      imagesAndVideosObj: {},
+      imagesAndVideosObj: parsedImagesAndVideosObj,
       comments: 0,
       images: 0,
       videos: 0,
       ip: req.ip,
       userAgent: req.headers['user-agent'],
     };
+    
+    
+    // --------------------------------------------------
+    //   画像を保存する
+    // --------------------------------------------------
+    
+    
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`\n---------- imagesAndVideosObj ----------\n`);
+    // console.dir(imagesAndVideosObj);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    console.log(`\n---------- parsedImagesAndVideosObj ----------\n`);
+    console.dir(parsedImagesAndVideosObj);
+    console.log(`\n-----------------------------------\n`);
+    
+    // console.log('画像を保存する');
+    
+    // console.log(chalk`
+    //   forumThreadsConditionObj._id: {green ${forumThreadsConditionObj._id}}
+    // `);
+    
+    if (parsedImagesAndVideosObj.mainArr) {
+      
+      // console.log('処理開始');
+      
+      const mainArr = await imageSave({
+        newArr: parsedImagesAndVideosObj.mainArr,
+        directoryPath: `static/img/forum/${forumThreadsConditionObj._id}/main/`,
+      });
+      
+      // console.log(`
+      //   ----- mainArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(mainArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // if (mainArr.length > 0) {
+        forumThreadsSaveObj.imagesAndVideosObj = {
+          mainArr,
+        };
+      // }
+      
+    }
+    
+    
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsSaveObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     // --------------------------------------------------
@@ -379,7 +449,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     // `);
     
     
-    // JSON.parse(imagesAndVideosObj);
+    // 
     
     
     // --------------------------------------------------
@@ -397,6 +467,8 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     
+    
+    
     // --------------------------------------------------
     //   DB find / Forum Threads
     // --------------------------------------------------
@@ -405,8 +477,8 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     //   localeObj,
     //   loginUsers_id,
     //   userCommunities_id,
-    //   page: pageInt,
-    //   limit: limitInt,
+    //   page: 1,
+    //   limit: parseInt(limit, 10),
     // });
     
     

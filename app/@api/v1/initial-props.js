@@ -39,13 +39,14 @@ const ModelForumComments = require('../../@database/forum-comments/model');
 //   Validations
 // ---------------------------------------------
 
-const { validationUsersPlayerID } = require('../../@database/users/validations/player-id');
+// const { validationUsersPlayerID } = require('../../@database/users/validations/player-id');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
+// const { createCsrfToken } = require('../../@modules/csrf');
 // const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
 // const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
@@ -809,26 +810,6 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Login Check / Login User Data
-    // --------------------------------------------------
-    
-    if (req.isAuthenticated() && req.user) {
-      returnObj.loginUsersObj = req.user;
-      returnObj.login = true;
-    }
-    
-    
-    // --------------------------------------------------
-    //   DB find / Games / Header Hero Image
-    // --------------------------------------------------
-    
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      language: localeObj.language,
-      country: localeObj.country,
-    });
-    
-    
-    // --------------------------------------------------
     //   DB find / Forum Threads
     // --------------------------------------------------
     
@@ -837,7 +818,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
       loginUsers_id,
       userCommunities_id,
       page: 1,
-      limit: 1,
+      // limit: 1,
     });
     
     

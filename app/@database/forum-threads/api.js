@@ -19,7 +19,7 @@ const express = require('express');
 const multer  = require('multer');
 const upload = multer({
   dest: 'static/',
-  limits: { fieldSize: 5 * 1024 * 1024 },
+  limits: { fieldSize: 25 * 1024 * 1024 },
 });
 
 const shortid = require('shortid');
@@ -364,9 +364,9 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     // console.log(`\n-----------------------------------\n`);
     
     
-    console.log(`\n---------- parsedImagesAndVideosObj ----------\n`);
-    console.dir(parsedImagesAndVideosObj);
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- parsedImagesAndVideosObj ----------\n`);
+    // console.dir(parsedImagesAndVideosObj);
+    // console.log(`\n-----------------------------------\n`);
     
     // console.log('画像を保存する');
     

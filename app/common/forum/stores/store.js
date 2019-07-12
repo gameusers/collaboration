@@ -175,7 +175,7 @@ class Store {
       const loadedDate = lodashGet(clonedObj, ['forumThreadsObj', 'dataObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(clonedObj, ['forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
       
-      let threadListLimit = lodashGet(clonedObj, ['forumThreadsObj', 'limit'], process.env.FORUM_THREADS_LIMIT);
+      let threadListLimit = lodashGet(clonedObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
       
       if (limit) {
         threadListLimit = limit;

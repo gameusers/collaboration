@@ -20,8 +20,6 @@ import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
 import lodashGet from 'lodash/get';
 
-import styled from '@emotion/styled';
-
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
 
@@ -41,7 +39,6 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -49,7 +46,6 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -129,56 +125,6 @@ const cssTableCell = css`
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// --------------------------------------------------
-//   Search
-// --------------------------------------------------
-
-// const SearchTabBox = styled.div`
-//   width: 100%;
-//   margin: 0;
-//   padding: 22px 24px 16px;
-// `;
-
-const SearchTabTypography = styled(Typography)`
-  padding: 16px;
-`;
-
-const SearchBox = styled.div`
-  margin: 0 0 16px 0;
-`;
-
-const SearchTextField = styled(TextField)`
-  && {
-    margin: 10px 0 0 0;
-  }
-`;
-
-const SearchDateTimeBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 15px 0 0 0;
-`;
-
-const SearchDateTimeTextField = styled(TextField)`
-  && {
-    margin: 10px 20px 0 0;
-  }
-`;
-
-const SearchCheckBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 15px 0 0 0;
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -232,6 +178,7 @@ export default injectIntl(class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   Panel
     // --------------------------------------------------
@@ -263,7 +210,7 @@ export default injectIntl(class extends React.Component {
       
     } = storeForum;
     
-    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 1);
+    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 2);
     
     
     // --------------------------------------------------
@@ -287,6 +234,11 @@ export default injectIntl(class extends React.Component {
     const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
     
     
+    // --------------------------------------------------
+    //   Search
+    // --------------------------------------------------
+    
+    // const searchKeyword = lodashGet(dataObj, [_id, 'searchObj', 'keyword'], '');
     
     
     // console.log(`
@@ -302,18 +254,11 @@ export default injectIntl(class extends React.Component {
     //   openedTabNo  : {green ${openedTabNo}}
     // `);
     
-    // console.log(`
-    //   ----- dataObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     // console.log(chalk`
     //   createThreadName: {green ${createThreadName} / ${typeof createThreadName}}
     // `);
     
     // console.log(chalk`
-    //   threadUpdatedDate: {green ${threadUpdatedDate}}
     //   threadListCount: {green ${threadListCount}}
     //   threadListLimit: {green ${threadListLimit}}
     //   threadListPage: {green ${threadListPage}}
@@ -332,48 +277,6 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
-    
-    // const createThreadName = stores.bbsNavigation.createThreadNameObj[id];
-    // const createThreadRule = stores.bbsNavigation.createThreadRuleObj[id];
-    
-    // const searchKeyword = stores.bbsNavigation.searchKeywordObj[id];
-    // const searchDateTimeStart = stores.bbsNavigation.searchDateTimeStartObj[id];
-    // const searchDateTimeEnd = stores.bbsNavigation.searchDateTimeEndObj[id];
-    // const searchThreadChecked = stores.bbsNavigation.searchThreadCheckedObj[id];
-    // const searchCommentChecked = stores.bbsNavigation.searchCommentCheckedObj[id];
-    // const searchReplyChecked = stores.bbsNavigation.searchReplyCheckedObj[id];
-    // const searchImageChecked = stores.bbsNavigation.searchImageCheckedObj[id];
-    // const searchVideoChecked = stores.bbsNavigation.searchVideoCheckedObj[id];
-    // const searchMineChecked = stores.bbsNavigation.searchMineCheckedObj[id];
-    
-    
-    // const {
-    //   handleMenuButtonThreadList,
-    //   handleMenuButtonNew,
-    //   handleMenuButtonImage,
-    //   handleMenuButtonVideo,
-      
-    //   handleOpenedTabNo,
-      
-    //   handleReadThread,
-    //   handleThreadListSort,
-    //   handleThreadListRowsPerPage,
-    //   handleThreadListPage,
-      
-    //   handleCreateThreadNameObj,
-    //   handleCreateThreadRuleObj,
-    //   handleCreateThread,
-      
-    //   handleSearchKeyword,
-    //   handleSearchDateTimeStart,
-    //   handleSearchDateTimeEnd,
-    //   handleSearchThreadChecked,
-    //   handleSearchCommentChecked,
-    //   handleSearchReplyChecked,
-    //   handleSearchImageChecked,
-    //   handleSearchVideoChecked,
-    //   handleSearchMineChecked
-    // } = stores.bbsNavigation;
     
     
     // --------------------------------------------------
@@ -537,7 +440,7 @@ export default injectIntl(class extends React.Component {
           {/* Pagination */}
           <TablePagination
             component="div"
-            rowsPerPageOptions={[1, 2, 3, 4, 5, 10, 20, 50]}
+            rowsPerPageOptions={[5, 10, 20, 50]}
             count={threadListCount}
             rowsPerPage={threadListLimit}
             page={threadListPage}
@@ -610,7 +513,7 @@ export default injectIntl(class extends React.Component {
                   padding: 7px 0 0 0;
                 `}
               >
-                BBS
+                Forum
               </h2>
             </div>
             
@@ -768,7 +671,7 @@ export default injectIntl(class extends React.Component {
             {openedTabNo === 1 &&
               <div
                 css={css`
-                  padding: 0 12px 16px;
+                  padding: 0 16px 16px;
                 `}
               >
                 
@@ -867,6 +770,205 @@ export default injectIntl(class extends React.Component {
                     スレッドを作成する
                   </Button>
                 </div>
+                
+                
+              </div>
+            }
+            
+            
+            {/* Search */}
+            {openedTabNo === 2 &&
+              <div
+                css={css`
+                  padding: 0 16px 16px;
+                `}
+              >
+                
+                
+                {/* 検索フォーム */}
+                <div
+                  css={css`
+                    margin: 0 0 16px 0;
+                  `}
+                >
+                  
+                  <TextField
+                    css={css`
+                      && {
+                        width: 100%;
+                        max-width: 500px;
+                      }
+                    `}
+                    id="createTreadName"
+                    label="検索キーワード"
+                    value={lodashGet(dataObj, [_id, 'searchObj', 'keyword'], '')}
+                    onChange={(eventObj) => handleEdit({
+                      pathArr: [_id, 'searchObj', 'keyword'],
+                      value: eventObj.target.value
+                    })}
+                    // error={validationForumThreadsObj.error}
+                    // helperText={intl.formatMessage({ id: validationForumThreadsObj.messageID }, { numberOfCharacters: validationForumThreadsObj.numberOfCharacters })}
+                    margin="normal"
+                    inputProps={{
+                      maxLength: 20,
+                    }}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconSearch />
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row wrap;
+                      margin: 6px 0 0 0;
+                    `}
+                  >
+                    
+                    <TextField
+                      css={css`
+                        && {
+                          margin: 12px 20px 0 0;
+                        }
+                      `}
+                      id="date-start"
+                      label="期間 - 開始日"
+                      type="date"
+                      value={lodashGet(dataObj, [_id, 'searchObj', 'dateStart'], '')}
+                      onChange={(eventObj) => handleEdit({
+                        pathArr: [_id, 'searchObj', 'dateStart'],
+                        value: eventObj.target.value
+                      })}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    
+                    <TextField
+                      css={css`
+                        && {
+                          margin: 12px 0 0 0;
+                        }
+                      `}
+                      id="date-end"
+                      label="期間 - 終了日"
+                      type="date"
+                      value={lodashGet(dataObj, [_id, 'searchObj', 'dateEnd'], '')}
+                      onChange={(eventObj) => handleEdit({
+                        pathArr: [_id, 'searchObj', 'dateEnd'],
+                        value: eventObj.target.value
+                      })}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                    
+                  </div>
+                  
+                  
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row wrap;
+                      margin: 16px 0 0 0;
+                    `}
+                  >
+                    
+                    <FormControlLabel
+                      classes={{
+                        label: classes.label
+                      }}
+                      control={
+                        <Checkbox
+                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkThread'], false)}
+                          onChange={(eventObj) => handleEdit({
+                            pathArr: [_id, 'searchObj', 'checkThread'],
+                            value: eventObj.target.checked
+                          })}
+                        />
+                      }
+                      label="スレッド"
+                    />
+                    
+                    <FormControlLabel
+                      classes={{
+                        label: classes.label
+                      }}
+                      control={
+                        <Checkbox
+                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkComment'], false)}
+                          onChange={(eventObj) => handleEdit({
+                            pathArr: [_id, 'searchObj', 'checkComment'],
+                            value: eventObj.target.checked
+                          })}
+                        />
+                      }
+                      label="コメント"
+                    />
+                    
+                    <FormControlLabel
+                      classes={{
+                        label: classes.label
+                      }}
+                      control={
+                        <Checkbox
+                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkImage'], false)}
+                          onChange={(eventObj) => handleEdit({
+                            pathArr: [_id, 'searchObj', 'checkImage'],
+                            value: eventObj.target.checked
+                          })}
+                        />
+                      }
+                      label="画像あり"
+                    />
+                    
+                    <FormControlLabel
+                      classes={{
+                        label: classes.label
+                      }}
+                      control={
+                        <Checkbox
+                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkVideo'], false)}
+                          onChange={(eventObj) => handleEdit({
+                            pathArr: [_id, 'searchObj', 'checkVideo'],
+                            value: eventObj.target.checked
+                          })}
+                        />
+                      }
+                      label="動画あり"
+                    />
+                    
+                    <FormControlLabel
+                      classes={{
+                        label: classes.label
+                      }}
+                      control={
+                        <Checkbox
+                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkMyPost'], false)}
+                          onChange={(eventObj) => handleEdit({
+                            pathArr: [_id, 'searchObj', 'checkMyPost'],
+                            value: eventObj.target.checked
+                          })}
+                        />
+                      }
+                      label="自分の投稿"
+                    />
+                    
+                  </div>
+                  
+                </div>
+                
+                
+                <Button
+                  variant="contained"
+                  color="primary"
+                >
+                  検索
+                </Button>
                 
                 
               </div>

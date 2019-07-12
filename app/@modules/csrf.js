@@ -36,18 +36,24 @@ const createCsrfToken = (req, res) => {
   //   トークン発行
   // --------------------------------------------------
   
-  const secret = tokens.secretSync();
-  const token = tokens.create(secret);
+  if (req) {
+    
+    const secret = tokens.secretSync();
+    const token = tokens.create(secret);
+    
+    req.session._csrf = secret;
+    res.cookie('_csrf', token);
+    
+    
+    // console.log(chalk`
+    //   createCsrfToken
+    //   secret: {green ${secret}}
+    //   token: {green ${token}}
+    // `);
+    
+  }
   
-  req.session._csrf = secret;
-  res.cookie('_csrf', token);
   
-  
-  // console.log(chalk`
-  //   createCsrfToken
-  //   secret: {green ${secret}}
-  //   token: {green ${token}}
-  // `);
   
 };
 
@@ -81,8 +87,8 @@ const verifyCsrfToken = (req, res) => {
     
     // console.log(chalk`
     //   verifyCsrfToken
-    //   secret: {green ${secret}}
-    //   token: {green ${token}}
+    //   session.secret: {green ${secret}}
+    //   cookies.token: {green ${token}}
     //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
     // `);
     

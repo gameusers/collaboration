@@ -29,7 +29,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
-import { createCsrfToken } from '../../app/@modules/csrf';
+// import { createCsrfToken } from '../../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -50,7 +50,6 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 import Layout from '../../app/common/layout/components/layout';
 import Drawer from '../../app/common/layout/components/drawer';
 import ForumNavigation from '../../app/common/forum/components/navigation';
-import Forum from '../../app/common/forum/components/forum';
 import VideoModal from '../../app/common/image-and-video/components/video-modal';
 // import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
@@ -70,24 +69,17 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query, login }) {
+  static async getInitialProps({ req, res, query }) {
     
     
-    // console.log('[userCommunityID].js / getInitialProps');
-    // const isServer = !!req;
-    
-    // console.log(chalk`
-    //   login: {green ${login}}
-    //   isServer: {green ${isServer}}
-    // `);
-    
+    console.log('[userCommunityID].js / getInitialProps');
     
     
     // --------------------------------------------------
     //   CSRF
     // --------------------------------------------------
     
-    createCsrfToken(req, res);
+    // createCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -376,10 +368,10 @@ export default class extends React.Component {
               <div style={{ marginTop: '14px' }}></div>
               
               
-              <ForumNavigation
-                userCommunities_id={this.props.userCommunities_id}
+              {/*<ForumNavigation
+                _id={this.props.userCommunities_id}
                 sidebar={true}
-              />
+              />*/}
               
             </div>
             
@@ -393,17 +385,6 @@ export default class extends React.Component {
               
               
               <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
-              
-              
-              <div
-                css={css`
-                  margin 12px 0 0 0;
-                `}
-              >
-                
-                <Forum userCommunities_id={this.props.userCommunities_id} />
-                
-              </div>
               
               
               {/* プレイヤーカード */}

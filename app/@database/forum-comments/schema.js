@@ -55,6 +55,8 @@ const schema = mongoose.Schema({
   anonymity: { type: Boolean, required: true },
   goods: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
+  ip: { type: String, required: true },
+  userAgent: { type: String, required: true },
 });
 
 
@@ -71,5 +73,3 @@ if (mongoose.models['forum-comments']) {
 }
 
 module.exports = model;
-
-// module.exports = mongoose.model('forum-comments', schema);

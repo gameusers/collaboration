@@ -210,7 +210,7 @@ export default injectIntl(class extends React.Component {
       
     } = storeForum;
     
-    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 2);
+    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
     
     
     // --------------------------------------------------

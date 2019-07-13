@@ -52,6 +52,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+// import Grow from '@material-ui/core/Grow';
+
 
 // ---------------------------------------------
 //   Material UI / Icons
@@ -68,6 +70,8 @@ import IconCreate from '@material-ui/icons/Create';
 import IconSearch from '@material-ui/icons/Search';
 
 import IconAssignment from '@material-ui/icons/Assignment';
+import IconPublic from '@material-ui/icons/Public';
+import IconEdit from '@material-ui/icons/Edit';
 
 
 // ---------------------------------------------
@@ -219,7 +223,7 @@ export default injectIntl(class extends React.Component {
     
     const forumArr = [1];
     
-    // const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
+    
     // const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1) - 1;
     // const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
     
@@ -299,6 +303,10 @@ export default injectIntl(class extends React.Component {
       // const editable = administrator || loginUserId === value.creatorId ? true : false;
       const editable = true;
       
+      const forumThreads_id = 'ks8WPvlQpbg';
+      
+      const showThreadDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showThreadDescription'], false);
+      
       
       // const threadUpdateFormName = threadUpdateFormNameObj[value.id];
       // const threadUpdateFormDescription = threadUpdateFormDescriptionObj[value.id];
@@ -311,11 +319,13 @@ export default injectIntl(class extends React.Component {
           key={index}
         >
           
-          {/* Title */}
+          
+          {/* Summary */}
           <ExpansionPanelSummary
             css={css`
               && {
                 margin: 0;
+                
                 
                 @media screen and (max-width: 480px) {
                   padding: 0 16px;
@@ -325,96 +335,220 @@ export default injectIntl(class extends React.Component {
           >
             
             
+            {/* Container */}
             <div
               css={css`
                 display: flex;
                 flex-flow: column nowrap;
+                width: 100%;
               `}
             >
-            
-            
-            <h2
-              css={css`
-                font-weight: bold;
-                font-size: 18px;
-              `}
-            >
-              雑談スレッド
-            </h2>
-            
-            
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row wrap;
-                font-size: 12px;
-              `}
-            >
-            
+              
+              
+              {/* Container - Thread Name & Expansion Button */}
               <div
                 css={css`
                   display: flex;
                   flex-flow: row nowrap;
-                  margin: 0 6px 0 0;
+                  align-items: center;
+                  width: 100%;
+                  // background-color: pink;
                 `}
               >
                 
-                <IconAssignment
-                  css={css`
-                    && {
-                      font-size: 24px;
-                      margin: 0 2px 0 0;
-                    }
-                  `}
-                />
                 
-                
+                {/* Container */}
                 <div
                   css={css`
-                    font-size: 12px;
-                    color: #009933;
+                    display: flex;
+                    flex-flow: column nowrap;
                   `}
-                  // onClick={() => handleThreadDescriptionOpenObj(value.id)}
                 >
-                  スレッドについて
+                  
+                  
+                  {/* h2 */}
+                  <h2
+                    css={css`
+                      font-weight: bold;
+                      font-size: 18px;
+                    `}
+                  >
+                    雑談スレッド
+                  </h2>
+                  
+                  
+                  {/* Information */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row wrap;
+                      font-size: 12px;
+                    `}
+                  >
+                    
+                    {/* Show Thread Description */}
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
+                        // align-items: center;
+                        margin: 0 6px 0 0;
+                      `}
+                    >
+                      
+                      <IconAssignment
+                        css={css`
+                          && {
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
+                      
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          margin: 2px 0 0 0;
+                        `}
+                        onClick={() => handleEdit({
+                          pathArr: [_id, forumThreads_id, 'showThreadDescription'],
+                          value: !showThreadDescription
+                        })}
+                      >
+                        スレッドについて
+                      </div>
+                      
+                    </div>
+                    
+                    
+                    {/* Thread _id */}
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
+                      `}
+                    >
+                      
+                      <IconPublic
+                        css={css`
+                          && {
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
+                      
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          margin: 2px 0 0 0;
+                        `}
+                      >
+                        ks8WPvlQpbg
+                      </div>
+                      
+                    </div>
+                    
+                    
+                    {/* Edit Button */}
+                    {editable &&
+                      <Button
+                        css={css`
+                          && {
+                            font-size: 12px;
+                            height: 22px;
+                            min-width: 54px;
+                            min-height: 22px;
+                            margin: 2px 0 0 10px;
+                            padding: 0 2px;
+                            
+                            @media screen and (max-width: 480px) {
+                              min-width: 36px;
+                              min-height: 22px;
+                            }
+                          }
+                        `}
+                        variant="outlined"
+                        // onClick={() => handleThreadUpdateFormOpen(value.id)}
+                      >
+                        <IconEdit
+                          css={css`
+                            && {
+                              font-size: 16px;
+                              margin: 0 3px 0 0;
+                              padding: 0;
+                              
+                              @media screen and (max-width: 480px) {
+                                display: none;
+                              }
+                            }
+                          `}
+                        />
+                        編集
+                      </Button>
+                    }
+                    
+                    
+                  </div>
+                  
+                  
                 </div>
+                
+                
+                
+                
+                {/* Expansion Button */}
+                <div
+                  css={css`
+                    margin-left: auto;
+                  `}
+                >
+                  
+                  <IconButton
+                    css={css`
+                      && {
+                        margin: 0;
+                        padding: 4px;
+                      }
+                    `}
+                    onClick={() => handlePanelExpand({ _id: `${_id}-forum` })}
+                    aria-expanded={panelExpanded}
+                    aria-label="Show more"
+                    disabled={buttonDisabled}
+                  >
+                    {panelExpanded ? (
+                      <IconExpandLess />
+                    ) : (
+                      <IconExpandMore />
+                    )}
+                  </IconButton>
+                  
+                </div>
+                
                 
               </div>
               
-            </div>
-            
-            
-            
-            {/* Expansion Button */}
-            <div
-              css={css`
-                margin: 0 0 0 auto;
-                padding: 0;
-              `}
-            >
               
-              <IconButton
-                css={css`
-                  && {
-                    margin: 0;
-                    padding: 4px;
-                  }
-                `}
-                onClick={() => handlePanelExpand({ _id })}
-                aria-expanded={panelExpanded}
-                aria-label="Show more"
-                disabled={buttonDisabled}
-              >
-                {panelExpanded ? (
-                  <IconExpandLess />
-                ) : (
-                  <IconExpandMore />
-                )}
-              </IconButton>
               
-            </div>
-            
-            
+              
+              {/* Thread Description */}
+              {showThreadDescription &&
+                <div
+                  css={css`
+                    font-size: 14px;
+                    line-height: 1.6em;
+                    border-left: 4px solid #A4A4A4;
+                    margin: 12px 0 10px 3px;
+                    padding: 0 0 0 18px;
+                  `}
+                >
+                  仲良く雑談しませんか？<br />ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。<br /><br />ルイン＆アドオンを使わず、選別もしない<br />僕のトラッパーがついにランク4の赤帯になりました。<br /><br /><br />Dead by Daylight
+                </div>
+              }
+              
+              
             </div>
             
             
@@ -422,27 +556,34 @@ export default injectIntl(class extends React.Component {
           
           
           
+          
           {/* Contents */}
-          {/*<ContentsExpansionPanelDetails>
+          <ExpansionPanelDetails>
             
-            <ContentsContainer>
+            <div
+              css={css`
+                width: 100%;
+              `}
+            >
               
-              <FormPost
+              AAA
+              
+              {/*<FormPost
                 id={`${value.id}-comment-insert`}
                 buttonLabel1="コメントする"
                 buttonHandle1={() => handleCommentInsert(communityId, value.id, `${value.id}-comment-insert`)}
-              />
+              />*/}
               
               
-              <CommentReply
+              {/*<CommentReply
                 communityId={communityId}
                 threadId={value.id}
                 commentArr={value.commentArr}
-              />
+              />*/}
               
-            </ContentsContainer>
+            </div>
             
-          </ContentsExpansionPanelDetails>*/}
+          </ExpansionPanelDetails>
           
         </ExpansionPanel>
         

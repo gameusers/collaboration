@@ -3118,6 +3118,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         anonymity: false,
         goods: 100,
         replies: 2,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
       
       
@@ -3145,6 +3147,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         anonymity: true,
         goods: 50,
         replies: 1,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
       
       
@@ -3172,6 +3176,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         anonymity: false,
         goods: 25,
         replies: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
       
       
@@ -3200,6 +3206,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         anonymity: true,
         goods: 50,
         replies: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
       
       
@@ -3227,6 +3235,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         anonymity: false,
         goods: 25,
         replies: 5,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
       
       

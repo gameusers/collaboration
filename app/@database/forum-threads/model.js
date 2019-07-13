@@ -458,6 +458,8 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     // `);
     delete cloneObj.createdDate;
     delete cloneObj.localesArr;
+    delete cloneObj.ip;
+    delete cloneObj.userAgent;
     delete cloneObj.__v;
     
     // console.log(`\n---------- cloneObj ----------\n`);

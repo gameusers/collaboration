@@ -246,29 +246,15 @@ const deleteMany = async ({ conditionObj }) => {
  */
 const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumThreads_idArr, commentsPage, commentsLimit = process.env.FORUM_COMMENTS_LIMIT, repliesPage, repliesLimit = process.env.FORUM_REPLIES_LIMIT }) => {
   
-  // console.log('findForForum');
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
   
   try {
     
     
     // --------------------------------------------------
-    //   Condition
+    //   Forum Comments & Replies データ取得
     // --------------------------------------------------
     
-    // const conditionObj = {
-    //   forumThreads_idArr,
-    // };
-    
-    
-    // --------------------------------------------------
-    //   Forum Threads & Comments データ取得
-    // --------------------------------------------------
-    
-    let resultArr = await SchemaForumComments.aggregate([
+    const resultArr = await SchemaForumComments.aggregate([
       
       {
         $match: { forumThreads_id: { $in: forumThreads_idArr } }
@@ -319,6 +305,12 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
       
     ]).exec();
     
+    
+    console.log(`
+      ----- findForForumCommentsAndReplies / resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

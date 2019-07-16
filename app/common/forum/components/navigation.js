@@ -79,7 +79,7 @@ const { validationForumThreadsName } = require('../../../@database/forum-threads
 //   Components
 // ---------------------------------------------
 
-import ImageAndVideoForm from '../../image-and-video/components/form';
+import FormThread from './form-thread';
 
 
 
@@ -206,7 +206,6 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleChangeThreadRowsPerPage,
       handleReadThreadsList,
-      handleSubmitCreateThread,
       
     } = storeForum;
     
@@ -217,21 +216,21 @@ export default injectIntl(class extends React.Component {
     //   Thread List
     // --------------------------------------------------
     
-    const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsObj', 'count'], 0);
-    const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1) - 1;
-    const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
+    const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'count'], 0);
+    const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'page'], 1) - 1;
+    const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIST_LIMIT, 10));
     
-    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
+    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
     //   Create Thread
     // --------------------------------------------------
     
-    const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
-    const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
+    // const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
+    // const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
     
-    const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
+    // const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
     
     
     // --------------------------------------------------
@@ -271,8 +270,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- dataObj[_id].forumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
+    //   ----- dataObj[_id].forumThreadsForListObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsForListObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -629,6 +628,7 @@ export default injectIntl(class extends React.Component {
         
         
         
+        
          {/* Contents */}
         <ExpansionPanelDetails
           css={css`
@@ -667,111 +667,18 @@ export default injectIntl(class extends React.Component {
             }
             
             
-            {/* Thread Create Form */}
+            {/* Thread Form */}
             {openedTabNo === 1 &&
               <div
                 css={css`
                   padding: 0 16px 16px;
                 `}
               >
-                
-                
-                {/* Thread Name */}
-                <TextField
-                  css={css`
-                    && {
-                      width: 100%;
-                      max-width: 500px;
-                    }
-                  `}
-                  id="createTreadName"
-                  label="スレッド名"
-                  value={validationForumThreadsObj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [_id, 'createThreadObj', 'name'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationForumThreadsObj.error}
-                  helperText={intl.formatMessage({ id: validationForumThreadsObj.messageID }, { numberOfCharacters: validationForumThreadsObj.numberOfCharacters })}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
+                <FormThread
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id="create"
                 />
-                
-                
-                {/* Textarea */}
-                <div
-                  css={css`
-                    margin: 12px 0 0 0;
-                  `}
-                >
-                  
-                  <TextareaAutosize
-                    css={css`
-                      && {
-                        width: 100%;
-                        border-radius: 4px;
-                        box-sizing: border-box;
-                        padding: 8px 12px;
-                        line-height: 1.8;
-                        
-                        &:focus {
-                          outline: 1px #A9F5F2 solid;
-                        }
-                        
-                        resize: none;
-                      }
-                    `}
-                    rows={5}
-                    placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
-                    value={createThreadDescription}
-                    onChange={(eventObj) => handleEdit({
-                    pathArr: [_id, 'createThreadObj', 'description'],
-                    value: eventObj.target.value
-                  })}
-                    maxLength={3000}
-                  />
-                  
-                </div>
-                
-                
-                {/* 画像 */}
-                <div
-                  css={css`
-                    margin: 12px 0 0 0;
-                  `}
-                >
-                  
-                  <ImageAndVideoForm
-                    _id={`${_id}-createThread`}
-                    descriptionImage="スレッドに表示する画像をアップロードできます。"
-                    descriptionVideo="スレッドに表示する動画を登録できます。"
-                    arrayName="mainArr"
-                    caption={true}
-                    limit={3}
-                  />
-                  
-                </div>
-                
-                
-                {/* Send Button */}
-                <div
-                  css={css`
-                    margin: 24px 0 0 0;
-                  `}
-                >
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => handleSubmitCreateThread({ userCommunities_id: _id, limit: threadListLimit })}
-                    disabled={buttonDisabled}
-                  >
-                    スレッドを作成する
-                  </Button>
-                </div>
-                
-                
               </div>
             }
             

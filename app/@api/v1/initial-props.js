@@ -810,10 +810,10 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / Forum Threads For List
     // --------------------------------------------------
     
-    returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForList({
       localeObj,
       loginUsers_id,
       userCommunities_id,
@@ -822,17 +822,47 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     });
     
     
+    
+    // const listArr = lodashGet(returnObj, ['forumThreadsForListObj', 'dataObj', 'page1Obj', 'arr'], []);
+    
+    // const forumThreads_idArr = [];
+    
+    // for (let valueObj of listArr.values()) {
+    //   forumThreads_idArr.push(valueObj._id);
+    // }
+    
+    // console.log(`
+    //   ----- listArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(listArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     // --------------------------------------------------
-    //   DB find / Forum Comments & Replies
+    //   DB find / Forum Threads
     // --------------------------------------------------
     
-    returnObj.forumCommentsAndRepliesArr = await ModelForumComments.findForForumCommentsAndReplies({
+    // returnObj.forumThreadsObj = await ModelForumThreads.findForThread({
+    //   localeObj,
+    //   loginUsers_id,
+    //   forumThreads_idArr,
+    // });
+    
+    returnObj.forumObj = await ModelForumThreads.findForForum({
       localeObj,
       loginUsers_id,
-      forumThreads_idArr: ['qNiOLKdRt'],
-      commentsPage: 1,
-      repliesPage: 1,
+      userCommunities_id,
+      page: 1,
     });
+    
+    
+    
     
     
     // ---------------------------------------------

@@ -28,7 +28,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 const SchemaForumThreads = require('./schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 
-// const SchemaForumComments = require('../forum-comments/schema');
+const ModelForumComments = require('../forum-comments/model');
 const ModelUserCommunities = require('../user-communities/model');
 
 
@@ -248,16 +248,13 @@ const deleteMany = async ({ conditionObj }) => {
  * スレッド一覧を取得する
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
  * @param {number} page - ページ
  * @param {number} limit - 1ページに表示する件数
  * @return {Array} 取得データ
  */
-const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREADS_LIMIT }) => {
+const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREADS_LIST_LIMIT }) => {
   
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
   
   try {
     
@@ -284,11 +281,81 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
     //   Format
     // --------------------------------------------------
     
-    const formattedArr = format({
-      localeObj,
-      loginUsers_id,
-      arr: resultArr,
-    });
+    const formattedArr = [];
+    
+    for (let valueObj of resultArr.values()) {
+      
+      
+      // --------------------------------------------------
+      //   ディープコピー
+      // --------------------------------------------------
+      
+      let cloneObj = lodashCloneDeep(valueObj.toJSON());
+      
+      
+      // --------------------------------------------------
+      //   Datetime
+      // --------------------------------------------------
+      
+      cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+      
+      
+      // --------------------------------------------------
+      //   編集権限
+      // --------------------------------------------------
+      
+      cloneObj.editable = false;
+      
+      if (loginUsers_id && valueObj.users_id === loginUsers_id) {
+        cloneObj.editable = true;
+      }
+      
+      
+      // --------------------------------------------------
+      //   Locale
+      // --------------------------------------------------
+      
+      const filteredArr = valueObj.localesArr.filter((filterObj) => {
+        return filterObj.language === localeObj.language;
+      });
+      
+      
+      if (lodashHas(filteredArr, [0])) {
+        
+        cloneObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+        
+      } else {
+        
+        cloneObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   不要な項目を削除する
+      // --------------------------------------------------
+      
+      delete cloneObj.createdDate;
+      delete cloneObj.users_id;
+      delete cloneObj.localesArr;
+      delete cloneObj.imagesAndVideosObj;
+      delete cloneObj.ip;
+      delete cloneObj.userAgent;
+      delete cloneObj.__v;
+      
+      // console.log(`\n---------- cloneObj ----------\n`);
+      // console.dir(cloneObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      // --------------------------------------------------
+      //   push
+      // --------------------------------------------------
+      
+      formattedArr.push(cloneObj);
+      
+      
+    }
     
     
     // --------------------------------------------------
@@ -368,6 +435,138 @@ const findForForumThreads = async ({ localeObj, loginUsers_id, userCommunities_i
 
 
 /**
+ * スレッドを取得する
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドのIDが入った配列
+ * @return {Array} 取得データ
+ */
+const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREADS_LIMIT }) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Condition
+    // --------------------------------------------------
+    
+    const conditionObj = {
+      userCommunities_id,
+    };
+    
+    // const conditionObj = {
+    //   _id: { $in: forumThreads_idArr },
+    // };
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const intLimit = parseInt(limit, 10);
+    
+    const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(intLimit).exec();
+    // const resultArr = await SchemaForumThreads.find(conditionObj).exec();
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const formattedArr = format({
+      localeObj,
+      loginUsers_id,
+      arr: resultArr,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Count
+    // --------------------------------------------------
+    
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    // const returnObj = {};
+    
+    const returnObj = {
+      count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+      page,
+      limit: intLimit,
+    };
+    
+    lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
+    lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], formattedArr);
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Comments & Replies
+    // --------------------------------------------------
+    
+    const forumCommentsAndRepliesArr = await ModelForumComments.findForForumCommentsAndReplies({
+      localeObj,
+      loginUsers_id,
+      forumThreads_idArr: ['qNiOLKdRt'],
+      commentsPage: 1,
+      repliesPage: 1,
+    });
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${page}}
+    //   limit: {green ${limit}}
+    // `);
+    
+    // console.log(`
+    //   ----- /app/@database/forum-threads/model.js / resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
 * DBから取得した情報をフォーマットする
 * @param {Object} localeObj - ロケール
 * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -413,12 +612,22 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
+    //   編集権限
+    // --------------------------------------------------
+    
+    cloneObj.editable = false;
+    
+    if (loginUsers_id && valueObj.users_id === loginUsers_id) {
+      cloneObj.editable = true;
+    }
+    
+    // --------------------------------------------------
     //   スレッドを作成した本人以外の場合、users_idを削除する
     // --------------------------------------------------
     
-    if (cloneObj.users_id !== loginUsers_id) {
-      cloneObj.users_id = '';
-    }
+    // if (cloneObj.users_id !== loginUsers_id) {
+    //   cloneObj.users_id = '';
+    // }
     
     
     // --------------------------------------------------
@@ -453,10 +662,9 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     // --------------------------------------------------
     //   不要な項目を削除する
     // --------------------------------------------------
-    // console.log(chalk`
-    //   cloneObj.images: {green ${cloneObj.images}}
-    // `);
+    
     delete cloneObj.createdDate;
+    delete cloneObj.users_id;
     delete cloneObj.localesArr;
     delete cloneObj.ip;
     delete cloneObj.userAgent;
@@ -632,6 +840,7 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
-  findForForumThreads,
+  findForList,
+  findForForum,
   transactionForThread,
 };

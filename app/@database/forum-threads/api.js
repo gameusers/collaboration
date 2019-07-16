@@ -159,7 +159,7 @@ router.post('/list-uc', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForList({
       localeObj,
       loginUsers_id,
       userCommunities_id,
@@ -473,7 +473,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    // returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
+    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForForumThreads({
     //   localeObj,
     //   loginUsers_id,
     //   userCommunities_id,

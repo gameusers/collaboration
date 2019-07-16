@@ -172,7 +172,7 @@ class Store {
       
   //     let formData = new FormData();
       
-  //     const limit = lodashGet(this.dataObj, [_id, 'threadListLimit'], process.env.FORUM_THREADS_LIMIT);
+  //     const limit = lodashGet(this.dataObj, [_id, 'threadListLimit'], process.env.FORUM_THREADS_LIST_LIMIT);
       
   //     formData.append('userCommunities_id', userCommunities_id);
   //     formData.append('page', page);

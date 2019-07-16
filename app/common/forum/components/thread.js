@@ -85,8 +85,8 @@ const { validationForumThreadsName } = require('../../../@database/forum-threads
 //   Components
 // ---------------------------------------------
 
-import Panel from '../../layout/components/panel';
-import ImageAndVideoForm from '../../image-and-video/components/form';
+import FormThread from './form-thread';
+
 
 
 
@@ -212,7 +212,6 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleChangeThreadRowsPerPage,
       handleReadThreadsList,
-      handleSubmitCreateThread,
       
     } = storeForum;
     
@@ -224,8 +223,11 @@ export default injectIntl(class extends React.Component {
     const forumArr = [1];
     
     
+    
+    
+    
     // const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1) - 1;
-    // const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIMIT, 10));
+    // const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIST_LIMIT, 10));
     
     // const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     
@@ -295,18 +297,14 @@ export default injectIntl(class extends React.Component {
     
     for (const [index, valueObj] of forumArr.entries()) {
       
-      // console.log(`value.commentArr`);
-      // console.dir(value.commentArr);
-      
-      
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
       // const editable = administrator || loginUserId === value.creatorId ? true : false;
       const editable = true;
       
       const forumThreads_id = 'ks8WPvlQpbg';
       
-      const showThreadDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showThreadDescription'], false);
-      
+      const showDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showDescription'], false);
+      const showForm = lodashGet(dataObj, [_id, forumThreads_id, 'showForm'], false);
       
       // const threadUpdateFormName = threadUpdateFormNameObj[value.id];
       // const threadUpdateFormDescription = threadUpdateFormDescriptionObj[value.id];
@@ -315,6 +313,9 @@ export default injectIntl(class extends React.Component {
       componentForum.push(
         
         <ExpansionPanel
+          // css={css`
+          //   margin: 0 !important;
+          // `}
           expanded={panelExpanded}
           key={index}
         >
@@ -324,8 +325,9 @@ export default injectIntl(class extends React.Component {
           <ExpansionPanelSummary
             css={css`
               && {
+                background-color: white !important;
                 margin: 0;
-                
+                // padding: 0 16px;
                 
                 @media screen and (max-width: 480px) {
                   padding: 0 16px;
@@ -412,8 +414,8 @@ export default injectIntl(class extends React.Component {
                           margin: 2px 0 0 0;
                         `}
                         onClick={() => handleEdit({
-                          pathArr: [_id, forumThreads_id, 'showThreadDescription'],
-                          value: !showThreadDescription
+                          pathArr: [_id, forumThreads_id, 'showDescription'],
+                          value: !showDescription
                         })}
                       >
                         スレッドについて
@@ -471,7 +473,10 @@ export default injectIntl(class extends React.Component {
                           }
                         `}
                         variant="outlined"
-                        // onClick={() => handleThreadUpdateFormOpen(value.id)}
+                        onClick={() => handleEdit({
+                          pathArr: [_id, forumThreads_id, 'showForm'],
+                          value: !showForm
+                        })}
                       >
                         <IconEdit
                           css={css`
@@ -533,8 +538,8 @@ export default injectIntl(class extends React.Component {
               
               
               
-              {/* Thread Description */}
-              {showThreadDescription &&
+              {/* Description */}
+              {showDescription &&
                 <div
                   css={css`
                     font-size: 14px;
@@ -547,6 +552,20 @@ export default injectIntl(class extends React.Component {
                   仲良く雑談しませんか？<br />ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。<br /><br />ルイン＆アドオンを使わず、選別もしない<br />僕のトラッパーがついにランク4の赤帯になりました。<br /><br /><br />Dead by Daylight
                 </div>
               }
+              
+              
+              
+              
+              {/* Form */}
+              {showForm &&
+                <FormThread
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
+                />
+              }
+              
+              
               
               
             </div>

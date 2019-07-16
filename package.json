@@ -59,7 +59,7 @@
     "mongoose": "^5.6.4",
     "multer": "^1.4.1",
     "next": "^9.0.1",
-    "nodemailer": "^6.2.1",
+    "nodemailer": "^6.3.0",
     "nprogress": "^0.2.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",

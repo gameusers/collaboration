@@ -48,4 +48,17 @@ const schema = mongoose.Schema({
   role: { type: String, default: 'User', required: true },
 });
 
-module.exports = mongoose.model('users', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['users']) {
+  model = mongoose.model('users');
+} else {
+  model = mongoose.model('users', schema);
+}
+
+module.exports = model;

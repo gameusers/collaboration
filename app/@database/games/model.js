@@ -184,17 +184,29 @@ const findForHeroImage = async ({ language, country }) => {
     //   Sort / ヒーローイメージがランダムに表示されるように並び替える
     // --------------------------------------------------
     
-    const resultObj = resultArr[0];
-    let mainArr = resultObj.imagesAndVideosObj.mainArr;
+    // console.log(`\n---------- resultArr ----------\n`);
+    // console.dir(resultArr);
+    // console.log(`\n-----------------------------------\n`);
     
-    for (let i = mainArr.length - 1; i > 0; i--){
-      const r = Math.floor(Math.random() * (i + 1));
-      const tmp = mainArr[i];
-      mainArr[i] = mainArr[r];
-      mainArr[r] = tmp;
+    let resultObj = {};
+    
+    if (resultArr.length > 0) {
+      
+      resultObj = resultArr[0];
+      let mainArr = resultObj.imagesAndVideosObj.mainArr;
+      
+      for (let i = mainArr.length - 1; i > 0; i--){
+        const r = Math.floor(Math.random() * (i + 1));
+        const tmp = mainArr[i];
+        mainArr[i] = mainArr[r];
+        mainArr[r] = tmp;
+      }
+      
+      resultObj.mainArr = mainArr;
+      
     }
     
-    resultObj.mainArr = mainArr;
+    
     
     // console.log(`\n---------- mainArr ----------\n`);
     // console.dir(mainArr.slice());

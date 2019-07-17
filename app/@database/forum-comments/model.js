@@ -14,7 +14,11 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const moment = require('moment');
 const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
+const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 // ---------------------------------------------
@@ -284,10 +288,86 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
                   createdDate: 0,
                   __v: 0,
                 }
-              }
+              },
+              
+              {
+                $lookup:
+                  {
+                    from: 'card-players',
+                    let: { forumRepliesUsers_id: '$users_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $and:
+                            [
+                              { $eq: ['$language', localeObj.language] },
+                              { $eq: ['$users_id', '$$forumRepliesUsers_id'] },
+                            ]
+                          },
+                        }
+                      },
+                      { $project:
+                        {
+                          // _id: 0,
+                          // users_id: 1,
+                          name: '$nameObj.value',
+                          status: '$statusObj.value',
+                          'imagesAndVideosObj.thumbnailArr': 1,
+                        }
+                      }
+                    ],
+                    as: 'cardPlayersObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$cardPlayersObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
             ],
             as: 'forumRepliesArr'
           }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'card-players',
+            let: { forumCommentsUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', localeObj.language] },
+                      { $eq: ['$users_id', '$$forumCommentsUsers_id'] },
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  // users_id: 1,
+                  name: '$nameObj.value',
+                  status: '$statusObj.value',
+                  'imagesAndVideosObj.thumbnailArr': 1,
+                }
+              }
+            ],
+            as: 'cardPlayersObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$cardPlayersObj',
+          preserveNullAndEmptyArrays: true,
+        }
       },
       
       
@@ -314,140 +394,15 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     
     
     
-    // // --------------------------------------------------
-    // //   forumComments_id を取得して配列に追加する
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
     
-    // const forumComments_idArr = [];
-    
-    // for (let value1Obj of resultThreadsCommentsArr.values()) {
-      
-    //   // console.log(index);
-      
-    //   // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
-    //   // console.dir(value1Obj.forumCommentsArr);
-    //   // console.log(`\n-----------------------------------\n`);
-      
-      
-    //   for (let value2Obj of value1Obj.forumCommentsArr.values()) {
-        
-    //     // console.log(`\n---------- value2Obj ----------\n`);
-    //     // console.dir(value2Obj);
-    //     // console.log(`\n-----------------------------------\n`);
-        
-    //     if (value2Obj._id) {
-    //       forumComments_idArr.push(value2Obj._id);
-    //     }
-        
-    //   }
-      
-    // }
-    
-    // // console.log(`\n---------- forumComments_idArr ----------\n`);
-    // // console.dir(forumComments_idArr);
-    // // console.log(`\n-----------------------------------\n`);
-    
-    
-    // // --------------------------------------------------
-    // //   コメントに対する返信　データ取得
-    // // --------------------------------------------------
-    
-    // let resultRepliesArr = await SchemaForumComments.aggregate([
-      
-    //   {
-    //     $match : { forumComments_id: { $in: forumComments_idArr } }
-    //   },
-      
-      
-    //   { $project:
-    //     {
-    //       __v: 0,
-    //     }
-    //   },
-      
-      
-    //   { '$sort': { 'updatedDate': -1 } },
-    //   { $skip: 0 },
-    //   { $limit: 1 },
-      
-    // ]).exec();
-    
-    
-    // // --------------------------------------------------
-    // //   コメントに対する返信　データを整える
-    // // --------------------------------------------------
-    // // loginUsers_id = 'jun-deE4J';
-    // const repliesObj = {};
-    
-    // for (const [index, valueObj] of resultRepliesArr.entries()) {
-      
-      
-    //   // 匿名の場合はユーザー情報を削除する
-    //   if (valueObj.anonymity && loginUsers_id !== valueObj.users_id) {
-    //     lodashSet(resultRepliesArr, [index, 'users_id'], '');
-    //   }
-      
-    //   // 匿名の項目を削除
-    //   delete valueObj.anonymity;
-      
-      
-    //   // 配列を作成する
-    //   if (!lodashHas(repliesObj, [valueObj.forumComments_id])) {
-    //     repliesObj[valueObj.forumComments_id] = [];
-    //   }
-      
-    //   // 配列に追加
-    //   repliesObj[valueObj.forumComments_id].push(valueObj);
-      
-      
-    //   // console.log(chalk`
-    //   //   index: {green ${index}}
-    //   //   valueObj.anonymity: {green ${valueObj.anonymity}}
-    //   // `);
-      
-    // }
-    
-    // // console.log(`\n---------- repliesObj ----------\n`);
-    // // console.dir(repliesObj);
-    // // console.log(`\n-----------------------------------\n`);
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   フォーラムデータ生成
-    // // --------------------------------------------------
-    
-    // for (const [index1, value1Obj] of resultThreadsCommentsArr.entries()) {
-      
-    //   // console.log(chalk`
-    //   //   index1: {green ${index1}}
-    //   // `);
-      
-    //   // console.log(`\n---------- value1Obj.forumCommentsArr ----------\n`);
-    //   // console.dir(value1Obj.forumCommentsArr);
-    //   // console.log(`\n-----------------------------------\n`);
-      
-      
-      
-      
-    //   for (const [index2, value2Obj] of value1Obj.forumCommentsArr.entries()) {
-        
-    //     // console.log(chalk`
-    //     //   index2: {green ${index2}}
-    //     // `);
-        
-    //     // console.log(`\n---------- value2Obj ----------\n`);
-    //     // console.dir(value2Obj);
-    //     // console.log(`\n-----------------------------------\n`);
-        
-    //     lodashSet(resultThreadsCommentsArr, [index1, 'forumCommentsArr', index2, 'forumRepliesArr'], repliesObj[value2Obj._id]);
-        
-    //   }
-      
-    // }
-    
-    
+    const formattedArr = format({
+      localeObj,
+      loginUsers_id,
+      arr: resultArr,
+    });
     
     
     // --------------------------------------------------
@@ -460,17 +415,11 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- resultThreadsCommentsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultThreadsCommentsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- formattedArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(formattedArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- Comments And Replies -----\n
@@ -497,6 +446,176 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     throw err;
     
   }
+  
+  
+};
+
+
+
+
+/**
+* DBから取得した情報をフォーマットする
+* @param {Object} localeObj - ロケール
+* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+* @param {Array} arr - 配列
+* @return {Array} フォーマット後のデータ
+*/
+const format = ({ localeObj, loginUsers_id, arr }) => {
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnArr = [];
+  
+  
+  // --------------------------------------------------
+  //   Loop
+  // --------------------------------------------------
+  
+  for (let valueObj of arr.values()) {
+    
+    
+    // --------------------------------------------------
+    //   ディープコピー
+    // --------------------------------------------------
+    
+    let cloneObj = lodashCloneDeep(valueObj);
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+    
+    
+    // --------------------------------------------------
+    //   画像の処理
+    // --------------------------------------------------
+    
+    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+    
+    
+    // --------------------------------------------------
+    //   編集権限
+    // --------------------------------------------------
+    
+    cloneObj.editable = false;
+    
+    if (loginUsers_id && valueObj.users_id === loginUsers_id) {
+      cloneObj.editable = true;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Name & Description
+    // --------------------------------------------------
+    
+    const filteredArr = valueObj.localesArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      cloneObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+      cloneObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+      
+    } else {
+      
+      cloneObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+      cloneObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
+      
+    }
+    
+    
+    
+    // console.log(`
+    //   ----- filteredArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    // --------------------------------------------------
+    //   匿名 - Card Players 
+    // --------------------------------------------------
+    
+    if (valueObj.anonymity) {
+      
+      delete cloneObj.cardPlayersObj;
+      
+      // lodashSet(cloneObj, ['cardPlayersObj', 'users_id'], '');
+      // lodashSet(cloneObj, ['cardPlayersObj', 'name'], '');
+      // lodashSet(cloneObj, ['cardPlayersObj', 'status'], '');
+      // lodashSet(cloneObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+      
+    } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
+      
+      // --------------------------------------------------
+      //   画像の処理 - Card Players
+      // --------------------------------------------------
+      
+      const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+    lodashSet(cloneObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Loop - forumRepliesArr
+    // --------------------------------------------------
+    
+    if (lodashHas(valueObj, ['forumRepliesArr'])) {
+      
+      const forumRepliesArr = lodashGet(valueObj, ['forumRepliesArr'], []);
+      
+      const formatted2Arr = format({
+        localeObj,
+        loginUsers_id,
+        arr: forumRepliesArr,
+      });
+      
+      lodashSet(cloneObj, ['forumRepliesArr'], formatted2Arr);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    delete cloneObj.createdDate;
+    delete cloneObj.users_id;
+    delete cloneObj.localesArr;
+    delete cloneObj.anonymity;
+    delete cloneObj.ip;
+    delete cloneObj.userAgent;
+    delete cloneObj.__v;
+    
+    // console.log(`\n---------- cloneObj ----------\n`);
+    // console.dir(cloneObj);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // --------------------------------------------------
+    //   push
+    // --------------------------------------------------
+    
+    returnArr.push(cloneObj);
+    
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return returnArr;
   
   
 };

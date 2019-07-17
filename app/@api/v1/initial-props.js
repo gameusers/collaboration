@@ -137,6 +137,8 @@ router.get('/common', upload.none(), async (req, res, next) => {
     //   ヘッダーヒーローイメージ用
     // --------------------------------------------------
     
+    // returnObj.headerObj = {};
+    
     returnObj.headerObj = await ModelGames.findForHeroImage({
       language: localeObj.language,
       country: localeObj.country,

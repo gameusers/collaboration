@@ -608,7 +608,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     //   画像の処理
     // --------------------------------------------------
     
-    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: cloneObj.imagesAndVideosObj.mainArr });
+    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
     
     
     // --------------------------------------------------
@@ -631,7 +631,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
-    //   Locale
+    //   Name & Description
     // --------------------------------------------------
     
     const filteredArr = valueObj.localesArr.filter((filterObj) => {

@@ -81,7 +81,7 @@ class MyApp extends App {
     //   Property
     // --------------------------------------------------
     
-    const pathname = lodashGet(ctx, ['pathname'], '');
+    // const pathname = lodashGet(ctx, ['pathname'], '');
     const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
     
@@ -189,7 +189,7 @@ class MyApp extends App {
     //   Return
     // --------------------------------------------------
     
-    return { pageProps, pathname, initialPropsObj, statusCode, reqAcceptLanguage, stores };
+    return { pageProps, initialPropsObj, statusCode, reqAcceptLanguage, stores };
     
   }
   

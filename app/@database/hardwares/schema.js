@@ -20,4 +20,17 @@ const schema = mongoose.Schema({
   searchKeywordsArr: [ String ]
 });
 
-module.exports = mongoose.model('hardwares', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['hardwares']) {
+  model = mongoose.model('hardwares');
+} else {
+  model = mongoose.model('hardwares', schema);
+}
+
+module.exports = model;

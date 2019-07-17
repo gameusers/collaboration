@@ -280,7 +280,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'rykFm6Vfg',
               type: 'image',
-              caption: '',
               srcSetArr: [
                 {
                   _id: '6Wh-bORu5',
@@ -296,7 +295,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'w_xujtkWJ',
               type: 'image',
-              caption: '',
               srcSetArr: [
                 {
                   _id: 'TJV1VSY3b',
@@ -380,7 +378,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'kaAcL8EDb',
               type: 'image',
-              caption: '',
               srcSetArr: [
                 {
                   _id: 'V4caK_q1p',
@@ -661,7 +658,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'b0gqRt4fd',
               type: 'image',
-              caption: '',
               srcSetArr: [
                 {
                   _id: 'BWl9SejbC',
@@ -677,7 +673,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'DnLgLJ003',
               type: 'image',
-              caption: '',
+              localesArr: [
+                {
+                  _id: 'NSCtDgnuO',
+                  language: 'ja',
+                  caption: 'caption1',
+                }
+              ],
               srcSetArr: [
                 {
                   _id: '-rv2yOt4k',
@@ -761,7 +763,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'yR4nKoMYz',
               type: 'image',
-              caption: '',
+              localesArr: [
+                {
+                  _id: 'RSzGuLI0f',
+                  language: 'ja',
+                  caption: 'caption2',
+                }
+              ],
               srcSetArr: [
                 {
                   _id: 'qDJbmdGnR',
@@ -796,7 +804,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: '1-dGMXkDr',
               type: 'image',
-              caption: '',
+              localesArr: [
+                {
+                  _id: 'TF-ugLen5',
+                  language: 'ja',
+                  caption: 'caption3',
+                }
+              ],
               srcSetArr: [
                 {
                   _id: 'qDJbmdGnR',
@@ -892,7 +906,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: '2My7aB184',
               type: 'image',
-              caption: '',
               srcSetArr: [
                 {
                   _id: 'Oc-oi5Lqz',
@@ -2413,7 +2426,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'glbzJb34t',
               type: 'image',
-              caption: '',
               srcSetArr: [
                 {
                   _id: 'BWl9SejbC',
@@ -2429,7 +2441,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
             {
               _id: 'H_NXaMPKG',
               type: 'image',
-              caption: 'ライオン',
+              localesArr: [
+                {
+                  _id: 'CXcJ-RPzt',
+                  language: 'ja',
+                  caption: 'ライオン',
+                }
+              ],
               srcSetArr: [
                 {
                   _id: 'himsYqtCL',
@@ -2458,13 +2476,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
                   w: '800w',
                   width: 800,
                   height: 450,
-                },
-                {
-                  _id: 'TsNkkGwok',
-                  src: '/static/img/card/players/zaoOWw89g/main/H_NXaMPKG/source.jpg',
-                  w: 'source',
-                  width: 1920,
-                  height: 1080,
                 },
               ],
             },
@@ -3203,7 +3214,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        anonymity: true,
+        anonymity: false,
         goods: 50,
         replies: 0,
         ip: '192.168.1.0',

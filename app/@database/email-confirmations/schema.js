@@ -19,4 +19,17 @@ const schema = mongoose.Schema({
   count: { type: Number, required: true },
 });
 
-module.exports = mongoose.model('email-confirmations', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['email-confirmations']) {
+  model = mongoose.model('email-confirmations');
+} else {
+  model = mongoose.model('email-confirmations', schema);
+}
+
+module.exports = model;

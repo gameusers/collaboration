@@ -6,7 +6,7 @@
 //   Console
 // ---------------------------------------------
 
-// const chalk = require('chalk');
+const chalk = require('chalk');
 
 
 // ---------------------------------------------
@@ -35,7 +35,7 @@ const formatImagesAndVideosArr = ({ arr }) => {
   // console.log(`\n---------- arr ----------\n`);
   // console.dir(JSON.parse(JSON.stringify(arr)));
   // console.log(`\n-----------------------------------\n`);
-  
+  // console.log('formatImagesAndVideosArr');
   
   // --------------------------------------------------
   //   Return Value
@@ -52,6 +52,15 @@ const formatImagesAndVideosArr = ({ arr }) => {
     
     for (const [index, valueObj] of arr.entries()) {
       
+      
+      // --------------------------------------------------
+      //   画像の場合
+      // --------------------------------------------------
+      
+      // console.log(chalk`
+      //   valueObj.type: {green ${valueObj.type}}
+      // `);
+      
       if (valueObj.type === 'image') {
         
         // 初期値
@@ -60,6 +69,7 @@ const formatImagesAndVideosArr = ({ arr }) => {
         const caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
         
         returnArr[index] = {
+          type: valueObj.type,
           src: '',
           caption,
           srcSet: '',
@@ -98,6 +108,18 @@ const formatImagesAndVideosArr = ({ arr }) => {
           returnArr[index].srcSet = srcSetArr.join(', ');
         }
         
+        
+      // --------------------------------------------------
+      //   動画の場合
+      // --------------------------------------------------
+        
+      } else if (valueObj.type === 'video') {
+        
+        returnArr[index] = {
+          type: valueObj.type,
+          videoChannel: valueObj.videoChannel,
+          videoID: valueObj.videoID,
+        };
         
       }
       

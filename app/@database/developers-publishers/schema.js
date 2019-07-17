@@ -20,4 +20,17 @@ const schema = mongoose.Schema({
   name: { type: String, required: true },
 });
 
-module.exports = mongoose.model('developers-publishers', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['developers-publishers']) {
+  model = mongoose.model('developers-publishers');
+} else {
+  model = mongoose.model('developers-publishers', schema);
+}
+
+module.exports = model;

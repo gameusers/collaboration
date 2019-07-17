@@ -22,4 +22,17 @@ const schema = mongoose.Schema({
   search: { type: Boolean, required: true },
 });
 
-module.exports = mongoose.model('ids', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['ids']) {
+  model = mongoose.model('ids');
+} else {
+  model = mongoose.model('ids', schema);
+}
+
+module.exports = model;

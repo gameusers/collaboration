@@ -19,4 +19,17 @@ const schema = mongoose.Schema({
   name: { type: String, required: true },
 });
 
-module.exports = mongoose.model('game-genres', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['game-genres']) {
+  model = mongoose.model('game-genres');
+} else {
+  model = mongoose.model('game-genres', schema);
+}
+
+module.exports = model;

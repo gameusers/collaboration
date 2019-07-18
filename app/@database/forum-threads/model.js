@@ -397,7 +397,7 @@ const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page,
     // `);
     
     // console.log(`
-    //   ----- /app/@database/forum-threads/model.js / resultArr -----\n
+    //   ----- findForList / resultArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
@@ -474,11 +474,14 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     //   Format
     // --------------------------------------------------
     
-    const formattedArr = format({
+    const formattedObj = format({
       localeObj,
       loginUsers_id,
       arr: resultArr,
     });
+    
+    const formattedArr = formattedObj.arr;
+    const forumThreads_idArr = formattedObj.forumThreads_idArr;
     
     
     // --------------------------------------------------
@@ -498,8 +501,6 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     
     const ISO8601 = moment().toISOString();
     
-    // const returnObj = {};
-    
     const returnObj = {
       count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
       page,
@@ -514,13 +515,66 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     //   DB find / Forum Comments & Replies
     // --------------------------------------------------
     
-    const forumCommentsAndRepliesArr = await ModelForumComments.findForForumCommentsAndReplies({
+    const forumCommentsAndRepliesObj = await ModelForumComments.findForForumCommentsAndReplies({
       localeObj,
       loginUsers_id,
-      forumThreads_idArr: ['qNiOLKdRt'],
+      forumThreads_idArr: forumThreads_idArr,
       commentsPage: 1,
+      commentsLimit: 20,
       repliesPage: 1,
+      repliesLimit: 1,
     });
+    
+    
+    console.log(`
+      ----- forumCommentsAndRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Integrate - コメント＆返信と統合する
+    // --------------------------------------------------
+    
+    // const integrateArr = [];
+    
+    // for (let valueObj of formattedArr.values()) {
+      
+      
+    //   // --------------------------------------------------
+    //   //   Deep Copy
+    //   // --------------------------------------------------
+      
+    //   const cloneObj = lodashCloneDeep(valueObj);
+      
+      
+    //   // const returnObj = {
+    //   //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+    //   //   page,
+    //   //   limit: intLimit,
+    //   // };
+      
+    //   console.log(valueObj._id);
+    //   console.log(forumCommentsAndRepliesObj[valueObj._id]);
+      
+    //   if (forumCommentsAndRepliesObj[valueObj._id]) {
+        
+        
+        
+    //     lodashSet(cloneObj, ['commentObj', `page${page}Obj`, 'loadedDate'], ISO8601);
+    //     lodashSet(cloneObj, ['commentObj', `page${page}Obj`, 'arr'], forumCommentsAndRepliesObj[valueObj._id]);
+    //   }
+      
+    //   integrateArr.push(cloneObj);
+      
+    //   // console.log(`
+    //   //   ----- valueObj -----\n
+    //   //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+    //   //   --------------------\n
+    //   // `);
+      
+    // }
     
     
     // --------------------------------------------------
@@ -535,14 +589,20 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     // `);
     
     // console.log(`
-    //   ----- /app/@database/forum-threads/model.js / resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- integrateArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(integrateArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
+    console.log(`
+      ----- findForForum / returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
     // console.log(`
-    //   ----- formattedArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedArr)), { colors: true, depth: null })}\n
+    //   ----- forumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -580,7 +640,8 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
   //   Return Value
   // --------------------------------------------------
   
-  let returnArr = [];
+  const returnArr = [];
+  const forumThreads_idArr = [];
   
   
   // --------------------------------------------------
@@ -591,10 +652,10 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
-    //   ディープコピー
+    //   Deep Copy
     // --------------------------------------------------
     
-    let cloneObj = lodashCloneDeep(valueObj.toJSON());
+    const cloneObj = lodashCloneDeep(valueObj.toJSON());
     
     
     // --------------------------------------------------
@@ -680,6 +741,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     // --------------------------------------------------
     
     returnArr.push(cloneObj);
+    forumThreads_idArr.push(valueObj._id);
     
     
   }
@@ -689,7 +751,10 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
   //   Return
   // --------------------------------------------------
   
-  return returnArr;
+  return {
+    arr: returnArr,
+    forumThreads_idArr,
+  };
   
   
 };

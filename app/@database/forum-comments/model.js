@@ -19,6 +19,7 @@ const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
 const lodashCloneDeep = require('lodash/cloneDeep');
+const lodashMerge = require('lodash/merge');
 
 
 // ---------------------------------------------
@@ -386,11 +387,11 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     ]).exec();
     
     
-    console.log(`
-      ----- findForForumCommentsAndReplies / resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- findForForumCommentsAndReplies / resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -398,11 +399,29 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     //   Format
     // --------------------------------------------------
     
-    const formattedArr = format({
+    const formattedObj = format({
       localeObj,
       loginUsers_id,
       arr: resultArr,
     });
+    
+    
+    // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+    
+    // const ISO8601 = moment().toISOString();
+    
+    // const intCommentsLimit = parseInt(commentsLimit, 10);
+    
+    // const returnObj = {
+    //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+    //   page,
+    //   limit: intCommentsLimit,
+    // };
+    
+    // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
+    // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], formattedArr);
     
     
     // --------------------------------------------------
@@ -415,11 +434,11 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- formattedArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(formattedArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- formattedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- Comments And Replies -----\n
@@ -437,8 +456,8 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
-    const returnObj = {};
-    return returnObj;
+    
+    return formattedObj;
     
     
   } catch (err) {
@@ -467,7 +486,8 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
   //   Return Value
   // --------------------------------------------------
   
-  let returnArr = [];
+  let returnObj = {};
+  const ISO8601 = moment().toISOString();
   
   
   // --------------------------------------------------
@@ -478,10 +498,10 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
-    //   ディープコピー
+    //   Deep Copy
     // --------------------------------------------------
     
-    let cloneObj = lodashCloneDeep(valueObj);
+    const cloneObj = lodashCloneDeep(valueObj);
     
     
     // --------------------------------------------------
@@ -492,7 +512,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
-    //   画像の処理
+    //   画像と動画の処理
     // --------------------------------------------------
     
     cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
@@ -541,45 +561,42 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
-    //   匿名 - Card Players 
+    //   匿名の場合の処理 - Card Players 
     // --------------------------------------------------
     
     if (valueObj.anonymity) {
       
       delete cloneObj.cardPlayersObj;
       
-      // lodashSet(cloneObj, ['cardPlayersObj', 'users_id'], '');
-      // lodashSet(cloneObj, ['cardPlayersObj', 'name'], '');
-      // lodashSet(cloneObj, ['cardPlayersObj', 'status'], '');
-      // lodashSet(cloneObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-      
     } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
       
       // --------------------------------------------------
-      //   画像の処理 - Card Players
+      //   サムネイル画像の処理 - Card Players
       // --------------------------------------------------
       
       const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-    lodashSet(cloneObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
+      lodashSet(cloneObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
       
     }
     
     
     // --------------------------------------------------
-    //   Loop - forumRepliesArr
+    //   Format - Reply
     // --------------------------------------------------
+    
+    let formattedReplyObj = {};
     
     if (lodashHas(valueObj, ['forumRepliesArr'])) {
       
       const forumRepliesArr = lodashGet(valueObj, ['forumRepliesArr'], []);
       
-      const formatted2Arr = format({
+      formattedReplyObj = format({
         localeObj,
         loginUsers_id,
         arr: forumRepliesArr,
       });
       
-      lodashSet(cloneObj, ['forumRepliesArr'], formatted2Arr);
+      // lodashSet(cloneObj, ['forumRepliesObj'], formatted2Arr);
       
     }
     
@@ -592,6 +609,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     delete cloneObj.users_id;
     delete cloneObj.localesArr;
     delete cloneObj.anonymity;
+    delete cloneObj.forumRepliesArr;
     delete cloneObj.ip;
     delete cloneObj.userAgent;
     delete cloneObj.__v;
@@ -601,21 +619,78 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     // console.log(`\n-----------------------------------\n`);
     
     
+    
+    
     // --------------------------------------------------
     //   push
     // --------------------------------------------------
     
-    returnArr.push(cloneObj);
+    const parent_id = valueObj.forumThreads_id || valueObj.forumComments_id;
+    
+    if (parent_id) {
+      
+      const page = 1;
+      
+      lodashSet(returnObj, [parent_id, 'count', ], 10);
+      lodashSet(returnObj, [parent_id, 'page', ], 1);
+      lodashSet(returnObj, [parent_id, 'limit', ], 10);
+      
+      lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
+      
+      const arr = lodashGet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+      arr.push(cloneObj);
+      lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'arr'], arr);
+      
+    }
+    
+    // if (valueObj.forumThreads_id) {
+      
+    //   if (!lodashHas(returnObj, [valueObj.forumThreads_id])) {
+    //     lodashSet(returnObj, [valueObj.forumThreads_id], []);
+    //   }
+      
+    //   returnObj[valueObj.forumThreads_id].push(cloneObj);
+      
+    // } else {
+      
+    //   if (!lodashHas(returnObj, [valueObj.forumComments_id])) {
+    //     lodashSet(returnObj, [valueObj.forumComments_id], []);
+    //   }
+      
+    //   returnObj[valueObj.forumComments_id].push(cloneObj);
+      
+    // }
+    
+    
+    
+    // --------------------------------------------------
+    //   Merge - コメントと返信をひとつのオブジェクトにマージする
+    // --------------------------------------------------
+    
+    returnObj = lodashMerge(returnObj, formattedReplyObj);
+    
+    
+    // const clonedReplyObj = lodashCloneDeep(valueObj);
+    
+    
+    // if (!lodashHas(returnObj, ['commentObj', valueObj.forumThreads_id])) {
+    //   lodashSet(returnObj, ['commentObj', valueObj.forumThreads_id], []);
+    // }
+    
+    // returnObj.commentObj[valueObj.forumThreads_id].push(cloneObj);
     
     
   }
+  
+  
+  //lodashMerge(clonedObj.forumThreadsForListObj, newObj);
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  return returnArr;
+  return returnObj;
   
   
 };

@@ -175,7 +175,7 @@ class Store {
       const loadedDate = lodashGet(clonedObj, ['forumThreadsForListObj', 'dataObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(clonedObj, ['forumThreadsForListObj', 'dataObj', `page${page}Obj`, 'arr'], []);
       
-      let threadListLimit = lodashGet(clonedObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIST_LIMIT, 10));
+      let threadListLimit = lodashGet(clonedObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
       
       if (limit) {
         threadListLimit = limit;
@@ -211,7 +211,7 @@ class Store {
         const datetimeLoaded = moment(loadedDate).utcOffset(0);
         const datetimeThreadUpdated = moment(threadUpdatedDate).utcOffset(0);
         const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.FORUM_THREADS_RELOAD_MINUTES, 'm').utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.FORUM_THREAD_RELOAD_MINUTES, 'm').utcOffset(0);
         // const datetimeReloadLimit = moment(loadedDate).add(20, 's').utcOffset(0);
         
         if (
@@ -576,7 +576,7 @@ class Store {
       
       const threadUpdatedDate = lodashGet(resultObj, ['data', 'updatedDateObj', 'thread'], '0000-01-01T00:00:00Z');
       
-      const threadListLimit = lodashGet(this.dataObj, [_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIST_LIMIT, 10));
+      const threadListLimit = lodashGet(this.dataObj, [_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
       
       await this.handleReadThreadsList({
         gameCommunities_id,

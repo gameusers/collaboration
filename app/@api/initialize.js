@@ -2910,7 +2910,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        comments: 780,
+        comments: 2,
         images: 108,
         videos: 50,
         ip: '192.168.1.0',
@@ -2935,7 +2935,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        comments: 5,
+        comments: 0,
         images: 4,
         videos: 3,
         ip: '192.168.1.0',
@@ -2981,7 +2981,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        comments: 4,
+        comments: 0,
         images: 4,
         videos: 4,
         ip: '192.168.1.0',
@@ -3004,7 +3004,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideosObj: {
           mainArr: [],
         },
-        comments: 5,
+        comments: 0,
         images: 5,
         videos: 5,
         ip: '192.168.1.0',
@@ -3036,7 +3036,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Save Object
     // ---------------------------------------------
     
-    // コメント1　forumThreads_id: 'qNiOLKdRt'で検索
+    // コメント1
     saveArr = [
       {
         _id: '8_AsHN1fm',
@@ -3052,7 +3052,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: '2DagvbZ4q',
             language: 'ja',
             name: '動画＋画像',
-            comment: `Comment 1: 動画＋画像のテスト`,
+            comment: `No.1 / Comment 1: 動画＋画像のテスト`,
           }
         ],
         imagesAndVideosObj: {
@@ -3134,13 +3134,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
-      // コメント1に対する返信　forumComments_id: '8_AsHN1fm'で検索
+      // 返信1 / コメント1に対して
       {
         _id: 'HJut0iubX',
         createdDate: '2019-01-02T00:00:00Z',
         updatedDate: '2019-01-02T00:00:00Z',
         userCommunities_id: 'QD7Ve7yND',
-        forumThreads_id: '',
+        forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '8_AsHN1fm',
         replyToForumComments_id: '',
         users_id: 'jun-deE4J',
@@ -3149,7 +3149,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'Z2x6S7Sua',
             language: 'ja',
             name: '',
-            comment: 'Comment 2: ジョバンニは勢いよく立ちあがりましたが、立ってみるともうはっきりとそれを答えることができないのでした。',
+            comment: 'No.2 / Reply 1: ジョバンニは勢いよく立ちあがりましたが、立ってみるともうはっきりとそれを答えることができないのでした。',
           }
         ],
         imagesAndVideosObj: {
@@ -3163,13 +3163,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
-      // コメント1に対する返信への返信　forumComments_id: '8_AsHN1fm'で検索
+      // 返信2 / 返信1に対して
       {
         _id: 'R2hdDidB6',
         createdDate: '2019-01-03T00:00:00Z',
         updatedDate: '2019-01-03T00:00:00Z',
         userCommunities_id: 'QD7Ve7yND',
-        forumThreads_id: '',
+        forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '8_AsHN1fm',
         replyToForumComments_id: 'HJut0iubX',
         users_id: '',
@@ -3178,7 +3178,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 's6z-LtF6x',
             language: 'ja',
             name: '天川',
-            comment: 'Comment 3: ですからもしもこの天あまの川がわがほんとうに川だと考えるなら、その一つ一つの小さな星はみんなその川のそこの砂や砂利じゃりの粒つぶにもあたるわけです。',
+            comment: 'No.3 / Reply 2: ですからもしもこの天あまの川がわがほんとうに川だと考えるなら、その一つ一つの小さな星はみんなその川のそこの砂や砂利じゃりの粒つぶにもあたるわけです。',
           }
         ],
         imagesAndVideosObj: {
@@ -3193,7 +3193,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
       
       
       
-      // コメント2　forumThreads_id: 'qNiOLKdRt'で検索
+      // コメント2
       {
         _id: 'm2N3ijR3A',
         createdDate: '2019-01-04T00:00:00Z',
@@ -3208,7 +3208,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'MWXoBzBVk',
             language: 'ja',
             name: '',
-            comment: `Comment 4: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ、そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
+            comment: `No.4 / Comment 2: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ、そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
           }
         ],
         imagesAndVideosObj: {
@@ -3222,13 +3222,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
       },
       
       
-      // コメント2に対する返信　forumComments_id: 'm2N3ijR3A'で検索
+      // 返信3 / コメント2に対して
       {
         _id: 'XDDd61fux',
         createdDate: '2019-01-05T00:00:00Z',
         updatedDate: '2019-01-05T00:00:00Z',
         userCommunities_id: 'QD7Ve7yND',
-        forumThreads_id: '',
+        forumThreads_id: 'qNiOLKdRt',
         forumComments_id: 'm2N3ijR3A',
         replyToForumComments_id: '',
         users_id: '',
@@ -3237,7 +3237,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: '8AmTHEgzD',
             language: 'ja',
             name: '',
-            comment: 'Comment 5: test',
+            comment: 'No.5 / Reply 3: test',
           }
         ],
         imagesAndVideosObj: {

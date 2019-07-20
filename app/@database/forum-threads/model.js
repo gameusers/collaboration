@@ -253,7 +253,7 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {number} limit - 1ページに表示する件数
  * @return {Array} 取得データ
  */
-const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREADS_LIST_LIMIT }) => {
+const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREAD_LIST_LIMIT }) => {
   
   
   try {
@@ -441,7 +441,7 @@ const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page,
  * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドのIDが入った配列
  * @return {Array} 取得データ
  */
-const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREADS_LIMIT }) => {
+const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREAD_LIMIT }) => {
   
   
   try {
@@ -519,62 +519,18 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
       localeObj,
       loginUsers_id,
       forumThreads_idArr: forumThreads_idArr,
-      commentsPage: 1,
-      commentsLimit: 20,
-      repliesPage: 1,
-      repliesLimit: 1,
+      commentPage: 1,
+      commentLimit: 20,
+      replyPage: 1,
+      replyLimit: 20,
     });
     
     
-    console.log(`
-      ----- forumCommentsAndRepliesObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
-    // --------------------------------------------------
-    //   Integrate - コメント＆返信と統合する
-    // --------------------------------------------------
-    
-    // const integrateArr = [];
-    
-    // for (let valueObj of formattedArr.values()) {
-      
-      
-    //   // --------------------------------------------------
-    //   //   Deep Copy
-    //   // --------------------------------------------------
-      
-    //   const cloneObj = lodashCloneDeep(valueObj);
-      
-      
-    //   // const returnObj = {
-    //   //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
-    //   //   page,
-    //   //   limit: intLimit,
-    //   // };
-      
-    //   console.log(valueObj._id);
-    //   console.log(forumCommentsAndRepliesObj[valueObj._id]);
-      
-    //   if (forumCommentsAndRepliesObj[valueObj._id]) {
-        
-        
-        
-    //     lodashSet(cloneObj, ['commentObj', `page${page}Obj`, 'loadedDate'], ISO8601);
-    //     lodashSet(cloneObj, ['commentObj', `page${page}Obj`, 'arr'], forumCommentsAndRepliesObj[valueObj._id]);
-    //   }
-      
-    //   integrateArr.push(cloneObj);
-      
-    //   // console.log(`
-    //   //   ----- valueObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-    // }
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -588,15 +544,15 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     //   limit: {green ${limit}}
     // `);
     
-    // console.log(`
-    //   ----- integrateArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(integrateArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- findForForumThread / returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     console.log(`
-      ----- findForForum / returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      ----- forumCommentsAndRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
       --------------------\n
     `);
     

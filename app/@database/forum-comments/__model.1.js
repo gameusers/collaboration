@@ -284,14 +284,11 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
             pipeline: [
               { $match:
                 { $expr:
-                  { $eq: ['$forumComments_id', '$$forumComments_id'] }
-                  // { $in: ['$forumComments_id', '$$cardPlayersHardwareActiveArr'] }
-                  // { forumComments_id: { $in: '$$forumComments_id' } },
-                  // { $and:
-                  //   [
-                  //     { $eq: ['$forumComments_id', '$$forumComments_id'] }
-                  //   ]
-                  // },
+                  { $and:
+                    [
+                      { $eq: ['$forumComments_id', '$$forumComments_id'] }
+                    ]
+                  },
                 }
               },
               { '$sort': { 'updatedDate': -1 } },
@@ -416,7 +413,7 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
       localeObj,
       loginUsers_id,
       arr: resultArr,
-      commentPage,
+      page: commentPage,
       replyPage,
     });
     
@@ -425,59 +422,57 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     //   Return Object
     // --------------------------------------------------
     
+    // const ISO8601 = moment().toISOString();
     
-    // const page1Obj = {
-      
-    //   'qNiOLKdRt': {// スレッド
-    //     'm2N3ijR3A': ['R2hdDidB6'], //コメント [返信]
-    //     '8_AsHN1fm': [],
-    //   }
-      
+    // const intCommentsLimit = parseInt(commentLimit, 10);
+    
+    // const returnObj = {
+    //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+    //   page,
+    //   limit: intCommentsLimit,
     // };
     
-    // const forumControlObj = {
+    // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
+    // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], formattedArr);
+    
+    
+    const page1Obj = {
       
-    //   threadCount: 5,
-    //   threadPage: 1,
-    //   threadLimit: 5,
-    //   commentLimit: 10,
-    //   replyLimit: 10,
+      'qNiOLKdRt': {// スレッド
+        'm2N3ijR3A': ['R2hdDidB6'], //コメント [返信]
+        '8_AsHN1fm': [],
+      }
       
-    //   // スレッド
-    //   '8xJS6lZCm': {
-    //     page: 1,//コメントのページ数
-    //     count: 0,// コメントのカウント数
-    //   },
-    //   'KQ_FuEYRu': {
-    //     page: 1,//コメントのページ数
-    //     count: 0,// コメントのカウント数
-    //   },
-    //   'HpzNGyKQE': {
-    //     page: 1,//コメントのページ数
-    //     count: 0,// コメントのカウント数
-    //   },
-    //   '_XDDSTWV_': {
-    //     page: 1,//コメントのページ数
-    //     count: 0,// コメントのカウント数
-    //   },
-    //   'qNiOLKdRt': {
-    //     page: 1,//コメントのページ数
-    //     count: 2,// コメントのカウント数
-    //   },
+    };
+    
+    const forumControlObj = {
+      threadCount: 5,
+      threadPage: 1,
+      threadLimit: 5,
+      commentLimit: 10,
+      replyLimit: 10,
       
-    //   // コメント
-    //   '8_AsHN1fm': {
-    //     page: 1,//返信のページ数
-    //     count: 2,// 返信のカウント数
-    //   },
-    //   'm2N3ijR3A': {
-    //     page: 1,//返信のページ数
-    //     count: 1,// 返信のカウント数
-    //   },
-      
-      
-      
-    // };
+      '8xJS6lZCm': {// スレッド
+        page: 1,//コメントのページ数
+        count: 0,// コメントのカウント数
+      },
+      'KQ_FuEYRu': {// スレッド
+        page: 1,//コメントのページ数
+        count: 0,// コメントのカウント数
+      },
+      'HpzNGyKQE': {// スレッド
+        page: 1,//コメントのページ数
+        count: 0,// コメントのカウント数
+      },
+      '_XDDSTWV_': {// スレッド
+        page: 1,//コメントのページ数
+        count: 0,// コメントのカウント数
+      },
+      'qNiOLKdRt': {// スレッド
+        page: 1,//コメントのページ数
+        count: 2,// コメントのカウント数
+      },
+    };
     
     
     
@@ -494,8 +489,8 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
     // `);
     
     // console.log(`
-    //   ----- formattedObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+    //   ----- formattedArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -538,7 +533,7 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
 * @param {Array} arr - 配列
 * @return {Array} フォーマット後のデータ
 */
-const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
+const format = ({ localeObj, loginUsers_id, arr, limit, replyLimit }) => {
   
   
   // --------------------------------------------------
@@ -653,9 +648,9 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
         localeObj,
         loginUsers_id,
         arr: forumRepliesArr,
-        commentPage,
-        replyPage,
       });
+      
+      // lodashSet(cloneObj, ['forumRepliesObj'], formatted2Arr);
       
     }
     
@@ -681,22 +676,18 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     
     
     // --------------------------------------------------
-    //   オブジェクト生成
+    //   push
     // --------------------------------------------------
     
-    // コメント
-    let parent_id = valueObj.forumThreads_id;
-    let page = commentPage;
-    
-    // 返信
-    if (valueObj.forumComments_id) {
-      parent_id = valueObj.forumComments_id;
-      page = replyPage;
-    }
+    const parent_id = valueObj.forumThreads_id || valueObj.forumComments_id;
     
     if (parent_id) {
       
-      lodashSet(returnObj, [parent_id, 'page'], page);
+      const page = 1;
+      
+      lodashSet(returnObj, [parent_id, 'count', ], 10);
+      lodashSet(returnObj, [parent_id, 'page', ], 1);
+      lodashSet(returnObj, [parent_id, 'limit', ], 10);
       
       lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
       
@@ -706,6 +697,25 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
       
     }
     
+    // if (valueObj.forumThreads_id) {
+      
+    //   if (!lodashHas(returnObj, [valueObj.forumThreads_id])) {
+    //     lodashSet(returnObj, [valueObj.forumThreads_id], []);
+    //   }
+      
+    //   returnObj[valueObj.forumThreads_id].push(cloneObj);
+      
+    // } else {
+      
+    //   if (!lodashHas(returnObj, [valueObj.forumComments_id])) {
+    //     lodashSet(returnObj, [valueObj.forumComments_id], []);
+    //   }
+      
+    //   returnObj[valueObj.forumComments_id].push(cloneObj);
+      
+    // }
+    
+    
     
     // --------------------------------------------------
     //   Merge - コメントと返信をひとつのオブジェクトにマージする
@@ -714,7 +724,20 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     returnObj = lodashMerge(returnObj, formattedReplyObj);
     
     
+    // const clonedReplyObj = lodashCloneDeep(valueObj);
+    
+    
+    // if (!lodashHas(returnObj, ['commentObj', valueObj.forumThreads_id])) {
+    //   lodashSet(returnObj, ['commentObj', valueObj.forumThreads_id], []);
+    // }
+    
+    // returnObj.commentObj[valueObj.forumThreads_id].push(cloneObj);
+    
+    
   }
+  
+  
+  //lodashMerge(clonedObj.forumThreadsForListObj, newObj);
   
   
   // --------------------------------------------------

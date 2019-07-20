@@ -218,7 +218,7 @@ export default injectIntl(class extends React.Component {
     
     const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'count'], 0);
     const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'page'], 1) - 1;
-    const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREADS_LIST_LIMIT, 10));
+    const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
     
     const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     

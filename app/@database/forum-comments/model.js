@@ -249,7 +249,17 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Array} 取得データ
  */
-const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumThreads_idArr, commentPage, commentLimit = process.env.FORUM_COMMENT_LIMIT, replyPage, replyLimit = process.env.FORUM_REPLY_LIMIT }) => {
+const findForForumCommentsAndReplies = async ({
+  
+  localeObj,
+  loginUsers_id,
+  forumThreads_idArr,
+  commentPage = 1,
+  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.FORUM_REPLY_LIMIT,
+    
+}) => {
   
   
   try {
@@ -270,7 +280,6 @@ const findForForumCommentsAndReplies = async ({ localeObj, loginUsers_id, forumT
           $and: [
             { forumThreads_id: { $in: forumThreads_idArr } },
             { forumComments_id: '' },
-            // { _id: { '$ne': '' }, },
           ]
         },
       },

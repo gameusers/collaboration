@@ -2898,7 +2898,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'qhpRQ_fGB',
             language: 'ja',
             name: 'Thread 1: 雑談スレッド',
-            description: 'みんなで気になる話題について話し合いましょう！ゲームの話は特に大歓迎です。おすすめの作品などがあったら、ぜひ紹介してください。',
+            description: `みんなで気になる話題について話し合いましょう！
+            ゲームの話は特に大歓迎です。
+            おすすめの作品などがあったら、ぜひ紹介してください。`,
           },
           {
             _id: '_Ov63CsHc',
@@ -2927,9 +2929,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'bV1gwPnYs',
             language: 'ja',
             name: 'Thread 2: カムパネルラ',
-            description: `「ではみなさんは、そういうふうに川だと言いわれたり、乳ちちの流ながれたあとだと言いわれたりしていた、このぼんやりと白いものがほんとうは何かご承知しょうちですか」先生は、黒板こくばんにつるした大きな黒い星座せいざの図の、上から下へ白くけぶった銀河帯ぎんがたいのようなところを指さしながら、みんなに問といをかけました。
-        
-        カムパネルラが手をあげました。それから四、五人手をあげました。ジョバンニも手をあげようとして、急いそいでそのままやめました。たしかにあれがみんな星だと、いつか雑誌ざっしで読んだのでしたが、このごろはジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
+            description: `Next.js を試してみたところ、とても優秀だったので採用することに決めました。サーバーサイドレンダリングの機能や、Code Splitting をデフォルトで行ってくれるのは非常に便利です。ただすべての機能を提供してくれるわけではないので、結局、自分で Express を利用したサーバー用コードを書かないといけない部分も多くあるのですが。
+  
+  それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
           }
         ],
         imagesAndVideosObj: {
@@ -2975,7 +2977,11 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'qhpRQ_fGB',
             language: 'ja',
             name: 'Thread 4: test4',
-            description: 'test4',
+            description: `Next.js で styled-components + Material UI を使う場合、それ用に別途コードを書かなければならない必要が生まれます。しかも Material UI がアップデートすると動かなくなったりするので、とても面倒な組み合わせです。
+
+今回もまた Material UI を Ver.4 にアップデートしてみたところ正常に動かなくなったため、なにか他に方法はないのかと調べてみました。すると emotion という CSS in JS の新しめのライブラリを発見することができました。なんと Material UI では emotion を特別なことをせずにそのまま使えるようなのです。実際、使用してみたところ styled-components との組み合わせよりも、全然相性がいい気がします。
+
+Material UI にスタイルを当てる場合、Material UI がデフォルトで用意している書き方を使う方法もあるのですが、自分はその書き方が気に入らなかったのと、サイト全体のスタイルシートの書き方を統一する意味も込めて、これまでは styled-components を採用していました。`,
           },
         ],
         imagesAndVideosObj: {
@@ -2998,7 +3004,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: '6-g2SWieU',
             language: 'ja',
             name: 'Thread 5: test5',
-            description: 'test5',
+            description: `今回使ってみて emotion の感触が良かったので、こちらに移行することにしました。 後発のライブラリなので機能的にもいいとこ取りをしていて、とても優秀です。同じように Material UI を利用している方はチェックしてみて欲しいですね。いろいろ楽になると思います。
+
+emotion: https://emotion.sh/docs/introduction`,
           },
         ],
         imagesAndVideosObj: {

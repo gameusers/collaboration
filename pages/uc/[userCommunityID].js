@@ -119,11 +119,11 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
@@ -226,12 +226,32 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Update Data - forumThreadsObj
+      //   Update Data - forumThreadsForListObj
       // --------------------------------------------------
       
       this.storeForum.handleEdit({
         pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
         value: props.initialPropsObj.forumThreadsForListObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumThreadsObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumThreadsObj'],
+        value: props.initialPropsObj.forumThreadsObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumCommentsAndRepliesObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumCommentsAndRepliesObj'],
+        value: props.initialPropsObj.forumCommentsAndRepliesObj,
       });
       
       

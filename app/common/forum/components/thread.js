@@ -86,6 +86,7 @@ const { validationForumThreadsName } = require('../../../@database/forum-threads
 // ---------------------------------------------
 
 import FormThread from './form-thread';
+import Paragraph from '../../layout/components/paragraph';
 
 
 
@@ -161,7 +162,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forum` });
+    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumThread` });
     
     
   }
@@ -189,7 +190,7 @@ export default injectIntl(class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-forum`], true);
+    // const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-forum`], true);
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
@@ -197,7 +198,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forum`], true);
+    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forum`], true);
     
     
     
@@ -210,44 +211,21 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleChangeThreadRowsPerPage,
-      handleReadThreadsList,
       
     } = storeForum;
     
     
     // --------------------------------------------------
-    //   Thread List
+    //   Data
     // --------------------------------------------------
     
-    const forumArr = [1];
-    
-    
-    
-    
-    
-    // const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1) - 1;
-    // const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    
-    // const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
-    
-    
-    // // --------------------------------------------------
-    // //   Create Thread
-    // // --------------------------------------------------
-    
-    // const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
-    // const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
-    
-    // const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
+    const page = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1);
+    const arr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
     //   Search
     // --------------------------------------------------
-    
-    // const searchKeyword = lodashGet(dataObj, [_id, 'searchObj', 'keyword'], '');
-    
     
     // console.log(`
     //   ----- validationForumThreadsObj -----\n
@@ -257,30 +235,19 @@ export default injectIntl(class extends React.Component {
     
     
     // console.log(chalk`
-    //   navigation.js
-    //   _id: {green ${_id}}
-    //   openedTabNo  : {green ${openedTabNo}}
+    //   /app/common/forum/components/thread.js
+    //   page: {green ${page}}
     // `);
     
-    // console.log(chalk`
-    //   createThreadName: {green ${createThreadName} / ${typeof createThreadName}}
-    // `);
-    
-    // console.log(chalk`
-    //   threadListCount: {green ${threadListCount}}
-    //   threadListLimit: {green ${threadListLimit}}
-    //   threadListPage: {green ${threadListPage}}
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
     //   ----- dataObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- dataObj[_id].forumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj[_id].forumThreadsObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -295,27 +262,51 @@ export default injectIntl(class extends React.Component {
     const componentForum = [];
     
     
-    for (const [index, valueObj] of forumArr.entries()) {
+    for (const [index, valueObj] of arr.entries()) {
+      
+      
+      // --------------------------------------------------
+      //   Property
+      // --------------------------------------------------
+      
+      const forumThreads_id = lodashGet(valueObj, ['_id'], '');
+      const name = lodashGet(valueObj, ['name'], '');
+      const description = lodashGet(valueObj, ['description'], '');
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      // const editable = administrator || loginUserId === value.creatorId ? true : false;
+      // const editable = lodashGet(valueObj, ['editable'], false);
       const editable = true;
       
-      const forumThreads_id = 'ks8WPvlQpbg';
+      // --------------------------------------------------
+      //   Show
+      // --------------------------------------------------
       
       const showDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showDescription'], false);
       const showForm = lodashGet(dataObj, [_id, forumThreads_id, 'showForm'], false);
       
-      // const threadUpdateFormName = threadUpdateFormNameObj[value.id];
-      // const threadUpdateFormDescription = threadUpdateFormDescriptionObj[value.id];
+      
+       // --------------------------------------------------
+      //   Panel
+      // --------------------------------------------------
+      
+      const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-${forumThreads_id}`], true);
+      
+      
+      // --------------------------------------------------
+      //   Button - Disabled
+      // --------------------------------------------------
+      
+      const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forumThread`], true);
+      
+      
       
       
       componentForum.push(
         
         <ExpansionPanel
-          // css={css`
-          //   margin: 0 !important;
-          // `}
+          css={css`
+            margin: 16px 0 !important;
+          `}
           expanded={panelExpanded}
           key={index}
         >
@@ -325,9 +316,9 @@ export default injectIntl(class extends React.Component {
           <ExpansionPanelSummary
             css={css`
               && {
+                cursor: default !important;
                 background-color: white !important;
                 margin: 0;
-                // padding: 0 16px;
                 
                 @media screen and (max-width: 480px) {
                   padding: 0 16px;
@@ -373,9 +364,10 @@ export default injectIntl(class extends React.Component {
                     css={css`
                       font-weight: bold;
                       font-size: 18px;
+                      margin: 0 0 4px 0;
                     `}
                   >
-                    雑談スレッド
+                    {name}
                   </h2>
                   
                   
@@ -411,6 +403,7 @@ export default injectIntl(class extends React.Component {
                         css={css`
                           font-size: 12px;
                           color: #009933;
+                          cursor: pointer;
                           margin: 2px 0 0 0;
                         `}
                         onClick={() => handleEdit({
@@ -445,10 +438,11 @@ export default injectIntl(class extends React.Component {
                         css={css`
                           font-size: 12px;
                           color: #009933;
+                          cursor: pointer;
                           margin: 2px 0 0 0;
                         `}
                       >
-                        ks8WPvlQpbg
+                        {forumThreads_id}
                       </div>
                       
                     </div>
@@ -461,36 +455,18 @@ export default injectIntl(class extends React.Component {
                           && {
                             font-size: 12px;
                             height: 22px;
-                            min-width: 54px;
-                            min-height: 22px;
+                            min-width: 36px;
                             margin: 2px 0 0 10px;
                             padding: 0 2px;
-                            
-                            @media screen and (max-width: 480px) {
-                              min-width: 36px;
-                              min-height: 22px;
-                            }
                           }
                         `}
                         variant="outlined"
+                        color="primary"
                         onClick={() => handleEdit({
                           pathArr: [_id, forumThreads_id, 'showForm'],
                           value: !showForm
                         })}
                       >
-                        <IconEdit
-                          css={css`
-                            && {
-                              font-size: 16px;
-                              margin: 0 3px 0 0;
-                              padding: 0;
-                              
-                              @media screen and (max-width: 480px) {
-                                display: none;
-                              }
-                            }
-                          `}
-                        />
                         編集
                       </Button>
                     }
@@ -518,7 +494,7 @@ export default injectIntl(class extends React.Component {
                         padding: 4px;
                       }
                     `}
-                    onClick={() => handlePanelExpand({ _id: `${_id}-forum` })}
+                    onClick={() => handlePanelExpand({ _id: `${_id}-${forumThreads_id}` })}
                     aria-expanded={panelExpanded}
                     aria-label="Show more"
                     disabled={buttonDisabled}
@@ -549,7 +525,7 @@ export default injectIntl(class extends React.Component {
                     padding: 0 0 0 18px;
                   `}
                 >
-                  仲良く雑談しませんか？<br />ゲームの雑談、または配信でプレイして欲しいゲームはそちらのスレに書いてください。<br /><br />ルイン＆アドオンを使わず、選別もしない<br />僕のトラッパーがついにランク4の赤帯になりました。<br /><br /><br />Dead by Daylight
+                  <Paragraph text={description} />
                 </div>
               }
               

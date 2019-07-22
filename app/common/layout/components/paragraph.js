@@ -57,7 +57,8 @@ export default class extends React.Component {
     
     for (const [index, value] of textArr.entries()) {
       
-      if (value === '') {
+      // if (value === '') {
+      if (!value.match(/\S/g)) {
         
         marginPx += 18;
         
@@ -81,7 +82,8 @@ export default class extends React.Component {
         
       }
       
-      // console.log(index, value);
+      // console.log(index, value, marginPx);
+      
     }
     
     componentsArr = componentsArr.reverse();

@@ -165,6 +165,9 @@ export default injectIntl(class extends React.Component {
     const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
     
+    // const buttonLabel = forumThreads_id ? 'スレッドを作成する' : 'スレッドを編集する';
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -176,16 +179,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   navigation.js
-    //   _id: {green ${_id}}
-    //   name  : {green ${name}}
-    //   description  : {green ${description}}
-    // `);
-    
-    // console.log(`
-    //   ----- dataObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   /app/common/forum/components/form-thread.js
+    //   forumThreads_id: {green ${forumThreads_id}}
     // `);
     
     
@@ -300,7 +295,7 @@ export default injectIntl(class extends React.Component {
             onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumThreads_id })}
             disabled={buttonDisabled}
           >
-            {forumThreads_id ? 'スレッドを作成する' : 'スレッドを編集する'}
+            {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
           </Button>
         </div>
         

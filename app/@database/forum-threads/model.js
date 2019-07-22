@@ -253,7 +253,15 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {number} limit - 1ページに表示する件数
  * @return {Array} 取得データ
  */
-const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREAD_LIST_LIMIT }) => {
+const findForList = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userCommunities_id,
+  page = 1,
+  limit = process.env.FORUM_THREAD_LIST_LIMIT
+  
+}) => {
   
   
   try {
@@ -287,7 +295,7 @@ const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page,
       
       
       // --------------------------------------------------
-      //   ディープコピー
+      //   Deep Copy
       // --------------------------------------------------
       
       let cloneObj = lodashCloneDeep(valueObj.toJSON());
@@ -359,7 +367,7 @@ const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page,
     
     
     // --------------------------------------------------
-    //   Count
+    //   Get Count
     // --------------------------------------------------
     
     const userCommunityArr = await ModelUserCommunities.find({
@@ -441,7 +449,19 @@ const findForList = async ({ localeObj, loginUsers_id, userCommunities_id, page,
  * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドのIDが入った配列
  * @return {Array} 取得データ
  */
-const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page, limit = process.env.FORUM_THREAD_LIMIT }) => {
+const findForForum = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userCommunities_id,
+  threadPage = 1,
+  threadLimit = process.env.FORUM_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  
+}) => {
   
   
   try {
@@ -455,19 +475,14 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
       userCommunities_id,
     };
     
-    // const conditionObj = {
-    //   _id: { $in: forumThreads_idArr },
-    // };
-    
     
     // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
-    const intLimit = parseInt(limit, 10);
+    const intThreadLimit = parseInt(threadLimit, 10);
     
-    const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(intLimit).exec();
-    // const resultArr = await SchemaForumThreads.find(conditionObj).exec();
+    const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((threadPage - 1) * intThreadLimit).limit(intThreadLimit).exec();
     
     
     // --------------------------------------------------
@@ -501,14 +516,14 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     
     const ISO8601 = moment().toISOString();
     
-    const returnObj = {
+    const forumThreadsObj = {
       count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
-      page,
-      limit: intLimit,
+      page: threadPage,
+      limit: intThreadLimit,
     };
     
-    lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
-    lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], formattedArr);
+    lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'loadedDate'], ISO8601);
+    lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'arr'], formattedArr);
     
     
     // --------------------------------------------------
@@ -519,10 +534,6 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
       localeObj,
       loginUsers_id,
       forumThreads_idArr: forumThreads_idArr,
-      commentPage: 1,
-      commentLimit: 20,
-      replyPage: 1,
-      replyLimit: 20,
     });
     
     
@@ -544,17 +555,17 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     //   limit: {green ${limit}}
     // `);
     
-    console.log(`
-      ----- findForForumThread / returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumCommentsAndRepliesObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- forumThreads_idArr -----\n
@@ -567,7 +578,10 @@ const findForForum = async ({ localeObj, loginUsers_id, userCommunities_id, page
     //   Return
     // --------------------------------------------------
     
-    return returnObj;
+    return {
+      forumThreadsObj,
+      forumCommentsAndRepliesObj,
+    };
     
     
   } catch (err) {

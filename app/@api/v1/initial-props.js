@@ -819,25 +819,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      page: 1,
-      // limit: 1,
     });
-    
-    
-    
-    // const listArr = lodashGet(returnObj, ['forumThreadsForListObj', 'dataObj', 'page1Obj', 'arr'], []);
-    
-    // const forumThreads_idArr = [];
-    
-    // for (let valueObj of listArr.values()) {
-    //   forumThreads_idArr.push(valueObj._id);
-    // }
-    
-    // console.log(`
-    //   ----- listArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(listArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(`
     //   ----- forumThreads_idArr -----\n
@@ -847,24 +829,17 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / Forum
     // --------------------------------------------------
     
-    // returnObj.forumThreadsObj = await ModelForumThreads.findForThread({
-    //   localeObj,
-    //   loginUsers_id,
-    //   forumThreads_idArr,
-    // });
-    
-    returnObj.forumObj = await ModelForumThreads.findForForum({
+    const forumObj = await ModelForumThreads.findForForum({
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      page: 1,
     });
     
-    
-    
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
     
     
     // ---------------------------------------------

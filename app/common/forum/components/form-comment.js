@@ -78,7 +78,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-${this.props.forumThreads_id}-formThread` });
+    const _idForum = this.props.forumThreads_id || this.props.forumComments_id;
+    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-${_idForum}-formComment` });
     
     
   }
@@ -95,16 +96,17 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
     
     const _id = gameCommunities_id || userCommunities_id;
+    const _idForum = forumThreads_id || forumComments_id;
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-${forumThreads_id}-formThread`], true);
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-${_idForum}-formComment`], true);
     
     
     
@@ -126,13 +128,10 @@ export default injectIntl(class extends React.Component {
     //   Form Thread
     // --------------------------------------------------
     
-    const name = lodashGet(dataObj, [_id, forumThreads_id, 'formThreadObj', 'name'], '');
-    const description = lodashGet(dataObj, [_id, forumThreads_id, 'formThreadObj', 'description'], '');
+    const description = lodashGet(dataObj, [_id, forumComments_id, 'formCommentObj', 'description'], '');
     
-    const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
+    // const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
-    
-    // const buttonLabel = forumThreads_id ? 'スレッドを作成する' : 'スレッドを編集する';
     
     
     // --------------------------------------------------
@@ -146,8 +145,11 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   /app/common/forum/components/form-thread.js
+    //   /app/common/forum/components/form-comment.js
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
     // `);
     
     
@@ -160,35 +162,9 @@ export default injectIntl(class extends React.Component {
     return (
       <div
         css={css`
-          padding: 0 0 8px;
+          
         `}
       >
-        
-        
-        {/* Name */}
-        <TextField
-          css={css`
-            && {
-              width: 100%;
-              max-width: 500px;
-            }
-          `}
-          id="createTreadName"
-          label="スレッド名"
-          value={validationForumThreadsNameObj.value}
-          onChange={(eventObj) => handleEdit({
-            pathArr: [_id, forumThreads_id, 'formThreadObj', 'name'],
-            value: eventObj.target.value
-          })}
-          error={validationForumThreadsNameObj.error}
-          helperText={intl.formatMessage({ id: validationForumThreadsNameObj.messageID }, { numberOfCharacters: validationForumThreadsNameObj.numberOfCharacters })}
-          margin="normal"
-          inputProps={{
-            maxLength: 100,
-          }}
-        />
-        
-        
         
         
         {/* Description */}
@@ -215,10 +191,10 @@ export default injectIntl(class extends React.Component {
               }
             `}
             rows={5}
-            placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
+            placeholder="コメントを書き込んでください"
             value={description}
             onChange={(eventObj) => handleEdit({
-            pathArr: [_id, forumThreads_id, 'formThreadObj', 'description'],
+            pathArr: [_id, forumComments_id, 'formCommentObj', 'description'],
             value: eventObj.target.value
           })}
             maxLength={3000}
@@ -237,9 +213,9 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            _id={`${_id}-${forumThreads_id}`}
-            descriptionImage="スレッドに表示する画像をアップロードできます。"
-            descriptionVideo="スレッドに表示する動画を登録できます。"
+            _id={`${_id}-${_idForum}-formComment`}
+            descriptionImage="コメントに表示する画像をアップロードできます。"
+            descriptionVideo="コメントに表示する動画を登録できます。"
             arrayName="mainArr"
             caption={true}
             limit={3}
@@ -259,10 +235,10 @@ export default injectIntl(class extends React.Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumThreads_id })}
+            onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
             disabled={buttonDisabled}
           >
-            {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
+            {forumComments_id ? 'コメントを編集する' : 'コメントを投稿する'}
           </Button>
         </div>
         

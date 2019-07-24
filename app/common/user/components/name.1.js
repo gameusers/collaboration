@@ -203,6 +203,8 @@ export default class extends React.Component {
       
       stores,
       
+      anonymity,
+      
       name,
       playerID,
       status,
@@ -231,19 +233,22 @@ export default class extends React.Component {
     
     let componentName = '';
     
-    if (name) {
+    if (anonymity) {
+      
+      componentName = <div css={cssNameNoColor}>ななしさん</div>;
+      
+    } else if (name) {
       
       componentName =
         <div css={cssNameNoColor}>
           <Link href={`${stores.data.urlBase}pl/${playerID}`}>
             <a>{name}</a>
           </Link>
-        </div>
-      ;
+        </div>;
       
     } else {
       
-      componentName = <div css={cssNameNoColor}>ななしさん</div>;
+      componentName = <div css={cssNameNoColor}>削除済みユーザー</div>;
       
     }
     
@@ -254,8 +259,18 @@ export default class extends React.Component {
     
     let componentStatus = '';
     
-    if (status) {
+    if (anonymity) {
+      
+      componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>774</div></div>;
+      
+    } else if (status) {
+      
       componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>{status}</div></div>;
+      
+    } else {
+      
+      componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>deleted</div></div>;
+      
     }
     
     
@@ -265,7 +280,7 @@ export default class extends React.Component {
     
     let componentAccessTime = '';
     
-    if (accessDate) {
+    if (!anonymity && accessDate) {
       
       const datetimeNow = moment().utcOffset(0);
       const datetimeAccess = moment(accessDate).utcOffset(0);
@@ -330,7 +345,7 @@ export default class extends React.Component {
       //   Level
       // --------------------------------------------------
       
-      if (experience) {
+      if (!anonymity && experience) {
         
         const level = Math.floor(experience / 10);
         
@@ -343,12 +358,12 @@ export default class extends React.Component {
         
       } else {
         
-        // componentBottomArr.push(
-        //   <div css={cssLevelBox} key="levelBox">
-        //     <IconStars css={cssIconStars} />
-        //     <div css={cssLevel}>Lv.0</div>
-        //   </div>
-        // );
+        componentBottomArr.push(
+          <div css={cssLevelBox} key="levelBox">
+            <IconStars css={cssIconStars} />
+            <div css={cssLevel}>Lv.0</div>
+          </div>
+        );
         
       }
       
@@ -357,7 +372,7 @@ export default class extends React.Component {
       //   Button Card Player
       // --------------------------------------------------
       
-      if (showCardPlayerButton && cardPlayers_id) {
+      if (!anonymity && showCardPlayerButton && cardPlayers_id) {
         
         
         // --------------------------------------------------
@@ -395,7 +410,7 @@ export default class extends React.Component {
       //   Button Card Game
       // --------------------------------------------------
       
-      if (showCardGameButton && cardGames_id) {
+      if (!anonymity && showCardGameButton && cardGames_id) {
         
         
         // --------------------------------------------------

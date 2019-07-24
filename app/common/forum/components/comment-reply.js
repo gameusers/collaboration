@@ -2,11 +2,37 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import { injectIntl } from 'react-intl';
 import styled from 'styled-components';
-import moment from 'moment';
 
+import moment from 'moment';
+moment.locale('ja');
+
+import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Material UI
+// ---------------------------------------------
+
+import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import IconPublic from '@material-ui/icons/Public';
@@ -15,16 +41,23 @@ import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
 
+
+// ---------------------------------------------
+//   Material UI / Color
+// ---------------------------------------------
+
 import green from '@material-ui/core/colors/green';
 
+
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
+
 import Paragraph from '../../layout/components/paragraph';
-import FormPost from '../../form/components/post';
 import UserThumbnail from '../../user/components/thumbnail';
 import UserName from '../../user/components/name';
-import ImageVideo from './image-video';
+// import ImageVideo from './image-video';
 
-
-moment.locale('ja');
 
 
 
@@ -37,64 +70,64 @@ moment.locale('ja');
 //   Comments & Replies
 // ---------------------------------------------
 
-const CommentsRepliesContainer = styled.div`
-  margin: 40px 0 0 0;
-  padding: 0;
-`;
+// const CommentsRepliesContainer = styled.div`
+//   margin: 40px 0 0 0;
+//   padding: 0;
+// `;
 
-const CommentContainer = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0;
-  padding: 0;
-  // background-color: pink;
-`;
+// const CommentContainer = styled.div`
+//   display: flex;
+//   flex-flow: row nowrap;
+//   margin: 0;
+//   padding: 0;
+//   // background-color: pink;
+// `;
 
-const CommentLeftBox = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  // align-items: stretch;
-  margin: 0;
-  // background-color: blue;
-`;
+// const CommentLeftBox = styled.div`
+//   display: flex;
+//   flex-flow: column nowrap;
+//   // align-items: stretch;
+//   margin: 0;
+//   // background-color: blue;
+// `;
 
-const CommentThumbnailBox = styled.div`
-  // align-items: flex-start;
-  margin: 3px 0 0 0;
-`;
+// const CommentThumbnailBox = styled.div`
+//   // align-items: flex-start;
+//   margin: 3px 0 0 0;
+// `;
 
-const CommentLevelBox = styled.div`
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 1em;
-  width: 100%;
-  text-align: center;
-  margin: 6px 0 0 0;
-  padding: 0;
-  // background-color: pink;
-`;
+// const CommentLevelBox = styled.div`
+//   font-size: 12px;
+//   font-weight: bold;
+//   line-height: 1em;
+//   width: 100%;
+//   text-align: center;
+//   margin: 6px 0 0 0;
+//   padding: 0;
+//   // background-color: pink;
+// `;
 
-const CommentLine = styled.div`
-  flex-grow: 2;
-  border-left: 4px solid #84cacb;
-  margin: 10px 0 0 0;
-  padding: 0;
-`;
+// const CommentLine = styled.div`
+//   flex-grow: 2;
+//   border-left: 4px solid #84cacb;
+//   margin: 10px 0 0 0;
+//   padding: 0;
+// `;
 
-const CommentRightBox = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  margin: 0;
-  padding: 0 0 0 10px;
-  // background-color: green;
-`;
+// const CommentRightBox = styled.div`
+//   display: flex;
+//   flex-flow: column nowrap;
+//   margin: 0;
+//   padding: 0 0 0 10px;
+//   // background-color: green;
+// `;
 
-const UserNameBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0;
-  padding: 0;
-`;
+// const UserNameBox = styled.div`
+//   display: flex;
+//   flex-flow: row wrap;
+//   margin: 0;
+//   padding: 0;
+// `;
 
 const CommentBox = styled.div`
   font-size: 14px;
@@ -414,40 +447,42 @@ const BottomNavIconReply = styled(IconReply)`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+// @withStyles(stylesObj)
+@inject('stores', 'storeForum')
 @observer
-export default class extends React.Component {
+export default injectIntl(class extends React.Component {
+  
+  
+  // --------------------------------------------------
+  //   constructor
+  // --------------------------------------------------
   
   constructor(props) {
-    
     super(props);
+  }
+  
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount(){
     
     
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
     
-    // ---------------------------------------------
-    //   Set Property
-    // ---------------------------------------------
+    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumComment` });
     
-    // ID
-    // communityId = props.communityId;
-    // threadId = props.threadId;
-    
-    // User Data
-    // userObj = props.stores.data.userObj;
-    
-    // Comment Good
-    // handleCommentGood = props.stores.bbs.handleCommentGood;
-    
-    // Reply Form Open
-    // replyInsertFormOpenObj = props.stores.bbs.replyInsertFormOpenObj;
-    // handleReplyInsertFormOpen = props.stores.bbs.handleReplyInsertFormOpen;
-    
-    // 
-    // this.commentUpdateFormOpenObj = props.stores.bbs.commentUpdateFormOpenObj;
-    // handleCommentUpdateFormOpen = props.stores.bbs.handleCommentUpdateFormOpen;
     
   }
   
+  
+  // --------------------------------------------------
+  //   render
+  // --------------------------------------------------
   
   render() {
     
@@ -456,7 +491,56 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, communityId, threadId, commentArr } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    
+    const _id = gameCommunities_id || userCommunities_id;
+    
+    
+    // --------------------------------------------------
+    //   Forum
+    // --------------------------------------------------
+    
+    const {
+      
+      dataObj,
+      handleEdit,
+      
+    } = storeForum;
+    
+    
+    // --------------------------------------------------
+    //   Data
+    // --------------------------------------------------
+    
+    const page = lodashGet(dataObj, [_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
+    const arr = lodashGet(dataObj, [_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   /app/common/forum/components/comment-reply.js
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   page: {green ${page}}
+    // `);
+    
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    // --------------------------------------------------
+    //   Props
+    // --------------------------------------------------
+    
+    // const { stores, communityId, threadId, commentArr } = this.props;
     
     
     
@@ -464,44 +548,44 @@ export default class extends React.Component {
     //   User Data
     // --------------------------------------------------
     
-    const { userObj } = stores.data;
+    // const { userObj } = stores.data;
     
     
-    // --------------------------------------------------
-    //   Comment Good
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Comment Good
+    // // --------------------------------------------------
     
-    const {
+    // const {
       
-      handleCommentGood
+    //   handleCommentGood
       
-    } = stores.bbs;
+    // } = stores.bbs;
     
     
-    // --------------------------------------------------
-    //   Reply Insert Form
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Reply Insert Form
+    // // --------------------------------------------------
     
-    const {
+    // const {
       
-      replyInsertFormOpenObj,
-      handleReplyInsertFormOpen,
-      handleReplyInsert
+    //   replyInsertFormOpenObj,
+    //   handleReplyInsertFormOpen,
+    //   handleReplyInsert
       
-    } = stores.bbs;
+    // } = stores.bbs;
     
     
-    // --------------------------------------------------
-    //   Comment Update Form
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Comment Update Form
+    // // --------------------------------------------------
     
-    const {
+    // const {
       
-      commentUpdateFormOpenObj,
-      handleCommentUpdateFormOpen,
-      handleCommentUpdate
+    //   commentUpdateFormOpenObj,
+    //   handleCommentUpdateFormOpen,
+    //   handleCommentUpdate
       
-    } = stores.bbs;
+    // } = stores.bbs;
     
     
     
@@ -510,185 +594,205 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Comment
+    //   Component - Comment & Reply
     // --------------------------------------------------
     
-    const componentsCommentArr = [];
+    const componentArr = [];
     
-    for (const [index, value] of commentArr.entries()) {
+    for (const [index, valueObj] of arr.entries()) {
       
       
       // User Level
-      const userLevel = value.userId in userObj ? userObj[value.userId].level : '';
+      const userLevel = 99;
       
       
-      // Datetime
-      const datetimeNow = moment().utcOffset(0);
-      const datetimeUpdated = moment(value.updatedDate).utcOffset(0);
-      const datetimeFrom = datetimeUpdated.from(datetimeNow);
+      // --------------------------------------------------
+      //   Property
+      // --------------------------------------------------
       
+      // const forumThreads_id = lodashGet(valueObj, ['_id'], '');
+      const cardPlayers_id = lodashGet(valueObj, ['cardPlayersObj', '_id'], '');
       
-      // Reply Insert Form Open
-      let replyInsertFormOpen = false;
+      let name = lodashGet(valueObj, ['name'], '');
+      const cardPlayers_name = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
       
-      if (`${value.id}-reply-insert` in replyInsertFormOpenObj) {
-        replyInsertFormOpen = replyInsertFormOpenObj[`${value.id}-reply-insert`];
+      if (cardPlayers_name) {
+        name = cardPlayers_name;
       }
+      // const name = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
+      
+      const statUs = lodashGet(valueObj, ['cardPlayersObj', 'status'], '');
       
       
-      // Comment Update Form Open
-      let commentUpdateFormOpen = false;
+      const comment = lodashGet(valueObj, ['comment'], '');
       
-      if (`${value.id}-comment-update` in commentUpdateFormOpenObj) {
-        commentUpdateFormOpen = commentUpdateFormOpenObj[`${value.id}-comment-update`];
-      }
+      // // Datetime
+      // const datetimeNow = moment().utcOffset(0);
+      // const datetimeUpdated = moment(value.updatedDate).utcOffset(0);
+      // const datetimeFrom = datetimeUpdated.from(datetimeNow);
+      
+      
+      // // Reply Insert Form Open
+      // let replyInsertFormOpen = false;
+      
+      // if (`${value.id}-reply-insert` in replyInsertFormOpenObj) {
+      //   replyInsertFormOpen = replyInsertFormOpenObj[`${value.id}-reply-insert`];
+      // }
+      
+      
+      // // Comment Update Form Open
+      // let commentUpdateFormOpen = false;
+      
+      // if (`${value.id}-comment-update` in commentUpdateFormOpenObj) {
+      //   commentUpdateFormOpen = commentUpdateFormOpenObj[`${value.id}-comment-update`];
+      // }
       
       // console.log(`value.imageVideoArr`);
       // console.dir(value.imageVideoArr);
       // console.log(`value.imageVideoArr[0].id = ${value.imageVideoArr[0].id}`);
       
       
-      componentsCommentArr.push(
+      componentArr.push(
         
-        <CommentsRepliesContainer key={index}>
+        <div
+          css={css`
+             margin: 40px 0 0 0;
+          `}
+          key={index}
+        >
           
-          { commentUpdateFormOpen === false ? (
           
-            <React.Fragment>
-          
-              {/* Comment */}
-              <CommentContainer>
-                
-                {/* コメントの左側　サムネイル */}
-                <CommentLeftBox>
-                  <CommentThumbnailBox>
-                    <UserThumbnail id={value.userId} />
-                  </CommentThumbnailBox>
-                  
-                  { userLevel &&
-                    <CommentLevelBox>Lv.{userLevel}</CommentLevelBox>
-                  }
-                  
-                  <CommentLine />
-                </CommentLeftBox>
-                
-                
-                {/* コメントの右側　画像・動画・コメント */}
-                <CommentRightBox>
-                
-                  <UserNameBox>
-                    <UserName
-                      id={value.userId}
-                      name={value.name}
-                      status={value.status}
-                    />
-                  </UserNameBox>
-                  
-                  
-                  <CommentBox>
-                    <ImageVideo
-                      id={value.id}
-                      imageVideoArr={value.imageVideoArr}
-                    />
-                    
-                    
-                    
-                    
-                    {/*<p>Comment ID = {value.id}</p>
-                    <p>value.imageVideoArr[0].id = {value.imageVideoArr[0].id}</p>*/}
-                    
-                    
-                    
-                    <Paragraph text={value.comment} />
-                  </CommentBox>
-                  
-                  
-                  {/* 更新日 */}
-                  <UpdatedDateBox>
-                    <UpdatedDateIconUpdate />
-                    <UpdatedDate>{datetimeFrom}</UpdatedDate>
-                  </UpdatedDateBox>
-                  
-                  
-                  {/* Goodボタン・返信ボタン・編集ボタン・ID */}
-                  <BottomNavBox>
-                    
-                    <BottomNavButtonsBox>
-                      
-                      <BottomNavThumbUpButton
-                        variant="outlined"
-                        onClick={() => handleCommentGood(communityId, threadId, value.id)}
-                      >
-                        <BottomNavIconThumbUp />
-                        {value.good}
-                      </BottomNavThumbUpButton>
-                      
-                      <BottomNavButton
-                        variant="outlined"
-                        onClick={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
-                      >
-                        <BottomNavIconReply />
-                        返信
-                      </BottomNavButton>
-                      
-                      <BottomNavButton
-                        variant="outlined"
-                        onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
-                      >
-                        <BottomNavIconEdit />
-                        編集
-                      </BottomNavButton>
-                      
-                      <BottomNavIdBox>
-                        <BottomNavIconPublic />
-                        <BottomNavId>{value.id}</BottomNavId>
-                      </BottomNavIdBox>
-                      
-                    </BottomNavButtonsBox>
-                    
-                  </BottomNavBox>
-                  
-                </CommentRightBox>
-                
-              </CommentContainer>
+          {/* Comment */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              // background-color: purple;
+            `}
+          >
+            
+            
+            {/* Left */}
+            <div
+              css={css`
+                display: flex;
+                flex-flow: column nowrap;
+                margin: 3px 0 0 0;
+                // background-color: pink;
+              `}
+            >
               
               
-              {/* 返信フォームを表示する */}
-              { replyInsertFormOpen &&
-                
-                <ReplyFormBox>
-                  
-                  <FormPost
-                    id={`${value.id}-reply-insert`}
-                    buttonLabel1="返信する"
-                    buttonHandle1={() => handleReplyInsert(`${value.id}-reply-insert`)}
-                    buttonLabel2="閉じる"
-                    buttonHandle2={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
-                  />
-                  
-                </ReplyFormBox>
-                
+              {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+              {/*<User
+                thumbnailSrc={thumbnailSrc}
+                name={name}
+                playerID={playerID}
+                status={status}
+                accessDate={accessDate}
+                experience={experience}
+              />*/}
+              
+              
+              {/* Thumbnail */}
+              <UserThumbnail />
+              
+              
+              {/* Level */}
+              {userLevel &&
+                <div
+                  css={css`
+                    font-size: 12px;
+                    font-weight: bold;
+                    line-height: 1em;
+                    width: 100%;
+                    text-align: center;
+                    margin: 6px 0 0 0;
+                  `}
+                >
+                  Lv.{userLevel}
+                </div>
               }
               
-            </React.Fragment>
-          
-          ) : (
+              
+              {/* Line */}
+              <div
+                css={css`
+                  flex-grow: 2;
+                  border-left: 4px solid #84cacb;
+                  // align-self: center;
+                  margin: 10px 0 0 0;
+                `}
+              />
+              
+              
+            </div>
             
-            <FormPost
-              id={`${value.id}-comment-update`}
-              name={value.name}
-              text={value.comment}
-              imageVideoArr={value.imageVideoArr}
-              // lightboxArr={value.lightboxArr}
-              buttonLabel1="編集する"
-              buttonHandle1={() => handleCommentUpdate(communityId, threadId, value.id, `${value.id}-comment-update`)}
-              buttonLabel2="閉じる"
-              buttonHandle2={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
-            />
             
-          )}
+            
+            {/* Right */}
+            <div
+              css={css`
+                display: flex;
+                flex-flow: column nowrap;
+                margin: 0;
+                padding: 0 0 0 10px;
+                // background-color: green;
+              `}
+            >
+              
+              
+              {/* ユーザー情報 */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row wrap;
+                `}
+              >
+                <UserName
+                  id={cardPlayers_id}
+                  name={name}
+                  status={statUs}
+                />
+              </div>
+              
+              
+              {/* 画像・動画・コメント */}
+              <div
+                css={css`
+                  font-size: 14px;
+                  line-height: 1.6em;
+                `}
+              >
+                
+                {/*<ImageVideo
+                  id={value.id}
+                  imageVideoArr={value.imageVideoArr}
+                />*/}
+                
+                <div
+                  css={css`
+                    margin 4px 0 0 0;
+                  `}
+                >
+                  <Paragraph text={comment} />
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            
+          </div>
           
-        </CommentsRepliesContainer>
+          
+          
+          
+         
+          
+          
+        </div>
         
       );
       
@@ -702,11 +806,11 @@ export default class extends React.Component {
     return (
       <React.Fragment>
       
-        {componentsCommentArr}
+        {componentArr}
       
       </React.Fragment>
     );
     
   }
   
-};
+});

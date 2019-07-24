@@ -17,7 +17,6 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import TextareaAutosize from 'react-autosize-textarea';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -35,24 +34,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import Paper from '@material-ui/core/Paper';
-import Tooltip from '@material-ui/core/Tooltip';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-
-// import Grow from '@material-ui/core/Grow';
 
 
 // ---------------------------------------------
@@ -85,8 +66,10 @@ const { validationForumThreadsName } = require('../../../@database/forum-threads
 //   Components
 // ---------------------------------------------
 
-import FormThread from './form-thread';
 import Paragraph from '../../layout/components/paragraph';
+import FormThread from './form-thread';
+import FormComment from './form-comment';
+import CommentReply from './comment-reply';
 
 
 
@@ -100,6 +83,11 @@ const stylesObj = {
   
   label: {
     fontSize: 14
+  },
+  
+  expanded: {
+    marginBottom: '0 !important',
+    // backgroundColor: 'pink',
   },
   
 };
@@ -224,7 +212,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Search
+    //   console.log
     // --------------------------------------------------
     
     // console.log(`
@@ -256,10 +244,10 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Forum
+    //   Component - Thread
     // --------------------------------------------------
     
-    const componentForum = [];
+    const componentArr = [];
     
     
     for (const [index, valueObj] of arr.entries()) {
@@ -281,7 +269,7 @@ export default injectIntl(class extends React.Component {
       //   Show
       // --------------------------------------------------
       
-      const showDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showDescription'], false);
+      const showDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showDescription'], true);
       const showForm = lodashGet(dataObj, [_id, forumThreads_id, 'showForm'], false);
       
       
@@ -301,7 +289,7 @@ export default injectIntl(class extends React.Component {
       
       
       
-      componentForum.push(
+      componentArr.push(
         
         <ExpansionPanel
           css={css`
@@ -318,13 +306,17 @@ export default injectIntl(class extends React.Component {
               && {
                 cursor: default !important;
                 background-color: white !important;
-                margin: 0;
+                margin: 20px 0 0 0 !important; 
                 
                 @media screen and (max-width: 480px) {
                   padding: 0 16px;
                 }
               }
             `}
+            // style={{ marginBottom: 0 }}
+            classes={{
+              expanded: classes.expanded
+            }}
           >
             
             
@@ -363,8 +355,12 @@ export default injectIntl(class extends React.Component {
                   <h2
                     css={css`
                       font-weight: bold;
-                      font-size: 18px;
-                      margin: 0 0 4px 0;
+                      font-size: 16px;
+                      // margin: 0 0 4px 0;
+                      
+                      @media screen and (max-width: 480px) {
+                        font-size: 14px;
+                      }
                     `}
                   >
                     {name}
@@ -377,6 +373,7 @@ export default injectIntl(class extends React.Component {
                       display: flex;
                       flex-flow: row wrap;
                       font-size: 12px;
+                      margin: 6px 0 0 0;
                     `}
                   >
                     
@@ -532,7 +529,7 @@ export default injectIntl(class extends React.Component {
               
               
               
-              {/* Form */}
+              {/* Form Thread */}
               {showForm &&
                 <FormThread
                   gameCommunities_id={gameCommunities_id}
@@ -553,7 +550,13 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Contents */}
-          <ExpansionPanelDetails>
+          <ExpansionPanelDetails
+            css={css`
+              @media screen and (max-width: 480px) {
+                padding: 8px 16px 24px !important;
+              }
+            `}
+          >
             
             <div
               css={css`
@@ -561,20 +564,22 @@ export default injectIntl(class extends React.Component {
               `}
             >
               
-              AAA
               
-              {/*<FormPost
-                id={`${value.id}-comment-insert`}
-                buttonLabel1="コメントする"
-                buttonHandle1={() => handleCommentInsert(communityId, value.id, `${value.id}-comment-insert`)}
-              />*/}
+              {/* Form Comment */}
+              <FormComment
+                gameCommunities_id={gameCommunities_id}
+                userCommunities_id={userCommunities_id}
+                forumThreads_id={forumThreads_id}
+              />
               
               
-              {/*<CommentReply
-                communityId={communityId}
-                threadId={value.id}
-                commentArr={value.commentArr}
-              />*/}
+              {/* Comment & Reply */}
+              <CommentReply
+                gameCommunities_id={gameCommunities_id}
+                userCommunities_id={userCommunities_id}
+                forumThreads_id={forumThreads_id}
+              />
+              
               
             </div>
             
@@ -595,7 +600,7 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
-        {componentForum}
+        {componentArr}
         
       </React.Fragment>
     );

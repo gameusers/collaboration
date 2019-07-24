@@ -2887,10 +2887,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     // スレッド　userCommunities_id: 'cxO8tEGty'で検索
     saveArr = [
+      
       {
         _id: 'qNiOLKdRt',
         createdDate: '2019-01-01T00:00:00Z',
         updatedDate: '2019-01-01T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'cxO8tEGty',
         users_id: 'jun-deE4J',
         localesArr: [
@@ -2918,10 +2920,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
+      
       {
         _id: '_XDDSTWV_',
         createdDate: '2019-01-02T00:00:00Z',
         updatedDate: '2019-01-02T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'cxO8tEGty',
         users_id: '',
         localesArr: [
@@ -2943,10 +2947,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
+      
       {
         _id: 'HpzNGyKQE',
         createdDate: '2019-01-03T00:00:00Z',
         updatedDate: '2019-01-03T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'cxO8tEGty',
         users_id: 'P7UJMuUnx',
         localesArr: [
@@ -2966,10 +2972,12 @@ router.post('/db', upload.none(), async (req, res, next) => {
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
+      
       {
         _id: 'KQ_FuEYRu',
         createdDate: '2019-01-04T00:00:00Z',
         updatedDate: '2019-01-04T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'cxO8tEGty',
         users_id: '',
         localesArr: [
@@ -2993,10 +3001,12 @@ Material UI にスタイルを当てる場合、Material UI がデフォルト�
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
+      
       {
         _id: '8xJS6lZCm',
         createdDate: '2019-01-05T00:00:00Z',
         updatedDate: '2019-01-05T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'cxO8tEGty',
         users_id: '',
         localesArr: [
@@ -3018,6 +3028,7 @@ emotion: https://emotion.sh/docs/introduction`,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
+      
     ];
     
     
@@ -3046,10 +3057,12 @@ emotion: https://emotion.sh/docs/introduction`,
     
     // コメント1
     saveArr = [
+      
       {
         _id: '8_AsHN1fm',
         createdDate: '2019-01-01T00:00:00Z',
         updatedDate: '2019-01-01T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '',
@@ -3147,6 +3160,7 @@ emotion: https://emotion.sh/docs/introduction`,
         _id: 'HJut0iubX',
         createdDate: '2019-01-02T00:00:00Z',
         updatedDate: '2019-01-02T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '8_AsHN1fm',
@@ -3176,6 +3190,7 @@ emotion: https://emotion.sh/docs/introduction`,
         _id: 'R2hdDidB6',
         createdDate: '2019-01-03T00:00:00Z',
         updatedDate: '2019-01-03T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '8_AsHN1fm',
@@ -3206,6 +3221,7 @@ emotion: https://emotion.sh/docs/introduction`,
         _id: 'm2N3ijR3A',
         createdDate: '2019-01-04T00:00:00Z',
         updatedDate: '2019-01-04T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: '',
@@ -3216,7 +3232,11 @@ emotion: https://emotion.sh/docs/introduction`,
             _id: 'MWXoBzBVk',
             language: 'ja',
             name: '',
-            comment: `No.4 / Comment 2: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ、そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
+            comment: `No.4 / Comment 2: まっ黒な頁ページいっぱいに白い点々のある美しい写真を二人でいつまでも見たのでした。
+            
+            それをカムパネルラが忘れる筈はずもなかったのに、すぐに返事をしなかったのは、このごろぼくが、朝にも午后にも仕事がつらく、学校に出てももうみんなともはきはき遊ばず、カムパネルラともあんまり物を云わないようになったので、カムパネルラがそれを知って気の毒がってわざと返事をしなかったのだ。
+            
+            そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
           }
         ],
         imagesAndVideosObj: {
@@ -3235,6 +3255,7 @@ emotion: https://emotion.sh/docs/introduction`,
         _id: 'XDDd61fux',
         createdDate: '2019-01-05T00:00:00Z',
         updatedDate: '2019-01-05T00:00:00Z',
+        gameCommunities_id: '',
         userCommunities_id: 'QD7Ve7yND',
         forumThreads_id: 'qNiOLKdRt',
         forumComments_id: 'm2N3ijR3A',

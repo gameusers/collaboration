@@ -13,6 +13,7 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
+  gameCommunities_id: { type: String },
   userCommunities_id: { type: String },
   forumThreads_id: { type: String },
   forumComments_id: { type: String },
@@ -36,7 +37,7 @@ const schema = mongoose.Schema({
             {
               _id: { type: String, required: true },
               language: { type: String, enum: ['en', 'ja'] },
-              caption: { type: String, required: true },
+              caption: { type: String },
             }
           ],
           default: undefined,
@@ -53,24 +54,6 @@ const schema = mongoose.Schema({
           ],
           default: undefined,
         },
-        // localesArr: [
-        //   {
-        //     _id: { type: String, required: true },
-        //     language: { type: String, enum: ['en', 'ja'] },
-        //     caption: { type: String, required: true },
-            
-        //   }
-        // ],
-        // srcSetArr: [
-        //   {
-        //     _id: { type: String, required: true },
-        //     src: { type: String, required: true },
-        //     w: { type: String, enum: ['320w', '480w', '640w', '800w'], required: true },
-        //     width: { type: Number, required: true },
-        //     height: { type: Number, required: true },
-        //     // default: undefined,
-        //   }
-        // ],
         videoChannel: { type: String, enum: ['youtube'] },
         videoID: String,
       },

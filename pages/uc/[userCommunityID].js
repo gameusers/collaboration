@@ -50,7 +50,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 import Layout from '../../app/common/layout/components/layout';
 import Drawer from '../../app/common/layout/components/drawer';
 import ForumNavigation from '../../app/common/forum/components/navigation';
-import ForumThread from '../../app/common/forum/components/thread';
+import Forum from '../../app/common/forum/components/forum';
 import VideoModal from '../../app/common/image-and-video/components/video-modal';
 // import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
@@ -404,6 +404,8 @@ export default class extends React.Component {
             </div>
             
             
+            
+            
             {/* Main */}
             <div
               css={css`
@@ -421,7 +423,7 @@ export default class extends React.Component {
                 `}
               >
                 
-                <ForumThread userCommunities_id={this.props.userCommunities_id} />
+                <Forum userCommunities_id={this.props.userCommunities_id} />
                 
               </div>
               

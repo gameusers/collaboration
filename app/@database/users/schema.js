@@ -31,7 +31,7 @@ const schema = mongoose.Schema({
   },
   country: { type: String, required: true },
   termsOfServiceConfirmedDate: { type: Date, required: true },
-  experience: { type: Number, default: 0, required: true },
+  exp: { type: Number, default: 0, required: true },
   titleArr: [
     {
       _id: { type: String, required: true },

@@ -180,7 +180,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
       //           {
       //             _id: 0,
       //             accessDate: 1,
-      //             experience: 1,
+      //             exp: 1,
       //             playerID: 1,
       //             followArr: 1,
       //             followedArr: 1,
@@ -529,7 +529,7 @@ const findBy_idsArr = async (argumentsObj) => {
                 {
                   _id: 0,
                   accessDate: 1,
-                  experience: 1,
+                  exp: 1,
                   playerID: 1,
                   followArr: 1,
                   followedArr: 1,

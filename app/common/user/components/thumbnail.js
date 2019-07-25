@@ -52,7 +52,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { thumbnailSrc, anonymity } = this.props;
+    const { thumbnailSrc } = this.props;
     
     
     // --------------------------------------------------
@@ -61,7 +61,7 @@ export default class extends React.Component {
     
     let src = '/static/img/common/thumbnail/none.svg';
     
-    if (!anonymity && thumbnailSrc) {
+    if (thumbnailSrc) {
       src = thumbnailSrc;
     }
     

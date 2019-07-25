@@ -313,6 +313,7 @@ const findForForumCommentsAndReplies = async ({
                 }
               },
               
+              
               {
                 $lookup:
                   {
@@ -346,6 +347,37 @@ const findForForumCommentsAndReplies = async ({
               {
                 $unwind: {
                   path: '$cardPlayersObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              {
+                $lookup:
+                  {
+                    from: 'users',
+                    let: { forumRepliesUsers_id: '$users_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$forumRepliesUsers_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 0,
+                          accessDate: 1,
+                          exp: 1,
+                          playerID: 1,
+                        }
+                      }
+                    ],
+                    as: 'usersObj'
+                  }
+              },
+              {
+                $unwind: {
+                  path: '$usersObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
@@ -389,6 +421,37 @@ const findForForumCommentsAndReplies = async ({
       {
         $unwind: {
           path: '$cardPlayersObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      {
+        $lookup:
+          {
+            from: 'users',
+            let: { forumCommentsUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumCommentsUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  accessDate: 1,
+                  exp: 1,
+                  playerID: 1,
+                }
+              }
+            ],
+            as: 'usersObj'
+          }
+      },
+      {
+        $unwind: {
+          path: '$usersObj',
           preserveNullAndEmptyArrays: true,
         }
       },
@@ -635,6 +698,7 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     if (valueObj.anonymity) {
       
       delete cloneObj.cardPlayersObj;
+      delete cloneObj.usersObj;
       
     } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
       

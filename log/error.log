@@ -257,3 +257,5 @@
 {"level":"error","message":"2019-07-24T09:24:33.300Z\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nLogin User: \nMessage: "}
 {"level":"error","message":"2019-07-24T09:24:47.173Z\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nLogin User: \nMessage: "}
 {"level":"error","message":"2019-07-24T09:28:01.976Z\nCode: QOVB4jVBQ@34KBpPcqT@xLLNIpo6a\nLogin User: \nMessage: "}
+{"logID":"zjjlIEQVg","date":"2019-07-25T02:46:03.898Z","endpointID":"hc7YMP_C8","users_id":"","ip":"::ffff:133.167.108.234","requestParametersObj":{"userCommunityID":"community1"},"errorsArr":[{"code":"zjjlIEQVg","messageID":"Error"}],"level":"error","message":"Arguments must be aggregate pipeline operators"}
+{"logID":"ali3X4VZES","date":"2019-07-25T02:46:03.994Z","endpointID":"hc7YMP_C8","users_id":"","ip":"::ffff:133.167.108.234","requestParametersObj":{"userCommunityID":"community1"},"errorsArr":[{"code":"ali3X4VZES","messageID":"Error"}],"level":"error","message":"Arguments must be aggregate pipeline operators"}

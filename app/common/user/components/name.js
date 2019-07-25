@@ -132,7 +132,7 @@ const cssButton = css`
 `;
 
 const cssIconLayers = css`
-  font-size: 18px;
+  font-size: 18px !important;
 `;
 
 
@@ -212,9 +212,11 @@ export default class extends React.Component {
       gameUrlID,
       showGameName,
       
-      experience,
+      exp,
+      
       cardPlayers_id,
       showCardPlayerButton,
+      
       cardGames_id,
       showCardGameButton
       
@@ -231,13 +233,21 @@ export default class extends React.Component {
     
     let componentName = '';
     
-    if (name) {
+    if (name && playerID) {
       
       componentName =
         <div css={cssNameNoColor}>
-          <Link href={`${stores.data.urlBase}pl/${playerID}`}>
+          <Link href={`${process.env.URL_BASE}pl/${playerID}`}>
             <a>{name}</a>
           </Link>
+        </div>
+      ;
+      
+    } else if (name) {
+      
+      componentName =
+        <div css={cssNameNoColor}>
+          {name}
         </div>
       ;
       
@@ -278,6 +288,7 @@ export default class extends React.Component {
             flex-flow: row wrap;
           `}
         >
+          
           <IconSchedule
             css={css`
               && {
@@ -286,14 +297,16 @@ export default class extends React.Component {
               }
             `}
           />
-            <div
-              css={css`
-                font-size: 14px;
-                margin: 0 2px 0 0;
-              `}
-            >
-              {accessTime}
-            </div>
+          
+          <div
+            css={css`
+              font-size: 14px;
+              margin: 0 2px 0 0;
+            `}
+          >
+            {accessTime}
+          </div>
+          
         </div>
       ;
       
@@ -317,7 +330,7 @@ export default class extends React.Component {
           `}
           key="gameBox"
         >
-          <Link href={`${stores.data.urlBase}gc/${gameUrlID}`}>
+          <Link href={`${process.env.URL_BASE}gc/${gameUrlID}`}>
             <a>{gameName}</a>
           </Link>
         </div>
@@ -330,9 +343,9 @@ export default class extends React.Component {
       //   Level
       // --------------------------------------------------
       
-      if (experience) {
+      if (exp) {
         
-        const level = Math.floor(experience / 10);
+        const level = Math.floor(exp / 10);
         
         componentBottomArr.push(
           <div css={cssLevelBox} key="levelBox">
@@ -343,12 +356,12 @@ export default class extends React.Component {
         
       } else {
         
-        // componentBottomArr.push(
-        //   <div css={cssLevelBox} key="levelBox">
-        //     <IconStars css={cssIconStars} />
-        //     <div css={cssLevel}>Lv.0</div>
-        //   </div>
-        // );
+        componentBottomArr.push(
+          <div css={cssLevelBox} key="levelBox">
+            <IconStars css={cssIconStars} />
+            <div css={cssLevel}>Lv.0</div>
+          </div>
+        );
         
       }
       
@@ -444,7 +457,7 @@ export default class extends React.Component {
           line-height: 1.6em;
           
           @media screen and (max-width: 768px) {
-            flex-flow: row wrap;
+            // flex-flow: row wrap;
           }
         `}
       >

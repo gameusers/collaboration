@@ -42,17 +42,8 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconList from '@material-ui/icons/List';
-import IconNew from '@material-ui/icons/FiberNew';
-import IconImage from '@material-ui/icons/Image';
-import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
-import IconListAlt from '@material-ui/icons/ListAlt';
-import IconCreate from '@material-ui/icons/Create';
-import IconSearch from '@material-ui/icons/Search';
-
 import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
-import IconEdit from '@material-ui/icons/Edit';
 
 
 // ---------------------------------------------

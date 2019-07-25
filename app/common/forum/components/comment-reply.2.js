@@ -18,10 +18,11 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import styled from 'styled-components';
+
 import moment from 'moment';
-import ImageGallery from 'react-image-gallery';
+moment.locale('ja');
+
 import lodashGet from 'lodash/get';
-import lodashHas from 'lodash/has';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -54,14 +55,9 @@ import green from '@material-ui/core/colors/green';
 
 import Paragraph from '../../layout/components/paragraph';
 import User from '../../user/components/user';
+import UserThumbnail from '../../user/components/thumbnail';
+import UserName from '../../user/components/name';
 // import ImageVideo from './image-video';
-
-
-// ---------------------------------------------
-//   Moment Locale
-// ---------------------------------------------
-
-moment.locale('ja');
 
 
 
@@ -540,58 +536,6 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   配列が空の場合は、空のコンポーネントを返す
-    // --------------------------------------------------
-    
-    if (arr.length === 0) {
-      return null;
-    }
-    
-    const images = [
-      {
-        original: '/static/img/forum/__/dFnadiGia/main/dFnadiGia/800w.jpg',
-        thumbnail: '/static/img/forum/__/dFnadiGia/main/dFnadiGia/320w.jpg',
-      },
-      {
-        original: '/static/img/forum/__/8_AsHN1fm/main/rlEoEK75y/320w.jpg',
-        thumbnail: '/static/img/forum/__/8_AsHN1fm/main/rlEoEK75y/320w.jpg'
-      },
-      {
-        original: '/static/img/forum/__/FK_8mRwTa18/800x533.jpg',
-        thumbnail: '/static/img/forum/__/FK_8mRwTa18/320x213.jpg'
-      },
-      {
-        original: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg',
-        thumbnail: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg'
-      },
-      {
-        original: '/static/img/forum/__/UKXKoSLsPuF/800x800.jpg',
-        thumbnail: '/static/img/forum/__/UKXKoSLsPuF/320x320.jpg'
-      },
-      {
-        original: '/static/img/forum/__/wQ40f5McTrq/800x300.jpg',
-        thumbnail: '/static/img/forum/__/wQ40f5McTrq/320x120.jpg'
-      },
-      {
-        original: '/static/img/forum/__/FK_8mRwTa18/800x533.jpg',
-        thumbnail: '/static/img/forum/__/FK_8mRwTa18/320x213.jpg'
-      },
-      {
-        original: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg',
-        thumbnail: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg'
-      },
-      {
-        original: '/static/img/forum/__/UKXKoSLsPuF/800x800.jpg',
-        thumbnail: '/static/img/forum/__/UKXKoSLsPuF/320x320.jpg'
-      },
-      {
-        original: '/static/img/forum/__/wQ40f5McTrq/800x300.jpg',
-        thumbnail: '/static/img/forum/__/wQ40f5McTrq/320x120.jpg'
-      },
-    ];
-    
-    
-    // --------------------------------------------------
     //   Component - Comment & Reply
     // --------------------------------------------------
     
@@ -600,19 +544,15 @@ export default injectIntl(class extends React.Component {
     for (const [index, valueObj] of arr.entries()) {
       
       
+      // User Level
+      const userLevel = 99;
+      
+      
       // --------------------------------------------------
       //   Property
       // --------------------------------------------------
       
-      let thumbnailSrc = '';
-      
-      const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-      
-      if (thumbnailArr.length > 0) {
-        thumbnailSrc = lodashGet(thumbnailArr, [0, 'src'], '');
-      }
-      
-      // const thumbnailSrc = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
+      // const forumThreads_id = lodashGet(valueObj, ['_id'], '');
       const cardPlayers_id = lodashGet(valueObj, ['cardPlayersObj', '_id'], '');
       
       let name = lodashGet(valueObj, ['name'], '');
@@ -621,12 +561,9 @@ export default injectIntl(class extends React.Component {
       if (cardPlayers_name) {
         name = cardPlayers_name;
       }
+      // const name = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
       
-      const status = lodashGet(valueObj, ['cardPlayersObj', 'status'], '');
-      
-      const exp = lodashGet(valueObj, ['usersObj', 'exp'], 0);
-      const accessDate = lodashGet(valueObj, ['usersObj', 'accessDate'], '');
-      const playerID = lodashGet(valueObj, ['usersObj', 'playerID'], '');
+      const statUs = lodashGet(valueObj, ['cardPlayersObj', 'status'], '');
       
       
       const comment = lodashGet(valueObj, ['comment'], '');
@@ -661,7 +598,7 @@ export default injectIntl(class extends React.Component {
         
         <div
           css={css`
-             margin: 24px 0 0 0;
+             margin: 40px 0 0 0;
           `}
           key={index}
         >
@@ -671,7 +608,7 @@ export default injectIntl(class extends React.Component {
           <div
             css={css`
               display: flex;
-              flex-flow: column nowrap;
+              flex-flow: row nowrap;
               // background-color: purple;
             `}
           >
@@ -679,64 +616,126 @@ export default injectIntl(class extends React.Component {
             
             {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
             <User
-              thumbnailSrc={thumbnailSrc}
+              // thumbnailSrc=""
               name={name}
-              playerID={playerID}
+              // playerID={playerID}
               status={status}
-              accessDate={accessDate}
-              exp={exp}
-              cardPlayers_id={cardPlayers_id}
-              showCardPlayerButton={true}
+              // accessDate={accessDate}
+              // experience={experience}
             />
             
             
-            {/* 画像・動画 */}
+            
+            {/* Left */}
             <div
               css={css`
-                // width: 600px;
-                // width: 600px;
-                margin: 12px 0 0 0;
-              `}
-            >
-              <img src="/static/img/forum/__/wQ40f5McTrq/1920x721.jpg" width="100%" />
-              {/*<ImageGallery
-                items={images}
-                useBrowserFullscreen={false}
-              />*/}
-            </div>
-            
-            
-            {/* 画像・動画・コメント */}
-            <div
-              css={css`
-                font-size: 14px;
-                line-height: 1.6em;
-                border-left: 4px solid #84cacb;
-                margin: 12px 0 0 3px;
-                padding: 0 0 3px 18px;
+                display: flex;
+                flex-flow: column nowrap;
+                margin: 3px 0 0 0;
                 // background-color: pink;
               `}
             >
               
-              {/*<ImageVideo
-                id={value.id}
-                imageVideoArr={value.imageVideoArr}
-              />*/}
               
               
               
+              
+              {/* Thumbnail */}
+              <UserThumbnail />
+              
+              
+              {/* Level */}
+              {userLevel &&
+                <div
+                  css={css`
+                    font-size: 12px;
+                    font-weight: bold;
+                    line-height: 1em;
+                    width: 100%;
+                    text-align: center;
+                    margin: 6px 0 0 0;
+                  `}
+                >
+                  Lv.{userLevel}
+                </div>
+              }
+              
+              
+              {/* Line */}
               <div
                 css={css`
-                  margin 4px 0 0 0;
+                  flex-grow: 2;
+                  border-left: 4px solid #84cacb;
+                  // align-self: center;
+                  margin: 10px 0 0 0;
+                `}
+              />
+              
+              
+            </div>
+            
+            
+            
+            {/* Right */}
+            <div
+              css={css`
+                display: flex;
+                flex-flow: column nowrap;
+                margin: 0;
+                padding: 0 0 0 10px;
+                // background-color: green;
+              `}
+            >
+              
+              
+              {/* ユーザー情報 */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row wrap;
                 `}
               >
-                <Paragraph text={comment} />
+                <UserName
+                  id={cardPlayers_id}
+                  name={name}
+                  status={statUs}
+                />
               </div>
+              
+              
+              {/* 画像・動画・コメント */}
+              <div
+                css={css`
+                  font-size: 14px;
+                  line-height: 1.6em;
+                `}
+              >
+                
+                {/*<ImageVideo
+                  id={value.id}
+                  imageVideoArr={value.imageVideoArr}
+                />*/}
+                
+                <div
+                  css={css`
+                    margin 4px 0 0 0;
+                  `}
+                >
+                  <Paragraph text={comment} />
+                </div>
+                
+              </div>
+              
               
             </div>
             
             
           </div>
+          
+          
+          
+          
+         
           
           
         </div>
@@ -751,17 +750,11 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
-        css={css`
-          // border-top: 1px dashed #A4A4A4;
-          margin: 42px 0 0 0;
-          padding: 0 0 0 0;
-        `}
-      >
-        
+      <React.Fragment>
+      
         {componentArr}
       
-      </div>
+      </React.Fragment>
     );
     
   }

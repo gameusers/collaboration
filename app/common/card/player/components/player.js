@@ -182,7 +182,7 @@ export default class extends React.Component {
     const status = lodashGet(cardPlayersObj, ['statusObj', 'value'], '');
     const comment = lodashGet(cardPlayersObj, ['commentObj', 'value'], '');
     const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
-    const experience = lodashGet(cardPlayersObj, ['usersObj', 'experience'], 0);
+    const exp = lodashGet(cardPlayersObj, ['usersObj', 'exp'], 0);
     const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
     const playerID = lodashGet(cardPlayersObj, ['usersObj', 'playerID'], '');
     const followedCount = lodashGet(cardPlayersObj, ['usersObj', 'followedCount'], 0);
@@ -355,7 +355,7 @@ export default class extends React.Component {
             playerID={playerID}
             status={status}
             accessDate={accessDate}
-            experience={experience}
+            exp={exp}
           />
           
           

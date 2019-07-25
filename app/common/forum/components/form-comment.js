@@ -229,7 +229,7 @@ export default injectIntl(class extends React.Component {
         {/* Send Button */}
         <div
           css={css`
-            margin: 24px 0 0 0;
+            margin: 16px 0 0 0;
           `}
         >
           <Button

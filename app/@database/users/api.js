@@ -468,7 +468,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
       },
       country: 'JP',
       termsOfServiceConfirmedDate: ISO8601,
-      experience: 0,
+      exp: 0,
       titleArr: [],
       followArr: [],
       followCount: 0,

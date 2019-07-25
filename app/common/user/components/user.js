@@ -64,7 +64,6 @@ export default class extends React.Component {
       
       thumbnailSrc,
       
-      // anonymity,
       name,
       playerID,
       status,
@@ -74,7 +73,8 @@ export default class extends React.Component {
       gameUrlID,
       showGameName,
       
-      experience,
+      exp,
+      
       cardPlayers_id,
       showCardPlayerButton,
       cardGames_id,
@@ -139,7 +139,8 @@ export default class extends React.Component {
               gameUrlID={gameUrlID}
               showGameName={showGameName}
               
-              experience={experience}
+              exp={exp}
+              
               cardPlayers_id={cardPlayers_id}
               showCardGameButton={showCardGameButton}
               cardGames_id={cardGames_id}

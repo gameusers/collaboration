@@ -54,6 +54,7 @@ import green from '@material-ui/core/colors/green';
 
 import Paragraph from '../../layout/components/paragraph';
 import User from '../../user/components/user';
+import ImageAndVideo from '../../image-and-video/components/image-and-video';
 // import ImageVideo from './image-video';
 
 
@@ -547,49 +548,6 @@ export default injectIntl(class extends React.Component {
       return null;
     }
     
-    const images = [
-      {
-        original: '/static/img/forum/__/dFnadiGia/main/dFnadiGia/800w.jpg',
-        thumbnail: '/static/img/forum/__/dFnadiGia/main/dFnadiGia/320w.jpg',
-      },
-      {
-        original: '/static/img/forum/__/8_AsHN1fm/main/rlEoEK75y/320w.jpg',
-        thumbnail: '/static/img/forum/__/8_AsHN1fm/main/rlEoEK75y/320w.jpg'
-      },
-      {
-        original: '/static/img/forum/__/FK_8mRwTa18/800x533.jpg',
-        thumbnail: '/static/img/forum/__/FK_8mRwTa18/320x213.jpg'
-      },
-      {
-        original: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg',
-        thumbnail: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg'
-      },
-      {
-        original: '/static/img/forum/__/UKXKoSLsPuF/800x800.jpg',
-        thumbnail: '/static/img/forum/__/UKXKoSLsPuF/320x320.jpg'
-      },
-      {
-        original: '/static/img/forum/__/wQ40f5McTrq/800x300.jpg',
-        thumbnail: '/static/img/forum/__/wQ40f5McTrq/320x120.jpg'
-      },
-      {
-        original: '/static/img/forum/__/FK_8mRwTa18/800x533.jpg',
-        thumbnail: '/static/img/forum/__/FK_8mRwTa18/320x213.jpg'
-      },
-      {
-        original: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg',
-        thumbnail: '/static/img/forum/__/LnDhqEc3sU6/256x256.jpg'
-      },
-      {
-        original: '/static/img/forum/__/UKXKoSLsPuF/800x800.jpg',
-        thumbnail: '/static/img/forum/__/UKXKoSLsPuF/320x320.jpg'
-      },
-      {
-        original: '/static/img/forum/__/wQ40f5McTrq/800x300.jpg',
-        thumbnail: '/static/img/forum/__/wQ40f5McTrq/320x120.jpg'
-      },
-    ];
-    
     
     // --------------------------------------------------
     //   Component - Comment & Reply
@@ -604,6 +562,8 @@ export default injectIntl(class extends React.Component {
       //   Property
       // --------------------------------------------------
       
+      const _id = lodashGet(valueObj, ['_id'], '');
+      
       let thumbnailSrc = '';
       
       const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
@@ -612,7 +572,6 @@ export default injectIntl(class extends React.Component {
         thumbnailSrc = lodashGet(thumbnailArr, [0, 'src'], '');
       }
       
-      // const thumbnailSrc = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
       const cardPlayers_id = lodashGet(valueObj, ['cardPlayersObj', '_id'], '');
       
       let name = lodashGet(valueObj, ['name'], '');
@@ -628,8 +587,11 @@ export default injectIntl(class extends React.Component {
       const accessDate = lodashGet(valueObj, ['usersObj', 'accessDate'], '');
       const playerID = lodashGet(valueObj, ['usersObj', 'playerID'], '');
       
-      
       const comment = lodashGet(valueObj, ['comment'], '');
+      
+      const imagesAndVideosArr = lodashGet(valueObj, ['imagesAndVideosObj', 'mainArr'], {});
+      // const imagesAndVideosArr = lodashGet(imagesAndVideosObj, [arrayName], []);
+      
       
       // // Datetime
       // const datetimeNow = moment().utcOffset(0);
@@ -691,19 +653,20 @@ export default injectIntl(class extends React.Component {
             
             
             {/* 画像・動画 */}
-            <div
-              css={css`
-                // width: 600px;
-                // width: 600px;
-                margin: 12px 0 0 0;
-              `}
-            >
-              <img src="/static/img/forum/__/wQ40f5McTrq/1920x721.jpg" width="100%" />
-              {/*<ImageGallery
-                items={images}
-                useBrowserFullscreen={false}
-              />*/}
-            </div>
+            {imagesAndVideosArr.length > 0 &&
+              <div
+                css={css`
+                  margin: 12px 0 0 0;
+                `}
+              >
+                
+                <ImageAndVideo
+                  _id={_id}
+                  imagesAndVideosArr={imagesAndVideosArr}
+                />
+                
+              </div>
+            }
             
             
             {/* 画像・動画・コメント */}
@@ -712,8 +675,8 @@ export default injectIntl(class extends React.Component {
                 font-size: 14px;
                 line-height: 1.6em;
                 border-left: 4px solid #84cacb;
-                margin: 12px 0 0 3px;
-                padding: 0 0 3px 18px;
+                margin: 14px 0 0 0;
+                padding: 0 0 4px 18px;
                 // background-color: pink;
               `}
             >

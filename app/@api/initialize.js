@@ -3078,12 +3078,50 @@ emotion: https://emotion.sh/docs/introduction`,
         ],
         imagesAndVideosObj: {
           mainArr: [
+            
             {
-              _id: '0Q4HnJTGa',
-              type: 'video',
-              videoChannel: 'youtube',
-              videoID: '1yIHLQJNvDw',
+              _id: 'LIpgMV4H3',
+              type: 'image',
+              localesArr: [
+                {
+                  _id: 'JttzzcaSa',
+                  language: 'ja',
+                  caption: 'パノラマ画像',
+                }
+              ],
+              srcSetArr: [
+                {
+                  _id: '7QKcCmHvW',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 120,
+                },
+                {
+                  _id: 'm5RV6KTP3',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 180,
+                },
+                {
+                  _id: 'V1eodatCl',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 240,
+                },
+                {
+                  _id: 'QI3Ux6GBb',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 300,
+                },
+              ],
             },
+            
+            
             {
               _id: 'rlEoEK75y',
               type: 'image',
@@ -3104,6 +3142,8 @@ emotion: https://emotion.sh/docs/introduction`,
                 },
               ],
             },
+            
+            
             {
               _id: 'dFnadiGia',
               type: 'image',
@@ -3145,6 +3185,132 @@ emotion: https://emotion.sh/docs/introduction`,
                 },
               ],
             },
+            
+            
+            {
+              _id: 'NeQ-I0kHE',
+              type: 'image',
+              srcSetArr: [
+                {
+                  _id: 'arOjE8QqM',
+                  src: '/static/img/forum/8_AsHN1fm/main/NeQ-I0kHE/320w.jpg',
+                  w: '320w',
+                  width: 96,
+                  height: 144,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: '0Q4HnJTGa',
+              type: 'video',
+              videoChannel: 'youtube',
+              videoID: '1yIHLQJNvDw',
+            },
+            
+            
+            {
+              _id: 'dFnadiGia',
+              type: 'image',
+              localesArr: [
+                {
+                  _id: 'JttzzcaSa',
+                  language: 'ja',
+                  caption: '教会',
+                }
+              ],
+              srcSetArr: [
+                {
+                  _id: '7QKcCmHvW',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 213,
+                },
+                {
+                  _id: 'm5RV6KTP3',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 320,
+                },
+                {
+                  _id: 'V1eodatCl',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 426,
+                },
+                {
+                  _id: 'QI3Ux6GBb',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 533,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: '_Ed74zfen',
+              type: 'image',
+              srcSetArr: [
+                {
+                  _id: 'P5kwos-Yd',
+                  src: '/static/img/forum/8_AsHN1fm/main/_Ed74zfen/320w.jpg',
+                  w: '320w',
+                  width: 256,
+                  height: 256,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'YYNOIfeRC',
+              type: 'image',
+              srcSetArr: [
+                {
+                  _id: '7QKcCmHvW',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 320,
+                },
+                {
+                  _id: 'm5RV6KTP3',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 480,
+                },
+                {
+                  _id: 'V1eodatCl',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 640,
+                },
+                {
+                  _id: 'QI3Ux6GBb',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 800,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'bMc2H7YCk',
+              type: 'video',
+              videoChannel: 'youtube',
+              videoID: 'HR0NB_ZDypM',
+            },
+            
           ],
         },
         anonymity: false,

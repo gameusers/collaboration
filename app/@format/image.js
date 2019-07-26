@@ -140,10 +140,84 @@ const formatImagesAndVideosArr = ({ arr }) => {
 
 
 
+/**
+ * SrcSet 情報の入った配列をフォーマットする
+ * 
+ * @param {Array} arr - SrcSet情報が入った配列
+ * @return {Array} フォーマットされた配列
+ */
+const formatSrcSetArr = ({ arr }) => {
+  
+  // console.log(`\n---------- arr ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(arr)));
+  // console.log(`\n-----------------------------------\n`);
+  // console.log('formatImagesAndVideosArr');
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   データ処理
+  // --------------------------------------------------
+  
+  if (arr.length > 0) {
+    
+    const srcSetArr = [];
+    
+    for (let valueObj of arr.values()) {
+      
+      // 画像をアップロードするときに、base64形式でプレビューを表示する
+      // その際、とりあえず srcset の値を 320w ということにして表示する
+      if (valueObj.w === 'upload') {
+        
+        returnObj.src = valueObj.src;
+        
+        valueObj.push(
+          `${valueObj.src} 320w`
+        );
+        
+      } else {
+        
+        returnObj.src = valueObj.src;
+        
+        srcSetArr.push(
+          `${valueObj.src} ${valueObj.w}`
+        );
+        
+      }
+      
+    }
+    
+    
+    // srcsetの配列をCSV形式の文字列に変換
+    if (srcSetArr.length > 0) {
+      returnObj.srcSet = srcSetArr.join(', ');
+    }
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return returnObj;
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
   formatImagesAndVideosArr,
+  formatSrcSetArr,
 };

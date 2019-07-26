@@ -646,7 +646,7 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     //   画像と動画の処理
     // --------------------------------------------------
     
-    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+    // cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
     
     
     // --------------------------------------------------

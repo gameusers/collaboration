@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -20,6 +20,8 @@ const util = require('util');
  * 画像のサイズを計算する、リサイズする場合などに利用
  * @param {number} width - 横幅
  * @param {number} height - 高さ
+ * @param {number} specifiedWidth - 横幅指定
+ * @param {number} specifiedHeight - 高さ指定
  * @param {number} minSize - リサイズする最小サイズ指定　横幅、または高さ
  * @param {number} maxSize - リサイズする最大サイズ指定　横幅、または高さ
  * @param {boolean} square - 正方形にする場合 true
@@ -92,6 +94,30 @@ const imageCalculateSize = ({ width, height, specifiedWidth, specifiedHeight, mi
     
     
   // ---------------------------------------------
+  //   最小サイズ指定
+  // ---------------------------------------------
+    
+  // } else if (minSize) {
+  //   console.log('最小サイズ指定');
+  //   if (width > minSize && height > minSize) {
+      
+  //     resizedWidth = width;
+  //     resizedHeight = height;
+      
+  //   } else if (width > height) {
+      
+  //     resizedWidth = Math.round(minSize * ratio);
+  //     resizedHeight = minSize;
+      
+  //   } else {
+      
+  //     resizedWidth = minSize;
+  //     resizedHeight = Math.round(minSize * ratio);
+      
+  //   }
+    
+    
+  // ---------------------------------------------
   //   最大サイズ指定
   // ---------------------------------------------
     
@@ -121,8 +147,10 @@ const imageCalculateSize = ({ width, height, specifiedWidth, specifiedHeight, mi
     
   } else if (specifiedWidth) {
     
+    ratio = specifiedWidth / width;
+    
     resizedWidth = specifiedWidth;
-    resizedHeight = Math.round(specifiedWidth * ratio);
+    resizedHeight = Math.round(height * ratio);
   
   
   // ---------------------------------------------
@@ -131,69 +159,18 @@ const imageCalculateSize = ({ width, height, specifiedWidth, specifiedHeight, mi
     
   } else if (specifiedHeight) {
     
-    resizedWidth = Math.round(specifiedHeight * ratio);
+    ratio = specifiedHeight / height;
+    
+    resizedWidth = Math.round(width * ratio);
     resizedHeight = specifiedHeight;
+    // console.log('縦幅指定');
+    // console.log(chalk`
+    //   resizedWidth: {green ${resizedWidth}}
+    //   resizedHeight: {green ${resizedHeight}}
+    // `);
+
     
   }
-  
-  
-  // // ---------------------------------------------
-  // //   横長画像
-  // // ---------------------------------------------
-  
-  // if (width > height) {
-    
-  //   if (maxSize) {
-      
-  //     resizedWidth = maxSize;
-  //     resizedHeight = Math.round(maxSize * ratio);
-      
-  //   } else if (maxWidth) {
-      
-  //     resizedWidth = maxWidth;
-  //     resizedHeight = Math.round(maxWidth * ratio);
-      
-  //   } else if (maxHeight) {
-      
-  //     resizedWidth = Math.round(maxHeight * ratio);
-  //     resizedHeight = maxHeight;
-      
-  //   }
-    
-    
-  // // ---------------------------------------------
-  // //   縦長画像
-  // // ---------------------------------------------
-    
-  // } else {
-    
-    
-    
-  // }
-  
-  
-  
-  // if (maxSize) {
-    
-  //   if (width > height) {
-  //     resizedWidth = maxSize;
-  //     resizedHeight = Math.round(maxSize * ratio);
-  //   } else {
-  //     resizedWidth = Math.round(maxSize * ratio);
-  //     resizedHeight = maxSize;
-  //   }
-    
-  // } else if (maxWidth) {
-    
-  //   resizedWidth = maxWidth;
-  //   resizedHeight = Math.round(maxWidth * ratio);
-    
-  // } else if (maxHeight) {
-    
-  //   resizedWidth = Math.round(maxHeight * ratio);
-  //   resizedHeight = maxHeight;
-    
-  // }
   
   
   
@@ -202,20 +179,17 @@ const imageCalculateSize = ({ width, height, specifiedWidth, specifiedHeight, mi
   //   console.log
   // ---------------------------------------------
   
-  // console.log(`
-  //   ----- newArr -----\n
-  //   ${util.inspect(newArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- oldArr -----\n
-  //   ${util.inspect(oldArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
   // console.log(chalk`
-  //   directoryPath: {green ${directoryPath}}
+  //   ratio: {green ${ratio}}
+  //   width: {green ${width}}
+  //   height: {green ${height}}
+  //   specifiedWidth: {green ${specifiedWidth}}
+  //   specifiedHeight: {green ${specifiedHeight}}
+  //   minSize: {green ${minSize}}
+  //   maxSize: {green ${maxSize}}
+  //   square: {green ${square}}
+  //   resizedWidth: {green ${resizedWidth}}
+  //   resizedHeight: {green ${resizedHeight}}
   // `);
   
   

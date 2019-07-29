@@ -116,8 +116,6 @@ export default injectIntl(class extends React.Component {
     const componentsThumbnailArr = [];
     let componentFirst = '';
     const imagesArr = [];
-    // let bigImageSrc = '';
-    
     let imageIndex = 0;
     
     for (const [index, valueObj] of imagesAndVideosArr.entries()) {
@@ -144,13 +142,7 @@ export default injectIntl(class extends React.Component {
         if (valueObj.type === 'image') {
             
           const srcSetArr = lodashGet(valueObj, ['srcSetArr'], []);
-          
           const formattedObj = formatSrcSetArr({ arr: srcSetArr });
-          
-          // const srcSetLastObj = lodashGet(srcSetArr, [srcSetArr.length - 1], []);
-          // bigImageSrc = lodashGet(srcSetLastObj, ['src'], '');
-          // const srcSetArr = lodashGet(srcSetLastObj, ['srcSetArr'], []);
-          // const srcSetArr = lodashGet(srcSetLastObj, ['srcSetArr'], []);
           
           // console.log(`
           //   ----- srcSetArr -----\n
@@ -162,6 +154,7 @@ export default injectIntl(class extends React.Component {
             <img
               srcSet={lodashGet(formattedObj, ['srcSet'], '')}
               src={lodashGet(formattedObj, ['src'], '')}
+              alt={lodashGet(valueObj, ['caption'], '')}
               onClick={() => handleLightboxOpen({ _id, currentNo: 0 })}
               width="100%"
             />
@@ -170,12 +163,6 @@ export default injectIntl(class extends React.Component {
           // console.log(`
           //   ----- formattedObj -----\n
           //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          // console.log(`
-          //   ----- srcSetLastObj -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(srcSetLastObj)), { colors: true, depth: null })}\n
           //   --------------------\n
           // `);
           
@@ -190,7 +177,70 @@ export default injectIntl(class extends React.Component {
         
         } else if (valueObj.type === 'video') {
           
-          
+          componentFirst =
+            <div
+              css={css`
+                width: 100%;
+                position: relative;
+              `}
+            >
+              
+              <img
+                css={css`
+                  width: 100%;
+                `}
+                src={`https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg`}
+                srcSet={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg 480w,
+                         https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg 640w`}
+              />
+              
+              <div
+                css={css`
+                  width: 100%;
+                  height: 100%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  position: absolute;
+                  top: 0;
+                `}
+                onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+              >
+                <div
+                  css={css`
+                    font-size: 72px;
+                  	position: relative;
+                  	width: 1.4em;
+                  	height: 1.4em;
+                  	border: 0.1em solid white;
+                  	border-radius: 100%;
+                  	
+                  	transition: 0.5s;
+                  	&:hover {
+                  	  opacity: 0.7;
+                  	}
+                  	
+                    @media screen and (max-width: 480px) {
+                      font-size: 36px;
+                    }
+                  	
+                    &:before {
+                      content: "";
+                    	position: absolute;
+                    	top: 0.3em;
+                    	left: 0.5em;
+                    	width: 0;
+                    	height: 0;
+                    	border-top: 0.4em solid transparent;
+                    	border-left: 0.6em solid white;
+                    	border-bottom: 0.4em solid transparent;
+                    }
+                  `}
+                />
+              </div>
+              
+            </div>
+          ;
           
         }
         
@@ -250,8 +300,8 @@ export default injectIntl(class extends React.Component {
                     max-height: 108px;
                     
                     @media screen and (max-width: 480px) {
-                      min-height: 54px;
-                      max-height: 54px;
+                      min-height: 68px;
+                      max-height: 68px;
                     }
                   `}
                   src={src}
@@ -283,8 +333,8 @@ export default injectIntl(class extends React.Component {
                     background-image: url(${src});
                     
                     @media screen and (max-width: 480px) {
-                      max-width: 54px;
-                      max-height: 54px;
+                      max-width: 68px;
+                      max-height: 68px;
                     }
                   `}
                   onClick={() => handleLightboxOpen({ _id, currentNo })}
@@ -312,36 +362,111 @@ export default injectIntl(class extends React.Component {
                 css={css`
                   width: 192px;
                   height: 108px;
-                  background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
-                  background-size: 192px 108px;
                   position: relative;
                   
                   @media screen and (max-width: 480px) {
-                    width: 96px;
-                    height: 54px;
-                    background-size: 96px 54px;
+                    width: 120px;
+                    height: 68px;
                   }
                 `}
-              />
-              
-              <img
-                css={css`
-                  width: 192px;
-                  height: 108px;
-                  position: absolute;
-                  top: 0;
-                  
-                  @media screen and (max-width: 480px) {
-                    width: 96px;
-                    height: 54px;
-                  }
-                `}
-                src="/static/img/common/video-play-button.png"
-                onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
-              />
+              >
+                
+                <img
+                  css={css`
+                    width: 100%;
+                  `}
+                  src={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg`}
+                />
+                
+                <div
+                  css={css`
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    position: absolute;
+                    top: 0;
+                    // background-color: pink;
+                    // opacity: 0.5;
+                  `}
+                  onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+                >
+                  <div
+                    css={css`
+                      font-size: 24px;
+                    	position: relative;
+                    	width: 1.4em;
+                    	height: 1.4em;
+                    	border: 0.1em solid white;
+                    	border-radius: 100%;
+                    	
+                    	transition: 0.5s;
+                    	&:hover {
+                    	  opacity: 0.7;
+                    	}
+                    	
+                      @media screen and (max-width: 480px) {
+                        font-size: 18px;
+                      }
+                    	
+                      &:before {
+                        content: "";
+                      	position: absolute;
+                      	top: 0.3em;
+                      	left: 0.5em;
+                      	width: 0;
+                      	height: 0;
+                      	border-top: 0.4em solid transparent;
+                      	border-left: 0.6em solid white;
+                      	border-bottom: 0.4em solid transparent;
+                      }
+                    `}
+                  />
+                </div>
+                
+              </div>
               
             </div>
           );
+          
+          // componentsThumbnailArr.push(
+          //   <div css={cssPreviewBox} key={index}>
+              
+          //     <div
+          //       css={css`
+          //         width: 192px;
+          //         height: 108px;
+          //         background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
+          //         background-size: 192px 108px;
+          //         position: relative;
+                  
+          //         @media screen and (max-width: 480px) {
+          //           width: 96px;
+          //           height: 54px;
+          //           background-size: 96px 54px;
+          //         }
+          //       `}
+          //     />
+              
+          //     <img
+          //       css={css`
+          //         width: 192px;
+          //         height: 108px;
+          //         position: absolute;
+          //         top: 0;
+                  
+          //         @media screen and (max-width: 480px) {
+          //           width: 96px;
+          //           height: 54px;
+          //         }
+          //       `}
+          //       src="/static/img/common/video-play-button.png"
+          //       onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+          //     />
+              
+          //   </div>
+          // );
           
         }
         

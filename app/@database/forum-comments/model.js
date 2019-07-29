@@ -33,7 +33,7 @@ const SchemaForumComments = require('./schema');
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr } = require('../../@format/image');
+const { formatImagesAndVideosArr, formatLocalesArr } = require('../../@format/image');
 
 
 
@@ -632,31 +632,31 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     //   Deep Copy
     // --------------------------------------------------
     
-    const cloneObj = lodashCloneDeep(valueObj);
+    const clonedObj = lodashCloneDeep(valueObj);
     
     
     // --------------------------------------------------
     //   Datetime
     // --------------------------------------------------
     
-    cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+    clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
     
     
     // --------------------------------------------------
     //   画像と動画の処理
     // --------------------------------------------------
     
-    // cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+    clonedObj.imagesAndVideosObj.mainArr = formatLocalesArr({ localeObj, arr: valueObj.imagesAndVideosObj.mainArr });
     
     
     // --------------------------------------------------
     //   編集権限
     // --------------------------------------------------
     
-    cloneObj.editable = false;
+    clonedObj.editable = false;
     
     if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-      cloneObj.editable = true;
+      clonedObj.editable = true;
     }
     
     
@@ -671,13 +671,13 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     
     if (lodashHas(filteredArr, [0])) {
       
-      cloneObj.name = lodashGet(filteredArr, [0, 'name'], '');;
-      cloneObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
+      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
+      clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
       
     } else {
       
-      cloneObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      cloneObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
+      clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+      clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
       
     }
     
@@ -697,8 +697,8 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     
     if (valueObj.anonymity) {
       
-      delete cloneObj.cardPlayersObj;
-      delete cloneObj.usersObj;
+      delete clonedObj.cardPlayersObj;
+      delete clonedObj.usersObj;
       
     } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
       
@@ -707,7 +707,7 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
       // --------------------------------------------------
       
       const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-      lodashSet(cloneObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
+      lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
       
     }
     
@@ -737,17 +737,17 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete cloneObj.createdDate;
-    delete cloneObj.users_id;
-    delete cloneObj.localesArr;
-    delete cloneObj.anonymity;
-    delete cloneObj.forumRepliesArr;
-    delete cloneObj.ip;
-    delete cloneObj.userAgent;
-    delete cloneObj.__v;
+    delete clonedObj.createdDate;
+    delete clonedObj.users_id;
+    delete clonedObj.localesArr;
+    delete clonedObj.anonymity;
+    delete clonedObj.forumRepliesArr;
+    delete clonedObj.ip;
+    delete clonedObj.userAgent;
+    delete clonedObj.__v;
     
-    // console.log(`\n---------- cloneObj ----------\n`);
-    // console.dir(cloneObj);
+    // console.log(`\n---------- clonedObj ----------\n`);
+    // console.dir(clonedObj);
     // console.log(`\n-----------------------------------\n`);
     
     
@@ -774,7 +774,7 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
       lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
       
       const arr = lodashGet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'arr'], []);
-      arr.push(cloneObj);
+      arr.push(clonedObj);
       lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'arr'], arr);
       
     }

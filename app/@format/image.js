@@ -7,6 +7,7 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -14,6 +15,8 @@ const chalk = require('chalk');
 // ---------------------------------------------
 
 const lodashGet = require('lodash/get');
+const lodashHas = require('lodash/has');
+const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 
@@ -66,7 +69,8 @@ const formatImagesAndVideosArr = ({ arr }) => {
         // 初期値
         const srcSetArr = [];
         
-        const caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
+        const caption = lodashGet(valueObj, ['caption'], '');
+        // const caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
         
         returnArr[index] = {
           type: valueObj.type,
@@ -213,6 +217,128 @@ const formatSrcSetArr = ({ arr }) => {
 
 
 
+/**
+ * imagesAndVideosObj mainArr 情報の入った配列をフォーマットする
+ * captionを出力する
+ * @param {Object} localeObj - ロケール
+ * @param {Array} arr - mainArr
+ * @return {Array} フォーマットされた配列
+ */
+const formatLocalesArr = ({ localeObj, arr }) => {
+  
+  // console.log(`\n---------- formatLocalesArr / arr ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(arr)));
+  // console.log(`\n-----------------------------------\n`);
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  let returnArr = [];
+  
+  
+  // --------------------------------------------------
+  //   データ処理
+  // --------------------------------------------------
+  
+  if (arr.length > 0) {
+    
+    for (let valueObj of arr.values()) {
+      
+      
+      // --------------------------------------------------
+      //   Deep Copy
+      // --------------------------------------------------
+      
+      const clonedObj = lodashCloneDeep(valueObj);
+      
+      
+      // --------------------------------------------------
+      //   Video
+      // --------------------------------------------------
+      
+      if (valueObj.type === 'video') {
+        returnArr.push(clonedObj);
+        continue;
+      }
+      
+      
+      // --------------------------------------------------
+      //   表示する言語のデータを取得
+      // --------------------------------------------------
+      
+      const localesArr = lodashGet(valueObj, ['localesArr'], []);
+      
+      const filteredArr = localesArr.filter((filterObj) => {
+        return filterObj.language === localeObj.language;
+      });
+      
+      
+      // console.log(`
+      //   ----- localesArr -----\n
+      //   ${util.inspect(localesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- filteredArr -----\n
+      //   ${util.inspect(filteredArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // --------------------------------------------------
+      //   Captionを設定
+      // --------------------------------------------------
+      
+      if (lodashHas(filteredArr, [0])) {
+        
+        clonedObj.caption = lodashGet(filteredArr, [0, 'caption'], '');
+        
+      } else {
+        
+        clonedObj.caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   不要な項目を削除する
+      // --------------------------------------------------
+      
+      delete clonedObj.localesArr;
+      
+      
+      // --------------------------------------------------
+      //   Push
+      // --------------------------------------------------
+      
+      returnArr.push(clonedObj);
+      
+      
+    }
+    
+  }
+  
+  
+  // console.log(`\n---------- formatLocalesArr / returnArr ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(returnArr)));
+  // console.log(`\n-----------------------------------\n`);
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return returnArr;
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -220,4 +346,5 @@ const formatSrcSetArr = ({ arr }) => {
 module.exports = {
   formatImagesAndVideosArr,
   formatSrcSetArr,
+  formatLocalesArr,
 };

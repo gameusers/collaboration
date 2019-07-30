@@ -132,7 +132,11 @@ export default injectIntl(class extends React.Component {
     const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
     
-    // const buttonLabel = forumThreads_id ? 'スレッドを作成する' : 'スレッドを編集する';
+    // --------------------------------------------------
+    //   Show
+    // --------------------------------------------------
+    
+    const showForm = lodashGet(dataObj, [_id, forumThreads_id, 'showForm'], false);
     
     
     // --------------------------------------------------
@@ -253,17 +257,42 @@ export default injectIntl(class extends React.Component {
         {/* Send Button */}
         <div
           css={css`
+            display: flex;
+            flex-flow: row nowrap;
             margin: 16px 0 0 0;
           `}
         >
+          
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumThreads_id })}
             disabled={buttonDisabled}
           >
-            {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
+            {forumThreads_id !== 'create' ? 'スレッドを編集する' : 'スレッドを作成する'}
           </Button>
+          
+          
+          {forumThreads_id !== 'create' &&
+            <div
+              css={css`
+                margin: 0 0 0 auto;
+              `}
+            >
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => handleEdit({
+                  pathArr: [_id, forumThreads_id, 'showForm'],
+                  value: !showForm
+                })}
+                disabled={buttonDisabled}
+              >
+                閉じる
+              </Button>
+            </div>
+          }
+          
         </div>
         
         

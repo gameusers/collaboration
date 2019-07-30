@@ -155,6 +155,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    // const _idName = this.props.sidebar ? `${_id}-forumNavigationSidebar` : `${_id}-forumNavigation`;
+    
     this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumNavigation` });
     
     
@@ -175,7 +177,7 @@ export default injectIntl(class extends React.Component {
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, sidebar } = this.props;
     
     const _id = gameCommunities_id || userCommunities_id;
-    
+    // const _idName = sidebar ? `${_id}-forumNavigationSidebar` : `${_id}-forumNavigation`;
     
     
     

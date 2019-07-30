@@ -123,16 +123,16 @@ const cssLevel = css`
 
 const cssButton = css`
   && {
+    font-size: 12px;
+    height: 22px;
+    min-height: 22px;
     margin: 0 6px 0 0;
     padding: 0 6px 0 3px;
-    font-size: 12px;
-    // min-width: 36px;
-    min-height: 20px
   }
 `;
 
 const cssIconLayers = css`
-  font-size: 18px !important;
+  font-size: 16px !important;
 `;
 
 

@@ -74,7 +74,7 @@ export default class extends React.Component {
       <img
         css={css`
           border-radius: 6px;
-          width: 48px;
+          width: 44px;
         `}
         src={src}
       />

@@ -114,7 +114,7 @@ export default class extends React.Component {
           css={css`
             display: flex;
             flex-flow: column nowrap;
-            padding: 2px 0 0 10px;
+            padding: 0 0 0 10px;
             
             @media screen and (max-width: 480px) {
               max-width: initial;

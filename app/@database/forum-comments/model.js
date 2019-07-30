@@ -639,7 +639,7 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     //   Datetime
     // --------------------------------------------------
     
-    clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+    // clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
     
     
     // --------------------------------------------------

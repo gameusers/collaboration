@@ -52,10 +52,10 @@ import green from '@material-ui/core/colors/green';
 //   Components
 // ---------------------------------------------
 
+import Reply from './reply';
 import Paragraph from '../../layout/components/paragraph';
 import User from '../../user/components/user';
 import ImageAndVideo from '../../image-and-video/components/image-and-video';
-// import ImageVideo from './image-video';
 
 
 // ---------------------------------------------
@@ -213,83 +213,6 @@ const PreviewVideoPlayButtonImg = styled.img`
 `;
 
 
-
-
-
-
-// ----------------------------------------
-//   Comment & Reply - Updated Date
-// ----------------------------------------
-
-const UpdatedDateBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 8px 0 4px;
-  padding: 0 0 0 0;
-  border-bottom: 1px dashed #D8D8D8;
-  // border-radius: 10px;
-  // background-color: #FAFAFA;
-`;
-
-const UpdatedDateIconUpdate = styled(IconUpdate)`
-  && {
-    font-size: 22px;
-    margin: 2px 2px 0 0;
-  }
-`;
-
-const UpdatedDate = styled.div`
-  font-size: 12px;
-  // font-weight: bold;
-  // color: #009933;
-`;
-
-
-// ---------------------------------------------
-//   Comment & Reply - Bottom Navigation
-// ---------------------------------------------
-
-const BottomNavBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0 0 0 0;
-  padding: 0;
-`;
-
-
-const BottomNavButtonsBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-`;
-
-const BottomNavInfoBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0 10px 0 0;
-`;
-
-
-// ----------------------------------------
-//   - Updated Date
-// ----------------------------------------
-
-const BottomNavUpdatedDateBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 1px 6px 0 0;
-`;
-
-const BottomNavIconUpdate = styled(IconUpdate)`
-  && {
-    font-size: 22px;
-    margin: 2px 2px 0 0;
-  }
-`;
-
-const BottomNavUpdatedDate = styled.div`
-  font-size: 12px;
-  // color: #009933;
-`;
 
 
 // ----------------------------------------
@@ -483,62 +406,6 @@ export default injectIntl(class extends React.Component {
     
     
     
-    // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    // const { stores, communityId, threadId, commentArr } = this.props;
-    
-    
-    
-    // --------------------------------------------------
-    //   User Data
-    // --------------------------------------------------
-    
-    // const { userObj } = stores.data;
-    
-    
-    // // --------------------------------------------------
-    // //   Comment Good
-    // // --------------------------------------------------
-    
-    // const {
-      
-    //   handleCommentGood
-      
-    // } = stores.bbs;
-    
-    
-    // // --------------------------------------------------
-    // //   Reply Insert Form
-    // // --------------------------------------------------
-    
-    // const {
-      
-    //   replyInsertFormOpenObj,
-    //   handleReplyInsertFormOpen,
-    //   handleReplyInsert
-      
-    // } = stores.bbs;
-    
-    
-    // // --------------------------------------------------
-    // //   Comment Update Form
-    // // --------------------------------------------------
-    
-    // const {
-      
-    //   commentUpdateFormOpenObj,
-    //   handleCommentUpdateFormOpen,
-    //   handleCommentUpdate
-      
-    // } = stores.bbs;
-    
-    
-    
-    // console.log(`commentArr`);
-    // console.dir(commentArr);
-    
     
     // --------------------------------------------------
     //   配列が空の場合は、空のコンポーネントを返す
@@ -559,10 +426,10 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Property
+      //   User
       // --------------------------------------------------
       
-      const _id = lodashGet(valueObj, ['_id'], '');
+      const forumComments_id = lodashGet(valueObj, ['_id'], '');
       
       let thumbnailSrc = '';
       
@@ -587,49 +454,37 @@ export default injectIntl(class extends React.Component {
       const accessDate = lodashGet(valueObj, ['usersObj', 'accessDate'], '');
       const playerID = lodashGet(valueObj, ['usersObj', 'playerID'], '');
       
+      
+      // --------------------------------------------------
+      //   Images and Videos & Comment
+      // --------------------------------------------------
+      
       const comment = lodashGet(valueObj, ['comment'], '');
-      
       const imagesAndVideosArr = lodashGet(valueObj, ['imagesAndVideosObj', 'mainArr'], {});
-      // const imagesAndVideosArr = lodashGet(imagesAndVideosObj, [arrayName], []);
       
       
-      // // Datetime
-      // const datetimeNow = moment().utcOffset(0);
-      // const datetimeUpdated = moment(value.updatedDate).utcOffset(0);
-      // const datetimeFrom = datetimeUpdated.from(datetimeNow);
+      // --------------------------------------------------
+      //   Datetime
+      // --------------------------------------------------
       
+      const datetimeNow = moment().utcOffset(0);
+      const datetimeUpdated = moment(valueObj.updatedDate).utcOffset(0);
+      const datetimeFrom = datetimeUpdated.from(datetimeNow);
       
-      // // Reply Insert Form Open
-      // let replyInsertFormOpen = false;
-      
-      // if (`${value.id}-reply-insert` in replyInsertFormOpenObj) {
-      //   replyInsertFormOpen = replyInsertFormOpenObj[`${value.id}-reply-insert`];
-      // }
-      
-      
-      // // Comment Update Form Open
-      // let commentUpdateFormOpen = false;
-      
-      // if (`${value.id}-comment-update` in commentUpdateFormOpenObj) {
-      //   commentUpdateFormOpen = commentUpdateFormOpenObj[`${value.id}-comment-update`];
-      // }
-      
-      // console.log(`value.imageVideoArr`);
-      // console.dir(value.imageVideoArr);
-      // console.log(`value.imageVideoArr[0].id = ${value.imageVideoArr[0].id}`);
+      const goods = lodashGet(valueObj, ['goods'], 0);
       
       
       componentArr.push(
         
         <div
           css={css`
-             margin: 24px 0 0 0;
+            margin: 36px 0 0 0;
           `}
           key={index}
         >
           
           
-          {/* Comment */}
+          {/* Comment Container */}
           <div
             css={css`
               display: flex;
@@ -652,7 +507,7 @@ export default injectIntl(class extends React.Component {
             />
             
             
-            {/* 画像・動画 */}
+            {/* Images and Videos */}
             {imagesAndVideosArr.length > 0 &&
               <div
                 css={css`
@@ -661,7 +516,7 @@ export default injectIntl(class extends React.Component {
               >
                 
                 <ImageAndVideo
-                  _id={_id}
+                  _id={forumComments_id}
                   imagesAndVideosArr={imagesAndVideosArr}
                 />
                 
@@ -669,24 +524,21 @@ export default injectIntl(class extends React.Component {
             }
             
             
-            {/* 画像・動画・コメント */}
+            {/* Comment */}
             <div
               css={css`
                 font-size: 14px;
                 line-height: 1.6em;
                 border-left: 4px solid #84cacb;
-                margin: 14px 0 0 0;
-                padding: 0 0 4px 18px;
+                margin: 10px 0 0 0;
+                padding: 0 0 4px 16px;
                 // background-color: pink;
+                
+                @media screen and (max-width: 480px) {
+                  padding: 0 0 4px 12px;
+                }
               `}
             >
-              
-              {/*<ImageVideo
-                id={value.id}
-                imageVideoArr={value.imageVideoArr}
-              />*/}
-              
-              
               
               <div
                 css={css`
@@ -699,7 +551,214 @@ export default injectIntl(class extends React.Component {
             </div>
             
             
+            {/* Bottom Container */}
+            <div
+              css={css`
+                display: flex;
+                flex-flow: row wrap;
+                border-left: 4px solid #84cacb;
+                padding: 5px 0 0 16px;
+                
+                @media screen and (max-width: 480px) {
+                  padding: 5px 0 0 12px;
+                }
+              `}
+            >
+              
+              
+              {/* Good Button */}
+              <Button
+                css={css`
+                  && {
+                    background-color: ${green[500]};
+                    &:hover {
+                      background-color: ${green[700]};
+                    }
+                    
+                    color: white;
+                    font-size: 12px;
+                    height: 22px;
+                    min-width: 40px;
+                    margin: 4px 12px 0 0;
+                    padding: 0 5px;
+                    
+                    @media screen and (max-width: 480px) {
+                      margin: 4px 8px 0 0;
+                    }
+                  }
+                `}
+                
+                variant="outlined"
+                // onClick={() => handleCommentGood(communityId, threadId, value.id)}
+              >
+                <IconThumbUp
+                  css={css`
+                    && {
+                      font-size: 14px;
+                      margin: 0 4px 2px 0;
+                    }
+                  `}
+                />
+                {goods}
+              </Button>
+              
+              
+              {/* Updated Date */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row nowrap;
+                  margin: 4px 12px 0 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    margin: 4px 8px 0 0;
+                  }
+                `}
+              >
+                <IconUpdate
+                  css={css`
+                    && {
+                      font-size: 22px;
+                      margin: 0 2px 0 0;
+                    }
+                  `}
+                />
+                
+                <div
+                  css={css`
+                    font-size: 12px;
+                    margin: 1px 0 0 0;
+                  `}
+                >
+                  {datetimeFrom}
+                </div>
+              </div>
+              
+              
+              {/* forum-comments_id */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row nowrap;
+                  margin: 1px 0 0 0;
+                `}
+              >
+                <IconPublic
+                  css={css`
+                    && {
+                      font-size: 20px;
+                      margin: 3px 2px 0 0;
+                    }
+                  `}
+                />
+                <div
+                  css={css`
+                    font-size: 12px;
+                    color: #009933;
+                    margin: 4px 0 0 0;
+                  `}
+                >
+                  {forumComments_id}
+                </div>
+              </div>
+              
+              
+              {/* Buttons */}
+              <div
+                css={css`
+                  display: flex;
+                  flex-flow: row nowrap;
+                  margin-left: auto;
+                  // background-color: pink;
+                `}
+              >
+                
+                <Button
+                  css={css`
+                    && {
+                      font-size: 12px;
+                      height: 22px;
+                      min-width: 54px;
+                      min-height: 22px;
+                      margin: 4px 12px 0 0;
+                      padding: 0 3px;
+                      
+                      @media screen and (max-width: 480px) {
+                        min-width: 36px;
+                        min-height: 22px;
+                      }
+                    }
+                  `}
+                  variant="outlined"
+                  // onClick={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
+                >
+                  <IconReply
+                    css={css`
+                      && {
+                        font-size: 16px;
+                        margin: 0 1px 3px 0;
+                        
+                        @media screen and (max-width: 480px) {
+                          display: none;
+                        }
+                      }
+                    `}
+                  />
+                  返信
+                </Button>
+                
+                
+                <Button
+                  css={css`
+                    && {
+                      font-size: 12px;
+                      height: 22px;
+                      min-width: 54px;
+                      min-height: 22px;
+                      margin: 4px 0 0 0;
+                      padding: 0 4px;
+                      
+                      @media screen and (max-width: 480px) {
+                        min-width: 36px;
+                        min-height: 22px;
+                      }
+                    }
+                  `}
+                  variant="outlined"
+                  // onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
+                >
+                  <IconEdit
+                    css={css`
+                      && {
+                        font-size: 16px;
+                        margin: 0 2px 3px 0;
+                        
+                        @media screen and (max-width: 480px) {
+                          display: none;
+                        }
+                      }
+                    `}
+                  />
+                  編集
+                </Button>
+                
+              </div>
+                
+            </div>
+            
           </div>
+          
+          
+          
+          
+          {/* Reply */}
+          <Reply
+            gameCommunities_id={gameCommunities_id}
+            userCommunities_id={userCommunities_id}
+            forumComments_id={forumComments_id}
+          />
+          
+          
           
           
         </div>

@@ -254,7 +254,7 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* Send Button */}
+        {/* Buttons */}
         <div
           css={css`
             display: flex;

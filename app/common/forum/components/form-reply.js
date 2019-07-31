@@ -29,14 +29,6 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
 
 
 // ---------------------------------------------
@@ -62,7 +54,57 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Unique ID
+    // --------------------------------------------------
+    
+    // 編集時
+    this.uniqueID = `${props._id}-formReply`;
+    
+    // 新規追加時
+    if (props.forumComments_id) {
+      
+      this.uniqueID = `${props.forumComments_id}-formReply`;
+      
+    // 新規追加時　返信に対する返信
+    } else if (props.forumComments_id && props.replyToForumComments_id) {
+      
+      this.uniqueID = `${props.forumComments_id}-${props.replyToForumComments_id}-formReply`;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    // 編集時
+    this.pathArr = [props._id, 'formReplyObj'];
+    this.showFormReplyPathArr = [props._id, 'formReplyObj', 'show'];
+    
+    // 新規追加時
+    if (props.forumComments_id) {
+      
+      this.pathArr = [props.forumComments_id, 'formReplyObj'];
+      this.showFormReplyPathArr = [props.forumComments_id, 'formReplyObj', 'show'];
+      
+    // 新規追加時　返信に対する返信
+    } else if (props.forumComments_id && props.replyToForumComments_id) {
+      
+      this.pathArr = [props.forumComments_id, props.replyToForumComments_id, 'formReplyObj'];
+      this.showFormReplyPathArr = [props.forumComments_id, props.replyToForumComments_id, 'formReplyObj', 'show'];
+      
+    }
+    
+    // this.showFormReplyPathArr = this.pathArr.push('show');
+    // console.log(chalk`
+    //   constructor
+    // `);
+    
   }
   
   
@@ -77,9 +119,9 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    const _idForum = this.props.forumThreads_id || this.props.forumComments_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-${_idForum}-formComment` });
+    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    // const _idForum = this.props.forumComments_id || this.props.forumComments_id;
+    this.props.stores.layout.handleButtonEnable({ _id: this.uniqueID });
     
     
   }
@@ -96,17 +138,36 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
+    const { stores, storeForum, intl, _id, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, replyToForumComments_id } = this.props;
     
-    const _id = gameCommunities_id || userCommunities_id;
-    const _idForum = forumThreads_id || forumComments_id;
+    const communities_id = gameCommunities_id || userCommunities_id;
+    
+    
+    // --------------------------------------------------
+    //   Unique ID
+    // --------------------------------------------------
+    
+    // 編集時
+    // let uniqueID = `${_id}-formReply`;
+    
+    // // 新規追加時
+    // if (forumComments_id) {
+      
+    //   uniqueID = `${forumComments_id}-formReply`;
+      
+    // // 新規追加時　返信に対する返信
+    // } else if (forumComments_id && replyToForumComments_id) {
+      
+    //   uniqueID = `${forumComments_id}-${replyToForumComments_id}-formReply`;
+      
+    // }
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-${_idForum}-formComment`], true);
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', this.uniqueID], true);
     
     
     
@@ -128,9 +189,23 @@ export default injectIntl(class extends React.Component {
     //   Form Thread
     // --------------------------------------------------
     
-    const comment = lodashGet(dataObj, [_id, forumComments_id, 'formCommentObj', 'comment'], '');
+    const comment = lodashGet(dataObj, [this.uniqueID, 'comment'], '');
     
-    // const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
+    
+    // --------------------------------------------------
+    //   Show
+    // --------------------------------------------------
+    
+    // let showFormReplyPathArr = [communities_id, forumComments_id, 'showFormReply'];
+    
+    // if (replyToForumComments_id) {
+    //   showFormReplyPathArr = [communities_id, forumComments_id, replyToForumComments_id, 'showFormReply'];
+    //   // showFormReply = lodashGet(dataObj, [communities_id, forumComments_id, replyToForumComments_id, 'showFormReply'], false);
+    // }
+    
+    // const showFormReply = lodashGet(dataObj, [forumComments_id, 'formReplyObj', 'show'], false);
+    const showFormReply = lodashGet(dataObj, this.showFormReplyPathArr, false);
+    
     
     
     
@@ -152,7 +227,15 @@ export default injectIntl(class extends React.Component {
     //   forumComments_id: {green ${forumComments_id}}
     // `);
     
+    console.log(`
+      ----- this.pathArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(this.pathArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
+    // console.log(chalk`
+    //   this.uniqueID: {green ${this.uniqueID}}
+    // `);
     
     
     // --------------------------------------------------
@@ -162,12 +245,12 @@ export default injectIntl(class extends React.Component {
     return (
       <div
         css={css`
-          
+          padding: 12px 0 12px 0;
         `}
       >
         
         
-        {/* Description */}
+        {/* Comment */}
         <div
           css={css`
             margin: 12px 0 0 0;
@@ -191,7 +274,7 @@ export default injectIntl(class extends React.Component {
               }
             `}
             rows={5}
-            placeholder="コメントを書き込んでください"
+            placeholder="返信を書き込んでください"
             value={comment}
             onChange={(eventObj) => handleEdit({
             pathArr: [_id, forumComments_id, 'formCommentObj', 'comment'],
@@ -213,9 +296,9 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            _id={`${_id}-${_idForum}-formComment`}
-            descriptionImage="コメントに表示する画像をアップロードできます。"
-            descriptionVideo="コメントに表示する動画を登録できます。"
+            _id={this.uniqueID}
+            descriptionImage="返信に表示する画像をアップロードできます。"
+            descriptionVideo="返信に表示する動画を登録できます。"
             arrayName="mainArr"
             caption={true}
             limit={3}
@@ -229,17 +312,44 @@ export default injectIntl(class extends React.Component {
         {/* Buttons */}
         <div
           css={css`
+            display: flex;
+            flex-flow: row nowrap;
             margin: 16px 0 0 0;
           `}
         >
+          
+          
+          {/* Submit */}
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
             disabled={buttonDisabled}
           >
-            {forumComments_id ? 'コメントを編集する' : 'コメントを投稿する'}
+            {_id ? '返信を編集する' : '返信を投稿する'}
           </Button>
+          
+          
+          {/* Close */}
+          <div
+            css={css`
+              margin: 0 0 0 auto;
+            `}
+          >
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => handleEdit({
+                pathArr: this.showFormReplyPathArr,
+                value: !showFormReply
+              })}
+              disabled={buttonDisabled}
+            >
+              閉じる
+            </Button>
+          </div>
+          
+          
         </div>
         
         

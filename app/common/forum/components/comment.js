@@ -31,7 +31,7 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
+// import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import IconPublic from '@material-ui/icons/Public';
@@ -53,6 +53,7 @@ import green from '@material-ui/core/colors/green';
 // ---------------------------------------------
 
 import Reply from './reply';
+import FormReply from './form-reply';
 import Paragraph from '../../layout/components/paragraph';
 import User from '../../user/components/user';
 import ImageAndVideo from '../../image-and-video/components/image-and-video';
@@ -63,252 +64,6 @@ import ImageAndVideo from '../../image-and-video/components/image-and-video';
 // ---------------------------------------------
 
 moment.locale('ja');
-
-
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// ---------------------------------------------
-//   Comments & Replies
-// ---------------------------------------------
-
-const CommentBox = styled.div`
-  font-size: 14px;
-  line-height: 1.6em;
-  margin: 0;
-  padding: 0;
-`;
-
-const ReplyFormBox = styled.div`
-  margin: 14px 0 0 0;
-  padding: 0;
-`;
-
-
-
-// ---------------------------------------------
-//   Comment - Reply
-// ---------------------------------------------
-
-const ReplyLeftBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  // align-items: flex-start;
-  // padding: 10px 0 0 0;
-  // background-color: blue;
-`;
-
-const ReplyThumbnailBox = styled.div`
-  align-items: flex-start;
-  margin: 19px 0 0 6px;
-`;
-
-const ReplyLine = styled.div`
-  // flex-grow: 2;
-  border-left: 4px solid #84cacb;
-  margin: 0 0 0 0;
-  padding: 0;
-`;
-
-const ReplyRightBox = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  // margin: 10px 0 0 0;
-  padding: 16px 0 0 10px;
-  // background-color: green;
-`;
-
-const CommentReplyImg = styled.img`
-  max-width: 500px;
-  max-height: 300px;
-  margin: 0 0 14px 0;
-  padding: 0 0 0 0;
-  // background-color: green;
-  
-  @media screen and (max-width: 480px) {
-    max-width: 100%;
-    max-height: 200px;
-  }
-`;
-
-const CommentReplyVideoImg = styled.img`
-  max-width: 500px;
-  max-height: 300px;
-  margin: 0 0 14px 0;
-  padding: 0 0 0 0;
-  // background-color: green;
-  
-  @media screen and (max-width: 480px) {
-    max-width: 100%;
-    max-height: 200px;
-  }
-`;
-
-const CommentReplyVideoBox = styled.div`
-  position: relative;
-`;
-
-const CommentReplyVideoPlayButtonImg = styled.img`
-  position: absolute;
-  top: 0;
-  
-  @media screen and (max-width: 480px) {
-    width: 100%;
-  }
-`;
-
-
-const PreviewBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 0 0 6px 0;
-`;
-
-const PrevieImg = styled.img`
-  // width: 320px;
-  // height: 180px;
-  max-width: 192px;
-  max-height: 108px;
-  margin: 0 4px 4px 0;
-  // padding: 0 0 0 0;
-  // background-color: green;
-  
-  @media screen and (max-width: 480px) {
-    max-width: 128px;
-    max-height: 72px;
-  }
-`;
-
-const PreviewVideoBox = styled.div`
-  position: relative;
-`;
-
-const PreviewVideoImg = styled.img`
-  width: 192px;
-  height: 108px;
-  // margin: 0 0 14px 0;
-  // padding: 0 0 0 0;
-  // background-color: green;
-  
-  @media screen and (max-width: 480px) {
-    width: 128px;
-    height: 72px;
-  }
-`;
-
-const PreviewVideoPlayButtonImg = styled.img`
-  width: 192px;
-  height: 108px;
-  position: absolute;
-  top: 0;
-  
-  @media screen and (max-width: 480px) {
-    width: 128px;
-    height: 72px;
-  }
-`;
-
-
-
-
-// ----------------------------------------
-//   - ID
-// ----------------------------------------
-
-const BottomNavIdBox = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 1px 0 0 0;
-`;
-
-const BottomNavIconPublic = styled(IconPublic)`
-  && {
-    font-size: 20px;
-    margin: 3px 2px 0 0;
-  }
-`;
-
-const BottomNavId = styled.div`
-  font-size: 12px;
-  color: #009933;
-`;
-
-
-// ----------------------------------------
-//   - Buttons
-// ----------------------------------------
-
-const BottomNavThumbUpButton = styled(Button)`
-  && {
-    background-color: ${green[500]};
-    &:hover {
-      background-color: ${green[700]};
-    }
-    
-    color: white;
-    font-size: 12px;
-    // width: 56px;
-    height: 22px;
-    min-width: 40px;
-    min-height: 22px;
-    margin: 4px 8px 0 0;
-    padding: 0 5px;
-  }
-`;
-
-const BottomNavIconThumbUp = styled(IconThumbUp)`
-  && {
-    font-size: 14px;
-    margin: 0 4px 0 0;
-    padding: 0;
-  }
-`;
-
-const BottomNavButton = styled(Button)`
-  && {
-    font-size: 12px;
-    height: 22px;
-    min-width: 54px;
-    min-height: 22px;
-    margin: 4px 8px 0 0;
-    padding: 0 2px;
-    
-    @media screen and (max-width: 480px) {
-      min-width: 36px;
-      min-height: 22px;
-    }
-  }
-`;
-
-const BottomNavIconEdit = styled(IconEdit)`
-  && {
-    font-size: 16px;
-    margin: 0 3px 0 0;
-    padding: 0;
-    
-    @media screen and (max-width: 480px) {
-      display: none;
-    }
-  }
-`;
-
-const BottomNavIconReply = styled(IconReply)`
-  && {
-    font-size: 16px;
-    margin: 0 1px 0 0;
-    padding: 0;
-    
-    @media screen and (max-width: 480px) {
-      display: none;
-    }
-  }
-`;
-
-
 
 
 
@@ -363,7 +118,7 @@ export default injectIntl(class extends React.Component {
     
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
     
-    const _id = gameCommunities_id || userCommunities_id;
+    const communities_id = gameCommunities_id || userCommunities_id;
     
     
     // --------------------------------------------------
@@ -382,8 +137,8 @@ export default injectIntl(class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    const page = lodashGet(dataObj, [_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
-    const arr = lodashGet(dataObj, [_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
+    const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
@@ -474,6 +229,15 @@ export default injectIntl(class extends React.Component {
       const goods = lodashGet(valueObj, ['goods'], 0);
       
       
+      // --------------------------------------------------
+      //   Show
+      // --------------------------------------------------
+      
+      const showFormReply = lodashGet(dataObj, [forumComments_id, 'formReplyObj', 'show'], false);
+      // console.log(forumComments_id);
+      
+      
+      
       componentArr.push(
         
         <div
@@ -484,44 +248,49 @@ export default injectIntl(class extends React.Component {
         >
           
           
-          {/* Comment Container */}
+          {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
+          <User
+            thumbnailSrc={thumbnailSrc}
+            name={name}
+            playerID={playerID}
+            status={status}
+            accessDate={accessDate}
+            exp={exp}
+            cardPlayers_id={cardPlayers_id}
+            showCardPlayerButton={true}
+          />
+          
+          
+          {/* Images and Videos */}
+          {imagesAndVideosArr.length > 0 &&
+            <div
+              css={css`
+                margin: 12px 0 0 0;
+              `}
+            >
+              
+              <ImageAndVideo
+                _id={forumComments_id}
+                imagesAndVideosArr={imagesAndVideosArr}
+              />
+              
+            </div>
+          }
+          
+          
+          {/* Comment Container / Left Green Line */}
           <div
             css={css`
-              display: flex;
-              flex-flow: column nowrap;
+              border-left: 4px solid #84cacb;
+              margin: 10px 0 0 0;
+              padding: 0 0 0 16px;
+              
+              @media screen and (max-width: 480px) {
+                padding: 0 0 0 12px;
+              }
               // background-color: purple;
             `}
           >
-            
-            
-            {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
-            <User
-              thumbnailSrc={thumbnailSrc}
-              name={name}
-              playerID={playerID}
-              status={status}
-              accessDate={accessDate}
-              exp={exp}
-              cardPlayers_id={cardPlayers_id}
-              showCardPlayerButton={true}
-            />
-            
-            
-            {/* Images and Videos */}
-            {imagesAndVideosArr.length > 0 &&
-              <div
-                css={css`
-                  margin: 12px 0 0 0;
-                `}
-              >
-                
-                <ImageAndVideo
-                  _id={forumComments_id}
-                  imagesAndVideosArr={imagesAndVideosArr}
-                />
-                
-              </div>
-            }
             
             
             {/* Comment */}
@@ -529,14 +298,6 @@ export default injectIntl(class extends React.Component {
               css={css`
                 font-size: 14px;
                 line-height: 1.6em;
-                border-left: 4px solid #84cacb;
-                margin: 10px 0 0 0;
-                padding: 0 0 4px 16px;
-                // background-color: pink;
-                
-                @media screen and (max-width: 480px) {
-                  padding: 0 0 4px 12px;
-                }
               `}
             >
               
@@ -556,12 +317,7 @@ export default injectIntl(class extends React.Component {
               css={css`
                 display: flex;
                 flex-flow: row wrap;
-                border-left: 4px solid #84cacb;
-                padding: 5px 0 0 16px;
-                
-                @media screen and (max-width: 480px) {
-                  padding: 5px 0 0 12px;
-                }
+                margin: 6px 0 0 0;
               `}
             >
               
@@ -578,7 +334,7 @@ export default injectIntl(class extends React.Component {
                     color: white;
                     font-size: 12px;
                     height: 22px;
-                    min-width: 40px;
+                    min-width: 20px;
                     margin: 4px 12px 0 0;
                     padding: 0 5px;
                     
@@ -690,7 +446,10 @@ export default injectIntl(class extends React.Component {
                     }
                   `}
                   variant="outlined"
-                  // onClick={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
+                  onClick={() => handleEdit({
+                    pathArr: [forumComments_id, 'formReplyObj', 'show'],
+                    value: !showFormReply
+                  })}
                 >
                   <IconReply
                     css={css`
@@ -746,7 +505,22 @@ export default injectIntl(class extends React.Component {
                 
             </div>
             
+            
+            
+            
+            {/* Form Reply */}
+            {showFormReply &&
+              <FormReply
+                gameCommunities_id={gameCommunities_id}
+                userCommunities_id={userCommunities_id}
+                forumComments_id={forumComments_id}
+              />
+            }
+            
+            
+            
           </div>
+          
           
           
           

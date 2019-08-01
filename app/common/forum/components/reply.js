@@ -17,9 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import styled from 'styled-components';
 import moment from 'moment';
-import ImageGallery from 'react-image-gallery';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -52,6 +50,7 @@ import green from '@material-ui/core/colors/green';
 //   Components
 // ---------------------------------------------
 
+import FormReply from './form-reply';
 import Paragraph from '../../layout/components/paragraph';
 import User from '../../user/components/user';
 import ImageAndVideo from '../../image-and-video/components/image-and-video';
@@ -81,7 +80,16 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.forumComments_id, 'replyObj'];
+    
   }
   
   
@@ -96,8 +104,10 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumComment` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    
+    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumComment` });
     
     
   }
@@ -116,7 +126,7 @@ export default injectIntl(class extends React.Component {
     
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumComments_id } = this.props;
     
-    const _id = gameCommunities_id || userCommunities_id;
+    const communities_id = gameCommunities_id || userCommunities_id;
     
     
     // --------------------------------------------------
@@ -135,8 +145,10 @@ export default injectIntl(class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    const page = lodashGet(dataObj, [_id, 'forumCommentsAndRepliesObj', forumComments_id, 'page'], 1);
-    const arr = lodashGet(dataObj, [_id, 'forumCommentsAndRepliesObj', forumComments_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id, 'page'], 1);
+    const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    
+    
     
     
     // --------------------------------------------------
@@ -227,6 +239,15 @@ export default injectIntl(class extends React.Component {
       const goods = lodashGet(valueObj, ['goods'], 0);
       
       
+      // --------------------------------------------------
+      //   Show
+      // --------------------------------------------------
+      
+      const showFormReply = lodashGet(dataObj, [forumComments_id, forumComments2_id, 'formReplyObj', 'show'], false);
+      
+      
+      
+      
       componentArr.push(
         
         <div
@@ -234,9 +255,8 @@ export default injectIntl(class extends React.Component {
             display: flex;
             flex-flow: column nowrap;
             
-            border-left: 4px solid #84cacb;
-            // margin: 0 0 0 0;
-            padding: 12px 0 0 12px;
+            // border-left: 4px solid #84cacb;
+            padding: 12px 0 0 0;
           `}
           key={index}
         >
@@ -244,7 +264,6 @@ export default injectIntl(class extends React.Component {
           <div
             css={css`
               border-top: 1px dashed #BDBDBD;
-              // margin: 0;
               padding: 12px 0 0 0;
             `}
           >
@@ -271,7 +290,8 @@ export default injectIntl(class extends React.Component {
               >
                 
                 <ImageAndVideo
-                  _id={forumComments2_id}
+                  // _id={forumComments2_id}
+                  pathArr={[forumComments2_id, 'replyObj', 'formImagesAndVideosObj']}
                   imagesAndVideosArr={imagesAndVideosArr}
                 />
                 
@@ -279,226 +299,263 @@ export default injectIntl(class extends React.Component {
             }
             
             
-            {/* Comment */}
+            
+            {/* Reply Container / Left Purple Line */}
             <div
               css={css`
-                font-size: 14px;
-                line-height: 1.6em;
                 border-left: 4px solid #A9A9F5;
                 margin: 10px 0 0 0;
-                padding: 0 0 4px 16px;
+                padding: 0 0 0 16px;
                 
                 @media screen and (max-width: 480px) {
-                  padding: 0 0 4px 12px;
+                  padding: 0 0 0 12px;
                 }
-              `}
-            >
-              
-              <div
-                css={css`
-                  margin 4px 0 0 0;
-                `}
-              >
-                <Paragraph text={comment} />
-              </div>
-              
-            </div>
-            
-            
-            {/* Bottom Container */}
-            <div
-              css={css`
-                display: flex;
-                flex-flow: row wrap;
-                border-left: 4px solid #A9A9F5;
-                padding: 0 0 4px 16px;
-                
-                @media screen and (max-width: 480px) {
-                  padding: 0 0 4px 12px;
-                }
+                // background-color: purple;
               `}
             >
               
               
-              {/* Good Button */}
-              <Button
-                css={css`
-                  && {
-                    background-color: ${green[500]};
-                    &:hover {
-                      background-color: ${green[700]};
-                    }
-                    
-                    color: white;
-                    font-size: 12px;
-                    height: 22px;
-                    min-width: 40px;
-                    margin: 4px 12px 0 0;
-                    padding: 0 5px;
-                    
-                    @media screen and (max-width: 480px) {
-                      margin: 4px 8px 0 0;
-                    }
-                  }
-                `}
-                
-                variant="outlined"
-                // onClick={() => handleCommentGood(communityId, threadId, value.id)}
-              >
-                <IconThumbUp
-                  css={css`
-                    && {
-                      font-size: 14px;
-                      margin: 0 4px 2px 0;
-                    }
-                  `}
-                />
-                {goods}
-              </Button>
-              
-              
-              {/* Updated Date */}
+              {/* Comment */}
               <div
                 css={css`
-                  display: flex;
-                  flex-flow: row nowrap;
-                  margin: 4px 12px 0 0;
-                  @media screen and (max-width: 480px) {
-                    margin: 4px 8px 0 0;
-                  }
+                  font-size: 14px;
+                  line-height: 1.6em;
+                  // border-left: 4px solid #A9A9F5;
+                  // margin: 10px 0 0 0;
+                  // padding: 0 0 4px 16px;
+                  
+                  // @media screen and (max-width: 480px) {
+                  //   padding: 0 0 4px 12px;
+                  // }
                 `}
               >
-                <IconUpdate
-                  css={css`
-                    && {
-                      font-size: 22px;
-                      margin: 0 2px 0 0;
-                    }
-                  `}
-                />
                 
                 <div
                   css={css`
-                    font-size: 12px;
-                    margin: 1px 0 0 0;
+                    margin 4px 0 0 0;
                   `}
                 >
-                  {datetimeFrom}
+                  <Paragraph text={comment} />
                 </div>
+                
               </div>
               
               
-              {/* forum-comments_id */}
+              {/* Bottom Container */}
               <div
                 css={css`
                   display: flex;
-                  flex-flow: row nowrap;
-                  margin: 1px 0 0 0;
-                `}
-              >
-                <IconPublic
-                  css={css`
-                    && {
-                      font-size: 20px;
-                      margin: 3px 2px 0 0;
-                    }
-                  `}
-                />
-                <div
-                  css={css`
-                    font-size: 12px;
-                    color: #009933;
-                    margin: 4px 0 0 0;
-                  `}
-                >
-                  {valueObj._id}
-                </div>
-              </div>
-              
-              
-              {/* Buttons */}
-              <div
-                css={css`
-                  display: flex;
-                  flex-flow: row nowrap;
-                  margin-left: auto;
-                  // background-color: pink;
+                  flex-flow: row wrap;
+                  margin: 6px 0 0 0;
+                  // border-left: 4px solid #A9A9F5;
+                  // padding: 0 0 4px 16px;
+                  
+                  // @media screen and (max-width: 480px) {
+                  //   padding: 0 0 4px 12px;
+                  // }
                 `}
               >
                 
+                
+                {/* Good Button */}
                 <Button
                   css={css`
                     && {
+                      background-color: ${green[500]};
+                      &:hover {
+                        background-color: ${green[700]};
+                      }
+                      
+                      color: white;
                       font-size: 12px;
                       height: 22px;
-                      min-width: 54px;
-                      min-height: 22px;
+                      min-width: 40px;
                       margin: 4px 12px 0 0;
-                      padding: 0 3px;
+                      padding: 0 5px;
                       
                       @media screen and (max-width: 480px) {
-                        min-width: 36px;
-                        min-height: 22px;
                         margin: 4px 8px 0 0;
                       }
                     }
                   `}
+                  
                   variant="outlined"
-                  // onClick={() => handleReplyInsertFormOpen(`${value.id}-reply-insert`)}
+                  // onClick={() => handleCommentGood(communityId, threadId, value.id)}
                 >
-                  <IconReply
+                  <IconThumbUp
                     css={css`
                       && {
-                        font-size: 16px;
-                        margin: 0 1px 3px 0;
-                        
-                        @media screen and (max-width: 480px) {
-                          display: none;
-                        }
+                        font-size: 14px;
+                        margin: 0 4px 2px 0;
                       }
                     `}
                   />
-                  返信
+                  {goods}
                 </Button>
                 
                 
-                <Button
+                {/* Updated Date */}
+                <div
                   css={css`
-                    && {
-                      font-size: 12px;
-                      height: 22px;
-                      min-width: 54px;
-                      min-height: 22px;
-                      margin: 4px 0 0 0;
-                      padding: 0 4px;
-                      
-                      @media screen and (max-width: 480px) {
-                        min-width: 36px;
-                        min-height: 22px;
-                      }
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin: 4px 12px 0 0;
+                    @media screen and (max-width: 480px) {
+                      margin: 4px 8px 0 0;
                     }
                   `}
-                  variant="outlined"
-                  // onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
                 >
-                  <IconEdit
+                  <IconUpdate
                     css={css`
                       && {
-                        font-size: 16px;
-                        margin: 0 2px 3px 0;
-                        
-                        @media screen and (max-width: 480px) {
-                          display: none;
-                        }
+                        font-size: 22px;
+                        margin: 0 2px 0 0;
                       }
                     `}
                   />
-                  編集
-                </Button>
+                  
+                  <div
+                    css={css`
+                      font-size: 12px;
+                      margin: 1px 0 0 0;
+                    `}
+                  >
+                    {datetimeFrom}
+                  </div>
+                </div>
                 
+                
+                {/* forum-comments_id */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin: 1px 0 0 0;
+                  `}
+                >
+                  <IconPublic
+                    css={css`
+                      && {
+                        font-size: 20px;
+                        margin: 3px 2px 0 0;
+                      }
+                    `}
+                  />
+                  <div
+                    css={css`
+                      font-size: 12px;
+                      color: #009933;
+                      margin: 4px 0 0 0;
+                    `}
+                  >
+                    {valueObj._id}
+                  </div>
+                </div>
+                
+                
+                {/* Buttons */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin-left: auto;
+                    // background-color: pink;
+                  `}
+                >
+                  
+                  <Button
+                    css={css`
+                      && {
+                        font-size: 12px;
+                        height: 22px;
+                        min-width: 54px;
+                        min-height: 22px;
+                        margin: 4px 12px 0 0;
+                        padding: 0 3px;
+                        
+                        @media screen and (max-width: 480px) {
+                          min-width: 36px;
+                          min-height: 22px;
+                          margin: 4px 8px 0 0;
+                        }
+                      }
+                    `}
+                    variant="outlined"
+                    onClick={() => handleEdit({
+                      pathArr: [forumComments_id, forumComments2_id, 'formReplyObj', 'show'],
+                      value: !showFormReply
+                    })}
+                  >
+                    <IconReply
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 1px 3px 0;
+                          
+                          @media screen and (max-width: 480px) {
+                            display: none;
+                          }
+                        }
+                      `}
+                    />
+                    返信
+                  </Button>
+                  
+                  
+                  <Button
+                    css={css`
+                      && {
+                        font-size: 12px;
+                        height: 22px;
+                        min-width: 54px;
+                        min-height: 22px;
+                        margin: 4px 0 0 0;
+                        padding: 0 4px;
+                        
+                        @media screen and (max-width: 480px) {
+                          min-width: 36px;
+                          min-height: 22px;
+                        }
+                      }
+                    `}
+                    variant="outlined"
+                    // onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
+                  >
+                    <IconEdit
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 0 2px 3px 0;
+                          
+                          @media screen and (max-width: 480px) {
+                            display: none;
+                          }
+                        }
+                      `}
+                    />
+                    編集
+                  </Button>
+                  
+                </div>
+                  
               </div>
-                
+              
+              
+              
+              
+              {/* Form Reply */}
+              {showFormReply &&
+                <FormReply
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumComments_id={forumComments_id}
+                  replyToForumComments_id={forumComments2_id}
+                />
+              }
+              
+              
             </div>
+            
             
           </div>
           

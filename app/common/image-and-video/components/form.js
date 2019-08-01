@@ -32,30 +32,6 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 
 
 // ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconClose from '@material-ui/icons/Close';
-// import IconDescription from '@material-ui/icons/Description';
-// import IconHelpOutline from '@material-ui/icons/HelpOutline';
-
-
-// ---------------------------------------------
-//   Material UI / Color
-// ---------------------------------------------
-
-// import cyan from '@material-ui/core/colors/cyan';
-
-
-// ---------------------------------------------
-//   Stores
-// ---------------------------------------------
-
-// import initStoreImageAndVideo from '../stores/image-and-video';
-// import initStoreImageAndVideoForm from '../stores/form';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -80,17 +56,7 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
-    
     super(props);
-    
-    
-    // --------------------------------------------------
-    //   Store
-    // --------------------------------------------------
-    
-    // this.storeImageAndVideo = initStoreImageAndVideo({});
-    // this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
-    
   }
   
   
@@ -105,7 +71,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, _id, descriptionImage, descriptionVideo, arrayName, caption, limit } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], descriptionImage, descriptionVideo, arrayName, caption, limit } = this.props;
     
     const {
       
@@ -115,8 +81,9 @@ export default injectIntl(class extends React.Component {
       
     } = storeImageAndVideoForm;
     
-    const formImageShow = lodashGet(dataObj, [_id, 'formImageShow'], false);
-    const formVideoShow = lodashGet(dataObj, [_id, 'formVideoShow'], false);
+    
+    const formImageShow = lodashGet(dataObj, [...pathArr, 'formImageShow'], false);
+    const formVideoShow = lodashGet(dataObj, [...pathArr, 'formVideoShow'], false);
     
     
     
@@ -146,14 +113,14 @@ export default injectIntl(class extends React.Component {
         
         {/* Buttons */}
         <ButtonGroup color="primary">
-          <Button onClick={() => handleFormImageShow({ _id })}>画像</Button>
-          <Button onClick={() => handleFormVideoShow({ _id })}>動画</Button>
+          <Button onClick={() => handleFormImageShow({ pathArr })}>画像</Button>
+          <Button onClick={() => handleFormVideoShow({ pathArr })}>動画</Button>
         </ButtonGroup>
         
         
         {/* Preview */}
         <FormPreview
-          _id={_id}
+          pathArr={pathArr}
           arrayName={arrayName}
         />
         
@@ -166,7 +133,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             <FormImage
-              _id={_id}
+              pathArr={pathArr}
               description={descriptionImage}
               arrayName={arrayName}
               caption={caption}
@@ -184,7 +151,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             <FormVideo
-              _id={_id}
+              pathArr={pathArr}
               description={descriptionVideo}
               arrayName={arrayName}
               limit={limit}

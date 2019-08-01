@@ -62,7 +62,24 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    
+    // 新規追加時
+    this.pathArr = [communities_id, 'formThreadObj'];
+    
+    // 編集時
+    if (props.forumThreads_id) {
+      this.pathArr = [props.forumThreads_id, 'formThreadObj'];
+    }
+    
   }
   
   
@@ -77,8 +94,10 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-${this.props.forumThreads_id}-formThread` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    
+    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-${this.props.forumThreads_id}-formThread` });
     
     
   }
@@ -97,14 +116,15 @@ export default injectIntl(class extends React.Component {
     
     const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
     
-    const _id = gameCommunities_id || userCommunities_id;
+    const communities_id = gameCommunities_id || userCommunities_id;
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-${forumThreads_id}-formThread`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-${forumThreads_id}-formThread`], true);
     
     
     
@@ -126,8 +146,8 @@ export default injectIntl(class extends React.Component {
     //   Form Thread
     // --------------------------------------------------
     
-    const name = lodashGet(dataObj, [_id, forumThreads_id, 'formThreadObj', 'name'], '');
-    const description = lodashGet(dataObj, [_id, forumThreads_id, 'formThreadObj', 'description'], '');
+    const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
+    const description = lodashGet(dataObj, [...this.pathArr, 'description'], '');
     
     const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
@@ -136,7 +156,7 @@ export default injectIntl(class extends React.Component {
     //   Show
     // --------------------------------------------------
     
-    const showForm = lodashGet(dataObj, [_id, forumThreads_id, 'showForm'], false);
+    const showForm = lodashGet(dataObj, [communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
     
     
     // --------------------------------------------------
@@ -181,7 +201,7 @@ export default injectIntl(class extends React.Component {
           label="スレッド名"
           value={validationForumThreadsNameObj.value}
           onChange={(eventObj) => handleEdit({
-            pathArr: [_id, forumThreads_id, 'formThreadObj', 'name'],
+            pathArr: [...this.pathArr, 'name'],
             value: eventObj.target.value
           })}
           error={validationForumThreadsNameObj.error}
@@ -222,7 +242,7 @@ export default injectIntl(class extends React.Component {
             placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
             value={description}
             onChange={(eventObj) => handleEdit({
-            pathArr: [_id, forumThreads_id, 'formThreadObj', 'description'],
+            pathArr: [...this.pathArr, 'description'],
             value: eventObj.target.value
           })}
             maxLength={3000}
@@ -241,7 +261,8 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            _id={`${_id}-${forumThreads_id}`}
+            // _id={`${_id}-${forumThreads_id}`}
+            pathArr={[...this.pathArr, 'formImagesAndVideosObj']}
             descriptionImage="スレッドに表示する画像をアップロードできます。"
             descriptionVideo="スレッドに表示する動画を登録できます。"
             arrayName="mainArr"
@@ -283,7 +304,7 @@ export default injectIntl(class extends React.Component {
                 variant="outlined"
                 color="secondary"
                 onClick={() => handleEdit({
-                  pathArr: [_id, forumThreads_id, 'showForm'],
+                  pathArr: [communities_id, 'threadObj', forumThreads_id, 'showForm'],
                   value: !showForm
                 })}
                 disabled={buttonDisabled}

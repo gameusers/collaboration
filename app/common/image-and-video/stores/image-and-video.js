@@ -50,51 +50,51 @@ class Store {
   
   /**
    * Lightboxを開く
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    * @param {number} currentNo - 表示する画像番号
    */
   @action.bound
-  handleLightboxOpen({ _id, currentNo }) {
+  handleLightboxOpen({ pathArr = [], currentNo = 0 }) {
     
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   currentNo: {green ${currentNo}}
     // `);
     
-    lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo);
-    lodashSet(this.lightboxObj, [_id, 'open'], true);
+    lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo);
+    lodashSet(this.lightboxObj, [...pathArr, 'open'], true);
   };
   
   
   /**
    * Lightboxを閉じる
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleLightboxClose({ _id }) {
-    lodashSet(this.lightboxObj, [_id, 'open'], false);
+  handleLightboxClose({ pathArr = [] }) {
+    lodashSet(this.lightboxObj, [...pathArr, 'open'], false);
   };
   
   
   /**
    * 前の画像を表示する
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleLightboxPrevious({ _id }) {
-    const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
-    lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo - 1);
+  handleLightboxPrevious({ pathArr = [] }) {
+    const currentNo = lodashGet(this.lightboxObj, [...pathArr, 'currentNo'], 0);
+    lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo - 1);
   };
   
   
   /**
    * 次の画像を表示する
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleLightboxNext({ _id }) {
-    const currentNo = lodashGet(this.lightboxObj, [_id, 'currentNo'], 0);
-    lodashSet(this.lightboxObj, [_id, 'currentNo'], currentNo + 1);
+  handleLightboxNext({ pathArr = [] }) {
+    const currentNo = lodashGet(this.lightboxObj, [...pathArr, 'currentNo'], 0);
+    lodashSet(this.lightboxObj, [...pathArr, 'currentNo'], currentNo + 1);
   };
   
   

@@ -15,6 +15,8 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 
@@ -618,16 +620,35 @@ class Store {
   
   
   /**
+   * パネルの状態を取得する
+   * @param {Array} pathArr - path
+   */
+  handleGetPanelExpanded({ pathArr }) {
+    return lodashGet(this.panelExpandedObj, pathArr, true);
+  };
+  
+  
+  /**
    * パネルの開閉を切り替える
    * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handlePanelExpand({ _id }) {
+  handlePanelExpand({ _id, pathArr }) {
     
-    if (_id in this.panelExpandedObj) {
-      this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
+    if (pathArr) {
+      
+      const expanded = lodashGet(this.panelExpandedObj, pathArr, true);
+      lodashSet(this.panelExpandedObj, pathArr, !expanded);
+      
     } else {
-      this.panelExpandedObj[_id] = false;
+      
+      if (_id in this.panelExpandedObj) {
+        this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
+      } else {
+        this.panelExpandedObj[_id] = false;
+      }
+      
     }
     
   };
@@ -688,11 +709,36 @@ class Store {
   
   
   /**
+   * ボタンの状態を取得する
+   * @param {Array} pathArr - path
+   */
+  handleGetButtonDisabled({ pathArr }) {
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.buttonDisabledObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.buttonDisabledObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    return lodashGet(this.buttonDisabledObj, pathArr, true);
+  };
+  
+  
+  /**
    * ボタンを利用可能にする
    * @param {string} _id - ID
    */
-  handleButtonEnable({ _id }) {
+  handleButtonEnable({ _id, pathArr }) {
     this.buttonDisabledObj[_id] = false;
+    
+    if (pathArr) {
+      lodashSet(this.buttonDisabledObj, pathArr, false);
+    }
   };
   
   
@@ -700,8 +746,12 @@ class Store {
    * ボタンを利用不可にする
    * @param {string} _id - ID
    */
-  handleButtonDisable({ _id }) {
+  handleButtonDisable({ _id, pathArr }) {
     this.buttonDisabledObj[_id] = true;
+    
+    if (pathArr) {
+      lodashSet(this.buttonDisabledObj, pathArr, true);
+    }
   };
   
   

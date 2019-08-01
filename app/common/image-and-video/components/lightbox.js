@@ -58,7 +58,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, _id, imagesAndVideosArr } = this.props;
+    const { storeImageAndVideo, pathArr = [], imagesAndVideosArr = [] } = this.props;
     
     const {
       
@@ -69,15 +69,15 @@ export default class extends React.Component {
       
     } = storeImageAndVideo;
     
-    const currentNo = lodashGet(lightboxObj, [_id, 'currentNo'], 0);
-    const open = lodashGet(lightboxObj, [_id, 'open'], false);
+    const currentNo = lodashGet(lightboxObj, [...pathArr, 'currentNo'], 0);
+    const open = lodashGet(lightboxObj, [...pathArr, 'open'], false);
     
     
     // --------------------------------------------------
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (!imagesAndVideosArr || imagesAndVideosArr.length === 0) {
+    if (imagesAndVideosArr.length === 0) {
       return null;
     }
     
@@ -114,9 +114,9 @@ export default class extends React.Component {
         images={imagesArr}
         currentImage={currentNo}
         isOpen={open}
-        onClickPrev={() => handleLightboxPrevious({ _id })}
-        onClickNext={() => handleLightboxNext({ _id })}
-        onClose={() => handleLightboxClose({ _id })}
+        onClickPrev={() => handleLightboxPrevious({ pathArr })}
+        onClickNext={() => handleLightboxNext({ pathArr })}
+        onClose={() => handleLightboxClose({ pathArr })}
         backdropClosesModal
       />
     );

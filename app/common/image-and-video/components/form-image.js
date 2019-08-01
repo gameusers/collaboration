@@ -84,7 +84,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, _id, heading, description, caption, limit, arrayName = 'mainArr' } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], heading, description, caption, limit, arrayName = 'mainArr' } = this.props;
     
     const {
       
@@ -95,10 +95,10 @@ export default injectIntl(class extends React.Component {
       
     } = storeImageAndVideoForm;
     
-    const imageCaption = lodashGet(dataObj, [_id, 'imageCaption'], '');
-    const imageCaptionOpen = lodashGet(dataObj, [_id, 'imageCaptionOpen'], false);
     
-    const imagesAndVideosArr = lodashGet(dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
+    const imageCaption = lodashGet(dataObj, [...pathArr, 'imageCaption'], '');
+    const imageCaptionOpen = lodashGet(dataObj, [...pathArr, 'imageCaptionOpen'], false);
+    const imagesAndVideosArr = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     
     
     
@@ -159,7 +159,7 @@ export default injectIntl(class extends React.Component {
               margin: 14px 0 0 0;
             `}
             type="file"
-            onChange={(eventObj) => handleSelectImage({ _id, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
+            onChange={(eventObj) => handleSelectImage({ pathArr, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
           />
           
           <div
@@ -172,7 +172,7 @@ export default injectIntl(class extends React.Component {
               variant="contained"
               color="secondary"
               size="small"
-              onClick={() => handleAddImage({ _id, arrayName, limit })}
+              onClick={() => handleAddImage({ pathArr, arrayName, limit })}
             >
               追加
             </Button>
@@ -198,7 +198,7 @@ export default injectIntl(class extends React.Component {
             placeholder="画像名・簡単な解説"
             value={imageCaption}
             onChange={(eventObj) => handleEdit({
-              pathArr: [_id, 'imageCaption'],
+              pathArr: [...pathArr, 'imageCaption'],
               value: eventObj.target.value
             })}
             InputProps={{
@@ -211,7 +211,7 @@ export default injectIntl(class extends React.Component {
                 <InputAdornment position="end">
                   <IconButton
                     onClick={() => handleEdit({
-                      pathArr: [_id, 'imageCaptionOpen'],
+                      pathArr: [...pathArr, 'imageCaptionOpen'],
                       value: !imageCaptionOpen
                     })}
                   >

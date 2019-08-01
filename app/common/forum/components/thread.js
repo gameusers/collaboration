@@ -50,7 +50,7 @@ import IconPublic from '@material-ui/icons/Public';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+// const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
 
 
 // ---------------------------------------------
@@ -125,7 +125,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.pathArr = [communities_id, 'threadObj'];
+    
   }
   
   
@@ -140,8 +150,10 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumThread` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    
+    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumThread` });
     
     
   }
@@ -160,16 +172,15 @@ export default injectIntl(class extends React.Component {
     
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id } = this.props;
     
-    const _id = gameCommunities_id || userCommunities_id;
+    const communities_id = gameCommunities_id || userCommunities_id;
     
     
     
     
     // --------------------------------------------------
-    //   Panel
+    //   Panel Expand Function
     // --------------------------------------------------
     
-    // const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-forum`], true);
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
@@ -177,7 +188,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forum`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
     
     
     
@@ -198,8 +209,8 @@ export default injectIntl(class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    const page = lodashGet(dataObj, [_id, 'forumThreadsObj', 'page'], 1);
-    const arr = lodashGet(dataObj, [_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [communities_id, 'forumThreadsObj', 'page'], 1);
+    const arr = lodashGet(dataObj, [communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
@@ -260,22 +271,24 @@ export default injectIntl(class extends React.Component {
       //   Show
       // --------------------------------------------------
       
-      const showDescription = lodashGet(dataObj, [_id, forumThreads_id, 'showDescription'], true);
-      const showForm = lodashGet(dataObj, [_id, forumThreads_id, 'showForm'], false);
+      const showDescription = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showDescription'], true);
+      const showForm = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showForm'], false);
       
       
-       // --------------------------------------------------
+      // --------------------------------------------------
       //   Panel
       // --------------------------------------------------
       
-      const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-${forumThreads_id}`], true);
+      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, forumThreads_id, 'panelExpanded'] });
+      // const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-${forumThreads_id}`], true);
       
       
       // --------------------------------------------------
       //   Button - Disabled
       // --------------------------------------------------
       
-      const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forumThread`], true);
+      // const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+      // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forumThread`], true);
       
       
       
@@ -304,7 +317,6 @@ export default injectIntl(class extends React.Component {
                 }
               }
             `}
-            // style={{ marginBottom: 0 }}
             classes={{
               expanded: classes.expanded
             }}
@@ -365,7 +377,6 @@ export default injectIntl(class extends React.Component {
                       css={css`
                         font-weight: bold;
                         font-size: 16px;
-                        // margin: 0 0 4px 0;
                         
                         @media screen and (max-width: 480px) {
                           font-size: 14px;
@@ -391,7 +402,6 @@ export default injectIntl(class extends React.Component {
                         css={css`
                           display: flex;
                           flex-flow: row nowrap;
-                          // align-items: center;
                           margin: 0 6px 0 0;
                         `}
                       >
@@ -413,7 +423,7 @@ export default injectIntl(class extends React.Component {
                             margin: 2px 0 0 0;
                           `}
                           onClick={() => handleEdit({
-                            pathArr: [_id, forumThreads_id, 'showDescription'],
+                            pathArr: [...this.pathArr, forumThreads_id, 'showDescription'],
                             value: !showDescription
                           })}
                         >
@@ -469,7 +479,7 @@ export default injectIntl(class extends React.Component {
                           variant="outlined"
                           color="primary"
                           onClick={() => handleEdit({
-                            pathArr: [_id, forumThreads_id, 'showForm'],
+                            pathArr: [...this.pathArr, forumThreads_id, 'showForm'],
                             value: !showForm
                           })}
                         >
@@ -500,7 +510,7 @@ export default injectIntl(class extends React.Component {
                           padding: 4px;
                         }
                       `}
-                      onClick={() => handlePanelExpand({ _id: `${_id}-${forumThreads_id}` })}
+                      onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, forumThreads_id, 'panelExpanded'] })}
                       aria-expanded={panelExpanded}
                       aria-label="Show more"
                       disabled={buttonDisabled}
@@ -593,7 +603,6 @@ export default injectIntl(class extends React.Component {
       );
       
     }
-    
     
     
     // --------------------------------------------------

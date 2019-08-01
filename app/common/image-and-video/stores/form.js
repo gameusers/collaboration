@@ -127,30 +127,30 @@ class Store {
   
   /**
    * 画像投稿フォームを表示する
-   * @param {string} _id - ID
+   * @param {Array} pathArr - path
    */
   @action.bound
-  handleFormImageShow({ _id }) {
+  handleFormImageShow({ pathArr }) {
     
-    const formImageShow = lodashGet(this.dataObj, [_id, 'formImageShow'], false);
+    const formImageShow = lodashGet(this.dataObj, [...pathArr, 'formImageShow'], false);
     
-    lodashSet(this.dataObj, [_id, 'formImageShow'], !formImageShow);
-    lodashSet(this.dataObj, [_id, 'formVideoShow'], false);
+    lodashSet(this.dataObj, [...pathArr, 'formImageShow'], !formImageShow);
+    lodashSet(this.dataObj, [...pathArr, 'formVideoShow'], false);
     
   };
   
   
   /**
    * 動画投稿フォームを表示する
-   * @param {string} _id - ID
+   * @param {Array} pathArr - path
    */
   @action.bound
-  handleFormVideoShow({ _id }) {
+  handleFormVideoShow({ pathArr }) {
     
-    const formVideoShow = lodashGet(this.dataObj, [_id, 'formVideoShow'], false);
+    const formVideoShow = lodashGet(this.dataObj, [...pathArr, 'formVideoShow'], false);
     
-    lodashSet(this.dataObj, [_id, 'formVideoShow'], !formVideoShow);
-    lodashSet(this.dataObj, [_id, 'formImageShow'], false);
+    lodashSet(this.dataObj, [...pathArr, 'formVideoShow'], !formVideoShow);
+    lodashSet(this.dataObj, [...pathArr, 'formImageShow'], false);
     
   };
   
@@ -163,11 +163,11 @@ class Store {
   
   /**
    * 画像を選択したときに呼び出される
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    * @param {Object} fileObj - ファイルオブジェクト
    */
   @action.bound
-  handleSelectImage({ _id, fileObj, imagesAndVideosArr }) {
+  handleSelectImage({ pathArr, fileObj, imagesAndVideosArr }) {
     
     
     // ---------------------------------------------
@@ -218,9 +218,9 @@ class Store {
 
         const { width, height } = img;
         
-        lodashSet(this.dataObj, [_id, 'imageObj', 'src'], fileReader.result);
-        lodashSet(this.dataObj, [_id, 'imageObj', 'width'], width);
-        lodashSet(this.dataObj, [_id, 'imageObj', 'height'], height);
+        lodashSet(this.dataObj, [...pathArr, 'imageObj', 'src'], fileReader.result);
+        lodashSet(this.dataObj, [...pathArr, 'imageObj', 'width'], width);
+        lodashSet(this.dataObj, [...pathArr, 'imageObj', 'height'], height);
         
       };
       
@@ -234,25 +234,25 @@ class Store {
   /**
    * 選択した画像を追加する
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    * @param {string} arrayName - 操作する配列名
    * @param {number} limit - 画像を追加できる上限
    */
   @action.bound
-  handleAddImage({ _id, arrayName, limit }) {
+  handleAddImage({ pathArr, arrayName, limit }) {
     
     
     // ---------------------------------------------
     //   Get Data
     // ---------------------------------------------
     
-    const imagesAndVideosArr = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
+    const imagesAndVideosArr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     let clonedArr = lodashCloneDeep(imagesAndVideosArr);
     
-    const src = lodashGet(this.dataObj, [_id, 'imageObj', 'src'], '');
-    const width = lodashGet(this.dataObj, [_id, 'imageObj', 'width'], '');
-    const height = lodashGet(this.dataObj, [_id, 'imageObj', 'height'], '');
-    const caption = lodashGet(this.dataObj, [_id, 'imageCaption'], '');
+    const src = lodashGet(this.dataObj, [...pathArr, 'imageObj', 'src'], '');
+    const width = lodashGet(this.dataObj, [...pathArr, 'imageObj', 'width'], '');
+    const height = lodashGet(this.dataObj, [...pathArr, 'imageObj', 'height'], '');
+    const caption = lodashGet(this.dataObj, [...pathArr, 'imageCaption'], '');
     
     
     // ---------------------------------------------
@@ -382,17 +382,14 @@ class Store {
       //   更新
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
+      lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], clonedArr);
       
       
       // ---------------------------------------------
       //   Caption 入力フォームをリセット
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [_id, 'imageCaption'], '');
-      
-      
-      
+      lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
       
       
     }
@@ -405,23 +402,23 @@ class Store {
   /**
    * 入力した動画を追加する
    * 追加すると動画のサムネイルがフォーム内に表示される（プレビューできる）
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    * @param {string} arrayName - 操作する配列名
    * @param {number} limit - 動画を追加できる上限
    */
   @action.bound
-  handleAddVideo({ _id, arrayName, limit }) {
+  handleAddVideo({ pathArr, arrayName, limit }) {
     
     
     // ---------------------------------------------
     //   Get Data
     // ---------------------------------------------
     
-    const imagesAndVideosArr = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
+    const imagesAndVideosArr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     let clonedArr = lodashCloneDeep(imagesAndVideosArr);
     
-    const videoChannel = lodashGet(this.dataObj, [_id, 'videoChannel'], 'youtube');
-    const videoURL = lodashGet(this.dataObj, [_id, 'videoURL'], '');
+    const videoChannel = lodashGet(this.dataObj, [...pathArr, 'videoChannel'], 'youtube');
+    const videoURL = lodashGet(this.dataObj, [...pathArr, 'videoURL'], '');
     
     
     // ---------------------------------------------
@@ -533,15 +530,15 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], clonedArr);
     
     
     // ---------------------------------------------
     //   入力フォームをリセット
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [_id, 'videoChannel'], 'youtube');
-    lodashSet(this.dataObj, [_id, 'videoURL'], '');
+    lodashSet(this.dataObj, [...pathArr, 'videoChannel'], 'youtube');
+    lodashSet(this.dataObj, [...pathArr, 'videoURL'], '');
     
     
     // console.log(`\n---------- clonedArr ----------\n`);
@@ -555,12 +552,12 @@ class Store {
   
   /**
    * プレビューを削除する
-   * @param {string} id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    * @param {string} arrayName - 操作する配列名
    * @param {number} index - 削除するプレビュー番号
    */
   @action.bound
-  handleRemovePreview({ _id, arrayName, index }) {
+  handleRemovePreview({ pathArr, arrayName, index }) {
     
     // console.log(chalk`
     //   _id: {green ${_id}}
@@ -571,7 +568,7 @@ class Store {
     //   データ取得＆クローン
     // ---------------------------------------------
     
-    const imagesAndVideosArr = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
+    const imagesAndVideosArr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     let clonedArr = lodashCloneDeep(imagesAndVideosArr);
     
     
@@ -593,7 +590,7 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [_id, 'imagesAndVideosObj', arrayName], clonedArr);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], clonedArr);
     
     // console.log(`
     //   ----- clonedArr -----\n

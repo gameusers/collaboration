@@ -85,7 +85,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, _id, heading, description, limit, arrayName = 'mainArr' } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], heading, description, limit, arrayName = 'mainArr' } = this.props;
     
     const {
       
@@ -95,8 +95,8 @@ export default injectIntl(class extends React.Component {
       
     } = storeImageAndVideoForm;
     
-    const videoChannel = lodashGet(dataObj, [_id, 'videoChannel'], 'youtube');
-    const videoURL = lodashGet(dataObj, [_id, 'videoURL'], '');
+    const videoChannel = lodashGet(dataObj, [...pathArr, 'videoChannel'], 'youtube');
+    const videoURL = lodashGet(dataObj, [...pathArr, 'videoURL'], '');
     
     
     
@@ -154,7 +154,7 @@ export default injectIntl(class extends React.Component {
             <Select
               value={videoChannel}
               onChange={(eventObj) => handleEdit({
-                pathArr: [_id, 'videoChannel'],
+                pathArr: [...pathArr, 'videoChannel'],
                 value: eventObj.target.value
               })}
               inputProps={{
@@ -184,7 +184,7 @@ export default injectIntl(class extends React.Component {
           placeholder="動画URL"
           value={videoURL}
           onChange={(eventObj) => handleEdit({
-            pathArr: [_id, 'videoURL'],
+            pathArr: [...pathArr, 'videoURL'],
             value: eventObj.target.value
           })}
           InputProps={{
@@ -218,7 +218,7 @@ export default injectIntl(class extends React.Component {
             variant="contained"
             color="secondary"
             size="small"
-            onClick={() => handleAddVideo({ _id, arrayName, limit })}
+            onClick={() => handleAddVideo({ pathArr, arrayName, limit })}
           >
             追加
           </Button>

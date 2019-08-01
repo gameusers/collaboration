@@ -38,7 +38,7 @@ import IconClose from '@material-ui/icons/Close';
 
 
 // ---------------------------------------------
-//   Material UI / Color
+//   Material UI / Colors
 // ---------------------------------------------
 
 import cyan from '@material-ui/core/colors/cyan';
@@ -121,13 +121,13 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, storeImageAndVideoForm, intl, _id, arrayName = 'mainArr' } = this.props;
+    const { storeImageAndVideo, storeImageAndVideoForm, intl, pathArr = [], arrayName = 'mainArr' } = this.props;
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
     const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
     
-    const imagesAndVideosArr = lodashGet(dataObj, [_id, 'imagesAndVideosObj', arrayName], []);
+    const imagesAndVideosArr = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     
     
     
@@ -199,13 +199,13 @@ export default injectIntl(class extends React.Component {
                     }
                   `}
                   src={src}
-                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
                 />
                 
                 <Fab
                   css={cssPreviewRemoveFab}
                   color="primary"
-                  onClick={() => handleRemovePreview({ _id, arrayName, index })}
+                  onClick={() => handleRemovePreview({ pathArr, arrayName, index })}
                 >
                   <IconClose />
                 </Fab>
@@ -234,13 +234,13 @@ export default injectIntl(class extends React.Component {
                       max-height: 54px;
                     }
                   `}
-                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
                 />
                 
                 <Fab
                   css={cssPreviewRemoveFab}
                   color="primary"
-                  onClick={() => handleRemovePreview({ _id, arrayName, index })}
+                  onClick={() => handleRemovePreview({ pathArr, arrayName, index })}
                 >
                   <IconClose />
                 </Fab>
@@ -282,7 +282,7 @@ export default injectIntl(class extends React.Component {
               <Fab
                 css={cssPreviewRemoveFab}
                 color="primary"
-                onClick={() => handleRemovePreview({ _id, arrayName, index })}
+                onClick={() => handleRemovePreview({ pathArr, arrayName, index })}
               >
                 <IconClose />
               </Fab>
@@ -352,7 +352,7 @@ export default injectIntl(class extends React.Component {
         
         {/* Lightbox */}
         <LightboxWrapper
-          _id={_id}
+          pathArr={pathArr}
           imagesAndVideosArr={imagesArr}
         />
         

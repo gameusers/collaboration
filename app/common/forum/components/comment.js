@@ -83,7 +83,16 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.forumThreads_id, 'commentObj'];
+    
   }
   
   
@@ -98,8 +107,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumComment` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
     
     
   }
@@ -270,7 +278,8 @@ export default injectIntl(class extends React.Component {
             >
               
               <ImageAndVideo
-                _id={forumComments_id}
+                // _id={forumComments_id}
+                pathArr={[forumComments_id, 'commentObj', 'formImagesAndVideosObj']}
                 imagesAndVideosArr={imagesAndVideosArr}
               />
               
@@ -283,7 +292,7 @@ export default injectIntl(class extends React.Component {
             css={css`
               border-left: 4px solid #84cacb;
               margin: 10px 0 0 0;
-              padding: 0 0 0 16px;
+              padding: 0 0 0 12px;
               
               @media screen and (max-width: 480px) {
                 padding: 0 0 0 12px;
@@ -518,21 +527,15 @@ export default injectIntl(class extends React.Component {
             }
             
             
+            {/* Reply */}
+            <Reply
+              gameCommunities_id={gameCommunities_id}
+              userCommunities_id={userCommunities_id}
+              forumComments_id={forumComments_id}
+            />
+            
             
           </div>
-          
-          
-          
-          
-          
-          {/* Reply */}
-          <Reply
-            gameCommunities_id={gameCommunities_id}
-            userCommunities_id={userCommunities_id}
-            forumComments_id={forumComments_id}
-          />
-          
-          
           
           
         </div>

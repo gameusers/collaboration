@@ -3096,8 +3096,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
             descriptionShort: 'descriptionShort',
           },
         ],
-        imagesAndVideos_id: '',
-        imagesAndVideosThumbnail_id: '',
+        imagesAndVideosObj: {
+          thumbnailArr: [],
+          mainArr: [],
+        },
         gameIDArr: [],
         memberObj: {
           count: 0,
@@ -3108,7 +3110,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         updatedDateObj: {
           notification: ISO8601,
-          forum: ISO8601,
+          thread: ISO8601,
+          comment: ISO8601,
         }
       },
     ];
@@ -3158,7 +3161,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
             description: 'English',
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         comments: 2,
         images: 108,
         videos: 50,
@@ -3184,7 +3189,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
   それと Next.js はデータベースへのアクセスをすべて API で行うことを推奨しているようです。そこそこの規模のサイトになると、そういった構成が増えてくるのかもしれないのですが、自分は小規模なサイトしか作ったことがないので、初めての経験でちょっと不安です。`,
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         comments: 0,
         images: 4,
         videos: 3,
@@ -3208,7 +3215,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
             description: `ジョバンニはまるで毎日教室でもねむく、本を読むひまも読む本もないので、なんだかどんなこともよくわからないという気持きもちがするのでした。`,
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         comments: 0,
         images: 0,
         videos: 0,
@@ -3236,7 +3245,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
 Material UI にスタイルを当てる場合、Material UI がデフォルトで用意している書き方を使う方法もあるのですが、自分はその書き方が気に入らなかったのと、サイト全体のスタイルシートの書き方を統一する意味も込めて、これまでは styled-components を採用していました。`,
           },
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         comments: 0,
         images: 4,
         videos: 4,
@@ -3262,7 +3273,9 @@ Material UI にスタイルを当てる場合、Material UI がデフォルト�
 emotion: https://emotion.sh/docs/introduction`,
           },
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         comments: 0,
         images: 5,
         videos: 5,
@@ -3271,34 +3284,36 @@ emotion: https://emotion.sh/docs/introduction`,
       },
       
       
-      // {
-      //   _id: 'IjE8qr-Mh',
-      //   createdDate: '2019-01-06T00:00:00Z',
-      //   updatedDate: '2019-01-06T00:00:00Z',
-      //   gameCommunities_id: '',
-      //   userCommunities_id: 'cxO8tEGty',
-      //   users_id: '',
-      //   localesArr: [
-      //     {
-      //       _id: 'ANCAagCg-',
-      //       language: 'ja',
-      //       name: 'スレッド6: 日本語',
-      //       description: `Thread 6`,
-      //     },
-      //     {
-      //       _id: 'PiTg1YYCR',
-      //       language: 'en',
-      //       name: 'Thread 6: English',
-      //       description: `Thread 6`,
-      //     },
-      //   ],
-      //   imagesAndVideos_id: '',
-      //   comments: 0,
-      //   images: 0,
-      //   videos: 0,
-      //   ip: '192.168.1.0',
-      //   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
-      // },
+      {
+        _id: 'IjE8qr-Mh',
+        createdDate: '2019-01-06T00:00:00Z',
+        updatedDate: '2019-01-06T00:00:00Z',
+        gameCommunities_id: '',
+        userCommunities_id: 'cxO8tEGty',
+        users_id: '',
+        localesArr: [
+          {
+            _id: 'ANCAagCg-',
+            language: 'ja',
+            name: 'スレッド6: 日本語',
+            description: `Thread 6`,
+          },
+          {
+            _id: 'PiTg1YYCR',
+            language: 'en',
+            name: 'Thread 6: English',
+            description: `Thread 6`,
+          },
+        ],
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
+        comments: 0,
+        images: 0,
+        videos: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
       
     ];
     
@@ -3321,10 +3336,9 @@ emotion: https://emotion.sh/docs/introduction`,
     //   Save Object
     // ---------------------------------------------
     
+    // コメント1
     saveArr = [
       
-      
-      // コメント1
       {
         _id: '8_AsHN1fm',
         createdDate: '2019-01-01T00:00:00Z',
@@ -3343,7 +3357,243 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: `No.1 / Comment 1: 動画＋画像のテスト`,
           }
         ],
-        imagesAndVideos_id: 'nA0rYeYu9',
+        imagesAndVideosObj: {
+          mainArr: [
+            
+            {
+              _id: 'LIpgMV4H3',
+              type: 'image',
+              localesArr: [
+                {
+                  _id: 'JttzzcaSa',
+                  language: 'ja',
+                  caption: 'パノラマ画像',
+                }
+              ],
+              srcSetArr: [
+                {
+                  _id: '7QKcCmHvW',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 120,
+                },
+                {
+                  _id: 'm5RV6KTP3',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 180,
+                },
+                {
+                  _id: 'V1eodatCl',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 240,
+                },
+                {
+                  _id: 'QI3Ux6GBb',
+                  src: '/static/img/forum/8_AsHN1fm/main/LIpgMV4H3/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 300,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'rlEoEK75y',
+              type: 'image',
+              localesArr: [
+                {
+                  _id: 'vw934dMWp',
+                  language: 'ja',
+                  caption: '動画＋画像のテスト',
+                }
+              ],
+              srcSetArr: [
+                {
+                  _id: 'Jtb7GDwTO',
+                  src: '/static/img/forum/8_AsHN1fm/main/rlEoEK75y/320w.jpg',
+                  w: '320w',
+                  width: 128,
+                  height: 85,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'dFnadiGia',
+              type: 'image',
+              localesArr: [
+                {
+                  _id: 'x30n1i1O1',
+                  language: 'ja',
+                  caption: '猫',
+                }
+              ],
+              srcSetArr: [
+                {
+                  _id: 'PCD799h1p',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/320w.jpg',
+                  w: '320w',
+                  width: 213,
+                  height: 320,
+                },
+                {
+                  _id: 'mzixmZhKn',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/480w.jpg',
+                  w: '480w',
+                  width: 320,
+                  height: 480,
+                },
+                {
+                  _id: 'et6Jk4aja',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/640w.jpg',
+                  w: '640w',
+                  width: 427,
+                  height: 640,
+                },
+                {
+                  _id: 'JUEZB9zJb',
+                  src: '/static/img/forum/8_AsHN1fm/main/dFnadiGia/800w.jpg',
+                  w: '800w',
+                  width: 533,
+                  height: 800,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'NeQ-I0kHE',
+              type: 'image',
+              srcSetArr: [
+                {
+                  _id: 'arOjE8QqM',
+                  src: '/static/img/forum/8_AsHN1fm/main/NeQ-I0kHE/320w.jpg',
+                  w: '320w',
+                  width: 96,
+                  height: 144,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: '0Q4HnJTGa',
+              type: 'video',
+              videoChannel: 'youtube',
+              videoID: '1yIHLQJNvDw',
+            },
+            
+            
+            {
+              _id: 'dFnadiGia',
+              type: 'image',
+              localesArr: [
+                {
+                  _id: 'JttzzcaSa',
+                  language: 'ja',
+                  caption: '教会',
+                }
+              ],
+              srcSetArr: [
+                {
+                  _id: '7QKcCmHvW',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 213,
+                },
+                {
+                  _id: 'm5RV6KTP3',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 320,
+                },
+                {
+                  _id: 'V1eodatCl',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 426,
+                },
+                {
+                  _id: 'QI3Ux6GBb',
+                  src: '/static/img/forum/8_AsHN1fm/main/BKzQGyalu/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 533,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: '_Ed74zfen',
+              type: 'image',
+              srcSetArr: [
+                {
+                  _id: 'P5kwos-Yd',
+                  src: '/static/img/forum/8_AsHN1fm/main/_Ed74zfen/320w.jpg',
+                  w: '320w',
+                  width: 256,
+                  height: 256,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'YYNOIfeRC',
+              type: 'image',
+              srcSetArr: [
+                {
+                  _id: '7QKcCmHvW',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/320w.jpg',
+                  w: '320w',
+                  width: 320,
+                  height: 320,
+                },
+                {
+                  _id: 'm5RV6KTP3',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/480w.jpg',
+                  w: '480w',
+                  width: 480,
+                  height: 480,
+                },
+                {
+                  _id: 'V1eodatCl',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/640w.jpg',
+                  w: '640w',
+                  width: 640,
+                  height: 640,
+                },
+                {
+                  _id: 'QI3Ux6GBb',
+                  src: '/static/img/forum/8_AsHN1fm/main/YYNOIfeRC/800w.jpg',
+                  w: '800w',
+                  width: 800,
+                  height: 800,
+                },
+              ],
+            },
+            
+            
+            {
+              _id: 'bMc2H7YCk',
+              type: 'video',
+              videoChannel: 'youtube',
+              videoID: 'HR0NB_ZDypM',
+            },
+            
+          ],
+        },
         anonymity: false,
         goods: 100,
         replies: 2,
@@ -3371,7 +3621,9 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: 'No.2 / Reply 1: ジョバンニは勢いよく立ちあがりましたが、立ってみるともうはっきりとそれを答えることができないのでした。',
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         anonymity: false,
         goods: 50,
         replies: 1,
@@ -3399,14 +3651,15 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: 'No.3 / Reply 2: ですからもしもこの天あまの川がわがほんとうに川だと考えるなら、その一つ一つの小さな星はみんなその川のそこの砂や砂利じゃりの粒つぶにもあたるわけです。',
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         anonymity: false,
         goods: 25,
         replies: 0,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
-      
       
       
       
@@ -3433,7 +3686,9 @@ emotion: https://emotion.sh/docs/introduction`,
             そう考えるとたまらないほど、じぶんもカムパネルラもあわれなような気がするのでした。`,
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         anonymity: false,
         goods: 50,
         replies: 1,
@@ -3461,15 +3716,15 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: 'No.5 / Reply 3: test',
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         anonymity: false,
         goods: 25,
         replies: 0,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
-      
-      
       
       
       // コメント3
@@ -3491,15 +3746,15 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: `No.6 / Comment 3`,
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         anonymity: false,
         goods: 1,
         replies: 0,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
-      
-      
       
       
       // コメント4
@@ -3521,7 +3776,9 @@ emotion: https://emotion.sh/docs/introduction`,
             comment: `No.7 / Comment 4`,
           }
         ],
-        imagesAndVideos_id: '',
+        imagesAndVideosObj: {
+          mainArr: [],
+        },
         anonymity: false,
         goods: 2,
         replies: 0,
@@ -3539,6 +3796,345 @@ emotion: https://emotion.sh/docs/introduction`,
     
     await SchemaForumComments.deleteMany({});
     returnObj = await SchemaForumComments.insertMany({ saveArr });
+    
+    
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Card Games
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+//     saveArr = [
+//       {
+//         _id: 'TzjNMDQyl',
+//         createdDate: ISO8601,
+//         updatedDate: ISO8601,
+//         users_id: 'jun-deE4J',
+//         gameID: 'Jk92aglWl',
+//         language: 'ja',
+//         theme: '',
+//         nameObj: {
+//           value: 'AZ-1979',
+//           search: true,
+//         },
+//         statusObj: {
+//           value: 'トラッパー',
+//           search: true,
+//         },
+//         thumbnail: false,
+//         imageVideoArr: [
+//           {
+//             _id: 'ZIEOqRppY',
+//             type: 'image',
+//             caption: '黄色のお花',
+//             srcSetArr: [
+//               {
+//                 _id: 'xz_HamTMS',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/320w.jpg',
+//                 w: '320w',
+//                 width: 320,
+//                 height: 213,
+//               },
+//               {
+//                 _id: 'VGaeXottk',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/480w.jpg',
+//                 w: '480w',
+//                 width: 480,
+//                 height: 320,
+//               },
+//               {
+//                 _id: 'E3kjgGmJ7',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/640w.jpg',
+//                 w: '640w',
+//                 width: 640,
+//                 height: 427,
+//               },
+//               {
+//                 _id: 'JHgN0IFXD',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/800w.jpg',
+//                 w: '800w',
+//                 width: 800,
+//                 height: 533,
+//               },
+//               {
+//                 _id: 'XMZ2Ioh2x',
+//                 src: '/static/img/card/players/TzjNMDQyl/ZIEOqRppY/source.jpg',
+//                 w: 'source',
+//                 width: 1920,
+//                 height: 1280,
+//               },
+//             ],
+//           },
+//         ],
+//         itemArr: [],
+//         commentObj: {
+//           value: `楽しかった時間が終わってしまいました。
+//   いいゲームをプレイしたときの独特の余韻を味わえました。
+//   今までゼルダの伝説でこんなに余韻が残ることはなかったのですが
+//   やり遂げた嬉しさに少しの寂しさが混じったような、ビターな味わいです。
+  
+//   今作はかなりの高評価を受けていて
+//   それは任天堂ファンボーイが騒いでるだけだと思っていたのですが
+//   実際やってみるとその評価に違わない面白さでした。
+//   オープンワールド童貞だった任天堂なのに
+//   このクオリティのものをいきなり作れるのは正直すごいと思いましたね。
+//   僕の場合、オープンワールドゲームはやり込みすぎて
+//   いつも最後は嫌になってクリアする感じなのですが
+//   BotWはラストも楽しめて良かったです（まさか最後にシロと一緒に戦えるなんて！）`,
+//           search: true,
+//         },
+//         hardwarePlayingObj: {
+//           valueArr: ['TdK3Oc-yV'],
+//           search: true,
+//         },
+//         idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
+//         activityTimeObj: {
+//           valueArr: [
+//             {
+//               _id: '0X3yH-BnG',
+//               beginTime: '19:00',
+//               endTime: '24:00',
+//               weekArr: [0, 1, 2, 3, 4]
+//             },
+//             {
+//               _id: '7Euewb_Ik',
+//               beginTime: '21:00',
+//               endTime: '03:00',
+//               weekArr: [5, 6]
+//             }
+//           ],
+//           search: true,
+//         },
+//         lookingForFriendsObj: {
+//           icon: 'emoji_u1f61c',
+//           comment: '学生の方よろしく！',
+//           search: true,
+//         },
+//         voiceChatObj: {
+//           comment: '朝9時まで',
+//           search: true,
+//         },
+//         linkArr: [
+//           {
+//             _id: 'K2NRYVCox',
+//             type: 'Twitter',
+//             label: '',
+//             url: 'https://twitter.com/Azumi1979',
+//             search: true,
+//           },
+//           {
+//             _id: '0syPuDv6O',
+//             type: 'Facebook',
+//             label: '',
+//             url: 'https://www.youtube.com/',
+//             search: true,
+//           },
+//           {
+//             _id: 'spRqODqbz',
+//             type: 'Other',
+//             label: 'Game開発サイト',
+//             url: 'http://dev-1.gameusers.org:8080/',
+//             search: true,
+//           },
+//         ],
+//         quotationObj: {
+//           cardPlayers_id: 'zaoOWw89g',
+//           activityTime: true,
+//           lookingForFriends: true,
+//           voiceChat: true,
+//           link: true,
+//         },
+//       },
+      
+      
+//       {
+//         _id: '3sZUV34Q_',
+//         createdDate: ISO8601,
+//         updatedDate: ISO8601,
+//         users_id: 'P7UJMuUnx',
+//         gameID: 'lxdubg6IY',
+//         language: 'ja',
+//         theme: '',
+//         nameObj: {
+//           value: 'パックンフラワー',
+//           search: true,
+//         },
+//         statusObj: {
+//           value: '人喰い植物',
+//           search: true,
+//         },
+//         thumbnail: false,
+//         imageVideoArr: [
+//           {
+//             _id: 'BrhMB9ieu',
+//             type: 'image',
+//             caption: 'Tree',
+//             srcSetArr: [
+//               {
+//                 _id: 'BolWOUmkF',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/320w.jpg',
+//                 w: '320w',
+//                 width: 320,
+//                 height: 213,
+//               },
+//               {
+//                 _id: 'gsRUhcWl3',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/480w.jpg',
+//                 w: '480w',
+//                 width: 480,
+//                 height: 320,
+//               },
+//               {
+//                 _id: '54sVdlP49',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/640w.jpg',
+//                 w: '640w',
+//                 width: 640,
+//                 height: 427,
+//               },
+//               {
+//                 _id: 'kyUo0yIl2',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/800w.jpg',
+//                 w: '800w',
+//                 width: 800,
+//                 height: 533,
+//               },
+//               {
+//                 _id: 'Tnp5c8Yh0',
+//                 src: '/static/img/card/players/3sZUV34Q_/BrhMB9ieu/source.jpg',
+//                 w: 'source',
+//                 width: 1920,
+//                 height: 1280,
+//               },
+//             ],
+//           },
+//         ],
+//         itemArr: [],
+//         commentObj: {
+//           value: `ドラゴンクエストビルダーズ2 #2～5
+
+// 序盤のモンゾーラ島でめちゃくちゃ気合を入れて
+// 街を作ってしまいました。
+// このペースだとクリアまで相当時間がかかるかもしれませんね。
+
+// あと進行不能バグがめっちゃ怖いです。
+// バグ満載で購入者にデバッグさせる姿勢は悪どすぎますね。
+// ゲームは面白いだけにもうちょっと真面目に取り組んでもらいたいです。
+
+// からっぽ島に戻ってきて開拓を始める話になりましたが
+// 広大で整地もされていない土地をどう開拓していくのか
+// まったくビジョンが見えないので、ちゃんとやっていけるか心配です。
+// はたして最初の街のように綺麗な場所にできるんでしょうか？`,
+//           search: true,
+//         },
+//         hardwarePlayingObj: {
+//           valueArr: ['TdK3Oc-yV'],
+//           search: true,
+//         },
+//         idArr: [],
+//         activityTimeObj: {
+//           valueArr: [
+//             {
+//               _id: 'dZCJsb6f-',
+//               beginTime: '19:00',
+//               endTime: '24:00',
+//               weekArr: [0, 1, 2, 3, 4]
+//             },
+//             {
+//               _id: '2eD3Ovfqr',
+//               beginTime: '21:00',
+//               endTime: '03:00',
+//               weekArr: [5, 6]
+//             }
+//           ],
+//           search: true,
+//         },
+//         lookingForFriendsObj: {
+//           icon: 'emoji_u1f61e',
+//           comment: '',
+//           search: true,
+//         },
+//         voiceChatObj: {
+//           comment: '',
+//           search: true,
+//         },
+//         linkArr: [
+//           {
+//             _id: 'c8gHFXEij',
+//             type: 'Twitter',
+//             label: '',
+//             url: 'https://twitter.com/Azumi1979',
+//             search: true,
+//           },
+//           {
+//             _id: '6tHU4FvfC',
+//             type: 'Facebook',
+//             label: '',
+//             url: 'https://www.youtube.com/',
+//             search: true,
+//           },
+//           {
+//             _id: 'CTyK8Om31',
+//             type: 'Other',
+//             label: 'Game開発サイト',
+//             url: 'http://dev-1.gameusers.org:8080/',
+//             search: true,
+//           },
+//         ],
+//         quotationObj: {
+//           cardPlayers_id: 'WAMuArrBZ',
+//           activityTime: false,
+//           lookingForFriends: false,
+//           voiceChat: false,
+//           link: false,
+//         },
+//       },
+      
+      
+//     ];
+
+    // saveArr = [];
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    // await SchemaCardGames.deleteMany({});
+    // returnObj = await SchemaCardGames.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Test
+    // --------------------------------------------------
+    
+    // returnObj = await SchemaCardGames.find({
+    //   countryArr: ['JP', 'US'],
+    //   languageArr: ['ja'],
+    //   loginUsers_id: 'P7UJMuUnx'
+    // });
+    
+    // const cardGamesObj = await SchemaCardGames.find({
+    //   users_id: 'jun-deE4J',
+    //   language: localeObj.language,
+    //   country: localeObj.country,
+    //   loginUsers_id: 'P7UJMuUnx'
+    // });
+    
+    // const cardPlayersObj = await SchemaCardPlayers.find({
+    //   users_id: 'jun-deE4J',
+    //   language: localeObj.language,
+    //   country: localeObj.country,
+    //   loginUsers_id: 'P7UJMuUnx'
+    // });
     
     
     

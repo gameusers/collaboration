@@ -48,7 +48,7 @@ const logger = require('./logger');
  * @param {Object} requestParametersObj - GET / POSTのリクエストパラメーター
  * @return {Object} エラーオブジェクト
  */
-const returnErrorsArr = ({ errorObj, endpointID, users_id, ip, requestParametersObj }) => {
+const returnErrorsArr = ({ errorObj = {}, endpointID, users_id, ip, requestParametersObj }) => {
   
   
   // ---------------------------------------------
@@ -60,6 +60,15 @@ const returnErrorsArr = ({ errorObj, endpointID, users_id, ip, requestParameters
   const logID = shortid.generate();
   const level = lodashGet(errorObj, ['level'], 'error');
   const message = lodashGet(errorObj, ['message'], '');
+  
+  // console.log(chalk`
+  //   level: {green ${level}}
+  //   message: {green ${message}}
+  // `);
+  
+  // console.log(`\n---------- errorObj ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(errorObj)));
+  // console.log(`\n-----------------------------------\n`);
   
   
   // ---------------------------------------------

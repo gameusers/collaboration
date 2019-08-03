@@ -218,112 +218,131 @@ const formatSrcSetArr = ({ arr }) => {
 
 
 /**
- * imagesAndVideosObj mainArr 情報の入った配列をフォーマットする
+ * imagesAndVideosObj localesArr をフォーマットする
  * captionを出力する
  * @param {Object} localeObj - ロケール
- * @param {Array} arr - mainArr
+ * @param {Object} obj - imagesAndVideosObj
  * @return {Array} フォーマットされた配列
  */
-const formatLocalesArr = ({ localeObj, arr }) => {
-  
-  // console.log(`\n---------- formatLocalesArr / arr ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(arr)));
-  // console.log(`\n-----------------------------------\n`);
+const formatLocalesArr = ({ localeObj, obj }) => {
   
   
   // --------------------------------------------------
-  //   Return Value
+  //   Return Array
   // --------------------------------------------------
   
-  let returnArr = [];
+  const returnArr = [];
   
   
   // --------------------------------------------------
-  //   データ処理
+  //   データ取得
   // --------------------------------------------------
   
-  if (arr.length > 0) {
+  const type = lodashGet(obj, ['type'], '');
+  const arr = lodashGet(obj, ['arr'], []);
+  
+  
+  // --------------------------------------------------
+  //   必要なデータがない場合は処理停止
+  // --------------------------------------------------
+  
+  if (!type || arr.length === 0) {
+    return null;
+  }
+  
+  
+  // --------------------------------------------------
+  //   Loop
+  // --------------------------------------------------
+  
+  for (let valueObj of arr.values()) {
     
-    for (let valueObj of arr.values()) {
-      
-      
-      // --------------------------------------------------
-      //   Deep Copy
-      // --------------------------------------------------
-      
-      const clonedObj = lodashCloneDeep(valueObj);
-      
-      
-      // --------------------------------------------------
-      //   Video
-      // --------------------------------------------------
-      
-      if (valueObj.type === 'video') {
-        returnArr.push(clonedObj);
-        continue;
-      }
-      
-      
-      // --------------------------------------------------
-      //   表示する言語のデータを取得
-      // --------------------------------------------------
-      
-      const localesArr = lodashGet(valueObj, ['localesArr'], []);
-      
-      const filteredArr = localesArr.filter((filterObj) => {
-        return filterObj.language === localeObj.language;
-      });
-      
-      
-      // console.log(`
-      //   ----- localesArr -----\n
-      //   ${util.inspect(localesArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- filteredArr -----\n
-      //   ${util.inspect(filteredArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // --------------------------------------------------
-      //   Captionを設定
-      // --------------------------------------------------
-      
-      if (lodashHas(filteredArr, [0])) {
-        
-        clonedObj.caption = lodashGet(filteredArr, [0, 'caption'], '');
-        
-      } else {
-        
-        clonedObj.caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   不要な項目を削除する
-      // --------------------------------------------------
-      
-      delete clonedObj.localesArr;
-      
-      
-      // --------------------------------------------------
-      //   Push
-      // --------------------------------------------------
-      
+    
+    // --------------------------------------------------
+    //   Deep Copy
+    // --------------------------------------------------
+    
+    const clonedObj = lodashCloneDeep(valueObj);
+    
+    
+    // --------------------------------------------------
+    //   Video
+    // --------------------------------------------------
+    
+    if (valueObj.type === 'video') {
       returnArr.push(clonedObj);
+      continue;
+    }
+    
+    
+    // --------------------------------------------------
+    //   表示する言語のデータを取得
+    // --------------------------------------------------
+    
+    const localesArr = lodashGet(valueObj, ['localesArr'], []);
+    
+    const filteredArr = localesArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
+    
+    
+    // console.log(`
+    //   ----- localesArr -----\n
+    //   ${util.inspect(localesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- filteredArr -----\n
+    //   ${util.inspect(filteredArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Captionを設定
+    // --------------------------------------------------
+    
+    if (lodashHas(filteredArr, [0])) {
       
+      clonedObj.caption = lodashGet(filteredArr, [0, 'caption'], '');
+      
+    } else {
+      
+      clonedObj.caption = lodashGet(valueObj, ['localesArr', 0, 'caption'], '');
       
     }
+    
+    
+    // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    delete clonedObj.localesArr;
+    
+    
+    // --------------------------------------------------
+    //   Push
+    // --------------------------------------------------
+    
+    returnArr.push(clonedObj);
+    
     
   }
   
   
-  // console.log(`\n---------- formatLocalesArr / returnArr ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(returnArr)));
+  // --------------------------------------------------
+  //   Return Object
+  // --------------------------------------------------
+  
+  const returnObj = {
+    type,
+    arr: returnArr,
+  };
+  
+  
+  // console.log(`\n---------- formatLocalesArr / returnObj ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(returnObj)));
   // console.log(`\n-----------------------------------\n`);
   
   
@@ -331,7 +350,7 @@ const formatLocalesArr = ({ localeObj, arr }) => {
   //   Return
   // --------------------------------------------------
   
-  return returnArr;
+  return returnObj;
   
   
 };

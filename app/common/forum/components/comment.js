@@ -219,11 +219,17 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Images and Videos & Comment
+      //   Comment
       // --------------------------------------------------
       
       const comment = lodashGet(valueObj, ['comment'], '');
-      const imagesAndVideosArr = lodashGet(valueObj, ['imagesAndVideosObj', 'mainArr'], {});
+      
+      
+      // --------------------------------------------------
+      //   Images and Videos
+      // --------------------------------------------------
+      
+      const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
       
       
       // --------------------------------------------------
@@ -270,7 +276,7 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Images and Videos */}
-          {imagesAndVideosArr.length > 0 &&
+          {Object.keys(imagesAndVideosObj).length > 0 &&
             <div
               css={css`
                 margin: 12px 0 0 0;
@@ -279,8 +285,8 @@ export default injectIntl(class extends React.Component {
               
               <ImageAndVideo
                 // _id={forumComments_id}
-                pathArr={[forumComments_id, 'commentObj', 'formImagesAndVideosObj']}
-                imagesAndVideosArr={imagesAndVideosArr}
+                // pathArr={[forumComments_id, 'commentObj', 'formImagesAndVideosObj']}
+                imagesAndVideosObj={imagesAndVideosObj}
               />
               
             </div>

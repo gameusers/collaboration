@@ -381,9 +381,9 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
-    
-    valueObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.thumbnailArr });
-    valueObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+    // とりあえず画像の処理はしない
+    // valueObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.thumbnailArr });
+    // valueObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
     
     
     // --------------------------------------------------

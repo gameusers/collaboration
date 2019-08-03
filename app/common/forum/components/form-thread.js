@@ -96,9 +96,6 @@ export default injectIntl(class extends React.Component {
     
     this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
     
-    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-${this.props.forumThreads_id}-formThread` });
-    
     
   }
   
@@ -124,7 +121,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
-    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-${forumThreads_id}-formThread`], true);
     
     
     
@@ -149,6 +145,11 @@ export default injectIntl(class extends React.Component {
     const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
     const description = lodashGet(dataObj, [...this.pathArr, 'description'], '');
     
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
     const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
     
@@ -157,6 +158,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const showForm = lodashGet(dataObj, [communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
+    
+    
     
     
     // --------------------------------------------------
@@ -261,7 +264,6 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            // _id={`${_id}-${forumThreads_id}`}
             pathArr={[...this.pathArr, 'formImagesAndVideosObj']}
             descriptionImage="スレッドに表示する画像をアップロードできます。"
             descriptionVideo="スレッドに表示する動画を登録できます。"

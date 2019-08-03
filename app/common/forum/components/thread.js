@@ -47,13 +47,6 @@ import IconPublic from '@material-ui/icons/Public';
 
 
 // ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -72,40 +65,11 @@ import Comment from './comment';
 
 const stylesObj = {
   
-  label: {
-    fontSize: 14
-  },
-  
   expanded: {
     marginBottom: '0 !important',
-    // backgroundColor: 'pink',
   },
   
 };
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// Tooltip内のIconButtonにemotionでスタイルを当てると、ビルド時にエラーがでるため、強引にstyleで当てている。
-// 将来的にバグ？が解消するかもしれないので、以下は消さないように
-const cssIconButton = css`
-  && {
-    width: 28px;
-    height: 28px;
-    margin: 0 10px 0 0;
-    padding: 0;
-  }
-`;
-
-const cssTableCell = css`
-  && {
-    white-space: nowrap;
-    padding: 14px 16px 14px 16px !important;
-  }
-`;
 
 
 
@@ -151,9 +115,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
-    
-    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumThread` });
     
     
   }
@@ -280,15 +241,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, forumThreads_id, 'panelExpanded'] });
-      // const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-${forumThreads_id}`], true);
-      
-      
-      // --------------------------------------------------
-      //   Button - Disabled
-      // --------------------------------------------------
-      
-      // const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
-      // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forumThread`], true);
       
       
       
@@ -338,10 +290,9 @@ export default injectIntl(class extends React.Component {
                 />
               </div>
               
-            // Forum
+            // Forum Thread
             ) : (
               
-              // Container
               <div
                 css={css`
                   display: flex;
@@ -563,8 +514,6 @@ export default injectIntl(class extends React.Component {
           {/* Contents */}
           <ExpansionPanelDetails
             css={css`
-              // padding-top: 0 !important;
-              
               @media screen and (max-width: 480px) {
                 padding: 0 16px 24px !important;
               }

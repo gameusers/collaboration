@@ -24,38 +24,7 @@ const schema = mongoose.Schema({
       description: { type: String, required: true },
     }
   ],
-  imagesAndVideosObj: {
-    mainArr: [
-      {
-        _id: { type: String, required: true },
-        type: { type: String, enum: ['image', 'video'], required: true },
-        localesArr: {
-          type: [
-            {
-              _id: { type: String, required: true },
-              language: { type: String, enum: ['en', 'ja'] },
-              caption: { type: String, required: true },
-            }
-          ],
-          default: undefined,
-        },
-        srcSetArr: {
-          type: [
-            {
-              _id: { type: String, required: true },
-              src: { type: String, required: true },
-              w: { type: String, enum: ['320w', '480w', '640w', '800w'], required: true },
-              width: { type: Number, required: true },
-              height: { type: Number, required: true },
-            }
-          ],
-          default: undefined,
-        },
-        videoChannel: { type: String, enum: ['youtube'] },
-        videoID: String,
-      },
-    ],
-  },
+  imagesAndVideos_id: { type: String },
   comments: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
@@ -77,5 +46,3 @@ if (mongoose.models['forum-threads']) {
 }
 
 module.exports = model;
-
-// module.exports = mongoose.model('forum-threads', schema);

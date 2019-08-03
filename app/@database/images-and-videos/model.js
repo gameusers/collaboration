@@ -346,7 +346,7 @@ const findForList = async ({
       delete cloneObj.createdDate;
       delete cloneObj.users_id;
       delete cloneObj.localesArr;
-      delete cloneObj.imagesAndVideos_id;
+      delete cloneObj.imagesAndVideosObj;
       delete cloneObj.ip;
       delete cloneObj.userAgent;
       delete cloneObj.__v;
@@ -639,7 +639,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     //   画像の処理
     // --------------------------------------------------
     
-    // cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
     
     
     // --------------------------------------------------

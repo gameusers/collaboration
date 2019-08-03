@@ -88,35 +88,46 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, intl, _id, imagesAndVideosArr } = this.props;
+    const { storeImageAndVideo, intl, _id, imagesAndVideosArr, imagesAndVideosObj } = this.props;
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
+    const type = lodashGet(imagesAndVideosObj, ['type'], '');
+    const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
+    
+    
     // const imagesAndVideosArr = lodashGet(imagesAndVideosObj, [arrayName], []);
     
-    // console.log(`\n---------- imagesAndVideosArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosArr)));
-    // console.log(`\n-----------------------------------\n`);
-    // return null;
+    console.log(chalk`
+      type: {green ${type}}
+    `);
+    
+    console.log(`\n---------- arr ----------\n`);
+    console.dir(JSON.parse(JSON.stringify(arr)));
+    console.log(`\n-----------------------------------\n`);
+    return null;
+    
     
     
     // --------------------------------------------------
     //   配列が空の場合は、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (imagesAndVideosArr.length === 0) {
+    if (arr.length === 0) {
       return null;
     }
     
     
     // --------------------------------------------------
-    //   Component - Preview Thumbnail Image & Video
+    //   Component - Preview Thumbnail
     // --------------------------------------------------
     
     const componentsThumbnailArr = [];
     let componentFirst = '';
+    
     const imagesArr = [];
     let imageIndex = 0;
+    
     
     for (const [index, valueObj] of imagesAndVideosArr.entries()) {
       
@@ -430,43 +441,6 @@ export default injectIntl(class extends React.Component {
             </div>
           );
           
-          // componentsThumbnailArr.push(
-          //   <div css={cssPreviewBox} key={index}>
-              
-          //     <div
-          //       css={css`
-          //         width: 192px;
-          //         height: 108px;
-          //         background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
-          //         background-size: 192px 108px;
-          //         position: relative;
-                  
-          //         @media screen and (max-width: 480px) {
-          //           width: 96px;
-          //           height: 54px;
-          //           background-size: 96px 54px;
-          //         }
-          //       `}
-          //     />
-              
-          //     <img
-          //       css={css`
-          //         width: 192px;
-          //         height: 108px;
-          //         position: absolute;
-          //         top: 0;
-                  
-          //         @media screen and (max-width: 480px) {
-          //           width: 96px;
-          //           height: 54px;
-          //         }
-          //       `}
-          //       src="/static/img/common/video-play-button.png"
-          //       onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
-          //     />
-              
-          //   </div>
-          // );
           
         }
         
@@ -475,11 +449,6 @@ export default injectIntl(class extends React.Component {
       
       
     }
-      
-      
-      
-      
-      
     
     
     

@@ -25,7 +25,7 @@
   "dependencies": {
     "@emotion/core": "^10.0.15",
     "@emotion/styled": "^10.0.15",
-    "@material-ui/core": "^4.3.0",
+    "@material-ui/core": "^4.3.1",
     "@material-ui/icons": "^4.2.1",
     "@zeit/next-css": "^1.0.1",
     "accept-language-parser": "^1.5.0",
@@ -69,7 +69,6 @@
     "react-autosize-textarea": "^7.0.0",
     "react-dom": "^16.8.6",
     "react-id-swiper": "^1.6.9",
-    "react-image-gallery": "^0.8.18",
     "react-images": "^0.5.19",
     "react-intl": "^2.9.0",
     "react-jss": "^8.6.1",

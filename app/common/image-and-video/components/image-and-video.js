@@ -34,7 +34,7 @@ import { imageCalculateSize } from '../../../@modules/image';
 //   Format
 // ---------------------------------------------
 
-const { formatSrcSetArr } = require('../../../@format/image');
+// const { formatSrcSetArr } = require('../../../@format/image');
 
 
 // ---------------------------------------------
@@ -88,7 +88,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, intl, _id, imagesAndVideosArr, imagesAndVideosObj } = this.props;
+    const { storeImageAndVideo, intl, _id, pathArr, imagesAndVideosObj } = this.props;
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
@@ -96,24 +96,21 @@ export default injectIntl(class extends React.Component {
     const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
     
     
-    // const imagesAndVideosArr = lodashGet(imagesAndVideosObj, [arrayName], []);
+    // console.log(chalk`
+    //   type: {green ${type}}
+    // `);
     
-    console.log(chalk`
-      type: {green ${type}}
-    `);
-    
-    console.log(`\n---------- arr ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(arr)));
-    console.log(`\n-----------------------------------\n`);
-    return null;
-    
+    // console.log(`\n---------- arr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(arr)));
+    // console.log(`\n-----------------------------------\n`);
+    // return null;
     
     
     // --------------------------------------------------
-    //   配列が空の場合は、空のコンポーネントを返す
+    //   必要なデータがない場合は処理停止
     // --------------------------------------------------
     
-    if (arr.length === 0) {
+    if (!type || arr.length === 0) {
       return null;
     }
     
@@ -129,7 +126,7 @@ export default injectIntl(class extends React.Component {
     let imageIndex = 0;
     
     
-    for (const [index, valueObj] of imagesAndVideosArr.entries()) {
+    for (const [index, valueObj] of arr.entries()) {
       
       
       // console.log(`
@@ -151,32 +148,66 @@ export default injectIntl(class extends React.Component {
         // ---------------------------------------------
         
         if (valueObj.type === 'image') {
-            
-          const srcSetArr = lodashGet(valueObj, ['srcSetArr'], []);
-          const formattedObj = formatSrcSetArr({ arr: srcSetArr });
+          
+          
+          // ---------------------------------------------
+          //   横幅・高さを計算する
+          // ---------------------------------------------
+          
+          const width = valueObj.width;
+          const height = valueObj.height;
+          
+          // const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 450 });
+          // const calculatedObj = imageCalculateSize({ width, height, maxSize: 400 });
+          
+          
+          console.log(chalk`
+            width: {green ${width}}
+            height: {green ${height}}
+          `);
           
           // console.log(`
-          //   ----- srcSetArr -----\n
-          //   ${util.inspect(srcSetArr, { colors: true, depth: null })}\n
+          //   ----- calculatedObj -----\n
+          //   ${util.inspect(JSON.parse(JSON.stringify(calculatedObj)), { colors: true, depth: null })}\n
           //   --------------------\n
           // `);
+          
+          let cssWidth = '';
+          let cssHeight = '';
+          
+          // if ((width < 800 && height < 800) || height > 400) {
+          //   cssWidth = `width: ${calculatedObj.width}px;`;
+          //   cssHeight = `height: ${calculatedObj.height}px;`;
+          // }
+          
           
           componentFirst =
-            <img
-              srcSet={lodashGet(formattedObj, ['srcSet'], '')}
-              src={lodashGet(formattedObj, ['src'], '')}
-              alt={lodashGet(valueObj, ['caption'], '')}
-              onClick={() => handleLightboxOpen({ _id, currentNo: 0 })}
-              width="100%"
-            />
+            <div
+              css={css`
+                width: 100%;
+                background-color: black;
+              `}
+            >
+              <img
+                css={css`
+                  ${cssWidth}
+                  ${cssHeight}
+                  // width: 100%;
+                  // height: 50%;
+                  max-width: 100%;
+                  max-height: 300px;
+                  object-fit: contain;
+                  margin: 0 auto;
+                `}
+                src={valueObj.src}
+                srcSet={valueObj.srcSet}
+                alt={valueObj.caption}
+                onClick={() => handleLightboxOpen({ pathArr, currentNo: 0 })}
+                width={width}
+                // height={height}
+              />
+            </div>
           ;
-          
-          // console.log(`
-          //   ----- formattedObj -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
           
           imageIndex += 1;
           imagesArr.push(valueObj);
@@ -272,9 +303,9 @@ export default injectIntl(class extends React.Component {
           // Lightboxで開く画像Noを設定する
           const currentNo = imageIndex;
           
-          const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
-          const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
-          const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
+          const src = valueObj.src;
+          const width = valueObj.width;
+          const height = valueObj.height;
           
           
           // ---------------------------------------------
@@ -316,7 +347,7 @@ export default injectIntl(class extends React.Component {
                     }
                   `}
                   src={src}
-                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
                 />
                 
               </div>
@@ -348,7 +379,7 @@ export default injectIntl(class extends React.Component {
                       max-height: 68px;
                     }
                   `}
-                  onClick={() => handleLightboxOpen({ _id, currentNo })}
+                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
                 />
                 
               </div>
@@ -494,8 +525,8 @@ export default injectIntl(class extends React.Component {
         
         {/* Lightbox */}
         <LightboxWrapper
-          _id={_id}
-          imagesAndVideosArr={imagesArr}
+          pathArr={pathArr}
+          imagesArr={imagesArr}
         />
         
         

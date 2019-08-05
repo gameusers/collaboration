@@ -19,6 +19,7 @@ const schema = mongoose.Schema({
     {
       _id: { type: String, required: true },
       type: { type: String, enum: ['image', 'video'], required: true },
+      imageType: { type: String, enum: ['JPEG', 'PNG', 'SVG'] },
       localesArr: {
         type: [
           {

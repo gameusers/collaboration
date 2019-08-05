@@ -33,7 +33,7 @@ const SchemaForumComments = require('./schema');
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatLocalesArr } = require('../../@format/image');
+const { formatImagesAndVideosArr, formatImagesAndVideosObj, formatLocalesArr } = require('../../@format/image');
 
 
 
@@ -369,7 +369,7 @@ const findForForumCommentsAndReplies = async ({
               },
               { $project:
                 {
-                  _id: 0,
+                  // _id: 0,
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -490,7 +490,7 @@ const findForForumCommentsAndReplies = async ({
                       },
                       { $project:
                         {
-                          _id: 0,
+                          // _id: 0,
                           createdDate: 0,
                           updatedDate: 0,
                           users_id: 0,
@@ -659,7 +659,9 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     //   画像と動画の処理
     // --------------------------------------------------
     
-    const formattedObj = formatLocalesArr({ localeObj, obj: valueObj.imagesAndVideosObj });
+    const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
+    
+    // const formattedObj = formatLocalesArr({ localeObj, obj: valueObj.imagesAndVideosObj });
     
     if (formattedObj) {
       

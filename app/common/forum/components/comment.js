@@ -17,9 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import styled from 'styled-components';
 import moment from 'moment';
-import ImageGallery from 'react-image-gallery';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -284,8 +282,7 @@ export default injectIntl(class extends React.Component {
             >
               
               <ImageAndVideo
-                // _id={forumComments_id}
-                // pathArr={[forumComments_id, 'commentObj', 'formImagesAndVideosObj']}
+                pathArr={[forumComments_id, 'imagesAndVideosObj']}
                 imagesAndVideosObj={imagesAndVideosObj}
               />
               

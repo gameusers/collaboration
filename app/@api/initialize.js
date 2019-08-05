@@ -2845,6 +2845,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'LIpgMV4H3',
             type: 'image',
+            imageType: 'JPEG',
             localesArr: [
               {
                 _id: 'JttzzcaSa',
@@ -2884,6 +2885,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'rlEoEK75y',
             type: 'image',
+            imageType: 'JPEG',
             localesArr: [
               {
                 _id: 'vw934dMWp',
@@ -2905,6 +2907,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'dFnadiGia',
             type: 'image',
+            imageType: 'JPEG',
             localesArr: [
               {
                 _id: 'x30n1i1O1',
@@ -2944,6 +2947,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'NeQ-I0kHE',
             type: 'image',
+            imageType: 'JPEG',
             srcSetArr: [
               {
                 _id: 'arOjE8QqM',
@@ -2964,8 +2968,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
           
           
           {
-            _id: 'dFnadiGia',
+            _id: 'BKzQGyalu',
             type: 'image',
+            imageType: 'JPEG',
             localesArr: [
               {
                 _id: 'JttzzcaSa',
@@ -3005,6 +3010,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: '_Ed74zfen',
             type: 'image',
+            imageType: 'JPEG',
             srcSetArr: [
               {
                 _id: 'P5kwos-Yd',
@@ -3019,6 +3025,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'YYNOIfeRC',
             type: 'image',
+            imageType: 'JPEG',
             srcSetArr: [
               {
                 _id: '7QKcCmHvW',

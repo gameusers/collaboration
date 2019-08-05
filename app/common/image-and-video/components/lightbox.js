@@ -24,7 +24,7 @@ import lodashGet from 'lodash/get';
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr } = require('../../../@format/image');
+// const { formatImagesAndVideosArr } = require('../../../@format/image');
 
 
 
@@ -58,7 +58,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, pathArr = [], imagesAndVideosArr = [] } = this.props;
+    const { storeImageAndVideo, pathArr = [], imagesArr = [] } = this.props;
     
     const {
       
@@ -77,7 +77,7 @@ export default class extends React.Component {
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (imagesAndVideosArr.length === 0) {
+    if (imagesArr.length === 0) {
       return null;
     }
     
@@ -86,7 +86,7 @@ export default class extends React.Component {
     //   Format
     // --------------------------------------------------
     
-    const imagesArr = formatImagesAndVideosArr({ arr: imagesAndVideosArr });
+    // const imagesArr = formatImagesAndVideosArr({ arr: imagesAndVideosArr });
     
     
     // --------------------------------------------------

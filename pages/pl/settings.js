@@ -26,10 +26,10 @@ import lodashGet from 'lodash/get';
 //   Locales
 // ---------------------------------------------
 
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
+// import { IntlProvider, addLocaleData } from 'react-intl';
+// import en from 'react-intl/locale-data/en';
+// import ja from 'react-intl/locale-data/ja';
+// addLocaleData([...en, ...ja]);
 
 import { locale } from '../../app/@locales/locale';
 

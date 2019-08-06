@@ -76,10 +76,10 @@ const ModelCardPlayers = require('./model');
 //   Locales
 // ---------------------------------------------
 
-const { addLocaleData } = require('react-intl');
-const en = require('react-intl/locale-data/en');
-const ja = require('react-intl/locale-data/ja');
-addLocaleData([...en, ...ja]);
+// const { addLocaleData } = require('react-intl');
+// const en = require('react-intl/locale-data/en');
+// const ja = require('react-intl/locale-data/ja');
+// addLocaleData([...en, ...ja]);
 
 const { locale } = require('../../@locales/locale');
 

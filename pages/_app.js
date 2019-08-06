@@ -41,10 +41,13 @@ import theme from '../app/@css/material-ui/theme';
 //   Locales
 // ---------------------------------------------
 
-import { IntlProvider, addLocaleData } from 'react-intl';
-import en from 'react-intl/locale-data/en';
-import ja from 'react-intl/locale-data/ja';
-addLocaleData([...en, ...ja]);
+import { IntlProvider } from 'react-intl';
+// import en from 'react-intl/locale-data/en';
+// import ja from 'react-intl/locale-data/ja';
+// addLocaleData([...en, ...ja]);
+// import '@formatjs/intl-relativetimeformat/polyfill';
+// import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
+// import '@formatjs/intl-relativetimeformat/dist/locale-data/ja';
 
 import { locale } from '../app/@locales/locale';
 
@@ -364,6 +367,7 @@ class MyApp extends App {
           {/* react-intl(i18n) Provider */}
           <IntlProvider 
             locale={this.stores.data.localeObj.languageArr[0]}
+            // locale="en"
             messages={this.stores.data.localeObj.dataObj}
           >
             

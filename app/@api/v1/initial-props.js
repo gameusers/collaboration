@@ -36,20 +36,10 @@ const ModelForumComments = require('../../@database/forum-comments/model');
 
 
 // ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validationUsersPlayerID } = require('../../@database/users/validations/player-id');
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-// const { createCsrfToken } = require('../../@modules/csrf');
-// const { verifyCsrfToken } = require('../../@modules/csrf');
 const { decrypt }  = require('../../@modules/crypto');
-// const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
 
@@ -65,10 +55,10 @@ const { formatEmailSecret } = require('../../@format/email');
 //   Locales
 // ---------------------------------------------
 
-const { addLocaleData } = require('react-intl');
-const en = require('react-intl/locale-data/en');
-const ja = require('react-intl/locale-data/ja');
-addLocaleData([...en, ...ja]);
+// const { addLocaleData } = require('react-intl');
+// const en = require('react-intl/locale-data/en');
+// const ja = require('react-intl/locale-data/ja');
+// addLocaleData([...en, ...ja]);
 
 const { locale } = require('../../@locales/locale');
 

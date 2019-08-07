@@ -71,19 +71,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], descriptionImage, descriptionVideo, arrayName, caption, limit } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], descriptionImage, descriptionVideo, showImageCaption, limit } = this.props;
     
     const {
       
       dataObj,
-      handleFormImageShow,
-      handleFormVideoShow,
+      handleShowFormImage,
+      handleShowFormVideo,
       
     } = storeImageAndVideoForm;
     
     
-    const formImageShow = lodashGet(dataObj, [...pathArr, 'formImageShow'], false);
-    const formVideoShow = lodashGet(dataObj, [...pathArr, 'formVideoShow'], false);
+    const showFormImage = lodashGet(dataObj, [...pathArr, 'showFormImage'], false);
+    const showFormVideo = lodashGet(dataObj, [...pathArr, 'showFormVideo'], false);
     
     
     
@@ -113,20 +113,19 @@ export default injectIntl(class extends React.Component {
         
         {/* Buttons */}
         <ButtonGroup color="primary">
-          <Button onClick={() => handleFormImageShow({ pathArr })}>画像</Button>
-          <Button onClick={() => handleFormVideoShow({ pathArr })}>動画</Button>
+          <Button onClick={() => handleShowFormImage({ pathArr })}>画像</Button>
+          <Button onClick={() => handleShowFormVideo({ pathArr })}>動画</Button>
         </ButtonGroup>
         
         
         {/* Preview */}
         <FormPreview
           pathArr={pathArr}
-          arrayName={arrayName}
         />
         
         
         {/* Form Image */}
-        {formImageShow &&
+        {showFormImage &&
           <div
             css={css`
               margin: 8px 0 0 0;
@@ -135,8 +134,7 @@ export default injectIntl(class extends React.Component {
             <FormImage
               pathArr={pathArr}
               description={descriptionImage}
-              arrayName={arrayName}
-              caption={caption}
+              showImageCaption={showImageCaption}
               limit={limit}
             />
           </div>
@@ -144,7 +142,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Form Video */}
-        {formVideoShow &&
+        {showFormVideo &&
           <div
             css={css`
               margin: 8px 0 0 0;
@@ -153,7 +151,6 @@ export default injectIntl(class extends React.Component {
             <FormVideo
               pathArr={pathArr}
               description={descriptionVideo}
-              arrayName={arrayName}
               limit={limit}
             />
           </div>

@@ -27,14 +27,7 @@ import { css, jsx } from '@emotion/core';
 //   Modules
 // ---------------------------------------------
 
-import { imageCalculateSize } from '../../../@modules/image';
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { formatSrcSetArr } = require('../../../@format/image');
+import { imageCalculateSize } from '../modules/calculate';
 
 
 // ---------------------------------------------
@@ -155,16 +148,16 @@ export default injectIntl(class extends React.Component {
           // ---------------------------------------------
           
           const width = valueObj.width;
-          const height = valueObj.height;
+          // const height = valueObj.height;
           
           // const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 450 });
           // const calculatedObj = imageCalculateSize({ width, height, maxSize: 400 });
           
           
-          console.log(chalk`
-            width: {green ${width}}
-            height: {green ${height}}
-          `);
+          // console.log(chalk`
+          //   width: {green ${width}}
+          //   height: {green ${height}}
+          // `);
           
           // console.log(`
           //   ----- calculatedObj -----\n
@@ -172,8 +165,8 @@ export default injectIntl(class extends React.Component {
           //   --------------------\n
           // `);
           
-          let cssWidth = '';
-          let cssHeight = '';
+          // let cssWidth = '';
+          // let cssHeight = '';
           
           // if ((width < 800 && height < 800) || height > 400) {
           //   cssWidth = `width: ${calculatedObj.width}px;`;
@@ -190,8 +183,6 @@ export default injectIntl(class extends React.Component {
             >
               <img
                 css={css`
-                  ${cssWidth}
-                  ${cssHeight}
                   // width: 100%;
                   // height: 50%;
                   max-width: 100%;

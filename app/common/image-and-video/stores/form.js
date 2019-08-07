@@ -28,6 +28,13 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 import initStoreLayout from '../../../common/layout/stores/layout';
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { returnNewObj } from '../modules/format';
+
+
 
 
 // --------------------------------------------------
@@ -130,12 +137,12 @@ class Store {
    * @param {Array} pathArr - path
    */
   @action.bound
-  handleFormImageShow({ pathArr }) {
+  handleShowFormImage({ pathArr }) {
     
-    const formImageShow = lodashGet(this.dataObj, [...pathArr, 'formImageShow'], false);
+    const showFormImage = lodashGet(this.dataObj, [...pathArr, 'showFormImage'], false);
     
-    lodashSet(this.dataObj, [...pathArr, 'formImageShow'], !formImageShow);
-    lodashSet(this.dataObj, [...pathArr, 'formVideoShow'], false);
+    lodashSet(this.dataObj, [...pathArr, 'showFormImage'], !showFormImage);
+    lodashSet(this.dataObj, [...pathArr, 'showFormVideo'], false);
     
   };
   
@@ -145,12 +152,12 @@ class Store {
    * @param {Array} pathArr - path
    */
   @action.bound
-  handleFormVideoShow({ pathArr }) {
+  handleShowFormVideo({ pathArr }) {
     
-    const formVideoShow = lodashGet(this.dataObj, [...pathArr, 'formVideoShow'], false);
+    const showFormVideo = lodashGet(this.dataObj, [...pathArr, 'showFormVideo'], false);
     
-    lodashSet(this.dataObj, [...pathArr, 'formVideoShow'], !formVideoShow);
-    lodashSet(this.dataObj, [...pathArr, 'formImageShow'], false);
+    lodashSet(this.dataObj, [...pathArr, 'showFormVideo'], !showFormVideo);
+    lodashSet(this.dataObj, [...pathArr, 'showFormImage'], false);
     
   };
   
@@ -167,7 +174,7 @@ class Store {
    * @param {Object} fileObj - ファイルオブジェクト
    */
   @action.bound
-  handleSelectImage({ pathArr, fileObj, imagesAndVideosArr }) {
+  handleSelectImage({ pathArr, fileObj }) {
     
     
     // ---------------------------------------------
@@ -178,28 +185,40 @@ class Store {
       return;
     }
     
+    // FileReaderに対応しているかチェック
     if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+      
       storeLayout.handleSnackbarOpen({
         variant: 'error',
         messageID: 'aSErb-9vc',
       });
+      
       return;
+      
     }
     
+    // アップロードできる画像の種類かチェック
     if (!fileObj.type.match(/^image\/(gif|jpeg|png|svg\+xml)$/)) {
+      
       storeLayout.handleSnackbarOpen({
         variant: 'error',
         messageID: 'sdHI6gvbB',
       });
+      
       return;
+      
     }
     
+    // ファイルサイズが設定より大きすぎないかチェック
     if (fileObj.size > process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT) {
+      
       storeLayout.handleSnackbarOpen({
         variant: 'error',
         messageID: 'ihxQ34x1L',
       });
+      
       return;
+      
     }
     
     
@@ -235,24 +254,61 @@ class Store {
    * 選択した画像を追加する
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
    * @param {Array} pathArr - データを保存する場所を配列で指定する
-   * @param {string} arrayName - 操作する配列名
    * @param {number} limit - 画像を追加できる上限
    */
   @action.bound
-  handleAddImage({ pathArr, arrayName, limit }) {
+  handleAddImage({ pathArr, limit }) {
     
     
     // ---------------------------------------------
     //   Get Data
     // ---------------------------------------------
     
-    const imagesAndVideosArr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
-    let clonedArr = lodashCloneDeep(imagesAndVideosArr);
+    let imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    
+    
+    // --------------------------------------------------
+    //   imagesAndVideosObj がない場合は新たに作成
+    // --------------------------------------------------
+    
+    if (!Object.keys(imagesAndVideosObj).length) {
+      
+      imagesAndVideosObj = {
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: '',
+        arr: [],
+      };
+      
+    }
+    
+    const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
+    
+    const clonedArr = lodashCloneDeep(arr);
     
     const src = lodashGet(this.dataObj, [...pathArr, 'imageObj', 'src'], '');
     const width = lodashGet(this.dataObj, [...pathArr, 'imageObj', 'width'], '');
     const height = lodashGet(this.dataObj, [...pathArr, 'imageObj', 'height'], '');
     const caption = lodashGet(this.dataObj, [...pathArr, 'imageCaption'], '');
+    
+    
+//     console.log(chalk`
+//   _id: {green ${_id}}
+// `);
+    
+    // console.log(`\n---------- pathArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(pathArr)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- imagesAndVideosObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosObj)));
+    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`\n---------- arr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(arr)));
+    // console.log(`\n-----------------------------------\n`);
     
     
     // ---------------------------------------------
@@ -261,9 +317,9 @@ class Store {
     
     let duplication = false;
     
-    if (imagesAndVideosArr.length > 0) {
+    if (arr.length > 0) {
       
-      for (const valueObj of imagesAndVideosArr.values()) {
+      for (const valueObj of arr.values()) {
         
         if (valueObj.type === 'image') {
           
@@ -309,90 +365,99 @@ class Store {
       
       return;
       
+    }
+    
+    
+    // ---------------------------------------------
+    //   limit が 1 のときは既存の要素を削除する
+    // ---------------------------------------------
+    
+    if (limit === 1) {
+      
+      clonedArr.splice(0, 1);
+      
       
     // ---------------------------------------------
-    //   srcset 用のデータを生成する
+    //   limit より多い場合は処理停止
     // ---------------------------------------------
       
-    } else {
+    } else if (clonedArr.length > limit) {
       
-      const srcSetArr = [];
-      
-      
-      srcSetArr.push({
-        _id: shortid.generate(),
-        src,
-        w: 'upload',
-        width,
-        height,
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'MansOH_XH',
       });
       
-      
-      // ---------------------------------------------
-      //   imagesAndVideosArr に追加する
-      // ---------------------------------------------
-      
-      if (limit === 1) {
-        
-        clonedArr.splice(0, 1);
-        
-        clonedArr.push({
-          _id: shortid.generate(),
-          type: 'image',
-          localesArr: [
-            {
-              _id: shortid.generate(),
-              language: 'ja',
-              caption,
-            }
-          ],
-          srcSetArr,
-        });
-        
-      } else if (limit > clonedArr.length) {
-        
-        clonedArr.push({
-          _id: shortid.generate(),
-          type: 'image',
-          localesArr: [
-            {
-              _id: shortid.generate(),
-              language: 'ja',
-              caption,
-            }
-          ],
-          srcSetArr,
-        });
-        
-      } else {
-        
-        storeLayout.handleSnackbarOpen({
-          variant: 'error',
-          messageID: 'MansOH_XH',
-        });
-        
-        return;
-        
-      }
-      
-//       console.log(`\n---------- clonedArr ----------\n`);
-// console.dir(clonedArr);
-// console.log(`\n-----------------------------------\n`);
-      // ---------------------------------------------
-      //   更新
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], clonedArr);
-      
-      
-      // ---------------------------------------------
-      //   Caption 入力フォームをリセット
-      // ---------------------------------------------
-      
-      lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
-      
+      return;
       
     }
+    
+    
+    // ---------------------------------------------
+    //   Upload データを生成する
+    // ---------------------------------------------
+    
+    const uploadObj = {
+      src,
+      width,
+      height,
+    };
+    
+    
+    // ---------------------------------------------
+    //   imagesAndVideosArr に追加する
+    // ---------------------------------------------
+    
+    const tempObj = {
+      // _id: shortid.generate(),
+      // type: 'image',
+      // srcSetArr: [],
+      uploadObj,
+    };
+    
+    if (caption) {
+      
+      tempObj.localesArr = [
+        {
+          _id: shortid.generate(),
+          language: 'ja',
+          caption,
+        }
+      ];
+      
+    }
+    
+    clonedArr.push(tempObj);
+    
+    imagesAndVideosObj.arr = clonedArr;
+    
+    
+    
+    
+    // console.log(`\n---------- clonedArr ----------\n`);
+    // console.dir(clonedArr);
+    // console.log(`\n-----------------------------------\n`);
+    
+    
+    // ---------------------------------------------
+    //   更新
+    // ---------------------------------------------
+    
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
+    
+    
+    // ---------------------------------------------
+    //   Caption 入力フォームをリセット
+    // ---------------------------------------------
+    
+    lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
+    
+    
+    console.log(`\n---------- result ----------\n`);
+    console.dir(JSON.parse(JSON.stringify(lodashGet(this.dataObj, [...pathArr], ''))));
+    console.log(`\n-----------------------------------\n`);
+    
+    
     
   };
   
@@ -414,9 +479,28 @@ class Store {
     //   Get Data
     // ---------------------------------------------
     
-    const imagesAndVideosArr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
-    let clonedArr = lodashCloneDeep(imagesAndVideosArr);
+    let imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
+    
+    // --------------------------------------------------
+    //   imagesAndVideosObj がない場合は新たに作成
+    // --------------------------------------------------
+    
+    if (!Object.keys(imagesAndVideosObj).length) {
+      
+      imagesAndVideosObj = {
+        _id: '',
+        createdDate: '',
+        updatedDate: '',
+        users_id: '',
+        type: '',
+        arr: [],
+      };
+      
+    }
+    
+    const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
+    const clonedArr = lodashCloneDeep(arr);
     const videoChannel = lodashGet(this.dataObj, [...pathArr, 'videoChannel'], 'youtube');
     const videoURL = lodashGet(this.dataObj, [...pathArr, 'videoURL'], '');
     
@@ -469,7 +553,7 @@ class Store {
     //   同じ動画を追加しようとしている場合、処理停止
     // ---------------------------------------------  
     
-    const resultObj = imagesAndVideosArr.find((valueObj) => {
+    const resultObj = arr.find((valueObj) => {
       return valueObj.videoID === videoID;
     });
     
@@ -491,30 +575,19 @@ class Store {
     
     
     // ---------------------------------------------
-    //   imagesAndVideosArr に追加する
+    //   limit が 1 のときは既存の要素を削除する
     // ---------------------------------------------
     
     if (limit === 1) {
       
       clonedArr.splice(0, 1);
       
-      clonedArr.push({
-        _id: shortid.generate(),
-        type: 'video',
-        videoChannel,
-        videoID,
-      });
       
-    } else if (limit > clonedArr.length) {
+    // ---------------------------------------------
+    //   limit より多い場合は処理停止
+    // ---------------------------------------------
       
-      clonedArr.push({
-        _id: shortid.generate(),
-        type: 'video',
-        videoChannel,
-        videoID,
-      });
-      
-    } else {
+    } else if (limit < clonedArr.length) {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -527,10 +600,24 @@ class Store {
     
     
     // ---------------------------------------------
+    //   imagesAndVideosArr に追加する
+    // ---------------------------------------------
+    
+    clonedArr.push({
+      _id: shortid.generate(),
+      type: 'video',
+      videoChannel,
+      videoID,
+    });
+    
+    imagesAndVideosObj.arr = clonedArr;
+    
+    
+    // ---------------------------------------------
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], clonedArr);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
     
     
     // ---------------------------------------------

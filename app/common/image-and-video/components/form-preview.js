@@ -48,7 +48,8 @@ import cyan from '@material-ui/core/colors/cyan';
 //   Modules
 // ---------------------------------------------
 
-import { imageCalculateSize } from '../../../@modules/image';
+import { imageCalculateSize } from '../modules/calculate';
+import { formatImagesAndVideosObj } from '../modules/format';
 
 
 // ---------------------------------------------
@@ -121,15 +122,48 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, storeImageAndVideoForm, intl, pathArr = [], arrayName = 'mainArr' } = this.props;
+    const { storeImageAndVideo, storeImageAndVideoForm, intl, pathArr = [] } = this.props;
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
     const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
     
-    const imagesAndVideosArr = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
+    // const imagesAndVideosObj = lodashGet(dataObj, [...pathArr], {});
+    
+    const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    // const type = lodashGet(imagesAndVideosObj, ['type'], '');
+    
+    // const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
+    
+    const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
     
     
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   必要なデータがない場合は処理停止
+    // --------------------------------------------------
+    
+    if (arr.length === 0) {
+      return null;
+    }
     
     
     // --------------------------------------------------
@@ -139,178 +173,177 @@ export default injectIntl(class extends React.Component {
     const componentsPreviewArr = [];
     const imagesArr = [];
     
-    if (imagesAndVideosArr.length > 0) {
+    
+    let imageIndex = 0;
+    
+    for (const [index, valueObj] of arr.entries()) {
       
-      let imageIndex = 0;
       
-      for (const [index, valueObj] of imagesAndVideosArr.entries()) {
+      console.log(`
+        ----- valueObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // ---------------------------------------------
+      //   画像
+      // ---------------------------------------------
+      
+      if (valueObj.type === 'image') {
         
+        // Lightboxで開く画像Noを設定する
+        const currentNo = imageIndex;
+        
+        const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
+        const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
+        const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
+        
+        
+        // ---------------------------------------------
+        //   横幅・高さを計算する
+        // ---------------------------------------------
+        
+        const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
         
         // console.log(`
-        //   ----- valueObj -----\n
-        //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+        //   ----- calculatedObj -----\n
+        //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
         
-        // ---------------------------------------------
-        //   画像
-        // ---------------------------------------------
+        // console.log(chalk`
+        //   src: {green ${src}}
+        //   width: {green ${width}}
+        //   height: {green ${height}}
+        // `);
         
-        if (valueObj.type === 'image') {
-          
-          // Lightboxで開く画像Noを設定する
-          const currentNo = imageIndex;
-          
-          const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
-          const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
-          const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
-          
-          
-          // ---------------------------------------------
-          //   横幅・高さを計算する
-          // ---------------------------------------------
-          
-          const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 108 });
-          
-          // console.log(`
-          //   ----- calculatedObj -----\n
-          //   ${util.inspect(calculatedObj, { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          // console.log(chalk`
-          //   src: {green ${src}}
-          //   width: {green ${width}}
-          //   height: {green ${height}}
-          // `);
-          
-          
-          if (src.indexOf('data:image/svg') === -1) {
-            
-            componentsPreviewArr.push(
-              <div css={cssPreviewBox} key={index}>
-                
-                <img
-                  css={css`
-                    max-height: 108px;
-                    
-                    @media screen and (max-width: 480px) {
-                      max-height: 54px;
-                    }
-                  `}
-                  src={src}
-                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
-                />
-                
-                <Fab
-                  css={cssPreviewRemoveFab}
-                  color="primary"
-                  onClick={() => handleRemovePreview({ pathArr, arrayName, index })}
-                >
-                  <IconClose />
-                </Fab>
-                
-              </div>
-            );
-            
-          } else {
-            
-            componentsPreviewArr.push(
-              <div css={cssPreviewBox} key={index}>
-                
-                <div
-                  css={css`
-                    background-repeat: no-repeat;
-                    background-position: center center;
-                    
-                    max-width: 108px;
-                    max-height: 108px;
-                    width: ${calculatedObj.width}px;
-                    height: ${calculatedObj.height}px;
-                    background-image: url(${src});
-                    
-                    @media screen and (max-width: 480px) {
-                      max-width: 54px;
-                      max-height: 54px;
-                    }
-                  `}
-                  onClick={() => handleLightboxOpen({ pathArr, currentNo })}
-                />
-                
-                <Fab
-                  css={cssPreviewRemoveFab}
-                  color="primary"
-                  onClick={() => handleRemovePreview({ pathArr, arrayName, index })}
-                >
-                  <IconClose />
-                </Fab>
-                
-              </div>
-            );
-            
-          }
-          
-          imageIndex += 1;
-          imagesArr.push(valueObj);
-          
-          
-        // ---------------------------------------------
-        //   動画
-        // ---------------------------------------------
         
-        } else if (valueObj.type === 'video') {
+        if (src.indexOf('data:image/svg') === -1) {
+          
+          componentsPreviewArr.push(
+            <div css={cssPreviewBox} key={index}>
+              
+              <img
+                css={css`
+                  max-height: 108px;
+                  
+                  @media screen and (max-width: 480px) {
+                    max-height: 54px;
+                  }
+                `}
+                src={src}
+                onClick={() => handleLightboxOpen({ pathArr, currentNo })}
+              />
+              
+              <Fab
+                css={cssPreviewRemoveFab}
+                color="primary"
+                onClick={() => handleRemovePreview({ pathArr, index })}
+              >
+                <IconClose />
+              </Fab>
+              
+            </div>
+          );
+          
+        } else {
           
           componentsPreviewArr.push(
             <div css={cssPreviewBox} key={index}>
               
               <div
                 css={css`
-                  width: 192px;
-                  height: 108px;
-                  background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
-                  background-size: 192px 108px;
-                  position: relative;
+                  background-repeat: no-repeat;
+                  background-position: center center;
+                  
+                  max-width: 108px;
+                  max-height: 108px;
+                  width: ${calculatedObj.width}px;
+                  height: ${calculatedObj.height}px;
+                  background-image: url(${src});
                   
                   @media screen and (max-width: 480px) {
-                    width: 96px;
-                    height: 54px;
-                    background-size: 96px 54px;
+                    max-width: 54px;
+                    max-height: 54px;
                   }
                 `}
+                onClick={() => handleLightboxOpen({ pathArr, currentNo })}
               />
               
               <Fab
                 css={cssPreviewRemoveFab}
                 color="primary"
-                onClick={() => handleRemovePreview({ pathArr, arrayName, index })}
+                onClick={() => handleRemovePreview({ pathArr, index })}
               >
                 <IconClose />
               </Fab>
-              
-              <img
-                css={css`
-                  width: 192px;
-                  height: 108px;
-                  position: absolute;
-                  top: 0;
-                  
-                  @media screen and (max-width: 480px) {
-                    width: 96px;
-                    height: 54px;
-                  }
-                `}
-                src="/static/img/common/video-play-button.png"
-                onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
-              />
               
             </div>
           );
           
         }
         
-      };
+        imageIndex += 1;
+        imagesArr.push(valueObj);
+        
+        
+      // ---------------------------------------------
+      //   動画
+      // ---------------------------------------------
       
-    }
+      } else if (valueObj.type === 'video') {
+        
+        componentsPreviewArr.push(
+          <div css={cssPreviewBox} key={index}>
+            
+            <div
+              css={css`
+                width: 192px;
+                height: 108px;
+                background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
+                background-size: 192px 108px;
+                position: relative;
+                
+                @media screen and (max-width: 480px) {
+                  width: 96px;
+                  height: 54px;
+                  background-size: 96px 54px;
+                }
+              `}
+            />
+            
+            <Fab
+              css={cssPreviewRemoveFab}
+              color="primary"
+              onClick={() => handleRemovePreview({ pathArr, index })}
+            >
+              <IconClose />
+            </Fab>
+            
+            <img
+              css={css`
+                width: 192px;
+                height: 108px;
+                position: absolute;
+                top: 0;
+                
+                @media screen and (max-width: 480px) {
+                  width: 96px;
+                  height: 54px;
+                }
+              `}
+              src="/static/img/common/video-play-button.png"
+              onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+            />
+            
+          </div>
+        );
+        
+      }
+      
+    };
+      
     
     
     

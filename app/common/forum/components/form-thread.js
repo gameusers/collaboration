@@ -80,6 +80,20 @@ export default injectIntl(class extends React.Component {
       this.pathArr = [props.forumThreads_id, 'formThreadObj'];
     }
     
+    
+    // --------------------------------------------------
+    //   Path Array / 画像＆動画用
+    // --------------------------------------------------
+    
+    // 新規追加時
+    this.imagesAndVideosPathArr = ['createObj', communities_id];
+    
+    // 編集時
+    if (this.props.imagesAndVideos_id) {
+      this.imagesAndVideosPathArr = [this.props.imagesAndVideos_id];
+    }
+    
+    
   }
   
   
@@ -111,7 +125,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, imagesAndVideos_id } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -256,7 +270,7 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* Image & Video */}
+        {/* Form Images & Videos */}
         <div
           css={css`
             margin: 12px 0 0 0;
@@ -264,11 +278,10 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            pathArr={[...this.pathArr, 'formImagesAndVideosObj']}
+            pathArr={this.imagesAndVideosPathArr}
             descriptionImage="スレッドに表示する画像をアップロードできます。"
             descriptionVideo="スレッドに表示する動画を登録できます。"
-            arrayName="mainArr"
-            caption={true}
+            showImageCaption={true}
             limit={3}
           />
           
@@ -286,6 +299,8 @@ export default injectIntl(class extends React.Component {
           `}
         >
           
+          
+          {/* Submit */}
           <Button
             variant="contained"
             color="primary"
@@ -296,6 +311,7 @@ export default injectIntl(class extends React.Component {
           </Button>
           
           
+          {/* Close */}
           {forumThreads_id !== 'create' &&
             <div
               css={css`

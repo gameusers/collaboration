@@ -84,7 +84,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], heading, description, caption, limit, arrayName = 'mainArr' } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], heading, description, showImageCaption = false, limit = 1 } = this.props;
     
     const {
       
@@ -97,8 +97,11 @@ export default injectIntl(class extends React.Component {
     
     
     const imageCaption = lodashGet(dataObj, [...pathArr, 'imageCaption'], '');
-    const imageCaptionOpen = lodashGet(dataObj, [...pathArr, 'imageCaptionOpen'], false);
-    const imagesAndVideosArr = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
+    const showImageCaptionDescription = lodashGet(dataObj, [...pathArr, 'showImageCaptionDescription'], false);
+    
+    // const type = lodashGet(dataObj, [...pathArr, 'type'], '');
+    // const arr = lodashGet(dataObj, [...pathArr, 'arr'], []);
+    // const imagesAndVideosArr = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
     
     
     
@@ -107,8 +110,12 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`\n---------- imagesAndVideosArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosArr)));
+    // console.log(chalk`
+    //   /app/common/image-and-video/components/form-image.js
+    // `);
+    
+    // console.log(`\n---------- pathArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(pathArr)));
     // console.log(`\n-----------------------------------\n`);
     
     // console.log(chalk`
@@ -159,7 +166,7 @@ export default injectIntl(class extends React.Component {
               margin: 14px 0 0 0;
             `}
             type="file"
-            onChange={(eventObj) => handleSelectImage({ pathArr, fileObj: eventObj.target.files[0], imagesAndVideosArr })}
+            onChange={(eventObj) => handleSelectImage({ pathArr, fileObj: eventObj.target.files[0] })}
           />
           
           <div
@@ -172,7 +179,7 @@ export default injectIntl(class extends React.Component {
               variant="contained"
               color="secondary"
               size="small"
-              onClick={() => handleAddImage({ pathArr, arrayName, limit })}
+              onClick={() => handleAddImage({ pathArr, limit })}
             >
               追加
             </Button>
@@ -182,7 +189,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Caption */}
-        {caption &&
+        {showImageCaption &&
           <TextField
             css={css`
               && {
@@ -211,8 +218,8 @@ export default injectIntl(class extends React.Component {
                 <InputAdornment position="end">
                   <IconButton
                     onClick={() => handleEdit({
-                      pathArr: [...pathArr, 'imageCaptionOpen'],
-                      value: !imageCaptionOpen
+                      pathArr: [...pathArr, 'showImageCaptionDescription'],
+                      value: !showImageCaptionDescription
                     })}
                   >
                     <IconHelpOutline />
@@ -225,7 +232,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Captionについての解説 */}
-        {imageCaptionOpen &&
+        {showImageCaptionDescription &&
           <p
             css={css`
               font-size: 12px;

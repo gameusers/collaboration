@@ -221,6 +221,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const forumThreads_id = lodashGet(valueObj, ['_id'], '');
+      const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
       const name = lodashGet(valueObj, ['name'], '');
       const description = lodashGet(valueObj, ['description'], '');
       
@@ -287,6 +288,7 @@ export default injectIntl(class extends React.Component {
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
                   forumThreads_id={forumThreads_id}
+                  imagesAndVideos_id={imagesAndVideos_id}
                 />
               </div>
               

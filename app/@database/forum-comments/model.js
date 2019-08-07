@@ -30,10 +30,17 @@ const SchemaForumComments = require('./schema');
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { formatImagesAndVideosObj } = require('../../common/image-and-video/modules/format');
+
+
+// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatImagesAndVideosObj, formatLocalesArr } = require('../../@format/image');
+const { formatImagesAndVideosArr, formatLocalesArr } = require('../../@format/image');
 
 
 

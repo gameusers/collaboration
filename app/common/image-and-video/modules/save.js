@@ -49,18 +49,46 @@ const { imageCalculateSize } = require('./calculate');
  * @param {boolean} square - 正方形にする場合 true
  * @return {Array} 画像情報の入った配列
  */
-const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }) => {
+const imageSave = async ({ newObj, oldObj, directoryPath, minSize, square }) => {
+  
+  
+  // ---------------------------------------------
+  //   Property
+  // ---------------------------------------------
+  
+  let _id = shortid.generate();
+  const old_id = lodashGet(oldObj, ['_id'], '');
+  
+  if (old_id) {
+    _id = old_id;
+  }
+  
+  
+  let type = lodashGet(newObj, ['type'], '');
+  const oldType = lodashGet(oldObj, ['type'], '');
+  
+  if (oldType) {
+    type = oldType;
+  }
+  
+  
+  const newArr = lodashGet(newObj, ['arr'], []);
+  const oldArr = lodashGet(oldObj, ['arr'], []);
+  
+  
+  const returnArr = [];
+  const _idsArr = [];
   
   
   // console.log(`
-  //   ----- newArr -----\n
-  //   ${util.inspect(newArr, { colors: true, depth: null })}\n
+  //   ----- newObj -----\n
+  //   ${util.inspect(newObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
   // console.log(`
-  //   ----- oldArr -----\n
-  //   ${util.inspect(oldArr, { colors: true, depth: null })}\n
+  //   ----- oldObj -----\n
+  //   ${util.inspect(oldObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
   
@@ -76,6 +104,7 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
   // ---------------------------------------------
   
   if (newArr.length === 0 && oldArr.length === 0) {
+    // console.log('AAA');
     return [];
   }
   
@@ -85,20 +114,10 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
   //   関係のないパスが送られた場合は処理停止
   // ---------------------------------------------
   
-  if (!directoryPath.startsWith('static/img/')) {
-    throw new Error('imageSave 1');
-  }
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Property
-  // ---------------------------------------------
-  
-  let returnArr = [];
-  let _idsArr = [];
-  
+  // if (!directoryPath.startsWith('static/img/')) {
+  //   throw new Error('imageSave 1');
+  // }
+  // console.log('BBB');
   
   // ---------------------------------------------
   //   画像を保存する
@@ -121,79 +140,100 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
     
     
     // ---------------------------------------------
-    //   Return Object
+    //   Temp Object
     // ---------------------------------------------
     
-    let returnObj = valueObj;
+    // const tempObj = {};
+    
+    
     
     
     // ---------------------------------------------
-    //   画像データ取得
+    //   アップロードされた画像を処理する
     // ---------------------------------------------
     
-    const _id = lodashGet(valueObj, ['_id'], '');
     const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
-    const w = lodashGet(valueObj, ['srcSetArr', 0, 'w'], '');
-    const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], '');
-    const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], '');
-    let extension = src.slice(src.indexOf('/') + 1, src.indexOf(';'));
-    let mimeType = 'image/jpeg';
-    
-    if (extension === 'jpeg') {
-      extension = 'jpg';
-    } else if (extension === 'svg+xml') {
-      extension = 'svg';
-    } else if (extension === 'gif' || extension === 'png') {
-      extension = 'png';
-      mimeType = 'image/png';
-    }
     
     
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   src: {green ${src}}
-    //   w: {green ${w}}
-    //   width: {green ${width}}
-    //   height: {green ${height}}
-    //   extension: {green ${extension}}
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   base64でuploadされた画像を処理する
-    // ---------------------------------------------
-    
-    if (w === 'upload' && src.indexOf('base64') !== -1) {
+    if (src && src.indexOf('base64') !== -1) {
+      
+      const _id2 = shortid.generate();
+      
+      // const w = lodashGet(valueObj, ['srcSetArr', 0, 'w'], '');
+      const localesArr = lodashGet(valueObj, ['localesArr'], []);
+      const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 128);
+      const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 128);
+      
+      
+      let extension = src.slice(src.indexOf('/') + 1, src.indexOf(';'));
+      
+      let imageType = 'JPEG';
+      let mimeType = 'image/jpeg';
+      
+      if (extension === 'jpeg') {
+        
+        extension = 'jpg';
+        
+      } else if (extension === 'svg+xml') {
+        
+        extension = 'svg';
+        imageType = 'SVG';
+        
+      } else if (extension === 'gif' || extension === 'png') {
+        
+        extension = 'png';
+        mimeType = 'image/png';
+        imageType = 'PNG';
+        
+      }
+      
+      
       
       
       // ---------------------------------------------
       //   ディレクトリ作成
       // ---------------------------------------------
       
-      const dirPath = `${directoryPath}${_id}/`;
+      const dirPath = `static/img/${type}/${_id}/${_id2}`;
       
-      mkdirp.sync(dirPath, (err) => {
-        if (err) {
-          throw new Error('mkdir');
-        }
-      });
+      // mkdirp.sync(dirPath, (err) => {
+      //   if (err) {
+      //     throw new Error('mkdir');
+      //   }
+      // });
+      
+      console.log(chalk`
+        _id2: {green ${_id2}}
+        src: {green ${src.substr(0, 30)}}
+        width: {green ${width}}
+        height: {green ${height}}
+        imageType: {green ${imageType}}
+        mimeType: {green ${mimeType}}
+        extension: {green ${extension}}
+        dirPath: {green ${dirPath}}
+      `);
       
       
       // ---------------------------------------------
       //   srcset用の配列を作成
       // ---------------------------------------------
       
-      let srcSetArr = [];
-      
+      const srcSetArr = [];
       
       let longSideArr = [320, 480, 640, 800];
       
       if (width < 480) {
+        
         longSideArr = [320];
+        
       } else if (width < 640) {
+        
         longSideArr = [320, 480];
+        
       } else if (width < 800) {
+        
         longSideArr = [320, 480, 640];
+        
       }
       
       
@@ -227,18 +267,23 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
         
         // 画像がSVGでない場合、リサイズする
         if (extension !== 'svg') {
+          
           const image = await Jimp.read(buff);
           image.resize(calculatedObj.width, calculatedObj.height);
           buff = await image.getBufferAsync(mimeType);
+          
         }
         
+        // 圧縮する
         const optimizedBuffer = await imagemin.buffer(buff, {
+          
           plugins: [
             imageminMozjpeg({ quality: 80 }),
             imageminPngquant({ quality: [0.5, 0.7] }),
             imageminGifsicle(),
             imageminSvgo()
           ]
+          
         });
         
         
@@ -246,8 +291,8 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
         //   ファイル保存
         // ---------------------------------------------
         
-        const srcSetSrc = `${dirPath}${longSide}w.${extension}`;
-        fs.writeFileSync(srcSetSrc, optimizedBuffer);
+        // const srcSetSrc = `${dirPath}${longSide}w.${extension}`;
+        // fs.writeFileSync(srcSetSrc, optimizedBuffer);
         
         
         // ---------------------------------------------
@@ -256,7 +301,7 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
         
         srcSetArr.push({
           _id: shortid.generate(),
-          src: `/${srcSetSrc}`,
+          // src: `/${srcSetSrc}`,
           w: `${longSide}w`,
           width: calculatedObj.width,
           height: calculatedObj.height,
@@ -267,10 +312,18 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
       
       
       // ---------------------------------------------
-      //   srcSetArr 置き換え
+      //   Push
       // ---------------------------------------------
       
-      returnObj.srcSetArr = srcSetArr;
+      const tempObj = {
+        _id: _id2,
+        type: 'image',
+        imageType,
+        localesArr,
+        srcSetArr,
+      };
+      
+      returnArr.push(tempObj);
       
       
     }
@@ -283,15 +336,9 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
     _idsArr.push(_id);
     
     
-    // ---------------------------------------------
-    //   結果オブジェクト作成
-    // ---------------------------------------------
-    
-    returnArr.push(returnObj);
-    
-    
   }
   
+  // console.log('CCC');
   
   // ---------------------------------------------
   //   画像を削除する
@@ -303,41 +350,48 @@ const imageSave = async ({ newArr, oldArr = [], directoryPath, minSize, square }
   //   --------------------\n
   // `);
   
-  for (let valueObj of oldArr.values()) {
+  
+  // for (let valueObj of oldArr.values()) {
     
-    // console.log(`
-    //   ----- valueObj -----\n
-    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // console.log(`
+  //   //   ----- valueObj -----\n
+  //   //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
     
-    if (_idsArr.includes(valueObj._id) === false) {
+  //   if (_idsArr.includes(valueObj._id) === false) {
       
-      const dirPath = `${directoryPath}${valueObj._id}/`;
-      // const dirPath = `static/img/card/players/test/glbzJb34t/`;
+  //     const dirPath = `${directoryPath}${valueObj._id}/`;
+  //     // const dirPath = `static/img/card/players/test/glbzJb34t/`;
       
       
-      rimraf(dirPath, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
+  //     rimraf(dirPath, (err) => {
+  //       if (err) {
+  //         console.log(err);
+  //       }
+  //     });
       
-      // console.log(chalk`
-      //   valueObj._id: {green ${valueObj._id}}
-      //   dirPath: {green ${dirPath}}
-      // `);
+  //     // console.log(chalk`
+  //     //   valueObj._id: {green ${valueObj._id}}
+  //     //   dirPath: {green ${dirPath}}
+  //     // `);
       
-      // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
-      // console.dir(fs.statSync(dirPath));
-      // console.log(`\n-----------------------------------\n`);
+  //     // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
+  //     // console.dir(fs.statSync(dirPath));
+  //     // console.log(`\n-----------------------------------\n`);
       
-    }
+  //   }
     
     
-  }
+  // }
   
   
+  
+  console.log(`
+    ----- returnArr -----\n
+    ${util.inspect(returnArr, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   
   // ---------------------------------------------

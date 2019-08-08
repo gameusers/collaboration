@@ -393,13 +393,13 @@ export default class extends React.Component {
               />
               
               
-              <div style={{ marginTop: '14px' }}></div>
+              {/*<div style={{ marginTop: '14px' }}></div>
               
               
               <ForumNavigation
                 userCommunities_id={this.props.userCommunities_id}
                 sidebar={true}
-              />
+              />*/}
               
             </div>
             

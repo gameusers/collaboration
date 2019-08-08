@@ -85,7 +85,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], heading, description, limit, arrayName = 'mainArr' } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], type, heading, description, limit = 1 } = this.props;
     
     const {
       
@@ -218,7 +218,7 @@ export default injectIntl(class extends React.Component {
             variant="contained"
             color="secondary"
             size="small"
-            onClick={() => handleAddVideo({ pathArr, arrayName, limit })}
+            onClick={() => handleAddVideo({ pathArr, type, limit })}
           >
             追加
           </Button>

@@ -253,7 +253,7 @@ export default injectIntl(class extends React.Component {
           css={css`
             display: flex;
             flex-flow: row nowrap;
-            margin: 16px 0 0 0;
+            margin: 24px 0 0 0;
           `}
         >
           

@@ -114,8 +114,8 @@ export default injectIntl(class extends React.Component {
     
     const componentsThumbnailArr = [];
     let componentFirst = '';
-    
     const imagesArr = [];
+    
     let imageIndex = 0;
     
     
@@ -404,6 +404,8 @@ export default injectIntl(class extends React.Component {
                 `}
               >
                 
+                
+                {/* Image */}
                 <img
                   css={css`
                     width: 100%;
@@ -411,6 +413,8 @@ export default injectIntl(class extends React.Component {
                   src={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg`}
                 />
                 
+                
+                {/* Play Button */}
                 <div
                   css={css`
                     width: 100%;
@@ -420,8 +424,6 @@ export default injectIntl(class extends React.Component {
                     align-items: center;
                     position: absolute;
                     top: 0;
-                    // background-color: pink;
-                    // opacity: 0.5;
                   `}
                   onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
                 >
@@ -457,6 +459,7 @@ export default injectIntl(class extends React.Component {
                     `}
                   />
                 </div>
+                
                 
               </div>
               

@@ -39,10 +39,6 @@ const lodashCloneDeep = require('lodash/cloneDeep');
  */
 const formatImagesAndVideosObj = ({ localeObj, obj }) => {
   
-  // console.log(`\n---------- arr ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(arr)));
-  // console.log(`\n-----------------------------------\n`);
-  // console.log('formatImagesAndVideosArr');
   
   // --------------------------------------------------
   //   Data
@@ -69,9 +65,11 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
   //   type: {green ${type}}
   // `);
   
-  // console.log(`\n---------- arr ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(arr)));
-  // console.log(`\n-----------------------------------\n`);
+  // console.log(`
+  //   ----- obj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   // return null;
   
   
@@ -158,14 +156,6 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
       }
       
       
-      //   returnArr[index] = {
-      //     type: valueObj.type,
-      //     src: '',
-      //     caption,
-      //     srcSet: '',
-      //   };
-      
-      
       // --------------------------------------------------
       //   srcset
       // --------------------------------------------------
@@ -176,40 +166,46 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
         
         
         // --------------------------------------------------
-        //   w
+        //   Upload 画像の場合
         // --------------------------------------------------
         
-        let w = value2Obj.w;
-        
-        // 画像をアップロードするときに、base64形式でプレビューを表示する
-        // その際、とりあえず srcset の値を 320w ということにして表示する
-        if (value2Obj.w === 'upload') {
-          w = '320w';
+        if (value2Obj.src) {
+          
+          tempObj.src = value2Obj.src;
+          
+          
+        // --------------------------------------------------
+        //   通常の画像の場合
+        // --------------------------------------------------
+          
+        } else {
+          
+          
+          // --------------------------------------------------
+          //   extension
+          // --------------------------------------------------
+          
+          let extension = '.jpg';
+          
+          if (value2Obj.imageType === 'PNG') {
+            
+            extension = '.png';
+            
+          } else if (value2Obj.imageType === 'SVG') {
+            
+            extension = '.svg';
+            
+          }
+          
+          
+          // --------------------------------------------------
+          //   src
+          // --------------------------------------------------
+          
+          tempObj.src = `/static/img/${type}/${_id}/${_id2}/${value2Obj.w}${extension}`;
+          
+          
         }
-        
-        
-        // --------------------------------------------------
-        //   extension
-        // --------------------------------------------------
-        
-        let extension = '.jpg';
-        
-        if (value2Obj.imageType === 'PNG') {
-          
-          extension = '.png';
-          
-        } else if (value2Obj.imageType === 'SVG') {
-          
-          extension = '.svg';
-          
-        }
-        
-        
-        // --------------------------------------------------
-        //   src
-        // --------------------------------------------------
-        
-        tempObj.src = `/static/img/${type}/${_id}/${_id2}/${w}${extension}`;
         
         
         // --------------------------------------------------
@@ -225,7 +221,7 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
         // --------------------------------------------------
         
         srcSet2Arr.push(
-          `${tempObj.src} ${w}`
+          `${tempObj.src} ${value2Obj.w}`
         );
         
         

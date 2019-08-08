@@ -139,7 +139,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.pathArr = [communities_id, 'navigationObj'];
+    
   }
   
   
@@ -154,10 +164,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    // const _idName = this.props.sidebar ? `${_id}-forumNavigationSidebar` : `${_id}-forumNavigation`;
-    
-    this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumNavigation` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
     
     
   }
@@ -176,8 +183,8 @@ export default injectIntl(class extends React.Component {
     
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, sidebar } = this.props;
     
-    const _id = gameCommunities_id || userCommunities_id;
-    // const _idName = sidebar ? `${_id}-forumNavigationSidebar` : `${_id}-forumNavigation`;
+    const communities_id = gameCommunities_id || userCommunities_id;
+    
     
     
     
@@ -185,15 +192,15 @@ export default injectIntl(class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', `${_id}-forumNavigation`], true);
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
+    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, 'panelExpanded'] });
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-forumNavigation`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
     
     
     
@@ -211,18 +218,18 @@ export default injectIntl(class extends React.Component {
       
     } = storeForum;
     
-    const openedTabNo = lodashGet(dataObj, [_id, 'openedTabNo'], 0);
+    const openedTabNo = lodashGet(dataObj, [...this.pathArr, 'openedTabNo'], 0);
     
     
     // --------------------------------------------------
     //   Thread List
     // --------------------------------------------------
     
-    const threadListCount = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'count'], 0);
-    const threadListPage = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'page'], 1) - 1;
-    const threadListLimit = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadListCount = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'count'], 0);
+    const threadListPage = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'page'], 1) - 1;
+    const threadListLimit = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
     
-    const forumThreadsArr = lodashGet(dataObj, [_id, 'forumThreadsForListObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
+    const forumThreadsArr = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
@@ -342,12 +349,8 @@ export default injectIntl(class extends React.Component {
           indicatorColor="primary"
           textColor="primary"
           
-          // onChange={(eventObj, value) => handleChangeOpenedTabNo({
-          //   _id,
-          //   value,
-          // })}
           onChange={(eventObj, value) => handleEdit({
-            pathArr: [_id, 'openedTabNo'],
+            pathArr: [...this.pathArr, 'openedTabNo'],
             value
           })}
         >
@@ -468,6 +471,7 @@ export default injectIntl(class extends React.Component {
       ;
       
     }
+    
     
     
     
@@ -612,7 +616,7 @@ export default injectIntl(class extends React.Component {
                   padding: 4px;
                 }
               `}
-              onClick={() => handlePanelExpand({ _id: `${_id}-forumNavigation` })}
+              onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, 'panelExpanded'] })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={buttonDisabled}
@@ -680,6 +684,7 @@ export default injectIntl(class extends React.Component {
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
                   forumThreads_id="create"
+                  imagesAndVideos_id=""
                 />
               </div>
             }
@@ -710,9 +715,9 @@ export default injectIntl(class extends React.Component {
                     `}
                     id="createTreadName"
                     label="検索キーワード"
-                    value={lodashGet(dataObj, [_id, 'searchObj', 'keyword'], '')}
+                    value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'keyword'], '')}
                     onChange={(eventObj) => handleEdit({
-                      pathArr: [_id, 'searchObj', 'keyword'],
+                      pathArr: [...this.pathArr, 'searchObj', 'keyword'],
                       value: eventObj.target.value
                     })}
                     // error={validationForumThreadsObj.error}
@@ -747,9 +752,9 @@ export default injectIntl(class extends React.Component {
                       id="date-start"
                       label="期間 - 開始日"
                       type="date"
-                      value={lodashGet(dataObj, [_id, 'searchObj', 'dateStart'], '')}
+                      value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'dateStart'], '')}
                       onChange={(eventObj) => handleEdit({
-                        pathArr: [_id, 'searchObj', 'dateStart'],
+                        pathArr: [...this.pathArr, 'searchObj', 'dateStart'],
                         value: eventObj.target.value
                       })}
                       InputLabelProps={{
@@ -766,9 +771,9 @@ export default injectIntl(class extends React.Component {
                       id="date-end"
                       label="期間 - 終了日"
                       type="date"
-                      value={lodashGet(dataObj, [_id, 'searchObj', 'dateEnd'], '')}
+                      value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'dateEnd'], '')}
                       onChange={(eventObj) => handleEdit({
-                        pathArr: [_id, 'searchObj', 'dateEnd'],
+                        pathArr: [...this.pathArr, 'searchObj', 'dateEnd'],
                         value: eventObj.target.value
                       })}
                       InputLabelProps={{
@@ -793,9 +798,9 @@ export default injectIntl(class extends React.Component {
                       }}
                       control={
                         <Checkbox
-                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkThread'], false)}
+                          value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'checkThread'], false)}
                           onChange={(eventObj) => handleEdit({
-                            pathArr: [_id, 'searchObj', 'checkThread'],
+                            pathArr: [...this.pathArr, 'searchObj', 'checkThread'],
                             value: eventObj.target.checked
                           })}
                         />
@@ -809,9 +814,9 @@ export default injectIntl(class extends React.Component {
                       }}
                       control={
                         <Checkbox
-                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkComment'], false)}
+                          value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'checkComment'], false)}
                           onChange={(eventObj) => handleEdit({
-                            pathArr: [_id, 'searchObj', 'checkComment'],
+                            pathArr: [...this.pathArr, 'searchObj', 'checkComment'],
                             value: eventObj.target.checked
                           })}
                         />
@@ -825,9 +830,9 @@ export default injectIntl(class extends React.Component {
                       }}
                       control={
                         <Checkbox
-                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkImage'], false)}
+                          value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'checkImage'], false)}
                           onChange={(eventObj) => handleEdit({
-                            pathArr: [_id, 'searchObj', 'checkImage'],
+                            pathArr: [...this.pathArr, 'searchObj', 'checkImage'],
                             value: eventObj.target.checked
                           })}
                         />
@@ -841,9 +846,9 @@ export default injectIntl(class extends React.Component {
                       }}
                       control={
                         <Checkbox
-                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkVideo'], false)}
+                          value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'checkVideo'], false)}
                           onChange={(eventObj) => handleEdit({
-                            pathArr: [_id, 'searchObj', 'checkVideo'],
+                            pathArr: [...this.pathArr, 'searchObj', 'checkVideo'],
                             value: eventObj.target.checked
                           })}
                         />
@@ -857,9 +862,9 @@ export default injectIntl(class extends React.Component {
                       }}
                       control={
                         <Checkbox
-                          value={lodashGet(dataObj, [_id, 'searchObj', 'checkMyPost'], false)}
+                          value={lodashGet(dataObj, [...this.pathArr, 'searchObj', 'checkMyPost'], false)}
                           onChange={(eventObj) => handleEdit({
-                            pathArr: [_id, 'searchObj', 'checkMyPost'],
+                            pathArr: [...this.pathArr, 'searchObj', 'checkMyPost'],
                             value: eventObj.target.checked
                           })}
                         />

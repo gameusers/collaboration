@@ -84,11 +84,11 @@ class Store {
   
   /**
    * imagesAndVideosObjを取得する
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleGetImagesAndVideosObj({ _id }) {
-    const imagesAndVideosObj = lodashGet(this.dataObj, [_id, 'imagesAndVideosObj'], {});
+  handleGetImagesAndVideosObj({ pathArr }) {
+    const obj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
     // console.log(chalk`
     //   \n---------- handleGetImagesAndVideosObj ----------\n
@@ -101,7 +101,7 @@ class Store {
     //   --------------------\n
     // `);
     
-    return imagesAndVideosObj;
+    return obj;
   };
   
   
@@ -113,16 +113,16 @@ class Store {
   
   /**
    * imagesAndVideosObjをリセットする
-   * @param {string} _id - ID
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleResetForm({ _id }) {
-    lodashSet(this.dataObj, [_id, 'imagesAndVideosObj'], {});
+  handleResetForm({ pathArr, _id }) {
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
-    lodashSet(this.dataObj, [_id, 'imageCaption'], '');
+    lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
     
-    lodashSet(this.dataObj, [_id, 'videoChannel'], 'youtube');
-    lodashSet(this.dataObj, [_id, 'videoURL'], '');
+    lodashSet(this.dataObj, [...pathArr, 'videoChannel'], 'youtube');
+    lodashSet(this.dataObj, [...pathArr, 'videoURL'], '');
   };
   
   
@@ -254,10 +254,11 @@ class Store {
    * 選択した画像を追加する
    * 追加すると画像のサムネイルがフォーム内に表示される（プレビューできる）
    * @param {Array} pathArr - データを保存する場所を配列で指定する
+   * @param {string} type - imagesAndVideosObjのtype
    * @param {number} limit - 画像を追加できる上限
    */
   @action.bound
-  handleAddImage({ pathArr, limit }) {
+  handleAddImage({ pathArr, type, limit }) {
     
     
     // ---------------------------------------------
@@ -271,14 +272,14 @@ class Store {
     //   imagesAndVideosObj がない場合は新たに作成
     // --------------------------------------------------
     
-    if (!Object.keys(imagesAndVideosObj).length) {
+    if (Object.keys(imagesAndVideosObj).length === 0) {
       
       imagesAndVideosObj = {
-        _id: '',
+        _id: 'new',
         createdDate: '',
         updatedDate: '',
         users_id: '',
-        type: '',
+        type: type,
         arr: [],
       };
       
@@ -294,10 +295,6 @@ class Store {
     const caption = lodashGet(this.dataObj, [...pathArr, 'imageCaption'], '');
     
     
-//     console.log(chalk`
-//   _id: {green ${_id}}
-// `);
-    
     // console.log(`\n---------- pathArr ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(pathArr)));
     // console.log(`\n-----------------------------------\n`);
@@ -311,8 +308,26 @@ class Store {
     // console.log(`\n-----------------------------------\n`);
     
     
+    
+    
     // ---------------------------------------------
-    //   すでに同じ画像が追加されていないかチェックする
+    //   画像が選択されていない場合、処理停止
+    // ---------------------------------------------
+    
+    if (src === '') {
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'kcnBnLcoV',
+      });
+      
+      return;
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   同じ画像を追加しようとしている場合、処理停止
     // ---------------------------------------------
     
     let duplication = false;
@@ -337,26 +352,7 @@ class Store {
       
     }
     
-    
-    // ---------------------------------------------
-    //   画像が選択されていない場合、処理停止
-    // ---------------------------------------------
-    
-    if (src === '') {
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        messageID: 'kcnBnLcoV',
-      });
-      
-      return;
-      
-      
-    // ---------------------------------------------
-    //   同じ画像を追加しようとしている場合、処理停止
-    // ---------------------------------------------  
-    
-    } else if (duplication) {
+    if (duplication) {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -378,10 +374,10 @@ class Store {
       
       
     // ---------------------------------------------
-    //   limit より多い場合は処理停止
+    //   画像＆動画が limit より多くなっている場合は処理停止
     // ---------------------------------------------
       
-    } else if (clonedArr.length > limit) {
+    } else if (limit <= clonedArr.length) {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -393,15 +389,26 @@ class Store {
     }
     
     
+    
+    
     // ---------------------------------------------
-    //   Upload データを生成する
+    //   srcSetArr データを生成する
     // ---------------------------------------------
     
-    const uploadObj = {
-      src,
+    const srcSetArr = [{
+      _id: '',
+      // _id: shortid.generate(),
+      w: '320w',
       width,
       height,
-    };
+      src,
+    }];
+    
+    // const uploadObj = {
+    //   src,
+    //   width,
+    //   height,
+    // };
     
     
     // ---------------------------------------------
@@ -409,17 +416,18 @@ class Store {
     // ---------------------------------------------
     
     const tempObj = {
-      // _id: shortid.generate(),
-      // type: 'image',
-      // srcSetArr: [],
-      uploadObj,
+      _id: shortid.generate(),
+      type: 'image',
+      srcSetArr,
+      // uploadObj,
     };
     
     if (caption) {
       
       tempObj.localesArr = [
         {
-          _id: shortid.generate(),
+          _id: '',
+          // _id: shortid.generate(),
           language: 'ja',
           caption,
         }
@@ -453,9 +461,9 @@ class Store {
     lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
     
     
-    console.log(`\n---------- result ----------\n`);
-    console.dir(JSON.parse(JSON.stringify(lodashGet(this.dataObj, [...pathArr], ''))));
-    console.log(`\n-----------------------------------\n`);
+    // console.log(`\n---------- result ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(lodashGet(this.dataObj, [...pathArr], ''))));
+    // console.log(`\n-----------------------------------\n`);
     
     
     
@@ -468,11 +476,10 @@ class Store {
    * 入力した動画を追加する
    * 追加すると動画のサムネイルがフォーム内に表示される（プレビューできる）
    * @param {Array} pathArr - データを保存する場所を配列で指定する
-   * @param {string} arrayName - 操作する配列名
    * @param {number} limit - 動画を追加できる上限
    */
   @action.bound
-  handleAddVideo({ pathArr, arrayName, limit }) {
+  handleAddVideo({ pathArr, type, limit }) {
     
     
     // ---------------------------------------------
@@ -486,14 +493,14 @@ class Store {
     //   imagesAndVideosObj がない場合は新たに作成
     // --------------------------------------------------
     
-    if (!Object.keys(imagesAndVideosObj).length) {
+    if (Object.keys(imagesAndVideosObj).length === 0) {
       
       imagesAndVideosObj = {
-        _id: '',
+        _id: 'new',
         createdDate: '',
         updatedDate: '',
         users_id: '',
-        type: '',
+        type,
         arr: [],
       };
       
@@ -501,6 +508,7 @@ class Store {
     
     const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
     const clonedArr = lodashCloneDeep(arr);
+    
     const videoChannel = lodashGet(this.dataObj, [...pathArr, 'videoChannel'], 'youtube');
     const videoURL = lodashGet(this.dataObj, [...pathArr, 'videoURL'], '');
     
@@ -584,10 +592,10 @@ class Store {
       
       
     // ---------------------------------------------
-    //   limit より多い場合は処理停止
+    //   画像＆動画が limit より多くなっている場合は処理停止
     // ---------------------------------------------
       
-    } else if (limit < clonedArr.length) {
+    } else if (limit <= clonedArr.length) {
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -604,7 +612,8 @@ class Store {
     // ---------------------------------------------
     
     clonedArr.push({
-      _id: shortid.generate(),
+      // _id: shortid.generate(),
+      _id: '',
       type: 'video',
       videoChannel,
       videoID,
@@ -640,23 +649,18 @@ class Store {
   /**
    * プレビューを削除する
    * @param {Array} pathArr - データを保存する場所を配列で指定する
-   * @param {string} arrayName - 操作する配列名
    * @param {number} index - 削除するプレビュー番号
    */
   @action.bound
-  handleRemovePreview({ pathArr, arrayName, index }) {
+  handleRemovePreview({ pathArr, index }) {
     
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   index: {green ${index}}
-    // `);
     
     // ---------------------------------------------
     //   データ取得＆クローン
     // ---------------------------------------------
     
-    const imagesAndVideosArr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], []);
-    let clonedArr = lodashCloneDeep(imagesAndVideosArr);
+    const arr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], []);
+    const clonedArr = lodashCloneDeep(arr);
     
     
     // console.log(`
@@ -677,7 +681,7 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', arrayName], clonedArr);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], clonedArr);
     
     // console.log(`
     //   ----- clonedArr -----\n

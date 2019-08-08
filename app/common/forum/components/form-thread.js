@@ -279,6 +279,7 @@ export default injectIntl(class extends React.Component {
           
           <ImageAndVideoForm
             pathArr={this.imagesAndVideosPathArr}
+            type="forum"
             descriptionImage="スレッドに表示する画像をアップロードできます。"
             descriptionVideo="スレッドに表示する動画を登録できます。"
             showImageCaption={true}
@@ -295,7 +296,7 @@ export default injectIntl(class extends React.Component {
           css={css`
             display: flex;
             flex-flow: row nowrap;
-            margin: 16px 0 0 0;
+            margin: 24px 0 0 0;
           `}
         >
           
@@ -304,7 +305,7 @@ export default injectIntl(class extends React.Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumThreads_id })}
+            onClick={() => handleSubmitFormThread({ pathArr: this.pathArr, imagesAndVideosPathArr: this.imagesAndVideosPathArr, gameCommunities_id, userCommunities_id, forumThreads_id })}
             disabled={buttonDisabled}
           >
             {forumThreads_id !== 'create' ? 'スレッドを編集する' : 'スレッドを作成する'}

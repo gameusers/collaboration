@@ -84,7 +84,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], heading, description, showImageCaption = false, limit = 1 } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], type, heading, description, showImageCaption = false, limit = 1 } = this.props;
     
     const {
       
@@ -179,7 +179,7 @@ export default injectIntl(class extends React.Component {
               variant="contained"
               color="secondary"
               size="small"
-              onClick={() => handleAddImage({ pathArr, limit })}
+              onClick={() => handleAddImage({ pathArr, type, limit })}
             >
               追加
             </Button>

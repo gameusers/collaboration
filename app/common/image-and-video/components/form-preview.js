@@ -97,7 +97,7 @@ const cssPreviewRemoveFab = css`
 //   Class
 // --------------------------------------------------
 
-@inject('storeImageAndVideo', 'storeImageAndVideoForm')
+@inject('stores', 'storeImageAndVideo', 'storeImageAndVideoForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -122,21 +122,26 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, storeImageAndVideoForm, intl, pathArr = [] } = this.props;
+    const { stores, storeImageAndVideo, storeImageAndVideoForm, intl, pathArr = [] } = this.props;
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
     const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
     
-    // const imagesAndVideosObj = lodashGet(dataObj, [...pathArr], {});
     
     const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
-    // const type = lodashGet(imagesAndVideosObj, ['type'], '');
     
-    // const formattedObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosObj });
+    const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     
-    const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
+    const type = lodashGet(formattedObj, ['type'], '');
+    const arr = lodashGet(formattedObj, ['arr'], []);
     
+    
+    // console.log(`
+    //   ----- formattedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- pathArr -----\n
@@ -161,7 +166,7 @@ export default injectIntl(class extends React.Component {
     //   必要なデータがない場合は処理停止
     // --------------------------------------------------
     
-    if (arr.length === 0) {
+    if (!type || arr.length === 0) {
       return null;
     }
     
@@ -173,17 +178,17 @@ export default injectIntl(class extends React.Component {
     const componentsPreviewArr = [];
     const imagesArr = [];
     
-    
     let imageIndex = 0;
+    
     
     for (const [index, valueObj] of arr.entries()) {
       
       
-      console.log(`
-        ----- valueObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -195,9 +200,13 @@ export default injectIntl(class extends React.Component {
         // Lightboxで開く画像Noを設定する
         const currentNo = imageIndex;
         
-        const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
-        const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
-        const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
+        const src = valueObj.src;
+        const width = valueObj.width;
+        const height = valueObj.height;
+        
+        // const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
+        // const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
+        // const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
         
         
         // ---------------------------------------------
@@ -219,23 +228,32 @@ export default injectIntl(class extends React.Component {
         // `);
         
         
+        // ---------------------------------------------
+        //   普通の画像
+        // ---------------------------------------------
+        
         if (src.indexOf('data:image/svg') === -1) {
           
           componentsPreviewArr.push(
             <div css={cssPreviewBox} key={index}>
               
+              {/* Image */}
               <img
                 css={css`
+                  min-height: 108px;
                   max-height: 108px;
                   
                   @media screen and (max-width: 480px) {
-                    max-height: 54px;
+                    min-height: 68px;
+                    max-height: 68px;
                   }
                 `}
                 src={src}
                 onClick={() => handleLightboxOpen({ pathArr, currentNo })}
               />
               
+              
+              {/* Remove Button */}
               <Fab
                 css={cssPreviewRemoveFab}
                 color="primary"
@@ -247,11 +265,17 @@ export default injectIntl(class extends React.Component {
             </div>
           );
           
+          
+        // ---------------------------------------------
+        //   SVG
+        // ---------------------------------------------
+          
         } else {
           
           componentsPreviewArr.push(
             <div css={cssPreviewBox} key={index}>
               
+              {/* Image */}
               <div
                 css={css`
                   background-repeat: no-repeat;
@@ -264,13 +288,15 @@ export default injectIntl(class extends React.Component {
                   background-image: url(${src});
                   
                   @media screen and (max-width: 480px) {
-                    max-width: 54px;
-                    max-height: 54px;
+                    max-width: 68px;
+                    max-height: 68px;
                   }
                 `}
                 onClick={() => handleLightboxOpen({ pathArr, currentNo })}
               />
               
+              
+              {/* Remove Button */}
               <Fab
                 css={cssPreviewRemoveFab}
                 color="primary"
@@ -301,41 +327,83 @@ export default injectIntl(class extends React.Component {
               css={css`
                 width: 192px;
                 height: 108px;
-                background-image: url(https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg);
-                background-size: 192px 108px;
                 position: relative;
                 
                 @media screen and (max-width: 480px) {
-                  width: 96px;
-                  height: 54px;
-                  background-size: 96px 54px;
+                  width: 120px;
+                  height: 68px;
                 }
               `}
-            />
-            
-            <Fab
-              css={cssPreviewRemoveFab}
-              color="primary"
-              onClick={() => handleRemovePreview({ pathArr, index })}
             >
-              <IconClose />
-            </Fab>
+              
+              
+              {/* Image */}
+              <img
+                css={css`
+                  width: 100%;
+                `}
+                src={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg`}
+              />
+              
+              
+              {/* Play Button */}
+              <div
+                css={css`
+                  width: 100%;
+                  height: 100%;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  position: absolute;
+                  top: 0;
+                `}
+                onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
+              >
+                <div
+                  css={css`
+                    font-size: 24px;
+                  	position: relative;
+                  	width: 1.4em;
+                  	height: 1.4em;
+                  	border: 0.1em solid white;
+                  	border-radius: 100%;
+                  	
+                  	transition: 0.5s;
+                  	&:hover {
+                  	  opacity: 0.7;
+                  	}
+                  	
+                    @media screen and (max-width: 480px) {
+                      font-size: 18px;
+                    }
+                  	
+                    &:before {
+                      content: "";
+                    	position: absolute;
+                    	top: 0.3em;
+                    	left: 0.5em;
+                    	width: 0;
+                    	height: 0;
+                    	border-top: 0.4em solid transparent;
+                    	border-left: 0.6em solid white;
+                    	border-bottom: 0.4em solid transparent;
+                    }
+                  `}
+                />
+              </div>
+              
+              
+              {/* Remove Button */}
+              <Fab
+                css={cssPreviewRemoveFab}
+                color="primary"
+                onClick={() => handleRemovePreview({ pathArr, index })}
+              >
+                <IconClose />
+              </Fab>
             
-            <img
-              css={css`
-                width: 192px;
-                height: 108px;
-                position: absolute;
-                top: 0;
-                
-                @media screen and (max-width: 480px) {
-                  width: 96px;
-                  height: 54px;
-                }
-              `}
-              src="/static/img/common/video-play-button.png"
-              onClick={() => handleModalVideoOpen({ videoChannel: valueObj.videoChannel, videoID: valueObj.videoID })}
-            />
+            
+            </div>
             
           </div>
         );
@@ -386,7 +454,7 @@ export default injectIntl(class extends React.Component {
         {/* Lightbox */}
         <LightboxWrapper
           pathArr={pathArr}
-          imagesAndVideosArr={imagesArr}
+          imagesArr={imagesArr}
         />
         
         

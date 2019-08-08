@@ -71,7 +71,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], descriptionImage, descriptionVideo, showImageCaption, limit } = this.props;
+    const { storeImageAndVideoForm, intl, pathArr = [], type, descriptionImage, descriptionVideo, showImageCaption, limit } = this.props;
     
     const {
       
@@ -133,6 +133,7 @@ export default injectIntl(class extends React.Component {
           >
             <FormImage
               pathArr={pathArr}
+              type={type}
               description={descriptionImage}
               showImageCaption={showImageCaption}
               limit={limit}
@@ -150,6 +151,7 @@ export default injectIntl(class extends React.Component {
           >
             <FormVideo
               pathArr={pathArr}
+              type={type}
               description={descriptionVideo}
               limit={limit}
             />

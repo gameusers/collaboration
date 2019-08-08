@@ -19,7 +19,7 @@ const express = require('express');
 const multer  = require('multer');
 const upload = multer({
   dest: 'static/',
-  limits: { fieldSize: 25 * 1024 * 1024 },
+  limits: { fieldSize: 25 * 1024 * 1024 },// 25MB
 });
 
 const shortid = require('shortid');
@@ -35,7 +35,7 @@ const lodashSet = require('lodash/set');
 const { verifyCsrfToken } = require('../../@modules/csrf');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
-const { imageSave } = require('../../@modules/image-server');
+const { imageSave } = require('../../common/image-and-video/modules/save');
 
 
 // ---------------------------------------------
@@ -64,11 +64,6 @@ const ModelUserCommunities = require('../../@database/user-communities/model');
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
-
-// const { addLocaleData } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
 
 const { locale } = require('../../@locales/locale');
 
@@ -307,6 +302,53 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     
+    // --------------------------------------------------
+    //   画像を保存する
+    // --------------------------------------------------
+    
+    if (imagesAndVideosObj) {
+      
+      const parsedImagesAndVideosObj = JSON.parse(imagesAndVideosObj);
+      
+      // imagesAndVideosSaveObj._id = shortid.generate();
+      // imagesAndVideosSaveObj.createdDate = ISO8601;
+      // imagesAndVideosSaveObj.updatedDate = ISO8601;
+      // imagesAndVideosSaveObj.users_id = loginUsers_id;
+      
+      // console.log(`
+      //   ----- parsedImagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(parsedImagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      const imagesAndVideosSaveObj = await imageSave({
+        newObj: parsedImagesAndVideosObj,
+        // directoryPath: `static/img/forum/${forumThreadsConditionObj._id}/main/`,
+      });
+      
+      // console.log(`
+      //   ----- mainArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(mainArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // const imagesAndVideosSaveObj = {
+      //   mainArr,
+      // };
+        
+      
+    }
+    
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
     
     
     
@@ -321,9 +363,9 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     };
     
     
-    const parsedImagesAndVideosObj = JSON.parse(imagesAndVideosObj);
     
-    const ISO8601 = moment().toISOString();
+    
+    
     
     const forumThreadsSaveObj = {
       createdDate: ISO8601,
@@ -338,7 +380,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
           description,
         }
       ],
-      imagesAndVideosObj: parsedImagesAndVideosObj,
+      imagesAndVideos_id: '',
       comments: 0,
       images: 0,
       videos: 0,
@@ -347,62 +389,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     };
     
     
-    // --------------------------------------------------
-    //   画像を保存する
-    // --------------------------------------------------
     
-    
-    
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`\n---------- imagesAndVideosObj ----------\n`);
-    // console.dir(imagesAndVideosObj);
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // console.log(`\n---------- parsedImagesAndVideosObj ----------\n`);
-    // console.dir(parsedImagesAndVideosObj);
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log('画像を保存する');
-    
-    // console.log(chalk`
-    //   forumThreadsConditionObj._id: {green ${forumThreadsConditionObj._id}}
-    // `);
-    
-    if (parsedImagesAndVideosObj.mainArr) {
-      
-      // console.log('処理開始');
-      
-      const mainArr = await imageSave({
-        newArr: parsedImagesAndVideosObj.mainArr,
-        directoryPath: `static/img/forum/${forumThreadsConditionObj._id}/main/`,
-      });
-      
-      // console.log(`
-      //   ----- mainArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(mainArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // if (mainArr.length > 0) {
-        forumThreadsSaveObj.imagesAndVideosObj = {
-          mainArr,
-        };
-      // }
-      
-    }
-    
-    
-    // console.log(`
-    //   ----- forumThreadsSaveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsSaveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -417,7 +404,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     const userCommunitiesSaveObj = {
       updatedDate: ISO8601,
-      'updatedDateObj.thread': ISO8601,
+      'updatedDateObj.forum': ISO8601,
       $inc: { 'forumObj.threadCount': 1 }
     };
     
@@ -453,37 +440,19 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB insert Transaction / Forum Threads & User Communities
     // --------------------------------------------------
     
-    await ModelForumThreads.transactionForThread({
-      forumThreadsConditionObj,
-      forumThreadsSaveObj,
-      userCommunitiesConditionObj,
-      userCommunitiesSaveObj,
-    });
-    
-    
-    
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForForumThreads({
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    //   page: 1,
-    //   limit: parseInt(limit, 10),
+    // await ModelForumThreads.transactionForThread({
+    //   forumThreadsConditionObj,
+    //   forumThreadsSaveObj,
+    //   userCommunitiesConditionObj,
+    //   userCommunitiesSaveObj,
     // });
     
     
     // --------------------------------------------------
-    //   DB find / User Communities
+    //   DB find / User Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
     const userCommunityArr = await ModelUserCommunities.find({

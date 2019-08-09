@@ -28,13 +28,6 @@ import lodashCloneDeep from 'lodash/cloneDeep';
 import initStoreLayout from '../../../common/layout/stores/layout';
 
 
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { returnNewObj } from '../modules/format';
-
-
 
 
 // --------------------------------------------------
@@ -275,7 +268,7 @@ class Store {
     if (Object.keys(imagesAndVideosObj).length === 0) {
       
       imagesAndVideosObj = {
-        _id: 'new',
+        _id: '',
         createdDate: '',
         updatedDate: '',
         users_id: '',
@@ -416,7 +409,7 @@ class Store {
     // ---------------------------------------------
     
     const tempObj = {
-      _id: shortid.generate(),
+      _id: '',
       type: 'image',
       srcSetArr,
       // uploadObj,
@@ -496,7 +489,7 @@ class Store {
     if (Object.keys(imagesAndVideosObj).length === 0) {
       
       imagesAndVideosObj = {
-        _id: 'new',
+        _id: '',
         createdDate: '',
         updatedDate: '',
         users_id: '',

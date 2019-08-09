@@ -35,7 +35,7 @@ const lodashSet = require('lodash/set');
 const { verifyCsrfToken } = require('../../@modules/csrf');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
-const { imageSave } = require('../../common/image-and-video/modules/save');
+const { formatAndSave } = require('../../@modules/image/save');
 
 
 // ---------------------------------------------
@@ -303,6 +303,13 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    
+    // --------------------------------------------------
     //   画像を保存する
     // --------------------------------------------------
     
@@ -310,32 +317,18 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       
       const parsedImagesAndVideosObj = JSON.parse(imagesAndVideosObj);
       
-      // imagesAndVideosSaveObj._id = shortid.generate();
-      // imagesAndVideosSaveObj.createdDate = ISO8601;
-      // imagesAndVideosSaveObj.updatedDate = ISO8601;
-      // imagesAndVideosSaveObj.users_id = loginUsers_id;
-      
       // console.log(`
       //   ----- parsedImagesAndVideosObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(parsedImagesAndVideosObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
-      const imagesAndVideosSaveObj = await imageSave({
+      const imagesAndVideosSaveObj = await formatAndSave({
         newObj: parsedImagesAndVideosObj,
-        // directoryPath: `static/img/forum/${forumThreadsConditionObj._id}/main/`,
+        loginUsers_id,
+        ISO8601,
       });
       
-      // console.log(`
-      //   ----- mainArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(mainArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // const imagesAndVideosSaveObj = {
-      //   mainArr,
-      // };
-        
       
     }
     
@@ -343,11 +336,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     
-    // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
     
     
     
@@ -361,10 +350,6 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     const forumThreadsConditionObj = {
       _id: shortid.generate(),
     };
-    
-    
-    
-    
     
     
     const forumThreadsSaveObj = {
@@ -387,8 +372,6 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       ip: req.ip,
       userAgent: req.headers['user-agent'],
     };
-    
-    
     
     
     
@@ -436,7 +419,6 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     // `);
     
     
-    // 
     
     
     // --------------------------------------------------

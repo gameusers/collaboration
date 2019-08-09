@@ -48,8 +48,8 @@ import cyan from '@material-ui/core/colors/cyan';
 //   Modules
 // ---------------------------------------------
 
-import { imageCalculateSize } from '../modules/calculate';
-import { formatImagesAndVideosObj } from '../modules/format';
+import { imageCalculateSize } from '../../../@modules/image/calculate';
+import { formatImagesAndVideosObj } from '../../../@modules/image/format';
 
 
 // ---------------------------------------------

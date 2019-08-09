@@ -33,7 +33,7 @@ const SchemaForumComments = require('./schema');
 //   Modules
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../../common/image-and-video/modules/format');
+const { formatImagesAndVideosObj } = require('../../@modules/image/format');
 
 
 // ---------------------------------------------

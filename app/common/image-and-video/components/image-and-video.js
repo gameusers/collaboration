@@ -27,14 +27,14 @@ import { css, jsx } from '@emotion/core';
 //   Modules
 // ---------------------------------------------
 
-import { imageCalculateSize } from '../modules/calculate';
+import { imageCalculateSize } from '../../../@modules/image/calculate';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import LightboxWrapper from '../../image-and-video/components/lightbox';
+import LightboxWrapper from './lightbox';
 
 
 

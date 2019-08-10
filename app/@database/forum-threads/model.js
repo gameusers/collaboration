@@ -26,6 +26,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaForumThreads = require('./schema');
+const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 
 const ModelForumComments = require('../forum-comments/model');
@@ -33,10 +34,17 @@ const ModelUserCommunities = require('../user-communities/model');
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+
+
+// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr } = require('../../@format/image');
+// const { formatImagesAndVideosArr } = require('../../@format/image');
 
 
 
@@ -298,24 +306,24 @@ const findForList = async ({
       //   Deep Copy
       // --------------------------------------------------
       
-      let cloneObj = lodashCloneDeep(valueObj.toJSON());
+      let clonedObj = lodashCloneDeep(valueObj.toJSON());
       
       
       // --------------------------------------------------
       //   Datetime
       // --------------------------------------------------
       
-      cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+      clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
       
       
       // --------------------------------------------------
       //   編集権限
       // --------------------------------------------------
       
-      cloneObj.editable = false;
+      clonedObj.editable = false;
       
       if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-        cloneObj.editable = true;
+        clonedObj.editable = true;
       }
       
       
@@ -330,11 +338,11 @@ const findForList = async ({
       
       if (lodashHas(filteredArr, [0])) {
         
-        cloneObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+        clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');;
         
       } else {
         
-        cloneObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+        clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
         
       }
       
@@ -343,16 +351,16 @@ const findForList = async ({
       //   不要な項目を削除する
       // --------------------------------------------------
       
-      delete cloneObj.createdDate;
-      delete cloneObj.users_id;
-      delete cloneObj.localesArr;
-      delete cloneObj.imagesAndVideos_id;
-      delete cloneObj.ip;
-      delete cloneObj.userAgent;
-      delete cloneObj.__v;
+      delete clonedObj.createdDate;
+      delete clonedObj.users_id;
+      delete clonedObj.localesArr;
+      delete clonedObj.imagesAndVideos_id;
+      delete clonedObj.ip;
+      delete clonedObj.userAgent;
+      delete clonedObj.__v;
       
-      // console.log(`\n---------- cloneObj ----------\n`);
-      // console.dir(cloneObj);
+      // console.log(`\n---------- clonedObj ----------\n`);
+      // console.dir(clonedObj);
       // console.log(`\n-----------------------------------\n`);
       
       
@@ -360,7 +368,7 @@ const findForList = async ({
       //   push
       // --------------------------------------------------
       
-      formattedArr.push(cloneObj);
+      formattedArr.push(clonedObj);
       
       
     }
@@ -471,9 +479,9 @@ const findForForum = async ({
     //   Condition
     // --------------------------------------------------
     
-    const conditionObj = {
-      userCommunities_id,
-    };
+    // const conditionObj = {
+    //   userCommunities_id,
+    // };
     
     
     // --------------------------------------------------
@@ -482,7 +490,67 @@ const findForForum = async ({
     
     const intThreadLimit = parseInt(threadLimit, 10);
     
-    const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((threadPage - 1) * intThreadLimit).limit(intThreadLimit).exec();
+    // const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((threadPage - 1) * intThreadLimit).limit(intThreadLimit).exec();
+    
+    
+    const resultArr = await SchemaForumThreads.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match : { userCommunities_id: userCommunities_id }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+      { '$sort': { 'updatedDate': -1 } },
+      { $skip: (threadPage - 1) * intThreadLimit },
+      { $limit: intThreadLimit },
+      
+      
+    ]).exec();
     
     
     // --------------------------------------------------
@@ -499,6 +567,8 @@ const findForForum = async ({
     const forumThreads_idArr = formattedObj.forumThreads_idArr;
     
     
+    
+    
     // --------------------------------------------------
     //   Count
     // --------------------------------------------------
@@ -508,6 +578,8 @@ const findForForum = async ({
         _id: userCommunities_id
       }
     });
+    
+    
     
     
     // --------------------------------------------------
@@ -524,6 +596,8 @@ const findForForum = async ({
     
     lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'loadedDate'], ISO8601);
     lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'arr'], formattedArr);
+    
+    
     
     
     // --------------------------------------------------
@@ -625,39 +699,57 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     //   Deep Copy
     // --------------------------------------------------
     
-    const cloneObj = lodashCloneDeep(valueObj.toJSON());
+    const clonedObj = lodashCloneDeep(valueObj);
+    // const clonedObj = lodashCloneDeep(valueObj.toJSON());
     
     
     // --------------------------------------------------
     //   Datetime
     // --------------------------------------------------
     
-    cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+    clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+    
+    
+    // --------------------------------------------------
+    //   画像と動画の処理
+    // --------------------------------------------------
+    
+    const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
+    
+    if (formattedObj) {
+      
+      clonedObj.imagesAndVideosObj = formattedObj;
+      
+    } else {
+      
+      delete clonedObj.imagesAndVideosObj;
+      
+    }
     
     
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
     
-    // cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+    // clonedObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
     
     
     // --------------------------------------------------
     //   編集権限
     // --------------------------------------------------
     
-    cloneObj.editable = false;
+    clonedObj.editable = false;
     
     if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-      cloneObj.editable = true;
+      clonedObj.editable = true;
     }
     
     // --------------------------------------------------
     //   スレッドを作成した本人以外の場合、users_idを削除する
     // --------------------------------------------------
     
-    // if (cloneObj.users_id !== loginUsers_id) {
-    //   cloneObj.users_id = '';
+    // if (clonedObj.users_id !== loginUsers_id) {
+    //   clonedObj.users_id = '';
     // }
     
     
@@ -672,13 +764,13 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     if (lodashHas(filteredArr, [0])) {
       
-      cloneObj.name = lodashGet(filteredArr, [0, 'name'], '');;
-      cloneObj.description = lodashGet(filteredArr, [0, 'description'], '');
+      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+      clonedObj.description = lodashGet(filteredArr, [0, 'description'], '');
       
     } else {
       
-      cloneObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      cloneObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
+      clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+      clonedObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
       
     }
     
@@ -694,15 +786,15 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete cloneObj.createdDate;
-    delete cloneObj.users_id;
-    delete cloneObj.localesArr;
-    delete cloneObj.ip;
-    delete cloneObj.userAgent;
-    delete cloneObj.__v;
+    delete clonedObj.createdDate;
+    delete clonedObj.users_id;
+    delete clonedObj.localesArr;
+    delete clonedObj.ip;
+    delete clonedObj.userAgent;
+    delete clonedObj.__v;
     
-    // console.log(`\n---------- cloneObj ----------\n`);
-    // console.dir(cloneObj);
+    // console.log(`\n---------- clonedObj ----------\n`);
+    // console.dir(clonedObj);
     // console.log(`\n-----------------------------------\n`);
     
     
@@ -710,7 +802,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     //   push
     // --------------------------------------------------
     
-    returnArr.push(cloneObj);
+    returnArr.push(clonedObj);
     forumThreads_idArr.push(valueObj._id);
     
     
@@ -733,14 +825,27 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
 
 
 /**
- * 挿入 / 更新する  スレッド用
+ * Transaction 挿入 / 更新する
+ * スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * 
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object} 
  */
-const transactionForThread = async ({ forumThreadsConditionObj, forumThreadsSaveObj, userCommunitiesConditionObj, userCommunitiesSaveObj }) => {
+const transactionForUpsertThread = async ({
+  
+  forumThreadsConditionObj,
+  forumThreadsSaveObj,
+  imagesAndVideosConditionObj = {},
+  imagesAndVideosSaveObj = {},
+  userCommunitiesConditionObj,
+  userCommunitiesSaveObj,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -776,6 +881,11 @@ const transactionForThread = async ({ forumThreadsConditionObj, forumThreadsSave
     // --------------------------------------------------
     
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+      await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+    }
+    
     // throw new Error();
     await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     
@@ -805,6 +915,18 @@ const transactionForThread = async ({ forumThreadsConditionObj, forumThreadsSave
     // console.log(`
     //   ----- forumThreadsSaveObj -----\n
     //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -877,5 +999,5 @@ module.exports = {
   deleteMany,
   findForList,
   findForForum,
-  transactionForThread,
+  transactionForUpsertThread,
 };

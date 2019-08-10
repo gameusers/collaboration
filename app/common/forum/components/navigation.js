@@ -683,7 +683,7 @@ export default injectIntl(class extends React.Component {
                 <FormThread
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
-                  forumThreads_id="create"
+                  forumThreads_id=""
                   imagesAndVideos_id=""
                 />
               </div>

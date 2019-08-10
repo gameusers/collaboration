@@ -54,6 +54,7 @@ import Paragraph from '../../layout/components/paragraph';
 import FormThread from './form-thread';
 import FormComment from './form-comment';
 import Comment from './comment';
+import ImageAndVideo from '../../image-and-video/components/image-and-video';
 
 
 
@@ -97,8 +98,8 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    const communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    this.pathArr = [communities_id, 'threadObj'];
+    this.communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.pathArr = [this.communities_id, 'threadObj'];
     
   }
   
@@ -133,7 +134,7 @@ export default injectIntl(class extends React.Component {
     
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id } = this.props;
     
-    const communities_id = gameCommunities_id || userCommunities_id;
+    // const communities_id = gameCommunities_id || userCommunities_id;
     
     
     
@@ -170,8 +171,8 @@ export default injectIntl(class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    const page = lodashGet(dataObj, [communities_id, 'forumThreadsObj', 'page'], 1);
-    const arr = lodashGet(dataObj, [communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
+    const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
@@ -224,6 +225,7 @@ export default injectIntl(class extends React.Component {
       const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
       const name = lodashGet(valueObj, ['name'], '');
       const description = lodashGet(valueObj, ['description'], '');
+      const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
       // const editable = lodashGet(valueObj, ['editable'], false);
@@ -276,7 +278,7 @@ export default injectIntl(class extends React.Component {
           >
             
             
-            {/* Form Thread */}
+            {/* Form */}
             {showForm ? (
               
               <div
@@ -292,7 +294,7 @@ export default injectIntl(class extends React.Component {
                 />
               </div>
               
-            // Forum Thread
+            // Thread
             ) : (
               
               <div
@@ -316,135 +318,19 @@ export default injectIntl(class extends React.Component {
                 >
                   
                   
-                  {/* Container */}
-                  <div
+                  {/* h2 */}
+                  <h2
                     css={css`
-                      display: flex;
-                      flex-flow: column nowrap;
+                      font-weight: bold;
+                      font-size: 16px;
+                      
+                      @media screen and (max-width: 480px) {
+                        font-size: 14px;
+                      }
                     `}
                   >
-                    
-                    
-                    {/* h2 */}
-                    <h2
-                      css={css`
-                        font-weight: bold;
-                        font-size: 16px;
-                        
-                        @media screen and (max-width: 480px) {
-                          font-size: 14px;
-                        }
-                      `}
-                    >
-                      {name}
-                    </h2>
-                    
-                    
-                    {/* Information */}
-                    <div
-                      css={css`
-                        display: flex;
-                        flex-flow: row wrap;
-                        font-size: 12px;
-                        margin: 6px 0 0 0;
-                      `}
-                    >
-                      
-                      {/* Show Thread Description */}
-                      <div
-                        css={css`
-                          display: flex;
-                          flex-flow: row nowrap;
-                          margin: 0 6px 0 0;
-                        `}
-                      >
-                        
-                        <IconAssignment
-                          css={css`
-                            && {
-                              font-size: 24px;
-                              margin: 0 2px 0 0;
-                            }
-                          `}
-                        />
-                        
-                        <div
-                          css={css`
-                            font-size: 12px;
-                            color: #009933;
-                            cursor: pointer;
-                            margin: 2px 0 0 0;
-                          `}
-                          onClick={() => handleEdit({
-                            pathArr: [...this.pathArr, forumThreads_id, 'showDescription'],
-                            value: !showDescription
-                          })}
-                        >
-                          スレッドについて
-                        </div>
-                        
-                      </div>
-                      
-                      
-                      {/* Thread _id */}
-                      <div
-                        css={css`
-                          display: flex;
-                          flex-flow: row nowrap;
-                        `}
-                      >
-                        
-                        <IconPublic
-                          css={css`
-                            && {
-                              font-size: 24px;
-                              margin: 0 2px 0 0;
-                            }
-                          `}
-                        />
-                        
-                        <div
-                          css={css`
-                            font-size: 12px;
-                            color: #009933;
-                            cursor: pointer;
-                            margin: 2px 0 0 0;
-                          `}
-                        >
-                          {forumThreads_id}
-                        </div>
-                        
-                      </div>
-                      
-                      
-                      {/* Edit Button */}
-                      {editable &&
-                        <Button
-                          css={css`
-                            && {
-                              font-size: 12px;
-                              height: 22px;
-                              min-width: 36px;
-                              margin: 2px 0 0 10px;
-                              padding: 0 2px;
-                            }
-                          `}
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => handleEdit({
-                            pathArr: [...this.pathArr, forumThreads_id, 'showForm'],
-                            value: !showForm
-                          })}
-                        >
-                          編集
-                        </Button>
-                      }
-                      
-                      
-                    </div>
-                    
-                    
-                  </div>
+                    {name}
+                  </h2>
                   
                   
                   
@@ -481,6 +367,127 @@ export default injectIntl(class extends React.Component {
                 </div>
                 
                 
+                
+                
+                {/* Images and Videos */}
+                {Object.keys(imagesAndVideosObj).length > 0 &&
+                  <div
+                    css={css`
+                      margin: 12px 0 0 0;
+                    `}
+                  >
+                    <ImageAndVideo
+                      pathArr={[...this.pathArr, forumThreads_id, 'imagesAndVideosObj']}
+                      imagesAndVideosObj={imagesAndVideosObj}
+                    />
+                  </div>
+                }
+                
+                
+                
+                
+                {/* Information */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row wrap;
+                    font-size: 12px;
+                    margin: 6px 0 0 0;
+                  `}
+                >
+                  
+                  {/* Show Thread Description */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                      margin: 0 6px 0 0;
+                    `}
+                  >
+                    
+                    <IconAssignment
+                      css={css`
+                        && {
+                          font-size: 24px;
+                          margin: 0 2px 0 0;
+                        }
+                      `}
+                    />
+                    
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        color: #009933;
+                        cursor: pointer;
+                        margin: 2px 0 0 0;
+                      `}
+                      onClick={() => handleEdit({
+                        pathArr: [...this.pathArr, forumThreads_id, 'showDescription'],
+                        value: !showDescription
+                      })}
+                    >
+                      スレッドについて
+                    </div>
+                    
+                  </div>
+                  
+                  
+                  {/* Thread _id */}
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-flow: row nowrap;
+                    `}
+                  >
+                    
+                    <IconPublic
+                      css={css`
+                        && {
+                          font-size: 24px;
+                          margin: 0 2px 0 0;
+                        }
+                      `}
+                    />
+                    
+                    <div
+                      css={css`
+                        font-size: 12px;
+                        color: #009933;
+                        cursor: pointer;
+                        margin: 2px 0 0 0;
+                      `}
+                    >
+                      {forumThreads_id}
+                    </div>
+                    
+                  </div>
+                  
+                  
+                  {/* Edit Button */}
+                  {editable &&
+                    <Button
+                      css={css`
+                        && {
+                          font-size: 12px;
+                          height: 22px;
+                          min-width: 36px;
+                          margin: 2px 0 0 10px;
+                          padding: 0 2px;
+                        }
+                      `}
+                      variant="outlined"
+                      color="primary"
+                      onClick={() => handleEdit({
+                        pathArr: [...this.pathArr, forumThreads_id, 'showForm'],
+                        value: !showForm
+                      })}
+                    >
+                      編集
+                    </Button>
+                  }
+                  
+                  
+                </div>
                 
                 
                 {/* Description */}

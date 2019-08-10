@@ -70,10 +70,10 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    const communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
     
     // 新規追加時
-    this.pathArr = [communities_id, 'formThreadObj'];
+    this.pathArr = [this.communities_id, 'formThreadObj'];
     
     // 編集時
     if (props.forumThreads_id) {
@@ -86,13 +86,25 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // 新規追加時
-    this.imagesAndVideosPathArr = ['createObj', communities_id];
+    this.imagesAndVideosPathArr = [this.communities_id, 'createFormForumThreadObj'];
     
     // 編集時
     if (this.props.imagesAndVideos_id) {
+      
       this.imagesAndVideosPathArr = [this.props.imagesAndVideos_id];
+      
+    } else if (props.forumThreads_id) {
+      
+      this.imagesAndVideosPathArr = [this.props.forumThreads_id];
+      
     }
     
+    
+    // console.log(`
+    //   ----- this.imagesAndVideosPathArr -----\n
+    //   ${util.inspect(this.imagesAndVideosPathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
   }
   
@@ -127,7 +139,7 @@ export default injectIntl(class extends React.Component {
     
     const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, imagesAndVideos_id } = this.props;
     
-    const communities_id = gameCommunities_id || userCommunities_id;
+    // const communities_id = gameCommunities_id || userCommunities_id;
     
     
     // --------------------------------------------------
@@ -171,7 +183,7 @@ export default injectIntl(class extends React.Component {
     //   Show
     // --------------------------------------------------
     
-    const showForm = lodashGet(dataObj, [communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
+    const showForm = lodashGet(dataObj, [this.communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
     
     
     
@@ -308,12 +320,12 @@ export default injectIntl(class extends React.Component {
             onClick={() => handleSubmitFormThread({ pathArr: this.pathArr, imagesAndVideosPathArr: this.imagesAndVideosPathArr, gameCommunities_id, userCommunities_id, forumThreads_id })}
             disabled={buttonDisabled}
           >
-            {forumThreads_id !== 'create' ? 'スレッドを編集する' : 'スレッドを作成する'}
+            {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
           </Button>
           
           
           {/* Close */}
-          {forumThreads_id !== 'create' &&
+          {forumThreads_id &&
             <div
               css={css`
                 margin: 0 0 0 auto;
@@ -323,7 +335,7 @@ export default injectIntl(class extends React.Component {
                 variant="outlined"
                 color="secondary"
                 onClick={() => handleEdit({
-                  pathArr: [communities_id, 'threadObj', forumThreads_id, 'showForm'],
+                  pathArr: [this.communities_id, 'threadObj', forumThreads_id, 'showForm'],
                   value: !showForm
                 })}
                 disabled={buttonDisabled}

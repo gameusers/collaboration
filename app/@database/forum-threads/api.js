@@ -313,6 +313,9 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     //   画像を保存する
     // --------------------------------------------------
     
+    let imagesAndVideosConditionObj = {};
+    let imagesAndVideosSaveObj = {};
+    
     if (imagesAndVideosObj) {
       
       const parsedImagesAndVideosObj = JSON.parse(imagesAndVideosObj);
@@ -323,22 +326,19 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       //   --------------------\n
       // `);
       
-      const imagesAndVideosSaveObj = await formatAndSave({
+      imagesAndVideosSaveObj = await formatAndSave({
         newObj: parsedImagesAndVideosObj,
         loginUsers_id,
         ISO8601,
       });
       
       
+      imagesAndVideosConditionObj = {
+        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
+      };
+      
+      
     }
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -392,29 +392,22 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     };
     
     
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   name: {green ${name} / ${typeof name}}
-    //   description: {green ${description} / ${typeof description}}
-    //   IP: {green ${req.ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
-    // `);
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      userCommunities_id: {green ${userCommunities_id}}
+      forumThreads_id: {green ${forumThreads_id}}
+      name: {green ${name} / ${typeof name}}
+      description: {green ${description} / ${typeof description}}
+      IP: {green ${req.ip}}
+      User Agent: {green ${req.headers['user-agent']}}
+    `);
     
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumThreadsSaveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsSaveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -425,12 +418,14 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     //   DB insert Transaction / Forum Threads & User Communities
     // --------------------------------------------------
     
-    // await ModelForumThreads.transactionForThread({
-    //   forumThreadsConditionObj,
-    //   forumThreadsSaveObj,
-    //   userCommunitiesConditionObj,
-    //   userCommunitiesSaveObj,
-    // });
+    await ModelForumThreads.transactionForUpsertThread({
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
+      imagesAndVideosConditionObj,
+      imagesAndVideosSaveObj,
+      userCommunitiesConditionObj,
+      userCommunitiesSaveObj,
+    });
     
     
     // --------------------------------------------------

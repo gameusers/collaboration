@@ -32,6 +32,7 @@ const imageminSvgo = require('imagemin-svgo');
 // ---------------------------------------------
 
 const { imageCalculateSize } = require('./calculate');
+const { CustomError } = require('../error/custom');
 
 
 // ---------------------------------------------
@@ -89,15 +90,15 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
   }
   
-  console.log(chalk`
-    type: {green ${type}}
-  `);
+  // console.log(chalk`
+  //   type: {green ${type}}
+  // `);
   
-  console.log(`
-    ----- newObj -----\n
-    ${util.inspect(newObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- newObj -----\n
+  //   ${util.inspect(newObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // ---------------------------------------------
   //   Validation
@@ -163,10 +164,10 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     let _id2 = lodashGet(valueObj, ['_id'], '');
     const type2 = lodashGet(valueObj, ['type'], '');
     
-    console.log(chalk`
-      _id2: {green ${_id2}}
-      type2: {green ${type2}}
-    `);
+    // console.log(chalk`
+    //   _id2: {green ${_id2}}
+    //   type2: {green ${type2}}
+    // `);
     
     
     
@@ -294,22 +295,23 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
       const dirPath = `static/img/${type}/${_id}/${_id2}`;
       
-      // mkdirp.sync(dirPath, (err) => {
-      //   if (err) {
-      //     throw new Error('mkdir');
-      //   }
-      // });
+      mkdirp.sync(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
+          // throw new Error('mkdir');
+        }
+      });
       
-      console.log(chalk`
-        _id2: {green ${_id2}}
-        src: {green ${src.substr(0, 30)}}
-        width: {green ${width}}
-        height: {green ${height}}
-        imageType: {green ${imageType}}
-        mimeType: {green ${mimeType}}
-        extension: {green ${extension}}
-        dirPath: {green ${dirPath}}
-      `);
+      // console.log(chalk`
+      //   _id2: {green ${_id2}}
+      //   src: {green ${src.substr(0, 30)}}
+      //   width: {green ${width}}
+      //   height: {green ${height}}
+      //   imageType: {green ${imageType}}
+      //   mimeType: {green ${mimeType}}
+      //   extension: {green ${extension}}
+      //   dirPath: {green ${dirPath}}
+      // `);
       
       
       // ---------------------------------------------
@@ -383,8 +385,8 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         //   ファイル保存
         // ---------------------------------------------
         
-        // const srcSetSrc = `${dirPath}${longSide}w.${extension}`;
-        // fs.writeFileSync(srcSetSrc, optimizedBuffer);
+        const srcSetSrc = `${dirPath}/${longSide}w.${extension}`;
+        fs.writeFileSync(srcSetSrc, optimizedBuffer);
         
         
         // ---------------------------------------------
@@ -499,11 +501,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   };
   
   
-  console.log(`
-    ----- _idsArr -----\n
-    ${util.inspect(_idsArr, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- _idsArr -----\n
+  //   ${util.inspect(_idsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   // console.log(`
   //   ----- returnArr -----\n

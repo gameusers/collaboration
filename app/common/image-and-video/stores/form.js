@@ -109,7 +109,7 @@ class Store {
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handleResetForm({ pathArr, _id }) {
+  handleResetForm({ pathArr }) {
     lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
     lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');

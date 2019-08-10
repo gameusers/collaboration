@@ -585,10 +585,10 @@ class Store {
       //   Form Reset
       // ---------------------------------------------
       
-      // lodashSet(this.dataObj, [...pathArr, 'name'], '');
-      // lodashSet(this.dataObj, [...pathArr, 'description'], '');
+      lodashSet(this.dataObj, [...pathArr, 'name'], '');
+      lodashSet(this.dataObj, [...pathArr, 'description'], '');
       
-      // storeImageAndVideoForm.handleResetForm({ _id: `${communities_id}-${forumThreads_id}` });
+      storeImageAndVideoForm.handleResetForm({ pathArr });
       
       
       // ---------------------------------------------

@@ -315,6 +315,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     let imagesAndVideosConditionObj = {};
     let imagesAndVideosSaveObj = {};
+    let imagesAndVideos_id = '';
     
     if (imagesAndVideosObj) {
       
@@ -333,10 +334,11 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       });
       
       
-      imagesAndVideosConditionObj = {
-        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
-      };
+      imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '')
       
+      imagesAndVideosConditionObj = {
+        _id: imagesAndVideos_id,
+      };
       
     }
     
@@ -365,7 +367,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
           description,
         }
       ],
-      imagesAndVideos_id: '',
+      imagesAndVideos_id,
       comments: 0,
       images: 0,
       videos: 0,
@@ -415,7 +417,7 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   DB insert Transaction / Forum Threads & User Communities
+    //   DB insert Transaction / Forum Threads & Images And Videos & User Communities
     // --------------------------------------------------
     
     await ModelForumThreads.transactionForUpsertThread({
@@ -460,6 +462,141 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     const resultErrorObj = returnErrorsArr({
       errorObj,
       endpointID: 'XfDc_r3br',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   スレッド編集用データ取得 / endpointID: SzZdM6eQ6
+// --------------------------------------------------
+
+router.post('/get-edit-data', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  // const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { forumThreads_id } = req.body;
+    
+    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    // const ISO8601 = moment().toISOString();
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    const returnObj = await ModelForumThreads.findForEdit({
+      localeObj,
+      loginUsers_id,
+      forumThreads_id,
+    });
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    // `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / User Communities / 最新の更新日時情報を取得する
+    // --------------------------------------------------
+    
+    // const userCommunityArr = await ModelUserCommunities.find({
+    //   conditionObj: {
+    //     _id: userCommunities_id
+    //   }
+    // });
+    
+    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'SzZdM6eQ6',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

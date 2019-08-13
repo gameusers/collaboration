@@ -2,9 +2,9 @@
 ![Game Users Banner](https://gameusers.org/assets/img/social/ogp_image.jpg)
 
 
-[![node](https://img.shields.io/badge/node-v10.16.0-lightgrey.svg)](https://nodejs.org/ja/)
-[![npm](https://img.shields.io/badge/npm-v6.4.1-blue.svg)](https://www.npmjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-v4.0.10-green.svg)](https://www.mongodb.com/)
+[![node](https://img.shields.io/badge/node-v10.16.2-lightgrey.svg)](https://nodejs.org/ja/)
+[![npm](https://img.shields.io/badge/npm-v6.9.0-blue.svg)](https://www.npmjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-v4.0.12-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
 

@@ -38,6 +38,7 @@ const ModelUserCommunities = require('../user-communities/model');
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+const { CustomError } = require('../../@modules/error/custom');
 
 
 // ---------------------------------------------
@@ -338,7 +339,7 @@ const findForList = async ({
       
       if (lodashHas(filteredArr, [0])) {
         
-        clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+        clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
         
       } else {
         
@@ -764,7 +765,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     if (lodashHas(filteredArr, [0])) {
       
-      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+      clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
       clonedObj.description = lodashGet(filteredArr, [0, 'description'], '');
       
     } else {
@@ -820,6 +821,204 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
   
   
 };
+
+
+
+
+/**
+ * スレッドを取得する　編集用
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドのIDが入った配列
+ * @return {Array} 取得データ
+ */
+const findForEdit = async ({
+  
+  localeObj,
+  loginUsers_id,
+  forumThreads_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Condition
+    // --------------------------------------------------
+    
+    // const conditionObj = {
+    //   userCommunities_id,
+    // };
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumThreads.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match : { _id: forumThreads_id }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (resultArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'V2oFFcQIl', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    const users_id = lodashGet(resultArr, [0, 'users_id'], '');
+    
+    if (users_id && users_id !== loginUsers_id) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
+    } else {
+      // throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const _id = lodashGet(resultArr, [0, '_id'], '');
+    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    let name = '';
+    let description = '';
+    
+    
+    // --------------------------------------------------
+    //   Name & Description
+    // --------------------------------------------------
+    
+    const filteredArr = resultArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      name = lodashGet(filteredArr, [0, 'name'], '');
+      description = lodashGet(filteredArr, [0, 'description'], '');
+      
+    } else {
+      
+      name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
+      description = lodashGet(resultArr, [0, 'localesArr', 0, 'description'], '');
+      
+    }
+    
+    
+    const returnObj = {
+      _id,
+      name,
+      description,
+      imagesAndVideosObj,
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
 
 
 
@@ -999,5 +1198,6 @@ module.exports = {
   deleteMany,
   findForList,
   findForForum,
+  findForEdit,
   transactionForUpsertThread,
 };

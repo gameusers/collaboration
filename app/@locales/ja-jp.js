@@ -48,6 +48,8 @@ const ja_JP = {
   'EnStWOly-': '編集しました',
   'j6lSS-Zf5': '削除しました',
   
+  'DSRlEoL29': '編集権限がありません',
+  
   
   // ---------------------------------------------
   //   Error / Validation / DB card-players

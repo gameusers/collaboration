@@ -129,7 +129,8 @@ export default injectIntl(class extends React.Component {
     const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
     
     
-    const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    // const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    const imagesAndVideosObj = lodashGet(dataObj, pathArr, {});
     
     const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     

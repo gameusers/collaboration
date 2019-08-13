@@ -398,6 +398,154 @@ class Store {
   
   
   /**
+   * スレッド編集フォームを表示する
+   */
+  @action.bound
+  async handleShowFormThread({ pathArr, forumThreads_id }) {
+    
+    
+    // ---------------------------------------------
+    //   Property
+    // ---------------------------------------------
+    
+    // const showForm = lodashGet(this.dataObj, [forumThreads_id, 'showForm'], false);
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   forumThreads_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: '5bsoal_-V', messageID: 'Error' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('forumThreads_id', forumThreads_id);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/forum-threads/get-edit-data`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+      
+      const name = lodashGet(resultObj, ['data', 'name'], '');
+      const description = lodashGet(resultObj, ['data', 'description'], '');
+      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
+      
+      lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'name'], name);
+      lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'description'], description);
+      lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id], imagesAndVideosObj);
+      
+      
+      console.log(`
+        ----- storeImageAndVideoForm.dataObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      // ---------------------------------------------
+      //   Show Form
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [forumThreads_id, 'showForm'], true);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
    * スレッド作成・編集フォームを送信する
    */
   @action.bound

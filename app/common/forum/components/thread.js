@@ -163,6 +163,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleShowFormThread,
       
     } = storeForum;
     
@@ -236,7 +237,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const showDescription = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showDescription'], true);
-      const showForm = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showForm'], false);
+      const showForm = lodashGet(dataObj, [forumThreads_id, 'showForm'], false);
       
       
       // --------------------------------------------------
@@ -477,9 +478,10 @@ export default injectIntl(class extends React.Component {
                       `}
                       variant="outlined"
                       color="primary"
-                      onClick={() => handleEdit({
-                        pathArr: [...this.pathArr, forumThreads_id, 'showForm'],
-                        value: !showForm
+                      disabled={buttonDisabled}
+                      onClick={() => handleShowFormThread({
+                        pathArr: this.pathArr,
+                        forumThreads_id
                       })}
                     >
                       編集

@@ -85,26 +85,33 @@ export default injectIntl(class extends React.Component {
     //   Path Array / 画像＆動画用
     // --------------------------------------------------
     
-    // 新規追加時
-    this.imagesAndVideosPathArr = [this.communities_id, 'createFormForumThreadObj'];
+    this.imagesAndVideosPathArr = [this.communities_id];
     
     // 編集時
-    if (this.props.imagesAndVideos_id) {
-      
-      this.imagesAndVideosPathArr = [this.props.imagesAndVideos_id];
-      
-    } else if (props.forumThreads_id) {
-      
+    if (props.forumThreads_id) {
       this.imagesAndVideosPathArr = [this.props.forumThreads_id];
-      
     }
     
+    // 新規追加時
+    // this.imagesAndVideosPathArr = [this.communities_id, 'createFormForumThreadObj'];
     
-    // console.log(`
-    //   ----- this.imagesAndVideosPathArr -----\n
-    //   ${util.inspect(this.imagesAndVideosPathArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // // 編集時
+    // if (this.props.imagesAndVideos_id) {
+      
+    //   this.imagesAndVideosPathArr = [this.props.imagesAndVideos_id];
+      
+    // } else if (props.forumThreads_id) {
+      
+    //   this.imagesAndVideosPathArr = [this.props.forumThreads_id];
+      
+    // }
+    
+    
+    console.log(`
+      ----- this.imagesAndVideosPathArr -----\n
+      ${util.inspect(this.imagesAndVideosPathArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
   }
   
@@ -183,7 +190,7 @@ export default injectIntl(class extends React.Component {
     //   Show
     // --------------------------------------------------
     
-    const showForm = lodashGet(dataObj, [this.communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
+    // const showForm = lodashGet(dataObj, [this.communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
     
     
     
@@ -335,8 +342,8 @@ export default injectIntl(class extends React.Component {
                 variant="outlined"
                 color="secondary"
                 onClick={() => handleEdit({
-                  pathArr: [this.communities_id, 'threadObj', forumThreads_id, 'showForm'],
-                  value: !showForm
+                  pathArr: [forumThreads_id, 'showForm'],
+                  value: false
                 })}
                 disabled={buttonDisabled}
               >

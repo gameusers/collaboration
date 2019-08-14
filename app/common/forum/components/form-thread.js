@@ -107,11 +107,11 @@ export default injectIntl(class extends React.Component {
     // }
     
     
-    console.log(`
-      ----- this.imagesAndVideosPathArr -----\n
-      ${util.inspect(this.imagesAndVideosPathArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- this.imagesAndVideosPathArr -----\n
+    //   ${util.inspect(this.imagesAndVideosPathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
   }
   
@@ -145,8 +145,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, imagesAndVideos_id } = this.props;
-    
-    // const communities_id = gameCommunities_id || userCommunities_id;
     
     
     // --------------------------------------------------
@@ -231,6 +229,7 @@ export default injectIntl(class extends React.Component {
             && {
               width: 100%;
               max-width: 500px;
+              ${forumThreads_id && `margin-top: 4px;`}
             }
           `}
           id="createTreadName"

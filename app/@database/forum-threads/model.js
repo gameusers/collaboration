@@ -1105,47 +1105,47 @@ const transactionForUpsertThread = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- forumThreadsConditionObj -----\n
-    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumThreadsConditionObj -----\n
+      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- forumThreadsSaveObj -----\n
-    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumThreadsSaveObj -----\n
+      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- userCommunitiesConditionObj -----\n
-    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesConditionObj -----\n
+      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- userCommunitiesSaveObj -----\n
-    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesSaveObj -----\n
+      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

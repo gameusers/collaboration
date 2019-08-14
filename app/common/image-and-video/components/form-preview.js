@@ -126,11 +126,12 @@ export default injectIntl(class extends React.Component {
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
-    const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
+    const { dataObj, handleGetImagesAndVideosObj, handleRemovePreview } = storeImageAndVideoForm;
     
     
     // const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
-    const imagesAndVideosObj = lodashGet(dataObj, pathArr, {});
+    // const imagesAndVideosObj = lodashGet(dataObj, pathArr, {});
+    const imagesAndVideosObj = handleGetImagesAndVideosObj({ pathArr });
     
     const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     

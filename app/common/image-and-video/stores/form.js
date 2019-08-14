@@ -72,7 +72,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Get
+  //   Getter & Setter
   // ---------------------------------------------
   
   /**
@@ -98,6 +98,17 @@ class Store {
   };
   
   
+  /**
+   * imagesAndVideosObjを更新する
+   * @param {Array} pathArr - データを保存する場所を配列で指定する
+   */
+  @action.bound
+  handleSetImagesAndVideosObj({ pathArr, value }) {
+    const obj = lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], value);
+    return obj;
+  };
+  
+  
   
   
   // ---------------------------------------------
@@ -105,11 +116,13 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * imagesAndVideosObjをリセットする
+   * フォームをリセットする
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
   handleResetForm({ pathArr }) {
+    lodashSet(this.dataObj, [...pathArr, 'imageObj'], {});
+    
     lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
     lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
@@ -258,7 +271,8 @@ class Store {
     //   Get Data
     // ---------------------------------------------
     
-    let imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    // let imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    let imagesAndVideosObj = this.handleGetImagesAndVideosObj({ pathArr });
     
     
     // --------------------------------------------------
@@ -444,18 +458,21 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
+    this.handleSetImagesAndVideosObj({ pathArr, value: imagesAndVideosObj });
+    
+    // lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
     
     
     // ---------------------------------------------
-    //   Caption 入力フォームをリセット
+    //   入力フォームをリセット
     // ---------------------------------------------
     
+    // this.handleResetForm({ pathArr });
     lodashSet(this.dataObj, [...pathArr, 'imageCaption'], '');
     
     
-    // console.log(`\n---------- result ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(lodashGet(this.dataObj, [...pathArr], ''))));
+    // console.log(`\n---------- this.dataObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(this.dataObj)));
     // console.log(`\n-----------------------------------\n`);
     
     
@@ -619,7 +636,8 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
+    this.handleSetImagesAndVideosObj({ pathArr, value: imagesAndVideosObj });
+    // lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
     
     
     // ---------------------------------------------
@@ -652,7 +670,9 @@ class Store {
     //   データ取得＆クローン
     // ---------------------------------------------
     
-    const arr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], []);
+    const imagesAndVideosObj = this.handleGetImagesAndVideosObj({ pathArr });
+    const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
+    // const arr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], []);
     const clonedArr = lodashCloneDeep(arr);
     
     
@@ -674,7 +694,9 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], clonedArr);
+    imagesAndVideosObj.arr = clonedArr;
+    this.handleSetImagesAndVideosObj({ pathArr, value: imagesAndVideosObj });
+    // lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], clonedArr);
     
     // console.log(`
     //   ----- clonedArr -----\n

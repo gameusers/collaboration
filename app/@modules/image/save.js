@@ -52,11 +52,11 @@ const { validationType } = require('../../@database/images-and-videos/validation
 // --------------------------------------------------
 
 /**
- * 画像を保存して不要な画像は削除。
+ * 画像を保存して不要な画像は削除
  * データベースに保存するオブジェクトをフォーマットして返す
  * 
- * @param {Array} newArr - 新しい画像情報の入った配列
- * @param {Array} oldArr - 古い（データベースから取得した）画像情報の入った配列
+ * @param {Array} newObj - 新しい画像情報の入ったオブジェクト (imagesAndVideosObj)
+ * @param {Array} oldObj - 古い（データベースから取得した）画像情報の入ったオブジェクト (imagesAndVideosObj)
  * @param {string} loginUsers_id - ログインユーザーID
  * @param {string} ISO8601 - 日時
  * @param {number} minSize - 画像の最小サイズ指定
@@ -94,11 +94,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   type: {green ${type}}
   // `);
   
-  // console.log(`
-  //   ----- newObj -----\n
-  //   ${util.inspect(newObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  
   
   // ---------------------------------------------
   //   Validation
@@ -107,29 +103,27 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   validationType({ throwError: true, value: type });
   
   
-  // _id: 'nA0rYeYu9',
-  //       createdDate: ISO8601,
-  //       updatedDate: ISO8601,
-  //       users_id: '',
-  //       type: 'forum',
   
+  console.log(`
+    ----- newObj -----\n
+    ${util.inspect(newObj, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
+  console.log(`
+    ----- oldObj -----\n
+    ${util.inspect(oldObj, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
+  console.log(chalk`
+    loginUsers_id: {green ${loginUsers_id}}
+    ISO8601: {green ${ISO8601}}
+    minSize: {green ${minSize}}
+    square: {green ${square}}
+  `);
   
-  // console.log(`
-  //   ----- oldObj -----\n
-  //   ${util.inspect(oldObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(chalk`
-  //   loginUsers_id: {green ${loginUsers_id}}
-  //   ISO8601: {green ${ISO8601}}
-  //   minSize: {green ${minSize}}
-  //   square: {green ${square}}
-  // `);
-  
-  
+  // return;
   
   
   // ---------------------------------------------
@@ -150,13 +144,6 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   for (let valueObj of newArr.values()) {
     
     
-    // console.log(`
-    //   ----- valueObj -----\n
-    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
     // ---------------------------------------------
     //   _id & type
     // ---------------------------------------------
@@ -164,26 +151,46 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     let _id2 = lodashGet(valueObj, ['_id'], '');
     const type2 = lodashGet(valueObj, ['type'], '');
     
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
     //   _id2: {green ${_id2}}
     //   type2: {green ${type2}}
     // `);
     
     
-    
     // ---------------------------------------------
-    //   既存の画像＆動画は処理しない
+    //   既存の画像＆動画の場合（新規追加ではない場合）
     // ---------------------------------------------
     
     if (_id2) {
+      
+      
+      // ---------------------------------------------
+      //   削除用　_idの入った配列作成 / imagesAndVideosObj.arr._id
+      // ---------------------------------------------
+      
+      _idsArr.push(_id2);
+      
+      
+      // ---------------------------------------------
+      //   処理しない
+      // ---------------------------------------------
+      
       continue;
+      
+      
     }
     
     
     
     
     // ---------------------------------------------
-    //   動画
+    //   新規の動画
     // ---------------------------------------------
     
     if (type2 === 'video') {
@@ -211,7 +218,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
     
     // ---------------------------------------------
-    //   画像
+    //   新規の画像
     // ---------------------------------------------
     
     const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
@@ -427,13 +434,6 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     }
     
     
-    // ---------------------------------------------
-    //   削除用　_idの入った配列作成
-    // ---------------------------------------------
-    
-    _idsArr.push(_id2);
-    
-    
   }
   
   
@@ -443,46 +443,48 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   画像を削除する
   // ---------------------------------------------
   
-  // console.log(`
-  //   ----- _idsArr -----\n
-  //   ${util.inspect(_idsArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  console.log(`
+    ----- _idsArr -----\n
+    ${util.inspect(_idsArr, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
   
   
-  // for (let valueObj of oldArr.values()) {
+  for (let valueObj of oldArr.values()) {
     
-  //   // console.log(`
-  //   //   ----- valueObj -----\n
-  //   //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-  //   if (_idsArr.includes(valueObj._id) === false) {
-      
-  //     const dirPath = `${directoryPath}${valueObj._id}/`;
-  //     // const dirPath = `static/img/card/players/test/glbzJb34t/`;
-      
-      
-  //     rimraf(dirPath, (err) => {
-  //       if (err) {
-  //         console.log(err);
-  //       }
-  //     });
-      
-  //     // console.log(chalk`
-  //     //   valueObj._id: {green ${valueObj._id}}
-  //     //   dirPath: {green ${dirPath}}
-  //     // `);
-      
-  //     // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
-  //     // console.dir(fs.statSync(dirPath));
-  //     // console.log(`\n-----------------------------------\n`);
-      
-  //   }
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
-  // }
+    
+    
+    if (_idsArr.includes(valueObj._id) === false) {
+      
+      const dirPath = `static/img/${type}/${_id}/${valueObj._id}`;
+      
+      
+      rimraf(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
+        }
+      });
+      
+      console.log(chalk`
+        valueObj._id: {green ${valueObj._id}}
+        dirPath: {green ${dirPath}}
+      `);
+      
+      // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
+      // console.dir(fs.statSync(dirPath));
+      // console.log(`\n-----------------------------------\n`);
+      
+    }
+    
+    
+  }
   
   
   
@@ -513,11 +515,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   --------------------\n
   // `);
   
-  console.log(`
-    ----- returnObj -----\n
-    ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- returnObj -----\n
+  //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   // ---------------------------------------------

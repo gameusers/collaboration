@@ -462,11 +462,11 @@ class Store {
         formData: formData
       });
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -490,14 +490,15 @@ class Store {
       
       lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'name'], name);
       lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'description'], description);
-      lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id], imagesAndVideosObj);
+      storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr: [forumThreads_id], value: imagesAndVideosObj });
+      // lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id], imagesAndVideosObj);
       
       
-      console.log(`
-        ----- storeImageAndVideoForm.dataObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- storeImageAndVideoForm.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -674,7 +675,7 @@ class Store {
       } else if (userCommunities_id) {
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v1/forum-threads/create-uc`,
+          urlApi: `${process.env.URL_API}/v1/forum-threads/upsert-uc`,
           methodType: 'POST',
           formData: formData
         });
@@ -730,13 +731,21 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Form Reset
+      //   Close Form & Reset Form
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [...pathArr, 'name'], '');
-      lodashSet(this.dataObj, [...pathArr, 'description'], '');
-      
-      storeImageAndVideoForm.handleResetForm({ pathArr });
+      if (forumThreads_id) {
+        // pathArr: [forumThreads_id, 'showForm']
+        lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
+        
+      } else {
+        
+        lodashSet(this.dataObj, [...pathArr, 'name'], '');
+        lodashSet(this.dataObj, [...pathArr, 'description'], '');
+        
+        storeImageAndVideoForm.handleResetForm({ pathArr });
+        
+      }
       
       
       // ---------------------------------------------

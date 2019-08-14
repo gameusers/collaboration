@@ -218,7 +218,7 @@ router.post('/list-uc', upload.none(), async (req, res, next) => {
 //   スレッド作成 / endpointID: XfDc_r3br
 // --------------------------------------------------
 
-router.post('/create-uc', upload.none(), async (req, res, next) => {
+router.post('/upsert-uc', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -279,24 +279,57 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     await validationIP({ throwError: true, value: req.ip });
     
     
+    
+    
     // --------------------------------------------------
-    //   DB find / Forum Threads / スレッドがすでに存在するかチェック
+    //   DB find / Forum Threads / スレッドが存在するかチェック
     // --------------------------------------------------
     
-    const count = await ModelForumThreads.count({
-      conditionObj: {
-        userCommunities_id,
-        'localesArr.name': name,
-        'localesArr.description': description,
+    let oldObj = {};
+    
+    if (forumThreads_id) {
+      
+      const tempOldObj = await ModelForumThreads.findForEdit({
+        localeObj,
+        loginUsers_id,
+        forumThreads_id,
+      });
+      
+      // console.log(`
+      //   ----- tempOldObj -----\n
+      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      oldObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
+      
+      if (Object.keys(tempOldObj).length === 0) {
+        throw new CustomError({ level: 'error', errorsArr: [{ code: 'ERb2Rej4K', messageID: 'cvS0qSAlE' }] });
       }
-    });
-    
-    // console.log(chalk`
-    //   count: {green ${count}}
-    // `);
-    
-    if (count > 0) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
+      
+      
+    // --------------------------------------------------
+    //   DB find / Forum Threads / 同じ名前のスレッドが存在するかチェック
+    // --------------------------------------------------
+      
+    } else {
+      
+      const count = await ModelForumThreads.count({
+        conditionObj: {
+          userCommunities_id,
+          'localesArr.name': name,
+        }
+      });
+      
+      // console.log(chalk`
+      //   count: {green ${count}}
+      // `);
+      
+      if (count > 0) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
+      }
+      
+      
     }
     
     
@@ -329,12 +362,13 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       
       imagesAndVideosSaveObj = await formatAndSave({
         newObj: parsedImagesAndVideosObj,
+        oldObj,
         loginUsers_id,
         ISO8601,
       });
       
       
-      imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '')
+      imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
       
       imagesAndVideosConditionObj = {
         _id: imagesAndVideos_id,
@@ -346,8 +380,12 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   forum-threads
+    //   Insert
     // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
     
     const forumThreadsConditionObj = {
       _id: shortid.generate(),
@@ -372,15 +410,13 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
       images: 0,
       videos: 0,
       ip: req.ip,
-      userAgent: req.headers['user-agent'],
+      userAgent: lodashGet(req, ['headers', 'user-agent'], '')
     };
     
     
-    
-    
-    // --------------------------------------------------
-    //   user-communities
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   - user-communities / 更新日時の変更＆スレッド数 + 1
+    // ---------------------------------------------
     
     const userCommunitiesConditionObj = {
       _id: userCommunities_id,
@@ -394,24 +430,43 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     };
     
     
+    
     // --------------------------------------------------
-    //   console.log
+    //   Update
     // --------------------------------------------------
     
-    console.log(chalk`
-      userCommunities_id: {green ${userCommunities_id}}
-      forumThreads_id: {green ${forumThreads_id}}
-      name: {green ${name} / ${typeof name}}
-      description: {green ${description} / ${typeof description}}
-      IP: {green ${req.ip}}
-      User Agent: {green ${req.headers['user-agent']}}
-    `);
-    
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    if (forumThreads_id) {
+      
+      
+      // ---------------------------------------------
+      //   - forum-threads
+      // ---------------------------------------------
+      
+      forumThreadsConditionObj._id = forumThreads_id;
+      
+      delete forumThreadsSaveObj.createdDate;
+      delete forumThreadsSaveObj.userCommunities_id;
+      delete forumThreadsSaveObj.users_id;
+      delete forumThreadsSaveObj.comments;
+      delete forumThreadsSaveObj.images;
+      delete forumThreadsSaveObj.videos;
+      
+      
+      
+      // ---------------------------------------------
+      //   - user-communities / 更新日時の変更
+      // ---------------------------------------------
+      
+      delete userCommunitiesSaveObj.$inc;
+      
+      
+      // const userCommunitiesSaveObj = {
+      //   updatedDate: ISO8601,
+      //   'updatedDateObj.forum': ISO8601,
+      //   $inc: { 'forumObj.threadCount': 1 }
+      // };
+      
+    }
     
     
     
@@ -430,6 +485,8 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     });
     
     
+    
+    
     // --------------------------------------------------
     //   DB find / User Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
@@ -441,6 +498,28 @@ router.post('/create-uc', upload.none(), async (req, res, next) => {
     });
     
     returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   name: {green ${name} / ${typeof name}}
+    //   description: {green ${description} / ${typeof description}}
+    //   IP: {green ${req.ip}}
+    //   User Agent: {green ${req.headers['user-agent']}}
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -503,7 +582,6 @@ router.post('/get-edit-data', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  // const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -532,13 +610,6 @@ router.post('/get-edit-data', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
-    
-    // const ISO8601 = moment().toISOString();
-    
-    
-    // --------------------------------------------------
     //   DB find / Forum Threads
     // --------------------------------------------------
     
@@ -557,25 +628,11 @@ router.post('/get-edit-data', upload.none(), async (req, res, next) => {
     //   forumThreads_id: {green ${forumThreads_id}}
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
-    // --------------------------------------------------
-    
-    // const userCommunityArr = await ModelUserCommunities.find({
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

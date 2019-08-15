@@ -70,7 +70,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.communities_id = props.gameCommunities_id || props.userCommunities_id;
     
     // 新規追加時
     this.pathArr = [this.communities_id, 'formThreadObj'];
@@ -85,11 +85,11 @@ export default injectIntl(class extends React.Component {
     //   Path Array / 画像＆動画用
     // --------------------------------------------------
     
-    this.imagesAndVideosPathArr = [this.communities_id];
+    this.imagesAndVideosPathArr = [this.communities_id, 'formThreadObj'];
     
     // 編集時
     if (props.forumThreads_id) {
-      this.imagesAndVideosPathArr = [this.props.forumThreads_id];
+      this.imagesAndVideosPathArr = [props.forumThreads_id, 'formThreadObj'];
     }
     
     // 新規追加時
@@ -296,7 +296,7 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            pathArr={this.imagesAndVideosPathArr}
+            pathArr={this.pathArr}
             type="forum"
             descriptionImage="スレッドに表示する画像をアップロードできます。"
             descriptionVideo="スレッドに表示する動画を登録できます。"
@@ -323,7 +323,7 @@ export default injectIntl(class extends React.Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={() => handleSubmitFormThread({ pathArr: this.pathArr, imagesAndVideosPathArr: this.imagesAndVideosPathArr, gameCommunities_id, userCommunities_id, forumThreads_id })}
+            onClick={() => handleSubmitFormThread({ pathArr: this.pathArr, gameCommunities_id, userCommunities_id, forumThreads_id })}
             disabled={buttonDisabled}
           >
             {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}

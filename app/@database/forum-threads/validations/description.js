@@ -41,7 +41,7 @@ const validationForumThreadsDescription = ({ throwError = false, value }) => {
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 100;
+  const maxLength = 3000;
   
   
   // ---------------------------------------------

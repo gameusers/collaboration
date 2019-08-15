@@ -36,6 +36,7 @@ const { verifyCsrfToken } = require('../../@modules/csrf');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
 const { formatAndSave } = require('../../@modules/image/save');
+const { setAuthority, verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
@@ -215,7 +216,117 @@ router.post('/list-uc', upload.none(), async (req, res, next) => {
 
 
 // --------------------------------------------------
-//   スレッド作成 / endpointID: XfDc_r3br
+//   スレッド編集用データ取得 / endpointID: SzZdM6eQ6
+// --------------------------------------------------
+
+router.post('/get-edit-data', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { forumThreads_id } = req.body;
+    
+    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    const returnObj = await ModelForumThreads.findForEdit({
+      req,
+      localeObj,
+      loginUsers_id,
+      forumThreads_id,
+    });
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'SzZdM6eQ6',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   スレッド作成・編集 / endpointID: XfDc_r3br
 // --------------------------------------------------
 
 router.post('/upsert-uc', upload.none(), async (req, res, next) => {
@@ -329,7 +440,6 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
       }
       
-      
     }
     
     
@@ -368,11 +478,26 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
       });
       
       
-      imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        imagesAndVideos_id = '';
+      } else {
+        imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+      }
+      
       
       imagesAndVideosConditionObj = {
-        _id: imagesAndVideos_id,
+        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
       };
+      
+      
+      // console.log(`
+      //   ----- imagesAndVideosSaveObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
     }
     
@@ -460,12 +585,6 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
       delete userCommunitiesSaveObj.$inc;
       
       
-      // const userCommunitiesSaveObj = {
-      //   updatedDate: ISO8601,
-      //   'updatedDateObj.forum': ISO8601,
-      //   $inc: { 'forumObj.threadCount': 1 }
-      // };
-      
     }
     
     
@@ -498,6 +617,29 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     });
     
     returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    
+    // const authority1 = verifyAuthority({ req, _id: forumThreads_id });
+    
+    // console.log(chalk`
+    //   authority1: {green ${authority1}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Set Authority
+    // --------------------------------------------------
+    
+    if (!forumThreads_id) {
+      setAuthority({ req, _id: forumThreadsConditionObj._id });
+    }
+    
+    // const authority2 = verifyAuthority({ req, _id: forumThreads_id });
+    
+    // console.log(chalk`
+    //   authority2: {green ${authority2}}
+    // `);
     
     
     
@@ -541,119 +683,6 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     const resultErrorObj = returnErrorsArr({
       errorObj,
       endpointID: 'XfDc_r3br',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
-  
-  
-});
-
-
-
-
-// --------------------------------------------------
-//   スレッド編集用データ取得 / endpointID: SzZdM6eQ6
-// --------------------------------------------------
-
-router.post('/get-edit-data', upload.none(), async (req, res, next) => {
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const { forumThreads_id } = req.body;
-    
-    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    const returnObj = await ModelForumThreads.findForEdit({
-      localeObj,
-      loginUsers_id,
-      forumThreads_id,
-    });
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   forumThreads_id: {green ${forumThreads_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'SzZdM6eQ6',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

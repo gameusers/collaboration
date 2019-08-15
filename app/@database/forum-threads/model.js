@@ -39,6 +39,7 @@ const ModelUserCommunities = require('../user-communities/model');
 
 const { formatImagesAndVideosObj } = require('../../@modules/image/format');
 const { CustomError } = require('../../@modules/error/custom');
+const { verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
@@ -321,11 +322,11 @@ const findForList = async ({
       //   編集権限
       // --------------------------------------------------
       
-      clonedObj.editable = false;
+      // clonedObj.editable = false;
       
-      if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-        clonedObj.editable = true;
-      }
+      // if (loginUsers_id && valueObj.users_id === loginUsers_id) {
+      //   clonedObj.editable = true;
+      // }
       
       
       // --------------------------------------------------
@@ -460,6 +461,7 @@ const findForList = async ({
  */
 const findForForum = async ({
   
+  req,
   localeObj,
   loginUsers_id,
   userCommunities_id,
@@ -539,7 +541,7 @@ const findForForum = async ({
       
       { $project:
         {
-          createdDate: 0,
+          // createdDate: 0,
           imagesAndVideos_id: 0,
           __v: 0,
         }
@@ -559,6 +561,7 @@ const findForForum = async ({
     // --------------------------------------------------
     
     const formattedObj = format({
+      req,
       localeObj,
       loginUsers_id,
       arr: resultArr,
@@ -678,7 +681,7 @@ const findForForum = async ({
 * @param {Array} arr - 配列
 * @return {Array} フォーマット後のデータ
 */
-const format = ({ localeObj, loginUsers_id, arr }) => {
+const format = ({ req, localeObj, loginUsers_id, arr }) => {
   
   
   // --------------------------------------------------
@@ -701,7 +704,6 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     // --------------------------------------------------
     
     const clonedObj = lodashCloneDeep(valueObj);
-    // const clonedObj = lodashCloneDeep(valueObj.toJSON());
     
     
     // --------------------------------------------------
@@ -729,29 +731,16 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
     
     
     // --------------------------------------------------
-    //   画像の処理
-    // --------------------------------------------------
-    
-    // clonedObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
-    
-    
-    // --------------------------------------------------
     //   編集権限
     // --------------------------------------------------
     
-    clonedObj.editable = false;
-    
-    if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-      clonedObj.editable = true;
-    }
-    
-    // --------------------------------------------------
-    //   スレッドを作成した本人以外の場合、users_idを削除する
-    // --------------------------------------------------
-    
-    // if (clonedObj.users_id !== loginUsers_id) {
-    //   clonedObj.users_id = '';
-    // }
+    clonedObj.editable = verifyAuthority({
+      req,
+      users_id: valueObj.users_id,
+      loginUsers_id,
+      ISO8601: valueObj.createdDate,
+      _id: valueObj._id
+    });
     
     
     // --------------------------------------------------
@@ -774,6 +763,12 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
       clonedObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
       
     }
+    
+    // console.log(chalk`
+    //   valueObj._id: {green ${valueObj._id}}
+    //   clonedObj.name: {green ${clonedObj.name}}
+    //   authority: {green ${authority}}
+    // `);
     
     
     
@@ -834,6 +829,7 @@ const format = ({ localeObj, loginUsers_id, arr }) => {
  */
 const findForEdit = async ({
   
+  req,
   localeObj,
   loginUsers_id,
   forumThreads_id,
@@ -927,13 +923,25 @@ const findForEdit = async ({
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
     
-    const users_id = lodashGet(resultArr, [0, 'users_id'], '');
+    const editable = verifyAuthority({
+      req,
+      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+      _id: lodashGet(resultArr, [0, '_id'], '')
+    });
     
-    if (users_id && users_id !== loginUsers_id) {
+    if (!editable) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
-    } else {
-      // throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
     }
+    
+    // const users_id = lodashGet(resultArr, [0, 'users_id'], '');
+    
+    // if (users_id && users_id !== loginUsers_id) {
+    //   throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
+    // } else {
+    //   // throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
+    // }
     
     
     
@@ -1081,9 +1089,33 @@ const transactionForUpsertThread = async ({
     
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     
+    
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
-      await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
+        
+        
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
+        
+      } else {
+        
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+        
+      }
+      
     }
+    
     
     // throw new Error();
     await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
@@ -1105,47 +1137,47 @@ const transactionForUpsertThread = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- forumThreadsConditionObj -----\n
-      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumThreadsSaveObj -----\n
-      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- userCommunitiesConditionObj -----\n
-      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- userCommunitiesSaveObj -----\n
-      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunitiesSaveObj -----\n
+    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

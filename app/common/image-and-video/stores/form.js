@@ -79,34 +79,34 @@ class Store {
    * imagesAndVideosObjを取得する
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
-  @action.bound
-  handleGetImagesAndVideosObj({ pathArr }) {
-    const obj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+  // @action.bound
+  // handleGetImagesAndVideosObj({ pathArr }) {
+  //   const obj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
-    // console.log(chalk`
-    //   \n---------- handleGetImagesAndVideosObj ----------\n
-    //   _id: {green ${_id}}
-    // `);
+  //   // console.log(chalk`
+  //   //   \n---------- handleGetImagesAndVideosObj ----------\n
+  //   //   _id: {green ${_id}}
+  //   // `);
     
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // console.log(`
+  //   //   ----- imagesAndVideosObj -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
     
-    return obj;
-  };
+  //   return obj;
+  // };
   
   
   /**
    * imagesAndVideosObjを更新する
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
-  @action.bound
-  handleSetImagesAndVideosObj({ pathArr, value }) {
-    const obj = lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], value);
-    return obj;
-  };
+  // @action.bound
+  // handleSetImagesAndVideosObj({ pathArr, value }) {
+  //   const obj = lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], value);
+  //   return obj;
+  // };
   
   
   
@@ -271,8 +271,7 @@ class Store {
     //   Get Data
     // ---------------------------------------------
     
-    // let imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
-    let imagesAndVideosObj = this.handleGetImagesAndVideosObj({ pathArr });
+    let imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     
     
     // --------------------------------------------------
@@ -404,18 +403,11 @@ class Store {
     
     const srcSetArr = [{
       _id: '',
-      // _id: shortid.generate(),
       w: '320w',
       width,
       height,
       src,
     }];
-    
-    // const uploadObj = {
-    //   src,
-    //   width,
-    //   height,
-    // };
     
     
     // ---------------------------------------------
@@ -426,7 +418,6 @@ class Store {
       _id: '',
       type: 'image',
       srcSetArr,
-      // uploadObj,
     };
     
     if (caption) {
@@ -434,7 +425,6 @@ class Store {
       tempObj.localesArr = [
         {
           _id: '',
-          // _id: shortid.generate(),
           language: 'ja',
           caption,
         }
@@ -447,8 +437,6 @@ class Store {
     imagesAndVideosObj.arr = clonedArr;
     
     
-    
-    
     // console.log(`\n---------- clonedArr ----------\n`);
     // console.dir(clonedArr);
     // console.log(`\n-----------------------------------\n`);
@@ -458,9 +446,7 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    this.handleSetImagesAndVideosObj({ pathArr, value: imagesAndVideosObj });
-    
-    // lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
     
     
     // ---------------------------------------------
@@ -474,7 +460,6 @@ class Store {
     // console.log(`\n---------- this.dataObj ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(this.dataObj)));
     // console.log(`\n-----------------------------------\n`);
-    
     
     
   };
@@ -622,7 +607,6 @@ class Store {
     // ---------------------------------------------
     
     clonedArr.push({
-      // _id: shortid.generate(),
       _id: '',
       type: 'video',
       videoChannel,
@@ -636,8 +620,7 @@ class Store {
     //   更新
     // ---------------------------------------------
     
-    this.handleSetImagesAndVideosObj({ pathArr, value: imagesAndVideosObj });
-    // lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
     
     
     // ---------------------------------------------
@@ -670,9 +653,8 @@ class Store {
     //   データ取得＆クローン
     // ---------------------------------------------
     
-    const imagesAndVideosObj = this.handleGetImagesAndVideosObj({ pathArr });
+    const imagesAndVideosObj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     const arr = lodashGet(imagesAndVideosObj, ['arr'], []);
-    // const arr = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], []);
     const clonedArr = lodashCloneDeep(arr);
     
     
@@ -695,14 +677,8 @@ class Store {
     // ---------------------------------------------
     
     imagesAndVideosObj.arr = clonedArr;
-    this.handleSetImagesAndVideosObj({ pathArr, value: imagesAndVideosObj });
-    // lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], clonedArr);
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj', 'arr'], clonedArr);
     
-    // console.log(`
-    //   ----- clonedArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(clonedArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
   };
   

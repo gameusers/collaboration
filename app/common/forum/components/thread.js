@@ -134,8 +134,6 @@ export default injectIntl(class extends React.Component {
     
     const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id } = this.props;
     
-    // const communities_id = gameCommunities_id || userCommunities_id;
-    
     
     
     
@@ -229,8 +227,8 @@ export default injectIntl(class extends React.Component {
       const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      // const editable = lodashGet(valueObj, ['editable'], false);
-      const editable = true;
+      const editable = lodashGet(valueObj, ['editable'], false);
+      // const editable = true;
       
       // --------------------------------------------------
       //   Show

@@ -823,6 +823,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const forumObj = await ModelForumThreads.findForForum({
+      req,
       localeObj,
       loginUsers_id,
       userCommunities_id,

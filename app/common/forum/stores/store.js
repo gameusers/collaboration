@@ -404,13 +404,6 @@ class Store {
   async handleShowFormThread({ pathArr, forumThreads_id }) {
     
     
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    // const showForm = lodashGet(this.dataObj, [forumThreads_id, 'showForm'], false);
-    
-    
     try {
       
       
@@ -423,7 +416,11 @@ class Store {
       }
       
       
-      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // ---------------------------------------------
       //   Loading 表示
@@ -490,8 +487,7 @@ class Store {
       
       lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'name'], name);
       lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'description'], description);
-      storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr: [forumThreads_id], value: imagesAndVideosObj });
-      // lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id], imagesAndVideosObj);
+      lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id, 'formThreadObj', 'imagesAndVideosObj'], imagesAndVideosObj);
       
       
       // console.log(`
@@ -550,7 +546,7 @@ class Store {
    * スレッド作成・編集フォームを送信する
    */
   @action.bound
-  async handleSubmitFormThread({ pathArr, imagesAndVideosPathArr, gameCommunities_id, userCommunities_id, forumThreads_id }) {
+  async handleSubmitFormThread({ pathArr, gameCommunities_id, userCommunities_id, forumThreads_id }) {
     
     
     // ---------------------------------------------
@@ -561,7 +557,8 @@ class Store {
     
     const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
     const description = lodashGet(this.dataObj, [...pathArr, 'description'], '');
-    const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr: imagesAndVideosPathArr });
+    
+    const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
     
     
     try {
@@ -616,12 +613,6 @@ class Store {
       // console.log(`
       //   ----- pathArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- imagesAndVideosPathArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosPathArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -707,8 +698,6 @@ class Store {
       //   Update Thread List
       // ---------------------------------------------
       
-      // const forumUpdatedDate = lodashGet(resultObj, ['data', 'updatedDateObj', 'forum'], '0000-01-01T00:00:00Z');
-      
       const threadListLimit = lodashGet(this.dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
       
       await this.handleReadThreadsList({
@@ -716,12 +705,11 @@ class Store {
         userCommunities_id,
         page: 1,
         limit: threadListLimit,
-        // forumUpdatedDate,
       });
       
       
       // ---------------------------------------------
-      //   Navigation Change openedTabNo 0
+      //   Navigation / 開いているタブをスレッド一覧に変更する
       // ---------------------------------------------
       
       this.handleEdit({
@@ -735,7 +723,7 @@ class Store {
       // ---------------------------------------------
       
       if (forumThreads_id) {
-        // pathArr: [forumThreads_id, 'showForm']
+        
         lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
         
       } else {
@@ -754,7 +742,7 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: 'pInPmleQh',
+        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
       });
       
       

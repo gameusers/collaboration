@@ -126,24 +126,15 @@ export default injectIntl(class extends React.Component {
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
-    const { dataObj, handleGetImagesAndVideosObj, handleRemovePreview } = storeImageAndVideoForm;
+    const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
     
     
-    // const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
-    // const imagesAndVideosObj = lodashGet(dataObj, pathArr, {});
-    const imagesAndVideosObj = handleGetImagesAndVideosObj({ pathArr });
-    
+    const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
     const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     
     const type = lodashGet(formattedObj, ['type'], '');
     const arr = lodashGet(formattedObj, ['arr'], []);
     
-    
-    // console.log(`
-    //   ----- formattedObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(`
     //   ----- pathArr -----\n
@@ -154,6 +145,12 @@ export default injectIntl(class extends React.Component {
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -205,10 +202,6 @@ export default injectIntl(class extends React.Component {
         const src = valueObj.src;
         const width = valueObj.width;
         const height = valueObj.height;
-        
-        // const src = lodashGet(valueObj, ['srcSetArr', 0, 'src'], '');
-        // const width = lodashGet(valueObj, ['srcSetArr', 0, 'width'], 0);
-        // const height = lodashGet(valueObj, ['srcSetArr', 0, 'height'], 0);
         
         
         // ---------------------------------------------
@@ -413,7 +406,6 @@ export default injectIntl(class extends React.Component {
       }
       
     };
-      
     
     
     

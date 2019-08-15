@@ -104,24 +104,24 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   
   
   
-  console.log(`
-    ----- newObj -----\n
-    ${util.inspect(newObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- newObj -----\n
+  //   ${util.inspect(newObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(`
-    ----- oldObj -----\n
-    ${util.inspect(oldObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- oldObj -----\n
+  //   ${util.inspect(oldObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(chalk`
-    loginUsers_id: {green ${loginUsers_id}}
-    ISO8601: {green ${ISO8601}}
-    minSize: {green ${minSize}}
-    square: {green ${square}}
-  `);
+  // console.log(chalk`
+  //   loginUsers_id: {green ${loginUsers_id}}
+  //   ISO8601: {green ${ISO8601}}
+  //   minSize: {green ${minSize}}
+  //   square: {green ${square}}
+  // `);
   
   // return;
   
@@ -443,48 +443,68 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   画像を削除する
   // ---------------------------------------------
   
-  console.log(`
-    ----- _idsArr -----\n
-    ${util.inspect(_idsArr, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- _idsArr -----\n
+  //   ${util.inspect(_idsArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
+  // ----------------------------------------
+  //   すべて削除
+  // ----------------------------------------
   
-  for (let valueObj of oldArr.values()) {
+  // let deleteAll = false;
+  
+  if (newArr.length === 0 && oldArr.length > 0) {
     
-    // console.log(`
-    //   ----- valueObj -----\n
-    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    const dirPath = `static/img/${type}/${_id}`;
     
+    rimraf(dirPath, (err) => {
+      if (err) {
+        throw new CustomError({ level: 'error', errorsArr: [{ code: 'mPduhlAfV', messageID: 'Error' }] });
+      }
+    });
     
+    // deleteAll = true;
     
+  } else {
     
-    if (_idsArr.includes(valueObj._id) === false) {
+    for (let valueObj of oldArr.values()) {
       
-      const dirPath = `static/img/${type}/${_id}/${valueObj._id}`;
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
+      if (_idsArr.includes(valueObj._id) === false) {
+        
+        const dirPath = `static/img/${type}/${_id}/${valueObj._id}`;
+        
+        rimraf(dirPath, (err) => {
+          if (err) {
+            throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
+          }
+        });
+        
+        // console.log(chalk`
+        //   valueObj._id: {green ${valueObj._id}}
+        //   dirPath: {green ${dirPath}}
+        // `);
+        
+        // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
+        // console.dir(fs.statSync(dirPath));
+        // console.log(`\n-----------------------------------\n`);
+        
+      }
       
-      rimraf(dirPath, (err) => {
-        if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
-        }
-      });
-      
-      console.log(chalk`
-        valueObj._id: {green ${valueObj._id}}
-        dirPath: {green ${dirPath}}
-      `);
-      
-      // console.log(`\n---------- fs.statSync(dirPath) ----------\n`);
-      // console.dir(fs.statSync(dirPath));
-      // console.log(`\n-----------------------------------\n`);
       
     }
     
-    
   }
+  
+  
+  
   
   
   

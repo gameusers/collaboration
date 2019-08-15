@@ -229,6 +229,7 @@ const ja_JP = {
   
   // /app/common/forum/stores/store.js
   'pInPmleQh': 'スレッドを作成しました',
+  'HINAkcSmJ': 'スレッドを編集しました',
   
   
   // ---------------------------------------------

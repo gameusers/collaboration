@@ -17,6 +17,8 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+import Pagination from 'rc-pagination';
+import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -34,6 +36,7 @@ import IconButton from '@material-ui/core/IconButton';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Paper from '@material-ui/core/Paper';
 
 
 // ---------------------------------------------
@@ -161,6 +164,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleReadThreads,
       handleShowFormThread,
       
     } = storeForum;
@@ -171,7 +175,14 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
+    const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
+    const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], process.env.FORUM_THREAD_LIMIT);
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
+    //FORUM_THREAD_LIMIT
+    
+    
+    // const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
+    
     
     
     // --------------------------------------------------
@@ -571,6 +582,44 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         {componentArr}
+        
+        
+        {/*<div
+          css={css`
+            margin: 0 0 0 0;
+            padding: 4px;
+            background-color: white;
+          `}
+        >*/}
+        <Paper
+          css={css`
+            // margin: 0 0 0 0;
+            padding: 8px;
+            // background-color: white;
+          `}
+        >
+          <Pagination
+            // selectComponentClass={Select}
+            // showQuickJumper
+            disabled={buttonDisabled}
+            showSizeChanger={true}
+            
+            pageSizeOptions={['1', '3', '5', '10', '20', '50']}
+            // onShowSizeChange={onShowSizeChange}
+            onChange={(page) => handleReadThreads({
+              pathArr: this.pathArr,
+              gameCommunities_id: gameCommunities_id,
+              userCommunities_id: userCommunities_id,
+              page,
+            })}
+            pageSize={limit}
+            current={page}
+            // total={count}
+            total={500}
+            locale={localeInfo}
+          />
+        </Paper>
+        {/*</div>*/}
         
       </React.Fragment>
     );

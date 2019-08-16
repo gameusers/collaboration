@@ -49,7 +49,7 @@ const { validationIP } = require('../../@validations/ip');
 const { validationUserCommunities_idServer } = require('../user-communities/validations/_id-server');
 
 const { validationForumThreads_idServer } = require('./validations/_id-server');
-const { validationForumThreadsLimit } = require('./validations/limit');
+const { validationForumThreadsForListLimit } = require('./validations/limit');
 const { validationForumThreadsName } = require('./validations/name');
 const { validationForumThreadsDescription } = require('./validations/description');
 
@@ -148,7 +148,7 @@ router.post('/list-uc', upload.none(), async (req, res, next) => {
     
     await validationUserCommunities_idServer({ value: userCommunities_id });
     await validationInteger({ throwError: true, required: true, value: pageInt });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
+    await validationForumThreadsForListLimit({ throwError: true, required: true, value: limitInt });
     
     
     // --------------------------------------------------

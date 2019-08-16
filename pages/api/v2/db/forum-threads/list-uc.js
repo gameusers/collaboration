@@ -24,7 +24,7 @@ const lodashSet = require('lodash/set');
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+const { validationForumThreadsForListLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 
 
 // ---------------------------------------------
@@ -140,7 +140,7 @@ export default async (req, res) => {
     
     await validationUserCommunities_idServer({ value: userCommunities_id });
     await validationInteger({ throwError: true, required: true, value: pageInt });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
+    await validationForumThreadsForListLimit({ throwError: true, required: true, value: limitInt });
     
     
     // --------------------------------------------------

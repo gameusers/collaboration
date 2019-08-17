@@ -49,7 +49,7 @@ const { validationIP } = require('../../@validations/ip');
 const { validationUserCommunities_idServer } = require('../user-communities/validations/_id-server');
 
 const { validationForumThreads_idServer } = require('./validations/_id-server');
-const { validationForumThreadsForListLimit } = require('./validations/limit');
+const { validationForumThreadsForListLimit, validationForumThreadsLimit } = require('./validations/limit');
 const { validationForumThreadsName } = require('./validations/name');
 const { validationForumThreadsDescription } = require('./validations/description');
 
@@ -88,10 +88,10 @@ let statusCode = 400;
 
 
 // --------------------------------------------------
-//   スレッド一覧 読み込み / ユーザーコミュニティ用 / endpointID: WM1-TR3MY
+//   スレッド一覧 読み込み / endpointID: WM1-TR3MY
 // --------------------------------------------------
 
-router.post('/list-uc', upload.none(), async (req, res, next) => {
+router.post('/read-threads-list', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -155,7 +155,7 @@ router.post('/list-uc', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForList({
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       localeObj,
       loginUsers_id,
       userCommunities_id,
@@ -194,6 +194,150 @@ router.post('/list-uc', upload.none(), async (req, res, next) => {
     const resultErrorObj = returnErrorsArr({
       errorObj,
       endpointID: 'WM1-TR3MY',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   スレッド 読み込み / endpointID: SR-1hVpJ_
+// --------------------------------------------------
+
+router.post('/read-threads', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { gameCommunities_id, userCommunities_id, page, limit } = req.body;
+    
+    const pageInt = parseInt(page, 10);
+    const limitInt = parseInt(limit, 10);
+    
+    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['page'], pageInt);
+    lodashSet(requestParametersObj, ['limit'], limitInt);
+    
+    
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${pageInt} / ${typeof pageInt}}
+    //   limit: {green ${limitInt} / ${typeof limitInt}}
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+    } else {
+      await validationUserCommunities_idServer({ value: userCommunities_id });
+    }
+    
+    await validationInteger({ throwError: true, required: true, value: pageInt });
+    await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
+    
+    const forumObj = await ModelForumThreads.findForThreads({
+      req,
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+      threadPage: pageInt,
+      threadLimit: limitInt,
+    });
+    
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
+    
+    
+    // --------------------------------------------------
+    //   DB find / User Communities
+    // --------------------------------------------------
+    
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'SR-1hVpJ_',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

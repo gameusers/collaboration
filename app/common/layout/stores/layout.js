@@ -786,6 +786,24 @@ class Store {
   };
   
   
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Scroll To Top
+  // ---------------------------------------------
+  
+  /**
+   * 利用規約のダイアログを表示する
+   */
+  // @action.bound
+  // handleScrollToTop() {
+  //   this.termsOfServiceDialogOpen = true;
+  // };
+  
+  
+  
 }
 
 

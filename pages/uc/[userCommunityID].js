@@ -18,6 +18,7 @@ import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
+import { Element } from 'react-scroll';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -119,11 +120,11 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
@@ -417,15 +418,17 @@ export default class extends React.Component {
               <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
               
               
-              <div
-                css={css`
-                  margin 12px 0 0 0;
-                `}
-              >
+              <Element name="forumThreads">
                 
-                <ForumThread userCommunities_id={this.props.userCommunities_id} />
+                <div
+                  css={css`
+                    margin 12px 0 0 0;
+                  `}
+                >
+                  <ForumThread userCommunities_id={this.props.userCommunities_id} />
+                </div>
                 
-              </div>
+              </Element>
               
               
               {/* プレイヤーカード */}

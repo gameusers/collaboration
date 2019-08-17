@@ -15,9 +15,10 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import styled from '@emotion/styled';
 // import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
+import { animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
+import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -94,7 +95,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const { stores } = this.props;
+    const { stores } = this.props;
+    
+    // const handleScrollToTop = lodashGet(stores, ['layout', 'handleScrollToTop'], '');
     
     
     // --------------------------------------------------
@@ -188,7 +191,7 @@ export default class extends React.Component {
               right: 10px;
             `}
           >
-            <Fab color="secondary" size="small">
+            <Fab color="secondary" size="small" onClick={scroll.scrollToTop}>
               <IconNavigation />
             </Fab>
           </div>

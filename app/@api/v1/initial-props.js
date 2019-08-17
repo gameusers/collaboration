@@ -805,7 +805,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads For List
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForList({
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       localeObj,
       loginUsers_id,
       userCommunities_id,
@@ -822,7 +822,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     //   DB find / Forum
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForForum({
+    const forumObj = await ModelForumThreads.findForThreads({
       req,
       localeObj,
       loginUsers_id,

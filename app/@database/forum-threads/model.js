@@ -263,7 +263,7 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {number} limit - 1ページに表示する件数
  * @return {Array} 取得データ
  */
-const findForList = async ({
+const findForThreadsList = async ({
   
   localeObj,
   loginUsers_id,
@@ -456,10 +456,10 @@ const findForList = async ({
  * スレッドを取得する
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドのIDが入った配列
+ * @param {string} userCommunities_id - DB user-communities _id / コミュニティID
  * @return {Array} 取得データ
  */
-const findForForum = async ({
+const findForThreads = async ({
   
   req,
   localeObj,
@@ -1228,8 +1228,8 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
-  findForList,
-  findForForum,
+  findForThreadsList,
+  findForThreads,
   findForEdit,
   transactionForUpsertThread,
 };

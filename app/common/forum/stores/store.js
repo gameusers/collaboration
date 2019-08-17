@@ -16,6 +16,7 @@ const util = require('util');
 
 import { action, observable } from 'mobx';
 import moment from 'moment';
+import { animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -293,8 +294,8 @@ class Store {
         
         resultObj = await fetchWrapper({
           // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=community1`),
-          // urlApi: `${process.env.URL_API}/v2/db/forum-threads/list-uc`,
-          urlApi: `${process.env.URL_API}/v1/forum-threads/list-uc`,
+          // urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads-list`,
+          urlApi: `${process.env.URL_API}/v1/forum-threads/read-threads-list`,
           methodType: 'POST',
           formData: formData,
         });
@@ -434,26 +435,26 @@ class Store {
       }
       
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        page: {green ${page}}
-        limit: {green ${limit}}
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   page: {green ${page}}
+      //   limit: {green ${limit}}
         
-        loadedDate  : {green ${loadedDate}}
-      `);
+      //   loadedDate: {green ${loadedDate}}
+      // `);
       
-      console.log(`
-        ----- arr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -513,6 +514,9 @@ class Store {
       }
       
       
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
       
       
       // ---------------------------------------------
@@ -569,22 +573,19 @@ class Store {
       
       let resultObj = {};
       
-      // if (gameCommunities_id) {
+      if (gameCommunities_id) {
         
         
         
-      // } else {
+      } else {
         
-      //   resultObj = await fetchWrapper({
-      //     // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=community1`),
-      //     // urlApi: `${process.env.URL_API}/v2/db/forum-threads/list-uc`,
-      //     urlApi: `${process.env.URL_API}/v1/forum-threads/list-uc`,
-      //     methodType: 'POST',
-      //     formData: formData,
-      //   });
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v1/forum-threads/read-threads`,
+          methodType: 'POST',
+          formData: formData,
+        });
         
-      // }
-      
+      }
       
       
       // console.log(`\n---------- resultObj ----------\n`);
@@ -604,40 +605,40 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Thread Data
+      //   forumThreadsObj
       // ---------------------------------------------
       
-      // const newObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      const newObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
-      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // const mergedObj = reload ? newObj : lodashMerge(clonedObj.forumThreadsObj, newObj);
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const mergedObj = reload ? newObj : lodashMerge(clonedObj.forumThreadsObj, newObj);
       
-      // clonedObj.forumThreadsObj = mergedObj;
+      clonedObj.forumThreadsObj = mergedObj;
       
-      // // console.log(`
-      // //   ----- mergedObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- mergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
-      //   Page & Limit
+      //   Page
       // ---------------------------------------------
       
       clonedObj.forumThreadsObj.page = page;
       
       
-      // // --------------------------------------------------
-      // //   UpdatedDateObj
-      // // --------------------------------------------------
+      // --------------------------------------------------
+      //   Community UpdatedDateObj
+      // --------------------------------------------------
       
-      // const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      // clonedObj.updatedDateObj = updatedDateObj;
+      const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      clonedObj.updatedDateObj = updatedDateObj;
       
       
       // ---------------------------------------------
-      //   Update forumThreadsForListObj
+      //   Update
       // ---------------------------------------------
       
       this.handleEdit({
@@ -674,6 +675,31 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
+      
+      
+      
+      // scroll.scrollToTop();
+      // scroller.scrollTo('forumThreads', {
+      //   duration: 1500,
+      //   delay: 100,
+      //   smooth: true,
+      //   containerId: 'layout',
+      //   // offset: 50, // Scrolls to element + 50 pixels down the page
+      // });
+      
+      // scroll.scrollTo(300);
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      scroller.scrollTo('forumThreads', {
+        duration: 800,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -100,
+      });
       
       
     }

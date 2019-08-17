@@ -38,6 +38,12 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 
 // ---------------------------------------------
 //   Material UI / Icons
@@ -71,6 +77,13 @@ const stylesObj = {
   
   expanded: {
     marginBottom: '0 !important',
+  },
+  
+  input: {
+    fontSize: '12px',
+    color: '#666',
+    // marginLeft: '12px',
+    padding: '6px 18px 6px 12px',
   },
   
 };
@@ -581,45 +594,90 @@ export default injectIntl(class extends React.Component {
     return (
       <React.Fragment>
         
+        
+        
+        {/*<div id="forumThreads" />*/}
+        {/*<a href="#forumThreads" name="forumThreads" id="forumThreads" />*/}
+        
+        
         {componentArr}
         
         
-        {/*<div
-          css={css`
-            margin: 0 0 0 0;
-            padding: 4px;
-            background-color: white;
-          `}
-        >*/}
+        {/* Pagination */}
         <Paper
           css={css`
-            // margin: 0 0 0 0;
-            padding: 8px;
-            // background-color: white;
+            display: flex;
+            flex-flow: row wrap;
+            padding: 0 8px 8px 8px;
           `}
         >
-          <Pagination
-            // selectComponentClass={Select}
-            // showQuickJumper
-            disabled={buttonDisabled}
-            showSizeChanger={true}
+          
+          
+          {/* Pagination */}
+          <div
+            css={css`
+              margin: 8px 24px 0 0;
+            `}
+          >
             
-            pageSizeOptions={['1', '3', '5', '10', '20', '50']}
-            // onShowSizeChange={onShowSizeChange}
-            onChange={(page) => handleReadThreads({
-              pathArr: this.pathArr,
-              gameCommunities_id: gameCommunities_id,
-              userCommunities_id: userCommunities_id,
-              page,
-            })}
-            pageSize={limit}
-            current={page}
-            // total={count}
-            total={500}
-            locale={localeInfo}
-          />
+            <Pagination
+              disabled={buttonDisabled}
+              onChange={(page) => handleReadThreads({
+                pathArr: this.pathArr,
+                gameCommunities_id: gameCommunities_id,
+                userCommunities_id: userCommunities_id,
+                page,
+              })}
+              pageSize={limit}
+              current={page}
+              total={count}
+              // total={500}
+              locale={localeInfo}
+            />
+            
+          </div>
+          
+          
+          {/* Rows Per Page */}
+          <FormControl
+            css={css`
+              margin: 8px 0 0 0 !important;
+            `}
+            variant="outlined"
+          >
+            
+            <Select
+              value={limit}
+              onChange={(eventObj) => handleReadThreads({
+                pathArr: this.pathArr,
+                gameCommunities_id: gameCommunities_id,
+                userCommunities_id: userCommunities_id,
+                page: 1,
+                limit: eventObj.target.value,
+              })}
+              input={
+                <OutlinedInput
+                  classes={{
+                    input: classes.input
+                  }}
+                  name="forum-threads-pagination"
+                  id="outlined-rows-per-page"
+                />
+              }
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+            
+          </FormControl>
+          
         </Paper>
-        {/*</div>*/}
+        
+        
         
       </React.Fragment>
     );

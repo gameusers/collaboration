@@ -17,12 +17,12 @@ import util from 'util';
 import React from 'react';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import { useSpring, animated } from 'react-spring';
+// import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-import styled from '@emotion/styled';
+// import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
@@ -81,28 +81,33 @@ const stylesObj = {
 //   react-spring
 // --------------------------------------------------
 
-const Container = ({ children, headerNavTopImmediate, headerNavTopShow }) => {
+// const Container = ({ children, headerNavTopImmediate, headerNavTopShow }) => {
   
-  const Header = styled(animated.header)`
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    background-color: white;
-    width: 100%;
-    height: 53px;
-    position: sticky;
-    top: 0;
-    z-index: 1001;
-  `;
+//   // const Header = styled(animated.header)`
+//   //   display: flex;
+//   //   flex-flow: row nowrap;
+//   //   align-items: center;
+//   //   background-color: white;
+//   //   width: 100%;
+//   //   height: 53px;
+//   //   position: sticky;
+//   //   top: 0;
+//   //   z-index: 1001;
+//   // `;
   
-  const props = useSpring({
-    transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)',
-    immediate: headerNavTopImmediate,
-  });
+//   // // const props = useSpring({
+//   // //   transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)',
+//   // //   immediate: headerNavTopImmediate,
+//   // // });
+//   // const props = useSpring({
+//   //   transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)',
+//   //   immediate: headerNavTopImmediate,
+//   // });
   
-  return <Header style={props}>{children}</Header>;
+//   // return <Header>{children}</Header>;
+//   return <header>{children}</header>;
   
-};
+// };
 
 
 
@@ -164,7 +169,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container headerNavTopImmediate={headerNavTopImmediate} headerNavTopShow={headerNavTopShow}>
+      <header>
         
         
         {/* ロゴ */}
@@ -223,6 +228,8 @@ export default class extends React.Component {
             display: flex;
             flex-grow: 1;
             justify-content: center;
+            
+            // max-width: 63%;
             margin-left: auto;
           `}
         >
@@ -364,7 +371,7 @@ export default class extends React.Component {
         </Menu>
         
         
-      </Container>
+      </header>
     );
     
   }

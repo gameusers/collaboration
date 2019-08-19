@@ -135,6 +135,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleShowFormComment,
       
     } = storeForum;
     
@@ -177,6 +178,8 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Component - Comment & Reply
     // --------------------------------------------------
@@ -187,10 +190,15 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   User
+      //   _id
       // --------------------------------------------------
       
       const forumComments_id = lodashGet(valueObj, ['_id'], '');
+      
+      
+      // --------------------------------------------------
+      //   User Data
+      // --------------------------------------------------
       
       let thumbnailSrc = '';
       
@@ -246,7 +254,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const showFormReply = lodashGet(dataObj, [forumComments_id, 'formReplyObj', 'show'], false);
-      // console.log(forumComments_id);
+      
       
       
       
@@ -496,7 +504,10 @@ export default injectIntl(class extends React.Component {
                     }
                   `}
                   variant="outlined"
-                  // onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
+                  onClick={() => handleShowFormComment({
+                    pathArr: this.pathArr,
+                    forumComments_id,
+                  })}
                 >
                   <IconEdit
                     css={css`

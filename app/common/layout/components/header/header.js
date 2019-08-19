@@ -99,7 +99,9 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   スクロールされる度に呼び出される関数を設定する
+    //   スクロールされる度に呼び出される関数を設定する / ヘッダーのアニメーション用
+    //   以下の一文を表示すると、このエラーが表示される。そのうち直すように。
+    //   Warning: Can't perform a React state update on an unmounted component.
     // --------------------------------------------------
     
     window.addEventListener('scroll', this.props.stores.layout.handleHeaderNavOnScroll);

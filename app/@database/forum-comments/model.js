@@ -34,13 +34,15 @@ const SchemaForumComments = require('./schema');
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+const { CustomError } = require('../../@modules/error/custom');
+const { verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatLocalesArr } = require('../../@format/image');
+const { formatImagesAndVideosArr } = require('../../@format/image');
 
 
 
@@ -834,6 +836,200 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
 
 
 
+/**
+ * コメント＆返信データを取得する　編集用
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumComments_id - DB forum-comments _id
+ * @return {Array} 取得データ
+ */
+const findForEdit = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  forumComments_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumComments.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match : { _id: forumComments_id }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (resultArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'hSZgl_T02', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    const editable = verifyAuthority({
+      req,
+      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+      _id: lodashGet(resultArr, [0, '_id'], ''),
+    });
+    
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    // const _id = lodashGet(resultArr, [0, '_id'], '');
+    // const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    // let name = '';
+    // let description = '';
+    
+    
+    // // --------------------------------------------------
+    // //   Name & Description
+    // // --------------------------------------------------
+    
+    // const filteredArr = resultArr.filter((filterObj) => {
+    //   return filterObj.language === localeObj.language;
+    // });
+    
+    
+    // if (lodashHas(filteredArr, [0])) {
+      
+    //   name = lodashGet(filteredArr, [0, 'name'], '');
+    //   description = lodashGet(filteredArr, [0, 'description'], '');
+      
+    // } else {
+      
+    //   name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
+    //   description = lodashGet(resultArr, [0, 'localesArr', 0, 'description'], '');
+      
+    // }
+    
+    
+    const returnObj = {
+      // _id,
+      // name,
+      // description,
+      // imagesAndVideosObj,
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      forumComments_id: {green ${forumComments_id}}
+    `);
+    
+    console.log(`
+      ----- resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -846,4 +1042,5 @@ module.exports = {
   insertMany,
   deleteMany,
   findForForumCommentsAndReplies,
+  findForEdit,
 };

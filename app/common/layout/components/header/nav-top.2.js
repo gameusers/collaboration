@@ -83,24 +83,8 @@ const stylesObj = {
 
 const Container = ({ children, headerNavTopImmediate, headerNavTopShow }) => {
   
-  const Header = styled(animated.header)`
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    background-color: white;
-    width: 100%;
-    height: 53px;
-    position: sticky;
-    top: 0;
-    z-index: 1001;
-  `;
   
-  const props = useSpring({
-    transform: headerNavTopShow ? 'translateY(0px)' : 'translateY(-53px)',
-    immediate: headerNavTopImmediate,
-  });
-  
-  return <Header style={props}>{children}</Header>;
+  return <div>aaa</div>
   
 };
 
@@ -223,6 +207,8 @@ export default class extends React.Component {
             display: flex;
             flex-grow: 1;
             justify-content: center;
+            
+            // max-width: 63%;
             margin-left: auto;
           `}
         >
@@ -299,13 +285,35 @@ export default class extends React.Component {
         
         {/* ログインメニュー */}
         <Menu
+          // css={css`
+          //   && {
+          //     top: 14px;
+          //     right: 14px;
+          //     margin: 0 8px 0 0;
+          //   }
+          // `}
           classes={{
             paper: classes.paper
           }}
+          // id="customized-menu"
+          // anchorEl={null}
+          // anchorEl={stores.layout.headerLoginMenuAnchorEl}
+          // keepMounted
           open={stores.layout.headerLoginMenuOpen}
           onClose={stores.layout.handleHeaderLoginMenuClose}
           disableAutoFocusItem={true}
+          // anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          // anchorOrigin={{
+          //   vertical: 'top',
+          //   horizontal: 'right',
+          // }}
+          // transformOrigin={{
+          //   vertical: 'top',
+          //   horizontal: 'right',
+          // }}
+          // anchorPosition={{ left: 800, top: 0 }}
           anchorReference="none"
+          // getContentAnchorEl={null}
         >
           
           

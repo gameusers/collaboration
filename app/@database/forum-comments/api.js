@@ -15,11 +15,13 @@ const util = require('util');
 // ---------------------------------------------
 
 const express = require('express');
+
 const multer  = require('multer');
-const upload = multer({ dest: 'static/' });
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcryptjs');
+const upload = multer({
+  dest: 'static/',
+  limits: { fieldSize: 25 * 1024 * 1024 },// 25MB
+});
+
 const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
@@ -31,52 +33,38 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../@modules/csrf');
-const { verifyRecaptcha } = require('../../@modules/recaptcha');
-const { encrypt }  = require('../../@modules/crypto');
-const { errorCodeIntoErrorObj } = require('../../@modules/error/error-obj');
 const { returnErrorsArr } = require('../../@modules/log/log');
 const { CustomError } = require('../../@modules/error/custom');
-const { sendMailConfirmation } = require('../../@modules/email');
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-const { formatEmailSecret } = require('../../@format/email');
+const { formatAndSave } = require('../../@modules/image/save');
+const { setAuthority, verifyAuthority } = require('../../@modules/authority');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validation_id } = require('../../@validations/_id');
+const { validationInteger } = require('../../@validations/integer');
+const { validationIP } = require('../../@validations/ip');
 
-const { validationUsersLoginID } = require('./validations/login-id');
-const { validationUsersLoginIDServer } = require('./validations/login-id-server');
-const { validationUsersLoginPassword } = require('./validations/login-password');
-const { validationUsersEmailServer } = require('./validations/email-server');
-const { validationUsersPlayerIDServer } = require('./validations/player-id-server');
-const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
+const { validationUserCommunities_idServer } = require('../user-communities/validations/_id-server');
+
+// const { validationForumThreads_idServer } = require('./validations/_id-server');
+// const { validationForumThreadsForListLimit, validationForumThreadsLimit } = require('./validations/limit');
+// const { validationForumThreadsName } = require('./validations/name');
+// const { validationForumThreadsDescription } = require('./validations/description');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('./model');
-const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
-const SchemaUsers = require('../../@database/users/schema');
+const ModelForumComments = require('./model');
+const ModelUserCommunities = require('../../@database/user-communities/model');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
-
-// const { addLocaleData } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
 
 const { locale } = require('../../@locales/locale');
 
@@ -95,283 +83,24 @@ const router = express.Router();
 // --------------------------------------------------
 
 let statusCode = 400;
-let loginUsers_id = '';
-let logLevel = 'error';
-
-let errorArgumentsObj = {
-  fileID: 'EOnyUrk82',
-  functionID: '',
-  messageCode: 'Error',
-  errorCodeArr: ['Error'],
-  errorObj: {},
-  loginUsers_id: ''
-};
 
 
 
 
 // --------------------------------------------------
-//   ログイン Passport：Local（ID & Password） / endpointID: ZVCmdUTHQ
-//   
-//   参考：
-//  　 http://www.passportjs.org/docs/username-password/
-//   
-//   参考 カスタムコールバック：
-//     http://www.passportjs.org/docs/authenticate/
-//     http://knimon-software.github.io/www.passportjs.org/guide/authenticate/
+//   スレッド 読み込み / endpointID: SR-1hVpJ_
 // --------------------------------------------------
 
-router.post('/login', upload.none(), (req, res, next) => {
-  
-  passport.authenticate('local', async (err, user, info) => {
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const requestParametersObj = {};
-    
-    
-    try {
-      
-      
-      // --------------------------------------------------
-      //   POST Data
-      // --------------------------------------------------
-      
-      const { loginID, loginPassword, response } = req.body;
-      
-      lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
-      lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
-      
-      
-      // ---------------------------------------------
-      //   Verify CSRF
-      // ---------------------------------------------
-      
-      verifyCsrfToken(req, res);
-      
-      
-      // ---------------------------------------------
-      //   Verify reCAPTCHA
-      // ---------------------------------------------
-      
-      await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
-      
-      
-      // --------------------------------------------------
-      //   Login Check
-      // --------------------------------------------------
-      
-      if (req.isAuthenticated()) {
-        statusCode = 401;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yyaAiB5f-', messageID: 'V9vI1Cl1S' }] });
-      }
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(chalk`
-      //   loginID: {green ${loginID}}
-      //   loginPassword: {green ${loginPassword}}
-      //   response: {green ${response}}
-      //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-      // `);
-      
-      
-      // --------------------------------------------------
-      //   Validation
-      // --------------------------------------------------
-      
-      await validationUsersLoginID({ throwError: true, required: true, value: loginID });
-      await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if (err) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'BBoMlwE0o-', messageID: 'Error' }] });
-      }
-      
-      if (!user) {
-        statusCode = 401;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'H0eMuApu6', messageID: 'RIj4SCt_s' }] });
-      }
-      
-      
-      // ---------------------------------------------
-      //   req.logIn - この記述はカスタムコールバックに必要らしい
-      // ---------------------------------------------
-      
-      req.logIn(user, function(err) {
-        
-        
-        // ---------------------------------------------
-        //   Error
-        // ---------------------------------------------
-        
-        if (err) {
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: '5PzzF23_V', messageID: 'Error' }] });
-        }
-        
-        
-        // ---------------------------------------------
-        //   Success
-        // ---------------------------------------------
-        
-        return res.status(200).json({
-          playerID: req.user.playerID
-        });
-        
-        
-      });
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Log
-      // ---------------------------------------------
-      
-      const resultErrorObj = returnErrorsArr({
-        errorObj,
-        endpointID: 'ZVCmdUTHQ',
-        users_id: loginUsers_id,
-        ip: req.ip,
-        requestParametersObj,
-      });
-      
-      
-      // --------------------------------------------------
-      //   Return JSON Object / Error
-      // --------------------------------------------------
-      
-      return res.status(statusCode).json(resultErrorObj);
-      
-      
-    }
-    
-    
-  })(req, res, next);
-  
-});
-
-
-// --------------------------------------------------
-//   Passport Local：ID & Password 認証
-// --------------------------------------------------
-
-passport.use(new LocalStrategy({
-    usernameField: 'loginID',
-    passwordField: 'loginPassword'
-  },
-  (username, password, done) => {
-    
-    // console.log(chalk`
-    //   username: {green ${username}}
-    //   password: {green ${password}}
-    // `);
-    
-    
-    SchemaUsers.findOne({ loginID: username }, (err, user) => {
-      
-      
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if (err) {
-        return done(err);
-      }
-      
-      
-      // --------------------------------------------------
-      //   Error：ユーザーが存在しない
-      // --------------------------------------------------
-      
-      if (!user) {
-        return done(null, false, {});
-      }
-      
-      
-      // --------------------------------------------------
-      //   bcrypt でハッシュ化したパスワードを検証する
-      //   参照：https://github.com/kelektiv/node.bcrypt.js#to-check-a-password-1
-      // --------------------------------------------------
-      
-      if (bcrypt.compareSync(password, user.loginPassword) === false) {
-        return done(null, false, {});
-      }
-      
-      
-      return done(null, user);
-      
-      
-    });
-    
-  }
-));
-
-
-// --------------------------------------------------
-//   シリアライズ
-//   認証時、DB/users コレクションの _id をセッションに保存する
-//   _id は req.session.passport.user に入っている
-// --------------------------------------------------
-
-passport.serializeUser((user, done) => {
-  done(null, user._id);
-});
-
-
-// --------------------------------------------------
-//   デシリアライズ
-//   セッション変数を受け取って中身を検証する
-//   データベースからログインユーザーデータを取得して返す
-//   返ってきたユーザーデータは各 router の req.user から参照できる
-// --------------------------------------------------
-
-passport.deserializeUser(async (id, done) => {
+router.post('/read-threads', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
-  //   データ取得 / Users
-  //   ログインユーザー情報
+  //   Locale
   // --------------------------------------------------
   
-  const usersObj = await ModelUsers.findOneForUser({
-    localeObj: {},
-    conditionObj: { _id: id },
-    loginUsers_id: id
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
   });
-  
-  let loginUsersObj = usersObj[id];
-  loginUsersObj._id = id;
-  
-  // console.log(`\n---------- loginUsersObj ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(loginUsersObj)));
-  // console.log(`\n-----------------------------------\n`);
-  
-  
-  done(null, loginUsersObj);
-  
-  
-});
-
-
-
-
-// --------------------------------------------------
-//   Create Account / endpointID: y9FpGQjEA
-// --------------------------------------------------
-
-router.post('/create-account', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -390,11 +119,25 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     //   POST Data
     // --------------------------------------------------
     
-    const { loginID, loginPassword, email, response } = req.body;
+    const { gameCommunities_id, userCommunities_id, page, limit } = req.body;
     
-    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
-    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
+    const pageInt = parseInt(page, 10);
+    const limitInt = parseInt(limit, 10);
+    
+    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['page'], pageInt);
+    lodashSet(requestParametersObj, ['limit'], limitInt);
+    
+    
+    // console.log(chalk`
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${pageInt} / ${typeof pageInt}}
+    //   limit: {green ${limitInt} / ${typeof limitInt}}
+    // `);
+    
+    
     
     
     // ---------------------------------------------
@@ -402,297 +145,52 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     // ---------------------------------------------
     
     verifyCsrfToken(req, res);
-    
-    
-    // ---------------------------------------------
-    //   Verify reCAPTCHA
-    // ---------------------------------------------
-    
-    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'L0w_PocQA', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   Hash Password
-    // --------------------------------------------------
-    
-    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
-    
-    
-    // --------------------------------------------------
-    //   Encrypt E-Mail
-    // --------------------------------------------------
-    
-    const encryptedEmail = email ? encrypt(email) : '';
     
     
     // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
-    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
-    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
-    await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
-    
-    
-    // --------------------------------------------------
-    //   DB Insert
-    // --------------------------------------------------
-    
-    const ISO8601 = moment().toISOString();
-    const users_id = shortid.generate();
-    const playerID = shortid.generate();
-    const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
-    
-    
-    const usersSaveArr = [{
-      _id: users_id,
-      createdDate: ISO8601,
-      updatedDate: ISO8601,
-      accessDate: ISO8601,
-      playerID,
-      loginID,
-      loginPassword: hashedPassword,
-      emailObj: {
-        value: encryptedEmail,
-        confirmation: false,
-      },
-      country: 'JP',
-      termsOfServiceConfirmedDate: ISO8601,
-      experience: 0,
-      titleArr: [],
-      followArr: [],
-      followCount: 0,
-      followedArr: [],
-      followedCount: 0,
-      role: 'User'
-    }];
-    
-    
-    const cardPlayersSaveArr = [{
-      _id: shortid.generate(),
-      createdDate: ISO8601,
-      updatedDate: ISO8601,
-      users_id,
-      language: 'ja',
-      nameObj: {
-        value: 'Name',
-        search: true,
-      },
-      statusObj: {
-        value: 'Status',
-        search: true,
-      },
-      imagesAndVideosObj: {
-        thumbnailArr: [],
-        mainArr: [],
-      },
-      commentObj: {
-        value: '',
-        search: true,
-      },
-      ageObj: {
-        value: '',
-        alternativeText: '',
-        search: true,
-      },
-      sexObj: {
-        value: 'empty',
-        alternativeText: '',
-        search: true,
-      },
-      addressObj: {
-        value: '',
-        alternativeText: '',
-        search: true,
-      },
-      gamingExperienceObj: {
-        value: '',
-        alternativeText: '',
-        search: true,
-      },
-      hobbiesObj: {
-        valueArr: [],
-        search: true,
-      },
-      specialSkillsObj: {
-        valueArr: [],
-        search: true,
-      },
-      smartphoneObj: {
-        model: '',
-        comment: '',
-        search: true,
-      },
-      tabletObj: {
-        model: '',
-        comment: '',
-        search: true,
-      },
-      pcObj: {
-        model: '',
-        comment: '',
-        specsObj: {
-          os: '',
-          cpu: '',
-          cpuCooler: '',
-          motherboard: '',
-          memory: '',
-          storage: '',
-          graphicsCard: '',
-          opticalDrive: '',
-          powerSupply: '',
-          pcCase: '',
-          monitor: '',
-          mouse: '',
-          keyboard: ''
-        },
-        search: true,
-      },
-      hardwareActiveObj: {
-        valueArr: [],
-        search: true,
-      },
-      hardwareInactiveObj: {
-        valueArr: [],
-        search: true,
-      },
-      idArr: [],
-      activityTimeObj: {
-        valueArr: [],
-        search: true,
-      },
-      lookingForFriendsObj: {
-        value: true,
-        icon: 'emoji_u263a',
-        comment: '',
-        search: true,
-      },
-      voiceChatObj: {
-        value: true,
-        comment: '',
-        search: true,
-      },
-      linkArr: []
-    }];
-    
-    
-    let emailConfirmationsSaveArr = [];
-    
-    if (email) {
+    if (gameCommunities_id) {
       
-      emailConfirmationsSaveArr = [{
-        _id: shortid.generate(),
-        isSuccess: false,
-        createdDate: ISO8601,
-        users_id,
-        emailConfirmationID,
-        email: encryptedEmail,
-        count: 1,
-      }];
-      
+    } else {
+      await validationUserCommunities_idServer({ value: userCommunities_id });
     }
     
+    await validationInteger({ throwError: true, required: true, value: pageInt });
+    await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
     
-    await ModelUsers.transactionForCreateAccount({ usersSaveArr, cardPlayersSaveArr, emailConfirmationsSaveArr });
+    
     
     
     // --------------------------------------------------
-    //   console.log
+    //   DB find / Forum Threads
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
-    //   email: {green ${email}}
-    //   hashedPassword: {green ${hashedPassword}}
-    //   encryptedEmail: {green ${encryptedEmail}}
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'y9FpGQjEA',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
+    const forumObj = await ModelForumThreads.findForThreads({
+      req,
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+      threadPage: pageInt,
+      threadLimit: limitInt,
     });
     
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
+    
     
     // --------------------------------------------------
-    //   Return JSON Object / Error
+    //   DB find / User Communities
     // --------------------------------------------------
     
-    return res.status(statusCode).json(resultErrorObj);
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
     
-    
-  }
-  
-});
-
-
-
-
-// --------------------------------------------------
-//   Logout / endpointID: hl4ZBunaB
-// --------------------------------------------------
-
-router.post('/logout', upload.none(), function(req, res, next) {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {};
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-  try {
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // ---------------------------------------------
-    //   ログアウト処理
-    // ---------------------------------------------
-    
-    req.logout();
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     // ---------------------------------------------
@@ -711,7 +209,7 @@ router.post('/logout', upload.none(), function(req, res, next) {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'hl4ZBunaB',
+      endpointID: 'SR-1hVpJ_',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,
@@ -734,566 +232,10 @@ router.post('/logout', upload.none(), function(req, res, next) {
 
 
 // --------------------------------------------------
-//   ログイン情報編集 / endpointID: svr_ZaIOk
+//   コメント＆返信編集用データ取得 / endpointID: 8_ggnm_lH
 // --------------------------------------------------
 
-router.post('/edit-account', upload.none(), async (req, res, next) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {};
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const { loginID, loginPassword } = req.body;
-    
-    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hGQuDAeuO', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   Hash Password
-    // --------------------------------------------------
-    
-    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
-    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
-    
-    
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
-    
-    const ISO8601 = moment().toISOString();
-    
-    const conditionObj = {
-      _id: loginUsers_id
-    };
-    
-    const saveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        loginID,
-        loginPassword: hashedPassword,
-      }
-    };
-    
-    await ModelUsers.upsert({ conditionObj, saveObj });
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
-    //   hashedPassword: {green ${hashedPassword}}
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'svr_ZaIOk',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
-  
-  
-});
-
-
-
-
-// --------------------------------------------------
-//   E-Mail登録 / endpointID: 14n6FEth2
-// --------------------------------------------------
-
-router.post('/email', upload.none(), async (req, res, next) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {};
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const { email, removeEmail } = req.body;
-    
-    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
-    lodashSet(requestParametersObj, ['removeEmail'], removeEmail);
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Q88YJ5uJ7', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   Encrypt E-Mail
-    // --------------------------------------------------
-    
-    const encryptedEmail = email ? encrypt(email) : '';
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const ISO8601 = moment().toISOString();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   E-Mailアドレスを空にする場合
-    // --------------------------------------------------
-    
-    if (removeEmail) {
-      
-      
-      // --------------------------------------------------
-      //   Update - DB users
-      // --------------------------------------------------
-      
-      const conditionObj = {
-        _id: loginUsers_id
-      };
-      
-      const saveObj = {
-        $set: {
-          updatedDate: ISO8601,
-          emailObj: {
-            value: '',
-            confirmation: false,
-          },
-        }
-      };
-      
-      await ModelUsers.upsert({ conditionObj, saveObj });
-      
-      
-      // --------------------------------------------------
-      //   E-Mail 伏せ字化
-      // --------------------------------------------------
-      
-      returnObj.emailSecret = '';
-      
-      
-    // --------------------------------------------------
-    //   E-Mailアドレスを保存する場合
-    // --------------------------------------------------
-    
-    } else if (email) {
-      
-      
-      // --------------------------------------------------
-      //   Find One / DB email-confirmations
-      // --------------------------------------------------
-      
-      const emailConfirmationsDocObj = await ModelEmailConfirmations.findOne({ users_id: loginUsers_id });
-      const emailConfirmations_id = lodashGet(emailConfirmationsDocObj, ['_id'], shortid.generate());
-      const emailConfirmationsCount = lodashGet(emailConfirmationsDocObj, ['count'], 0);
-      
-      
-      // --------------------------------------------------
-      //   メールを送れるのは3回まで、それ以上はエラーにする
-      // --------------------------------------------------
-      
-      if (emailConfirmationsCount >= 3) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XzR7k_Fh3', messageID: 'EAvJztLfH' }] });
-      }
-      
-      
-      // --------------------------------------------------
-      //   Upsert 
-      //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
-      // --------------------------------------------------
-      
-      const usersConditionObj = {
-        _id: loginUsers_id
-      };
-      
-      const usersSaveObj = {
-        $set: {
-          updatedDate: ISO8601,
-          emailObj: {
-            value: encryptedEmail,
-            confirmation: false,
-          },
-        }
-      };
-      
-      
-      const emailConfirmationsConditionObj = {
-        _id: emailConfirmations_id
-      };
-      
-      const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
-      
-      const emailConfirmationsSaveObj = {
-        $set: {
-          isSuccess: false,
-          createdDate: ISO8601,
-          users_id: loginUsers_id,
-          emailConfirmationID,
-          email: encryptedEmail,
-          count: emailConfirmationsCount + 1,
-        }
-      };
-      
-      
-      await ModelUsers.transactionForEditAccount({ usersConditionObj, usersSaveObj, emailConfirmationsConditionObj, emailConfirmationsSaveObj });
-      
-      
-      // --------------------------------------------------
-      //   E-Mail 伏せ字化
-      // --------------------------------------------------
-      
-      returnObj.emailSecret = formatEmailSecret({ value: email });
-      
-      
-      // --------------------------------------------------
-      //   確認メール送信
-      // --------------------------------------------------
-      
-      sendMailConfirmation({
-        to: email,
-        emailConfirmationID,
-      });
-      
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   email: {green ${email}}
-    //   encryptedEmail: {green ${encryptedEmail}}
-    //   returnObj.emailSecret: {green ${returnObj.emailSecret}}
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: '14n6FEth2',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
-  
-  
-});
-
-
-
-
-// --------------------------------------------------
-//   プレイヤーページ設定 / endpointID: OeLTc2B7G
-// --------------------------------------------------
-
-router.post('/pages', upload.none(), async (req, res, next) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {
-    pageTransition: false
-  };
-  
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const { playerID, pagesArr } = req.body;
-    
-    lodashSet(requestParametersObj, ['playerID'], playerID);
-    lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
-    
-    const parsedPagesArr = JSON.parse(pagesArr);
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GTWHMVVkX', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const newPagesArr = [];
-    
-    await validationUsersPlayerIDServer({ value: playerID, loginUsers_id });
-    
-    for (let valueObj of parsedPagesArr.values()) {
-      
-      await validationUsersPagesType({ throwError: true, value: valueObj.type });
-      await validationUsersPagesName({ throwError: true, value: valueObj.name });
-      await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
-      
-      newPagesArr.push({
-        _id: shortid.generate(),
-        type: valueObj.type,
-        name: valueObj.name,
-        language: valueObj.language,
-      });
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Find One - Page Transition
-    // --------------------------------------------------
-    
-    let conditionObj = {
-      _id: loginUsers_id
-    };
-    
-    let docObj = await ModelUsers.findOne({ conditionObj });
-    
-    if (docObj.playerID !== playerID) {
-      returnObj.pageTransition = true;
-    }
-    
-    // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
-    
-    const ISO8601 = moment().toISOString();
-    
-    conditionObj = {
-      _id: loginUsers_id
-    };
-    
-    const saveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        playerID,
-        pagesArr: newPagesArr,
-      }
-    };
-    
-    await ModelUsers.upsert({ conditionObj, saveObj });
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   playerID: {green ${playerID}}
-    // `);
-    
-    // console.log(`\n---------- parsedPagesArr ----------\n`);
-    // console.dir(parsedPagesArr);
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'OeLTc2B7G',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
-  
-  
-});
-
-
-
-
-// --------------------------------------------------
-//   Follow / endpointID: uXe64jfMh
-// --------------------------------------------------
-
-router.post('/follow', upload.none(), async (req, res, next) => {
+router.post('/get-edit-data', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -1309,60 +251,39 @@ router.post('/follow', upload.none(), async (req, res, next) => {
   //   Property
   // --------------------------------------------------
   
-  errorArgumentsObj.functionID = 'uXe64jfMh';
-  
-  let returnObj = {};
-  
-  
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
   try {
     
     
     // --------------------------------------------------
-    //   CSRF
+    //   POST Data
     // --------------------------------------------------
+    
+    const { forumComments_id } = req.body;
+    
+    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
     
     verifyCsrfToken(req, res);
     
     
     // --------------------------------------------------
-    //   Login Check
+    //   DB find / Forum Threads
     // --------------------------------------------------
     
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
-      throw new Error();
-    }
-    
-    const loginUsers_id = req.user._id;
-    
-    
-    // --------------------------------------------------
-    //   POST 取得 & Property
-    // --------------------------------------------------
-    
-    const { users_id } = req.body;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationObj = validation_id({ required: true, value: users_id });
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    
-    // --------------------------------------------------
-    //   Model / Users / Follow
-    // --------------------------------------------------
-    
-    returnObj = await ModelUsers.updateForFollow(loginUsers_id, users_id);
+    const returnObj = await ModelForumComments.findForEdit({
+      req,
+      localeObj,
+      loginUsers_id,
+      forumComments_id,
+    });
     
     
     // --------------------------------------------------
@@ -1370,29 +291,20 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   users_id: {green ${users_id}}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   ----- validation_idObj -----\n
-    //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   forumThreads_id: {green ${forumThreads_id}}
     // `);
     
     // console.log(`
     //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     
+    
+    
     // ---------------------------------------------
-    //   Return Json Object / Success
+    //   Success
     // ---------------------------------------------
     
     return res.status(200).json(returnObj);
@@ -1402,11 +314,395 @@ router.post('/follow', upload.none(), async (req, res, next) => {
     
     
     // ---------------------------------------------
-    //   Error Object
+    //   Log
     // ---------------------------------------------
     
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: '8_ggnm_lH',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
+
+
+
+// --------------------------------------------------
+//   スレッド作成・編集 / endpointID: XfDc_r3br
+// --------------------------------------------------
+
+router.post('/upsert-uc', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { userCommunities_id, forumThreads_id, name, description, imagesAndVideosObj } = req.body;
+    
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
+    lodashSet(requestParametersObj, ['name'], name);
+    lodashSet(requestParametersObj, ['description'], description);
+    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    if (userCommunities_id) {
+      await validationUserCommunities_idServer({ value: userCommunities_id });
+    } else {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WNajTF52g', messageID: '1YJnibkmh' }] });
+    }
+    
+    await validationForumThreadsName({ throwError: true, value: name });
+    await validationForumThreadsDescription({ throwError: true, value: description });
+    await validationIP({ throwError: true, value: req.ip });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Threads / スレッドが存在するかチェック
+    // --------------------------------------------------
+    
+    let oldObj = {};
+    
+    if (forumThreads_id) {
+      
+      const tempOldObj = await ModelForumThreads.findForEdit({
+        localeObj,
+        loginUsers_id,
+        forumThreads_id,
+      });
+      
+      // console.log(`
+      //   ----- tempOldObj -----\n
+      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      oldObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
+      
+      if (Object.keys(tempOldObj).length === 0) {
+        throw new CustomError({ level: 'error', errorsArr: [{ code: 'ERb2Rej4K', messageID: 'cvS0qSAlE' }] });
+      }
+      
+      
+    // --------------------------------------------------
+    //   DB find / Forum Threads / 同じ名前のスレッドが存在するかチェック
+    // --------------------------------------------------
+      
+    } else {
+      
+      const count = await ModelForumThreads.count({
+        conditionObj: {
+          userCommunities_id,
+          'localesArr.name': name,
+        }
+      });
+      
+      // console.log(chalk`
+      //   count: {green ${count}}
+      // `);
+      
+      if (count > 0) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    
+    // --------------------------------------------------
+    //   画像を保存する
+    // --------------------------------------------------
+    
+    let imagesAndVideosConditionObj = {};
+    let imagesAndVideosSaveObj = {};
+    let imagesAndVideos_id = '';
+    
+    if (imagesAndVideosObj) {
+      
+      const parsedImagesAndVideosObj = JSON.parse(imagesAndVideosObj);
+      
+      // console.log(`
+      //   ----- parsedImagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(parsedImagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      imagesAndVideosSaveObj = await formatAndSave({
+        newObj: parsedImagesAndVideosObj,
+        oldObj,
+        loginUsers_id,
+        ISO8601,
+      });
+      
+      
+      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        imagesAndVideos_id = '';
+      } else {
+        imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+      }
+      
+      
+      imagesAndVideosConditionObj = {
+        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
+      };
+      
+      
+      // console.log(`
+      //   ----- imagesAndVideosSaveObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Insert
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
+    
+    const forumThreadsConditionObj = {
+      _id: shortid.generate(),
+    };
+    
+    
+    const forumThreadsSaveObj = {
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      userCommunities_id,
+      users_id: loginUsers_id,
+      localesArr: [
+        {
+          _id: shortid.generate(),
+          language: localeObj.language,
+          name,
+          description,
+        }
+      ],
+      imagesAndVideos_id,
+      comments: 0,
+      images: 0,
+      videos: 0,
+      ip: req.ip,
+      userAgent: lodashGet(req, ['headers', 'user-agent'], '')
+    };
+    
+    
+    // ---------------------------------------------
+    //   - user-communities / 更新日時の変更＆スレッド数 + 1
+    // ---------------------------------------------
+    
+    const userCommunitiesConditionObj = {
+      _id: userCommunities_id,
+    };
+    
+    
+    const userCommunitiesSaveObj = {
+      updatedDate: ISO8601,
+      'updatedDateObj.forum': ISO8601,
+      $inc: { 'forumObj.threadCount': 1 }
+    };
+    
+    
+    
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
+    
+    if (forumThreads_id) {
+      
+      
+      // ---------------------------------------------
+      //   - forum-threads
+      // ---------------------------------------------
+      
+      forumThreadsConditionObj._id = forumThreads_id;
+      
+      delete forumThreadsSaveObj.createdDate;
+      delete forumThreadsSaveObj.userCommunities_id;
+      delete forumThreadsSaveObj.users_id;
+      delete forumThreadsSaveObj.comments;
+      delete forumThreadsSaveObj.images;
+      delete forumThreadsSaveObj.videos;
+      
+      
+      
+      // ---------------------------------------------
+      //   - user-communities / 更新日時の変更
+      // ---------------------------------------------
+      
+      delete userCommunitiesSaveObj.$inc;
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB insert Transaction / Forum Threads & Images And Videos & User Communities
+    // --------------------------------------------------
+    
+    await ModelForumThreads.transactionForUpsertThread({
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
+      imagesAndVideosConditionObj,
+      imagesAndVideosSaveObj,
+      userCommunitiesConditionObj,
+      userCommunitiesSaveObj,
+    });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / User Communities / 最新の更新日時情報を取得する
+    // --------------------------------------------------
+    
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    
+    // const authority1 = verifyAuthority({ req, _id: forumThreads_id });
+    
+    // console.log(chalk`
+    //   authority1: {green ${authority1}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Set Authority
+    // --------------------------------------------------
+    
+    if (!forumThreads_id) {
+      setAuthority({ req, _id: forumThreadsConditionObj._id });
+    }
+    
+    // const authority2 = verifyAuthority({ req, _id: forumThreads_id });
+    
+    // console.log(chalk`
+    //   authority2: {green ${authority2}}
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   name: {green ${name} / ${typeof name}}
+    //   description: {green ${description} / ${typeof description}}
+    //   IP: {green ${req.ip}}
+    //   User Agent: {green ${req.headers['user-agent']}}
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'XfDc_r3br',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
     
     
     // --------------------------------------------------

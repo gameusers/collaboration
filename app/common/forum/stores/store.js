@@ -712,6 +712,8 @@ class Store {
   
   /**
    * スレッド編集フォームを表示する
+   * @param {Array} pathArr - パス
+   * @param {string} forumThreads_id - DB forum-threads _id
    */
   @action.bound
   async handleShowFormThread({ pathArr, forumThreads_id }) {
@@ -1057,6 +1059,162 @@ class Store {
         variant: 'success',
         messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
       });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   コメント
+  // ---------------------------------------------
+  
+  /**
+   * コメント編集フォームを表示する
+   * @param {Array} pathArr - パス
+   * @param {string} forumComments_id - DB forum-comments _id
+   */
+  @action.bound
+  async handleShowFormComment({ pathArr, forumComments_id }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   forumComments_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!forumComments_id) {
+        throw new CustomError({ errorsArr: [{ code: '3NtNGg1EG', messageID: 'Error' }] });
+      }
+      
+      console.log('handleShowFormComment');
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('forumComments_id', forumComments_id);
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/forum-comments/get-edit-data`,
+        methodType: 'POST',
+        formData: formData
+      });
+      
+      
+      console.log(`
+        ----- pathArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+      
+      // const name = lodashGet(resultObj, ['data', 'name'], '');
+      // const description = lodashGet(resultObj, ['data', 'description'], '');
+      // const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
+      
+      // lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'name'], name);
+      // lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'description'], description);
+      // lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id, 'formThreadObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+      
+      
+      // console.log(`
+      //   ----- storeImageAndVideoForm.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Show Form
+      // ---------------------------------------------
+      
+      // lodashSet(this.dataObj, [forumThreads_id, 'showForm'], true);
       
       
     } catch (errorObj) {

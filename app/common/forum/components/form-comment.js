@@ -29,6 +29,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 
 
 // ---------------------------------------------
@@ -103,8 +104,7 @@ export default injectIntl(class extends React.Component {
     
     const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
     
-    // const _id = gameCommunities_id || userCommunities_id;
-    // const _idForum = forumThreads_id || forumComments_id;
+    
     
     
     // --------------------------------------------------
@@ -117,7 +117,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Forum
+    //   Store Forum
     // --------------------------------------------------
     
     const {
@@ -128,6 +128,12 @@ export default injectIntl(class extends React.Component {
       
     } = storeForum;
     
+    
+    // --------------------------------------------------
+    //   Form Data
+    // --------------------------------------------------
+    
+    const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
     
     
@@ -135,16 +141,8 @@ export default injectIntl(class extends React.Component {
     //   Show
     // --------------------------------------------------
     
-    const showFormComment = lodashGet(dataObj, [...this.pathArr, 'show'], false);
+    // const showFormComment = lodashGet(dataObj, [...this.pathArr, 'showFormComment'], false);
     
-    
-    // --------------------------------------------------
-    //   Form Thread
-    // --------------------------------------------------
-    
-    // const comment = lodashGet(dataObj, [_id, forumComments_id, 'formCommentObj', 'comment'], '');
-    
-    // const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
     
     
@@ -174,14 +172,49 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
-        css={css`
-          
-        `}
-      >
+      <form onSubmit={(eventObj) => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}>
         
         
-        {/* Description */}
+        {/* Login ID */}
+        <div>
+          <TextField
+            css={css`
+              && {
+                width: 400px;
+                margin-top: 0;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              }
+            `}
+            id="name"
+            label="名前"
+            value={name}
+            // value={validationUsersLoginIDObj.value}
+            // onChange={(eventObj) => handleEdit({
+            //   pathArr: ['loginID'],
+            //   value: eventObj.target.value
+            // })}
+            // error={validationUsersLoginIDObj.error}
+            // helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
+            disabled={buttonDisabled}
+            margin="normal"
+            inputProps={{
+              maxLength: 50,
+            }}
+            // InputProps={{
+            //   startAdornment: (
+            //     <InputAdornment position="start">
+            //       <IconID />
+            //     </InputAdornment>
+            //   ),
+            // }}
+          />
+        </div>
+        
+        
+        {/* Comment */}
         <div
           css={css`
             margin: 12px 0 0 0;
@@ -219,7 +252,7 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* Image & Video */}
+        {/* Form Images & Videos */}
         <div
           css={css`
             margin: 12px 0 0 0;
@@ -227,11 +260,11 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            pathArr={[...this.pathArr, 'formImagesAndVideosObj']}
+            pathArr={this.pathArr}
+            type="forum"
             descriptionImage="コメントに表示する画像をアップロードできます。"
             descriptionVideo="コメントに表示する動画を登録できます。"
-            arrayName="mainArr"
-            caption={true}
+            showImageCaption={true}
             limit={3}
           />
           
@@ -243,13 +276,19 @@ export default injectIntl(class extends React.Component {
         {/* Buttons */}
         <div
           css={css`
+            display: flex;
+            flex-flow: row nowrap;
             margin: 24px 0 0 0;
           `}
         >
+          
+          
+          {/* Submit */}
           <Button
+            type="submit"
             variant="contained"
             color="primary"
-            onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
+            // onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
             disabled={buttonDisabled}
           >
             {forumComments_id ? 'コメントを編集する' : 'コメントを投稿する'}
@@ -270,7 +309,7 @@ export default injectIntl(class extends React.Component {
                 color="secondary"
                 onClick={() => handleEdit({
                   pathArr: [...this.pathArr, 'show'],
-                  value: !showFormComment
+                  value: false
                 })}
                 disabled={buttonDisabled}
               >
@@ -282,7 +321,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </div>
+      </form>
     );
     
   }

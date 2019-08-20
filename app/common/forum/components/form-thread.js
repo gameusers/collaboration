@@ -80,39 +80,6 @@ export default injectIntl(class extends React.Component {
       this.pathArr = [props.forumThreads_id, 'formThreadObj'];
     }
     
-    
-    // --------------------------------------------------
-    //   Path Array / 画像＆動画用
-    // --------------------------------------------------
-    
-    this.imagesAndVideosPathArr = [this.communities_id, 'formThreadObj'];
-    
-    // 編集時
-    if (props.forumThreads_id) {
-      this.imagesAndVideosPathArr = [props.forumThreads_id, 'formThreadObj'];
-    }
-    
-    // 新規追加時
-    // this.imagesAndVideosPathArr = [this.communities_id, 'createFormForumThreadObj'];
-    
-    // // 編集時
-    // if (this.props.imagesAndVideos_id) {
-      
-    //   this.imagesAndVideosPathArr = [this.props.imagesAndVideos_id];
-      
-    // } else if (props.forumThreads_id) {
-      
-    //   this.imagesAndVideosPathArr = [this.props.forumThreads_id];
-      
-    // }
-    
-    
-    // console.log(`
-    //   ----- this.imagesAndVideosPathArr -----\n
-    //   ${util.inspect(this.imagesAndVideosPathArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
   }
   
   
@@ -144,7 +111,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, imagesAndVideos_id } = this.props;
+    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
     
     
     // --------------------------------------------------
@@ -170,7 +137,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Form Thread
+    //   Form Data
     // --------------------------------------------------
     
     const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
@@ -182,13 +149,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
-    
-    
-    // --------------------------------------------------
-    //   Show
-    // --------------------------------------------------
-    
-    // const showForm = lodashGet(dataObj, [this.communities_id, 'threadObj', forumThreads_id, 'showForm'], false);
     
     
     

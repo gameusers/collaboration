@@ -245,9 +245,9 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const forumThreads_id = lodashGet(valueObj, ['_id'], '');
-      const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
       const name = lodashGet(valueObj, ['name'], '');
       const description = lodashGet(valueObj, ['description'], '');
+      const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
       const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
@@ -313,7 +313,6 @@ export default injectIntl(class extends React.Component {
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
                   forumThreads_id={forumThreads_id}
-                  imagesAndVideos_id={imagesAndVideos_id}
                 />
               </div>
               

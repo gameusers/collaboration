@@ -1125,7 +1125,7 @@ class Store {
         throw new CustomError({ errorsArr: [{ code: '3NtNGg1EG', messageID: 'Error' }] });
       }
       
-      console.log('handleShowFormComment');
+      // console.log('handleShowFormComment');
       
       
       // ---------------------------------------------
@@ -1194,13 +1194,13 @@ class Store {
       //   Set Form Data
       // ---------------------------------------------
       
-      // const name = lodashGet(resultObj, ['data', 'name'], '');
-      // const description = lodashGet(resultObj, ['data', 'description'], '');
-      // const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
+      const name = lodashGet(resultObj, ['data', 'name'], '');
+      const comment = lodashGet(resultObj, ['data', 'comment'], '');
+      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
       
-      // lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'name'], name);
-      // lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'description'], description);
-      // lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id, 'formThreadObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'name'], name);
+      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'comment'], comment);
+      lodashSet(storeImageAndVideoForm, ['dataObj', forumComments_id, 'formCommentObj', 'imagesAndVideosObj'], imagesAndVideosObj);
       
       
       // console.log(`
@@ -1214,7 +1214,7 @@ class Store {
       //   Show Form
       // ---------------------------------------------
       
-      // lodashSet(this.dataObj, [forumThreads_id, 'showForm'], true);
+      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], true);
       
       
     } catch (errorObj) {
@@ -1251,6 +1251,16 @@ class Store {
     
     
   };
+  
+  
+  
+  
+  
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
+    // eventObj.preventDefault();
   
   
 }

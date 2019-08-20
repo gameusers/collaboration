@@ -931,17 +931,17 @@ const findForEdit = async ({
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
     
-    const editable = verifyAuthority({
-      req,
-      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
-      loginUsers_id,
-      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-      _id: lodashGet(resultArr, [0, '_id'], ''),
-    });
+    // const editable = verifyAuthority({
+    //   req,
+    //   users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+    //   loginUsers_id,
+    //   ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+    //   _id: lodashGet(resultArr, [0, '_id'], ''),
+    // });
     
-    if (!editable) {
-      throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
-    }
+    // if (!editable) {
+    //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+    // }
     
     
     
@@ -950,39 +950,39 @@ const findForEdit = async ({
     //   Format
     // --------------------------------------------------
     
-    // const _id = lodashGet(resultArr, [0, '_id'], '');
-    // const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
-    // let name = '';
-    // let description = '';
+    const _id = lodashGet(resultArr, [0, '_id'], '');
+    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    let name = '';
+    let comment = '';
     
     
-    // // --------------------------------------------------
-    // //   Name & Description
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Name & Comment
+    // --------------------------------------------------
     
-    // const filteredArr = resultArr.filter((filterObj) => {
-    //   return filterObj.language === localeObj.language;
-    // });
+    const filteredArr = resultArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
+    });
     
     
-    // if (lodashHas(filteredArr, [0])) {
+    if (lodashHas(filteredArr, [0])) {
       
-    //   name = lodashGet(filteredArr, [0, 'name'], '');
-    //   description = lodashGet(filteredArr, [0, 'description'], '');
+      name = lodashGet(filteredArr, [0, 'name'], '');
+      comment = lodashGet(filteredArr, [0, 'comment'], '');
       
-    // } else {
+    } else {
       
-    //   name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
-    //   description = lodashGet(resultArr, [0, 'localesArr', 0, 'description'], '');
+      name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
+      comment = lodashGet(resultArr, [0, 'localesArr', 0, 'comment'], '');
       
-    // }
+    }
     
     
     const returnObj = {
-      // _id,
-      // name,
-      // description,
-      // imagesAndVideosObj,
+      _id,
+      name,
+      comment,
+      imagesAndVideosObj,
     };
     
     
@@ -992,21 +992,21 @@ const findForEdit = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      forumComments_id: {green ${forumComments_id}}
-    `);
+    // console.log(chalk`
+    //   forumComments_id: {green ${forumComments_id}}
+    // `);
     
-    console.log(`
-      ----- resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

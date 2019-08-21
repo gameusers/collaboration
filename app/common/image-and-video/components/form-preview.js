@@ -438,7 +438,7 @@ export default injectIntl(class extends React.Component {
           css={css`
             display: flex;
             flex-flow: row wrap;
-            margin: 10px 0 0 0;
+            margin: 2px 0 0 0;
           `}
         >
           {componentsPreviewArr}

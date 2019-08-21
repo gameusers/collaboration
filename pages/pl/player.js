@@ -180,12 +180,14 @@ export default class extends React.Component {
       const headerNavMainArr = [
         {
           name: 'プロフィール',
-          href: `/pl/player?playerID=${props.playerID}`,
+          // href: `/pl/player?playerID=${props.playerID}`,// エラーが出るからとりあえずコメントアウト
+          href: '/',
           as: `/pl/${props.playerID}`,
         },
         {
           name: '設定',
-          href: `/pl/settings?playerID=${props.playerID}`,
+          // href: `/pl/settings?playerID=${props.playerID}`,
+          ref: '/',
           as: `/pl/${props.playerID}/settings`,
         }
       ];

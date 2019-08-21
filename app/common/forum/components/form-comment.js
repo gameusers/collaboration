@@ -30,6 +30,15 @@ import { css, jsx } from '@emotion/core';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationForumCommentsName } = require('../../../@database/forum-comments/validations/form');
 
 
 // ---------------------------------------------
@@ -102,9 +111,22 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
+    
+    const { loginUsersObj } = stores.data;
     
     
+    
+    
+    // --------------------------------------------------
+    //   ログインしているかどうか
+    // --------------------------------------------------
+    
+    let login = false; 
+    
+    if (Object.keys(loginUsersObj).length > 0) {
+      login = true;
+    }
     
     
     // --------------------------------------------------
@@ -134,14 +156,15 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
+    const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
     const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
     
     
     // --------------------------------------------------
-    //   Show
+    //   Validation
     // --------------------------------------------------
     
-    // const showFormComment = lodashGet(dataObj, [...this.pathArr, 'showFormComment'], false);
+    const validationForumCommentsNameObj = validationForumCommentsName({ value: name });
     
     
     
@@ -151,8 +174,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- validationForumThreadsNameObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
+    //   ----- validationForumCommentsNameObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationForumCommentsNameObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -172,46 +195,62 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <form onSubmit={(eventObj) => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}>
+      <form
+        name={`form-${forumComments_id}`}
+        onSubmit={(eventObj) => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
+      >
         
         
         {/* Login ID */}
-        <div>
-          <TextField
-            css={css`
-              && {
-                width: 400px;
-                margin-top: 0;
-                
-                @media screen and (max-width: 480px) {
-                  width: 100%;
+        {login &&
+          <div>
+            <TextField
+              css={css`
+                && {
+                  width: 400px;
+                  margin-top: 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    width: 100%;
+                  }
                 }
+              `}
+              id="name"
+              placeholder="名前"
+              value={name}
+              value={validationForumCommentsNameObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...this.pathArr, 'name'],
+                value: eventObj.target.value
+              })}
+              error={validationForumCommentsNameObj.error}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 50,
+              }}
+            />
+          </div>
+        }
+        
+        
+        {/* Anonymity */}
+        {!login &&
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={anonymity}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [...this.pathArr, 'anonymity'],
+                    value: eventObj.target.checked
+                  })}
+                />
               }
-            `}
-            id="name"
-            label="名前"
-            value={name}
-            // value={validationUsersLoginIDObj.value}
-            // onChange={(eventObj) => handleEdit({
-            //   pathArr: ['loginID'],
-            //   value: eventObj.target.value
-            // })}
-            // error={validationUsersLoginIDObj.error}
-            // helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 50,
-            }}
-            // InputProps={{
-            //   startAdornment: (
-            //     <InputAdornment position="start">
-            //       <IconID />
-            //     </InputAdornment>
-            //   ),
-            // }}
-          />
-        </div>
+              label="匿名にする"
+            />
+          </div>
+        }
         
         
         {/* Comment */}
@@ -253,11 +292,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Form Images & Videos */}
-        <div
-          css={css`
-            margin: 12px 0 0 0;
-          `}
-        >
+        <div>
           
           <ImageAndVideoForm
             pathArr={this.pathArr}

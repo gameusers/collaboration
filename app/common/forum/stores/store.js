@@ -1164,17 +1164,17 @@ class Store {
       });
       
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -1233,6 +1233,9 @@ class Store {
     } finally {
       
       
+      
+      
+      
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
@@ -1245,6 +1248,68 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      // const headerScrollUp = lodashGet(storeLayout, ['headerScrollUp'], false);
+      
+      // if (headerScrollUp) {
+      //   console.log('下げる');
+      //   scrollBy(0, 1);
+      // } else {
+      //   console.log('上げる');
+      //   scrollBy(0, -1);
+      // }
+      
+      // setTimeout(() => {
+        
+      //   scroller.scrollTo(`form-${forumComments_id}`, {
+      //     duration: 800,
+      //     delay: 0,
+      //     smooth: 'easeInOutQuart',
+      //     offset: -120,
+      //   });
+        
+      // }, 1000);
+      
+      // lodashSet(storeLayout, ['headerNavTopShow'], false);
+      
+      scrollBy(0, 1);
+      
+      // lodashSet(storeLayout, ['headerNavMainStopHandleHeaderNavOnScroll'], true);
+      
+      scroller.scrollTo(`form-${forumComments_id}`, {
+        duration: 500,
+        delay: 20,
+        smooth: 'easeInOutQuart',
+        offset: -70,
+      });
+      
+      // lodashSet(storeLayout, ['headerNavMainStopHandleHeaderNavOnScroll'], false);
+      
+      
+      // setTimeout(() => {
+        
+      //   scrollBy(0, 1);
+        
+      //   // const headerScrollUp = lodashGet(storeLayout, ['headerScrollUp'], false);
+        
+      //   // if (headerScrollUp) {
+      //   //   scrollBy(0, 1);
+      //   // } else {
+      //   //   scrollBy(0, -1);
+      //   // }
+        
+      // }, 820);
+      
+      // setTimeout(() => test() {}, 3000);
+      
+      
+      
+      
       
       
     }

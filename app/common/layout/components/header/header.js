@@ -104,7 +104,7 @@ export default class extends React.Component {
     //   Warning: Can't perform a React state update on an unmounted component.
     // --------------------------------------------------
     
-    window.addEventListener('scroll', this.props.stores.layout.handleHeaderNavOnScroll);
+    // window.addEventListener('scroll', this.props.stores.layout.handleHeaderNavOnScroll);
     
     
   }

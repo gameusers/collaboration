@@ -140,7 +140,13 @@ export default injectIntl(class extends React.Component {
         
         {/* Description */}
         {description &&
-          <p>{description}</p>
+          <p
+            css={css`
+              margin: 12px 0 0 0;
+            `}
+          >
+            {description}
+          </p>
         }
         
         

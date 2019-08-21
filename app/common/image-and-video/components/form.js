@@ -111,17 +111,22 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* Buttons */}
-        <ButtonGroup color="primary">
-          <Button onClick={() => handleShowFormImage({ pathArr })}>画像</Button>
-          <Button onClick={() => handleShowFormVideo({ pathArr })}>動画</Button>
-        </ButtonGroup>
-        
-        
         {/* Preview */}
         <FormPreview
           pathArr={pathArr}
         />
+        
+        
+        {/* Buttons */}
+        <ButtonGroup
+          css={css`
+            margin: 12px 0 0 0;
+          `}
+          color="primary"
+        >
+          <Button onClick={() => handleShowFormImage({ pathArr })}>画像</Button>
+          <Button onClick={() => handleShowFormVideo({ pathArr })}>動画</Button>
+        </ButtonGroup>
         
         
         {/* Form Image */}

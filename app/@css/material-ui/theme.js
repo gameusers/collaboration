@@ -3,6 +3,16 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 // Create a theme instance.
 const theme = createMuiTheme({
+  
+  // Checkbox のラベルのフォントサイズを指定する
+  overrides: {
+    MuiFormControlLabel: {
+      label: {
+        fontSize: 14,
+      },
+    },
+  },
+  
   // palette: {
   //   primary: {
   //     main: '#556cd6',

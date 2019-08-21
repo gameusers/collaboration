@@ -117,10 +117,31 @@ class Store {
   
   
   /**
+   * 
+   * @type {boolean}
+   */
+  @observable headerNavMainStopHandleHeaderNavOnScroll = false;
+  
+  
+  /**
    * スクロールされる度に呼び出される関数
    */
   @action.bound
   handleHeaderNavOnScroll() {
+    
+    // console.log(this.headerNavMainStopHandleHeaderNavOnScroll);
+    // ---------------------------------------------
+    //   handleHeaderNavOnScroll を処理しない
+    //   JavaScriptからスクロールする際に、ヘッダーのアニメーションを行わないようにする
+    // ---------------------------------------------
+    
+    // if (this.headerNavMainStopHandleHeaderNavOnScroll) {
+    //   console.log('処理停止');
+    //   return;
+    // }
+    
+    // console.log('handleHeaderNavOnScroll');
+    
     
     
     // ---------------------------------------------

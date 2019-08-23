@@ -11,264 +11,32 @@ const util = require('util');
 
 
 // ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
+
+
+// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
 const Model = require('./schema');
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
 
-// 320 480 640 800 960 1120 1280 1440 1600 1760 1920
+const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+
+
+
+
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
-
-/**
- * 取得する / ヒーローイメージ用データ
- * @param {string} language - 言語
- * @param {string} country - 国
- * @return {Array} 取得データ
- */
-const findForHeroImage = async ({ language, country }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    let resultArr = await Model.aggregate([
-      
-      
-      {
-        $match : { 'imagesAndVideosObj.mainArr._id': { $exists: true, $ne: null } }
-      },
-      
-      
-      {
-        $sample: { size: 1 }
-      },
-      
-      
-      {
-        $lookup:
-          {
-            from: 'hardwares',
-            let: { gamesHardwareID: '$hardwareArr.hardwareID' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
-                      { $in: ['$hardwareID', '$$gamesHardwareID'] }
-                    ]
-                  },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  hardwareID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'hardwaresArr'
-          }
-      },
-      
-      
-      {
-        $lookup:
-          {
-            from: 'game-genres',
-            let: { gamesGenreArr: '$genreArr' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
-                      { $in: ['$genreID', '$$gamesGenreArr'] }
-                    ]
-                  },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  genreID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'gameGenresArr'
-          }
-      },
-      
-      
-      {
-        $lookup:
-          {
-            from: 'developers-publishers',
-            let: {
-              gamesPublisherID: '$hardwareArr.publisherID',
-              gamesDeveloperID: '$hardwareArr.developerID',
-            },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $or:
-                    [
-                      { $and:
-                        [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
-                        ]
-                      },
-                      { $and:
-                        [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
-                          { $in: ['$developerPublisherID', '$$gamesDeveloperID'] }
-                        ]
-                      }
-                    ]
-                  },
-                }
-              },
-              { $project:
-                {
-                  _id: 0,
-                  developerPublisherID: 1,
-                  name: 1,
-                }
-              }
-            ],
-            as: 'developersPublishersArr'
-          }
-      },
-      
-      
-      {
-        $project: {
-          // __v: 0,
-          urlID: 1,
-          imagesAndVideosObj: 1,
-          name: 1,
-          subtitle: 1,
-          hardwareArr: 1,
-          genreArr: 1,
-          linkArr: 1,
-          hardwaresArr: 1,
-          gameGenresArr: 1,
-          developersPublishersArr: 1,
-        }
-      },
-      
-      
-    ]).exec();
-    
-    
-    // --------------------------------------------------
-    //   Sort / ヒーローイメージがランダムに表示されるように並び替える
-    // --------------------------------------------------
-    
-    // console.log(`\n---------- resultArr ----------\n`);
-    // console.dir(resultArr);
-    // console.log(`\n-----------------------------------\n`);
-    
-    let resultObj = {};
-    
-    if (resultArr.length > 0) {
-      
-      resultObj = resultArr[0];
-      let mainArr = resultObj.imagesAndVideosObj.mainArr;
-      
-      for (let i = mainArr.length - 1; i > 0; i--){
-        const r = Math.floor(Math.random() * (i + 1));
-        const tmp = mainArr[i];
-        mainArr[i] = mainArr[r];
-        mainArr[r] = tmp;
-      }
-      
-      resultObj.mainArr = mainArr;
-      
-    }
-    
-    
-    
-    // console.log(`\n---------- mainArr ----------\n`);
-    // console.dir(mainArr.slice());
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return resultObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * 取得する / サジェスト用のデータ
- * @param {string} language - 言語
- * @param {string} country - 国
- * @param {string} keyword - 検索キーワード
- * @return {Array} 取得データ
- */
-const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    const pattern = new RegExp(`.*${keyword}.*`);
-    
-    return await Model.find(
-      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    ).select('gameID imagesAndVideosObj name').limit(10).exec();
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
 
 /**
  * 取得する
@@ -435,16 +203,331 @@ const deleteMany = async ({ conditionObj }) => {
 
 
 
+/**
+ * 取得する / ヒーローイメージ用データ
+ * @param {Object} localeObj - ロケール
+ * @return {Array} 取得データ
+ */
+const findForHeroImage = async ({ localeObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    let resultArr = await Model.aggregate([
+      
+      
+      // 画像＆動画が登録されているゲームを取得する
+      {
+        $match : { 'imagesAndVideos_id': { $exists: true, $ne: '' } }
+      },
+      
+      
+      // ランダムに1件データを取得する
+      {
+        $sample: { size: 1 }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { gamesImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$gamesImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // ハードウェア
+      {
+        $lookup:
+          {
+            from: 'hardwares',
+            let: { gamesHardwareID: '$hardwareArr.hardwareID' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', localeObj.language] },
+                      { $eq: ['$country', localeObj.country] },
+                      { $in: ['$hardwareID', '$$gamesHardwareID'] }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  hardwareID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'hardwaresArr'
+          }
+      },
+      
+      
+      // ジャンル
+      {
+        $lookup:
+          {
+            from: 'game-genres',
+            let: { gamesGenreArr: '$genreArr' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', localeObj.language] },
+                      { $eq: ['$country', localeObj.country] },
+                      { $in: ['$genreID', '$$gamesGenreArr'] }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  genreID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'gameGenresArr'
+          }
+      },
+      
+      
+      // 開発＆パブリッシャー
+      {
+        $lookup:
+          {
+            from: 'developers-publishers',
+            let: {
+              gamesPublisherID: '$hardwareArr.publisherID',
+              gamesDeveloperID: '$hardwareArr.developerID',
+            },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $or:
+                    [
+                      { $and:
+                        [
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
+                          { $in: ['$developerPublisherID', '$$gamesPublisherID'] }
+                        ]
+                      },
+                      { $and:
+                        [
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
+                          { $in: ['$developerPublisherID', '$$gamesDeveloperID'] }
+                        ]
+                      }
+                    ]
+                  },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  developerPublisherID: 1,
+                  name: 1,
+                }
+              }
+            ],
+            as: 'developersPublishersArr'
+          }
+      },
+      
+      
+      {
+        $project: {
+          // __v: 0,
+          urlID: 1,
+          imagesAndVideosObj: 1,
+          name: 1,
+          subtitle: 1,
+          hardwareArr: 1,
+          genreArr: 1,
+          linkArr: 1,
+          hardwaresArr: 1,
+          gameGenresArr: 1,
+          developersPublishersArr: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   ヒーローイメージがランダムに表示されるように並び替える
+    // --------------------------------------------------
+    
+    let returnObj = lodashGet(resultArr, [0], {});
+    
+    if (Object.keys(returnObj).length !== 0) {
+      
+      const arr = lodashGet(returnObj, ['imagesAndVideosObj', 'arr'], []);
+      
+      // 並び替え
+      for (let i = arr.length - 1; i > 0; i--){
+        const r = Math.floor(Math.random() * (i + 1));
+        const tmp = arr[i];
+        arr[i] = arr[r];
+        arr[r] = tmp;
+      }
+      
+      lodashSet(returnObj, ['imagesAndVideosObj', 'arr'], arr);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   画像をフォーマットする
+    // --------------------------------------------------
+    
+    const formattedObj = formatImagesAndVideosObj({ localeObj, obj: returnObj.imagesAndVideosObj });
+    
+    if (formattedObj) {
+      
+      returnObj.imagesAndVideosObj = formattedObj;
+      
+    } else {
+      
+      delete returnObj.imagesAndVideosObj;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 取得する / サジェスト用のデータ
+ * @param {string} language - 言語
+ * @param {string} country - 国
+ * @param {string} keyword - 検索キーワード
+ * @return {Array} 取得データ
+ */
+const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const pattern = new RegExp(`.*${keyword}.*`);
+    
+    return await Model.find(
+      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
+    ).select('gameID imagesAndVideosObj name').limit(10).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
-  findForHeroImage,
-  findBySearchKeywordsArrForSuggestion,
   find,
   count,
   upsert,
   insertMany,
-  deleteMany
+  deleteMany,
+  findForHeroImage,
+  findBySearchKeywordsArrForSuggestion,
 };

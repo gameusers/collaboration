@@ -3,11 +3,21 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
 const util = require('util');
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
+const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 // ---------------------------------------------
@@ -24,26 +34,177 @@ const Model = require('./schema');
 // --------------------------------------------------
 
 /**
+ * 取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {Array} 取得データ
+ */
+const find = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Model.find(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * カウントを取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {number} カウント数
+ */
+const count = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Model.countDocuments(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 挿入 / 更新する
+ * @param {Object} argumentsObj - 引数
+ * @return {Array} 
+ */
+const upsert = async ({ conditionObj, saveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 挿入する
+ * @param {Object} argumentsObj - 引数
+ * @return {Array} 
+ */
+const insertMany = async ({ saveArr }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    return await Model.insertMany(saveArr);
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 削除する
+ * @param {Object} conditionObj - 検索条件
+ * @return {Array} 
+ */
+const deleteMany = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Delete
+    // --------------------------------------------------
+    
+    return await Model.deleteMany(conditionObj);
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
  * _id が入った配列を利用して、まとめてデータを取得し
  * 利用しやすくフォーマットされたオブジェクトを返す
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    language,
-    country,
-    loginUsers_id,
-    arr,
-    
-  } = argumentsObj;
+const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
   
   
   // --------------------------------------------------
@@ -58,10 +219,15 @@ const findForCardPlayer = async (argumentsObj) => {
     // --------------------------------------------------
     
     const resultIDsArr = await findBy_idsArr({
-      language,
-      country,
-      arr,
+      localeObj,
+      ids_idArr,
     });
+    
+    // console.log(`
+    //   ----- resultIDsArr -----\n
+    //   ${util.inspect(resultIDsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -77,7 +243,7 @@ const findForCardPlayer = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
     // console.log(chalk`
@@ -330,22 +496,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
  * @param {Object} argumentsObj - 引数
  * @return {Object} フォーマット後のデータ
  */
-const formatToObject = (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    // ids_idsArr,
-    arr,
-    loginUsers_id
-    
-  } = argumentsObj;
-  
-  
+const formatToObject = ({ arr, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -354,14 +505,15 @@ const formatToObject = (argumentsObj) => {
   
   let formattedObj = {};
   
+  
   for (let valueObj of arr) {
     
     
     // --------------------------------------------------
-    //   コピー
+    //   Deep Copy
     // --------------------------------------------------
     
-    const copiedObj = JSON.parse(JSON.stringify(valueObj));
+    const clonedObj = lodashCloneDeep(valueObj);
     
     
     // --------------------------------------------------
@@ -370,19 +522,27 @@ const formatToObject = (argumentsObj) => {
     //   followed 自分が相手にフォローされている場合、true
     // --------------------------------------------------
     
-    copiedObj.usersObj.follow = false;
-    copiedObj.usersObj.followed = false;
+    lodashSet(clonedObj, ['usersObj', 'follow'], false);
+    lodashSet(clonedObj, ['usersObj', 'followed'], false);
+    
+    const followArr = lodashGet(clonedObj, ['usersObj', 'followArr'], []);
+    const followedArr = lodashGet(clonedObj, ['usersObj', 'followedArr'], []);
+    
+    // copiedObj.usersObj.follow = false;
+    // copiedObj.usersObj.followed = false;
     
     if (loginUsers_id) {
       
-      if (copiedObj.users_id !== loginUsers_id) {
+      if (clonedObj.users_id !== loginUsers_id) {
         
-        if (copiedObj.usersObj.followArr.includes(loginUsers_id)) {
-          copiedObj.usersObj.follow = true;
+        if (followArr.includes(loginUsers_id)) {
+          lodashSet(clonedObj, ['usersObj', 'follow'], true);
+          // clonedObj.usersObj.follow = true;
         }
         
-        if (copiedObj.usersObj.followedArr.includes(loginUsers_id)) {
-          copiedObj.usersObj.followed = true;
+        if (followedArr.includes(loginUsers_id)) {
+          lodashSet(clonedObj, ['usersObj', 'followed'], true);
+          // clonedObj.usersObj.followed = true;
         }
         
       }
@@ -402,11 +562,11 @@ const formatToObject = (argumentsObj) => {
     // --------------------------------------------------
     
     if (
-      copiedObj.users_id === loginUsers_id ||
+      clonedObj.users_id === loginUsers_id ||
       valueObj.publicSetting === 1 ||
-      valueObj.publicSetting === 2 && copiedObj.usersObj.followed ||
-      valueObj.publicSetting === 3 && copiedObj.usersObj.follow ||
-      valueObj.publicSetting === 4 && copiedObj.usersObj.follow && copiedObj.usersObj.followed
+      valueObj.publicSetting === 2 && clonedObj.usersObj.followed ||
+      valueObj.publicSetting === 3 && clonedObj.usersObj.follow ||
+      valueObj.publicSetting === 4 && clonedObj.usersObj.follow && clonedObj.usersObj.followed
       // valueObj.publicSetting === 5 && copiedObj.users_id === loginUsers_id
     ) {
       
@@ -470,30 +630,20 @@ const formatToObject = (argumentsObj) => {
 
 /**
  * 取得する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} localeObj - ロケール
+ * @param {Array} ids_idArr - DB ids _id の入った配列
  * @return {Array} 取得データ
  */
-const findBy_idsArr = async (argumentsObj) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    language,
-    country,
-    arr,
-    
-  } = argumentsObj;
+const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
   
   
   // --------------------------------------------------
   //   配列の重複している値を削除
   // --------------------------------------------------
   
-  const removedDuplicatesArr = Array.from(new Set(arr));
+  const removedDuplicatesArr = Array.from(new Set(ids_idArr));
+  
+  
   
   
   // --------------------------------------------------
@@ -508,6 +658,7 @@ const findBy_idsArr = async (argumentsObj) => {
     // --------------------------------------------------
     
     let resultArr = await Model.aggregate([
+      
       
       {
         $match : { _id: { $in: removedDuplicatesArr } }
@@ -540,6 +691,7 @@ const findBy_idsArr = async (argumentsObj) => {
             as: 'usersObj'
           }
       },
+      
       {
         $unwind: '$usersObj'
       },
@@ -555,8 +707,8 @@ const findBy_idsArr = async (argumentsObj) => {
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$language', language] },
-                      { $eq: ['$country', country] },
+                      { $eq: ['$language', localeObj.language] },
+                      { $eq: ['$country', localeObj.country] },
                       { $eq: ['$gameID', '$$idsGameID'] }
                     ]
                   },
@@ -574,6 +726,7 @@ const findBy_idsArr = async (argumentsObj) => {
             as: 'gamesObj'
           }
       },
+      
       {
         $unwind:
           {
@@ -581,6 +734,7 @@ const findBy_idsArr = async (argumentsObj) => {
             preserveNullAndEmptyArrays: true
           }
       },
+      
       
     ]).exec();
     
@@ -605,187 +759,16 @@ const findBy_idsArr = async (argumentsObj) => {
 
 
 
-
-
-
-
-
-
-/**
- * 取得する
- * @param {Object} conditionObj - 検索条件
- * @return {Array} 取得データ
- */
-const find = async ({ conditionObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    return await Model.find(conditionObj).exec();
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * カウントを取得する
- * @param {Object} conditionObj - 検索条件
- * @return {number} カウント数
- */
-const count = async ({ conditionObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    return await Model.countDocuments(conditionObj).exec();
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * 挿入 / 更新する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 
- */
-const upsert = async ({ conditionObj, saveObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Upsert
-    // --------------------------------------------------
-    
-    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * 挿入する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 
- */
-const insertMany = async ({ saveArr }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   insertMany
-    // --------------------------------------------------
-    
-    return await Model.insertMany(saveArr);
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * 削除する
- * @param {Object} conditionObj - 検索条件
- * @return {Array} 
- */
-const deleteMany = async ({ conditionObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Delete
-    // --------------------------------------------------
-    
-    return await Model.deleteMany(conditionObj);
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
 
 module.exports = {
-  findForCardPlayer,
-  findBy_Users_idForForm,
   find,
   count,
   upsert,
   insertMany,
-  deleteMany
+  deleteMany,
+  findForCardPlayer,
+  findBy_Users_idForForm,
 };

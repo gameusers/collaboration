@@ -35,20 +35,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 // ---------------------------------------------
 
 import CardPlayer from './player';
-// import CardGame from './game';
 
 
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// const Container = styled.div`
-//   margin: 0;
-//   padding: 0;
-// `;
 
 
 // --------------------------------------------------
@@ -98,8 +86,6 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
   }
-  
-  
   
   
   // --------------------------------------------------

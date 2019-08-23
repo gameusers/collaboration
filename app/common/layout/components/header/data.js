@@ -253,6 +253,11 @@ export default class extends React.Component {
     
     if (heroImage) {
       
+      
+      // --------------------------------------------------
+      //   Data Opened
+      // --------------------------------------------------
+      
       if (headerDataOpen) {
         
         componentData = 
@@ -263,17 +268,18 @@ export default class extends React.Component {
               background-color: #000;
               background-color: rgba(0, 0, 0, 0.5);
               color: #fff;
+              
               position: absolute;
               right: 15px;
               bottom: 15px;
               padding: 0 0 6px 0;
               
-              @media screen and (max-width: 480px) {
-                position: static;
-                right: auto;
-                bottom: auto;
-                margin: 10px auto;
-              }
+              // @media screen and (max-width: 480px) {
+              //   position: static;
+              //   right: auto;
+              //   bottom: auto;
+              //   margin: 10px auto;
+              // }
             `}
           >
             
@@ -309,6 +315,11 @@ export default class extends React.Component {
           </div>
         ;
         
+        
+      // --------------------------------------------------
+      //   Data Closed
+      // --------------------------------------------------
+        
       } else {
         
         componentData = 
@@ -318,12 +329,14 @@ export default class extends React.Component {
               flex-flow: row nowrap;
               justify-content: center;
               align-items: center;
+              
               min-width: 150px;
               max-width: 300px;
               border-radius: 8px;
               background-color: #000;
               background-color: rgba(0, 0, 0, 0.5);
               color: #fff;
+              
               position: absolute;
               right: 15px;
               bottom: 15px;
@@ -402,6 +415,7 @@ export default class extends React.Component {
               flex-flow: row nowrap;
               justify-content: center;
               align-items: center;
+              
               min-width: 150px;
               max-width: 300px;
               border-radius: 8px;

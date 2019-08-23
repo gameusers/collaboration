@@ -17,13 +17,12 @@ import util from 'util';
 import React from 'react';
 import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import { useSpring, animated, config } from 'react-spring';
+import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
 import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
-// import styled from '@emotion/styled';
 
 
 // ---------------------------------------------
@@ -37,9 +36,6 @@ import Badge from '@material-ui/core/Badge';
 import Avatar from '@material-ui/core/Avatar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Paper from '@material-ui/core/Paper';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -84,24 +80,9 @@ const stylesObj = {
 
 const Container = ({ children, showNavTop, immediate }) => {
   
-  // const Header = styled(animated.header)`
-  //   display: flex;
-  //   flex-flow: row nowrap;
-  //   align-items: center;
-  //   background-color: white;
-  //   width: 100%;
-  //   height: 53px;
-  //   position: sticky;
-  //   top: 0;
-  //   z-index: 1001;
-  // `;
-  
   const props = useSpring({
     transform: showNavTop ? 'translateY(0px)' : 'translateY(-53px)',
     config: { duration: 250 },
-    // config: config.slow,
-    // config: { mass: 1, tension: 210, friction: 20, clamp: true }
-    // immediate: immediate,
   });
   
   return <animated.header
@@ -120,9 +101,6 @@ const Container = ({ children, showNavTop, immediate }) => {
     >
       {children}
     </animated.header>;
-  
-  // return <Header style={props}>{children}</Header>;
-  // return <header>{children}</header>;
   
 };
 
@@ -179,10 +157,7 @@ export default class extends React.Component {
     
     // --------------------------------------------------
     //   スクロールされる度に呼び出される関数を設定する / ヘッダーのアニメーション用
-    //   以下の一文を表示すると、このエラーが表示される。そのうち直すように。
-    //   Warning: Can't perform a React state update on an unmounted component.
     // --------------------------------------------------
-    // console.log('componentDidMount');
     
     this.scrollYOffset = 0;
     this.navTopHeight = 53;
@@ -194,15 +169,18 @@ export default class extends React.Component {
   }
   
   
+  // --------------------------------------------------
+  //   componentWillUnmount
+  // --------------------------------------------------
+  
   componentWillUnmount() {
-    // console.log('componentWillUnmount');
     window.removeEventListener('scroll', this.handleScroll);
-    // this._isMounted = false;
-    // window.removeEventListener('scroll', this.props.stores.layout.handleHeaderNavOnScroll);
   }
   
   
-  
+  // --------------------------------------------------
+  //   handleScroll
+  // --------------------------------------------------
   
   handleScroll = lodashThrottle(() => {
     
@@ -210,8 +188,6 @@ export default class extends React.Component {
     
     let scrollUp = false;
     let showNavTop = true;
-    // let immediate = true;
-    // let lowerNavMain = false;
     
     
     // ---------------------------------------------
@@ -245,16 +221,6 @@ export default class extends React.Component {
         }
         
       }
-      
-      
-      // ---------------------------------------------
-      //   Immediate アニメーションを行わないですぐに表示する場合、true
-      //   immediate	bool/fn	Prevents animation if true. Also valid as a function for individual keys: key => immediate
-      //   https://www.react-spring.io/docs/hooks/api
-      // ---------------------------------------------
-      
-      // immediate = true;
-      
     
     }
     
@@ -271,26 +237,13 @@ export default class extends React.Component {
     // `);
     
     
-    
-    
     if (this.state.showNavTop !== showNavTop) {
-      
-      // console.log('setState');
-      
-      // console.log(chalk`
-      //   scrollY: {green ${scrollY}}
-      //   this.navTopHeight: {green ${this.navTopHeight}}
-      //   this.heroImageHeight: {green ${this.heroImageHeight}}
-      //   scrollUp: {green ${scrollUp}}
-      //   showNavTop: {green ${showNavTop}}
-      // `);
       
       this.setState({
         showNavTop,
       });
       
     }
-    
     
   }, 100);
   
@@ -319,22 +272,6 @@ export default class extends React.Component {
     const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
     const playerID = lodashGet(stores, ['data', 'loginUsersObj', 'playerID'], '');
     
-    
-    // --------------------------------------------------
-    //   Store Value
-    // --------------------------------------------------
-    
-    // const headerNavTopImmediate = lodashGet(stores, ['layout', 'headerNavTopImmediate'], true);
-    // const headerNavTopShow = lodashGet(stores, ['layout', 'headerNavTopShow'], true);
-    
-    
-    
-    
-    // const headerScrollY = window.scrollY;
-    
-    // console.log(chalk`
-    //   headerScrollY: {green ${headerScrollY}}
-    // `);
     
     
     

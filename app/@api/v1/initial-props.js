@@ -130,8 +130,7 @@ router.get('/common', upload.none(), async (req, res, next) => {
     // returnObj.headerObj = {};
     
     returnObj.headerObj = await ModelGames.findForHeroImage({
-      language: localeObj.language,
-      country: localeObj.country,
+      localeObj,
     });
     
     
@@ -214,30 +213,6 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     lodashSet(requestParametersObj, ['playerID'], playerID);
     
     
-    // --------------------------------------------------
-    //   データ取得 / Games
-    //   ヘッダーヒーローイメージ用
-    // --------------------------------------------------
-    
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      language: localeObj.language,
-      country: localeObj.country,
-    });
-    
-    // console.log(`
-    //   ----- returnObj.headerObj -----\n
-    //   ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   ログインしているユーザー情報
-    // --------------------------------------------------
-    
-    if (req.isAuthenticated() && req.user) {
-      returnObj.loginUsersObj = req.user;
-    }
     
     
     // --------------------------------------------------
@@ -257,7 +232,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     //   ユーザー情報が存在しない場合はエラー
     // --------------------------------------------------
     
-    const users_id = usersObj._id;
+    const users_id = lodashGet(usersObj, ['_id'], '');
     
     if (!users_id) {
       statusCode = 404;
@@ -269,7 +244,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     //   pagesArr
     // --------------------------------------------------
     
-    returnObj.pagesArr = usersObj.pagesArr;
+    returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
     
     
     // --------------------------------------------------
@@ -278,9 +253,8 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+      localeObj,
       users_id,
-      language: localeObj.language,
-      country: localeObj.country,
       loginUsers_id
     });
     

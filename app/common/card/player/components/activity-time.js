@@ -16,6 +16,7 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -70,7 +71,11 @@ export default class extends React.Component {
       return null;
     }
     
-    
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -79,24 +84,38 @@ export default class extends React.Component {
     
     const componentsArr = [];
     
-    for (const [index, value] of arr.entries()) {
+    for (const [index, valueObj] of arr.entries()) {
+      
+      
+      // --------------------------------------------------
+      //   Property
+      // --------------------------------------------------
       
       const weekTextArr = ['月', '火', '水', '木', '金', '土', '日'];
+      const weekArr = lodashGet(valueObj, ['weekArr'], []);
       
+      
+      // --------------------------------------------------
+      //   曜日
+      // --------------------------------------------------
       
       let week = '';
       
-      if (value.weekArr.length > 0) {
+      if (weekArr.length > 0) {
         
         const tempArr = [];
         
-        for (let value of value.weekArr.values()) {
+        for (let value of weekArr.values()) {
           tempArr.push(weekTextArr[value]);
         }
         
         week = ` (${tempArr.join(' / ')})`;
       }
       
+      
+      // --------------------------------------------------
+      //   Push
+      // --------------------------------------------------
       
       componentsArr.push(
         <div
@@ -109,9 +128,10 @@ export default class extends React.Component {
           `}
           key={`activityTime${index}`}
         >
-          {value.beginTime} ～ {value.endTime}{week}
+          {valueObj.beginTime} ～ {valueObj.endTime}{week}
         </div>
       );
+      
       
     }
     

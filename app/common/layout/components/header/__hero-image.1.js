@@ -67,11 +67,9 @@ export default class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    // const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
+    const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
     const imagesAndVideosObj = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj'], {});
     const thumbnailArr = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-    
-    
     
     
     // --------------------------------------------------
@@ -82,12 +80,11 @@ export default class extends React.Component {
     //   headerDataOpen: {green ${headerDataOpen}}
     // `);
     
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
+    console.log(`
+      ----- imagesAndVideosObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -99,11 +96,87 @@ export default class extends React.Component {
     
     if (Object.keys(imagesAndVideosObj).length !== 0) {
       
+      // const imageObj = mainArr[0];
+      // const _id = lodashGet(imagesAndVideosObj, ['_id'], '');
+      // const type = lodashGet(imagesAndVideosObj, ['type'], '');
+      
+      // const srcSetArr = lodashGet(imagesAndVideosObj, ['arr', 'srcSetArr'], []).slice().reverse();
+      
+      // let backgroundUrl = '';
+      // let paddingTop = '56.25';
+      // let mediaQueries = '';
+      
+      
+      // for (const [index, valueObj] of srcSetArr.entries()) {
+        
+      //   const src = valueObj.src;
+        
+        
+      //   // 一番大きい画像のデータを取得する
+      //   if (index === 0) {
+          
+      //     backgroundUrl = src;
+          
+      //     // padding-top（例：56.25%）は画像の高さ ÷ 画像の幅 × 100
+      //     paddingTop = Math.floor(valueObj.height / valueObj.width * 100);
+          
+      //     continue;
+          
+      //   }
+        
+        
+      //   if (valueObj.w === '800w') {
+      //     mediaQueries += `
+      //       @media screen and (max-width: 800px) {
+      //         background: no-repeat center center url(${src});
+      //         padding-top: ${paddingTop}%;
+      //       }
+      //     `;
+      //   } else if (valueObj.w === '640w') {
+      //     mediaQueries += `
+      //       @media screen and (max-width: 640px) {
+      //         background: no-repeat center center url(${src})
+      //         padding-top: ${paddingTop}%;
+      //       }
+      //     `;
+      //   } else if (valueObj.w === '480w') {
+      //     mediaQueries += `
+      //       @media screen and (max-width: 480px) {
+      //         background: no-repeat center center url(${src});
+      //         padding-top: ${headerDataOpen ? '10px' : 'auto'};
+      //         padding-bottom: ${headerDataOpen ? '10px' : 'auto'};
+      //         // padding-top: ${headerDataOpen ? 0 : 'auto'};
+      //       }
+      //     `;
+      //   }
+        
+      // }
+      
+      
+      // code = 
+      //   <div
+      //     css={css`
+      //       width: 100%;
+      //       background: no-repeat center center url(${backgroundUrl});
+      //       background-size: cover;
+      //       background-color: #25283D;
+      //       position: relative;
+      //       padding-top: ${paddingTop > 56.25 ? 56.25 : paddingTop}%;
+            
+      //       ${mediaQueries}
+      //     `}
+      //   >
+      //     <Data heroImage={true} />
+      //   </div>
+      // ;
+      
+      
       const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
       
       const src = lodashGet(imagesAndVideosObj, ['arr', 0, 'src'], '');
       const srcSet = lodashGet(imagesAndVideosObj, ['arr', 0, 'srcSet'], '');
       const width = lodashGet(imagesAndVideosObj, ['arr', 0, 'width'], 256);
+      const height = lodashGet(imagesAndVideosObj, ['arr', 0, 'height'], 256);
       
       
       code = 
@@ -117,10 +190,11 @@ export default class extends React.Component {
           
           <img
             css={css`
+              // width: 100%;
+              // height: 50%;
               min-height: 220px;
               max-width: 100%;
-              max-height: 640px;
-              // max-height: 1080px;
+              max-height: 1080px;
               object-fit: cover;
               margin: 0 auto;
             `}
@@ -128,6 +202,7 @@ export default class extends React.Component {
             srcSet={srcSet}
             alt={name}
             width={width}
+            // height={height}
           />
           
           <Data heroImage={true} />
@@ -146,7 +221,6 @@ export default class extends React.Component {
       
       const thumbnailSrc = lodashGet(thumbnailArr.slice(), [0, 'srcSetArr', 0, 'src'], '');
       const imgSrc = thumbnailSrc ? thumbnailSrc : '/static/img/common/thumbnail/none-game.jpg';
-      
       
       code = 
         <div

@@ -17,74 +17,12 @@ const schema = mongoose.Schema({
   urlID: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
   country: { type: String, enum: ['US', 'JP'], required: true },
-  imagesAndVideosObj: {
-    thumbnailArr: [
-      {
-        _id: { type: String, required: true },
-        type: { type: String, enum: ['image', 'video'], required: true },
-        srcSetArr: [
-          {
-            _id: { type: String, required: true },
-            src: { type: String, required: true },
-            w: { type: String, enum: ['320w', '480w', '640w', '800w'], required: true },
-            width: { type: Number, required: true },
-            height: { type: Number, required: true },
-          }
-        ],
-      },
-    ],
-    mainArr: [
-      {
-        _id: { type: String, required: true },
-        type: { type: String, enum: ['image', 'video'], required: true },
-        localesArr: {
-          type: [
-            {
-              _id: { type: String, required: true },
-              language: { type: String, enum: ['en', 'ja'] },
-              caption: { type: String },
-            }
-          ],
-          default: undefined,
-        },
-        srcSetArr: {
-          type: [
-            {
-              _id: { type: String, required: true },
-              src: { type: String, required: true },
-              w: { type: String, enum: ['320w', '480w', '640w', '800w', '960w', '1120w', '1280w', '1440w', '1600w', '1760w', '1920w'], required: true },
-              width: { type: Number, required: true },
-              height: { type: Number, required: true },
-            }
-          ],
-          default: undefined,
-        },
-        videoChannel: { type: String, enum: ['youtube'] },
-        videoID: String,
-      },
-    ],
-  },
-  // thumbnail: { type: Boolean, required: true },
-  // imageVideoArr: [
-  //   {
-  //     _id: { type: String, required: true },
-  //     type: { type: String, enum: ['image', 'video'], required: true },
-  //     caption: String,
-  //     fileFormat: { type: String, enum: ['JPEG', 'PNG', 'GIF'] },
-  //     srcSetArr: [
-  //       {
-  //         _id: { type: String, required: true },
-  //         w: { type: String, enum: ['320w', '480w', '640w', '800w', 'source'], required: true },
-  //         width: { type: Number, required: true },
-  //         height: { type: Number, required: true },
-  //       }
-  //     ],
-  //   },
-  // ],
+  imagesAndVideos_id: '',
+  imagesAndVideosThumbnail_id: '',
   name: { type: String, required: true },
   subtitle: String,
   searchKeywordsArr: [String],
-  forSort: { type: String, required: true },
+  sortKeyword: { type: String, required: true },
   twitterHashtag: String,
   genreArr: [String],
   genreSubArr: [String],
@@ -124,5 +62,3 @@ if (mongoose.models.games) {
 }
 
 module.exports = model;
-
-// module.exports = mongoose.model('games', schema);

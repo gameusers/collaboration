@@ -14,7 +14,7 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   users_id: { type: String },
-  type: { type: String },
+  type: { type: String, enum: ['game', 'player', 'forum'], required: true },
   arr: [
     {
       _id: { type: String, required: true },
@@ -34,7 +34,7 @@ const schema = mongoose.Schema({
         type: [
           {
             _id: { type: String, required: true },
-            w: { type: String, enum: ['320w', '480w', '640w', '800w'], required: true },
+            w: { type: String, enum: ['320w', '480w', '640w', '800w', '1920w'], required: true },
             width: { type: Number, required: true },
             height: { type: Number, required: true },
           }

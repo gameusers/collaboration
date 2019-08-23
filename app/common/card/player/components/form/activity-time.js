@@ -27,8 +27,6 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
-import { withStyles } from '@material-ui/core/styles';
-
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
@@ -56,20 +54,6 @@ const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../..
 
 
 // --------------------------------------------------
-//   Material UI Style Overrides
-//   https://material-ui.com/styles/basics/
-// --------------------------------------------------
-
-const stylesObj = {
-  
-  label: {
-    fontSize: 14
-  },
-  
-};
-
-
-// --------------------------------------------------
 //   Emotion
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
@@ -82,56 +66,11 @@ const cssTextField = css`
 
 
 
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// const Heading = styled.div`
-//   font-weight: bold;
-//   margin: 0 0 2px 0;
-// `;
-
-// const Description = styled.p`
-  
-// `;
-
-// const Box = styled.div`
-  
-// `;
-
-// const TextFieldBox = styled.div`
-//   margin: 12px 0 0 0;
-// `;
-
-// const StyledTextField = styled(TextField)`
-//   && {
-//     margin-right: 16px;
-//   }
-// `;
-
-// const IconButtonBox = styled.div`
-//   margin: 12px 0 0 0;
-// `;
-
-// const StyledIconButton = styled(IconButton)`
-//   && {
-//     margin-right: 16px;
-//   }
-// `;
-
-// const SearchBox = styled.div`
-  
-// `;
-
-
-
 
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@withStyles(stylesObj)
 @inject('storeCardPlayer')
 @observer
 export default injectIntl(class extends React.Component {
@@ -157,7 +96,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, storeCardPlayer, intl, _id, activityTimeObj } = this.props;
+    const { storeCardPlayer, intl, _id, activityTimeObj } = this.props;
     
     const {
       
@@ -366,6 +305,8 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -452,9 +393,6 @@ export default injectIntl(class extends React.Component {
         {/* 検索チェックボックス */}
         <div>
           <FormControlLabel
-            classes={{
-              label: classes.label
-            }}
             control={
               <Checkbox
                 checked={activityTimeObj.search}

@@ -26,6 +26,13 @@ const ModelIDs = require('../ids/model');
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+
+
+// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
@@ -40,13 +47,12 @@ const { formatImagesAndVideosArr } = require('../../@format/image');
 
 /**
  * 取得する
+ * @param {Object} localeObj - ロケール
  * @param {string} users_id - DB users _id
- * @param {string} language - 言語
- * @param {string} country - 国
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async ({ users_id, language, country, loginUsers_id }) => {
+const findForCardPlayer = async ({ localeObj, users_id, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -67,13 +73,84 @@ const findForCardPlayer = async ({ users_id, language, country, loginUsers_id })
     //   Card Players のデータを取得
     // --------------------------------------------------
     
-    let resultCardPlayersArr = await Model.aggregate([
+    let resultArr = await Model.aggregate([
       
+      
+      // Card Players を取得する
       {
         $match : { users_id }
       },
       
       
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // 画像と動画を取得 - サムネイル用
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosThumbnailObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosThumbnailObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // ユーザー情報
       {
         $lookup:
           {
@@ -100,11 +177,13 @@ const findForCardPlayer = async ({ users_id, language, country, loginUsers_id })
             as: 'usersObj'
           }
       },
+      
       {
         $unwind: '$usersObj'
       },
       
       
+      // ハードウェア
       {
         $lookup:
           {
@@ -120,15 +199,15 @@ const findForCardPlayer = async ({ users_id, language, country, loginUsers_id })
                     [
                       { $and:
                         [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
                         ]
                       },
                       { $and:
                         [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
                         ]
                       }
@@ -187,18 +266,15 @@ const findForCardPlayer = async ({ users_id, language, country, loginUsers_id })
     
     let ids_idArr = [];
     
-    for (let valueObj of resultCardPlayersArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.idArr);
+    for (let valueObj of resultArr.values()) {
+      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
-      language,
-      country,
+      localeObj,
       loginUsers_id,
-      arr: ids_idArr,
+      ids_idArr,
     });
-    
-    
     
     
     // --------------------------------------------------
@@ -206,8 +282,9 @@ const findForCardPlayer = async ({ users_id, language, country, loginUsers_id })
     // --------------------------------------------------
     
     returnObj = format({
+      localeObj,
       loginUsers_id,
-      cardPlayersArr: resultCardPlayersArr,
+      cardPlayersArr: resultArr,
       idsObj: resultIDsObj
     });
     
@@ -215,11 +292,29 @@ const findForCardPlayer = async ({ users_id, language, country, loginUsers_id })
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
-    // console.log(`\n---------- resultCardPlayersArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(resultCardPlayersArr)));
+    console.log(`
+      ----- resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- ids_idArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- resultIDsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`\n---------- resultArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(resultArr)));
     // console.log(`\n-----------------------------------\n`);
     
     // console.log(`\n---------- returnObj ----------\n`);
@@ -679,12 +774,13 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
 
 /**
  * DBから取得したカード情報をフォーマットする
+ * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} cardPlayersArr - カード情報の入った配列
  * @param {Object} idsObj - ID情報の入ったオブジェクト
  * @return {Object} フォーマット後のデータ
  */
-const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
+const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
   
   
   // --------------------------------------------------
@@ -702,22 +798,55 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
     
     
     // --------------------------------------------------
-    //   ディープコピー
+    //   Deep Copy
     // --------------------------------------------------
     
-    const cloneObj = lodashCloneDeep(valueObj);
-    // const cloneObj = JSON.parse(JSON.stringify(valueObj));
+    const clonedObj = lodashCloneDeep(valueObj);
+    
+    
+    // --------------------------------------------------
+    //   画像をフォーマットする
+    // --------------------------------------------------
+    
+    const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
+    
+    if (formattedObj) {
+      
+      clonedObj.imagesAndVideosObj = formattedObj;
+      
+    } else {
+      
+      delete clonedObj.imagesAndVideosObj;
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   画像をフォーマットする - サムネイル
+    // --------------------------------------------------
+    
+    const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosThumbnailObj });
+    
+    if (formattedThumbnailObj) {
+      
+      clonedObj.imagesAndVideosThumbnailObj = formattedThumbnailObj;
+      
+    } else {
+      
+      delete clonedObj.imagesAndVideosThumbnailObj;
+      
+    }
     
     
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
     // console.log('AAA');
-    cloneObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: cloneObj.imagesAndVideosObj.thumbnailArr });
-    cloneObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: cloneObj.imagesAndVideosObj.mainArr });
+    // clonedObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: clonedObj.imagesAndVideosObj.thumbnailArr });
+    // clonedObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: clonedObj.imagesAndVideosObj.mainArr });
     
-    // cloneObj.imagesArr = formatImagesAndVideosArr({ arr: cloneObj.imageVideoArr });
-    // cloneObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, cloneObj.imageVideoArr);
+    // clonedObj.imagesArr = formatImagesAndVideosArr({ arr: clonedObj.imageVideoArr });
+    // clonedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, clonedObj.imageVideoArr);
     // console.log('BBB');
     
     
@@ -725,7 +854,7 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
     //   hardwareActive
     // --------------------------------------------------
     
-    cloneObj.hardwareActiveArr = [];
+    clonedObj.hardwareActiveArr = [];
     
     for (let value of valueObj.hardwareActiveObj.valueArr) {
       
@@ -734,7 +863,7 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
       });
       
       if (obj && 'name' in obj) {
-        cloneObj.hardwareActiveArr.push({
+        clonedObj.hardwareActiveArr.push({
           name: obj.name
         });
       }
@@ -746,7 +875,7 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
     //   hardwareInactive
     // --------------------------------------------------
     
-    cloneObj.hardwareInactiveArr = [];
+    clonedObj.hardwareInactiveArr = [];
     
     for (let value of valueObj.hardwareInactiveObj.valueArr) {
       
@@ -755,7 +884,7 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
       });
       
       if (obj && 'name' in obj) {
-        cloneObj.hardwareInactiveArr.push({
+        clonedObj.hardwareInactiveArr.push({
           name: obj.name
         });
       }
@@ -767,19 +896,19 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
     //   Follow の処理
     // --------------------------------------------------
     
-    cloneObj.usersObj.follow = false;
-    cloneObj.usersObj.followed = false;
+    clonedObj.usersObj.follow = false;
+    clonedObj.usersObj.followed = false;
     
     if (loginUsers_id) {
       
-      if (cloneObj.users_id !== loginUsers_id) {
+      if (clonedObj.users_id !== loginUsers_id) {
         
-        if (cloneObj.usersObj.followArr.includes(loginUsers_id)) {
-          cloneObj.usersObj.follow = true;
+        if (clonedObj.usersObj.followArr.includes(loginUsers_id)) {
+          clonedObj.usersObj.follow = true;
         }
         
-        if (cloneObj.usersObj.followedArr.includes(loginUsers_id)) {
-          cloneObj.usersObj.followed = true;
+        if (clonedObj.usersObj.followedArr.includes(loginUsers_id)) {
+          clonedObj.usersObj.followed = true;
         }
         
       }
@@ -791,12 +920,12 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
     //   ID
     // --------------------------------------------------
     
-    cloneObj.idArr = [];
+    clonedObj.ids_idArr = [];
     
-    for (let value of valueObj.idArr) {
+    for (let value of valueObj.ids_idArr) {
       
       if (value in idsObj) {
-        cloneObj.idArr.push(idsObj[value]);
+        clonedObj.ids_idArr.push(idsObj[value]);
       }
       
     }
@@ -806,16 +935,16 @@ const format = ({ loginUsers_id, cardPlayersArr, idsObj }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete cloneObj._id;
-    // delete cloneObj.imageVideoArr;
-    delete cloneObj.usersObj.followArr;
-    delete cloneObj.usersObj.followedArr;
-    delete cloneObj.hardwareActiveObj;
-    delete cloneObj.hardwareInactiveObj;
-    delete cloneObj.hardwaresArr;
+    delete clonedObj._id;
+    // delete clonedObj.imageVideoArr;
+    delete clonedObj.usersObj.followArr;
+    delete clonedObj.usersObj.followedArr;
+    delete clonedObj.hardwareActiveObj;
+    delete clonedObj.hardwareInactiveObj;
+    delete clonedObj.hardwaresArr;
     
     
-    returnObj[valueObj._id] = cloneObj;
+    returnObj[valueObj._id] = clonedObj;
     
   }
   
@@ -859,22 +988,22 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   ディープコピー
     // --------------------------------------------------
     
-    const cloneObj = lodashCloneDeep(valueObj);
+    const clonedObj = lodashCloneDeep(valueObj);
     
     
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
     
-    // cloneObj.imageVideoArr = formatImagesAndVideosArr({ arr: cloneObj.imageVideoArr });
-    // cloneObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, cloneObj.imageVideoArr);
+    // clonedObj.imageVideoArr = formatImagesAndVideosArr({ arr: clonedObj.imageVideoArr });
+    // clonedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, clonedObj.imageVideoArr);
     
     
     // --------------------------------------------------
     //   hardwareActive
     // --------------------------------------------------
     
-    cloneObj.hardwareActiveArr = [];
+    clonedObj.hardwareActiveArr = [];
     
     for (let value of valueObj.hardwareActiveObj.valueArr) {
       
@@ -883,7 +1012,7 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
       });
       
       if (obj && 'name' in obj) {
-        cloneObj.hardwareActiveArr.push({
+        clonedObj.hardwareActiveArr.push({
           hardwareID: value,
           name: obj.name
         });
@@ -896,7 +1025,7 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   hardwareInactive
     // --------------------------------------------------
     
-    cloneObj.hardwareInactiveArr = [];
+    clonedObj.hardwareInactiveArr = [];
     
     for (let value of valueObj.hardwareInactiveObj.valueArr) {
       
@@ -905,7 +1034,7 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
       });
       
       if (obj && 'name' in obj) {
-        cloneObj.hardwareInactiveArr.push({
+        clonedObj.hardwareInactiveArr.push({
           hardwareID: value,
           name: obj.name
         });
@@ -918,12 +1047,12 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   ID
     // --------------------------------------------------
     
-    cloneObj.idArr = [];
+    clonedObj.idArr = [];
     
     for (let value of valueObj.idArr) {
       
       if (value in idsObj) {
-        cloneObj.idArr.push(idsObj[value]);
+        clonedObj.idArr.push(idsObj[value]);
       }
       
     }
@@ -933,14 +1062,14 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    // delete cloneObj._id;
-    // delete cloneObj.imageVideoArr;
-    // delete cloneObj.hardwareActiveObj;
-    // delete cloneObj.hardwareInactiveObj;
-    delete cloneObj.hardwaresArr;
+    // delete clonedObj._id;
+    // delete clonedObj.imageVideoArr;
+    // delete clonedObj.hardwareActiveObj;
+    // delete clonedObj.hardwareInactiveObj;
+    delete clonedObj.hardwaresArr;
     
     
-    returnObj[valueObj._id] = cloneObj;
+    returnObj[valueObj._id] = clonedObj;
     
   }
   

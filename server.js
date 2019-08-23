@@ -207,23 +207,23 @@ app.prepare().then(() => {
   //   Player
   // ---------------------------------------------
   
-  server.get('/pl/:playerID/settings', csrfToken, (req, res) => {
-    const { playerID } = req.params;
-    app.render(req, res, '/pl/settings', { playerID });
-  });
+  // server.get('/pl/:playerID/settings', csrfToken, (req, res) => {
+  //   const { playerID } = req.params;
+  //   app.render(req, res, '/pl/settings', { playerID });
+  // });
   
   
-  server.get('/pl/:playerID*', csrfToken, (req, res) => {
+  // server.get('/pl/:playerID*', csrfToken, (req, res) => {
     
-    const { playerID } = req.params;
+  //   const { playerID } = req.params;
     
-    if (!playerID) {
-      app.render(req, res, '/pl/index', req.query);
-    }
+  //   if (!playerID) {
+  //     app.render(req, res, '/pl/index', req.query);
+  //   }
     
-    app.render(req, res, '/pl/player', { playerID });
+  //   app.render(req, res, '/pl/player', { playerID });
     
-  });
+  // });
   
   
   

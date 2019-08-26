@@ -176,7 +176,7 @@ router.get('/common', upload.none(), async (req, res, next) => {
 //   endpointID: P3ut9x3Fj
 // --------------------------------------------------
 
-router.get('/pl/player', upload.none(), async (req, res, next) => {
+router.get('/ur/user', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -208,9 +208,9 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     //   GET Data
     // --------------------------------------------------
     
-    const playerID = req.query.playerID;
+    const userID = req.query.userID;
     
-    lodashSet(requestParametersObj, ['playerID'], playerID);
+    lodashSet(requestParametersObj, ['userID'], userID);
     
     
     
@@ -223,7 +223,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     
     const usersObj = await ModelUsers.findOne({
       conditionObj: {
-        playerID,
+        userID,
       }
     });
     
@@ -279,8 +279,8 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   {green pl/player/api/player / initial-props}
-    //   playerID: {green ${playerID}}
+    //   {green ur/player/api/player / initial-props}
+    //   userID: {green ${userID}}
     //   users_id：{green ${users_id}}
     // `);
     
@@ -350,7 +350,7 @@ router.get('/pl/player', upload.none(), async (req, res, next) => {
 //   endpointID: IXNCfSRLy
 // --------------------------------------------------
 
-router.get('/pl/settings', upload.none(), async (req, res, next) => {
+router.get('/ur/settings', upload.none(), async (req, res, next) => {
   
   
   // --------------------------------------------------
@@ -425,7 +425,7 @@ router.get('/pl/settings', upload.none(), async (req, res, next) => {
     
     returnObj.usersObj = {
       loginID: usersObj.loginID,
-      playerID: usersObj.playerID,
+      userID: usersObj.userID,
       emailObj: {
         secret: formatEmailSecret({ value: decryptedEmail }),
         confirmation: usersObj.emailObj.confirmation,

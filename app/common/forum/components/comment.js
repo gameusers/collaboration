@@ -222,7 +222,7 @@ export default injectIntl(class extends React.Component {
       
       const exp = lodashGet(valueObj, ['usersObj', 'exp'], 0);
       const accessDate = lodashGet(valueObj, ['usersObj', 'accessDate'], '');
-      const playerID = lodashGet(valueObj, ['usersObj', 'playerID'], '');
+      const userID = lodashGet(valueObj, ['usersObj', 'userID'], '');
       
       
       // --------------------------------------------------
@@ -237,7 +237,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
-      const imagesAndVideos_id = lodashGet(imagesAndVideosObj, ['_id'], '');
       
       
       // --------------------------------------------------
@@ -321,7 +320,7 @@ export default injectIntl(class extends React.Component {
             <User
               thumbnailSrc={thumbnailSrc}
               name={name}
-              playerID={playerID}
+              userID={userID}
               status={status}
               accessDate={accessDate}
               exp={exp}

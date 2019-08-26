@@ -142,7 +142,7 @@ export default class extends React.Component {
     
     // const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
     // const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
-    // const playerID = lodashGet(stores, ['data', 'loginUsersObj', 'playerID'], '');
+    // const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
     
     
     // --------------------------------------------------
@@ -152,7 +152,7 @@ export default class extends React.Component {
     // console.log(chalk`
     //   thumbnailSrc: {green ${thumbnailSrc}}
     //   thumbnailSrcSet: {green ${thumbnailSrcSet}}
-    //   playerID: {green ${playerID}}
+    //   userID: {green ${userID}}
     // `);
     
     // console.log(`

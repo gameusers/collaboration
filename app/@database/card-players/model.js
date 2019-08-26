@@ -167,7 +167,7 @@ const findForCardPlayer = async ({ localeObj, users_id, loginUsers_id }) => {
                   _id: 0,
                   accessDate: 1,
                   exp: 1,
-                  playerID: 1,
+                  userID: 1,
                   followArr: 1,
                   followedArr: 1,
                   followedCount: 1,
@@ -295,23 +295,23 @@ const findForCardPlayer = async ({ localeObj, users_id, loginUsers_id }) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- ids_idArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- resultIDsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultIDsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`\n---------- resultArr ----------\n`);
     // console.dir(JSON.parse(JSON.stringify(resultArr)));
@@ -405,7 +405,7 @@ const findOneBy_id = async (argumentsObj) => {
                   _id: 0,
                   accessDate: 1,
                   exp: 1,
-                  playerID: 1,
+                  userID: 1,
                   followArr: 1,
                   followedArr: 1,
                   followedCount: 1,

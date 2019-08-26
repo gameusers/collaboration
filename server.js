@@ -207,21 +207,21 @@ app.prepare().then(() => {
   //   Player
   // ---------------------------------------------
   
-  // server.get('/pl/:playerID/settings', csrfToken, (req, res) => {
-  //   const { playerID } = req.params;
-  //   app.render(req, res, '/pl/settings', { playerID });
+  // server.get('/ur/:userID/settings', csrfToken, (req, res) => {
+  //   const { userID } = req.params;
+  //   app.render(req, res, '/ur/settings', { userID });
   // });
   
   
-  // server.get('/pl/:playerID*', csrfToken, (req, res) => {
+  // server.get('/ur/:userID*', csrfToken, (req, res) => {
     
-  //   const { playerID } = req.params;
+  //   const { userID } = req.params;
     
-  //   if (!playerID) {
-  //     app.render(req, res, '/pl/index', req.query);
+  //   if (!userID) {
+  //     app.render(req, res, '/ur/index', req.query);
   //   }
     
-  //   app.render(req, res, '/pl/player', { playerID });
+  //   app.render(req, res, '/ur/user', { userID });
     
   // });
   

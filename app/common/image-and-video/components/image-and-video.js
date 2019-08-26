@@ -81,7 +81,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideo, intl, _id, pathArr, imagesAndVideosObj } = this.props;
+    const { storeImageAndVideo, intl, _id, pathArr, imagesAndVideosObj, setMaxHeight = true } = this.props;
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
@@ -150,29 +150,6 @@ export default injectIntl(class extends React.Component {
           const width = valueObj.width;
           // const height = valueObj.height;
           
-          // const calculatedObj = imageCalculateSize({ width, height, specifiedHeight: 450 });
-          // const calculatedObj = imageCalculateSize({ width, height, maxSize: 400 });
-          
-          
-          // console.log(chalk`
-          //   width: {green ${width}}
-          //   height: {green ${height}}
-          // `);
-          
-          // console.log(`
-          //   ----- calculatedObj -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(calculatedObj)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
-          
-          // let cssWidth = '';
-          // let cssHeight = '';
-          
-          // if ((width < 800 && height < 800) || height > 400) {
-          //   cssWidth = `width: ${calculatedObj.width}px;`;
-          //   cssHeight = `height: ${calculatedObj.height}px;`;
-          // }
-          
           
           componentFirst =
             <div
@@ -186,7 +163,7 @@ export default injectIntl(class extends React.Component {
                   // width: 100%;
                   // height: 50%;
                   max-width: 100%;
-                  max-height: 300px;
+                  max-height: ${setMaxHeight ? '300px' : 'none'};
                   object-fit: contain;
                   margin: 0 auto;
                 `}
@@ -506,15 +483,17 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Preview */}
-        <div
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            margin: 10px 0 0 0;
-          `}
-        >
-          {componentsThumbnailArr}
-        </div>
+        {componentsThumbnailArr.length > 0 &&
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 10px 0 0 0;
+            `}
+          >
+            {componentsThumbnailArr}
+          </div>
+        }
         
         
         {/* Lightbox */}

@@ -76,154 +76,154 @@ class Store {
    * Navigation Topの高さ
    * @type {number}
    */
-  headerNavTopHeight = 53;
+  // headerNavTopHeight = 53;
   
   
-  /**
-   * スクロールのオフセット
-   * 上スクロールか下スクロールを判定するために利用
-   * @type {number}
-   */
-  headerScrollYOffset = 0;
+  // /**
+  // * スクロールのオフセット
+  // * 上スクロールか下スクロールを判定するために利用
+  // * @type {number}
+  // */
+  // headerScrollYOffset = 0;
   
   
-  /**
-   * 上スクロール中で true
-   * @type {boolean}
-   */
-  @observable headerScrollUp = false;
+  // /**
+  // * 上スクロール中で true
+  // * @type {boolean}
+  // */
+  // @observable headerScrollUp = false;
   
   
-  /**
-   * Navigation Topのアニメーションを行わない true / 行う false
-   * スクロールYがゼロのときはアニメーションを行わない
-   * @type {boolean}
-   */
-  headerNavTopImmediate = true;
+  // /**
+  // * Navigation Topのアニメーションを行わない true / 行う false
+  // * スクロールYがゼロのときはアニメーションを行わない
+  // * @type {boolean}
+  // */
+  // headerNavTopImmediate = true;
   
   
-  /**
-   * Navigation Topが表示されている場合 true
-   * @type {boolean}
-   */
-  @observable headerNavTopShow = true;
+  // /**
+  // * Navigation Topが表示されている場合 true
+  // * @type {boolean}
+  // */
+  // @observable headerNavTopShow = true;
   
   
-  /**
-   * Navigation Main を position: sticky にする場合、true
-   * @type {boolean}
-   */
-  @observable headerNavMainPositionSticky = false;
+  // /**
+  // * Navigation Main を position: sticky にする場合、true
+  // * @type {boolean}
+  // */
+  // @observable headerNavMainPositionSticky = false;
   
   
-  /**
-   * 
-   * @type {boolean}
-   */
-  @observable headerNavMainStopHandleHeaderNavOnScroll = false;
+  // /**
+  // * 
+  // * @type {boolean}
+  // */
+  // @observable headerNavMainStopHandleHeaderNavOnScroll = false;
   
   
-  /**
-   * スクロールされる度に呼び出される関数
-   */
-  @action.bound
-  handleHeaderNavOnScroll() {
+  // /**
+  // * スクロールされる度に呼び出される関数
+  // */
+  // @action.bound
+  // handleHeaderNavOnScroll() {
     
-    // console.log(this.headerNavMainStopHandleHeaderNavOnScroll);
-    // ---------------------------------------------
-    //   handleHeaderNavOnScroll を処理しない
-    //   JavaScriptからスクロールする際に、ヘッダーのアニメーションを行わないようにする
-    // ---------------------------------------------
+  //   // console.log(this.headerNavMainStopHandleHeaderNavOnScroll);
+  //   // ---------------------------------------------
+  //   //   handleHeaderNavOnScroll を処理しない
+  //   //   JavaScriptからスクロールする際に、ヘッダーのアニメーションを行わないようにする
+  //   // ---------------------------------------------
     
-    // if (this.headerNavMainStopHandleHeaderNavOnScroll) {
-    //   console.log('処理停止');
-    //   return;
-    // }
+  //   // if (this.headerNavMainStopHandleHeaderNavOnScroll) {
+  //   //   console.log('処理停止');
+  //   //   return;
+  //   // }
     
-    // console.log('handleHeaderNavOnScroll');
-    
-    
-    
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    const headerScrollY = window.scrollY;
+  //   // console.log('handleHeaderNavOnScroll');
     
     
     
-    // ---------------------------------------------
-    //   headerScrollY === 0
-    // ---------------------------------------------
+  //   // ---------------------------------------------
+  //   //   Property
+  //   // ---------------------------------------------
     
-    if (headerScrollY === 0) {
+  //   const headerScrollY = window.scrollY;
+    
+    
+    
+  //   // ---------------------------------------------
+  //   //   headerScrollY === 0
+  //   // ---------------------------------------------
+    
+  //   if (headerScrollY === 0) {
       
-      this.headerNavTopImmediate = true;
-      this.headerScrollUp = false;
-      this.headerNavTopShow = true;
-      this.headerNavMainPositionSticky = false;
+  //     this.headerNavTopImmediate = true;
+  //     this.headerScrollUp = false;
+  //     this.headerNavTopShow = true;
+  //     this.headerNavMainPositionSticky = false;
       
-    } else {
-      
-      
-      this.headerNavTopImmediate = false;
+  //   } else {
       
       
-      // ---------------------------------------------
-      //   Check Scroll Up / Scroll Down
-      // ---------------------------------------------
-      
-      if (headerScrollY > this.headerScrollYOffset) {
-        this.headerScrollUp = false;
-      } else {
-        this.headerScrollUp = true;
-      }
+  //     this.headerNavTopImmediate = false;
       
       
-      // ---------------------------------------------
-      //   Navigation Top Show
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Check Scroll Up / Scroll Down
+  //     // ---------------------------------------------
       
-      if (this.headerHeroImageHeight < headerScrollY) {
+  //     if (headerScrollY > this.headerScrollYOffset) {
+  //       this.headerScrollUp = false;
+  //     } else {
+  //       this.headerScrollUp = true;
+  //     }
+      
+      
+  //     // ---------------------------------------------
+  //     //   Navigation Top Show
+  //     // ---------------------------------------------
+      
+  //     if (this.headerHeroImageHeight < headerScrollY) {
         
-        if (this.headerScrollUp) {
-          this.headerNavTopShow = true;
-        } else {
-          this.headerNavTopShow = false;
-        }
+  //       if (this.headerScrollUp) {
+  //         this.headerNavTopShow = true;
+  //       } else {
+  //         this.headerNavTopShow = false;
+  //       }
         
-      }
+  //     }
       
       
-      // ---------------------------------------------
-      //   Navigation Main Position Sticky
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Navigation Main Position Sticky
+  //     // ---------------------------------------------
       
-      if (this.headerNavTopHeight + this.headerHeroImageHeight < headerScrollY) {
-        this.headerNavMainPositionSticky = true;
-      } else {
-        this.headerNavMainPositionSticky = false;
-      }
+  //     if (this.headerNavTopHeight + this.headerHeroImageHeight < headerScrollY) {
+  //       this.headerNavMainPositionSticky = true;
+  //     } else {
+  //       this.headerNavMainPositionSticky = false;
+  //     }
       
     
-    }
+  //   }
     
     
-    // console.log(chalk`
-    //   headerScrollY: {green ${headerScrollY}}
-    //   this.headerNavTopImmediate: {green ${this.headerNavTopImmediate}}
-    //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
-    //   this.headerScrollUp: {green ${this.headerScrollUp}}
-    //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
-    //   this.headerNavMainPositionSticky: {green ${this.headerNavMainPositionSticky}}
-    // `);
+  //   // console.log(chalk`
+  //   //   headerScrollY: {green ${headerScrollY}}
+  //   //   this.headerNavTopImmediate: {green ${this.headerNavTopImmediate}}
+  //   //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
+  //   //   this.headerScrollUp: {green ${this.headerScrollUp}}
+  //   //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
+  //   //   this.headerNavMainPositionSticky: {green ${this.headerNavMainPositionSticky}}
+  //   // `);
     
     
     
-    this.headerScrollYOffset = headerScrollY;
+  //   this.headerScrollYOffset = headerScrollY;
     
     
-  };
+  // };
   
   
   
@@ -662,7 +662,7 @@ class Store {
       const expanded = lodashGet(this.panelExpandedObj, pathArr, true);
       lodashSet(this.panelExpandedObj, pathArr, !expanded);
       
-    } else {
+    } else {// _idを削除後は消すこと
       
       if (_id in this.panelExpandedObj) {
         this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
@@ -672,46 +672,6 @@ class Store {
       
     }
     
-  };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Loading
-  // ---------------------------------------------
-  
-  /**
-   * ローディングを表示するかどうかの真偽値
-   * @type {boolean}
-   */
-  @observable loading = true;
-  
-  
-  /**
-   * ローディングを表示する場所
-   * @type {boolean}
-   */
-  @observable loadingLeft = false;
-  
-  
-  /**
-   * ローディングを表示する
-   */
-  handleLoadingShow({ left = false }) {
-    this.loading = true;
-    
-    if (left) {
-      this.loadingLeft = true;
-    }
-  };
-  
-  
-  /**
-   * ローディングを非表示にする
-   */
-  handleLoadingHide({}) {
-    this.loading = false;
   };
   
   
@@ -755,7 +715,7 @@ class Store {
    * @param {string} _id - ID
    */
   handleButtonEnable({ _id, pathArr }) {
-    this.buttonDisabledObj[_id] = false;
+    this.buttonDisabledObj[_id] = false;// _idを削除後は消すこと
     
     if (pathArr) {
       lodashSet(this.buttonDisabledObj, pathArr, false);
@@ -768,11 +728,51 @@ class Store {
    * @param {string} _id - ID
    */
   handleButtonDisable({ _id, pathArr }) {
-    this.buttonDisabledObj[_id] = true;
+    this.buttonDisabledObj[_id] = true;// _idを削除後は消すこと
     
     if (pathArr) {
       lodashSet(this.buttonDisabledObj, pathArr, true);
     }
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Loading
+  // ---------------------------------------------
+  
+  /**
+   * ローディングを表示するかどうかの真偽値
+   * @type {boolean}
+   */
+  @observable loading = true;
+  
+  
+  /**
+   * ローディングを表示する場所
+   * @type {boolean}
+   */
+  @observable loadingLeft = false;
+  
+  
+  /**
+   * ローディングを表示する
+   */
+  handleLoadingShow({ left = false }) {
+    this.loading = true;
+    
+    if (left) {
+      this.loadingLeft = true;
+    }
+  };
+  
+  
+  /**
+   * ローディングを非表示にする
+   */
+  handleLoadingHide({}) {
+    this.loading = false;
   };
   
   

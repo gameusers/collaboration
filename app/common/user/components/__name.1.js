@@ -206,7 +206,7 @@ export default class extends React.Component {
       anonymity,
       
       name,
-      playerID,
+      userID,
       status,
       accessDate,
       
@@ -241,7 +241,7 @@ export default class extends React.Component {
       
       componentName =
         <div css={cssNameNoColor}>
-          <Link href={`${stores.data.urlBase}pl/${playerID}`}>
+          <Link href={`${stores.data.urlBase}ur/${userID}`}>
             <a>{name}</a>
           </Link>
         </div>;

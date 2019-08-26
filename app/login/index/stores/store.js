@@ -326,8 +326,8 @@ class Store {
       //   Page Transition
       // ---------------------------------------------
       
-      const playerID = lodashGet(resultObj, ['data', 'playerID'], '');
-      window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+      const userID = lodashGet(resultObj, ['data', 'userID'], '');
+      window.location.href = `${process.env.URL_BASE}ur/${userID}`;
       
       
     } catch (errorObj) {

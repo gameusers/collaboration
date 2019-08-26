@@ -417,7 +417,7 @@ const format = async ({ arr, loginUsers_id }) => {
       followedCount: lodashGet(valueObj, ['followedCount'], 0),
       followed: false,
       accessDate: lodashGet(valueObj, ['accessDate'], ''),
-      playerID: lodashGet(valueObj, ['playerID'], ''),
+      userID: lodashGet(valueObj, ['userID'], ''),
       role: lodashGet(valueObj, ['role'], 'User'),
     };
     

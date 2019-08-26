@@ -77,10 +77,10 @@ const cssNameNoColor = css`
 //   Status
 // ---------------------------------------------
 
-const cssStatusBox = css`
-  display: flex;
-  flex-flow: row wrap;
-`;
+// const cssStatusBox = css`
+//   display: flex;
+//   flex-flow: row wrap;
+// `;
 
 const cssIconHealing = css`
   && {
@@ -157,6 +157,13 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.cardPlayers_id, 'userNameObj'];
+    
+    
+    // --------------------------------------------------
     //   Store
     // --------------------------------------------------
     
@@ -179,8 +186,12 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardPlayers_id}-card-player` });
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardGames_id}-card-game` });
+    if (this.props.cardPlayers_id) {
+      this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    }
+    
+    // this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardPlayers_id}-card-player` });
+    // this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardGames_id}-card-game` });
     
     
   }
@@ -204,40 +215,58 @@ export default class extends React.Component {
       stores,
       
       name,
-      playerID,
+      userID,
       status,
       accessDate,
       
       gameName,
       gameUrlID,
-      showGameName,
+      // showGameName,
       
       exp,
       
       cardPlayers_id,
-      showCardPlayerButton,
+      // showCardPlayerButton,
       
-      cardGames_id,
-      showCardGameButton
+      // cardGames_id,
+      // showCardGameButton
       
     } = this.props;
     
-    const { buttonDisabledObj } = stores.layout;
+    // const { buttonDisabledObj } = stores.layout;
     
     const { handleCardPlayerDialogOpen } = this.storeCardPlayer;
     
     
+    
+    
     // --------------------------------------------------
-    //   Name
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    let buttonDisabled = true;
+    
+    if (cardPlayers_id) {
+      buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Name
     // --------------------------------------------------
     
     let componentName = '';
     
-    if (name && playerID) {
+    if (name && userID) {
       
       componentName =
         <div css={cssNameNoColor}>
-          <Link href={`${process.env.URL_BASE}pl/${playerID}`}>
+          <Link
+            href={`/ur/user?userID=${userID}`}
+            as={`/ur/${userID}`}
+          >
             <a>{name}</a>
           </Link>
         </div>
@@ -259,18 +288,45 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Status
+    //   Component - Status
     // --------------------------------------------------
     
     let componentStatus = '';
     
     if (status) {
-      componentStatus = <div css={cssStatusBox}><IconHealing css={cssIconHealing} /><div css={cssStatus}>{status}</div></div>;
+      componentStatus =
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+          `}
+        >
+          
+          <IconHealing
+            css={css`
+              && {
+                font-size: 18px;
+                margin: 1px 2px 0 0;
+              }
+            `}
+          />
+          
+          <div
+            css={css`
+              font-size: 14px;
+              margin: 0 2px 0 0;
+            `}
+          >
+            {status}
+          </div>
+          
+        </div>
+      ;
     }
     
     
     // --------------------------------------------------
-    //   Access Time
+    //   Component - Access Time
     // --------------------------------------------------
     
     let componentAccessTime = '';
@@ -316,31 +372,31 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Bottom Box
+    //   下段
     // --------------------------------------------------
     
     let componentBottomArr = [];
     
-    if (showGameName && gameName && gameUrlID) {
+    if (gameName && gameUrlID) {
       
-      componentBottomArr.push(
-        <div
-          css={css`
-            font-size: 14px;
-          `}
-          key="gameBox"
-        >
-          <Link href={`${process.env.URL_BASE}gc/${gameUrlID}`}>
-            <a>{gameName}</a>
-          </Link>
-        </div>
-      );
+      // componentBottomArr.push(
+      //   <div
+      //     css={css`
+      //       font-size: 14px;
+      //     `}
+      //     key="gameBox"
+      //   >
+      //     <Link href={`${process.env.URL_BASE}gc/${gameUrlID}`}>
+      //       <a>{gameName}</a>
+      //     </Link>
+      //   </div>
+      // );
       
     } else {
       
       
       // --------------------------------------------------
-      //   Level
+      //   Component - Level
       // --------------------------------------------------
       
       if (exp) {
@@ -367,33 +423,17 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Button Card Player
+      //   Component - Button / Open Card Player
       // --------------------------------------------------
       
-      if (showCardPlayerButton && cardPlayers_id) {
-        
-        
-        // --------------------------------------------------
-        //   Button Disable - ロードが終わるまで使用禁止
-        // --------------------------------------------------
-        
-        let buttonDisabledCardPlayer = true;
-        
-        if (`${cardPlayers_id}-card-player` in buttonDisabledObj) {
-          buttonDisabledCardPlayer = buttonDisabledObj[`${cardPlayers_id}-card-player`];
-        }
-        
-        
-        // --------------------------------------------------
-        //   Component
-        // --------------------------------------------------
+      if (cardPlayers_id) {
         
         componentBottomArr.push(
           <Button
             css={cssButton}
             variant="outlined"
             onClick={() => handleCardPlayerDialogOpen('player', cardPlayers_id)}
-            disabled={buttonDisabledCardPlayer}
+            disabled={buttonDisabled}
             key="cardPlayersButton"
           >
             <IconLayers css={cssIconLayers} />
@@ -408,41 +448,43 @@ export default class extends React.Component {
       //   Button Card Game
       // --------------------------------------------------
       
-      if (showCardGameButton && cardGames_id) {
+      // if (showCardGameButton && cardGames_id) {
         
         
-        // --------------------------------------------------
-        //   Button Disable - ロードが終わるまで使用禁止
-        // --------------------------------------------------
+      //   // --------------------------------------------------
+      //   //   Button Disable - ロードが終わるまで使用禁止
+      //   // --------------------------------------------------
         
-        let buttonDisabledCardGame = true;
+      //   let buttonDisabledCardGame = true;
         
-        if (`${cardGames_id}-card-game` in buttonDisabledObj) {
-          buttonDisabledCardGame = buttonDisabledObj[`${cardGames_id}-card-game`];
-        }
+      //   if (`${cardGames_id}-card-game` in buttonDisabledObj) {
+      //     buttonDisabledCardGame = buttonDisabledObj[`${cardGames_id}-card-game`];
+      //   }
         
         
-        // --------------------------------------------------
-        //   Component
-        // --------------------------------------------------
+      //   // --------------------------------------------------
+      //   //   Component
+      //   // --------------------------------------------------
         
-        componentBottomArr.push(
-          <Button
-            css={cssButton}
-            variant="outlined"
-            onClick={() => handleCardPlayerDialogOpen('game', cardGames_id)}
-            disabled={buttonDisabledCardGame}
-            key="cardGamesButton"
-          >
-            <IconLayers css={cssIconLayers} />
-            Game
-          </Button>
-        );
+      //   componentBottomArr.push(
+      //     <Button
+      //       css={cssButton}
+      //       variant="outlined"
+      //       onClick={() => handleCardPlayerDialogOpen('game', cardGames_id)}
+      //       disabled={buttonDisabledCardGame}
+      //       key="cardGamesButton"
+      //     >
+      //       <IconLayers css={cssIconLayers} />
+      //       Game
+      //     </Button>
+      //   );
         
-      }
+      // }
       
       
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -456,12 +498,14 @@ export default class extends React.Component {
           flex-flow: column wrap;
           line-height: 1.6em;
           
-          @media screen and (max-width: 768px) {
-            // flex-flow: row wrap;
-          }
+          // @media screen and (max-width: 768px) {
+          //   flex-flow: row wrap;
+          // }
         `}
       >
         
+        
+        {/* 上段 */}
         <div
           css={css`
             display: flex;
@@ -473,6 +517,8 @@ export default class extends React.Component {
           {componentAccessTime}
         </div>
         
+        
+        {/* 下段 */}
         <div
           css={css`
             display: flex;
@@ -481,6 +527,7 @@ export default class extends React.Component {
         >
           {componentBottomArr}
         </div>
+        
         
       </div>
     );

@@ -46,7 +46,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreRoot from '../../app/@stores/root';
-import initStorePlayerSettings from '../../app/pl/settings/stores/store';
+import initStorePlayerSettings from '../../app/ur/settings/stores/store';
 
 
 // ---------------------------------------------
@@ -54,9 +54,9 @@ import initStorePlayerSettings from '../../app/pl/settings/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
-import FormAccount from '../../app/pl/settings/components/form-account';
-import FormEmail from '../../app/pl/settings/components/form-email';
-import FormPage from '../../app/pl/settings/components/form-page';
+import FormAccount from '../../app/ur/settings/components/form-account';
+import FormEmail from '../../app/ur/settings/components/form-email';
+import FormPage from '../../app/ur/settings/components/form-page';
 
 
 // ---------------------------------------------
@@ -86,7 +86,7 @@ const Container = styled.div`
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/pl/***/settings
+//   URL: http://dev-1.gameusers.org:8080/ur/***/settings
 // --------------------------------------------------
 
 @observer
@@ -107,8 +107,8 @@ class Component extends React.Component {
     const isServer = !process.browser;
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const playerID = query.playerID;
-    const pathname = `/pl/${playerID}/settings`;
+    const userID = query.userID;
+    const pathname = `/ur/${userID}/settings`;
     
     
     // --------------------------------------------------
@@ -116,7 +116,7 @@ class Component extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/pl/settings`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/ur/settings`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -130,9 +130,9 @@ class Component extends React.Component {
     //   Check Access Right
     // --------------------------------------------------
     
-    const myPlayerID = lodashGet(initialPropsObj, ['loginUsersObj', 'playerID'], '');
+    const myPlayerID = lodashGet(initialPropsObj, ['loginUsersObj', 'userID'], '');
     
-    if (playerID !== myPlayerID) {
+    if (userID !== myPlayerID) {
       statusCode = 403;
     }
     
@@ -143,12 +143,12 @@ class Component extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   playerID: {green ${playerID}}
+    //   userID: {green ${userID}}
     //   myPlayerID: {green ${myPlayerID}}
     // `);
     
     
-    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, playerID };
+    return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, userID };
     
   }
   
@@ -237,13 +237,13 @@ class Component extends React.Component {
       const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
       const emailSecret = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'secret'], '');
       const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
-      const playerID = lodashGet(props, ['initialPropsObj', 'usersObj', 'playerID'], '');
+      const userID = lodashGet(props, ['initialPropsObj', 'usersObj', 'userID'], '');
       const pagesArr = lodashGet(props, ['initialPropsObj', 'usersObj', 'pagesArr'], '');
       
       this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
       this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
       this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
-      this.stores.playerSettings.handleEdit({ pathArr: ['playerID'], value: playerID });
+      this.stores.playerSettings.handleEdit({ pathArr: ['userID'], value: userID });
       this.stores.playerSettings.handleEdit({ pathArr: ['pagesArr'], value: pagesArr });
       
       
@@ -288,13 +288,13 @@ class Component extends React.Component {
     const headerNavMainArr = [
       {
         name: 'プロフィール',
-        href: `/pl/player?playerID=${this.props.playerID}`,
-        as: `/pl/${this.props.playerID}`,
+        href: `/ur/user?userID=${this.props.userID}`,
+        as: `/ur/${this.props.userID}`,
       },
       {
         name: '設定',
-        href: `/pl/settings?playerID=${this.props.playerID}`,
-        as: `/pl/${this.props.playerID}/settings`,
+        href: `/ur/settings?userID=${this.props.userID}`,
+        as: `/ur/${this.props.userID}/settings`,
       }
     ];
     

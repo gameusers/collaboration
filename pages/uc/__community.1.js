@@ -95,7 +95,7 @@ class Component extends React.Component {
         name: 'あづみ',
         status: 'プロハンター',
         playerId: 'az1979',
-        playerPage: '/pl/az1979',
+        playerPage: '/ur/az1979',
         level: 999,
         accessDate: '2018-08-06T08:50:00Z'
       }

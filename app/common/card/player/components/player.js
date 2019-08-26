@@ -46,6 +46,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 //   Components
 // ---------------------------------------------
 
+import ImageAndVideo from '../../../image-and-video/components/image-and-video';
 import Paragraph from '../../../layout/components/paragraph';
 import User from '../../../user/components/user';
 import Profile from './profile';
@@ -79,7 +80,18 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.cardPlayers_id, 'cardObj'];
+    
+    
   }
   
   
@@ -96,11 +108,8 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-panelButton` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
-    
-    // フォームを表示する、あとで消すように
-    this.props.storeCardPlayer.handleFormOpen({ _id: 'zaoOWw89g' });
     
   }
   
@@ -122,9 +131,7 @@ export default class extends React.Component {
       
       stores,
       storeCardPlayer,
-      _id,
-      // cardGames_id,
-      // showCardGameButton,
+      cardPlayers_id,
       showFollow
       
     } = this.props;
@@ -136,33 +143,33 @@ export default class extends React.Component {
     //   cardPlayersObj
     // --------------------------------------------------
     
-    const cardPlayersObj = toJS(lodashGet(stores, ['data', 'cardPlayersObj', _id], {}));
+    const cardPlayersObj = toJS(lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id], {}));
     
     
     // --------------------------------------------------
     //   カードデータが存在しない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (Object.keys(cardPlayersObj).length === false) {
+    if (Object.keys(cardPlayersObj).length === 0) {
       return null;
     }
     
-
+    
     
     
     // --------------------------------------------------
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', _id], true);
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
+    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], () => {});
+    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: this.pathArr });
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', `${_id}-panelButton`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -181,21 +188,29 @@ export default class extends React.Component {
     const name = lodashGet(cardPlayersObj, ['nameObj', 'value'], '');
     const status = lodashGet(cardPlayersObj, ['statusObj', 'value'], '');
     const comment = lodashGet(cardPlayersObj, ['commentObj', 'value'], '');
-    const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'thumbnailArr', 0, 'src'], '');
+    const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '');
     const exp = lodashGet(cardPlayersObj, ['usersObj', 'exp'], 0);
     const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
-    const playerID = lodashGet(cardPlayersObj, ['usersObj', 'playerID'], '');
+    const userID = lodashGet(cardPlayersObj, ['usersObj', 'userID'], '');
     const followedCount = lodashGet(cardPlayersObj, ['usersObj', 'followedCount'], 0);
     const followed = lodashGet(cardPlayersObj, ['usersObj', 'followed'], false);
+    
+    
+    
+    // --------------------------------------------------
+    //   Images and Videos
+    // --------------------------------------------------
+    
+    const imagesAndVideosObj = lodashGet(cardPlayersObj, ['imagesAndVideosObj'], {});
     
     
     // ---------------------------------------------
     //   Main Image
     // ---------------------------------------------
     
-    const imageSrcSet = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'srcSet'], '');
-    const imageSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'src'], '');
-    const imageAlt = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'caption'], '');
+    // const imageSrcSet = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'srcSet'], '');
+    // const imageSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'src'], '');
+    // const imageAlt = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'caption'], '');
     
     
     // ---------------------------------------------
@@ -302,7 +317,7 @@ export default class extends React.Component {
     //   Edit Form
     // --------------------------------------------------
     
-    const formOpen = lodashGet(storeCardPlayer, ['formOpenObj', _id], false);
+    const formOpen = lodashGet(storeCardPlayer, ['formOpenObj', cardPlayers_id], false);
     
     // console.log(chalk`
     //   formOpen: {green ${formOpen}}
@@ -352,7 +367,7 @@ export default class extends React.Component {
           <User
             thumbnailSrc={thumbnailSrc}
             name={name}
-            playerID={playerID}
+            userID={userID}
             status={status}
             accessDate={accessDate}
             exp={exp}
@@ -366,7 +381,7 @@ export default class extends React.Component {
             `}
           >
             <IconButton
-              onClick={() => handlePanelExpand({ _id })}
+              onClick={() => handlePanelExpand({ pathArr: this.pathArr })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={buttonDisabled}
@@ -393,7 +408,7 @@ export default class extends React.Component {
           {formOpen ? (
             
             <FormPlayer
-              _id={_id}
+              _id={cardPlayers_id}
             />
             
           ) : (
@@ -402,14 +417,11 @@ export default class extends React.Component {
               
               
               {/* Big Image */}
-              {imageSrc &&
-                <img
-                  srcSet={imageSrcSet}
-                  src={imageSrc}
-                  alt={imageAlt}
-                  width="100%"
-                />
-              }
+              <ImageAndVideo
+                pathArr={[cardPlayers_id, 'imagesAndVideosObj']}
+                imagesAndVideosObj={imagesAndVideosObj}
+                setMaxHeight={false}
+              />
               
               
               {/* Contents */}
@@ -522,9 +534,11 @@ export default class extends React.Component {
                   />
                 }
                 
+                
                 {/* 編集ボタン */}
                 <EditButton
-                  _id={_id}
+                  pathArr={this.pathArr}
+                  cardPlayers_id={cardPlayers_id}
                   users_id={users_id}
                 />
                 

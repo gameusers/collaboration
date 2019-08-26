@@ -61,7 +61,14 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-editButton` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.props.pathArr });
+    
+    
+    // --------------------------------------------------
+    //   Button - Enable
+    // --------------------------------------------------
+    
+    // this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-editButton` });
     
     
   }
@@ -80,9 +87,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeCardPlayer, _id, users_id } = this.props;
+    const { stores, storeCardPlayer, cardPlayers_id, users_id, pathArr } = this.props;
     
-    const { buttonDisabledObj } = stores.layout;
+    // const { buttonDisabledObj } = stores.layout;
     
     const { loginUsersObj } = stores.data;
     
@@ -112,20 +119,29 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Component - Button
     // --------------------------------------------------
     
-    let buttonDisabled = true;
+    // let buttonDisabled = true;
     
-    if (`${_id}-editButton` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${_id}-editButton`];
-    }
+    // if (`${_id}-editButton` in buttonDisabledObj) {
+    //   buttonDisabled = buttonDisabledObj[`${_id}-editButton`];
+    // }
     
     let componentButton =
       <Button
         variant="outlined"
         color="primary"
-        onClick={() => handleFormOpen({ _id: _id })}
+        onClick={() => handleFormOpen({ _id: cardPlayers_id })}
         disabled={buttonDisabled}
       >
         編集する

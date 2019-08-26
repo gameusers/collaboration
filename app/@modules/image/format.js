@@ -92,6 +92,7 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
     
     const _id2 = lodashGet(valueObj, ['_id'], '');
     const type2 = lodashGet(valueObj, ['type'], '');
+    const imageType = lodashGet(valueObj, ['imageType'], '');
     
     // console.log(chalk`
     //   _id2: {green ${_id2}}
@@ -163,7 +164,11 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
       const srcSet2Arr = [];
       
       for (let value2Obj of srcSetArr.values()) {
-        
+//         console.log(`
+//   ----- value2Obj -----\n
+//   ${util.inspect(JSON.parse(JSON.stringify(value2Obj)), { colors: true, depth: null })}\n
+//   --------------------\n
+// `);
         
         // --------------------------------------------------
         //   Upload 画像の場合
@@ -187,11 +192,11 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
           
           let extension = '.jpg';
           
-          if (value2Obj.imageType === 'PNG') {
+          if (imageType === 'PNG') {
             
             extension = '.png';
             
-          } else if (value2Obj.imageType === 'SVG') {
+          } else if (imageType === 'SVG') {
             
             extension = '.svg';
             

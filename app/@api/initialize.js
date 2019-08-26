@@ -149,7 +149,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         accessDate: ISO8601,
-        playerID: 'user1',
+        userID: 'user1',
         pagesArr: [
           {
             _id: '51WW1NG1r',
@@ -189,7 +189,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         accessDate: ISO8601,
-        playerID: 'user2',
+        userID: 'user2',
         pagesArr: [
           {
             _id: 'bZiZ-kQjo',
@@ -221,7 +221,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         accessDate: ISO8601,
-        playerID: 'user3',
+        userID: 'user3',
         pagesArr: [
           {
             _id: '5UDVe_gui',
@@ -2768,7 +2768,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
           {
             _id: 'JvApY7kSd',
             type: 'image',
-            imageType: 'JPEG',
+            imageType: 'PNG',
             srcSetArr: [
               {
                 _id: 'AkCw84zpT',
@@ -3473,12 +3473,12 @@ emotion: https://emotion.sh/docs/introduction`,
         forumThreads_id: '_XDDSTWV_',
         forumComments_id: '',
         replyToForumComments_id: '',
-        users_id: '',
+        users_id: 'jun-deE4J',
         localesArr: [
           {
             _id: 'TT3o43rQF',
             language: 'ja',
-            name: 'No Name 2',
+            name: '',
             comment: `No.7 / Comment 4`,
           }
         ],

@@ -196,7 +196,7 @@ export default class extends React.Component {
       
       accessDate,
       level,
-      playerID,
+      userID,
       followedCount,
       followed
       
@@ -324,7 +324,7 @@ export default class extends React.Component {
             thumbnailSrc={thumbnailSrc}
             
             name={name}
-            playerID={playerID}
+            userID={userID}
             status={status}
             accessDate={accessDate}
             

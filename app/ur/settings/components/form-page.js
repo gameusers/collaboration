@@ -262,8 +262,8 @@ export default injectIntl(class extends React.Component {
     //   Player ID
     // --------------------------------------------------
     
-    const playerID = lodashGet(dataObj, ['playerID'], '');
-    const validationUsersPlayerIDObj = validationUsersPlayerID({ value: playerID });
+    const userID = lodashGet(dataObj, ['userID'], '');
+    const validationUsersPlayerIDObj = validationUsersPlayerID({ value: userID });
     
     
     
@@ -445,18 +445,18 @@ export default injectIntl(class extends React.Component {
               
               <FormHeading>Player ID</FormHeading>
               
-              <FormDescription>Player IDを入力してください。Player IDはプレイヤーページのURLになります。https://gameusers.org/pl/***</FormDescription>
+              <FormDescription>Player IDを入力してください。Player IDはプレイヤーページのURLになります。https://gameusers.org/ur/***</FormDescription>
               
               <FormDescription>利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。3文字以上、32文字以内。</FormDescription>
               
               
               <div>
                 <StyledTextFieldWide
-                  id="playerID"
+                  id="userID"
                   label="Player ID"
                   value={validationUsersPlayerIDObj.value}
                   onChange={(eventObj) => handleEdit({
-                    pathArr: ['playerID'],
+                    pathArr: ['userID'],
                     value: eventObj.target.value
                   })}
                   error={validationUsersPlayerIDObj.error}

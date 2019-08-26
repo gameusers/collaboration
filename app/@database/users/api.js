@@ -225,7 +225,7 @@ router.post('/login', upload.none(), (req, res, next) => {
         // ---------------------------------------------
         
         return res.status(200).json({
-          playerID: req.user.playerID
+          userID: req.user.userID
         });
         
         
@@ -450,7 +450,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
     
     const ISO8601 = moment().toISOString();
     const users_id = shortid.generate();
-    const playerID = shortid.generate();
+    const userID = shortid.generate();
     const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
     
     
@@ -459,7 +459,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
       createdDate: ISO8601,
       updatedDate: ISO8601,
       accessDate: ISO8601,
-      playerID,
+      userID,
       loginID,
       loginPassword: hashedPassword,
       emailObj: {
@@ -1141,9 +1141,9 @@ router.post('/pages', upload.none(), async (req, res, next) => {
     //   POST Data
     // --------------------------------------------------
     
-    const { playerID, pagesArr } = req.body;
+    const { userID, pagesArr } = req.body;
     
-    lodashSet(requestParametersObj, ['playerID'], playerID);
+    lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
     
     const parsedPagesArr = JSON.parse(pagesArr);
@@ -1172,7 +1172,7 @@ router.post('/pages', upload.none(), async (req, res, next) => {
     
     const newPagesArr = [];
     
-    await validationUsersPlayerIDServer({ value: playerID, loginUsers_id });
+    await validationUsersPlayerIDServer({ value: userID, loginUsers_id });
     
     for (let valueObj of parsedPagesArr.values()) {
       
@@ -1200,7 +1200,7 @@ router.post('/pages', upload.none(), async (req, res, next) => {
     
     let docObj = await ModelUsers.findOne({ conditionObj });
     
-    if (docObj.playerID !== playerID) {
+    if (docObj.userID !== userID) {
       returnObj.pageTransition = true;
     }
     
@@ -1224,7 +1224,7 @@ router.post('/pages', upload.none(), async (req, res, next) => {
     const saveObj = {
       $set: {
         updatedDate: ISO8601,
-        playerID,
+        userID,
         pagesArr: newPagesArr,
       }
     };
@@ -1237,7 +1237,7 @@ router.post('/pages', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   playerID: {green ${playerID}}
+    //   userID: {green ${userID}}
     // `);
     
     // console.log(`\n---------- parsedPagesArr ----------\n`);

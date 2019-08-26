@@ -74,7 +74,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     // --------------------------------------------------
     
     console.log(chalk`
-      {green pl/player/api/player / initial-props}
+      {green ur/player/api/player / initial-props}
       req.isAuthenticated(): {green ${req.isAuthenticated()}}
     `);
     
@@ -215,7 +215,7 @@ router.get('/initial-props', upload.none(), async (req, res, next) => {
     //     name: 'あづみデッドバイデイライト',
     //     status: 'プロハンター',
     //     playerId: 'az1979',
-    //     playerPage: '/pl/az1979',
+    //     playerPage: '/ur/az1979',
     //     level: 999,
     //     accessDate: '2018-08-06T08:50:00Z',
     //     cardPlayerObj: {

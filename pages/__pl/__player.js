@@ -37,7 +37,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 
 import initStoreRoot from '../../app/@stores/root';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
-import initStorePlPlayer from '../../app/pl/player/stores/store';
+import initStorePlPlayer from '../../app/ur/user/stores/store';
 import initStoreIDForm from '../../app/common/id/stores/form';
 import initStoreGameForm from '../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
@@ -58,7 +58,7 @@ import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/pl/***
+//   URL: http://dev-1.gameusers.org:8080/ur/***
 // --------------------------------------------------
 
 @observer
@@ -78,8 +78,8 @@ export default class extends React.Component {
     
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const playerID = query.playerID;
-    const pathname = `/pl/${playerID}`;
+    const userID = query.userID;
+    const pathname = `/ur/${userID}`;
     
     
     // --------------------------------------------------
@@ -87,7 +87,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/pl/player/?playerID=${playerID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/ur/user/?userID=${userID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -112,7 +112,7 @@ export default class extends React.Component {
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, playerID };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userID };
     
     
   }
@@ -180,15 +180,15 @@ export default class extends React.Component {
       const headerNavMainArr = [
         {
           name: 'プロフィール',
-          // href: `/pl/player?playerID=${props.playerID}`,// エラーが出るからとりあえずコメントアウト
+          // href: `/ur/user?userID=${props.userID}`,// エラーが出るからとりあえずコメントアウト
           href: '/',
-          as: `/pl/${props.playerID}`,
+          as: `/ur/${props.userID}`,
         },
         {
           name: '設定',
-          // href: `/pl/settings?playerID=${props.playerID}`,
+          // href: `/ur/settings?userID=${props.userID}`,
           ref: '/',
-          as: `/pl/${props.playerID}/settings`,
+          as: `/ur/${props.userID}/settings`,
         }
       ];
       

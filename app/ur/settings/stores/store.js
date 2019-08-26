@@ -574,7 +574,7 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      const playerID = lodashGet(this.dataObj, ['playerID'], '');
+      const userID = lodashGet(this.dataObj, ['userID'], '');
       const pagesArr = lodashGet(this.dataObj, ['pagesArr'], []);
       
       
@@ -584,7 +584,7 @@ class Store {
       
       let formData = new FormData();
       
-      formData.append('playerID', playerID);
+      formData.append('userID', userID);
       formData.append('pagesArr', JSON.stringify(pagesArr));
       
       
@@ -627,7 +627,7 @@ class Store {
       const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
       if (pageTransition) {
-        window.location.href = `${process.env.URL_BASE}pl/${playerID}`;
+        window.location.href = `${process.env.URL_BASE}ur/${userID}`;
       }
       
       

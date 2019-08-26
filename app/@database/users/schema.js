@@ -14,7 +14,7 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   accessDate: { type: Date, required: true },
-  playerID: { type: String, required: true, unique: true },
+  userID: { type: String, required: true, unique: true },
   pagesArr: [
     {
       _id: { type: String, required: true },

@@ -88,7 +88,7 @@ const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
   const count = await Model.count({
     conditionObj: {
       _id: { '$ne': loginUsers_id },
-      playerID: value,
+      userID: value,
     }
   });
   

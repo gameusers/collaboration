@@ -23,7 +23,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
 import lodashGet from 'lodash/get';
@@ -354,7 +354,7 @@ class MyApp extends App {
     // --------------------------------------------------
     
     return (
-      <Container>
+      <React.Fragment>
         
         <Head>
           <title>Game Users</title>
@@ -382,7 +382,7 @@ class MyApp extends App {
           
         </Provider>
         
-      </Container>
+      </React.Fragment>
     );
     
   }

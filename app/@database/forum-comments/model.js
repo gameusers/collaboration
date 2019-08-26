@@ -309,13 +309,49 @@ const findForForumCommentsAndReplies = async ({
                   },
                 }
               },
+              
+              
+              // サムネイルを取得
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          // _id: 0,
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
               { $project:
                 {
                   // _id: 0,
                   // users_id: 1,
                   name: '$nameObj.value',
                   status: '$statusObj.value',
-                  'imagesAndVideosObj.thumbnailArr': 1,
+                  imagesAndVideosThumbnailObj: 1,
                 }
               }
             ],
@@ -348,7 +384,7 @@ const findForForumCommentsAndReplies = async ({
                   _id: 0,
                   accessDate: 1,
                   exp: 1,
-                  playerID: 1,
+                  userID: 1,
                 }
               }
             ],
@@ -469,7 +505,7 @@ const findForForumCommentsAndReplies = async ({
                           _id: 0,
                           accessDate: 1,
                           exp: 1,
-                          playerID: 1,
+                          userID: 1,
                         }
                       }
                     ],

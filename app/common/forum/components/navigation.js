@@ -164,7 +164,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -192,15 +192,15 @@ export default injectIntl(class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
-    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, 'panelExpanded'] });
+    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], () => {});
+    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: this.pathArr });
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -616,7 +616,7 @@ export default injectIntl(class extends React.Component {
                   padding: 4px;
                 }
               `}
-              onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, 'panelExpanded'] })}
+              onClick={() => handlePanelExpand({ pathArr: this.pathArr })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={buttonDisabled}

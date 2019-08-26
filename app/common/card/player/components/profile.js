@@ -86,6 +86,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const {
+      
       ageValue,
       ageAlternativeText,
       sexValue,
@@ -95,6 +96,7 @@ export default class extends React.Component {
       gamingExperienceAlternativeText,
       hobbiesValueArr,
       specialSkillsValueArr,
+      
     } = this.props;
     
     
@@ -133,9 +135,13 @@ export default class extends React.Component {
     let age = '';
     
     if (ageAlternativeText) {
+      
       age = ageAlternativeText;
+      
     } else if (ageValue) {
+      
       age = `${moment().diff(ageValue, 'years')}歳`;
+      
     }
     
     if (age) {
@@ -152,11 +158,17 @@ export default class extends React.Component {
     let sex = '';
     
     if (sexAlternativeText) {
+      
       sex = sexAlternativeText;
+      
     } else if (sexValue === 'male') {
+      
       sex = '男';
+      
     } else if (sexValue === 'female') {
+      
       sex = '女';
+      
     }
     
     if (sex) {
@@ -184,9 +196,13 @@ export default class extends React.Component {
     let gamingExperience = '';
     
     if (gamingExperienceAlternativeText) {
+      
       gamingExperience = gamingExperienceAlternativeText;
+      
     } else if (gamingExperienceValue) {
+      
       gamingExperience = `${moment(gamingExperienceValue).fromNow(true)}`;
+      
     }
     
     if (gamingExperience) {
@@ -250,6 +266,7 @@ export default class extends React.Component {
     
     
     
+    
     // console.log(chalk`
     //   userId: {green ${userId}}
     //   age: {green ${age}}
@@ -258,6 +275,7 @@ export default class extends React.Component {
     //   imageSrc: {green ${imageSrc}}
     //   imageAlt: {green ${imageAlt}}
     // `);
+    
     
     
     

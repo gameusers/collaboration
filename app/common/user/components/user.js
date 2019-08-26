@@ -65,20 +65,19 @@ export default class extends React.Component {
       thumbnailSrc,
       
       name,
-      playerID,
+      userID,
       status,
       accessDate,
       
       gameName,
       gameUrlID,
-      showGameName,
       
       exp,
       
       cardPlayers_id,
-      showCardPlayerButton,
-      cardGames_id,
-      showCardGameButton
+      // showCardPlayerButton,
+      // cardGames_id,
+      // showCardGameButton
       
     } = this.props;
     
@@ -131,20 +130,20 @@ export default class extends React.Component {
             
             <Name
               name={name}
-              playerID={playerID}
+              userID={userID}
               status={status}
               accessDate={accessDate}
               
               gameName={gameName}
               gameUrlID={gameUrlID}
-              showGameName={showGameName}
+              // showGameName={showGameName}
               
               exp={exp}
               
               cardPlayers_id={cardPlayers_id}
-              showCardGameButton={showCardGameButton}
-              cardGames_id={cardGames_id}
-              showCardPlayerButton={showCardPlayerButton}
+              // showCardGameButton={showCardGameButton}
+              // cardGames_id={cardGames_id}
+              // showCardPlayerButton={showCardPlayerButton}
             />
             
           </div>

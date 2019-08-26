@@ -151,7 +151,7 @@ export default class extends React.Component {
     
     const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
     const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
-    const playerID = lodashGet(stores, ['data', 'loginUsersObj', 'playerID'], '');
+    const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
     
     
     // --------------------------------------------------
@@ -195,7 +195,7 @@ export default class extends React.Component {
         
         
         {/* ベル・通知 */}
-        {playerID &&
+        {userID &&
           <IconButton
             css={css`
               && {
@@ -257,7 +257,7 @@ export default class extends React.Component {
         
         
         {/* サムネイル */}
-        {playerID ? (
+        {userID ? (
           <IconButton
             css={css`
               && {
@@ -328,7 +328,7 @@ export default class extends React.Component {
               <IconPerson />
             </ListItemIcon>
             
-            <Link href={`/pl/${playerID}`}>
+            <Link href={`/ur/${userID}`}>
               <ListItemText
                 css={css`
                   && {

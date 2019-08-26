@@ -191,7 +191,7 @@ const ja_JP = {
   //   Player / Settings
   // ---------------------------------------------
   
-  // /app/pl/settings/stores/store.js
+  // /app/ur/settings/stores/store.js
   'nhn2yers2': 'ログイン情報を編集しました',
   '84FmVC7RZ': 'E-Mailを登録しました',
   'hbRy4HpaP': 'E-Mailの登録を解除しました',

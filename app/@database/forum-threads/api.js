@@ -51,7 +51,7 @@ const { validationUserCommunities_idServer } = require('../user-communities/vali
 const { validationForumThreads_idServer } = require('./validations/_id-server');
 const { validationForumThreadsForListLimit, validationForumThreadsLimit } = require('./validations/limit');
 const { validationForumThreadsName } = require('./validations/name');
-const { validationForumThreadsDescription } = require('./validations/description');
+const { validationForumThreadsComment } = require('./validations/comment');
 
 
 // ---------------------------------------------
@@ -501,12 +501,12 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     //   POST Data
     // --------------------------------------------------
     
-    const { userCommunities_id, forumThreads_id, name, description, imagesAndVideosObj } = req.body;
+    const { userCommunities_id, forumThreads_id, name, comment, imagesAndVideosObj } = req.body;
     
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['name'], name);
-    lodashSet(requestParametersObj, ['description'], description);
+    lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     
     
@@ -530,7 +530,7 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     }
     
     await validationForumThreadsName({ throwError: true, value: name });
-    await validationForumThreadsDescription({ throwError: true, value: description });
+    await validationForumThreadsComment({ throwError: true, value: comment });
     await validationIP({ throwError: true, value: req.ip });
     
     
@@ -671,7 +671,7 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
           _id: shortid.generate(),
           language: localeObj.language,
           name,
-          description,
+          comment,
         }
       ],
       imagesAndVideos_id,
@@ -796,7 +796,7 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   name: {green ${name} / ${typeof name}}
-    //   description: {green ${description} / ${typeof description}}
+    //   comment: {green ${comment} / ${typeof comment}}
     //   IP: {green ${req.ip}}
     //   User Agent: {green ${req.headers['user-agent']}}
     // `);

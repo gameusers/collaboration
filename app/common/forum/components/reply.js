@@ -104,7 +104,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
     // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumComment` });
@@ -191,18 +191,17 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   User
+      //   _id
       // --------------------------------------------------
       
       const forumComments2_id = lodashGet(valueObj, ['_id'], '');
       
-      let thumbnailSrc = '';
       
-      const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+      // --------------------------------------------------
+      //   User Data
+      // --------------------------------------------------
       
-      if (thumbnailArr.length > 0) {
-        thumbnailSrc = lodashGet(thumbnailArr, [0, 'src'], '');
-      }
+      const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
       
       const cardPlayers_id = lodashGet(valueObj, ['cardPlayersObj', '_id'], '');
       
@@ -270,14 +269,13 @@ export default injectIntl(class extends React.Component {
             
             {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
             <User
-              thumbnailSrc={thumbnailSrc}
+              imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
               name={name}
               userID={userID}
               status={status}
               accessDate={accessDate}
               exp={exp}
               cardPlayers_id={cardPlayers_id}
-              showCardPlayerButton={true}
             />
             
             

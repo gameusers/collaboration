@@ -94,7 +94,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -133,7 +133,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -146,7 +146,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitFormThread,
+      handleSubmitFormComment,
       
     } = storeForum;
     
@@ -174,6 +174,12 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
+    //   ----- this.pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
     //   ----- validationForumCommentsNameObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(validationForumCommentsNameObj)), { colors: true, depth: null })}\n
     //   --------------------\n
@@ -197,7 +203,14 @@ export default injectIntl(class extends React.Component {
     return (
       <form
         name={`form-${forumComments_id}`}
-        onSubmit={(eventObj) => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
+        onSubmit={(eventObj) => handleSubmitFormComment({
+          eventObj,
+          pathArr: this.pathArr,
+          gameCommunities_id,
+          userCommunities_id,
+          forumThreads_id,
+          forumComments_id
+        })}
       >
         
         

@@ -755,12 +755,12 @@ const format = ({ req, localeObj, loginUsers_id, arr }) => {
     if (lodashHas(filteredArr, [0])) {
       
       clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-      clonedObj.description = lodashGet(filteredArr, [0, 'description'], '');
+      clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
       
     } else {
       
       clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      clonedObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
+      clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
       
     }
     
@@ -953,7 +953,7 @@ const findForEdit = async ({
     const _id = lodashGet(resultArr, [0, '_id'], '');
     const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
     let name = '';
-    let description = '';
+    let comment = '';
     
     
     // --------------------------------------------------
@@ -968,12 +968,12 @@ const findForEdit = async ({
     if (lodashHas(filteredArr, [0])) {
       
       name = lodashGet(filteredArr, [0, 'name'], '');
-      description = lodashGet(filteredArr, [0, 'description'], '');
+      comment = lodashGet(filteredArr, [0, 'comment'], '');
       
     } else {
       
       name = lodashGet(resultArr, [0, 'localesArr', 0, 'name'], '');
-      description = lodashGet(resultArr, [0, 'localesArr', 0, 'description'], '');
+      comment = lodashGet(resultArr, [0, 'localesArr', 0, 'comment'], '');
       
     }
     
@@ -981,7 +981,7 @@ const findForEdit = async ({
     const returnObj = {
       _id,
       name,
-      description,
+      comment,
       imagesAndVideosObj,
     };
     

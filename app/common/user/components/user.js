@@ -62,7 +62,7 @@ export default class extends React.Component {
     
     const {
       
-      thumbnailSrc,
+      imagesAndVideosThumbnailObj,
       
       name,
       userID,
@@ -104,7 +104,7 @@ export default class extends React.Component {
             flex-flow: column nowrap;
           `}
         >
-          <Thumbnail thumbnailSrc={thumbnailSrc} />
+          <Thumbnail imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj} />
         </div>
         
         

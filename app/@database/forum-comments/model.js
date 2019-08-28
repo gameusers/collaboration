@@ -466,13 +466,49 @@ const findForForumCommentsAndReplies = async ({
                           },
                         }
                       },
+                      
+                      
+                      // サムネイルを取得
+                      {
+                        $lookup:
+                          {
+                            from: 'images-and-videos',
+                            let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                                }
+                              },
+                              { $project:
+                                {
+                                  // _id: 0,
+                                  createdDate: 0,
+                                  updatedDate: 0,
+                                  users_id: 0,
+                                  __v: 0,
+                                }
+                              }
+                            ],
+                            as: 'imagesAndVideosThumbnailObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind: {
+                          path: '$imagesAndVideosThumbnailObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+                      
+                      
                       { $project:
                         {
                           // _id: 0,
                           // users_id: 1,
                           name: '$nameObj.value',
                           status: '$statusObj.value',
-                          'imagesAndVideosObj.thumbnailArr': 1,
+                          imagesAndVideosThumbnailObj: 1,
                         }
                       }
                     ],
@@ -592,12 +628,6 @@ const findForForumCommentsAndReplies = async ({
     ]).exec();
     
     
-    // console.log(`
-    //   ----- findForForumCommentsAndReplies / resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     
     // --------------------------------------------------
@@ -676,12 +706,13 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
   // --------------------------------------------------
   
   let returnObj = {};
-  const ISO8601 = moment().toISOString();
   
   
   // --------------------------------------------------
   //   Loop
   // --------------------------------------------------
+  
+  const ISO8601 = moment().toISOString();
   
   for (let valueObj of arr.values()) {
     
@@ -694,19 +725,10 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     
     
     // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
-    
-    // clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
-    
-    
-    // --------------------------------------------------
     //   画像と動画の処理
     // --------------------------------------------------
     
     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-    
-    // const formattedObj = formatLocalesArr({ localeObj, obj: valueObj.imagesAndVideosObj });
     
     if (formattedObj) {
       
@@ -717,6 +739,37 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
       delete clonedObj.imagesAndVideosObj;
       
     }
+    
+    
+    // --------------------------------------------------
+    //   画像と動画の処理 - ユーザーサムネイル
+    // --------------------------------------------------
+    
+    if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'])) {
+      
+      const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+      
+      // console.log(`
+      //   ----- imagesAndVideosThumbnailObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
+      
+      if (formattedThumbnailObj) {
+        
+        lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], formattedThumbnailObj);
+        
+      } else {
+        
+        delete clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj;
+        
+      }
+      
+    }
+    
+    
     
     
     // --------------------------------------------------

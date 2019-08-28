@@ -94,7 +94,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -118,7 +118,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -141,7 +141,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
-    const description = lodashGet(dataObj, [...this.pathArr, 'description'], '');
+    const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
     
     
     // --------------------------------------------------
@@ -235,9 +235,9 @@ export default injectIntl(class extends React.Component {
             `}
             rows={5}
             placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
-            value={description}
+            value={comment}
             onChange={(eventObj) => handleEdit({
-            pathArr: [...this.pathArr, 'description'],
+            pathArr: [...this.pathArr, 'comment'],
             value: eventObj.target.value
           })}
             maxLength={3000}

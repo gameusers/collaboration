@@ -28,12 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Name
+ * Comment
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationForumThreadsDescription = ({ throwError = false, value }) => {
+const validationForumCommentsComment = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -67,7 +67,7 @@ const validationForumThreadsDescription = ({ throwError = false, value }) => {
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '0aDGHCQw8', messageID: 'pLES2ZGM2' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'VT9ny7ovX', messageID: 'pLES2ZGM2' }] });
     }
     
     
@@ -116,5 +116,5 @@ const validationForumThreadsDescription = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationForumThreadsDescription,
+  validationForumCommentsComment,
 };

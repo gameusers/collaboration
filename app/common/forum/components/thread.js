@@ -131,7 +131,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -157,14 +157,14 @@ export default injectIntl(class extends React.Component {
     //   Panel Expand Function
     // --------------------------------------------------
     
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
+    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], () => {});
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: [...this.pathArr, 'buttonDisabled'] });
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -191,10 +191,7 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
     const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], process.env.FORUM_THREAD_LIMIT);
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
-    //FORUM_THREAD_LIMIT
     
-    
-    // const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
     
     
     
@@ -247,7 +244,7 @@ export default injectIntl(class extends React.Component {
       const forumThreads_id = lodashGet(valueObj, ['_id'], '');
       const name = lodashGet(valueObj, ['name'], '');
       const description = lodashGet(valueObj, ['description'], '');
-      const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
+      // const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
       const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
@@ -266,7 +263,7 @@ export default injectIntl(class extends React.Component {
       //   Panel
       // --------------------------------------------------
       
-      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, forumThreads_id, 'panelExpanded'] });
+      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, forumThreads_id] });
       
       
       
@@ -335,7 +332,6 @@ export default injectIntl(class extends React.Component {
                     flex-flow: row nowrap;
                     align-items: center;
                     width: 100%;
-                    // background-color: pink;
                   `}
                 >
                   
@@ -371,7 +367,7 @@ export default injectIntl(class extends React.Component {
                           padding: 4px;
                         }
                       `}
-                      onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, forumThreads_id, 'panelExpanded'] })}
+                      onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, forumThreads_id] })}
                       aria-expanded={panelExpanded}
                       aria-label="Show more"
                       disabled={buttonDisabled}

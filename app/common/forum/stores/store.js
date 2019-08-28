@@ -36,8 +36,8 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validations
 // ---------------------------------------------
 
-import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
-import { validationForumThreadsDescription } from '../../../@database/forum-threads/validations/description';
+import { validationForumCommentsName } from '../../../@database/forum-comments/validations/name';
+import { validationForumCommentsComment } from '../../../@database/forum-comments/validations/comment';
 
 
 // --------------------------------------------------
@@ -552,7 +552,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       // ---------------------------------------------
@@ -667,7 +667,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -748,7 +748,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
@@ -797,11 +797,11 @@ class Store {
       // ---------------------------------------------
       
       const name = lodashGet(resultObj, ['data', 'name'], '');
-      const description = lodashGet(resultObj, ['data', 'description'], '');
+      const comment = lodashGet(resultObj, ['data', 'comment'], '');
       const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
       
       lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'name'], name);
-      lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'description'], description);
+      lodashSet(this.dataObj, [forumThreads_id, 'formThreadObj', 'comment'], comment);
       lodashSet(storeImageAndVideoForm, ['dataObj', forumThreads_id, 'formThreadObj', 'imagesAndVideosObj'], imagesAndVideosObj);
       
       
@@ -839,7 +839,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -871,7 +871,7 @@ class Store {
     const communities_id = gameCommunities_id || userCommunities_id;
     
     const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
-    const description = lodashGet(this.dataObj, [...pathArr, 'description'], '');
+    const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
     
     const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
     
@@ -893,7 +893,7 @@ class Store {
       // ---------------------------------------------
       
       const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
-      const validationForumThreadsDescriptionObj = validationForumThreadsDescription({ value: description });
+      const validationForumThreadsCommentObj = validationForumThreadsComment({ value: comment });
       
       
       // ---------------------------------------------
@@ -902,7 +902,7 @@ class Store {
       
       if (
         validationForumThreadsNameObj.error ||
-        validationForumThreadsDescriptionObj.error
+        validationForumThreadsCommentObj.error
       ) {
         throw new CustomError({ errorsArr: [{ code: '3NtQODEsb', messageID: 'uwHIKBy7c' }] });
       }
@@ -921,7 +921,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
@@ -937,7 +937,7 @@ class Store {
       //   userCommunities_id: {green ${userCommunities_id}}
       //   forumThreads_id: {green ${forumThreads_id}}
       //   name: {green ${name}}
-      //   description: {green ${description}}
+      //   comment: {green ${comment}}
       // `);
       
       // console.log(`
@@ -959,7 +959,7 @@ class Store {
       formData.append('userCommunities_id', userCommunities_id);
       formData.append('forumThreads_id', forumThreads_id);
       formData.append('name', name);
-      formData.append('description', description);
+      formData.append('comment', comment);
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formData.append('imagesAndVideosObj', JSON.stringify(imagesAndVideosObj));
@@ -1044,7 +1044,7 @@ class Store {
       } else {
         
         lodashSet(this.dataObj, [...pathArr, 'name'], '');
-        lodashSet(this.dataObj, [...pathArr, 'description'], '');
+        lodashSet(this.dataObj, [...pathArr, 'comment'], '');
         
         storeImageAndVideoForm.handleResetForm({ pathArr });
         
@@ -1081,7 +1081,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -1125,7 +1125,7 @@ class Store {
         throw new CustomError({ errorsArr: [{ code: '3NtNGg1EG', messageID: 'Error' }] });
       }
       
-      // console.log('handleShowFormComment');
+      
       
       
       // ---------------------------------------------
@@ -1139,7 +1139,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
@@ -1164,8 +1164,12 @@ class Store {
       });
       
       
+      // console.log(chalk`
+      //   forumComments_id: {green ${forumComments_id}}
+      // `);
+      
       // console.log(`
-      //   ----- pathArr -----\n
+      //   ----- handleShowFormComment / pathArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
@@ -1240,7 +1244,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr: [...pathArr, 'buttonDisabled'] });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -1254,32 +1258,7 @@ class Store {
       //   Scroll
       // ---------------------------------------------
       
-      // const headerScrollUp = lodashGet(storeLayout, ['headerScrollUp'], false);
-      
-      // if (headerScrollUp) {
-      //   console.log('下げる');
-      //   scrollBy(0, 1);
-      // } else {
-      //   console.log('上げる');
-      //   scrollBy(0, -1);
-      // }
-      
-      // setTimeout(() => {
-        
-      //   scroller.scrollTo(`form-${forumComments_id}`, {
-      //     duration: 800,
-      //     delay: 0,
-      //     smooth: 'easeInOutQuart',
-      //     offset: -120,
-      //   });
-        
-      // }, 1000);
-      
-      // lodashSet(storeLayout, ['headerNavTopShow'], false);
-      
       scrollBy(0, 1);
-      
-      // lodashSet(storeLayout, ['headerNavMainStopHandleHeaderNavOnScroll'], true);
       
       scroller.scrollTo(`form-${forumComments_id}`, {
         duration: 500,
@@ -1287,29 +1266,6 @@ class Store {
         smooth: 'easeInOutQuart',
         offset: -70,
       });
-      
-      // lodashSet(storeLayout, ['headerNavMainStopHandleHeaderNavOnScroll'], false);
-      
-      
-      // setTimeout(() => {
-        
-      //   scrollBy(0, 1);
-        
-      //   // const headerScrollUp = lodashGet(storeLayout, ['headerScrollUp'], false);
-        
-      //   // if (headerScrollUp) {
-      //   //   scrollBy(0, 1);
-      //   // } else {
-      //   //   scrollBy(0, -1);
-      //   // }
-        
-      // }, 820);
-      
-      // setTimeout(() => test() {}, 3000);
-      
-      
-      
-      
       
       
     }
@@ -1319,13 +1275,268 @@ class Store {
   
   
   
-  
-  
+    
+  /**
+   * コメント作成・編集フォームを送信する
+   */
+  @action.bound
+  async handleSubmitFormComment({ eventObj, pathArr = [], gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id }) {
+    
+    
     // ---------------------------------------------
     //   フォームの送信処理停止
     // ---------------------------------------------
     
-    // eventObj.preventDefault();
+    eventObj.preventDefault();
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Property
+    // ---------------------------------------------
+    
+    const communities_id = gameCommunities_id || userCommunities_id;
+    
+    const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+    const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
+    const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+    
+    const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   communities_id または forumThreads_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!communities_id || !forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   Validation
+      // ---------------------------------------------
+      
+      const validationForumCommentsNameObj = validationForumCommentsName({ value: name });
+      const validationForumCommentsCommentObj = validationForumCommentsComment({ value: comment });
+      
+      
+      // ---------------------------------------------
+      //   Validation Error
+      // ---------------------------------------------
+      
+      if (
+        validationForumCommentsNameObj.error ||
+        validationForumCommentsCommentObj.error
+      ) {
+        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      // console.log(chalk`
+      //   \n---------- handleSubmitFormComment ----------\n
+      // `);
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   forumComments_id: {green ${forumComments_id}}
+      //   name: {green ${name}}
+      //   anonymity: {green ${anonymity}}
+      //   typeof anonymity: {green ${typeof anonymity}}
+      //   comment: {green ${comment}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // return;
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('gameCommunities_id', gameCommunities_id);
+      formData.append('userCommunities_id', userCommunities_id);
+      formData.append('forumThreads_id', forumThreads_id);
+      formData.append('forumComments_id', forumComments_id);
+      formData.append('name', name);
+      
+      if (anonymity) {
+        // console.log('anonymity = true');
+        formData.append('anonymity', anonymity);
+      }
+      
+      formData.append('comment', comment);
+      
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formData.append('imagesAndVideosObj', JSON.stringify(imagesAndVideosObj));
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = {};
+      
+      if (gameCommunities_id) {
+        
+        
+        
+      } else if (userCommunities_id) {
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v1/forum-comments/upsert-uc`,
+          methodType: 'POST',
+          formData: formData
+        });
+        
+      } else {
+        
+        
+        
+      }
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      // // ---------------------------------------------
+      // //   Update Thread List
+      // // ---------------------------------------------
+      
+      // const threadListLimit = lodashGet(this.dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      
+      // await this.handleReadThreadsList({
+      //   gameCommunities_id,
+      //   userCommunities_id,
+      //   page: 1,
+      //   limit: threadListLimit,
+      // });
+      
+      
+      // // ---------------------------------------------
+      // //   Navigation / 開いているタブをスレッド一覧に変更する
+      // // ---------------------------------------------
+      
+      // this.handleEdit({
+      //   pathArr: [communities_id, 'navigationObj', 'openedTabNo'],
+      //   value: 0,
+      // });
+      
+      
+      // // ---------------------------------------------
+      // //   Close Form & Reset Form
+      // // ---------------------------------------------
+      
+      // if (forumThreads_id) {
+        
+      //   lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
+        
+      // } else {
+        
+      //   lodashSet(this.dataObj, [...pathArr, 'name'], '');
+      //   lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+        
+      //   storeImageAndVideoForm.handleResetForm({ pathArr });
+        
+      // }
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+      });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
   
   
 }

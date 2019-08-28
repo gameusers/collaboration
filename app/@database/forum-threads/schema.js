@@ -21,7 +21,7 @@ const schema = mongoose.Schema({
       _id: { type: String, required: true },
       language: { type: String, enum: ['en', 'ja'] },
       name: { type: String, required: true },
-      description: { type: String, required: true },
+      comment: { type: String, required: true },
     }
   ],
   imagesAndVideos_id: { type: String },

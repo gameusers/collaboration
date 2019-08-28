@@ -120,11 +120,11 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n

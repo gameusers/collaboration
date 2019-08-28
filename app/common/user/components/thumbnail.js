@@ -16,6 +16,7 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -41,6 +42,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -52,31 +55,39 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { thumbnailSrc } = this.props;
+    const { imagesAndVideosThumbnailObj } = this.props;
+    
     
     
     // --------------------------------------------------
-    //   Img Src
+    //   src & srcSet
     // --------------------------------------------------
     
-    let src = '/static/img/common/thumbnail/none.svg';
+    let src = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'src'], '');
+    const srcSet = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'srcSet'], '');
     
-    if (thumbnailSrc) {
-      src = thumbnailSrc;
+    
+    // --------------------------------------------------
+    //   src none
+    // --------------------------------------------------
+    
+    if (!src) {
+      src = '/static/img/common/thumbnail/none.svg';
     }
     
     
     // --------------------------------------------------
-    //   Img Size
+    //   component - img
     // --------------------------------------------------
     
-    let code =
+    const component =
       <img
         css={css`
           border-radius: 6px;
           width: 44px;
         `}
         src={src}
+        srcSet={srcSet}
       />
     ;
     
@@ -87,7 +98,7 @@ export default class extends React.Component {
     
     return (
       <React.Fragment>
-        {code}
+        {component}
       </React.Fragment>
     );
     

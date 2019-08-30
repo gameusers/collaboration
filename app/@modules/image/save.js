@@ -90,6 +90,9 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
   }
   
+  
+  
+  
   // console.log(chalk`
   //   type: {green ${type}}
   // `);
@@ -141,6 +144,10 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   画像を保存する
   // ---------------------------------------------
   
+  let countNewImages = 0;
+  let countNewVideos = 0;
+  
+  
   for (let valueObj of newArr.values()) {
     
     
@@ -161,6 +168,25 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     //   _id2: {green ${_id2}}
     //   type2: {green ${type2}}
     // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   画像と動画の数をカウント
+    // ---------------------------------------------
+    
+    if (type2 === 'image') {
+      
+      countNewImages += 1;
+      
+    } else if (type2 === 'video') {
+      
+      countNewVideos += 1;
+      
+    }
+    
+    
     
     
     // ---------------------------------------------
@@ -208,8 +234,9 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         videoID,
       };
       
-      
       returnArr.push(tempObj);
+      
+      
       continue;
       
     }
@@ -297,17 +324,16 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
       
       // ---------------------------------------------
-      //   ディレクトリ作成
+      //   ディレクトリ作成　【チェック時は要コメントアウト】
       // ---------------------------------------------
       
       const dirPath = `static/img/${type}/${_id}/${_id2}`;
       
-      mkdirp.sync(dirPath, (err) => {
-        if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
-          // throw new Error('mkdir');
-        }
-      });
+      // mkdirp.sync(dirPath, (err) => {
+      //   if (err) {
+      //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
+      //   }
+      // });
       
       // console.log(chalk`
       //   _id2: {green ${_id2}}
@@ -389,11 +415,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
         
         // ---------------------------------------------
-        //   ファイル保存
+        //   ファイル保存　【チェック時は要コメントアウト】
         // ---------------------------------------------
         
-        const srcSetSrc = `${dirPath}/${longSide}w.${extension}`;
-        fs.writeFileSync(srcSetSrc, optimizedBuffer);
+        // const srcSetSrc = `${dirPath}/${longSide}w.${extension}`;
+        // fs.writeFileSync(srcSetSrc, optimizedBuffer);
         
         
         // ---------------------------------------------
@@ -439,33 +465,64 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   
   
   
+  
   // ---------------------------------------------
-  //   画像を削除する
+  //   画像と動画の数をカウント
   // ---------------------------------------------
   
-  // console.log(`
-  //   ----- _idsArr -----\n
-  //   ${util.inspect(_idsArr, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+  let countOldImages = 0;
+  let countOldVideos = 0;
+  
+  
+  for (let valueObj of oldArr.values()) {
+    
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    if (valueObj.type === 'image') {
+      
+      countOldImages += 1;
+      
+    } else if (valueObj.type === 'video') {
+      
+      countOldVideos += 1;
+      
+    }
+    
+  }
+  
+  
+  const images = countNewImages - countOldImages;
+  const videos = countNewVideos - countOldVideos;
+  
+    
+  
+  
+  // ---------------------------------------------
+  //   画像を削除する　【チェック時は要コメントアウト】
+  // ---------------------------------------------
   
   // ----------------------------------------
   //   すべて削除
   // ----------------------------------------
   
-  // let deleteAll = false;
-  
   if (newArr.length === 0 && oldArr.length > 0) {
     
     const dirPath = `static/img/${type}/${_id}`;
     
-    rimraf(dirPath, (err) => {
-      if (err) {
-        throw new CustomError({ level: 'error', errorsArr: [{ code: 'mPduhlAfV', messageID: 'Error' }] });
-      }
-    });
+    // rimraf(dirPath, (err) => {
+    //   if (err) {
+    //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'mPduhlAfV', messageID: 'Error' }] });
+    //   }
+    // });
     
-    // deleteAll = true;
+  
+  // ----------------------------------------
+  //   個別に削除
+  // ----------------------------------------
     
   } else {
     
@@ -481,11 +538,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
         const dirPath = `static/img/${type}/${_id}/${valueObj._id}`;
         
-        rimraf(dirPath, (err) => {
-          if (err) {
-            throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
-          }
-        });
+        // rimraf(dirPath, (err) => {
+        //   if (err) {
+        //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
+        //   }
+        // });
         
         // console.log(chalk`
         //   valueObj._id: {green ${valueObj._id}}
@@ -506,21 +563,31 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   
   
   
-  
-  
-  
   // ---------------------------------------------
   //   Return Object
   // ---------------------------------------------
   
   const returnObj = {
-    _id,
-    createdDate,
-    updatedDate,
-    users_id: loginUsers_id,
-    type,
-    arr: returnArr,
+    imagesAndVideosObj: {
+      _id,
+      createdDate,
+      updatedDate,
+      users_id: loginUsers_id,
+      type,
+      arr: returnArr,
+    },
+    images,
+    videos,
   };
+  
+  // const returnObj = {
+  //   _id,
+  //   createdDate,
+  //   updatedDate,
+  //   users_id: loginUsers_id,
+  //   type,
+  //   arr: returnArr,
+  // };
   
   
   // console.log(`
@@ -540,6 +607,17 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
+  
+  // console.log(chalk`
+  //   countNewImages: {green ${countNewImages}}
+  //   countNewVideos: {green ${countNewVideos}}
+  //   countOldImages: {green ${countOldImages}}
+  //   countOldVideos: {green ${countOldVideos}}
+  //   images: {green ${images}}
+  //   videos: {green ${videos}}
+  // `);
+  
+  
   
   
   // ---------------------------------------------

@@ -1393,15 +1393,16 @@ class Store {
       formData.append('gameCommunities_id', gameCommunities_id);
       formData.append('userCommunities_id', userCommunities_id);
       formData.append('forumThreads_id', forumThreads_id);
-      formData.append('forumComments_id', forumComments_id);
       formData.append('name', name);
+      formData.append('comment', comment);
       
-      if (anonymity) {
-        // console.log('anonymity = true');
-        formData.append('anonymity', anonymity);
+      if (forumComments_id) {
+        formData.append('forumComments_id', forumComments_id);
       }
       
-      formData.append('comment', comment);
+      if (anonymity) {
+        formData.append('anonymity', anonymity);
+      }
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formData.append('imagesAndVideosObj', JSON.stringify(imagesAndVideosObj));

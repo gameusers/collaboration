@@ -214,8 +214,8 @@ export default injectIntl(class extends React.Component {
       >
         
         
-        {/* Login ID */}
-        {login &&
+        {/* 名前 */}
+        {!login &&
           <div>
             <TextField
               css={css`
@@ -248,7 +248,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Anonymity */}
-        {!login &&
+        {login &&
           <div>
             <FormControlLabel
               control={
@@ -313,7 +313,7 @@ export default injectIntl(class extends React.Component {
             descriptionImage="コメントに表示する画像をアップロードできます。"
             descriptionVideo="コメントに表示する動画を登録できます。"
             showImageCaption={true}
-            limit={3}
+            limit={20}
           />
           
         </div>

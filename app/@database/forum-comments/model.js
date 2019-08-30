@@ -27,6 +27,9 @@ const lodashMerge = require('lodash/merge');
 // ---------------------------------------------
 
 const SchemaForumComments = require('./schema');
+const SchemaForumThreads = require('../forum-threads/schema');
+const SchemaUserCommunities = require('../user-communities/schema');
+const SchemaImagesAndVideos = require('../images-and-videos/schema');
 
 
 // ---------------------------------------------
@@ -1119,6 +1122,208 @@ const findForEdit = async ({
 
 
 
+/**
+ * Transaction 挿入 / 更新する
+ * コメント、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * 
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumCommentsSaveObj - DB forum-comments 保存データ
+ * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
+ * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
+ * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
+ * @return {Object} 
+ */
+const transactionForUpsert = async ({
+  
+  forumCommentsConditionObj,
+  forumCommentsSaveObj,
+  forumThreadsConditionObj,
+  forumThreadsSaveObj,
+  imagesAndVideosConditionObj,
+  imagesAndVideosSaveObj,
+  userCommunitiesConditionObj,
+  userCommunitiesSaveObj,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  // const session = await SchemaForumThreads.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    // await session.startTransaction();
+    
+    
+    // // --------------------------------------------------
+    // //   DB updateOne
+    // // --------------------------------------------------
+    
+    // await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    
+    
+    // if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+      
+      
+    //   // --------------------------------------------------
+    //   //   画像＆動画を削除する
+    //   // --------------------------------------------------
+      
+    //   const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+    //   if (arr.length === 0) {
+        
+    //     await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
+        
+        
+    //   // --------------------------------------------------
+    //   //   画像＆動画を保存
+    //   // --------------------------------------------------
+        
+    //   } else {
+        
+    //     await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+        
+    //   }
+      
+    // }
+    
+    
+    // // throw new Error();
+    // await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    
+    // // --------------------------------------------------
+    // //   Transaction / Commit
+    // // --------------------------------------------------
+    
+    // await session.commitTransaction();
+    // // console.log('--------コミット-----------');
+    
+    // session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----- forumCommentsConditionObj -----\n
+      ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumCommentsSaveObj -----\n
+      ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumThreadsConditionObj -----\n
+      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumThreadsSaveObj -----\n
+      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- userCommunitiesConditionObj -----\n
+      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- userCommunitiesSaveObj -----\n
+      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    // await session.abortTransaction();
+    // // console.log('--------ロールバック-----------');
+    
+    // session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -1132,4 +1337,5 @@ module.exports = {
   deleteMany,
   findForForumCommentsAndReplies,
   findForEdit,
+  transactionForUpsert,
 };

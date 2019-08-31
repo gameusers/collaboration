@@ -619,8 +619,8 @@ export default injectIntl(class extends React.Component {
               disabled={buttonDisabled}
               onChange={(page) => handleReadThreads({
                 pathArr: this.pathArr,
-                gameCommunities_id: gameCommunities_id,
-                userCommunities_id: userCommunities_id,
+                gameCommunities_id,
+                userCommunities_id,
                 page,
               })}
               pageSize={limit}

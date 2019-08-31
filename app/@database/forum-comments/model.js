@@ -1161,7 +1161,7 @@ const transactionForUpsert = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  // const session = await SchemaForumThreads.startSession();
+  const session = await SchemaForumThreads.startSession();
   
   
   // --------------------------------------------------
@@ -1175,55 +1175,56 @@ const transactionForUpsert = async ({
     //   Transaction / Start
     // --------------------------------------------------
     
-    // await session.startTransaction();
+    await session.startTransaction();
     
     
-    // // --------------------------------------------------
-    // //   DB updateOne
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB updateOne
+    // --------------------------------------------------
     
-    // await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
+    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     
     
-    // if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
       
       
-    //   // --------------------------------------------------
-    //   //   画像＆動画を削除する
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
       
-    //   const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
       
-    //   if (arr.length === 0) {
+      if (arr.length === 0) {
         
-    //     await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
         
         
-    //   // --------------------------------------------------
-    //   //   画像＆動画を保存
-    //   // --------------------------------------------------
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
         
-    //   } else {
+      } else {
         
-    //     await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
         
-    //   }
+      }
       
-    // }
+    }
     
     
-    // // throw new Error();
-    // await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    // throw new Error();
+    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     
     
-    // // --------------------------------------------------
-    // //   Transaction / Commit
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
     
-    // await session.commitTransaction();
-    // // console.log('--------コミット-----------');
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
     
-    // session.endSession();
+    session.endSession();
     
     
     
@@ -1280,11 +1281,11 @@ const transactionForUpsert = async ({
       --------------------\n
     `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

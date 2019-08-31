@@ -90,6 +90,10 @@ class Store {
   
   
   
+  // ---------------------------------------------
+  //   スレッド
+  // ---------------------------------------------
+  
   /**
    * スレッド一覧の1ページに表示する件数を変更する
    * @param {string} _id -  / userCommunities_id
@@ -111,7 +115,6 @@ class Store {
         userCommunities_id,
         page: 1,
         limit,
-        // forumUpdatedDate,
       });
       
       
@@ -588,9 +591,9 @@ class Store {
       }
       
       
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
+      console.log(`\n---------- resultObj ----------\n`);
+      console.dir(resultObj);
+      console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
@@ -640,6 +643,8 @@ class Store {
       // ---------------------------------------------
       //   Update
       // ---------------------------------------------
+      
+      // this.dataObj[communities_id] = clonedObj;
       
       this.handleEdit({
         pathArr: [communities_id],
@@ -1099,8 +1104,6 @@ class Store {
   
   
   
-  
-  
   // ---------------------------------------------
   //   コメント
   // ---------------------------------------------
@@ -1452,46 +1455,25 @@ class Store {
       }
       
       
-      // // ---------------------------------------------
-      // //   Update Thread List
-      // // ---------------------------------------------
-      
-      // const threadListLimit = lodashGet(this.dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-      
-      // await this.handleReadThreadsList({
-      //   gameCommunities_id,
-      //   userCommunities_id,
-      //   page: 1,
-      //   limit: threadListLimit,
-      // });
       
       
-      // // ---------------------------------------------
-      // //   Navigation / 開いているタブをスレッド一覧に変更する
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Close Form & Reset Form
+      // ---------------------------------------------
       
-      // this.handleEdit({
-      //   pathArr: [communities_id, 'navigationObj', 'openedTabNo'],
-      //   value: 0,
-      // });
-      
-      
-      // // ---------------------------------------------
-      // //   Close Form & Reset Form
-      // // ---------------------------------------------
-      
-      // if (forumThreads_id) {
+      if (forumThreads_id) {
         
-      //   lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
+        lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], false);
+        // lodashSet(this.dataObj, [forumThreads_id, 'showForm'], false);
         
-      // } else {
+      } else {
         
-      //   lodashSet(this.dataObj, [...pathArr, 'name'], '');
-      //   lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+        lodashSet(this.dataObj, [...pathArr, 'name'], '');
+        lodashSet(this.dataObj, [...pathArr, 'comment'], '');
         
-      //   storeImageAndVideoForm.handleResetForm({ pathArr });
+        storeImageAndVideoForm.handleResetForm({ pathArr });
         
-      // }
+      }
       
       
       // ---------------------------------------------
@@ -1500,7 +1482,32 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: forumThreads_id ? 'HINAkcSmJ' : 'pInPmleQh',
+        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - UpdatedDateObj
+      // --------------------------------------------------
+      
+      // lodashSet(this.dataObj, [userCommunities_id], {});
+      // lodashSet(this.dataObj, [userCommunities_id, 'updatedDateObj', 'forum'], '');
+      
+      // this.handleEdit({
+      //   pathArr: [userCommunities_id, 'updatedDateObj', 'forum'],
+      //   value: lodashGet(resultObj, ['data', 'updatedDateObj'], {}),
+      // });
+      
+      
+      // ---------------------------------------------
+      //   スレッド読み込み
+      // ---------------------------------------------
+      
+      this.handleReadThreads({
+        pathArr,
+        gameCommunities_id,
+        userCommunities_id,
+        page: 1,
       });
       
       

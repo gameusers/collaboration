@@ -637,16 +637,16 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
       
     }
     
-    console.log(chalk`
-      userCommunities_id: {green ${userCommunities_id}}
-      forumThreads_id: {green ${forumThreads_id}}
-      forumComments_id: {green ${forumComments_id}}
-      name: {green ${name} / ${typeof name}}
-      comment: {green ${comment} / ${typeof comment}}
-      anonymity: {green ${anonymity} / ${typeof anonymity}}
-      IP: {green ${req.ip}}
-      User Agent: {green ${req.headers['user-agent']}}
-    `);
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   name: {green ${name} / ${typeof name}}
+    //   comment: {green ${comment} / ${typeof comment}}
+    //   anonymity: {green ${anonymity} / ${typeof anonymity}}
+    //   IP: {green ${req.ip}}
+    //   User Agent: {green ${req.headers['user-agent']}}
+    // `);
     
     
     // --------------------------------------------------
@@ -669,40 +669,26 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     
     
     
-    // // --------------------------------------------------
-    // //   DB find / User Communities / 最新の更新日時情報を取得する
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB find / User Communities / 最新の更新日時情報を取得する
+    // --------------------------------------------------
     
-    // const userCommunityArr = await ModelUserCommunities.find({
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
-    // });
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
     
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
-    
-    
-    
-    // // const authority1 = verifyAuthority({ req, _id: forumThreads_id });
-    
-    // // console.log(chalk`
-    // //   authority1: {green ${authority1}}
-    // // `);
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
-    // // --------------------------------------------------
-    // //   Set Authority
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Set Authority
+    // --------------------------------------------------
     
-    // if (!forumThreads_id) {
-    //   setAuthority({ req, _id: forumCommentsConditionObj._id });
-    // }
-    
-    // const authority2 = verifyAuthority({ req, _id: forumThreads_id });
-    
-    // console.log(chalk`
-    //   authority2: {green ${authority2}}
-    // `);
+    if (!forumThreads_id) {
+      setAuthority({ req, _id: forumCommentsConditionObj._id });
+    }
     
     
     

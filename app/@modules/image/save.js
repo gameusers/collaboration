@@ -93,12 +93,6 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   
   
   
-  // console.log(chalk`
-  //   type: {green ${type}}
-  // `);
-  
-  
-  
   // ---------------------------------------------
   //   Validation
   // ---------------------------------------------
@@ -158,6 +152,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     let _id2 = lodashGet(valueObj, ['_id'], '');
     const type2 = lodashGet(valueObj, ['type'], '');
     
+    
     // console.log(`
     //   ----- valueObj -----\n
     //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
@@ -194,6 +189,13 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     // ---------------------------------------------
     
     if (_id2) {
+      
+      
+      // ---------------------------------------------
+      //   そのまま追加
+      // ---------------------------------------------
+      
+      returnArr.push(valueObj);
       
       
       // ---------------------------------------------
@@ -329,11 +331,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
       const dirPath = `static/img/${type}/${_id}/${_id2}`;
       
-      // mkdirp.sync(dirPath, (err) => {
-      //   if (err) {
-      //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
-      //   }
-      // });
+      mkdirp.sync(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
+        }
+      });
       
       // console.log(chalk`
       //   _id2: {green ${_id2}}
@@ -418,8 +420,8 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         //   ファイル保存　【チェック時は要コメントアウト】
         // ---------------------------------------------
         
-        // const srcSetSrc = `${dirPath}/${longSide}w.${extension}`;
-        // fs.writeFileSync(srcSetSrc, optimizedBuffer);
+        const srcSetSrc = `${dirPath}/${longSide}w.${extension}`;
+        fs.writeFileSync(srcSetSrc, optimizedBuffer);
         
         
         // ---------------------------------------------
@@ -513,11 +515,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
     const dirPath = `static/img/${type}/${_id}`;
     
-    // rimraf(dirPath, (err) => {
-    //   if (err) {
-    //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'mPduhlAfV', messageID: 'Error' }] });
-    //   }
-    // });
+    rimraf(dirPath, (err) => {
+      if (err) {
+        throw new CustomError({ level: 'error', errorsArr: [{ code: 'mPduhlAfV', messageID: 'Error' }] });
+      }
+    });
     
   
   // ----------------------------------------
@@ -538,11 +540,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
         const dirPath = `static/img/${type}/${_id}/${valueObj._id}`;
         
-        // rimraf(dirPath, (err) => {
-        //   if (err) {
-        //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
-        //   }
-        // });
+        rimraf(dirPath, (err) => {
+          if (err) {
+            throw new CustomError({ level: 'error', errorsArr: [{ code: 'uzE621Av1', messageID: 'Error' }] });
+          }
+        });
         
         // console.log(chalk`
         //   valueObj._id: {green ${valueObj._id}}

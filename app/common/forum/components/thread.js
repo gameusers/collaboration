@@ -189,7 +189,7 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
     const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
-    const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], process.env.FORUM_THREAD_LIMIT);
+    const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
@@ -243,7 +243,7 @@ export default injectIntl(class extends React.Component {
       
       const forumThreads_id = lodashGet(valueObj, ['_id'], '');
       const name = lodashGet(valueObj, ['name'], '');
-      const description = lodashGet(valueObj, ['description'], '');
+      const comment = lodashGet(valueObj, ['comment'], '');
       // const imagesAndVideos_id = lodashGet(valueObj, ['imagesAndVideos_id'], '');
       const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
       
@@ -251,11 +251,14 @@ export default injectIntl(class extends React.Component {
       const editable = lodashGet(valueObj, ['editable'], false);
       // const editable = true;
       
+      const comments = lodashGet(valueObj, ['comments'], 0);
+      
+      
       // --------------------------------------------------
       //   Show
       // --------------------------------------------------
       
-      const showDescription = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showDescription'], true);
+      const showComment = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showComment'], true);
       const showForm = lodashGet(dataObj, [forumThreads_id, 'showForm'], false);
       
       
@@ -440,8 +443,8 @@ export default injectIntl(class extends React.Component {
                         margin: 2px 0 0 0;
                       `}
                       onClick={() => handleEdit({
-                        pathArr: [...this.pathArr, forumThreads_id, 'showDescription'],
-                        value: !showDescription
+                        pathArr: [...this.pathArr, forumThreads_id, 'showComment'],
+                        value: !showComment
                       })}
                     >
                       スレッドについて
@@ -510,7 +513,7 @@ export default injectIntl(class extends React.Component {
                 
                 
                 {/* Description */}
-                {showDescription &&
+                {showComment &&
                   <div
                     css={css`
                       font-size: 14px;
@@ -524,7 +527,7 @@ export default injectIntl(class extends React.Component {
                       }
                     `}
                   >
-                    <Paragraph text={description} />
+                    <Paragraph text={comment} />
                   </div>
                 }
                 
@@ -551,6 +554,7 @@ export default injectIntl(class extends React.Component {
             <div
               css={css`
                 width: 100%;
+                margin: 12px 0 0 0;
               `}
             >
               
@@ -568,6 +572,7 @@ export default injectIntl(class extends React.Component {
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
+                comments={comments}
               />
               
               

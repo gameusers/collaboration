@@ -18,6 +18,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
+import Pagination from 'rc-pagination';
+import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -95,6 +97,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -112,6 +116,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -123,7 +129,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, comments } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -137,8 +143,20 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleShowFormComment,
+      handleReadComments,
       
     } = storeForum;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    
+    
     
     
     // --------------------------------------------------
@@ -146,7 +164,12 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
+    const count = comments;
+    const limit = 1;
+    // const limit = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    
+    
     
     
     // --------------------------------------------------
@@ -615,6 +638,73 @@ export default injectIntl(class extends React.Component {
       >
         
         {componentArr}
+        
+        
+        {/* Pagination */}
+        <div
+          css={css`
+            border-top: 1px solid;
+            border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+            border-image-slice: 1;
+            padding: 24px 0 0 0;
+            margin: 24px 24px 0 0;
+          `}
+        >
+          
+          <Pagination
+            disabled={buttonDisabled}
+            onChange={(page) => handleReadComments({
+              pathArr: this.pathArr,
+              gameCommunities_id,
+              userCommunities_id,
+              forumThreads_id,
+              page,
+            })}
+            pageSize={limit}
+            current={page}
+            total={count}
+            locale={localeInfo}
+          />
+          
+        </div>
+          
+          
+          {/* Rows Per Page */}
+          {/*<FormControl
+            css={css`
+              margin: 8px 0 0 0 !important;
+            `}
+            variant="outlined"
+          >
+            
+            <Select
+              value={limit}
+              onChange={(eventObj) => handleReadThreads({
+                pathArr: this.pathArr,
+                gameCommunities_id: gameCommunities_id,
+                userCommunities_id: userCommunities_id,
+                page: 1,
+                limit: eventObj.target.value,
+              })}
+              input={
+                <OutlinedInput
+                  classes={{
+                    input: classes.input
+                  }}
+                  name="forum-threads-pagination"
+                  id="outlined-rows-per-page"
+                />
+              }
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+            
+          </FormControl>*/}
       
       </div>
     );

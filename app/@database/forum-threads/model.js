@@ -479,21 +479,10 @@ const findForThreads = async ({
     
     
     // --------------------------------------------------
-    //   Condition
-    // --------------------------------------------------
-    
-    // const conditionObj = {
-    //   userCommunities_id,
-    // };
-    
-    
-    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
     const intThreadLimit = parseInt(threadLimit, 10);
-    
-    // const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((threadPage - 1) * intThreadLimit).limit(intThreadLimit).exec();
     
     
     const resultArr = await SchemaForumThreads.aggregate([
@@ -556,6 +545,8 @@ const findForThreads = async ({
     ]).exec();
     
     
+    
+    
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
@@ -574,7 +565,7 @@ const findForThreads = async ({
     
     
     // --------------------------------------------------
-    //   Count
+    //   コミュニティデータ取得 - コミュニティのスレッド数取得用
     // --------------------------------------------------
     
     const userCommunityArr = await ModelUserCommunities.find({
@@ -587,7 +578,7 @@ const findForThreads = async ({
     
     
     // --------------------------------------------------
-    //   Return Object
+    //   forumThreadsObj
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
@@ -615,11 +606,6 @@ const findForThreads = async ({
     });
     
     
-    // console.log(`
-    //   ----- forumCommentsAndRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -698,7 +684,9 @@ const format = ({ req, localeObj, loginUsers_id, arr }) => {
   
   for (let valueObj of arr.values()) {
     
-    
+    // console.log(`\n---------- valueObj ----------\n`);
+    // console.dir(valueObj);
+    // console.log(`\n-----------------------------------\n`);
     // --------------------------------------------------
     //   Deep Copy
     // --------------------------------------------------
@@ -799,7 +787,10 @@ const format = ({ req, localeObj, loginUsers_id, arr }) => {
     // --------------------------------------------------
     
     returnArr.push(clonedObj);
-    forumThreads_idArr.push(valueObj._id);
+    
+    if (valueObj.comments > 0) {
+      forumThreads_idArr.push(valueObj._id);
+    }
     
     
   }

@@ -106,7 +106,7 @@ class Store {
   //     const datetimeNow = moment().utcOffset(0);
   //     const datetimeReloadLimit = moment(loadedDate).add(20, 's').utcOffset(0);
       
-  //     // process.env.FORUM_THREAD_RELOAD_MINUTES, 'm'
+  //     // process.env.FORUM_RELOAD_MINUTES, 'm'
       
   //     const reload = datetimeNow.isAfter(datetimeReloadLimit) ? true : false;
       
@@ -143,7 +143,7 @@ class Store {
   //       page  : {green ${page}}
         
   //       loadedDate  : {green ${loadedDate}}
-  //       process.env.FORUM_THREAD_RELOAD_MINUTES  : {green ${process.env.FORUM_THREAD_RELOAD_MINUTES}}
+  //       process.env.FORUM_RELOAD_MINUTES  : {green ${process.env.FORUM_RELOAD_MINUTES}}
   //       reload  : {green ${reload}}
         
   //       datetimeNow  : {green ${datetimeNow}}

@@ -719,11 +719,11 @@ const findForForumCommentsAndReplies = async ({
   loginUsers_id,
   forumThreads_idArr,
   commentPage = 1,
-  // commentLimit = process.env.FORUM_COMMENT_LIMIT,
-  commentLimit = 1,
+  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  // commentLimit = 1,
   replyPage = 1,
   replyLimit = process.env.FORUM_REPLY_LIMIT,
-    
+  
 }) => {
   
   
@@ -734,7 +734,7 @@ const findForForumCommentsAndReplies = async ({
     //   Forum Comments & Replies データ取得
     //   $in, sort, limit を使って最新のコメントを取得すると、古いコメントが limit で削られてしまうため
     //   あるスレッドでは古いコメントが表示されないという事態になってしまう
-    //   そのため for のループで検索している　可能なら改善した方がいい
+    //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
     // --------------------------------------------------
     
     let resultArr = [];
@@ -1096,8 +1096,12 @@ const findForForumCommentsAndReplies = async ({
         
         
         { '$sort': { 'updatedDate': -1 } },
-        { $skip: (commentPage - 1) * commentLimit },
-        { $limit: parseInt(commentLimit, 10) },
+        { $skip: (commentPage - 1) * 1 },
+        { $limit: parseInt(1, 10) },
+        
+        // { '$sort': { 'updatedDate': -1 } },
+        // { $skip: (commentPage - 1) * commentLimit },
+        // { $limit: parseInt(commentLimit, 10) },
         
         
       ]).exec();
@@ -1106,6 +1110,11 @@ const findForForumCommentsAndReplies = async ({
       
       // console.log(chalk`
       //   value: {green ${value}}
+      // `);
+      
+      // console.log(chalk`
+      //   commentPage2: {green ${commentPage}}
+      //   commentLimit2: {green ${commentLimit}}
       // `);
       
       // console.log(`

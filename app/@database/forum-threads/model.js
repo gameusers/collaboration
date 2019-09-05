@@ -673,7 +673,7 @@ const findForThreads = async ({
       
       // スレッドを取得
       {
-        $match : { userCommunities_id: userCommunities_id }
+        $match : { userCommunities_id }
       },
       
       
@@ -713,7 +713,6 @@ const findForThreads = async ({
       
       { $project:
         {
-          // createdDate: 0,
           imagesAndVideos_id: 0,
           __v: 0,
         }
@@ -757,6 +756,11 @@ const findForThreads = async ({
       }
     });
     
+    const forumObj = {
+      threadLimit: intThreadLimit,
+      threadCount: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+    };
+    
     
     
     
@@ -767,15 +771,18 @@ const findForThreads = async ({
     const ISO8601 = moment().toISOString();
     
     const forumThreadsObj = {
-      count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
       page: threadPage,
-      limit: intThreadLimit,
     };
     
     lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'loadedDate'], ISO8601);
     lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'arr'], formattedArr);
     
-    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    // `);
     
     
     // --------------------------------------------------
@@ -785,7 +792,11 @@ const findForThreads = async ({
     const forumCommentsAndRepliesObj = await ModelForumComments.findForForumCommentsAndReplies({
       localeObj,
       loginUsers_id,
-      forumThreads_idArr: forumThreads_idArr,
+      forumThreads_idArr,
+      commentPage,
+      commentLimit,
+      replyPage,
+      replyLimit,
     });
     
     
@@ -821,11 +832,14 @@ const findForThreads = async ({
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return {
+      forumObj,
       forumThreadsObj,
       forumCommentsAndRepliesObj,
     };

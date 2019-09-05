@@ -121,7 +121,7 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     //   POST Data
     // --------------------------------------------------
     
-    const { gameCommunities_id, userCommunities_id, forumThreads_id, page, limit } = req.body;
+    const { gameCommunities_id, userCommunities_id, forumThreads_id, forumThreads_idArr, page, limit } = req.body;
     
     const pageInt = parseInt(page, 10);
     const limitInt = parseInt(limit, 10);
@@ -158,13 +158,31 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     if (gameCommunities_id) {
       
     } else {
+      
       await validationUserCommunities_idServer({ value: userCommunities_id });
+      await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
+      
     }
     
     await validationInteger({ throwError: true, required: true, value: pageInt });
     await validationForumCommentsLimit({ throwError: true, required: true, value: limitInt });
     
     
+    
+    // --------------------------------------------------
+    //   DB find / Forum
+    // --------------------------------------------------
+    
+    // const forumObj2 = await ModelForumThreads.findForThreads({
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    // });
+    
+    // returnObj.forumObj = forumObj.forumObj;
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
     
     
     // --------------------------------------------------

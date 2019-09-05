@@ -59,7 +59,7 @@ const validationForumCommentsLimit = ({ throwError = false, required = false, va
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(data, ['5', '10', '20', '50', '100'])) {
+    if (!validator.isIn(data, ['1', '10', '20', '50', '100'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AChTTpRx5', messageID: 'PH8jcw-VF' }] });
     }
     

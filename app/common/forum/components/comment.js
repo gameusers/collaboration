@@ -31,7 +31,7 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
-// import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import IconPublic from '@material-ui/icons/Public';
@@ -39,6 +39,12 @@ import IconUpdate from '@material-ui/icons/Update';
 import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
+
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
@@ -70,10 +76,29 @@ moment.locale('ja');
 
 
 // --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const stylesObj = {
+  
+  input: {
+    fontSize: '12px',
+    color: '#666',
+    // marginLeft: '12px',
+    padding: '6px 18px 6px 12px',
+  },
+  
+};
+
+
+
+
+// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-// @withStyles(stylesObj)
+@withStyles(stylesObj)
 @inject('stores', 'storeForum')
 @observer
 export default injectIntl(class extends React.Component {
@@ -143,6 +168,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleShowFormComment,
+      handleChangeCommentRowsPerPage,
       handleReadComments,
       
     } = storeForum;
@@ -165,8 +191,8 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
     const count = comments;
-    const limit = 1;
-    // const limit = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    // const limit = 1;
+    const limit = lodashGet(dataObj, [communities_id, 'forumObj', 'commentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
@@ -643,34 +669,44 @@ export default injectIntl(class extends React.Component {
         {/* Pagination */}
         <div
           css={css`
+            display: flex;
+            flex-flow: row wrap;
+            
             border-top: 1px solid;
             border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
             border-image-slice: 1;
-            padding: 24px 0 0 0;
+            
+            padding: 16px 0 0 0;
             margin: 24px 24px 0 0;
           `}
         >
           
-          <Pagination
-            disabled={buttonDisabled}
-            onChange={(page) => handleReadComments({
-              pathArr: this.pathArr,
-              gameCommunities_id,
-              userCommunities_id,
-              forumThreads_id,
-              page,
-            })}
-            pageSize={limit}
-            current={page}
-            total={count}
-            locale={localeInfo}
-          />
           
-        </div>
+          {/* Pagination */}
+          <div
+            css={css`
+              margin: 8px 24px 0 0;
+            `}
+          >
+            <Pagination
+              disabled={buttonDisabled}
+              onChange={(page) => handleReadComments({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                userCommunities_id,
+                forumThreads_id,
+                page,
+              })}
+              pageSize={limit}
+              current={page}
+              total={count}
+              locale={localeInfo}
+            />
+          </div>
           
           
           {/* Rows Per Page */}
-          {/*<FormControl
+          <FormControl
             css={css`
               margin: 8px 0 0 0 !important;
             `}
@@ -679,10 +715,18 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              onChange={(eventObj) => handleReadThreads({
+              // onChange={(eventObj) => handleChangeCommentRowsPerPage({
+              //   pathArr: [communities_id, 'threadObj'],
+              //   gameCommunities_id: gameCommunities_id,
+              //   userCommunities_id: userCommunities_id,
+              //   // commentPage: 1,
+              //   commentLimit: eventObj.target.value,
+              // })}
+              onChange={(eventObj) => handleReadComments({
                 pathArr: this.pathArr,
-                gameCommunities_id: gameCommunities_id,
-                userCommunities_id: userCommunities_id,
+                gameCommunities_id,
+                userCommunities_id,
+                forumThreads_id,
                 page: 1,
                 limit: eventObj.target.value,
               })}
@@ -691,20 +735,24 @@ export default injectIntl(class extends React.Component {
                   classes={{
                     input: classes.input
                   }}
-                  name="forum-threads-pagination"
+                  name="forum-comments-pagination"
                   id="outlined-rows-per-page"
                 />
               }
             >
               <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
               <MenuItem value={50}>50</MenuItem>
             </Select>
             
-          </FormControl>*/}
+          </FormControl>
+          
+          
+        </div>
+        
+        
+        
       
       </div>
     );

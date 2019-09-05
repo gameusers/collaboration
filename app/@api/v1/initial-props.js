@@ -803,6 +803,7 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
       userCommunities_id,
     });
     
+    returnObj.forumObj = forumObj.forumObj;
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
     

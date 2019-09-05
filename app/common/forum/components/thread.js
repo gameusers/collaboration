@@ -188,8 +188,10 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
-    const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
-    const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    // const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
+    const count = lodashGet(dataObj, [this.communities_id, 'forumObj', 'threadCount'], 0);
+    const limit = lodashGet(dataObj, [this.communities_id, 'forumObj', 'threadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    // const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
@@ -209,6 +211,8 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   /app/common/forum/components/thread.js
     //   page: {green ${page}}
+    //   count: {green ${count}}
+    //   limit: {green ${limit}}
     // `);
     
     // console.log(`
@@ -626,7 +630,7 @@ export default injectIntl(class extends React.Component {
                 pathArr: this.pathArr,
                 gameCommunities_id,
                 userCommunities_id,
-                page,
+                threadPage: page,
               })}
               pageSize={limit}
               current={page}
@@ -652,8 +656,8 @@ export default injectIntl(class extends React.Component {
                 pathArr: this.pathArr,
                 gameCommunities_id: gameCommunities_id,
                 userCommunities_id: userCommunities_id,
-                page: 1,
-                limit: eventObj.target.value,
+                threadPage: 1,
+                threadLimit: eventObj.target.value,
               })}
               input={
                 <OutlinedInput
@@ -674,6 +678,7 @@ export default injectIntl(class extends React.Component {
             </Select>
             
           </FormControl>
+          
           
         </Paper>
         

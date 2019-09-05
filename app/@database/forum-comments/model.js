@@ -720,12 +720,18 @@ const findForForumCommentsAndReplies = async ({
   forumThreads_idArr,
   commentPage = 1,
   commentLimit = process.env.FORUM_COMMENT_LIMIT,
-  // commentLimit = 1,
   replyPage = 1,
   replyLimit = process.env.FORUM_REPLY_LIMIT,
   
 }) => {
   
+  console.log(chalk`
+    ----- findForForumCommentsAndReplies -----
+    commentPage: {green ${commentPage}}
+    commentLimit: {green ${commentLimit}}
+    replyPage: {green ${replyPage}}
+    replyLimit: {green ${replyLimit}}
+  `);
   
   try {
     
@@ -754,7 +760,6 @@ const findForForumCommentsAndReplies = async ({
         {
           $match: {
             $and: [
-              // { forumThreads_id: { $in: [value] } },
               { forumThreads_id: value },
               { forumComments_id: '' },
             ]
@@ -1075,9 +1080,9 @@ const findForForumCommentsAndReplies = async ({
                 },
                 
                 
-                // { '$sort': { 'updatedDate': -1 } },
-                // { $skip: (replyPage - 1) * replyLimit },
-                // { $limit: parseInt(replyLimit, 10) },
+                { '$sort': { 'updatedDate': -1 } },
+                { $skip: (replyPage - 1) * replyLimit },
+                { $limit: parseInt(replyLimit, 10) },
                 
                 
               ],
@@ -1095,13 +1100,13 @@ const findForForumCommentsAndReplies = async ({
         },
         
         
-        { '$sort': { 'updatedDate': -1 } },
-        { $skip: (commentPage - 1) * 1 },
-        { $limit: parseInt(1, 10) },
-        
         // { '$sort': { 'updatedDate': -1 } },
-        // { $skip: (commentPage - 1) * commentLimit },
-        // { $limit: parseInt(commentLimit, 10) },
+        // { $skip: (commentPage - 1) * 1 },
+        // { $limit: parseInt(1, 10) },
+        
+        { '$sort': { 'updatedDate': -1 } },
+        { $skip: (commentPage - 1) * commentLimit },
+        { $limit: parseInt(commentLimit, 10) },
         
         
       ]).exec();
@@ -1151,7 +1156,9 @@ const findForForumCommentsAndReplies = async ({
       loginUsers_id,
       arr: resultArr,
       commentPage,
+      // commentLimit,
       replyPage,
+      // replyLimit,
     });
     
     
@@ -1409,6 +1416,8 @@ const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
     if (parent_id) {
       
       lodashSet(returnObj, [parent_id, 'page'], page);
+      // lodashSet(returnObj, [parent_id, 'commentLimit'], parseInt(commentLimit, 10));
+      // lodashSet(returnObj, [parent_id, 'replyLimit'], parseInt(replyLimit, 10));
       
       lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
       

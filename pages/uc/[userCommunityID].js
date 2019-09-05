@@ -237,6 +237,16 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
+      //   Update Data - forumObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumObj'],
+        value: props.initialPropsObj.forumObj,
+      });
+      
+      
+      // --------------------------------------------------
       //   Update Data - forumThreadsObj
       // --------------------------------------------------
       

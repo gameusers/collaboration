@@ -247,22 +247,54 @@ router.post('/read-threads', upload.none(), async (req, res, next) => {
     //   POST Data
     // --------------------------------------------------
     
-    const { gameCommunities_id, userCommunities_id, page, limit } = req.body;
+    const { 
+      
+      gameCommunities_id,
+      userCommunities_id,
+      threadPage,
+      threadLimit,
+      commentPage, 
+      commentLimit,
+      replyPage,
+      replyLimit,
+      
+    } = req.body;
     
-    const pageInt = parseInt(page, 10);
-    const limitInt = parseInt(limit, 10);
+    
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['page'], pageInt);
-    lodashSet(requestParametersObj, ['limit'], limitInt);
+    lodashSet(requestParametersObj, ['threadPage'], threadPage);
+    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    lodashSet(requestParametersObj, ['commentPage'], commentPage);
+    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
+    lodashSet(requestParametersObj, ['replyPage'], replyPage);
+    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   parseInt
+    // ---------------------------------------------
+    
+    const threadPageInt = parseInt(threadPage, 10);
+    const threadLimitInt = parseInt(threadLimit, 10);
+    const commentPageInt = parseInt(commentPage, 10);
+    const commentLimitInt = parseInt(commentLimit, 10);
+    const replyPageInt = parseInt(replyPage, 10);
+    const replyLimitInt = parseInt(replyLimit, 10);
     
     
     // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   page: {green ${pageInt} / ${typeof pageInt}}
-    //   limit: {green ${limitInt} / ${typeof limitInt}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage} / ${parseInt(commentPage, 10)}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
     // `);
     
     
@@ -285,8 +317,8 @@ router.post('/read-threads', upload.none(), async (req, res, next) => {
       await validationUserCommunities_idServer({ value: userCommunities_id });
     }
     
-    await validationInteger({ throwError: true, required: true, value: pageInt });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: limitInt });
+    await validationInteger({ throwError: true, required: true, value: threadPageInt });
+    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimitInt });
     
     
     
@@ -295,14 +327,33 @@ router.post('/read-threads', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForThreads({
+    const argumentsObj = {
       req,
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      threadPage: pageInt,
-      threadLimit: limitInt,
-    });
+      threadPage: threadPageInt,
+      threadLimit: threadLimitInt,
+    };
+    
+    if (commentPage) {
+      argumentsObj.commentPage = commentPageInt;
+    }
+    
+    if (commentLimit) {
+      argumentsObj.commentLimit = commentLimitInt;
+    }
+    
+    if (replyPage) {
+      argumentsObj.replyPage = replyPageInt;
+    }
+    
+    if (replyLimit) {
+      argumentsObj.replyLimit = replyLimitInt;
+    }
+    
+    
+    const forumObj = await ModelForumThreads.findForThreads(argumentsObj);
     
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;

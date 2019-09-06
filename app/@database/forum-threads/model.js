@@ -453,18 +453,18 @@ const findForThreadsList = async ({
 
 
 /**
- * スレッドを取得する / 一件
+ * スレッドを取得する / コメントの表示件数を変更した場合に利用
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumThreads_id - DB forum-threads _id / フォーラムスレッドID
+ * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドIDの入った配列
  * @return {Array} 取得データ
  */
-const findOneForThreads = async ({
+const findThreadsForChangeCommentRowsPerPage = async ({
   
   req,
   localeObj,
   loginUsers_id,
-  forumThreads_id,
+  forumThreads_idArr,
   commentPage = 1,
   commentLimit = process.env.FORUM_COMMENT_LIMIT,
   
@@ -483,7 +483,7 @@ const findOneForThreads = async ({
       
       // スレッドを取得
       {
-        $match : { _id: forumThreads_id }
+        $match: { _id: { $in: forumThreads_idArr } }
       },
       
       
@@ -544,16 +544,17 @@ const findOneForThreads = async ({
       arr: resultArr,
     });
     
-    const forumThreadsObj = lodashGet(formattedObj, ['arr', 0], {});
-    const forumThreads_idArr = formattedObj.forumThreads_idArr;
+    const forumThreadsArr = lodashGet(formattedObj, ['arr'], []);
+    // const forumThreadsObj = lodashGet(formattedObj, ['arr', 0], {});
+    // const forumThreads_idArr = formattedObj.forumThreads_idArr;
     
     // console.log(`
-    //     ----- forumThreadsObj -----\n
-    //     ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-    //     --------------------\n
-    //   `);
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    // forumThreadsObj.comment = 'AAA';
+    // forumThreadsArr[0].comment = 'AAA';
     
     
     // --------------------------------------------------
@@ -618,7 +619,7 @@ const findOneForThreads = async ({
     // --------------------------------------------------
     
     return {
-      forumThreadsObj,
+      forumThreadsArr,
       forumCommentsAndRepliesObj,
     };
     
@@ -1417,7 +1418,7 @@ module.exports = {
   insertMany,
   deleteMany,
   findForThreadsList,
-  findOneForThreads,
+  findThreadsForChangeCommentRowsPerPage,
   findForThreads,
   findForEdit,
   transactionForUpsertThread,

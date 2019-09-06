@@ -421,6 +421,7 @@ class Store {
     
   }) {
     
+    
     const communities_id = gameCommunities_id || userCommunities_id;
     
     
@@ -460,7 +461,11 @@ class Store {
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
       //   threadPage: {green ${threadPage}}
-      //   limit: {green ${limit}}
+      //   threadLimit: {green ${threadLimit}}
+      //   commentPage: {green ${commentPage}}
+      //   commentLimit: {green ${commentLimit}}
+      //   replyPage: {green ${replyPage}}
+      //   replyLimit: {green ${replyLimit}}
         
       //   loadedDate: {green ${loadedDate}}
       // `);
@@ -641,18 +646,36 @@ class Store {
       //   forumThreadsObj
       // ---------------------------------------------
       
-      const newObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      const forumThreadsOldObj = lodashGet(clonedObj, ['forumThreadsObj'], {});
+      const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
       // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      const mergedObj = reload ? newObj : lodashMerge(clonedObj.forumThreadsObj, newObj);
+      const forumThreadsMergedObj = reload ? forumThreadsNewObj : lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
       
-      clonedObj.forumThreadsObj = mergedObj;
+      clonedObj.forumThreadsObj = forumThreadsMergedObj;
       
       // console.log(`
-      //   ----- mergedObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
+      //   ----- forumThreadsMergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   forumCommentsAndRepliesObj
+      // ---------------------------------------------
+      
+      const forumCommentsAndRepliesOldObj = lodashGet(clonedObj, ['forumCommentsAndRepliesObj'], {});
+      const forumCommentsAndRepliesNewObj = lodashGet(resultObj, ['data', 'forumCommentsAndRepliesObj'], {});
+      
+      // 古いデータと新しいデータをマージする
+      const forumCommentsAndRepliesMergedObj = Object.assign(forumCommentsAndRepliesOldObj, forumCommentsAndRepliesNewObj);
+      
+      clonedObj.forumCommentsAndRepliesObj = forumCommentsAndRepliesMergedObj;
+      
+      
       
       
       // ---------------------------------------------
@@ -673,8 +696,6 @@ class Store {
       // ---------------------------------------------
       //   Update
       // ---------------------------------------------
-      
-      // this.dataObj[communities_id] = clonedObj;
       
       this.handleEdit({
         pathArr: [communities_id],
@@ -1325,18 +1346,22 @@ class Store {
       storeLayout.handleButtonDisable({ pathArr });
       
       
+      
+      
       // ---------------------------------------------
-      //   FormData
+      //   forumThreads_idArr
       // ---------------------------------------------
       
       const forumThreadsObj = lodashGet(this.dataObj, [communities_id, 'forumThreadsObj'], {});
       const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-      const forumThreadsDataArr = lodashGet(forumThreadsObj, ['dataObj', `page${forumThreadsPage}Obj`, 'arr'], []);
+      const forumThreadsOldArr = lodashGet(forumThreadsObj, ['dataObj', `page${forumThreadsPage}Obj`, 'arr'], []);
       const forumThreads_idArr = [];
       
-      for (let value of forumThreadsDataArr.values()) {
-        forumThreads_idArr.push(value);
+      for (let valueObj of forumThreadsOldArr.values()) {
+        forumThreads_idArr.push(valueObj._id);
       }
+      
+      
       
       
       // ---------------------------------------------
@@ -1348,7 +1373,7 @@ class Store {
       formData.append('gameCommunities_id', gameCommunities_id);
       formData.append('userCommunities_id', userCommunities_id);
       formData.append('forumThreads_id', forumThreads_id);
-      formData.append('forumThreads_idArr', forumThreads_idArr);
+      formData.append('forumThreads_idArr', JSON.stringify(forumThreads_idArr));
       formData.append('page', page);
       formData.append('limit', commentLimit);
       
@@ -1394,40 +1419,29 @@ class Store {
       //   forumThreadsObj
       // ---------------------------------------------
       
-      const replaceObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
-      
-      // const forumThreadsObj = lodashGet(this.dataObj, [communities_id, 'forumThreadsObj'], {});
-      // const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-      // const forumThreadsDataArr = lodashGet(forumThreadsObj, ['dataObj', `page${forumThreadsPage}Obj`, 'arr'], []);
-      
-      const index = forumThreadsDataArr.findIndex((valueObj) => {
-        return valueObj._id === forumThreads_id;
-      });
-      
-      lodashSet(clonedObj, ['forumThreadsObj', 'dataObj', `page${forumThreadsPage}Obj`, 'arr', index], replaceObj);
+      const forumThreadsNewArr = lodashGet(resultObj, ['data', 'forumThreadsArr'], []);
+      const forumThreadsMergedArr = lodashMerge(forumThreadsOldArr, forumThreadsNewArr);
+      lodashSet(clonedObj, ['forumThreadsObj', 'dataObj', `page${forumThreadsPage}Obj`, 'arr'], forumThreadsMergedArr);
       
       
       // console.log(`
-      //   ----- forumThreadsObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+      //   ----- forumThreadsOldArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- forumThreadsDataArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsDataArr)), { colors: true, depth: null })}\n
+      //   ----- forumThreadsNewArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- replaceObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(replaceObj)), { colors: true, depth: null })}\n
+      //   ----- forumThreadsMergedArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
-      // console.log(chalk`
-      //   index: {green ${index}}
-      // `);
       
       
       
@@ -1435,19 +1449,34 @@ class Store {
       //   forumCommentsAndRepliesObj
       // ---------------------------------------------
       
-      const newObj = lodashGet(resultObj, ['data', 'forumCommentsAndRepliesObj'], {});
+      const forumCommentsAndRepliesOldObj = lodashGet(clonedObj, ['forumCommentsAndRepliesObj'], {});
+      const forumCommentsAndRepliesNewObj = lodashGet(resultObj, ['data', 'forumCommentsAndRepliesObj'], {});
       
-      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      const mergedObj = lodashMerge(clonedObj.forumCommentsAndRepliesObj, newObj);
-      // const mergedObj = reload ? newObj : lodashMerge(clonedObj.forumCommentsAndRepliesObj, newObj);
+      // 古いデータと新しいデータをマージする
+      const forumCommentsAndRepliesMergedObj = Object.assign(forumCommentsAndRepliesOldObj, forumCommentsAndRepliesNewObj);
       
-      clonedObj.forumCommentsAndRepliesObj = mergedObj;
+      clonedObj.forumCommentsAndRepliesObj = forumCommentsAndRepliesMergedObj;
+      
       
       // console.log(`
-      //   ----- mergedObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(mergedObj)), { colors: true, depth: null })}\n
+      //   ----- forumCommentsAndRepliesOldObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesOldObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      // console.log(`
+      //   ----- forumCommentsAndRepliesNewObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesNewObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- forumCommentsAndRepliesMergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesMergedObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
       
       
       // ---------------------------------------------

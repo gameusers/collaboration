@@ -725,13 +725,13 @@ const findForForumCommentsAndReplies = async ({
   
 }) => {
   
-  console.log(chalk`
-    ----- findForForumCommentsAndReplies -----
-    commentPage: {green ${commentPage}}
-    commentLimit: {green ${commentLimit}}
-    replyPage: {green ${replyPage}}
-    replyLimit: {green ${replyLimit}}
-  `);
+  // console.log(chalk`
+  //   ----- findForForumCommentsAndReplies -----
+  //   commentPage: {green ${commentPage}}
+  //   commentLimit: {green ${commentLimit}}
+  //   replyPage: {green ${replyPage}}
+  //   replyLimit: {green ${replyLimit}}
+  // `);
   
   try {
     

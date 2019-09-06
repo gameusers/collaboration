@@ -123,22 +123,40 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     
     const { gameCommunities_id, userCommunities_id, forumThreads_id, forumThreads_idArr, page, limit } = req.body;
     
-    const pageInt = parseInt(page, 10);
-    const limitInt = parseInt(limit, 10);
+    
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    lodashSet(requestParametersObj, ['page'], pageInt);
-    lodashSet(requestParametersObj, ['limit'], limitInt);
+    lodashSet(requestParametersObj, ['forumThreads_idArr'], forumThreads_idArr);
+    lodashSet(requestParametersObj, ['page'], page);
+    lodashSet(requestParametersObj, ['limit'], limit);
     
     
     // console.log(chalk`
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
-    //   page: {green ${pageInt} / ${typeof pageInt}}
-    //   limit: {green ${limitInt} / ${typeof limitInt}}
+    //   page: {green ${page} / ${typeof page}}
+    //   limit: {green ${limit} / ${typeof limit}}
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   parse
+    // ---------------------------------------------
+    
+    const pageInt = parseInt(page, 10);
+    const limitInt = parseInt(limit, 10);
+    
+    const parsedForumThreads_idArr = JSON.parse(forumThreads_idArr);
+    
+    // console.log(`
+    //   ----- parsedForumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(parsedForumThreads_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     
@@ -189,16 +207,16 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findOneForThreads({
+    const forumObj = await ModelForumThreads.findThreadsForChangeCommentRowsPerPage({
       req,
       localeObj,
       loginUsers_id,
-      forumThreads_id,
+      forumThreads_idArr: parsedForumThreads_idArr,
       commentPage: pageInt,
       commentLimit: limitInt,
     });
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumThreadsArr = forumObj.forumThreadsArr;
     returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
     
     

@@ -19,7 +19,6 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import Pagination from 'rc-pagination';
-import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -34,17 +33,21 @@ import { css, jsx } from '@emotion/core';
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+
+// ---------------------------------------------
+//   Material UI / Icon
+// ---------------------------------------------
+
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
 import IconThumbUp from '@material-ui/icons/ThumbUp';
 import IconEdit from '@material-ui/icons/Edit';
 import IconReply from '@material-ui/icons/Reply';
-
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
@@ -85,8 +88,7 @@ const stylesObj = {
   input: {
     fontSize: '12px',
     color: '#666',
-    // marginLeft: '12px',
-    padding: '6px 18px 6px 12px',
+    padding: '6px 26px 6px 12px',
   },
   
 };
@@ -118,6 +120,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.pathArr = [props.forumThreads_id, 'commentObj'];
+    
     
   }
   
@@ -159,21 +162,6 @@ export default injectIntl(class extends React.Component {
     const communities_id = gameCommunities_id || userCommunities_id;
     
     
-    // --------------------------------------------------
-    //   Forum
-    // --------------------------------------------------
-    
-    const {
-      
-      dataObj,
-      handleEdit,
-      handleShowFormComment,
-      handleChangeCommentRowsPerPage,
-      handleReadComments,
-      
-    } = storeForum;
-    
-    
     
     
     // --------------------------------------------------
@@ -186,12 +174,21 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Data
+    //   Forum
     // --------------------------------------------------
+    
+    const {
+      
+      dataObj,
+      handleEdit,
+      handleShowFormComment,
+      handleReadComments,
+      
+    } = storeForum;
+    
     
     const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
     const count = comments;
-    // const limit = 1;
     const limit = lodashGet(dataObj, [communities_id, 'forumObj', 'commentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
     
@@ -291,6 +288,13 @@ export default injectIntl(class extends React.Component {
       const datetimeFrom = datetimeUpdated.from(datetimeNow);
       
       const goods = lodashGet(valueObj, ['goods'], 0);
+      
+      
+      // --------------------------------------------------
+      //   Replies
+      // --------------------------------------------------
+      
+      const replies = lodashGet(valueObj, ['replies'], 0);
       
       
       // --------------------------------------------------
@@ -635,7 +639,9 @@ export default injectIntl(class extends React.Component {
               <Reply
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
+                forumThreads_id={forumThreads_id}
                 forumComments_id={forumComments_id}
+                replies={replies}
               />
               
               
@@ -700,7 +706,6 @@ export default injectIntl(class extends React.Component {
               pageSize={limit}
               current={page}
               total={count}
-              locale={localeInfo}
             />
           </div>
           
@@ -715,13 +720,6 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              // onChange={(eventObj) => handleChangeCommentRowsPerPage({
-              //   pathArr: [communities_id, 'threadObj'],
-              //   gameCommunities_id: gameCommunities_id,
-              //   userCommunities_id: userCommunities_id,
-              //   // commentPage: 1,
-              //   commentLimit: eventObj.target.value,
-              // })}
               onChange={(eventObj) => handleReadComments({
                 pathArr: this.pathArr,
                 gameCommunities_id,

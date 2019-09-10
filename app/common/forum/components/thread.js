@@ -18,7 +18,6 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import Pagination from 'rc-pagination';
-import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -39,7 +38,6 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -82,8 +80,7 @@ const stylesObj = {
   input: {
     fontSize: '12px',
     color: '#666',
-    // marginLeft: '12px',
-    padding: '6px 18px 6px 12px',
+    padding: '6px 26px 6px 12px',
   },
   
 };
@@ -116,6 +113,7 @@ export default injectIntl(class extends React.Component {
     
     this.communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
     this.pathArr = [this.communities_id, 'threadObj'];
+    
     
   }
   
@@ -187,10 +185,6 @@ export default injectIntl(class extends React.Component {
     } = storeForum;
     
     
-    // --------------------------------------------------
-    //   Data
-    // --------------------------------------------------
-    
     const threadPage = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
     const threadCount = lodashGet(dataObj, [this.communities_id, 'forumObj', 'threadCount'], 0);
     const threadLimit = lodashGet(dataObj, [this.communities_id, 'forumObj', 'threadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
@@ -233,10 +227,16 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Property
+      //   _id
       // --------------------------------------------------
       
       const forumThreads_id = lodashGet(valueObj, ['_id'], '');
+      
+      
+      // --------------------------------------------------
+      //   Property
+      // --------------------------------------------------
+      
       const name = lodashGet(valueObj, ['name'], '');
       const comment = lodashGet(valueObj, ['comment'], '');
       
@@ -626,8 +626,6 @@ export default injectIntl(class extends React.Component {
               pageSize={threadLimit}
               current={threadPage}
               total={threadCount}
-              // total={500}
-              locale={localeInfo}
             />
             
           </div>

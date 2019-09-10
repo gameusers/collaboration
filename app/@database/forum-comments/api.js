@@ -50,9 +50,10 @@ const { validationUserCommunities_idServer } = require('../user-communities/vali
 
 const { validationForumThreads_idServerUC } = require('../forum-threads/validations/_id-server');
 
-const { validationForumCommentsLimit } = require('./validations/limit');
+const { validationForumComments_idServerUC } = require('./validations/_id-server');
 const { validationForumCommentsName } = require('./validations/name');
 const { validationForumCommentsComment } = require('./validations/comment');
+const { validationForumCommentsLimit, validationForumRepliesLimit } = require('./validations/limit');
 
 
 // ---------------------------------------------
@@ -124,7 +125,6 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     const { gameCommunities_id, userCommunities_id, forumThreads_id, forumThreads_idArr, page, limit } = req.body;
     
     
-    
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
@@ -150,7 +150,6 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     
     const pageInt = parseInt(page, 10);
     const limitInt = parseInt(limit, 10);
-    
     const parsedForumThreads_idArr = JSON.parse(forumThreads_idArr);
     
     // console.log(`
@@ -175,6 +174,8 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     
     if (gameCommunities_id) {
       
+      
+      
     } else {
       
       await validationUserCommunities_idServer({ value: userCommunities_id });
@@ -187,28 +188,33 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
     
     
     
-    // --------------------------------------------------
-    //   DB find / Forum
-    // --------------------------------------------------
-    
-    // const forumObj2 = await ModelForumThreads.findForThreads({
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    // });
-    
-    // returnObj.forumObj = forumObj.forumObj;
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
-    
     
     // --------------------------------------------------
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findThreadsForChangeCommentRowsPerPage({
+    const forumThreadsArr = await ModelForumThreads.findThreadsByForumThreads_idArr({
       req,
+      localeObj,
+      loginUsers_id,
+      forumThreads_idArr: parsedForumThreads_idArr,
+    });
+    
+    returnObj.forumThreadsArr = forumThreadsArr;
+    
+    
+    // console.log(`
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Comments & Replies
+    // --------------------------------------------------
+    
+    const forumCommentsAndRepliesObj = await ModelForumComments.findForForumCommentsAndReplies({
       localeObj,
       loginUsers_id,
       forumThreads_idArr: parsedForumThreads_idArr,
@@ -216,8 +222,14 @@ router.post('/read-comments', upload.none(), async (req, res, next) => {
       commentLimit: limitInt,
     });
     
-    returnObj.forumThreadsArr = forumObj.forumThreadsArr;
-    returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
+    returnObj.forumCommentsAndRepliesObj = forumCommentsAndRepliesObj;
+    
+    
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -404,6 +416,8 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
   
   
   try {
@@ -620,7 +634,7 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
     };
     
     
-    const forumThreadsSaveObj = {
+    let forumThreadsSaveObj = {
       updatedDate: ISO8601,
       $inc: { comments: 1, images, videos }
     };
@@ -671,6 +685,10 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
       //   - forum-threads / 更新日時の変更
       // ---------------------------------------------
       
+      forumThreadsSaveObj = {
+        updatedDate: ISO8601,
+        $inc: { images, videos }
+      };
       // delete forumThreadsSaveObj.$inc;
       
       
@@ -803,6 +821,202 @@ router.post('/upsert-uc', upload.none(), async (req, res, next) => {
   
   
 });
+
+
+
+
+
+
+// --------------------------------------------------
+//   返信読み込み / endpointID: kcTydshdR
+// --------------------------------------------------
+
+router.post('/read-replies', upload.none(), async (req, res, next) => {
+  
+  
+  // --------------------------------------------------
+  //   Locale
+  // --------------------------------------------------
+  
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  const returnObj = {};
+  const requestParametersObj = {};
+  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   POST Data
+    // --------------------------------------------------
+    
+    const { gameCommunities_id, userCommunities_id, forumComments_id, forumComments_idArr, page, limit } = req.body;
+    
+    
+    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
+    lodashSet(requestParametersObj, ['forumComments_idArr'], forumComments_idArr);
+    lodashSet(requestParametersObj, ['page'], page);
+    lodashSet(requestParametersObj, ['limit'], limit);
+    
+    
+    console.log(chalk`
+      gameCommunities_id: {green ${gameCommunities_id}}
+      userCommunities_id: {green ${userCommunities_id}}
+      forumComments_id: {green ${forumComments_id}}
+      page: {green ${page} / ${typeof page}}
+      limit: {green ${limit} / ${typeof limit}}
+    `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   parse
+    // ---------------------------------------------
+    
+    const pageInt = parseInt(page, 10);
+    const limitInt = parseInt(limit, 10);
+    // const parsedForumComments_idArr = JSON.parse(forumComments_idArr);
+    
+    // console.log(`
+    //   ----- parsedForumComments_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(parsedForumComments_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+      
+      
+    } else {
+      
+      await validationUserCommunities_idServer({ value: userCommunities_id });
+      await validationForumComments_idServerUC({ forumComments_id, userCommunities_id });
+      
+    }
+    
+    await validationInteger({ throwError: true, required: true, value: pageInt });
+    await validationForumRepliesLimit({ throwError: true, required: true, value: limitInt });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Comments
+    // --------------------------------------------------
+    
+    const forumCommentObj = await ModelForumComments.findCommentByForumComment_id({
+      localeObj,
+      loginUsers_id,
+      forumComments_id,
+    });
+    
+    returnObj.forumCommentObj = forumCommentObj;
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Replies
+    // --------------------------------------------------
+    
+    const forumRepliesObj = await ModelForumComments.findRepliesByForumComment_id({
+      localeObj,
+      loginUsers_id,
+      forumComments_id,
+      replyPage: pageInt,
+      replyLimit: limitInt,
+    });
+    
+    returnObj.forumRepliesObj = forumRepliesObj;
+    
+    
+    console.log(`
+      ----- forumCommentObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumCommentObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    // --------------------------------------------------
+    //   DB find / User Communities
+    // --------------------------------------------------
+    
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    
+    
+    // ---------------------------------------------
+    //   Success
+    // ---------------------------------------------
+    
+    return res.status(200).json(returnObj);
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Log
+    // ---------------------------------------------
+    
+    const resultErrorObj = returnErrorsArr({
+      errorObj,
+      endpointID: 'kcTydshdR',
+      users_id: loginUsers_id,
+      ip: req.ip,
+      requestParametersObj,
+    });
+    
+    
+    // --------------------------------------------------
+    //   Return JSON Object / Error
+    // --------------------------------------------------
+    
+    return res.status(statusCode).json(resultErrorObj);
+    
+    
+  }
+  
+  
+});
+
 
 
 

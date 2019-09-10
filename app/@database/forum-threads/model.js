@@ -452,186 +452,6 @@ const findForThreadsList = async ({
 
 
 
-/**
- * スレッドを取得する / コメントの表示件数を変更した場合に利用
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドIDの入った配列
- * @return {Array} 取得データ
- */
-const findThreadsForChangeCommentRowsPerPage = async ({
-  
-  req,
-  localeObj,
-  loginUsers_id,
-  forumThreads_idArr,
-  commentPage = 1,
-  commentLimit = process.env.FORUM_COMMENT_LIMIT,
-  
-}) => {
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
-    
-    const resultArr = await SchemaForumThreads.aggregate([
-      
-      
-      // スレッドを取得
-      {
-        $match: { _id: { $in: forumThreads_idArr } }
-      },
-      
-      
-      // 画像と動画を取得
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
-                }
-              },
-              { $project:
-                {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      { $project:
-        {
-          imagesAndVideos_id: 0,
-          __v: 0,
-        }
-      },
-      
-      
-    ]).exec();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
-    
-    const formattedObj = format({
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: resultArr,
-    });
-    
-    const forumThreadsArr = lodashGet(formattedObj, ['arr'], []);
-    // const forumThreadsObj = lodashGet(formattedObj, ['arr', 0], {});
-    // const forumThreads_idArr = formattedObj.forumThreads_idArr;
-    
-    // console.log(`
-    //   ----- forumThreadsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // forumThreadsArr[0].comment = 'AAA';
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Comments & Replies
-    // --------------------------------------------------
-    
-    const forumCommentsAndRepliesObj = await ModelForumComments.findForForumCommentsAndReplies({
-      localeObj,
-      loginUsers_id,
-      forumThreads_idArr,
-      commentPage,
-      commentLimit,
-    });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   commentPage: {green ${commentPage}}
-    //   commentLimit: {green ${commentLimit}}
-    // `);
-    
-    // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- formattedObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumCommentsAndRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return {
-      forumThreadsArr,
-      forumCommentsAndRepliesObj,
-    };
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-  
-};
 
 
 
@@ -844,6 +664,173 @@ const findForThreads = async ({
       forumThreadsObj,
       forumCommentsAndRepliesObj,
     };
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * スレッドを取得する / _id で検索
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドIDの入った配列
+ * @return {Array} 取得データ
+ */
+const findThreadsByForumThreads_idArr = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  forumThreads_idArr,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumThreads.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match: { _id: { $in: forumThreads_idArr } }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const formattedObj = format({
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: resultArr,
+    });
+    
+    const forumThreadsArr = lodashGet(formattedObj, ['arr'], []);
+    // const forumThreadsObj = lodashGet(formattedObj, ['arr', 0], {});
+    // const forumThreads_idArr = formattedObj.forumThreads_idArr;
+    
+    // console.log(`
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // forumThreadsArr[0].comment = 'AAA';
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return forumThreadsArr;
     
     
   } catch (err) {
@@ -1418,7 +1405,7 @@ module.exports = {
   insertMany,
   deleteMany,
   findForThreadsList,
-  findThreadsForChangeCommentRowsPerPage,
+  findThreadsByForumThreads_idArr,
   findForThreads,
   findForEdit,
   transactionForUpsertThread,

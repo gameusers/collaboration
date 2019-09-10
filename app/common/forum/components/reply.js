@@ -18,8 +18,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
+import Pagination from 'rc-pagination';
 import lodashGet from 'lodash/get';
-import lodashHas from 'lodash/has';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -32,6 +32,16 @@ import { css, jsx } from '@emotion/core';
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
+
+// ---------------------------------------------
+//   Material UI / Icon
+// ---------------------------------------------
+
 import IconPublic from '@material-ui/icons/Public';
 import IconUpdate from '@material-ui/icons/Update';
 import IconThumbUp from '@material-ui/icons/ThumbUp';
@@ -66,10 +76,28 @@ moment.locale('ja');
 
 
 // --------------------------------------------------
+//   Material UI Style Overrides
+//   https://material-ui.com/styles/basics/
+// --------------------------------------------------
+
+const stylesObj = {
+  
+  input: {
+    fontSize: '12px',
+    color: '#666',
+    padding: '6px 26px 6px 12px',
+  },
+  
+};
+
+
+
+
+// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-// @withStyles(stylesObj)
+@withStyles(stylesObj)
 @inject('stores', 'storeForum')
 @observer
 export default injectIntl(class extends React.Component {
@@ -81,6 +109,7 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
+    
     super(props);
     
     
@@ -89,6 +118,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.pathArr = [props.forumComments_id, 'replyObj'];
+    
     
   }
   
@@ -106,9 +136,6 @@ export default injectIntl(class extends React.Component {
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
-    // const _id = this.props.gameCommunities_id || this.props.userCommunities_id;
-    // this.props.stores.layout.handleButtonEnable({ _id: `${_id}-forumComment` });
-    
     
   }
   
@@ -124,9 +151,20 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumComments_id } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, replies } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    
+    
     
     
     // --------------------------------------------------
@@ -137,15 +175,15 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
+      handleReadComments,
+      handleReadReplies,
       
     } = storeForum;
     
     
-    // --------------------------------------------------
-    //   Data
-    // --------------------------------------------------
-    
     const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id, 'page'], 1);
+    const count = replies;
+    const limit = lodashGet(dataObj, [communities_id, 'forumObj', 'replyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id, 'dataObj', `page${page}Obj`, 'arr'], []);
     
     
@@ -159,8 +197,10 @@ export default injectIntl(class extends React.Component {
     //   /app/common/forum/components/comment-reply.js
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
     //   page: {green ${page}}
+    //   count: {green ${count}}
+    //   limit: {green ${limit}}
     // `);
     
     // console.log(`
@@ -179,6 +219,8 @@ export default injectIntl(class extends React.Component {
     if (arr.length === 0) {
       return null;
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -247,18 +289,21 @@ export default injectIntl(class extends React.Component {
       
       
       
+      // --------------------------------------------------
+      //   Component - Replies
+      // --------------------------------------------------
+      
       componentArr.push(
         
         <div
           css={css`
             display: flex;
             flex-flow: column nowrap;
-            
-            // border-left: 4px solid #84cacb;
             padding: 12px 0 0 0;
           `}
           key={index}
         >
+          
           
           <div
             css={css`
@@ -266,6 +311,7 @@ export default injectIntl(class extends React.Component {
               padding: 12px 0 0 0;
             `}
           >
+            
             
             {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
             <User
@@ -288,13 +334,13 @@ export default injectIntl(class extends React.Component {
               >
                 
                 <ImageAndVideo
-                  // _id={forumComments2_id}
                   pathArr={[forumComments2_id, 'replyObj', 'formImagesAndVideosObj']}
                   imagesAndVideosArr={imagesAndVideosArr}
                 />
                 
               </div>
             }
+            
             
             
             
@@ -308,7 +354,6 @@ export default injectIntl(class extends React.Component {
                 @media screen and (max-width: 480px) {
                   padding: 0 0 0 12px;
                 }
-                // background-color: purple;
               `}
             >
               
@@ -318,13 +363,6 @@ export default injectIntl(class extends React.Component {
                 css={css`
                   font-size: 14px;
                   line-height: 1.6em;
-                  // border-left: 4px solid #A9A9F5;
-                  // margin: 10px 0 0 0;
-                  // padding: 0 0 4px 16px;
-                  
-                  // @media screen and (max-width: 480px) {
-                  //   padding: 0 0 4px 12px;
-                  // }
                 `}
               >
                 
@@ -345,12 +383,6 @@ export default injectIntl(class extends React.Component {
                   display: flex;
                   flex-flow: row wrap;
                   margin: 6px 0 0 0;
-                  // border-left: 4px solid #A9A9F5;
-                  // padding: 0 0 4px 16px;
-                  
-                  // @media screen and (max-width: 480px) {
-                  //   padding: 0 0 4px 12px;
-                  // }
                 `}
               >
                 
@@ -577,6 +609,93 @@ export default injectIntl(class extends React.Component {
       >
         
         {componentArr}
+        
+        
+        
+        {/* Pagination */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            
+            border-top: 1px solid;
+            border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+            border-image-slice: 1;
+            
+            padding: 16px 0 0 0;
+            margin: 24px 24px 0 0;
+          `}
+        >
+          
+          
+          {/* Pagination */}
+          <div
+            css={css`
+              margin: 8px 24px 0 0;
+            `}
+          >
+            <Pagination
+              disabled={buttonDisabled}
+              // onChange={(eventObj) => handleReadComments({
+              //   pathArr: this.pathArr,
+              //   gameCommunities_id,
+              //   userCommunities_id,
+              //   forumThreads_id,
+              //   page: 1,
+              // })}
+              onChange={(page) => handleReadReplies({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                userCommunities_id,
+                forumComments_id,
+                page,
+              })}
+              pageSize={limit}
+              current={page}
+              total={count}
+            />
+          </div>
+          
+          
+          {/* Rows Per Page */}
+          <FormControl
+            css={css`
+              margin: 8px 0 0 0 !important;
+            `}
+            variant="outlined"
+          >
+            
+            <Select
+              value={limit}
+              // onChange={(eventObj) => handleReadComments({
+              //   pathArr: this.pathArr,
+              //   gameCommunities_id,
+              //   userCommunities_id,
+              //   forumThreads_id,
+              //   page: 1,
+              //   limit: eventObj.target.value,
+              // })}
+              input={
+                <OutlinedInput
+                  classes={{
+                    input: classes.input
+                  }}
+                  name="forum-comments-pagination"
+                  id="outlined-rows-per-page"
+                />
+              }
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={50}>50</MenuItem>
+            </Select>
+            
+          </FormControl>
+          
+          
+        </div>
+        
       
       </div>
     );

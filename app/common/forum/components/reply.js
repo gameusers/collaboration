@@ -667,6 +667,14 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
+              onChange={(eventObj) => handleReadReplies({
+                pathArr: this.pathArr,
+                gameCommunities_id,
+                userCommunities_id,
+                forumComments_id,
+                page: 1,
+                limit: eventObj.target.value,
+              })}
               // onChange={(eventObj) => handleReadComments({
               //   pathArr: this.pathArr,
               //   gameCommunities_id,

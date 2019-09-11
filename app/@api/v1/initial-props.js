@@ -792,6 +792,20 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     // `);
     
     
+    
+    // --------------------------------------------------
+    //   DB find / Forum
+    // --------------------------------------------------
+    
+    const forum2Obj = await ModelForumThreads.findByUserCommunities_id({
+      req,
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+    });
+    
+    
+    
     // --------------------------------------------------
     //   DB find / Forum
     // --------------------------------------------------

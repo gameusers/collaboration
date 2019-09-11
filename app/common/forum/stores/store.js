@@ -2136,6 +2136,7 @@ class Store {
     
     try {
       
+      
       // console.log(`
       //   ----- this.dataObj -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
@@ -2211,11 +2212,11 @@ class Store {
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       console.log(chalk`
         gameCommunities_id: {green ${gameCommunities_id}}
@@ -2227,11 +2228,11 @@ class Store {
         loadedDate: {green ${loadedDate}}
       `);
       
-      console.log(`
-        ----- arr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- arr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       console.log(`
         ----- clonedObj -----\n
@@ -2240,19 +2241,20 @@ class Store {
       `);
       
       
-      const forumCommentsAndRepliesObj = lodashGet(this.dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id], {});
+      // const forumCommentsAndRepliesObj = lodashGet(this.dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id], {});
       
-      console.log(`
-        ----- forumCommentsAndRepliesObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- forumCommentsAndRepliesObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       console.log(chalk`
         reload: {green ${reload}}
       `);
       
       // return;
+      
       
       
       
@@ -2311,6 +2313,73 @@ class Store {
       
       
       
+      // forumObj = {
+      //   threadLimit: 5,
+      //   threadCount: 5,
+      //   replyLimit: 1,
+        
+      //   threadPage: 1,
+        
+      //   dataObj: {
+      //     page1Arr: [{
+            
+      //     }],
+      //     page1Obj: {
+            
+      //     }
+      //   }
+      // };
+      
+      
+      const forumThreadsObj = {
+        
+        page: 1,
+        limit: 1,
+        count: 5,
+        
+        page1Obj: {
+          loadedDate: '',
+          arr: ['_XDDSTWV_', '8xJS6lZCm', 'KQ_FuEYRu'],
+        },
+        
+        page2Obj: {
+          loadedDate: '',
+          arr: ['HpzNGyKQE', 'qNiOLKdRt'],
+        },
+        
+        dataObj: {},
+        
+      };
+      
+      
+      const forumCommentsObj = {
+        
+        limit: 5,
+        
+        '_XDDSTWV_': {
+          
+          page: 1,
+          count: 5,
+          
+          page1Obj: {
+            loadedDate: '',
+            arr: ['_XDDSTWV_', '8xJS6lZCm', 'KQ_FuEYRu'],
+          },
+          
+          page2Obj: {
+            loadedDate: '',
+            arr: ['HpzNGyKQE', 'qNiOLKdRt'],
+          },
+          
+          dataObj: {},
+          
+        }
+        
+      };
+      
+      
+      
+      
       
       // ---------------------------------------------
       //   FormData
@@ -2364,29 +2433,39 @@ class Store {
       
       
       // ---------------------------------------------
-      //   forumThreadsObj
+      //   forumCommentObj
       // ---------------------------------------------
       
-      // const forumThreadsNewArr = lodashGet(resultObj, ['data', 'forumThreadsArr'], []);
+      const newForumCommentObj = lodashGet(resultObj, ['data', 'forumCommentObj'], {});
+      const forumThreads_id = lodashGet(newForumCommentObj, ['forumThreads_id'], '');
+      const commentPage = lodashGet(clonedObj, ['forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
+      const commentDataArr = lodashGet(clonedObj, ['forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${commentPage}Obj`, 'arr'], []);
+      
+      const index = commentDataArr.findIndex((valueObj) => {
+        return valueObj._id === forumComments_id;
+      });
+      
+      lodashSet(clonedObj, ['forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${commentPage}Obj`, 'arr', index], newForumCommentObj);
+      
+      
       // const forumThreadsMergedArr = lodashMerge(forumThreadsOldArr, forumThreadsNewArr);
       // lodashSet(clonedObj, ['forumThreadsObj', 'dataObj', `page${forumThreadsPage}Obj`, 'arr'], forumThreadsMergedArr);
       
+      // console.log(chalk`
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   commentPage: {green ${commentPage}}
+      //   index: {green ${index}}
+      // `);
       
       // console.log(`
-      //   ----- forumThreadsOldArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldArr)), { colors: true, depth: null })}\n
+      //   ----- newForumCommentObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newForumCommentObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- forumThreadsNewArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- forumThreadsMergedArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedArr)), { colors: true, depth: null })}\n
+      //   ----- commentDataArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(commentDataArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -2397,32 +2476,36 @@ class Store {
       //   forumCommentsAndRepliesObj
       // ---------------------------------------------
       
-      // const forumCommentsAndRepliesOldObj = lodashGet(clonedObj, ['forumCommentsAndRepliesObj'], {});
-      // const forumCommentsAndRepliesNewObj = lodashGet(resultObj, ['data', 'forumCommentsAndRepliesObj'], {});
+      const forumRepliesOldObj = lodashGet(clonedObj, ['forumCommentsAndRepliesObj', forumComments_id], {});
+      const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj', forumComments_id], {});
       
-      // // 古いデータと新しいデータをマージする
-      // const forumCommentsAndRepliesMergedObj = Object.assign(forumCommentsAndRepliesOldObj, forumCommentsAndRepliesNewObj);
+      console.log(`
+        ----- forumRepliesOldObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumRepliesOldObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
+      console.log(`
+        ----- forumRepliesNewObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumRepliesNewObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      // 古いデータと新しいデータをマージする
+      // const forumRepliesMergedObj = reload ? forumRepliesNewObj : Object.assign(forumRepliesOldObj, forumRepliesNewObj);
+      const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
+      
+      lodashSet(clonedObj, ['forumCommentsAndRepliesObj', forumComments_id], forumRepliesMergedObj);
       // clonedObj.forumCommentsAndRepliesObj = forumCommentsAndRepliesMergedObj;
       
       
-      // console.log(`
-      //   ----- forumCommentsAndRepliesOldObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesOldObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
-      // console.log(`
-      //   ----- forumCommentsAndRepliesNewObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesNewObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
-      // console.log(`
-      //   ----- forumCommentsAndRepliesMergedObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesMergedObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- forumRepliesMergedObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumRepliesMergedObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       
@@ -2434,24 +2517,24 @@ class Store {
       // clonedObj.forumCommentsAndRepliesObj.page = page;
       
       
-      // // --------------------------------------------------
-      // //   Community UpdatedDateObj
-      // // --------------------------------------------------
+      // --------------------------------------------------
+      //   Community UpdatedDateObj
+      // --------------------------------------------------
       
-      // const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      // clonedObj.updatedDateObj = updatedDateObj;
+      const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      clonedObj.updatedDateObj = updatedDateObj;
       
       
-      // // ---------------------------------------------
-      // //   Update
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Update
+      // ---------------------------------------------
       
-      // // this.dataObj[communities_id] = clonedObj;
+      // this.dataObj[communities_id] = clonedObj;
       
-      // this.handleEdit({
-      //   pathArr: [communities_id],
-      //   value: clonedObj
-      // });
+      this.handleEdit({
+        pathArr: [communities_id],
+        value: clonedObj
+      });
       
       
     } catch (errorObj) {

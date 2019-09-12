@@ -552,20 +552,6 @@ const findByUserCommunities_id = async ({
     
     
     // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
-    
-    const formattedObj = formatVer2({
-      req,
-      localeObj,
-      loginUsers_id,
-      arr: resultArr,
-      threadPage,
-      threadLimit: intThreadLimit,
-    });
-    
-    
-    // --------------------------------------------------
     //   コミュニティデータ取得 - コミュニティのスレッド数取得用
     // --------------------------------------------------
     
@@ -576,30 +562,24 @@ const findByUserCommunities_id = async ({
     });
     
     
-    
-    
     // --------------------------------------------------
-    //   forumThreadObj
+    //   Format
     // --------------------------------------------------
     
-    const forumThreadObj = {
-      
-      page: threadPage,
-      limit: intThreadLimit,
-      count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
-      dataObj: formattedObj.dataObj,
-      
-    };
+    const threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
     
+    const formattedThreadsObj = formatVer2({
+      req,
+      localeObj,
+      loginUsers_id,
+      arr: resultArr,
+      threadPage,
+      threadLimit: intThreadLimit,
+      threadCount,
+    });
     
-    const ISO8601 = moment().toISOString();
-    
-    forumThreadObj[`page${threadPage}Obj`] = {
-      
-      loadedDate: ISO8601,
-      arr: formattedObj.forumThreads_idsArr,
-      
-    };
+    const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
+    const forumThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['forumThreads_idsForCommentArr'], []);
     
     
     
@@ -611,12 +591,16 @@ const findByUserCommunities_id = async ({
     const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
       localeObj,
       loginUsers_id,
-      forumThreads_idsArr: formattedObj.forumThreads_idsForCommentArr,
+      forumThreads_idsArr: forumThreads_idsForCommentArr,
+      forumThreadsObj,
       commentPage,
-      commentLimit,
+      commentLimit: intCommentLimit,
       replyPage,
-      replyLimit,
+      replyLimit: intReplyLimit,
     });
+    
+    const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+    const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
     
     
     
@@ -641,20 +625,32 @@ const findByUserCommunities_id = async ({
     // `);
     
     // console.log(`
-    //   ----- formattedObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+    //   ----- formattedThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- forumThreadObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadObj)), { colors: true, depth: null })}\n
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     console.log(`
-      ----- forumCommentsAndRepliesObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+      ----- forumThreadsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumCommentsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
       --------------------\n
     `);
     
@@ -697,20 +693,41 @@ const findByUserCommunities_id = async ({
 * @param {Array} arr - 配列
 * @return {Array} フォーマット後のデータ
 */
-const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimit }) => {
+const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimit, threadCount }) => {
   
   
   // --------------------------------------------------
   //   Return Value
   // --------------------------------------------------
   
-  // const forumThreadsObj = {};
+  const forumThreadsObj = {
+    page: threadPage,
+    limit: threadLimit,
+    count: threadCount,
+    dataObj: {},
+  };
+  
+  const ISO8601 = moment().toISOString();
+  
+  
   const dataObj = {};
-  const forumThreads_idsArr = [];
+  // const forumThreads_idsArr = [];
   const forumThreads_idsForCommentArr = [];
   
   
-  
+  // const forumThreadsObj = {
+    
+  //   page: threadPage,
+  //   limit: intThreadLimit,
+  //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+  //   dataObj: forumThreadsDataObj,
+    
+  // };
+    
+    
+    
+    
+    
   
   // --------------------------------------------------
   //   Loop
@@ -825,15 +842,34 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
     
     dataObj[valueObj._id] = clonedObj;
     
-    forumThreads_idsArr.push(valueObj._id);
+    // forumThreads_idsArr.push(valueObj._id);
     
     if (valueObj.comments > 0) {
       forumThreads_idsForCommentArr.push(valueObj._id);
     }
     
     
+    // --------------------------------------------------
+    //   
+    // --------------------------------------------------
+    
+    const forumThreadsPageArr = lodashGet(forumThreadsObj, [`page${threadPage}Obj`, 'arr'], []);
+    forumThreadsPageArr.push(valueObj._id);
+    
+    forumThreadsObj[`page${threadPage}Obj`] = {
+      
+      loadedDate: ISO8601,
+      arr: forumThreadsPageArr,
+      
+    };
+    
+    
   }
   
+  
+  
+  
+  forumThreadsObj.dataObj = dataObj;
   
   
   
@@ -842,8 +878,8 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
   // --------------------------------------------------
   
   return {
-    dataObj,
-    forumThreads_idsArr,
+    forumThreadsObj,
+    // forumThreads_idsArr,
     forumThreads_idsForCommentArr,
   };
   

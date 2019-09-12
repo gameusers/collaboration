@@ -719,7 +719,7 @@ router.get('/email/confirmation', upload.none(), async (req, res, next) => {
 
 router.get('/uc/community', upload.none(), async (req, res, next) => {
   
-  
+  // console.log('/uc/community');
   // --------------------------------------------------
   //   Locale
   // --------------------------------------------------

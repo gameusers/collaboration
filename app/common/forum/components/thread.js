@@ -185,13 +185,22 @@ export default injectIntl(class extends React.Component {
     } = storeForum;
     
     
-    const threadPage = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
-    const threadCount = lodashGet(dataObj, [this.communities_id, 'forumObj', 'threadCount'], 0);
-    const threadLimit = lodashGet(dataObj, [this.communities_id, 'forumObj', 'threadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const threadArr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', `page${threadPage}Obj`, 'arr'], []);
+    // --------------------------------------------------
+    //   Thread
+    // --------------------------------------------------
     
-    const commentLimit = lodashGet(dataObj, [this.communities_id, 'forumObj', 'commentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(dataObj, [this.communities_id, 'forumObj', 'replyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadPage = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
+    const threadCount = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
+    const threadLimit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const threadArr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${threadPage}Obj`, 'arr'], []);
+    
+    
+    // --------------------------------------------------
+    //   Comment & Reply
+    // --------------------------------------------------
+    
+    const commentLimit = lodashGet(dataObj, [this.communities_id, 'forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(dataObj, [this.communities_id, 'forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -208,8 +217,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   ----- threadArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(threadArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -223,30 +232,33 @@ export default injectIntl(class extends React.Component {
     const componentArr = [];
     
     
-    for (const [index, valueObj] of threadArr.entries()) {
+    for (const [index, forumThreads_id] of threadArr.entries()) {
       
       
       // --------------------------------------------------
       //   _id
       // --------------------------------------------------
       
-      const forumThreads_id = lodashGet(valueObj, ['_id'], '');
+      // const forumThreads_id = lodashGet(valueObj, ['_id'], '');
       
       
       // --------------------------------------------------
       //   Property
       // --------------------------------------------------
       
-      const name = lodashGet(valueObj, ['name'], '');
-      const comment = lodashGet(valueObj, ['comment'], '');
+      const threadsDataObj = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', forumThreads_id], {});
+      // const dataObj = lodashGet(threadsDataObj, [forumThreads_id], {});
       
-      const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
+      const name = lodashGet(threadsDataObj, ['name'], '');
+      const comment = lodashGet(threadsDataObj, ['comment'], '');
+      
+      const imagesAndVideosObj = lodashGet(threadsDataObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      const editable = lodashGet(valueObj, ['editable'], false);
+      const editable = lodashGet(threadsDataObj, ['editable'], false);
       // const editable = true;
       
-      const comments = lodashGet(valueObj, ['comments'], 0);
+      const comments = lodashGet(threadsDataObj, ['comments'], 0);
       
       
       // --------------------------------------------------
@@ -256,7 +268,10 @@ export default injectIntl(class extends React.Component {
       const showComment = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showComment'], true);
       const showForm = lodashGet(dataObj, [forumThreads_id, 'showForm'], false);
       
-      
+      // console.log(chalk`
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   showComment: {green ${showComment}}
+      // `);
       // --------------------------------------------------
       //   Panel
       // --------------------------------------------------
@@ -412,6 +427,7 @@ export default injectIntl(class extends React.Component {
                   `}
                 >
                   
+                  
                   {/* Show Thread Description */}
                   <div
                     css={css`
@@ -507,7 +523,7 @@ export default injectIntl(class extends React.Component {
                 </div>
                 
                 
-                {/* Description */}
+                {/* Comment */}
                 {showComment &&
                   <div
                     css={css`
@@ -580,6 +596,8 @@ export default injectIntl(class extends React.Component {
       );
       
     }
+    
+    
     
     
     // --------------------------------------------------

@@ -14,7 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
+// const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -23,37 +23,23 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelGames = require('../../@database/games/model');
-const ModelUserCommunities = require('../../@database/user-communities/model');
-const ModelForumThreads = require('../../@database/forum-threads/model');
-const ModelForumComments = require('../../@database/forum-comments/model');
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const { validationUsersPlayerID } = require('../../@database/users/validations/player-id');
+const ModelUserCommunities = require('../../../../app/@database/user-communities/model');
+const ModelForumThreads = require('../../../../app/@database/forum-threads/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../@modules/log/log');
-const { CustomError } = require('../../@modules/error/custom');
+const { returnErrorsArr } = require('../../../../app/@modules/log/log');
+const { CustomError } = require('../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-// const { addLocaleData } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
-
-const { locale } = require('../../@locales/locale');
+const { locale } = require('../../../../app/@locales/locale');
 
 
 
@@ -71,12 +57,9 @@ let statusCode = 400;
 //   endpointID: hc7YMP_C8
 // --------------------------------------------------
 
-export default (req, res) => {
-  res.status(200).json({ name: 'Nextjs' });
-};
-
-router.get('/uc/community', upload.none(), async (req, res, next) => {
+export default async (req, res) => {
   
+  console.log('initial-props');
   
   // --------------------------------------------------
   //   Locale
@@ -96,6 +79,8 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  
+  
   try {
     
     
@@ -106,6 +91,8 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     const userCommunityID = req.query.userCommunityID;
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    
+    
     
     
     // --------------------------------------------------
@@ -133,50 +120,43 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     returnObj.userCommunityObj = userCommunityArr[0];
     
     
-    // --------------------------------------------------
-    //   Login Check / Login User Data
-    // --------------------------------------------------
-    
-    if (req.isAuthenticated() && req.user) {
-      returnObj.loginUsersObj = req.user;
-      returnObj.login = true;
-    }
     
     
     // --------------------------------------------------
-    //   DB find / Games / Header Hero Image
+    //   DB find / Forum Threads For List
     // --------------------------------------------------
     
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      language: localeObj.language,
-      country: localeObj.country,
-    });
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum Threads
-    // --------------------------------------------------
-    
-    returnObj.forumThreadsObj = await ModelForumThreads.findForForumThreads({
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      page: 1,
-      limit: 1,
     });
     
+    // console.log(`
+    //   ----- forumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
     
     // --------------------------------------------------
-    //   DB find / Forum Comments & Replies
+    //   DB find / Forum
     // --------------------------------------------------
     
-    returnObj.forumCommentsAndRepliesArr = await ModelForumComments.findForForumCommentsAndReplies({
+    const forumObj = await ModelForumThreads.findByUserCommunities_id({
+      req,
       localeObj,
       loginUsers_id,
-      forumThreads_idArr: ['qNiOLKdRt'],
-      commentsPage: 1,
-      repliesPage: 1,
+      userCommunities_id,
     });
+    
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    
     
     
     // ---------------------------------------------
@@ -212,9 +192,4 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
   }
   
   
-});
-
-
-
-
-module.exports = router;
+};

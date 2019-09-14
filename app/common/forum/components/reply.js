@@ -109,7 +109,6 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
-    
     super(props);
     
     
@@ -121,6 +120,8 @@ export default injectIntl(class extends React.Component {
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -138,6 +139,8 @@ export default injectIntl(class extends React.Component {
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -175,16 +178,16 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleReadComments,
       handleReadReplies,
       
     } = storeForum;
     
     
-    const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id, 'page'], 1);
-    const count = replies;
-    const limit = lodashGet(dataObj, [communities_id, 'forumObj', 'replyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
-    const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumComments_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, 'page'], 1);
+    const count = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, 'count'], 0);
+    // const count = replies;
+    const limit = lodashGet(dataObj, [communities_id, 'forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const arr = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr'], []);
     
     
     
@@ -194,7 +197,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   /app/common/forum/components/comment-reply.js
+    //   /app/common/forum/components/reply.js
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumComments_id: {green ${forumComments_id}}
@@ -229,44 +232,44 @@ export default injectIntl(class extends React.Component {
     
     const componentArr = [];
     
-    for (const [index, valueObj] of arr.entries()) {
+    for (const [index, forumComments2_id] of arr.entries()) {
       
       
       // --------------------------------------------------
-      //   _id
+      //   dataObj
       // --------------------------------------------------
       
-      const forumComments2_id = lodashGet(valueObj, ['_id'], '');
+      const repliesDataObj = lodashGet(dataObj, [communities_id, 'forumRepliesObj', 'dataObj', forumComments2_id], {});
       
       
       // --------------------------------------------------
       //   User Data
       // --------------------------------------------------
       
-      const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+      const imagesAndVideosThumbnailObj = lodashGet(repliesDataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
       
-      const cardPlayers_id = lodashGet(valueObj, ['cardPlayersObj', '_id'], '');
+      const cardPlayers_id = lodashGet(repliesDataObj, ['cardPlayersObj', '_id'], '');
       
-      let name = lodashGet(valueObj, ['name'], '');
-      const cardPlayers_name = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
+      let name = lodashGet(repliesDataObj, ['name'], '');
+      const cardPlayers_name = lodashGet(repliesDataObj, ['cardPlayersObj', 'name'], '');
       
       if (cardPlayers_name) {
         name = cardPlayers_name;
       }
       
-      const status = lodashGet(valueObj, ['cardPlayersObj', 'status'], '');
+      const status = lodashGet(repliesDataObj, ['cardPlayersObj', 'status'], '');
       
-      const exp = lodashGet(valueObj, ['usersObj', 'exp'], 0);
-      const accessDate = lodashGet(valueObj, ['usersObj', 'accessDate'], '');
-      const userID = lodashGet(valueObj, ['usersObj', 'userID'], '');
+      const exp = lodashGet(repliesDataObj, ['usersObj', 'exp'], 0);
+      const accessDate = lodashGet(repliesDataObj, ['usersObj', 'accessDate'], '');
+      const userID = lodashGet(repliesDataObj, ['usersObj', 'userID'], '');
       
       
       // --------------------------------------------------
       //   Images and Videos & Comment
       // --------------------------------------------------
       
-      const comment = lodashGet(valueObj, ['comment'], '');
-      const imagesAndVideosArr = lodashGet(valueObj, ['imagesAndVideosObj', 'mainArr'], {});
+      const comment = lodashGet(repliesDataObj, ['comment'], '');
+      const imagesAndVideosArr = lodashGet(repliesDataObj, ['imagesAndVideosObj', 'mainArr'], {});
       
       
       // --------------------------------------------------
@@ -274,10 +277,10 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const datetimeNow = moment().utcOffset(0);
-      const datetimeUpdated = moment(valueObj.updatedDate).utcOffset(0);
+      const datetimeUpdated = moment(repliesDataObj.updatedDate).utcOffset(0);
       const datetimeFrom = datetimeUpdated.from(datetimeNow);
       
-      const goods = lodashGet(valueObj, ['goods'], 0);
+      const goods = lodashGet(repliesDataObj, ['goods'], 0);
       
       
       // --------------------------------------------------
@@ -478,7 +481,7 @@ export default injectIntl(class extends React.Component {
                       margin: 4px 0 0 0;
                     `}
                   >
-                    {valueObj._id}
+                    {forumComments2_id}
                   </div>
                 </div>
                 
@@ -608,8 +611,8 @@ export default injectIntl(class extends React.Component {
         `}
       >
         
-        {componentArr}
         
+        {componentArr}
         
         
         {/* Pagination */}
@@ -636,13 +639,6 @@ export default injectIntl(class extends React.Component {
           >
             <Pagination
               disabled={buttonDisabled}
-              // onChange={(eventObj) => handleReadComments({
-              //   pathArr: this.pathArr,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   forumThreads_id,
-              //   page: 1,
-              // })}
               onChange={(page) => handleReadReplies({
                 pathArr: this.pathArr,
                 gameCommunities_id,
@@ -675,14 +671,6 @@ export default injectIntl(class extends React.Component {
                 page: 1,
                 limit: eventObj.target.value,
               })}
-              // onChange={(eventObj) => handleReadComments({
-              //   pathArr: this.pathArr,
-              //   gameCommunities_id,
-              //   userCommunities_id,
-              //   forumThreads_id,
-              //   page: 1,
-              //   limit: eventObj.target.value,
-              // })}
               input={
                 <OutlinedInput
                   classes={{

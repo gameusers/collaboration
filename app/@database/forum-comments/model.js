@@ -256,10 +256,12 @@ const deleteMany = async ({ conditionObj }) => {
 
 
 /**
- * コメントと返信を取得する
+ * コメントと返信を取得する - forumThreads_idsArr で検索
+ * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {Array} forumThreads_idArr - DB forum-threads _id / _idが入っている配列
+ * @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
  * @param {number} commentPage - コメントのページ
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
@@ -268,6 +270,7 @@ const deleteMany = async ({ conditionObj }) => {
  */
 const findCommentsAndRepliesByForumThreads_idsArr = async ({
   
+  req,
   localeObj,
   loginUsers_id,
   forumThreads_idsArr,
@@ -702,14 +705,13 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
     
     
     
-    
-    
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
     
     const formattedObj = formatVer2({
       
+      req,
       localeObj,
       loginUsers_id,
       arr: resultArr,
@@ -729,12 +731,6 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- resultArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
     //   --------------------\n
@@ -747,12 +743,6 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
     // `);
     
     
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -776,12 +766,18 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
 
 /**
 * DBから取得した情報をフォーマットする
+* @param {Object} req - リクエスト
 * @param {Object} localeObj - ロケール
 * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
+* @param {Array} arr - コメントと返信情報の入った配列
+* @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
+* @param {number} commentPage - コメントのページ
+* @param {number} commentLimit - コメントのリミット
+* @param {number} replyPage - 返信のページ
+* @param {number} replyLimit - 返信のリミット
 * @return {Array} フォーマット後のデータ
 */
-const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPage, commentLimit, replyPage, replyLimit }) => {
+const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, commentPage, commentLimit, replyPage, replyLimit }) => {
   
   
   // --------------------------------------------------
@@ -799,6 +795,9 @@ const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPag
   };
   
   
+  // --------------------------------------------------
+  //   コメントと返信に分離
+  // --------------------------------------------------
   
   let commentsArr = [];
   let repliesArr = [];
@@ -831,9 +830,6 @@ const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPag
   //   ${util.inspect(JSON.parse(JSON.stringify(repliesArr)), { colors: true, depth: null })}\n
   //   --------------------\n
   // `);
-  
-  
-  
   
   
   
@@ -914,11 +910,15 @@ const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPag
       //   編集権限
       // --------------------------------------------------
       
-      clonedObj.editable = false;
+      clonedObj.editable = verifyAuthority({
+        req,
+        users_id: valueObj.users_id,
+        loginUsers_id,
+        ISO8601: valueObj.createdDate,
+        _id: valueObj._id
+      });
       
-      if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-        clonedObj.editable = true;
-      }
+      
       
       
       // --------------------------------------------------
@@ -999,7 +999,7 @@ const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPag
       
       
       // --------------------------------------------------
-      //   オブジェクトに追加
+      //   オブジェクトに追加 - dataObj用
       // --------------------------------------------------
       
       returnObj[valueObj._id] = clonedObj;
@@ -1008,7 +1008,7 @@ const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPag
       
       
       // --------------------------------------------------
-      //   
+      //   forumCommentsObj & forumRepliesPageArr 作成
       // --------------------------------------------------
       
       const forumThreads_id = valueObj.forumThreads_id;
@@ -1062,25 +1062,25 @@ const formatVer2 = ({ localeObj, loginUsers_id, arr, forumThreadsObj, commentPag
     
     return returnObj;
     
-    // return {
-    //   forumCommentsObj,
-    //   forumRepliesObj
-    // };
-    
   
   };
   
   
   
   
+  // --------------------------------------------------
+  //   完成
+  // --------------------------------------------------
+  
   const ISO8601 = moment().toISOString();
   
   const formattedCommentsObj = loopFormat({ arr: commentsArr, ISO8601 });
   const formattedRepliesObj = loopFormat({ arr: repliesArr, ISO8601 });
   
-  
   forumCommentsObj.dataObj = formattedCommentsObj;
   forumRepliesObj.dataObj = formattedRepliesObj;
+  
+  
   
   
   // console.log(`

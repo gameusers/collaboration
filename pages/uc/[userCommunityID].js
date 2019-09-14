@@ -110,12 +110,20 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=${userCommunityID}`),
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/uc/community/?userCommunityID=${userCommunityID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
     });
+    
+    // const resultObj = await fetchWrapper({
+    //   // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=${userCommunityID}`),
+    //   urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/uc/community/?userCommunityID=${userCommunityID}`),
+    //   // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=${userCommunityID}`),
+    //   methodType: 'GET',
+    //   reqHeadersCookie,
+    //   reqAcceptLanguage,
+    // });
     
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
@@ -257,13 +265,33 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Update Data - forumCommentsAndRepliesObj
+      //   Update Data - forumCommentsObj
       // --------------------------------------------------
       
       this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumCommentsAndRepliesObj'],
-        value: props.initialPropsObj.forumCommentsAndRepliesObj,
+        pathArr: [props.userCommunities_id, 'forumCommentsObj'],
+        value: props.initialPropsObj.forumCommentsObj,
       });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumRepliesObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumRepliesObj'],
+        value: props.initialPropsObj.forumRepliesObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumCommentsAndRepliesObj
+      // --------------------------------------------------
+      
+      // this.storeForum.handleEdit({
+      //   pathArr: [props.userCommunities_id, 'forumCommentsAndRepliesObj'],
+      //   value: props.initialPropsObj.forumCommentsAndRepliesObj,
+      // });
       
       
     } catch (e) {

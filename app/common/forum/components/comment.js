@@ -187,10 +187,12 @@ export default injectIntl(class extends React.Component {
     } = storeForum;
     
     
-    const page = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'page'], 1);
-    const count = comments;
-    const limit = lodashGet(dataObj, [communities_id, 'forumObj', 'commentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const arr = lodashGet(dataObj, [communities_id, 'forumCommentsAndRepliesObj', forumThreads_id, 'dataObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'page'], 1);
+    const count = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'count'], 0);
+    // const count = comments;
+    const limit = lodashGet(dataObj, [communities_id, 'forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    // const limit = lodashGet(dataObj, [communities_id, 'forumObj', 'commentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const arr = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
     
     
     
@@ -200,11 +202,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   /app/common/forum/components/comment-reply.js
+    //   /app/common/forum/components/comment.js
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   page: {green ${page}}
+    //   count: {green ${count}}
+    //   limit: {green ${limit}}
     // `);
     
     // console.log(`
@@ -233,50 +237,52 @@ export default injectIntl(class extends React.Component {
     
     const componentArr = [];
     
-    for (const [index, valueObj] of arr.entries()) {
+    for (const [index, forumComments_id] of arr.entries()) {
       
       
       // --------------------------------------------------
-      //   _id
+      //   dataObj
       // --------------------------------------------------
       
-      const forumComments_id = lodashGet(valueObj, ['_id'], '');
+      const commentsDataObj = lodashGet(dataObj, [communities_id, 'forumCommentsObj', 'dataObj', forumComments_id], {});
       
       
       // --------------------------------------------------
       //   User Data
       // --------------------------------------------------
       
-      const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
       
-      const cardPlayers_id = lodashGet(valueObj, ['cardPlayersObj', '_id'], '');
       
-      let name = lodashGet(valueObj, ['name'], '');
-      const cardPlayers_name = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
+      const imagesAndVideosThumbnailObj = lodashGet(commentsDataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
+      
+      const cardPlayers_id = lodashGet(commentsDataObj, ['cardPlayersObj', '_id'], '');
+      
+      let name = lodashGet(commentsDataObj, ['name'], '');
+      const cardPlayers_name = lodashGet(commentsDataObj, ['cardPlayersObj', 'name'], '');
       
       if (cardPlayers_name) {
         name = cardPlayers_name;
       }
       
-      const status = lodashGet(valueObj, ['cardPlayersObj', 'status'], '');
+      const status = lodashGet(commentsDataObj, ['cardPlayersObj', 'status'], '');
       
-      const exp = lodashGet(valueObj, ['usersObj', 'exp'], 0);
-      const accessDate = lodashGet(valueObj, ['usersObj', 'accessDate'], '');
-      const userID = lodashGet(valueObj, ['usersObj', 'userID'], '');
+      const exp = lodashGet(commentsDataObj, ['usersObj', 'exp'], 0);
+      const accessDate = lodashGet(commentsDataObj, ['usersObj', 'accessDate'], '');
+      const userID = lodashGet(commentsDataObj, ['usersObj', 'userID'], '');
       
       
       // --------------------------------------------------
       //   Comment
       // --------------------------------------------------
       
-      const comment = lodashGet(valueObj, ['comment'], '');
+      const comment = lodashGet(commentsDataObj, ['comment'], '');
       
       
       // --------------------------------------------------
       //   Images and Videos
       // --------------------------------------------------
       
-      const imagesAndVideosObj = lodashGet(valueObj, ['imagesAndVideosObj'], {});
+      const imagesAndVideosObj = lodashGet(commentsDataObj, ['imagesAndVideosObj'], {});
       
       
       // --------------------------------------------------
@@ -284,17 +290,17 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const datetimeNow = moment().utcOffset(0);
-      const datetimeUpdated = moment(valueObj.updatedDate).utcOffset(0);
+      const datetimeUpdated = moment(commentsDataObj.updatedDate).utcOffset(0);
       const datetimeFrom = datetimeUpdated.from(datetimeNow);
       
-      const goods = lodashGet(valueObj, ['goods'], 0);
+      const goods = lodashGet(commentsDataObj, ['goods'], 0);
       
       
       // --------------------------------------------------
       //   Replies
       // --------------------------------------------------
       
-      const replies = lodashGet(valueObj, ['replies'], 0);
+      const replies = lodashGet(commentsDataObj, ['replies'], 0);
       
       
       // --------------------------------------------------
@@ -669,6 +675,7 @@ export default injectIntl(class extends React.Component {
         `}
       >
         
+        
         {componentArr}
         
         
@@ -750,8 +757,6 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-        
-      
       </div>
     );
     

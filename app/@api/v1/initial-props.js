@@ -797,29 +797,32 @@ router.get('/uc/community', upload.none(), async (req, res, next) => {
     //   DB find / Forum
     // --------------------------------------------------
     
-    const forum2Obj = await ModelForumThreads.findByUserCommunities_id({
+    const forumObj = await ModelForumThreads.findByUserCommunities_id({
       req,
       localeObj,
       loginUsers_id,
       userCommunities_id,
     });
     
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
     
     
     // --------------------------------------------------
     //   DB find / Forum
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForThreads({
-      req,
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-    });
+    // const forumObj = await ModelForumThreads.findForThreads({
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    // });
     
-    returnObj.forumObj = forumObj.forumObj;
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
+    // returnObj.forumObj = forumObj.forumObj;
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
     
     
     // ---------------------------------------------

@@ -457,10 +457,17 @@ const findForThreadsList = async ({
 
 
 /**
- * スレッドを取得する
+ * スレッドを取得する - userCommunities_id で検索
+ * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} userCommunities_id - DB user-communities _id / コミュニティID
+ * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
 const findByUserCommunities_id = async ({
@@ -589,6 +596,7 @@ const findByUserCommunities_id = async ({
     // --------------------------------------------------
     
     const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+      req,
       localeObj,
       loginUsers_id,
       forumThreads_idsArr: forumThreads_idsForCommentArr,
@@ -615,8 +623,6 @@ const findByUserCommunities_id = async ({
     //   page: {green ${page}}
     //   limit: {green ${limit}}
     // `);
-    
-    
     
     // console.log(`
     //   ----- resultArr -----\n
@@ -654,12 +660,6 @@ const findByUserCommunities_id = async ({
       --------------------\n
     `);
     
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     
     
@@ -667,11 +667,11 @@ const findByUserCommunities_id = async ({
     //   Return
     // --------------------------------------------------
     
-    // return {
-    //   forumObj,
-    //   forumThreadsObj,
-    //   forumCommentsAndRepliesObj,
-    // };
+    return {
+      forumThreadsObj,
+      forumCommentsObj,
+      forumRepliesObj,
+    };
     
     
   } catch (err) {

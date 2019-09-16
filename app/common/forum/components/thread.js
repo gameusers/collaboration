@@ -635,11 +635,11 @@ export default injectIntl(class extends React.Component {
                 gameCommunities_id,
                 userCommunities_id,
                 threadPage,
-                threadLimit,
-                commentPage: 1,
-                commentLimit,
-                replyPage: 1,
-                replyLimit,
+                // threadLimit,
+                // commentPage: 1,
+                // commentLimit,
+                // replyPage: 1,
+                // replyLimit,
               })}
               pageSize={threadLimit}
               current={threadPage}

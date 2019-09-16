@@ -362,13 +362,30 @@ app.prepare().then(() => {
   
   
   // ---------------------------------------------
-  //   Error
+  //   GET
   // ---------------------------------------------
   
   server.get('*', (req, res) => {
     return handle(req, res);
   });
   
+  
+  // ---------------------------------------------
+  //   POST
+  //   これを追加しないとAPIのPOSTが機能しない
+  //   https://github.com/zeit/next.js/issues/7960
+  // ---------------------------------------------
+  
+  server.post('*', (req, res) => {
+    return handle(req, res);
+  });
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Error
+  // ---------------------------------------------
   
   server.use((err, req, res, next) => {
     // logger.error(`${err}`);
@@ -379,9 +396,14 @@ app.prepare().then(() => {
   });
   
   
+  // ---------------------------------------------
+  //   listen
+  // ---------------------------------------------
+  
   server.listen(port, (err) => {
     if (err) throw err;
     console.log(`> Ready on http://localhost:${port}`);
   });
+  
   
 });

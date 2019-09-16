@@ -59,7 +59,7 @@ let statusCode = 400;
 
 export default async (req, res) => {
   
-  console.log('initial-props');
+  // console.log('initial-props');
   
   // --------------------------------------------------
   //   Locale

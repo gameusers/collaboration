@@ -189,18 +189,18 @@ export default injectIntl(class extends React.Component {
     //   Thread
     // --------------------------------------------------
     
-    const threadPage = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
-    const threadCount = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
-    const threadLimit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const threadArr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${threadPage}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
+    const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
+    const limit = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
     //   Comment & Reply
     // --------------------------------------------------
     
-    const commentLimit = lodashGet(dataObj, [this.communities_id, 'forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(dataObj, [this.communities_id, 'forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    // const commentLimit = lodashGet(dataObj, [this.communities_id, 'forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    // const replyLimit = lodashGet(dataObj, [this.communities_id, 'forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -211,14 +211,14 @@ export default injectIntl(class extends React.Component {
     
     // console.log(chalk`
     //   /app/common/forum/components/thread.js
-    //   threadPage: {green ${threadPage}}
-    //   threadCount: {green ${threadCount}}
-    //   threadLimit: {green ${threadLimit}}
+    //   page: {green ${page}}
+    //   count: {green ${count}}
+    //   limit: {green ${limit}}
     // `);
     
     // console.log(`
-    //   ----- threadArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(threadArr)), { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -232,14 +232,7 @@ export default injectIntl(class extends React.Component {
     const componentArr = [];
     
     
-    for (const [index, forumThreads_id] of threadArr.entries()) {
-      
-      
-      // --------------------------------------------------
-      //   _id
-      // --------------------------------------------------
-      
-      // const forumThreads_id = lodashGet(valueObj, ['_id'], '');
+    for (const [index, forumThreads_id] of arr.entries()) {
       
       
       // --------------------------------------------------
@@ -247,7 +240,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const threadsDataObj = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', forumThreads_id], {});
-      // const dataObj = lodashGet(threadsDataObj, [forumThreads_id], {});
       
       const name = lodashGet(threadsDataObj, ['name'], '');
       const comment = lodashGet(threadsDataObj, ['comment'], '');
@@ -272,6 +264,7 @@ export default injectIntl(class extends React.Component {
       //   forumThreads_id: {green ${forumThreads_id}}
       //   showComment: {green ${showComment}}
       // `);
+      
       // --------------------------------------------------
       //   Panel
       // --------------------------------------------------
@@ -630,20 +623,20 @@ export default injectIntl(class extends React.Component {
             
             <Pagination
               disabled={buttonDisabled}
-              onChange={(threadPage) => handleReadThreads({
+              onChange={(page) => handleReadThreads({
                 pathArr: this.pathArr,
                 gameCommunities_id,
                 userCommunities_id,
-                threadPage,
-                // threadLimit,
+                page,
+                // limit,
                 // commentPage: 1,
                 // commentLimit,
                 // replyPage: 1,
                 // replyLimit,
               })}
-              pageSize={threadLimit}
-              current={threadPage}
-              total={threadCount}
+              pageSize={limit}
+              current={page}
+              total={count}
             />
             
           </div>
@@ -658,17 +651,17 @@ export default injectIntl(class extends React.Component {
           >
             
             <Select
-              value={threadLimit}
+              value={limit}
               onChange={(eventObj) => handleReadThreads({
                 pathArr: this.pathArr,
                 gameCommunities_id: gameCommunities_id,
                 userCommunities_id: userCommunities_id,
-                threadPage: 1,
-                threadLimit: eventObj.target.value,
-                commentPage: 1,
-                commentLimit,
-                replyPage: 1,
-                replyLimit,
+                page: 1,
+                changeLimit: eventObj.target.value,
+                // commentPage: 1,
+                // commentLimit,
+                // replyPage: 1,
+                // replyLimit,
               })}
               input={
                 <OutlinedInput

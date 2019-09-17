@@ -80,7 +80,10 @@ export default injectIntl(class extends React.Component {
       this.pathArr = [props.forumThreads_id, 'formThreadObj'];
     }
     
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -100,6 +103,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -112,6 +117,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    
+    
     
     
     // --------------------------------------------------

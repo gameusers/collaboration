@@ -476,6 +476,7 @@ const findByUserCommunities_id = async ({
   localeObj,
   loginUsers_id,
   userCommunities_id,
+  forumThreads_idArr = [],
   threadPage = 1,
   threadLimit = process.env.FORUM_THREAD_LIMIT,
   commentPage = 1,
@@ -488,9 +489,9 @@ const findByUserCommunities_id = async ({
   
   try {
     
-    
+    // const forumThreads_idArr = [ '_XDDSTWV_', '8xJS6lZCm', 'KQ_FuEYRu' ];
     // --------------------------------------------------
-    //   Find
+    //   Parse
     // --------------------------------------------------
     
     const intThreadLimit = parseInt(threadLimit, 10);
@@ -498,13 +499,59 @@ const findByUserCommunities_id = async ({
     const intReplyLimit = parseInt(replyLimit, 10);
     
     
-    const resultArr = await SchemaForumThreads.aggregate([
-      
-      
-      // スレッドを取得
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [
       {
         $match : { userCommunities_id }
       },
+    ];
+    
+    if (forumThreads_idArr.length > 0) {
+      
+      matchConditionArr = [
+        {
+          $match: {
+            $and: [
+              { _id: { $in: forumThreads_idArr } },
+              { userCommunities_id },
+            ]
+          },
+        }
+      ];
+      
+    }
+    
+    console.log(`
+      ----- matchConditionArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumThreads.aggregate([
+      
+      ...matchConditionArr,
+      
+      // スレッドを取得
+      // {
+      //   $match : { userCommunities_id }
+      // },
+      
+      // {
+      //   $match: {
+      //     $and: [
+      //       { _id: { $in: forumThreads_idArr } },
+      //       { userCommunities_id },
+      //     ]
+      //   },
+      // },
       
       
       // 画像と動画を取得

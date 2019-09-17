@@ -157,7 +157,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, comments } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -248,8 +248,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       //   User Data
       // --------------------------------------------------
-      
-      
       
       const imagesAndVideosThumbnailObj = lodashGet(commentsDataObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
       
@@ -660,6 +658,8 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -667,7 +667,6 @@ export default injectIntl(class extends React.Component {
     return (
       <div
         css={css`
-          // border-top: 1px dashed #A4A4A4;
           margin: 24px 0 0 0;
           padding: 0 0 0 0;
         `}
@@ -731,7 +730,7 @@ export default injectIntl(class extends React.Component {
                 userCommunities_id,
                 forumThreads_id,
                 page: 1,
-                limit: eventObj.target.value,
+                changeLimit: eventObj.target.value,
               })}
               input={
                 <OutlinedInput

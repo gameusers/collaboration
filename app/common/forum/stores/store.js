@@ -90,6 +90,8 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
   //   スレッド一覧
   // ---------------------------------------------
@@ -401,6 +403,8 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
   //   スレッド
   // ---------------------------------------------
@@ -410,12 +414,8 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {number} threadPage - スレッドのページ
-   * @param {number} threadLimit - スレッドのリミット
-   * @param {number} commentPage - コメントのページ
-   * @param {number} commentLimit - コメントのリミット
-   * @param {number} replyPage - 返信のページ
-   * @param {number} replyLimit - 返信のリミット
+   * @param {number} page - スレッドのページ
+   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   @action.bound
   async handleReadThreads({
@@ -423,44 +423,37 @@ class Store {
     pathArr,
     gameCommunities_id,
     userCommunities_id,
-    threadPage,
-    threadLimit,
-    commentPage, 
-    commentLimit,
-    replyPage,
-    replyLimit,
+    page,
+    changeLimit,
     
   }) {
     
     
-    const communities_id = gameCommunities_id || userCommunities_id;
-    
-    
     try {
-      
-      
-      // console.log(`
-      //   ----- this.dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
       
+      const communities_id = gameCommunities_id || userCommunities_id;
+      
       const forumObj = lodashGet(this.dataObj, [communities_id], {});
       const clonedObj = lodashCloneDeep(forumObj);
       
-      const loadedDate = lodashGet(forumObj, ['forumThreadsObj', `page${threadPage}Obj`, 'loadedDate'], '');
-      const arr = lodashGet(forumObj, ['forumThreadsObj', `page${threadPage}Obj`, 'arr'], []);
+      const loadedDate = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'arr'], []);
       
       let limit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
       
-      if (threadLimit) {
-        limit = threadLimit;
+      if (changeLimit) {
+        limit = changeLimit;
       }
+      
+      const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      
+      
       
       
       // ---------------------------------------------
@@ -479,19 +472,19 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        threadPage: {green ${threadPage}}
-        threadLimit: {green ${threadLimit}}
-        commentPage: {green ${commentPage}}
-        commentLimit: {green ${commentLimit}}
-        replyPage: {green ${replyPage}}
-        replyLimit: {green ${replyLimit}}
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   page: {green ${page}}
+      //   threadLimit: {green ${threadLimit}}
+      //   commentPage: {green ${commentPage}}
+      //   commentLimit: {green ${commentLimit}}
+      //   replyPage: {green ${replyPage}}
+      //   replyLimit: {green ${replyLimit}}
         
-        limit: {green ${limit}}
-        loadedDate: {green ${loadedDate}}
-      `);
+      //   limit: {green ${limit}}
+      //   loadedDate: {green ${loadedDate}}
+      // `);
       
       // console.log(`
       //   ----- arr -----\n
@@ -515,14 +508,14 @@ class Store {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (threadLimit) {
+      if (changeLimit) {
         
         
         // ---------------------------------------------
         //   表示件数変更
         // ---------------------------------------------
         
-        lodashSet(clonedObj, ['forumThreadsObj', 'limit'], parseInt(threadLimit, 10));
+        lodashSet(clonedObj, ['forumThreadsObj', 'limit'], parseInt(changeLimit, 10));
         
         
         // ---------------------------------------------
@@ -556,9 +549,9 @@ class Store {
       }
       
       
-      console.log(chalk`
-        reload: {green ${reload}}
-      `);
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
       
       
       // ---------------------------------------------
@@ -569,7 +562,7 @@ class Store {
         
         console.log('store');
         
-        clonedObj.forumThreadsObj.page = threadPage;
+        clonedObj.forumThreadsObj.page = page;
         
         this.handleEdit({
           pathArr: [communities_id],
@@ -605,40 +598,18 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      // let formData = new FormData();
-      
-      // formData.append('gameCommunities_id', gameCommunities_id);
-      // formData.append('userCommunities_id', userCommunities_id);
-      // formData.append('threadPage', threadPage);
-      // formData.append('threadLimit', limit);
-      
-      // if (commentPage) {
-      //   formData.append('commentPage', commentPage);
-      // }
-      
-      // if (commentLimit) {
-      //   formData.append('commentLimit', commentLimit);
-      // }
-      
-      // if (replyPage) {
-      //   formData.append('replyPage', replyPage);
-      // }
-      
-      // if (replyLimit) {
-      //   formData.append('replyLimit', replyLimit);
-      // }
-      
       const formDataObj = {
+        
         gameCommunities_id,
         userCommunities_id,
-        threadPage,
+        threadPage: page,
         threadLimit: limit,
-        commentPage,
+        commentPage: 1,
         commentLimit,
-        replyPage,
+        replyPage: 1,
         replyLimit,
+        
       };
-      
       
       
       // ---------------------------------------------
@@ -682,7 +653,7 @@ class Store {
       //   forumThreadsObj
       // ---------------------------------------------
       
-      const forumThreadsOldObj = lodashGet(clonedObj, ['forumThreadsObj'], {});
+      const forumThreadsOldObj = lodashGet(forumObj, ['forumThreadsObj'], {});
       const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
       // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
@@ -712,16 +683,35 @@ class Store {
       
       
       // ---------------------------------------------
-      //   forumCommentsAndRepliesObj
+      //   forumCommentsObj
       // ---------------------------------------------
       
-      const forumCommentsAndRepliesOldObj = lodashGet(clonedObj, ['forumCommentsAndRepliesObj'], {});
-      const forumCommentsAndRepliesNewObj = lodashGet(resultObj, ['data', 'forumCommentsAndRepliesObj'], {});
+      const forumCommentsOldObj = lodashGet(forumObj, ['forumCommentsObj'], {});
+      const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const forumCommentsMergedObj = reload ? forumCommentsNewObj : lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
       
       // 古いデータと新しいデータをマージする
-      const forumCommentsAndRepliesMergedObj = Object.assign(forumCommentsAndRepliesOldObj, forumCommentsAndRepliesNewObj);
+      // const forumCommentsMergedObj = Object.assign(forumCommentsOldObj, forumCommentsNewObj);
       
-      clonedObj.forumCommentsAndRepliesObj = forumCommentsAndRepliesMergedObj;
+      clonedObj.forumCommentsObj = forumCommentsMergedObj;
+      
+      
+      // ---------------------------------------------
+      //   forumRepliesObj
+      // ---------------------------------------------
+      
+      const forumRepliesOldObj = lodashGet(forumObj, ['forumRepliesObj'], {});
+      const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
+      
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
+      
+      // 古いデータと新しいデータをマージする
+      // const forumRepliesMergedObj = Object.assign(forumRepliesOldObj, forumRepliesNewObj);
+      
+      clonedObj.forumRepliesObj = forumRepliesMergedObj;
       
       
       
@@ -730,7 +720,7 @@ class Store {
       //   Page
       // ---------------------------------------------
       
-      clonedObj.forumThreadsObj.page = threadPage;
+      clonedObj.forumThreadsObj.page = page;
       
       
       // --------------------------------------------------
@@ -779,8 +769,6 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
-      
-      
       
       
       // ---------------------------------------------
@@ -1192,6 +1180,8 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
   //   コメント
   // ---------------------------------------------
@@ -1203,27 +1193,29 @@ class Store {
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    * @param {number} page - コメントのページ
-   * @param {number} limit - コメントのリミット
+   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   @action.bound
-  async handleReadComments({ pathArr, gameCommunities_id, userCommunities_id, forumThreads_id, page, limit }) {
+  async handleReadComments({
     
-    const communities_id = gameCommunities_id || userCommunities_id;
+    pathArr,
+    gameCommunities_id,
+    userCommunities_id,
+    forumThreads_id,
+    page,
+    changeLimit,
+    
+  }) {
     
     
     try {
       
       
-      // console.log(`
-      //   ----- this.dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
+      
+      const communities_id = gameCommunities_id || userCommunities_id;
       
       const forumObj = lodashGet(this.dataObj, [communities_id], {});
       const clonedObj = lodashCloneDeep(forumObj);
@@ -1231,17 +1223,20 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumCommentsObj ', forumThreads_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
       
-      let commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      let limit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
       
-      if (limit) {
-        commentLimit = limit;
+      if (changeLimit) {
+        limit = changeLimit;
       }
+      
+      const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       
       
       
       // ---------------------------------------------
-      //   Property
+      //   再読込するかどうか
       // ---------------------------------------------
       
       let reload = false;
@@ -1251,14 +1246,14 @@ class Store {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (limit) {
+      if (changeLimit) {
         
         
         // ---------------------------------------------
         //   表示件数変更
         // ---------------------------------------------
         
-        lodashSet(clonedObj, ['forumObj', 'commentLimit'], parseInt(limit, 10));
+        lodashSet(clonedObj, ['forumObj', 'commentLimit'], parseInt(changeLimit, 10));
         
         
         // ---------------------------------------------
@@ -1304,15 +1299,15 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        forumThreads_id: {green ${forumThreads_id}}
-        page: {green ${page}}
-        limit: {green ${limit}}
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   page: {green ${page}}
+      //   limit: {green ${limit}}
         
-        loadedDate: {green ${loadedDate}}
-      `);
+      //   loadedDate: {green ${loadedDate}}
+      // `);
       
       // console.log(`
       //   ----- arr -----\n
@@ -1371,14 +1366,14 @@ class Store {
       //   Loading 表示
       // ---------------------------------------------
       
-      // storeLayout.handleLoadingShow({});
+      storeLayout.handleLoadingShow({});
       
       
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
       
-      // storeLayout.handleButtonDisable({ pathArr });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
@@ -1387,49 +1382,48 @@ class Store {
       //   forumThreads_idArr
       // ---------------------------------------------
       
-      const forumThreadsObj = lodashGet(this.dataObj, [communities_id, 'forumThreadsObj'], {});
+      let forumThreads_idArr = [];
+      const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
       const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-      const forumThreadsOldArr = lodashGet(forumThreadsObj, ['dataObj', `page${forumThreadsPage}Obj`, 'arr'], []);
-      let forumThreads_idArr = [forumThreads_id];
+      forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
       
-      if (limit) {
+      // if (changeLimit) {
         
-        forumThreads_idArr = [];
+      //   const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
+      //   const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
+      //   forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
         
-        for (let valueObj of forumThreadsOldArr.values()) {
-          forumThreads_idArr.push(valueObj._id);
-        }
+      //   // 現在表示しているスレッドのIDを取得して、
+      //   // forumThreads_idArr = forumThreads_idArr.filter(_id => _id !== forumThreads_id);
         
-      }
+      // }
       
       
-      // console.log(`
-      //   ----- forumThreadsOldArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      
+      console.log(`
+        ----- forumThreads_idArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      // let formData = new FormData();
-      
-      // formData.append('gameCommunities_id', gameCommunities_id);
-      // formData.append('userCommunities_id', userCommunities_id);
-      // formData.append('forumThreads_id', forumThreads_id);
-      // formData.append('forumThreads_idArr', JSON.stringify(forumThreads_idArr));
-      // formData.append('page', page);
-      // formData.append('limit', commentLimit);
-      
       const formDataObj = {
+        
         gameCommunities_id,
         userCommunities_id,
-        forumThreads_id,
+        // forumThreads_id,
         forumThreads_idArr,
-        page,
-        limit: commentLimit,
+        threadPage: 1,
+        threadLimit,
+        commentPage: page,
+        commentLimit: limit,
+        replyPage: 1,
+        replyLimit,
+        
       };
       
       
@@ -1458,7 +1452,7 @@ class Store {
       console.dir(resultObj);
       console.log(`\n-----------------------------------\n`);
       
-      return;
+      // return;
       
       
       // ---------------------------------------------
@@ -1476,85 +1470,70 @@ class Store {
       //   forumThreadsObj
       // ---------------------------------------------
       
-      const forumThreadsNewArr = lodashGet(resultObj, ['data', 'forumThreadsArr'], []);
+      const forumThreadsOldDataObj = lodashGet(forumObj, ['forumThreadsObj', 'dataObj'], {});
+      const forumThreadsNewDataObj = lodashGet(resultObj, ['data', 'forumThreadsObj', 'dataObj'], {});
       
-      let tempObj = {};
-      const forumThreadsMergedArr = [];
+      const forumThreadsMergedDataObj = reload ? forumThreadsNewDataObj : lodashMerge(forumThreadsOldDataObj, forumThreadsNewDataObj);
       
-      for (const [index, valueObj] of forumThreadsNewArr.entries()) {
-        tempObj[valueObj._id] = index;
-      }
-      
-      for (let valueObj of forumThreadsOldArr.values()) {
-        
-        const tempIndex = tempObj[valueObj._id];
-        
-        // console.log(chalk`
-        //   tempIndex: {green ${tempIndex}}
-        // `);
-        
-        if (tempIndex) {
-          forumThreadsMergedArr.push(forumThreadsNewArr[tempIndex]);
-        } else {
-          forumThreadsMergedArr.push(valueObj);
-        }
-        
-      }
-      
-      lodashSet(clonedObj, ['forumThreadsObj', 'dataObj', `page${forumThreadsPage}Obj`, 'arr'], forumThreadsMergedArr);
+      lodashSet(clonedObj, ['forumThreadsObj', 'dataObj'], forumThreadsMergedDataObj);
       
       
-      // console.log(`
-      //   ----- tempObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(tempObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- forumThreadsOldDataObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldDataObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
-      // console.log(`
-      //   ----- forumThreadsNewArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- forumThreadsNewDataObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewDataObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
-      // console.log(`
-      //   ----- forumThreadsMergedArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- forumThreadsMergedDataObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedDataObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       
       
       // ---------------------------------------------
-      //   forumCommentsAndRepliesObj
+      //   forumCommentsObj
       // ---------------------------------------------
       
-      const forumCommentsAndRepliesOldObj = lodashGet(clonedObj, ['forumCommentsAndRepliesObj'], {});
-      const forumCommentsAndRepliesNewObj = lodashGet(resultObj, ['data', 'forumCommentsAndRepliesObj'], {});
+      const forumCommentsOldObj = lodashGet(forumObj, ['forumCommentsObj'], {});
+      const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const forumCommentsMergedObj = reload ? forumCommentsNewObj : lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
+      
+      clonedObj.forumCommentsObj = forumCommentsMergedObj;
       
       
       // console.log(`
-      //   ----- forumCommentsAndRepliesOldObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesOldObj)), { colors: true, depth: null })}\n
+      //   ----- forumCommentsMergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsMergedObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
+      
+      // ---------------------------------------------
+      //   forumRepliesObj
+      // ---------------------------------------------
+      
+      const forumRepliesOldObj = lodashGet(forumObj, ['forumRepliesObj'], {});
+      const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
+      
+      // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
+      
+      clonedObj.forumRepliesObj = forumRepliesMergedObj;
+      
       // console.log(`
-      //   ----- forumCommentsAndRepliesNewObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesNewObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // 古いデータと新しいデータをマージする
-      const forumCommentsAndRepliesMergedObj = Object.assign(forumCommentsAndRepliesOldObj, forumCommentsAndRepliesNewObj);
-      
-      clonedObj.forumCommentsAndRepliesObj = forumCommentsAndRepliesMergedObj;
-      
-      
-      // console.log(`
-      //   ----- forumCommentsAndRepliesMergedObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesMergedObj)), { colors: true, depth: null })}\n
+      //   ----- forumRepliesMergedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesMergedObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1565,7 +1544,7 @@ class Store {
       //   Page
       // ---------------------------------------------
       
-      clonedObj.forumCommentsAndRepliesObj.page = page;
+      clonedObj.forumCommentsObj.page = page;
       
       
       // --------------------------------------------------

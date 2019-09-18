@@ -669,7 +669,7 @@ export default injectIntl(class extends React.Component {
                 userCommunities_id,
                 forumComments_id,
                 page: 1,
-                limit: eventObj.target.value,
+                changeLimit: eventObj.target.value,
               })}
               input={
                 <OutlinedInput

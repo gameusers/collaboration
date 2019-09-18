@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -44,11 +43,7 @@ const { locale } = require('../../../../app/@locales/locale');
 
 
 
-// --------------------------------------------------
-//   Status Code & Error Arguments Object
-// --------------------------------------------------
 
-let statusCode = 400;
 
 
 
@@ -59,7 +54,13 @@ let statusCode = 400;
 
 export default async (req, res) => {
   
-  // console.log('initial-props');
+  
+  // --------------------------------------------------
+  //   Status Code
+  // --------------------------------------------------
+  
+  let statusCode = 400;
+  
   
   // --------------------------------------------------
   //   Locale

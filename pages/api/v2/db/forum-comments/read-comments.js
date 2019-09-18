@@ -24,7 +24,6 @@ const lodashSet = require('lodash/set');
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
-// const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -33,7 +32,6 @@ const ModelForumThreads = require('../../../../../app/@database/forum-threads/mo
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-// const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
@@ -58,19 +56,17 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   Status Code & Error Arguments Object
-// --------------------------------------------------
-
-// let statusCode = 400;
-
-
-
-
-// --------------------------------------------------
 //   endpointID: xo-pMg2cf
 // --------------------------------------------------
 
 export default async (req, res) => {
+  
+  
+  // --------------------------------------------------
+  //   Status Code
+  // --------------------------------------------------
+  
+  let statusCode = 400;
   
   
   // --------------------------------------------------
@@ -256,7 +252,7 @@ export default async (req, res) => {
     //   Return JSON Object / Error
     // --------------------------------------------------
     
-    return res.status(400).json(resultErrorObj);
+    return res.status(statusCode).json(resultErrorObj);
     
     
   }

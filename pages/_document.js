@@ -16,6 +16,15 @@ import { ServerStyleSheets } from '@material-ui/styles';
 import flush from 'styled-jsx/server';
 // import theme from '../app/@css/material-ui/theme';
 
+
+import '@formatjs/intl-relativetimeformat/polyfill';
+// 以下のエラーが出るので入れている
+// Error: Intl.RelativeTimeFormat is not available in this environment.
+// Try polyfilling it using "@formatjs/intl-relativetimeformat"
+// Node.jsがv12になるとIntl.RelativeTimeFormatが使えるようになるらしいので、polyfillはいらなくなるみたい
+// 開発環境のNode.jsがv12になった場合は、改めてimportしなくていいかチェックすること
+
+
 class MyDocument extends Document {
   render() {
     return (

@@ -524,11 +524,11 @@ const findByUserCommunities_id = async ({
       
     }
     
-    console.log(`
-      ----- matchConditionArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -538,20 +538,6 @@ const findByUserCommunities_id = async ({
     const resultArr = await SchemaForumThreads.aggregate([
       
       ...matchConditionArr,
-      
-      // スレッドを取得
-      // {
-      //   $match : { userCommunities_id }
-      // },
-      
-      // {
-      //   $match: {
-      //     $and: [
-      //       { _id: { $in: forumThreads_idArr } },
-      //       { userCommunities_id },
-      //     ]
-      //   },
-      // },
       
       
       // 画像と動画を取得
@@ -689,23 +675,23 @@ const findByUserCommunities_id = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- forumThreadsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumCommentsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumRepliesObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

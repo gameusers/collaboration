@@ -24,6 +24,7 @@ const lodashSet = require('lodash/set');
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -32,7 +33,6 @@ const ModelForumThreads = require('../../../../../app/@database/forum-threads/mo
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-// const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
@@ -40,11 +40,11 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-// const { validationIP } = require('../../../../../app/@validations/ip');
 
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 
 const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
 
 // ---------------------------------------------
@@ -57,13 +57,11 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: SR-1hVpJ_
+//   endpointID: AQOnS_hsz
 // --------------------------------------------------
 
 export default async (req, res) => {
   
-  
-  // console.log('/pages/api/v2/db/forum-threads/read-threads.js');
   
   // --------------------------------------------------
   //   Status Code
@@ -90,29 +88,6 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
-  // console.log(`
-  //   ----- req.cookies -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(req.cookies)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- req.query -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(req.query)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- req.body -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(req.body)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`\n---------- req ----------\n`);
-  // console.dir(req);
-  // console.log(`\n-----------------------------------\n`);
-  
-  
   
   
   try {
@@ -124,10 +99,12 @@ export default async (req, res) => {
     
     const bodyObj = JSON.parse(req.body);
     
-    const { 
+    const {
       
       gameCommunities_id,
       userCommunities_id,
+      forumComments_id,
+      forumThreads_idArr,
       threadPage,
       threadLimit,
       commentPage, 
@@ -140,6 +117,8 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
+    lodashSet(requestParametersObj, ['forumThreads_idArr'], forumThreads_idArr);
     lodashSet(requestParametersObj, ['threadPage'], threadPage);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
@@ -148,31 +127,26 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
-    
-    
-    // ---------------------------------------------
-    //   parseInt
-    // ---------------------------------------------
-    
-    const threadPageInt = parseInt(threadPage, 10);
-    const threadLimitInt = parseInt(threadLimit, 10);
-    const commentPageInt = parseInt(commentPage, 10);
-    const commentLimitInt = parseInt(commentLimit, 10);
-    const replyPageInt = parseInt(replyPage, 10);
-    const replyLimitInt = parseInt(replyLimit, 10);
-    
-    
     // console.log(chalk`
+    //   /pages/api/v2/db/forum-comments/read-replies.js
+      
     //   loginUsers_id: {green ${loginUsers_id}}
       
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumComments_id: {green ${forumComments_id}}
     //   threadPage: {green ${threadPage} / ${typeof threadPage}}
     //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
     //   commentPage: {green ${commentPage} / ${typeof commentPage}}
     //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
     //   replyPage: {green ${replyPage} / ${typeof replyPage}}
     //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     
@@ -201,47 +175,71 @@ export default async (req, res) => {
       
     }
     
-    await validationInteger({ throwError: true, required: true, value: threadPageInt });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimitInt });
+    await validationInteger({ throwError: true, required: true, value: threadPage });
+    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
+    
+    await validationInteger({ throwError: true, required: true, value: commentPage });
+    await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
+    
+    await validationInteger({ throwError: true, required: true, value: replyPage });
+    await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / Forum Comments - Replies
     // --------------------------------------------------
     
-    const argumentsObj = {
+    const forumRepliesObj = await ModelForumComments.findRepliesByForumComment_id({
+      
       req,
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      threadPage: threadPageInt,
-      threadLimit: threadLimitInt,
-    };
+      forumComments_id,
+      commentPage,
+      commentLimit,
+      replyPage,
+      replyLimit,
+      
+    });
     
-    if (commentPage) {
-      argumentsObj.commentPage = commentPageInt;
-    }
-    
-    if (commentLimit) {
-      argumentsObj.commentLimit = commentLimitInt;
-    }
-    
-    if (replyPage) {
-      argumentsObj.replyPage = replyPageInt;
-    }
-    
-    if (replyLimit) {
-      argumentsObj.replyLimit = replyLimitInt;
-    }
+    returnObj.forumRepliesObj = forumRepliesObj;
     
     
-    const forumObj = await ModelForumThreads.findByUserCommunities_id(argumentsObj);
+    console.log(`
+      ----- forumRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    // // --------------------------------------------------
+    // //   DB find / Forum Threads
+    // // --------------------------------------------------
+    
+    // const forumObj = await ModelForumThreads.findByUserCommunities_id({
+      
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    //   forumThreads_idArr,
+    //   threadPage,
+    //   threadLimit,
+    //   commentPage,
+    //   commentLimit,
+    //   replyPage,
+    //   replyLimit,
+      
+    // });
+    
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    // // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
     
     
     
@@ -277,7 +275,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'SR-1hVpJ_',
+      endpointID: 'AQOnS_hsz',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

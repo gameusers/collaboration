@@ -34,7 +34,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationForumThreadsForListLimit = ({ throwError = false, required = false, value }) => {
+const validationForumThreadsListLimit = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -59,7 +59,7 @@ const validationForumThreadsForListLimit = ({ throwError = false, required = fal
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(data, ['5', '10', '20', '50'])) {
+    if (!validator.isIn(data, ['1', '5', '10', '20', '50'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CeqE4ulYz', messageID: 'PH8jcw-VF' }] });
     }
     
@@ -186,6 +186,6 @@ const validationForumThreadsLimit = ({ throwError = false, required = false, val
 // --------------------------------------------------
 
 module.exports = {
-  validationForumThreadsForListLimit,
+  validationForumThreadsListLimit,
   validationForumThreadsLimit,
 };

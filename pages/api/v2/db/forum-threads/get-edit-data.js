@@ -22,34 +22,37 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../app/@database/forum-threads/model');
+const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../app/@modules/error/custom');
+const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
+const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+// const { validationInteger } = require('../../../../../app/@validations/integer');
+// const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+// const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../app/@locales/locale');
-
-
-
-
-
+const { locale } = require('../../../../../app/@locales/locale');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: hc7YMP_C8
+//   endpointID: XcNLlVj1X
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -75,7 +78,6 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -86,76 +88,59 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   GET Data
+    //   POST Data
     // --------------------------------------------------
     
-    const userCommunityID = req.query.userCommunityID;
+    const bodyObj = JSON.parse(req.body);
     
-    lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    const { 
+      
+      forumThreads_id,
+      
+    } = bodyObj;
+    
+    
+    lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     
     
     
     
-    // --------------------------------------------------
-    //   DB find / User Community
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
-      localeObj,
-      loginUsers_id,
-      userCommunityID,
-    });
-    
-    // console.log(`
-    //   ----- userCommunityArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    if (userCommunityArr.length === 0) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
-    }
-    
-    const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
-    returnObj.userCommunityObj = userCommunityArr[0];
+    verifyCsrfToken(req, res);
     
     
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads For List
+    //   DB find / Forum Threads
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-    });
-    
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum
-    // --------------------------------------------------
-    
-    const forumObj = await ModelForumThreads.findForForum({
+    const returnObj = await ModelForumThreads.findForEdit({
       req,
       localeObj,
       loginUsers_id,
-      userCommunities_id,
+      forumThreads_id,
     });
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      forumThreads_id: {green ${forumThreads_id}}
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -176,7 +161,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'hc7YMP_C8',
+      endpointID: 'XcNLlVj1X',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

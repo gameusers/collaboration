@@ -187,7 +187,7 @@ export default async (req, res) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findByUserCommunities_id({
+    const forumObj = await ModelForumThreads.findForForum({
       
       req,
       localeObj,

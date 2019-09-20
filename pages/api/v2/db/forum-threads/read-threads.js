@@ -237,7 +237,7 @@ export default async (req, res) => {
     }
     
     
-    const forumObj = await ModelForumThreads.findByUserCommunities_id(argumentsObj);
+    const forumObj = await ModelForumThreads.findForForum(argumentsObj);
     
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsObj = forumObj.forumCommentsObj;

@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import Pagination from 'rc-pagination';
+import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -51,6 +52,7 @@ import IconExpandLess from '@material-ui/icons/ExpandLess';
 import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
+import IconEdit from '@material-ui/icons/Edit';
 
 
 // ---------------------------------------------
@@ -490,26 +492,60 @@ export default injectIntl(class extends React.Component {
                   
                   {/* Edit Button */}
                   {editable &&
-                    <Button
+                    <div
                       css={css`
-                        && {
-                          font-size: 12px;
-                          height: 22px;
-                          min-width: 36px;
-                          margin: 2px 0 0 10px;
-                          padding: 0 2px;
-                        }
+                        display: flex;
+                        flex-flow: row nowrap;
+                        margin-left: auto;
+                        // background-color: pink;
                       `}
-                      variant="outlined"
-                      color="primary"
-                      disabled={buttonDisabled}
-                      onClick={() => handleShowFormThread({
-                        pathArr: this.pathArr,
-                        forumThreads_id
-                      })}
                     >
-                      編集
-                    </Button>
+                      <Button
+                        css={css`
+                          && {
+                            font-size: 12px;
+                            height: 22px;
+                            min-width: 54px;
+                            min-height: 22px;
+                            margin: 4px 0 0 0;
+                            padding: 0 4px;
+                            
+                            @media screen and (max-width: 480px) {
+                              min-width: 36px;
+                              min-height: 22px;
+                            }
+                          }
+                          // && {
+                          //   font-size: 12px;
+                          //   height: 22px;
+                          //   min-width: 36px;
+                          //   margin: 2px 0 0 10px;
+                          //   padding: 0 2px;
+                          // }
+                        `}
+                        variant="outlined"
+                        color="primary"
+                        disabled={buttonDisabled}
+                        onClick={() => handleShowFormThread({
+                          pathArr: this.pathArr,
+                          forumThreads_id
+                        })}
+                      >
+                        <IconEdit
+                          css={css`
+                            && {
+                              font-size: 16px;
+                              margin: 0 2px 3px 0;
+                              
+                              @media screen and (max-width: 480px) {
+                                display: none;
+                              }
+                            }
+                          `}
+                        />
+                        編集
+                      </Button>
+                    </div>
                   }
                   
                   
@@ -637,6 +673,7 @@ export default injectIntl(class extends React.Component {
               pageSize={limit}
               current={page}
               total={count}
+              locale={localeInfo}
             />
             
           </div>

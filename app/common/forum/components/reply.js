@@ -19,6 +19,7 @@ import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import Pagination from 'rc-pagination';
+import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -552,6 +553,7 @@ export default injectIntl(class extends React.Component {
                       }
                     `}
                     variant="outlined"
+                    color="primary"
                     // onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
                   >
                     <IconEdit
@@ -649,6 +651,7 @@ export default injectIntl(class extends React.Component {
               pageSize={limit}
               current={page}
               total={count}
+              locale={localeInfo}
             />
           </div>
           

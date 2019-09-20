@@ -16,6 +16,7 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashMerge = require('lodash/merge');
 
 
 // ---------------------------------------------
@@ -205,41 +206,66 @@ export default async (req, res) => {
       
     });
     
-    returnObj.forumRepliesObj = forumRepliesObj;
     
     
-    console.log(`
-      ----- forumRepliesObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
+    // --------------------------------------------------
+    //   DB find / Forum Threads
+    // --------------------------------------------------
     
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads
-    // // --------------------------------------------------
-    
-    // const forumObj = await ModelForumThreads.findByUserCommunities_id({
+    const forumObj = await ModelForumThreads.findForForum({
       
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    //   forumThreads_idArr,
-    //   threadPage,
-    //   threadLimit,
-    //   commentPage,
-    //   commentLimit,
-    //   replyPage,
-    //   replyLimit,
+      req,
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+      forumThreads_idArr,
+      threadPage,
+      threadLimit,
+      commentPage,
+      commentLimit,
+      replyPage,
+      replyLimit,
       
-    // });
+    });
     
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
     
-    // // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
+    // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
+    
+    returnObj.forumRepliesObj = lodashMerge(forumObj.forumRepliesObj, forumRepliesObj);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- forumObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumObj.forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumObj.forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj.forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj.forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

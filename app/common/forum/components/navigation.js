@@ -17,7 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import TextareaAutosize from 'react-autosize-textarea';
+// import TextareaAutosize from 'react-autosize-textarea';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -72,7 +72,7 @@ import IconSearch from '@material-ui/icons/Search';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+// const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
 
 
 // ---------------------------------------------
@@ -150,7 +150,10 @@ export default injectIntl(class extends React.Component {
     const communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
     this.pathArr = [communities_id, 'navigationObj'];
     
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -168,6 +171,8 @@ export default injectIntl(class extends React.Component {
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -213,7 +218,6 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleChangeThreadRowsPerPage,
       handleReadThreadsList,
       
     } = storeForum;
@@ -226,20 +230,12 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const threadListCount = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'count'], 0);
-    const threadListPage = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'page'], 1) - 1;
+    const threadListPage = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'page'], 1);
     const threadListLimit = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
     
-    const forumThreadsArr = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'dataObj', `page${threadListPage + 1}Obj`, 'arr'], []);
+    const forumThreadsArr = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', `page${threadListPage}Obj`, 'arr'], []);
     
     
-    // --------------------------------------------------
-    //   Create Thread
-    // --------------------------------------------------
-    
-    // const createThreadName = lodashGet(dataObj, [_id, 'createThreadObj', 'name'], '');
-    // const createThreadDescription = lodashGet(dataObj, [_id, 'createThreadObj', 'description'], '');
-    
-    // const validationForumThreadsObj = validationForumThreadsName({ value: createThreadName });
     
     
     // --------------------------------------------------
@@ -249,12 +245,23 @@ export default injectIntl(class extends React.Component {
     // const searchKeyword = lodashGet(dataObj, [_id, 'searchObj', 'keyword'], '');
     
     
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
     // console.log(`
     //   ----- validationForumThreadsObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
     //   navigation.js
@@ -296,6 +303,7 @@ export default injectIntl(class extends React.Component {
     if (sidebar) {
       
       componentTabs =
+        
         <Tabs
           css={css`
             && {
@@ -307,6 +315,8 @@ export default injectIntl(class extends React.Component {
           textColor="primary"
           // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
         >
+          
+          
           <Tooltip title="スレッド一覧">
             <Tab
               style={{
@@ -315,6 +325,7 @@ export default injectIntl(class extends React.Component {
               icon={<IconListAlt />}
             />
           </Tooltip>
+          
           
           <Tooltip title="スレッド作成">
             <Tab
@@ -325,15 +336,19 @@ export default injectIntl(class extends React.Component {
             />
           </Tooltip>
           
-          <Tooltip title="検索">
+          
+          {/*<Tooltip title="検索">
             <Tab
               style={{
                 minWidth: '92px',
               }}
               icon={<IconSearch />}
             />
-          </Tooltip>
+          </Tooltip>*/}
+          
+          
         </Tabs>
+        
       ;
       
     } else {
@@ -356,7 +371,7 @@ export default injectIntl(class extends React.Component {
         >
           <Tab label="スレッド一覧" />
           <Tab label="スレッド作成" />
-          <Tab label="検索" />
+          {/*<Tab label="検索" />*/}
         </Tabs>
       ;
       
@@ -380,7 +395,11 @@ export default injectIntl(class extends React.Component {
       
       let componentTableDataArr = [];
       
-      for (const [index, valueObj] of forumThreadsArr.entries()) {
+      
+      for (const [index, forumThreads_id] of forumThreadsArr.entries()) {
+        
+        const threadsDataObj = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'dataObj', forumThreads_id], {});
+        
         
         componentTableDataArr.push(
           <TableRow key={index}>
@@ -401,12 +420,12 @@ export default injectIntl(class extends React.Component {
               scope="row"
               // onClick={() => handleReadThread(value.id)}
             >
-              {valueObj.name}
+              {threadsDataObj.name}
             </TableCell>
-            <TableCell css={cssTableCell}>{valueObj.updatedDate}</TableCell>
-            <TableCell css={cssTableCell} align="right">{valueObj.comments}</TableCell>
-            <TableCell css={cssTableCell} align="right">{valueObj.images}</TableCell>
-            <TableCell css={cssTableCell} align="right">{valueObj.videos}</TableCell>
+            <TableCell css={cssTableCell}>{threadsDataObj.updatedDate}</TableCell>
+            <TableCell css={cssTableCell} align="right">{threadsDataObj.comments}</TableCell>
+            <TableCell css={cssTableCell} align="right">{threadsDataObj.images}</TableCell>
+            <TableCell css={cssTableCell} align="right">{threadsDataObj.videos}</TableCell>
           </TableRow>
         );
         
@@ -447,7 +466,7 @@ export default injectIntl(class extends React.Component {
             rowsPerPageOptions={[5, 10, 20, 50]}
             count={threadListCount}
             rowsPerPage={threadListLimit}
-            page={threadListPage}
+            page={threadListPage - 1}
             labelRowsPerPage=""
             backIconButtonProps={{
               'aria-label': 'Previous Page',
@@ -455,12 +474,15 @@ export default injectIntl(class extends React.Component {
             nextIconButtonProps={{
               'aria-label': 'Next Page',
             }}
-            onChangeRowsPerPage={(eventObj) => handleChangeThreadRowsPerPage({
+            onChangeRowsPerPage={(eventObj) => handleReadThreadsList({
+              pathArr: this.pathArr,
               gameCommunities_id,
               userCommunities_id,
-              limit: eventObj.target.value,
+              page: 1,
+              changeLimit: eventObj.target.value,
             })}
             onChangePage={(eventObj, value) => handleReadThreadsList({
+              pathArr: this.pathArr,
               gameCommunities_id,
               userCommunities_id,
               page: value + 1,
@@ -524,16 +546,16 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Icon */}
-            <div
+            {/*<div
               css={css`
                 margin: 0 0 0 14px;
                 // background-color: green;
               `}
-            >
+            >*/}
               
               
               {/* Tooltip内のIconButtonにemotionでスタイルを当てると、ビルド時にエラーがでるため、強引にstyleで当てている */}
-              <Tooltip title="すべてのコメント">
+              {/*<Tooltip title="すべてのコメント">
                 <IconButton
                   style={{
                     width: '28px',
@@ -598,7 +620,7 @@ export default injectIntl(class extends React.Component {
               </Tooltip>
               
               
-            </div>
+            </div>*/}
             
           </div>
           
@@ -660,6 +682,8 @@ export default injectIntl(class extends React.Component {
             {componentTabs}
             
             
+            
+            
             {/* Thread List */}
             {openedTabNo === 0 &&
               <div
@@ -671,6 +695,8 @@ export default injectIntl(class extends React.Component {
                 {componentThreadList}
               </div>
             }
+            
+            
             
             
             {/* Thread Form */}
@@ -690,16 +716,17 @@ export default injectIntl(class extends React.Component {
             }
             
             
+            
+            
             {/* Search */}
             {openedTabNo === 2 &&
-              <div
+              {/*<div
                 css={css`
                   padding: 0 16px 16px;
                 `}
               >
                 
                 
-                {/* 検索フォーム */}
                 <div
                   css={css`
                     margin: 0 0 16px 0;
@@ -885,7 +912,7 @@ export default injectIntl(class extends React.Component {
                 </Button>
                 
                 
-              </div>
+              </div>*/}
             }
             
             

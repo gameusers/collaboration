@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
@@ -109,6 +110,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -130,6 +133,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentWillUnmount
   // --------------------------------------------------
@@ -139,11 +144,14 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   handleScroll
   // --------------------------------------------------
   
   handleScroll = lodashThrottle(() => {
+    
     
     const scrollY = window.scrollY;
     
@@ -164,8 +172,10 @@ export default class extends React.Component {
       // ---------------------------------------------
       
       if (scrollY > this.scrollYOffset) {
+        // console.log('scrollDown');
         scrollUp = false;
       } else {
+        // console.log('scrollUp');
         scrollUp = true;
       }
       
@@ -197,11 +207,44 @@ export default class extends React.Component {
         
       }
       
-    
+      
     }
     
     
     this.scrollYOffset = scrollY;
+    
+    
+    // ---------------------------------------------
+    //   scrollToで移動する場合、ナビゲーションを上の位置に表示する
+    // ---------------------------------------------
+    
+    // console.log('Nav Main Scroll');
+    
+    const headerNavMainBeginForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
+    const headerNavMainEndForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
+    
+    if (headerNavMainBeginForScrollTo) {
+      
+      // console.log('Nav Main Begin');
+      
+      lowerNavMain = false;
+      
+      
+      if (headerNavMainEndForScrollTo) {
+        
+        // console.log('Nav Main End');
+        
+        lodashSet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
+        lodashSet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
+        return;
+      }
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
     
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
@@ -213,6 +256,10 @@ export default class extends React.Component {
     // `);
     
     
+    // ---------------------------------------------
+    //   setState
+    // ---------------------------------------------
+    
     if (this.state.lowerNavMain !== lowerNavMain) {
       
       this.setState({
@@ -220,6 +267,7 @@ export default class extends React.Component {
       });
       
     }
+    
     
   }, 100);
   

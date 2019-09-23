@@ -71,7 +71,10 @@ const setAuthority = ({ req, _id }) => {
 /**
  * 権限を確認 / セッションに格納されている配列に _id が含まれているかチェックする
  * @param {Object} req - リクエスト
- * @param {string} _id - _id
+ * @param {string} users_id - 作者のユーザーID
+ * @param {string} loginUsers_id - ログインしているユーザーID
+ * @param {string} ISO8601 - 投稿日時など
+ * @param {string} _id - 検証する_id
  * @return {boolean} 検証結果を真偽値で返す
  */
 const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
@@ -86,7 +89,8 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
 
   
   // --------------------------------------------------
-  //   作者がログインしているユーザーの場合
+  //   ログイン中
+  //   ユーザーIDで検証
   // --------------------------------------------------
   
   if ((users_id && loginUsers_id) && (users_id === loginUsers_id)) {
@@ -96,7 +100,9 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
   
   
   // --------------------------------------------------
-  //   1時間以内にアクセスしていない
+  //   ログインしていない
+  //   投稿後、1時間経った場合は編集権限を失う
+  //   （Game Usersではログインしていなくても一時間以内にアクセスした場合は、編集が行える）
   // --------------------------------------------------
   
   if (ISO8601) {
@@ -113,7 +119,9 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
   
   
   // --------------------------------------------------
-  //   セッションで確認する
+  //   ログインしていない
+  //   非ログイン時はコメントなどの投稿時に、ID（スレッドID、コメントIDなど）がセッションに格納される
+  //   セッションに該当するIDが含まれているかどうかを確認して、作者かどうかを判定する
   // --------------------------------------------------
   
   if (req && _id) {
@@ -140,7 +148,7 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
   
   
   // --------------------------------------------------
-  //   それ以外
+  //   それ以外は編集権限なし
   // --------------------------------------------------
   
   // console.log('false / それ以外');

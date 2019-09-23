@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
@@ -148,6 +149,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -169,6 +172,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentWillUnmount
   // --------------------------------------------------
@@ -178,11 +183,14 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   handleScroll
   // --------------------------------------------------
   
   handleScroll = lodashThrottle(() => {
+    
     
     const scrollY = window.scrollY;
     
@@ -221,11 +229,39 @@ export default class extends React.Component {
         }
         
       }
-    
+      
+      
     }
     
     
     this.scrollYOffset = scrollY;
+    
+    
+    // ---------------------------------------------
+    //   scrollToで移動する場合、ナビゲーションを非表示にする
+    // ---------------------------------------------
+    
+    // console.log('Nav Top Scroll');
+    
+    const headerNavMainBeginForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
+    const headerNavMainEndForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
+    
+    if (headerNavMainBeginForScrollTo) {
+      // console.log('Nav Top Stop');
+      showNavTop = false;
+      
+      if (headerNavMainEndForScrollTo) {
+        
+        // lodashSet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
+        // lodashSet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
+        return;
+      }
+    }
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
     
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
@@ -236,6 +272,10 @@ export default class extends React.Component {
     //   immediate: {green ${immediate}}
     // `);
     
+    
+    // ---------------------------------------------
+    //   setState
+    // ---------------------------------------------
     
     if (this.state.showNavTop !== showNavTop) {
       

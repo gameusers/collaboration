@@ -41,9 +41,7 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-
 const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
@@ -176,12 +174,15 @@ export default async (req, res) => {
       
     }
     
+    // Thread Page & Limit
     await validationInteger({ throwError: true, required: true, value: threadPage });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
     
+    // Comment Page & Limit
     await validationInteger({ throwError: true, required: true, value: commentPage });
     await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     
+    // Reply Page & Limit
     await validationInteger({ throwError: true, required: true, value: replyPage });
     await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
@@ -224,7 +225,7 @@ export default async (req, res) => {
       threadLimit,
       commentPage,
       commentLimit,
-      replyPage,
+      replyPage: 1,
       replyLimit,
       
     });

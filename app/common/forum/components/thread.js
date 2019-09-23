@@ -197,14 +197,6 @@ export default injectIntl(class extends React.Component {
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${page}Obj`, 'arr'], []);
     
     
-    // --------------------------------------------------
-    //   Comment & Reply
-    // --------------------------------------------------
-    
-    // const commentLimit = lodashGet(dataObj, [this.communities_id, 'forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    // const replyLimit = lodashGet(dataObj, [this.communities_id, 'forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
-    
-    
     
     
     // --------------------------------------------------
@@ -249,8 +241,8 @@ export default injectIntl(class extends React.Component {
       const imagesAndVideosObj = lodashGet(threadsDataObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      const editable = lodashGet(threadsDataObj, ['editable'], false);
-      // const editable = true;
+      // const editable = lodashGet(threadsDataObj, ['editable'], false);
+      const editable = true;
       
       const comments = lodashGet(threadsDataObj, ['comments'], 0);
       

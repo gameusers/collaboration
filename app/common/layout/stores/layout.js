@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 
@@ -37,17 +38,6 @@ let storeLayout = null;
 class Store {
   
   
-  // @observable count = 0;
-  
-  
-  // @action
-  // increment() {
-  //   ++this.count;
-  //   console.log(this.count);
-  // }
-  
-  
-  
   // ---------------------------------------------
   //   Header - Hero Image
   // ---------------------------------------------
@@ -68,162 +58,27 @@ class Store {
   };
   
   
+  
+  
   // ---------------------------------------------
-  //   Header - Navigation / Top & Main / position: sticky
+  //   Header - Navigation / Top & Main
+  //   scrollToで移動した場合は、スクロールを上にした時と同じ動作にする
   // ---------------------------------------------
   
   /**
-   * Navigation Topの高さ
-   * @type {number}
+   * scrollToを開始 - 開始するとナビゲーションを
+   * @type {boolean}
    */
-  // headerNavTopHeight = 53;
+  headerNavMainBeginForScrollTo = false;
   
   
-  // /**
-  // * スクロールのオフセット
-  // * 上スクロールか下スクロールを判定するために利用
-  // * @type {number}
-  // */
-  // headerScrollYOffset = 0;
+  /**
+   * scrollToを終了
+   * @type {boolean}
+   */
+  headerNavMainEndForScrollTo = false;
   
   
-  // /**
-  // * 上スクロール中で true
-  // * @type {boolean}
-  // */
-  // @observable headerScrollUp = false;
-  
-  
-  // /**
-  // * Navigation Topのアニメーションを行わない true / 行う false
-  // * スクロールYがゼロのときはアニメーションを行わない
-  // * @type {boolean}
-  // */
-  // headerNavTopImmediate = true;
-  
-  
-  // /**
-  // * Navigation Topが表示されている場合 true
-  // * @type {boolean}
-  // */
-  // @observable headerNavTopShow = true;
-  
-  
-  // /**
-  // * Navigation Main を position: sticky にする場合、true
-  // * @type {boolean}
-  // */
-  // @observable headerNavMainPositionSticky = false;
-  
-  
-  // /**
-  // * 
-  // * @type {boolean}
-  // */
-  // @observable headerNavMainStopHandleHeaderNavOnScroll = false;
-  
-  
-  // /**
-  // * スクロールされる度に呼び出される関数
-  // */
-  // @action.bound
-  // handleHeaderNavOnScroll() {
-    
-  //   // console.log(this.headerNavMainStopHandleHeaderNavOnScroll);
-  //   // ---------------------------------------------
-  //   //   handleHeaderNavOnScroll を処理しない
-  //   //   JavaScriptからスクロールする際に、ヘッダーのアニメーションを行わないようにする
-  //   // ---------------------------------------------
-    
-  //   // if (this.headerNavMainStopHandleHeaderNavOnScroll) {
-  //   //   console.log('処理停止');
-  //   //   return;
-  //   // }
-    
-  //   // console.log('handleHeaderNavOnScroll');
-    
-    
-    
-  //   // ---------------------------------------------
-  //   //   Property
-  //   // ---------------------------------------------
-    
-  //   const headerScrollY = window.scrollY;
-    
-    
-    
-  //   // ---------------------------------------------
-  //   //   headerScrollY === 0
-  //   // ---------------------------------------------
-    
-  //   if (headerScrollY === 0) {
-      
-  //     this.headerNavTopImmediate = true;
-  //     this.headerScrollUp = false;
-  //     this.headerNavTopShow = true;
-  //     this.headerNavMainPositionSticky = false;
-      
-  //   } else {
-      
-      
-  //     this.headerNavTopImmediate = false;
-      
-      
-  //     // ---------------------------------------------
-  //     //   Check Scroll Up / Scroll Down
-  //     // ---------------------------------------------
-      
-  //     if (headerScrollY > this.headerScrollYOffset) {
-  //       this.headerScrollUp = false;
-  //     } else {
-  //       this.headerScrollUp = true;
-  //     }
-      
-      
-  //     // ---------------------------------------------
-  //     //   Navigation Top Show
-  //     // ---------------------------------------------
-      
-  //     if (this.headerHeroImageHeight < headerScrollY) {
-        
-  //       if (this.headerScrollUp) {
-  //         this.headerNavTopShow = true;
-  //       } else {
-  //         this.headerNavTopShow = false;
-  //       }
-        
-  //     }
-      
-      
-  //     // ---------------------------------------------
-  //     //   Navigation Main Position Sticky
-  //     // ---------------------------------------------
-      
-  //     if (this.headerNavTopHeight + this.headerHeroImageHeight < headerScrollY) {
-  //       this.headerNavMainPositionSticky = true;
-  //     } else {
-  //       this.headerNavMainPositionSticky = false;
-  //     }
-      
-    
-  //   }
-    
-    
-  //   // console.log(chalk`
-  //   //   headerScrollY: {green ${headerScrollY}}
-  //   //   this.headerNavTopImmediate: {green ${this.headerNavTopImmediate}}
-  //   //   this.headerHeroImageHeight: {green ${this.headerHeroImageHeight}}
-  //   //   this.headerScrollUp: {green ${this.headerScrollUp}}
-  //   //   this.headerNavTopShow: {green ${this.headerNavTopShow}}
-  //   //   this.headerNavMainPositionSticky: {green ${this.headerNavMainPositionSticky}}
-  //   // `);
-    
-    
-    
-  //   this.headerScrollYOffset = headerScrollY;
-    
-    
-  // };
   
   
   
@@ -812,16 +667,35 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Scroll To Top
+  //   Scroll To
   // ---------------------------------------------
   
   /**
-   * 利用規約のダイアログを表示する
+   * スクロール
+   * headerNavMainBeginForScrollTo & headerNavMainEndForScrollTo
+   * これはページトップのナビゲーションの位置を操作するための変数
    */
-  // @action.bound
-  // handleScrollToTop() {
-  //   this.termsOfServiceDialogOpen = true;
-  // };
+  @action.bound
+  handleScrollTo({ to, duration = 0, delay = 0, smooth = 'easeInOutQuart', offset = -50 }) {
+    
+    if (!to) {
+      return;
+    }
+    
+    this.headerNavMainBeginForScrollTo = true;
+    
+    scroller.scrollTo(to, {
+      duration,
+      delay,
+      smooth,
+      offset,
+    });
+    
+    Events.scrollEvent.register('end', (to, element) => {
+      this.headerNavMainEndForScrollTo = true;
+    });
+    
+  };
   
   
   

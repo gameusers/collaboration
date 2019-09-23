@@ -16,7 +16,7 @@ const util = require('util');
 
 import { action, observable } from 'mobx';
 import moment from 'moment';
-import { animateScroll as scroll, scrollSpy, scroller } from 'react-scroll';
+// import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -602,6 +602,8 @@ class Store {
       // console.log(`\n-----------------------------------\n`);
       
       
+      
+      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -656,9 +658,6 @@ class Store {
       // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
       const forumCommentsMergedObj = reload ? forumCommentsNewObj : lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
       
-      // 古いデータと新しいデータをマージする
-      // const forumCommentsMergedObj = Object.assign(forumCommentsOldObj, forumCommentsNewObj);
-      
       clonedObj.forumCommentsObj = forumCommentsMergedObj;
       
       
@@ -671,9 +670,6 @@ class Store {
       
       // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
       const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
-      
-      // 古いデータと新しいデータをマージする
-      // const forumRepliesMergedObj = Object.assign(forumRepliesOldObj, forumRepliesNewObj);
       
       clonedObj.forumRepliesObj = forumRepliesMergedObj;
       
@@ -739,12 +735,65 @@ class Store {
       //   Scroll
       // ---------------------------------------------
       
-      scroller.scrollTo('forumThreads', {
-        duration: 800,
+      storeLayout.handleScrollTo({
+        to: 'forumThreads',
+        duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
-        offset: -100,
+        offset: -50,
       });
+      
+      // // console.log('scrollBy');
+      // // scrollBy(0, 5);
+      
+      // // console.log('headerNavMainBeginForScrollTo = true');
+      // lodashSet(storeLayout, ['headerNavMainBeginForScrollTo'], true);
+      
+      // // const funcStopForScrollTo = () => {
+      // //   console.log('AAA');
+      // //   lodashSet(storeLayout, ['headerNavMainStopForScrollTo'], false);
+      // // };
+      
+      // // const funcScroll = () => {
+        
+      // //   scroller.scrollTo('forumThreads', {
+      // //     duration: 0,
+      // //     delay: 1000,
+      // //     smooth: 'easeInOutQuart',
+      // //     offset: -100,
+      // //     // onSetInactive: {funcStopForScrollTo},
+      // //   });
+        
+      // //   Events.scrollEvent.register('end', (to, element) => {
+      // //     console.log('Events.scrollEvent.register / end');
+      // //     lodashSet(storeLayout, ['headerNavMainStopForScrollTo'], false);
+      // //     // console.log("end", to, element);
+      // //   });
+        
+      // //   // lodashSet(storeLayout, ['headerNavMainStopForScrollTo'], false);
+        
+      // // };
+      
+      
+      
+      // // console.log('setTimeout');
+      // // setTimeout(funcScroll, 100);
+      
+      
+      
+      // scroller.scrollTo('forumThreads', {
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
+      //   // onSetInactive: {funcStopForScrollTo},
+      // });
+      
+      // Events.scrollEvent.register('end', (to, element) => {
+      //   // console.log('Events.scrollEvent.register / end');
+      //   lodashSet(storeLayout, ['headerNavMainEndForScrollTo'], true);
+      //   // console.log("end", to, element);
+      // });
       
       
     }
@@ -1741,14 +1790,14 @@ class Store {
       //   Scroll
       // ---------------------------------------------
       
-      scrollBy(0, 1);
+      // scrollBy(0, 1);
       
-      scroller.scrollTo(`form-${forumComments_id}`, {
-        duration: 500,
-        delay: 20,
-        smooth: 'easeInOutQuart',
-        offset: -70,
-      });
+      // scroller.scrollTo(`form-${forumComments_id}`, {
+      //   duration: 500,
+      //   delay: 20,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -70,
+      // });
       
       
     }
@@ -2270,6 +2319,8 @@ class Store {
       // `);
       
       
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
@@ -2315,6 +2366,8 @@ class Store {
       // console.dir(resultObj);
       // console.log(`\n-----------------------------------\n`);
       // return;
+      
+      
       
       
       // ---------------------------------------------

@@ -31,6 +31,7 @@ const ModelForumThreads = require('../../../../../app/@database/forum-threads/mo
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
+const { verifyAuthority } = require('../../../../../app/@modules/authority');
 
 
 // ---------------------------------------------
@@ -124,6 +125,20 @@ export default async (req, res) => {
       loginUsers_id,
       forumThreads_id,
     });
+    
+    
+    
+    // --------------------------------------------------
+    //   編集権限
+    // --------------------------------------------------
+    
+    // const editable = verifyAuthority({
+    //   req,
+    //   users_id: valueObj.users_id,
+    //   loginUsers_id,
+    //   ISO8601: valueObj.createdDate,
+    //   _id: valueObj._id
+    // });
     
     
     

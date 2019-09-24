@@ -742,6 +742,7 @@ const findForForum = async ({
 
 /**
 * DBから取得した情報をフォーマットする
+* @param {Object} req - リクエスト
 * @param {Object} localeObj - ロケール
 * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
 * @param {Array} arr - 配列
@@ -763,25 +764,10 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
   
   const ISO8601 = moment().toISOString();
   
-  
   const dataObj = {};
-  // const forumThreads_idsArr = [];
   const forumThreads_idsForCommentArr = [];
   
   
-  // const forumThreadsObj = {
-    
-  //   page: threadPage,
-  //   limit: intThreadLimit,
-  //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
-  //   dataObj: forumThreadsDataObj,
-    
-  // };
-    
-    
-    
-    
-    
   
   // --------------------------------------------------
   //   Loop
@@ -942,557 +928,12 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
 
 
 
-
-
-
-
-
-
 /**
- * スレッドを取得する
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} userCommunities_id - DB user-communities _id / コミュニティID
- * @return {Array} 取得データ
- */
-// const findForThreads = async ({
-  
-//   req,
-//   localeObj,
-//   loginUsers_id,
-//   userCommunities_id,
-//   threadPage = 1,
-//   threadLimit = process.env.FORUM_THREAD_LIMIT,
-//   commentPage = 1,
-//   commentLimit = process.env.FORUM_COMMENT_LIMIT,
-//   replyPage = 1,
-//   replyLimit = process.env.FORUM_REPLY_LIMIT,
-  
-// }) => {
-  
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Find
-//     // --------------------------------------------------
-    
-//     const intThreadLimit = parseInt(threadLimit, 10);
-    
-    
-//     const resultArr = await SchemaForumThreads.aggregate([
-      
-      
-//       // スレッドを取得
-//       {
-//         $match : { userCommunities_id }
-//       },
-      
-      
-//       // 画像と動画を取得
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   // _id: 0,
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       { $project:
-//         {
-//           imagesAndVideos_id: 0,
-//           __v: 0,
-//         }
-//       },
-      
-      
-//       { '$sort': { 'updatedDate': -1 } },
-//       { $skip: (threadPage - 1) * intThreadLimit },
-//       { $limit: intThreadLimit },
-      
-      
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Format
-//     // --------------------------------------------------
-    
-//     const formattedObj = format({
-//       req,
-//       localeObj,
-//       loginUsers_id,
-//       arr: resultArr,
-//     });
-    
-//     const formattedArr = formattedObj.arr;
-//     const forumThreads_idArr = formattedObj.forumThreads_idArr;
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   コミュニティデータ取得 - コミュニティのスレッド数取得用
-//     // --------------------------------------------------
-    
-//     const userCommunityArr = await ModelUserCommunities.find({
-//       conditionObj: {
-//         _id: userCommunities_id
-//       }
-//     });
-    
-//     const forumObj = {
-//       threadLimit: intThreadLimit,
-//       threadCount: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
-//     };
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   forumThreadsObj
-//     // --------------------------------------------------
-    
-//     const ISO8601 = moment().toISOString();
-    
-//     const forumThreadsObj = {
-//       page: threadPage,
-//     };
-    
-//     lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'loadedDate'], ISO8601);
-//     lodashSet(forumThreadsObj, ['dataObj', `page${threadPage}Obj`, 'arr'], formattedArr);
-    
-//     // console.log(chalk`
-//     //   loginUsers_id: {green ${loginUsers_id}}
-//     //   userCommunities_id: {green ${userCommunities_id}}
-//     //   commentPage: {green ${commentPage}}
-//     //   commentLimit: {green ${commentLimit}}
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   DB find / Forum Comments & Replies
-//     // --------------------------------------------------
-    
-//     const forumCommentsAndRepliesObj = await ModelForumComments.findForForumCommentsAndReplies({
-//       localeObj,
-//       loginUsers_id,
-//       forumThreads_idArr,
-//       commentPage,
-//       commentLimit,
-//       replyPage,
-//       replyLimit,
-//     });
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   loginUsers_id: {green ${loginUsers_id}}
-//     //   userCommunities_id: {green ${userCommunities_id}}
-//     //   page: {green ${page}}
-//     //   limit: {green ${limit}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumThreadsObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumCommentsAndRepliesObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumThreads_idArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return {
-//       forumObj,
-//       forumThreadsObj,
-//       forumCommentsAndRepliesObj,
-//     };
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
-
-
-
-
-/**
- * スレッドを取得する / _id で検索
+ * スレッドを取得する　編集用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドIDの入った配列
- * @return {Array} 取得データ
- */
-// const findThreadsByForumThreads_idArr = async ({
-  
-//   req,
-//   localeObj,
-//   loginUsers_id,
-//   forumThreads_idArr,
-  
-// }) => {
-  
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Find
-//     // --------------------------------------------------
-    
-//     const resultArr = await SchemaForumThreads.aggregate([
-      
-      
-//       // スレッドを取得
-//       {
-//         $match: { _id: { $in: forumThreads_idArr } }
-//       },
-      
-      
-//       // 画像と動画を取得
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       { $project:
-//         {
-//           imagesAndVideos_id: 0,
-//           __v: 0,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Format
-//     // --------------------------------------------------
-    
-//     const formattedObj = format({
-//       req,
-//       localeObj,
-//       loginUsers_id,
-//       arr: resultArr,
-//     });
-    
-//     const forumThreadsArr = lodashGet(formattedObj, ['arr'], []);
-//     // const forumThreadsObj = lodashGet(formattedObj, ['arr', 0], {});
-//     // const forumThreads_idArr = formattedObj.forumThreads_idArr;
-    
-//     // console.log(`
-//     //   ----- forumThreadsArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // forumThreadsArr[0].comment = 'AAA';
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   loginUsers_id: {green ${loginUsers_id}}
-//     //   forumThreads_id: {green ${forumThreads_id}}
-//     //   commentPage: {green ${commentPage}}
-//     //   commentLimit: {green ${commentLimit}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- formattedObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumThreadsObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumThreads_idArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- forumCommentsAndRepliesObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return forumThreadsArr;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
-
-
-
-
-/**
-* DBから取得した情報をフォーマットする
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @return {Array} フォーマット後のデータ
-*/
-// const format = ({ req, localeObj, loginUsers_id, arr }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   const returnArr = [];
-//   const forumThreads_idArr = [];
-  
-  
-//   // --------------------------------------------------
-//   //   Loop
-//   // --------------------------------------------------
-  
-//   for (let valueObj of arr.values()) {
-    
-//     // console.log(`\n---------- valueObj ----------\n`);
-//     // console.dir(valueObj);
-//     // console.log(`\n-----------------------------------\n`);
-//     // --------------------------------------------------
-//     //   Deep Copy
-//     // --------------------------------------------------
-    
-//     const clonedObj = lodashCloneDeep(valueObj);
-    
-    
-//     // --------------------------------------------------
-//     //   Datetime
-//     // --------------------------------------------------
-    
-//     clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
-    
-    
-//     // --------------------------------------------------
-//     //   画像と動画の処理
-//     // --------------------------------------------------
-    
-//     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-    
-//     if (formattedObj) {
-      
-//       clonedObj.imagesAndVideosObj = formattedObj;
-      
-//     } else {
-      
-//       delete clonedObj.imagesAndVideosObj;
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   編集権限
-//     // --------------------------------------------------
-    
-//     clonedObj.editable = verifyAuthority({
-//       req,
-//       users_id: valueObj.users_id,
-//       loginUsers_id,
-//       ISO8601: valueObj.createdDate,
-//       _id: valueObj._id
-//     });
-    
-    
-//     // --------------------------------------------------
-//     //   Name & Description
-//     // --------------------------------------------------
-    
-//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
-//       return filterObj.language === localeObj.language;
-//     });
-    
-    
-//     if (lodashHas(filteredArr, [0])) {
-      
-//       clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-//       clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
-      
-//     } else {
-      
-//       clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-//       clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
-      
-//     }
-    
-//     // console.log(chalk`
-//     //   valueObj._id: {green ${valueObj._id}}
-//     //   clonedObj.name: {green ${clonedObj.name}}
-//     //   authority: {green ${authority}}
-//     // `);
-    
-    
-    
-//     // console.log(`
-//     //   ----- filteredArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // --------------------------------------------------
-//     //   不要な項目を削除する
-//     // --------------------------------------------------
-    
-//     delete clonedObj.createdDate;
-//     delete clonedObj.users_id;
-//     delete clonedObj.localesArr;
-//     delete clonedObj.ip;
-//     delete clonedObj.userAgent;
-//     delete clonedObj.__v;
-    
-//     // console.log(`\n---------- clonedObj ----------\n`);
-//     // console.dir(clonedObj);
-//     // console.log(`\n-----------------------------------\n`);
-    
-    
-//     // --------------------------------------------------
-//     //   push
-//     // --------------------------------------------------
-    
-//     returnArr.push(clonedObj);
-    
-//     if (valueObj.comments > 0) {
-//       forumThreads_idArr.push(valueObj._id);
-//     }
-    
-    
-//   }
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return {
-//     arr: returnArr,
-//     forumThreads_idArr,
-//   };
-  
-  
-// };
-
-
-
-
-/**
- * スレッドを取得する　編集用
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumThreads_idArr - DB forum-threads _id / スレッドのIDが入った配列
+ * @param {string} forumThreads_id - DB forum-threads _id / スレッドID
  * @return {Array} 取得データ
  */
 const findForEdit = async ({
@@ -1506,15 +947,6 @@ const findForEdit = async ({
   
   
   try {
-    
-    
-    // --------------------------------------------------
-    //   Condition
-    // --------------------------------------------------
-    
-    // const conditionObj = {
-    //   userCommunities_id,
-    // };
     
     
     // --------------------------------------------------
@@ -1544,7 +976,6 @@ const findForEdit = async ({
               },
               { $project:
                 {
-                  // _id: 0,
                   createdDate: 0,
                   updatedDate: 0,
                   users_id: 0,
@@ -1603,14 +1034,6 @@ const findForEdit = async ({
       throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
     }
     
-    // const users_id = lodashGet(resultArr, [0, 'users_id'], '');
-    
-    // if (users_id && users_id !== loginUsers_id) {
-    //   throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
-    // } else {
-    //   // throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
-    // }
-    
     
     
     
@@ -1646,14 +1069,6 @@ const findForEdit = async ({
     }
     
     
-    const returnObj = {
-      _id,
-      name,
-      comment,
-      imagesAndVideosObj,
-    };
-    
-    
     
     
     // --------------------------------------------------
@@ -1683,7 +1098,12 @@ const findForEdit = async ({
     //   Return
     // --------------------------------------------------
     
-    return returnObj;
+    return {
+      _id,
+      name,
+      comment,
+      imagesAndVideosObj,
+    };
     
     
   } catch (err) {
@@ -1817,17 +1237,17 @@ const transactionForUpsertThread = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- userCommunitiesConditionObj -----\n

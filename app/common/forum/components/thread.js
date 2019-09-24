@@ -241,8 +241,8 @@ export default injectIntl(class extends React.Component {
       const imagesAndVideosObj = lodashGet(threadsDataObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      // const editable = lodashGet(threadsDataObj, ['editable'], false);
-      const editable = true;
+      const editable = lodashGet(threadsDataObj, ['editable'], false);
+      // const editable = true;
       
       const comments = lodashGet(threadsDataObj, ['comments'], 0);
       
@@ -391,7 +391,7 @@ export default injectIntl(class extends React.Component {
                 {Object.keys(imagesAndVideosObj).length > 0 &&
                   <div
                     css={css`
-                      margin: 12px 0 0 0;
+                      margin: 12px 0 4px 0;
                     `}
                   >
                     <ImageAndVideo
@@ -411,6 +411,7 @@ export default injectIntl(class extends React.Component {
                     flex-flow: row wrap;
                     font-size: 12px;
                     margin: 6px 0 0 0;
+                    // background-color: pink;
                   `}
                 >
                   
@@ -499,7 +500,7 @@ export default injectIntl(class extends React.Component {
                             height: 22px;
                             min-width: 54px;
                             min-height: 22px;
-                            margin: 4px 0 0 0;
+                            margin: 0 0 0 0;
                             padding: 0 4px;
                             
                             @media screen and (max-width: 480px) {

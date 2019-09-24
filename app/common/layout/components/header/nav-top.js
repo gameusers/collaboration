@@ -243,19 +243,19 @@ export default class extends React.Component {
     
     // console.log('Nav Top Scroll');
     
-    const headerNavMainBeginForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
-    const headerNavMainEndForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
+    const headerNavForceScrollUpBegin = lodashGet(this.props, ['stores', 'layout', 'headerNavForceScrollUpBegin'], false);
     
-    if (headerNavMainBeginForScrollTo) {
+    if (headerNavForceScrollUpBegin) {
       // console.log('Nav Top Stop');
+      
+      // const headerNavForceScrollUpEnd = lodashGet(this.props, ['stores', 'layout', 'headerNavForceScrollUpEnd'], false);
+      
+      // if (headerNavForceScrollUpEnd) {
+      //   return;
+      // }
+      
       showNavTop = false;
       
-      if (headerNavMainEndForScrollTo) {
-        
-        // lodashSet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
-        // lodashSet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
-        return;
-      }
     }
     
     

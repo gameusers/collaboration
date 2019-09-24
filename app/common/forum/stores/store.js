@@ -36,6 +36,9 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validations
 // ---------------------------------------------
 
+const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+const { validationForumThreadsComment } = require('../../../@database/forum-threads/validations/comment');
+
 import { validationForumCommentsName } from '../../../@database/forum-comments/validations/name';
 import { validationForumCommentsComment } from '../../../@database/forum-comments/validations/comment';
 
@@ -210,6 +213,10 @@ class Store {
       
       
       
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
       
       // console.log(chalk`
       //   gameCommunities_id  : {green ${gameCommunities_id}}
@@ -715,7 +722,7 @@ class Store {
       
       
     } finally {
-      
+      // console.log('finally');
       
       // ---------------------------------------------
       //   Button Enable
@@ -743,58 +750,6 @@ class Store {
         offset: -50,
       });
       
-      // // console.log('scrollBy');
-      // // scrollBy(0, 5);
-      
-      // // console.log('headerNavMainBeginForScrollTo = true');
-      // lodashSet(storeLayout, ['headerNavMainBeginForScrollTo'], true);
-      
-      // // const funcStopForScrollTo = () => {
-      // //   console.log('AAA');
-      // //   lodashSet(storeLayout, ['headerNavMainStopForScrollTo'], false);
-      // // };
-      
-      // // const funcScroll = () => {
-        
-      // //   scroller.scrollTo('forumThreads', {
-      // //     duration: 0,
-      // //     delay: 1000,
-      // //     smooth: 'easeInOutQuart',
-      // //     offset: -100,
-      // //     // onSetInactive: {funcStopForScrollTo},
-      // //   });
-        
-      // //   Events.scrollEvent.register('end', (to, element) => {
-      // //     console.log('Events.scrollEvent.register / end');
-      // //     lodashSet(storeLayout, ['headerNavMainStopForScrollTo'], false);
-      // //     // console.log("end", to, element);
-      // //   });
-        
-      // //   // lodashSet(storeLayout, ['headerNavMainStopForScrollTo'], false);
-        
-      // // };
-      
-      
-      
-      // // console.log('setTimeout');
-      // // setTimeout(funcScroll, 100);
-      
-      
-      
-      // scroller.scrollTo('forumThreads', {
-      //   duration: 0,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -50,
-      //   // onSetInactive: {funcStopForScrollTo},
-      // });
-      
-      // Events.scrollEvent.register('end', (to, element) => {
-      //   // console.log('Events.scrollEvent.register / end');
-      //   lodashSet(storeLayout, ['headerNavMainEndForScrollTo'], true);
-      //   // console.log("end", to, element);
-      // });
-      
       
     }
     
@@ -807,7 +762,7 @@ class Store {
   /**
    * スレッド編集フォームを表示する
    * @param {Array} pathArr - パス
-   * @param {string} forumThreads_id - DB forum-threads _id
+   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    */
   @action.bound
   async handleShowFormThread({ pathArr, forumThreads_id }) {
@@ -855,12 +810,6 @@ class Store {
       const formDataObj = {
         forumThreads_id,
       };
-      
-      // const formData = new FormData();
-      
-      // formData.append('forumThreads_id', forumThreads_id);
-      
-      
       
       
       // ---------------------------------------------
@@ -959,24 +908,38 @@ class Store {
   
   /**
    * スレッド作成・編集フォームを送信する
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    */
   @action.bound
   async handleSubmitFormThread({ pathArr, gameCommunities_id, userCommunities_id, forumThreads_id }) {
     
     
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
-    const communities_id = gameCommunities_id || userCommunities_id;
-    
-    const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
-    const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
-    
-    const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
-    
-    
     try {
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const communities_id = gameCommunities_id || userCommunities_id;
+      
+      const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+      const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+      const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
+      
+      
+      const forumObj = lodashGet(this.dataObj, [communities_id], {});
+      const clonedObj = lodashCloneDeep(forumObj);
+      
+      const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      
+      
       
       
       // ---------------------------------------------
@@ -1025,6 +988,11 @@ class Store {
       
       
       
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
       // console.log(`
       //   ----- pathArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
@@ -1049,20 +1017,28 @@ class Store {
       // return;
       
       
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
-      
-      formData.append('gameCommunities_id', gameCommunities_id);
-      formData.append('userCommunities_id', userCommunities_id);
-      formData.append('forumThreads_id', forumThreads_id);
-      formData.append('name', name);
-      formData.append('comment', comment);
+      const formDataObj = {
+        
+        gameCommunities_id,
+        userCommunities_id,
+        forumThreads_id,
+        name,
+        comment,
+        threadListLimit,
+        threadLimit,
+        commentLimit,
+        replyLimit,
+        
+      };
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
-        formData.append('imagesAndVideosObj', JSON.stringify(imagesAndVideosObj));
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
       
@@ -1078,17 +1054,13 @@ class Store {
         
         
         
-      } else if (userCommunities_id) {
-        
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v1/forum-threads/upsert-uc`,
-          methodType: 'POST',
-          formData: formData
-        });
-        
       } else {
         
-        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-threads/upsert-uc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
         
       }
       
@@ -1100,6 +1072,8 @@ class Store {
       // `);
       
       
+      
+      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -1109,28 +1083,53 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
-      //   Update Thread List
+      //   forumThreadsForListObj
       // ---------------------------------------------
       
-      const threadListLimit = lodashGet(this.dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      clonedObj.forumThreadsForListObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
       
-      await this.handleReadThreadsList({
-        gameCommunities_id,
-        userCommunities_id,
-        page: 1,
-        limit: threadListLimit,
-      });
+      
+      // ---------------------------------------------
+      //   forumThreadsObj
+      // ---------------------------------------------
+      
+      clonedObj.forumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumCommentsObj
+      // ---------------------------------------------
+      
+      clonedObj.forumCommentsObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumRepliesObj
+      // ---------------------------------------------
+      
+      clonedObj.forumRepliesObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
       
       
       // ---------------------------------------------
       //   Navigation / 開いているタブをスレッド一覧に変更する
       // ---------------------------------------------
       
+      lodashSet(clonedObj, ['navigationObj', 'openedTabNo'], 0);
+      
+      
+      // ---------------------------------------------
+      //   Update
+      // ---------------------------------------------
+      
       this.handleEdit({
-        pathArr: [communities_id, 'navigationObj', 'openedTabNo'],
-        value: 0,
+        pathArr: [communities_id],
+        value: clonedObj
       });
+      
+      
       
       
       // ---------------------------------------------
@@ -2389,10 +2388,21 @@ class Store {
       const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
       const forumThreadsMergedObj = lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
-      // const forumThreadsMergedObj = reload ? forumThreadsNewObj : lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
       
       lodashSet(clonedObj, ['forumThreadsObj'], forumThreadsMergedObj);
       
+      
+      // console.log(`
+      //   ----- forumThreadsOldObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- forumThreadsNewObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // ---------------------------------------------
       //   forumCommentObj
@@ -2402,7 +2412,6 @@ class Store {
       const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
       
       const forumCommentsMergedObj = lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
-      // const forumCommentsMergedObj = reload ? forumCommentsNewObj : lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
       
       lodashSet(clonedObj, ['forumCommentsObj'], forumCommentsMergedObj);
       
@@ -2414,8 +2423,6 @@ class Store {
       const forumRepliesOldObj = lodashGet(forumObj, ['forumRepliesObj'], {});
       const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
       
-      // 古いデータと新しいデータをマージする
-      // const forumRepliesMergedObj = reload ? forumRepliesNewObj : Object.assign(forumRepliesOldObj, forumRepliesNewObj);
       const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
       
       lodashSet(clonedObj, ['forumRepliesObj'], forumRepliesMergedObj);
@@ -2440,11 +2447,11 @@ class Store {
       // `);
       
       
-      console.log(`
-        ----- clonedObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(clonedObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- clonedObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(clonedObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------

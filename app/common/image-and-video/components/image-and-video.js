@@ -192,16 +192,23 @@ export default injectIntl(class extends React.Component {
               css={css`
                 width: 100%;
                 position: relative;
+                background-color: black;
               `}
             >
               
               <img
                 css={css`
-                  width: 100%;
+                  // width: 100%;
+                  max-width: 100%;
+                  max-height: 300px;
+                  object-fit: contain;
+                  margin: 0 auto;
                 `}
-                src={`https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg`}
-                srcSet={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg 480w,
-                         https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg 640w`}
+                src={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg`}
+                
+                // src={`https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg`}
+                // srcSet={`https://img.youtube.com/vi/${valueObj.videoID}/mqdefault.jpg 480w,
+                //         https://img.youtube.com/vi/${valueObj.videoID}/maxresdefault.jpg 640w`}
               />
               
               <div
@@ -218,7 +225,7 @@ export default injectIntl(class extends React.Component {
               >
                 <div
                   css={css`
-                    font-size: 72px;
+                    font-size: 46px;
                   	position: relative;
                   	width: 1.4em;
                   	height: 1.4em;

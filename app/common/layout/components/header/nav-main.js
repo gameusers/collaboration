@@ -220,28 +220,32 @@ export default class extends React.Component {
     
     // console.log('Nav Main Scroll');
     
-    const headerNavMainBeginForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
-    const headerNavMainEndForScrollTo = lodashGet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
+    const headerNavForceScrollUpBegin = lodashGet(this.props, ['stores', 'layout', 'headerNavForceScrollUpBegin'], false);
     
-    if (headerNavMainBeginForScrollTo) {
+    if (headerNavForceScrollUpBegin) {
       
       // console.log('Nav Main Begin');
       
-      lowerNavMain = false;
+      const headerNavForceScrollUpEnd = lodashGet(this.props, ['stores', 'layout', 'headerNavForceScrollUpEnd'], false);
       
-      
-      if (headerNavMainEndForScrollTo) {
+      if (headerNavForceScrollUpEnd) {
         
         // console.log('Nav Main End');
         
-        lodashSet(this.props, ['stores', 'layout', 'headerNavMainBeginForScrollTo'], false);
-        lodashSet(this.props, ['stores', 'layout', 'headerNavMainEndForScrollTo'], false);
-        return;
+        lodashSet(this.props, ['stores', 'layout', 'headerNavForceScrollUpBegin'], false);
+        lodashSet(this.props, ['stores', 'layout', 'headerNavForceScrollUpEnd'], false);
+        
+        // return;
+        
       }
+      
+      lowerNavMain = false;
       
     }
     
-    
+    // console.log(chalk`
+    //   lowerNavMain: {green ${lowerNavMain}}
+    // `);
     // ---------------------------------------------
     //   console.log
     // ---------------------------------------------

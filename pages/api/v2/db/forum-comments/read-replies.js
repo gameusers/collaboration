@@ -193,7 +193,7 @@ export default async (req, res) => {
     //   DB find / Forum Comments - Replies
     // --------------------------------------------------
     
-    const forumRepliesObj = await ModelForumComments.findRepliesByForumComment_id({
+    returnObj.forumRepliesObj = await ModelForumComments.findRepliesByForumComment_id({
       
       req,
       localeObj,
@@ -214,28 +214,34 @@ export default async (req, res) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForForum({
+    if (forumThreads_idArr.length > 0) {
       
-      req,
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-      forumThreads_idArr,
-      threadPage,
-      threadLimit,
-      commentPage,
-      commentLimit,
-      replyPage: 1,
-      replyLimit,
+      const forumObj = await ModelForumThreads.findForForum({
+        
+        req,
+        localeObj,
+        loginUsers_id,
+        userCommunities_id,
+        forumThreads_idArr,
+        threadPage,
+        threadLimit,
+        commentPage,
+        commentLimit,
+        replyPage: 1,
+        replyLimit,
+        
+      });
       
-    });
+      // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+      // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+      
+      // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
+      
+      returnObj.forumRepliesObj = lodashMerge(forumObj.forumRepliesObj, returnObj.forumRepliesObj);
+      
+    }
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
     
-    // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
-    
-    returnObj.forumRepliesObj = lodashMerge(forumObj.forumRepliesObj, forumRepliesObj);
     
     
     

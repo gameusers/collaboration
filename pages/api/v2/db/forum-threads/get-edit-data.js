@@ -31,16 +31,6 @@ const ModelForumThreads = require('../../../../../app/@database/forum-threads/mo
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-const { verifyAuthority } = require('../../../../../app/@modules/authority');
-
-
-// ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-// const { validationInteger } = require('../../../../../app/@validations/integer');
-// const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-// const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 
 
 // ---------------------------------------------
@@ -128,34 +118,20 @@ export default async (req, res) => {
     
     
     
-    // --------------------------------------------------
-    //   編集権限
-    // --------------------------------------------------
-    
-    // const editable = verifyAuthority({
-    //   req,
-    //   users_id: valueObj.users_id,
-    //   loginUsers_id,
-    //   ISO8601: valueObj.createdDate,
-    //   _id: valueObj._id
-    // });
-    
-    
-    
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      forumThreads_id: {green ${forumThreads_id}}
-    `);
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

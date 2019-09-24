@@ -41,6 +41,7 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
 
 // ---------------------------------------------
@@ -147,16 +148,8 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   parseInt
+    //   console.log
     // ---------------------------------------------
-    
-    const threadPageInt = parseInt(threadPage, 10);
-    const threadLimitInt = parseInt(threadLimit, 10);
-    const commentPageInt = parseInt(commentPage, 10);
-    const commentLimitInt = parseInt(commentLimit, 10);
-    const replyPageInt = parseInt(replyPage, 10);
-    const replyLimitInt = parseInt(replyLimit, 10);
-    
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -197,8 +190,17 @@ export default async (req, res) => {
       
     }
     
-    await validationInteger({ throwError: true, required: true, value: threadPageInt });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimitInt });
+    // Thread Page & Limit
+    await validationInteger({ throwError: true, required: true, value: threadPage });
+    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
+    
+    // Comment Page & Limit
+    await validationInteger({ throwError: true, required: true, value: commentPage });
+    await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
+    
+    // Reply Page & Limit
+    await validationInteger({ throwError: true, required: true, value: replyPage });
+    await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
     
     
     
@@ -207,33 +209,20 @@ export default async (req, res) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    const argumentsObj = {
+    const forumObj = await ModelForumThreads.findForForum({
+      
       req,
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      threadPage: threadPageInt,
-      threadLimit: threadLimitInt,
-    };
-    
-    if (commentPage) {
-      argumentsObj.commentPage = commentPageInt;
-    }
-    
-    if (commentLimit) {
-      argumentsObj.commentLimit = commentLimitInt;
-    }
-    
-    if (replyPage) {
-      argumentsObj.replyPage = replyPageInt;
-    }
-    
-    if (replyLimit) {
-      argumentsObj.replyLimit = replyLimitInt;
-    }
-    
-    
-    const forumObj = await ModelForumThreads.findForForum(argumentsObj);
+      threadPage,
+      threadLimit,
+      commentPage,
+      commentLimit,
+      replyPage,
+      replyLimit,
+      
+    });
     
     returnObj.forumThreadsObj = forumObj.forumThreadsObj;
     returnObj.forumCommentsObj = forumObj.forumCommentsObj;

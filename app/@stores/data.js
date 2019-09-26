@@ -3,6 +3,7 @@
 // --------------------------------------------------
 
 import { action, observable } from 'mobx';
+import moment from 'moment';
 
 
 // ---------------------------------------------
@@ -51,6 +52,56 @@ class Store {
   //   this.replaceLocaleObj(localeObj);
     
   // }
+  
+  
+  
+  // ---------------------------------------------
+  //   Datetime
+  // ---------------------------------------------
+  
+  /**
+   * 現在の日時
+   * @type {string}
+   */
+  @observable datetimeCurrent = '';
+  
+  
+  /**
+   * 現在の日時を設定する
+   */
+  @action.bound
+  setDatetimeCurrent({ ISO8601 }) {
+    
+    let datetimeCurrent = ISO8601;
+    
+    if (!ISO8601) {
+      datetimeCurrent = moment().toISOString();
+    }
+    
+    this.datetimeCurrent = datetimeCurrent;
+    
+  };
+  
+  
+  /**
+   * 現在の日時を定期的に更新する
+   */
+  @action.bound
+  setIntervalDatetimeCurrent() {
+    
+    // console.log('setIntervalDatetimeCurrent');
+    
+    setInterval(() => {
+      
+      // const datetimeCurrent = moment().utcOffset(0);
+      this.datetimeCurrent = moment().toISOString();
+      // this.datetimeCurrent = datetimeCurrent;
+      
+      // console.log(`setIntervalDatetimeCurrent - ${this.datetimeCurrent}`);
+      
+    }, 1000 * 60);
+    
+  };
   
   
   

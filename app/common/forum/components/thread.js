@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
@@ -269,352 +270,350 @@ export default injectIntl(class extends React.Component {
       
       
       componentArr.push(
-        
-        <ExpansionPanel
-          css={css`
-            margin: 16px 0 !important;
-          `}
-          expanded={panelExpanded}
+        <Element
+          name={forumThreads_id}
           key={index}
         >
           
           
-          {/* Summary */}
-          <ExpansionPanelSummary
+          <ExpansionPanel
             css={css`
-              && {
-                cursor: default !important;
-                background-color: white !important;
-                margin: 20px 0 0 0 !important; 
-                
-                @media screen and (max-width: 480px) {
-                  padding: 0 16px;
-                }
-              }
+              margin: 16px 0 !important;
             `}
-            classes={{
-              expanded: classes.expanded
-            }}
+            expanded={panelExpanded}
           >
             
             
-            {/* Form */}
-            {showForm ? (
+            {/* Summary */}
+            <ExpansionPanelSummary
+              css={css`
+                && {
+                  cursor: default !important;
+                  background-color: white !important;
+                  margin: 20px 0 0 0 !important; 
+                  
+                  @media screen and (max-width: 480px) {
+                    padding: 0 16px;
+                  }
+                }
+              `}
+              classes={{
+                expanded: classes.expanded
+              }}
+            >
               
-              <div
-                css={css`
-                  width: 100%;
-                `}
-              >
-                <FormThread
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunities_id={userCommunities_id}
-                  forumThreads_id={forumThreads_id}
-                />
-              </div>
               
-            // Thread
-            ) : (
-              
-              <div
-                css={css`
-                  display: flex;
-                  flex-flow: column nowrap;
-                  width: 100%;
-                `}
-              >
+              {/* Form */}
+              {showForm ? (
                 
+                <div
+                  css={css`
+                    width: 100%;
+                  `}
+                >
+                  <FormThread
+                    gameCommunities_id={gameCommunities_id}
+                    userCommunities_id={userCommunities_id}
+                    forumThreads_id={forumThreads_id}
+                  />
+                </div>
                 
-                {/* Container - Thread Name & Expansion Button */}
+              // Thread
+              ) : (
+                
                 <div
                   css={css`
                     display: flex;
-                    flex-flow: row nowrap;
-                    align-items: center;
+                    flex-flow: column nowrap;
                     width: 100%;
                   `}
                 >
                   
                   
-                  {/* h2 */}
-                  <h2
+                  {/* Container - Thread Name & Expansion Button */}
+                  <div
                     css={css`
-                      font-weight: bold;
-                      font-size: 16px;
+                      display: flex;
+                      flex-flow: row nowrap;
+                      align-items: center;
+                      width: 100%;
+                    `}
+                  >
+                    
+                    
+                    {/* h2 */}
+                    <h2
+                      css={css`
+                        font-weight: bold;
+                        font-size: 16px;
+                        
+                        @media screen and (max-width: 480px) {
+                          font-size: 14px;
+                        }
+                      `}
+                    >
+                      {name}
+                    </h2>
+                    
+                    
+                    
+                    
+                    {/* Expansion Button */}
+                    <div
+                      css={css`
+                        margin-left: auto;
+                      `}
+                    >
                       
-                      @media screen and (max-width: 480px) {
-                        font-size: 14px;
-                      }
-                    `}
-                  >
-                    {name}
-                  </h2>
-                  
-                  
-                  
-                  
-                  {/* Expansion Button */}
-                  <div
-                    css={css`
-                      margin-left: auto;
-                    `}
-                  >
+                      <IconButton
+                        css={css`
+                          && {
+                            margin: 0;
+                            padding: 4px;
+                          }
+                        `}
+                        onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, forumThreads_id] })}
+                        aria-expanded={panelExpanded}
+                        aria-label="Show more"
+                        disabled={buttonDisabled}
+                      >
+                        {panelExpanded ? (
+                          <IconExpandLess />
+                        ) : (
+                          <IconExpandMore />
+                        )}
+                      </IconButton>
+                      
+                    </div>
                     
-                    <IconButton
+                    
+                  </div>
+                  
+                  
+                  
+                  
+                  {/* Images and Videos */}
+                  {Object.keys(imagesAndVideosObj).length > 0 &&
+                    <div
                       css={css`
-                        && {
-                          margin: 0;
-                          padding: 4px;
-                        }
+                        margin: 12px 0 4px 0;
                       `}
-                      onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, forumThreads_id] })}
-                      aria-expanded={panelExpanded}
-                      aria-label="Show more"
-                      disabled={buttonDisabled}
                     >
-                      {panelExpanded ? (
-                        <IconExpandLess />
-                      ) : (
-                        <IconExpandMore />
-                      )}
-                    </IconButton>
-                    
-                  </div>
+                      <ImageAndVideo
+                        pathArr={[...this.pathArr, forumThreads_id, 'imagesAndVideosObj']}
+                        imagesAndVideosObj={imagesAndVideosObj}
+                      />
+                    </div>
+                  }
                   
                   
-                </div>
-                
-                
-                
-                
-                {/* Images and Videos */}
-                {Object.keys(imagesAndVideosObj).length > 0 &&
-                  <div
-                    css={css`
-                      margin: 12px 0 4px 0;
-                    `}
-                  >
-                    <ImageAndVideo
-                      pathArr={[...this.pathArr, forumThreads_id, 'imagesAndVideosObj']}
-                      imagesAndVideosObj={imagesAndVideosObj}
-                    />
-                  </div>
-                }
-                
-                
-                
-                
-                {/* Information */}
-                <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row wrap;
-                    font-size: 12px;
-                    margin: 6px 0 0 0;
-                    // background-color: pink;
-                  `}
-                >
                   
                   
-                  {/* Show Thread Description */}
+                  {/* Information */}
                   <div
                     css={css`
                       display: flex;
-                      flex-flow: row nowrap;
-                      margin: 0 6px 0 0;
+                      flex-flow: row wrap;
+                      font-size: 12px;
+                      margin: 6px 0 0 0;
+                      // background-color: pink;
                     `}
                   >
                     
-                    <IconAssignment
-                      css={css`
-                        && {
-                          font-size: 24px;
-                          margin: 0 2px 0 0;
-                        }
-                      `}
-                    />
                     
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        color: #009933;
-                        cursor: pointer;
-                        margin: 2px 0 0 0;
-                      `}
-                      onClick={() => handleEdit({
-                        pathArr: [...this.pathArr, forumThreads_id, 'showComment'],
-                        value: !showComment
-                      })}
-                    >
-                      スレッドについて
-                    </div>
-                    
-                  </div>
-                  
-                  
-                  {/* Thread _id */}
-                  <div
-                    css={css`
-                      display: flex;
-                      flex-flow: row nowrap;
-                    `}
-                  >
-                    
-                    <IconPublic
-                      css={css`
-                        && {
-                          font-size: 24px;
-                          margin: 0 2px 0 0;
-                        }
-                      `}
-                    />
-                    
-                    <div
-                      css={css`
-                        font-size: 12px;
-                        color: #009933;
-                        cursor: pointer;
-                        margin: 2px 0 0 0;
-                      `}
-                    >
-                      {forumThreads_id}
-                    </div>
-                    
-                  </div>
-                  
-                  
-                  {/* Edit Button */}
-                  {editable &&
+                    {/* Show Thread Description */}
                     <div
                       css={css`
                         display: flex;
                         flex-flow: row nowrap;
-                        margin-left: auto;
-                        // background-color: pink;
+                        margin: 0 6px 0 0;
                       `}
                     >
-                      <Button
+                      
+                      <IconAssignment
                         css={css`
                           && {
-                            font-size: 12px;
-                            height: 22px;
-                            min-width: 54px;
-                            min-height: 22px;
-                            margin: 0 0 0 0;
-                            padding: 0 4px;
-                            
-                            @media screen and (max-width: 480px) {
-                              min-width: 36px;
-                              min-height: 22px;
-                            }
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
                           }
-                          // && {
-                          //   font-size: 12px;
-                          //   height: 22px;
-                          //   min-width: 36px;
-                          //   margin: 2px 0 0 10px;
-                          //   padding: 0 2px;
-                          // }
                         `}
-                        variant="outlined"
-                        color="primary"
-                        disabled={buttonDisabled}
-                        onClick={() => handleShowFormThread({
-                          pathArr: this.pathArr,
-                          forumThreads_id
+                      />
+                      
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          cursor: pointer;
+                          margin: 2px 0 0 0;
+                        `}
+                        onClick={() => handleEdit({
+                          pathArr: [...this.pathArr, forumThreads_id, 'showComment'],
+                          value: !showComment
                         })}
                       >
-                        <IconEdit
+                        スレッドについて
+                      </div>
+                      
+                    </div>
+                    
+                    
+                    {/* Thread _id */}
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
+                      `}
+                    >
+                      
+                      <IconPublic
+                        css={css`
+                          && {
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
+                      
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          cursor: pointer;
+                          margin: 2px 0 0 0;
+                        `}
+                      >
+                        {forumThreads_id}
+                      </div>
+                      
+                    </div>
+                    
+                    
+                    {/* Edit Button */}
+                    {editable &&
+                      <div
+                        css={css`
+                          display: flex;
+                          flex-flow: row nowrap;
+                          margin-left: auto;
+                        `}
+                      >
+                        <Button
                           css={css`
                             && {
-                              font-size: 16px;
-                              margin: 0 2px 3px 0;
+                              font-size: 12px;
+                              height: 22px;
+                              min-width: 54px;
+                              min-height: 22px;
+                              margin: 0 0 0 0;
+                              padding: 0 4px;
                               
                               @media screen and (max-width: 480px) {
-                                display: none;
+                                min-width: 36px;
+                                min-height: 22px;
                               }
                             }
                           `}
-                        />
-                        編集
-                      </Button>
+                          variant="outlined"
+                          color="primary"
+                          disabled={buttonDisabled}
+                          onClick={() => handleShowFormThread({
+                            pathArr: this.pathArr,
+                            forumThreads_id
+                          })}
+                        >
+                          <IconEdit
+                            css={css`
+                              && {
+                                font-size: 16px;
+                                margin: 0 2px 3px 0;
+                                
+                                @media screen and (max-width: 480px) {
+                                  display: none;
+                                }
+                              }
+                            `}
+                          />
+                          編集
+                        </Button>
+                      </div>
+                    }
+                    
+                    
+                  </div>
+                  
+                  
+                  {/* Comment */}
+                  {showComment &&
+                    <div
+                      css={css`
+                        font-size: 14px;
+                        line-height: 1.6em;
+                        border-left: 4px solid #A4A4A4;
+                        margin: 12px 0 10px 3px;
+                        padding: 0 0 0 16px;
+                        
+                        @media screen and (max-width: 480px) {
+                          padding: 0 0 0 12px;
+                        }
+                      `}
+                    >
+                      <Paragraph text={comment} />
                     </div>
                   }
                   
                   
                 </div>
-                
-                
-                {/* Comment */}
-                {showComment &&
-                  <div
-                    css={css`
-                      font-size: 14px;
-                      line-height: 1.6em;
-                      border-left: 4px solid #A4A4A4;
-                      margin: 12px 0 10px 3px;
-                      padding: 0 0 0 16px;
-                      
-                      @media screen and (max-width: 480px) {
-                        padding: 0 0 0 12px;
-                      }
-                    `}
-                  >
-                    <Paragraph text={comment} />
-                  </div>
-                }
-                
-                
-              </div>
-            　
-            )}
+              　
+              )}
+              
+              
+            </ExpansionPanelSummary>
             
             
-          </ExpansionPanelSummary>
-          
-          
-          
-          
-          {/* Contents */}
-          <ExpansionPanelDetails
-            css={css`
-              @media screen and (max-width: 480px) {
-                padding: 0 16px 24px !important;
-              }
-            `}
-          >
             
-            <div
+            
+            {/* Contents */}
+            <ExpansionPanelDetails
               css={css`
-                width: 100%;
-                margin: 12px 0 0 0;
+                @media screen and (max-width: 480px) {
+                  padding: 0 16px 24px !important;
+                }
               `}
             >
               
+              <div
+                css={css`
+                  width: 100%;
+                  margin: 12px 0 0 0;
+                `}
+              >
+                
+                
+                {/* Form Comment */}
+                <FormComment
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
+                />
+                
+                
+                {/* Comment */}
+                <Comment
+                  gameCommunities_id={gameCommunities_id}
+                  userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
+                  comments={comments}
+                />
+                
+                
+              </div>
               
-              {/* Form Comment */}
-              <FormComment
-                gameCommunities_id={gameCommunities_id}
-                userCommunities_id={userCommunities_id}
-                forumThreads_id={forumThreads_id}
-              />
-              
-              
-              {/* Comment */}
-              <Comment
-                gameCommunities_id={gameCommunities_id}
-                userCommunities_id={userCommunities_id}
-                forumThreads_id={forumThreads_id}
-                comments={comments}
-              />
-              
-              
-            </div>
+            </ExpansionPanelDetails>
             
-          </ExpansionPanelDetails>
+          </ExpansionPanel>
           
-        </ExpansionPanel>
-        
+          
+        </Element>
       );
       
     }
@@ -715,7 +714,6 @@ export default injectIntl(class extends React.Component {
           
           
         </Paper>
-        
         
         
       </React.Fragment>

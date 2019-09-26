@@ -71,7 +71,7 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query, login }) {
+  static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
     
     
     // console.log('[userCommunityID].js / getInitialProps');
@@ -79,9 +79,9 @@ export default class extends React.Component {
     
     // console.log(chalk`
     //   login: {green ${login}}
+    //   datetimeCurrent: {green ${datetimeCurrent}}
     //   isServer: {green ${isServer}}
     // `);
-    
     
     
     // --------------------------------------------------
@@ -105,6 +105,7 @@ export default class extends React.Component {
     //   userCommunityID: {green ${userCommunityID}}
     // `);
     
+    
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
@@ -116,15 +117,6 @@ export default class extends React.Component {
       reqAcceptLanguage,
     });
     
-    // const resultObj = await fetchWrapper({
-    //   // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=${userCommunityID}`),
-    //   urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/uc/community/?userCommunityID=${userCommunityID}`),
-    //   // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=${userCommunityID}`),
-    //   methodType: 'GET',
-    //   reqHeadersCookie,
-    //   reqAcceptLanguage,
-    // });
-    
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
@@ -134,18 +126,14 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
-    //   ${util.inspect(initialPropsObj.userCommunityObj.updatedDateObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id: 'cxO8tEGty' };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, datetimeCurrent };
     
     
   }
@@ -195,6 +183,15 @@ export default class extends React.Component {
       this.storeForum = initStoreForum({});
       this.storeImageAndVideo = initStoreImageAndVideo({});
       this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Datetime Current
+      // --------------------------------------------------
+      
+      stores.data.setDatetimeCurrent(props.datetimeCurrent);
       
       
       // --------------------------------------------------
@@ -282,16 +279,6 @@ export default class extends React.Component {
         pathArr: [props.userCommunities_id, 'forumRepliesObj'],
         value: props.initialPropsObj.forumRepliesObj,
       });
-      
-      
-      // --------------------------------------------------
-      //   Update Data - forumCommentsAndRepliesObj
-      // --------------------------------------------------
-      
-      // this.storeForum.handleEdit({
-      //   pathArr: [props.userCommunities_id, 'forumCommentsAndRepliesObj'],
-      //   value: props.initialPropsObj.forumCommentsAndRepliesObj,
-      // });
       
       
     } catch (e) {
@@ -456,15 +443,14 @@ export default class extends React.Component {
               <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
               
               
-              <Element name="forumThreads">
+              <Element
+                css={css`
+                  margin 12px 0 0 0;
+                `}
+                name="forumThreads"
+              >
                 
-                <div
-                  css={css`
-                    margin 12px 0 0 0;
-                  `}
-                >
-                  <ForumThread userCommunities_id={this.props.userCommunities_id} />
-                </div>
+                <ForumThread userCommunities_id={this.props.userCommunities_id} />
                 
               </Element>
               

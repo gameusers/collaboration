@@ -26,6 +26,7 @@ import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
+import moment from 'moment';
 import lodashGet from 'lodash/get';
 
 
@@ -42,13 +43,6 @@ import theme from '../app/@css/material-ui/theme';
 // ---------------------------------------------
 
 import { IntlProvider } from 'react-intl';
-// import en from 'react-intl/locale-data/en';
-// import ja from 'react-intl/locale-data/ja';
-// addLocaleData([...en, ...ja]);
-// import '@formatjs/intl-relativetimeformat/polyfill';
-// import '@formatjs/intl-relativetimeformat/dist/locale-data/en';
-// import '@formatjs/intl-relativetimeformat/dist/locale-data/ja';
-
 import { locale } from '../app/@locales/locale';
 
 
@@ -77,6 +71,7 @@ class MyApp extends App {
   
   static async getInitialProps({ Component, ctx }) {
     
+    
     // console.log('_app.js / getInitialProps');
     
     
@@ -94,7 +89,7 @@ class MyApp extends App {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/common`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/common/initial-props`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -117,11 +112,21 @@ class MyApp extends App {
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Stores
     // --------------------------------------------------
     
     const stores = initStoreRoot();
+    
+    
+    // --------------------------------------------------
+    //   Update Data - datetime
+    // --------------------------------------------------
+    
+    const datetimeCurrent = moment().toISOString();
+    stores.data.datetimeCurrent = datetimeCurrent;
     
     
     // --------------------------------------------------
@@ -176,6 +181,16 @@ class MyApp extends App {
     
     
     // --------------------------------------------------
+    //   Datetime Current
+    //   サーバー側とクライアント側の日時の表示に差が生まれてしまう問題を解決するためにctxを利用する
+    //   サーバー側でctxの中に入れた値は、クライアント側でも利用できるようになる
+    //   これによってアクセス日時（20分前など）の表示に差が生まれないようにする
+    // --------------------------------------------------
+    
+    ctx.datetimeCurrent = datetimeCurrent;
+    
+    
+    // --------------------------------------------------
     //   pageProps
     // --------------------------------------------------
     
@@ -194,7 +209,10 @@ class MyApp extends App {
     
     return { pageProps, initialPropsObj, statusCode, reqAcceptLanguage, stores };
     
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -309,6 +327,8 @@ class MyApp extends App {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -322,7 +342,23 @@ class MyApp extends App {
       jssStyles.parentNode.removeChild(jssStyles);
     }
     
+    // console.log('_app.js / componentDidMount');
+    window.addEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
+    
   }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   componentWillUnmount
+  // --------------------------------------------------
+  
+  componentWillUnmount() {
+    window.removeEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
+  }
+  
+  
   
   
   // --------------------------------------------------

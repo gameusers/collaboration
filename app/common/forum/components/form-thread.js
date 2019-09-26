@@ -183,10 +183,18 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
+      <form
         css={css`
           padding: 0 0 8px;
         `}
+        name={`form-${forumThreads_id}`}
+        onSubmit={(eventObj) => handleSubmitFormThread({
+          eventObj,
+          pathArr: this.pathArr,
+          gameCommunities_id,
+          userCommunities_id,
+          forumThreads_id,
+        })}
       >
         
         
@@ -288,9 +296,9 @@ export default injectIntl(class extends React.Component {
           
           {/* Submit */}
           <Button
+            type="submit"
             variant="contained"
             color="primary"
-            onClick={() => handleSubmitFormThread({ pathArr: this.pathArr, gameCommunities_id, userCommunities_id, forumThreads_id })}
             disabled={buttonDisabled}
           >
             {forumThreads_id ? 'スレッドを編集する' : 'スレッドを作成する'}
@@ -321,7 +329,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </div>
+      </form>
     );
     
   }

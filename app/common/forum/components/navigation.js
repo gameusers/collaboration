@@ -439,6 +439,7 @@ export default injectIntl(class extends React.Component {
           {/* Table */}
           <Table>
             
+            
             {/* Head */}
             <TableHead>
               <TableRow>

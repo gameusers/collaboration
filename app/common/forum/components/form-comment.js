@@ -80,7 +80,10 @@ export default injectIntl(class extends React.Component {
       this.pathArr = [props.forumComments_id, 'formCommentObj'];
     }
     
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -98,6 +101,8 @@ export default injectIntl(class extends React.Component {
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -336,7 +341,6 @@ export default injectIntl(class extends React.Component {
             type="submit"
             variant="contained"
             color="primary"
-            // onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
             disabled={buttonDisabled}
           >
             {forumComments_id ? 'コメントを編集する' : 'コメントを投稿する'}

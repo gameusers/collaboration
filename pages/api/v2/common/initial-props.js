@@ -22,8 +22,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../app/@database/forum-threads/model');
+const ModelGames = require('../../../../app/@database/games/model');
 
 
 // ---------------------------------------------
@@ -31,7 +30,6 @@ const ModelForumThreads = require('../../../../app/@database/forum-threads/model
 // ---------------------------------------------
 
 const { returnErrorsArr } = require('../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
@@ -44,7 +42,7 @@ const { locale } = require('../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: hc7YMP_C8
+//   endpointID: GBsTCSr4y
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -70,7 +68,10 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
+  const returnObj = {
+    login: false
+  };
+  
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -81,78 +82,23 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   GET Data
+    //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
     
-    const userCommunityID = req.query.userCommunityID;
-    
-    lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Community
-    // --------------------------------------------------
-    
-    const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
-      localeObj,
-      loginUsers_id,
-      userCommunityID,
-    });
-    
-    // console.log(`
-    //   ----- userCommunityArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    if (userCommunityArr.length === 0) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
+    if (req.isAuthenticated() && req.user) {
+      returnObj.loginUsersObj = req.user;
+      returnObj.login = true;
     }
     
-    const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
-    returnObj.userCommunityObj = userCommunityArr[0];
-    
-    
-    
     
     // --------------------------------------------------
-    //   DB find / Forum Threads For List
+    //   データ取得 / Games
+    //   ヘッダーヒーローイメージ用
     // --------------------------------------------------
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+    returnObj.headerObj = await ModelGames.findForHeroImage({
       localeObj,
-      loginUsers_id,
-      userCommunities_id,
     });
-    
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / Forum
-    // --------------------------------------------------
-    
-    const forumObj = await ModelForumThreads.findForForum({
-      req,
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-    });
-    
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
     
     
     // ---------------------------------------------
@@ -171,7 +117,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'hc7YMP_C8',
+      endpointID: 'GBsTCSr4y',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

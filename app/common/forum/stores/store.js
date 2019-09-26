@@ -898,6 +898,19 @@ class Store {
       storeLayout.handleLoadingHide({});
       
       
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: forumThreads_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
+      
+      
     }
     
     
@@ -908,13 +921,23 @@ class Store {
   
   /**
    * スレッド作成・編集フォームを送信する
+   * @param {Object} eventObj - イベント
    * @param {Array} pathArr - パス
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    */
   @action.bound
-  async handleSubmitFormThread({ pathArr, gameCommunities_id, userCommunities_id, forumThreads_id }) {
+  async handleSubmitFormThread({ eventObj, pathArr, gameCommunities_id, userCommunities_id, forumThreads_id }) {
+    
+    
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
+    eventObj.preventDefault();
+    
+    
     
     
     try {
@@ -1188,6 +1211,19 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: forumThreads_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
       
       
     }
@@ -1615,23 +1651,23 @@ class Store {
       
       
       
-      // // ---------------------------------------------
-      // //   Scroll
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
       
-      // scroller.scrollTo('forumThreads', {
-      //   duration: 800,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -100,
-      // });
+      storeLayout.handleScrollTo({
+        to: `forumComments-${forumThreads_id}`,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
       
       
     }
     
     
   };
-  
   
   
   
@@ -1679,9 +1715,13 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
+      const formDataObj = {
+        forumComments_id,
+      };
       
-      formData.append('forumComments_id', forumComments_id);
+      // const formData = new FormData();
+      
+      // formData.append('forumComments_id', forumComments_id);
       
       
       // ---------------------------------------------
@@ -1689,11 +1729,15 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/forum-comments/get-edit-data`,
+        urlApi: `${process.env.URL_API}/v2/db/forum-comments/get-edit-data`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj)
       });
       
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
       
       // console.log(chalk`
       //   forumComments_id: {green ${forumComments_id}}
@@ -1768,9 +1812,6 @@ class Store {
     } finally {
       
       
-      
-      
-      
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
@@ -1789,14 +1830,13 @@ class Store {
       //   Scroll
       // ---------------------------------------------
       
-      // scrollBy(0, 1);
-      
-      // scroller.scrollTo(`form-${forumComments_id}`, {
-      //   duration: 500,
-      //   delay: 20,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -70,
-      // });
+      storeLayout.handleScrollTo({
+        to: forumComments_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
       
       
     }
@@ -1809,6 +1849,10 @@ class Store {
     
   /**
    * コメント作成・編集フォームを送信する
+   * @param {Object} eventObj - イベント
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    */
   @action.bound
   async handleSubmitFormComment({ eventObj, pathArr = [], gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id }) {
@@ -2087,6 +2131,19 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: forumComments_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
       
       
     }

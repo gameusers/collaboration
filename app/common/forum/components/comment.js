@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+import { Element } from 'react-scroll';
 import moment from 'moment';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
@@ -286,9 +287,20 @@ export default injectIntl(class extends React.Component {
       //   Datetime
       // --------------------------------------------------
       
-      const datetimeNow = moment().utcOffset(0);
+      // const datetimeCurrent = moment().utcOffset(0);
+      const datetimeCurrent = moment(stores.data.datetimeCurrent);
+      // const datetimeCurrent = moment(moment().toISOString());
+      
+      
+      // console.log(chalk`
+      //   /app/common/forum/components/comment.js
+      //   stores.data.datetimeCurrent: {green ${stores.data.datetimeCurrent}}
+      // `);
+      
+      // console.log(datetimeCurrent);
+      
       const datetimeUpdated = moment(commentsDataObj.updatedDate).utcOffset(0);
-      const datetimeFrom = datetimeUpdated.from(datetimeNow);
+      const datetimeFrom = datetimeUpdated.from(datetimeCurrent);
       
       const goods = lodashGet(commentsDataObj, ['goods'], 0);
       
@@ -318,7 +330,7 @@ export default injectIntl(class extends React.Component {
         
         componentArr.push(
           
-          <div
+          <Element
             css={css`
               border-top: 1px solid;
               border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
@@ -327,7 +339,19 @@ export default injectIntl(class extends React.Component {
               margin: 24px 0 0 0;
             `}
             key={index}
+            name={forumComments_id}
           >
+          
+          {/*<div
+            css={css`
+              border-top: 1px solid;
+              border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+              border-image-slice: 1;
+              padding: 24px 0 0 0;
+              margin: 24px 0 0 0;
+            `}
+            key={index}
+          >*/}
             
             <div
               css={css`
@@ -342,7 +366,7 @@ export default injectIntl(class extends React.Component {
               />
             </div>
             
-          </div>
+          </Element>
           
         );
         
@@ -355,7 +379,7 @@ export default injectIntl(class extends React.Component {
         
         componentArr.push(
           
-          <div
+          <Element
             css={css`
               border-top: 1px solid;
               border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
@@ -364,7 +388,19 @@ export default injectIntl(class extends React.Component {
               margin: 24px 0 0 0;
             `}
             key={index}
+            name={forumComments_id}
           >
+          
+          {/*<div
+            css={css`
+              border-top: 1px solid;
+              border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+              border-image-slice: 1;
+              padding: 24px 0 0 0;
+              margin: 24px 0 0 0;
+            `}
+            key={index}
+          >*/}
             
             
             {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
@@ -651,7 +687,8 @@ export default injectIntl(class extends React.Component {
               
             </div>
             
-          </div>
+            
+          </Element>
           
         );
         
@@ -667,11 +704,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
+      <Element
         css={css`
           margin: 24px 0 0 0;
           padding: 0 0 0 0;
+          // background-color: pink;
         `}
+        name={`forumComments-${forumThreads_id}`}
       >
         
         
@@ -757,7 +796,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </div>
+      </Element>
     );
     
   }

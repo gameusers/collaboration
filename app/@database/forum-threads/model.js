@@ -325,7 +325,15 @@ const findForThreadsList = async ({
       //   Datetime
       // --------------------------------------------------
       
-      clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+      // const timezone = moment.tz.guess();
+      // clonedObj.updatedDate = moment.tz(valueObj.updatedDate, timezone).format('YYYY/MM/DD HH:mm');
+      
+      // console.log(chalk`
+      //   valueObj.updatedDate: {green ${valueObj.updatedDate}}
+      //   timezone: {green ${timezone}}
+      // `);
+      // console.log(moment.tz.guess());
+      clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD HH:mm');
       
       
       // --------------------------------------------------
@@ -1237,17 +1245,17 @@ const transactionForUpsertThread = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- userCommunitiesConditionObj -----\n

@@ -389,7 +389,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
         
         // ---------------------------------------------
-        //   画像をリサイズ＆圧縮する
+        //   画像をリサイズ＆圧縮す��
         // ---------------------------------------------
         
         let buff = Buffer.from(src.slice(src.indexOf('base64') + 7), 'base64');
@@ -503,6 +503,24 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
   
   
+  console.log(`
+    ----- newArr -----\n
+    ${util.inspect(newArr, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+  
+  console.log(`
+    ----- oldArr -----\n
+    ${util.inspect(oldArr, { colors: true, depth: null })}\n
+    --------------------\n
+  `);
+  
+  console.log(chalk`
+    countNewImages: {green ${countNewImages}}
+    countOldImages: {green ${countOldImages}}
+  `);
+  
+  
   // ---------------------------------------------
   //   画像を削除する　【チェック時は要コメントアウト】
   // ---------------------------------------------
@@ -511,7 +529,8 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   //   すべて削除
   // ----------------------------------------
   
-  if (newArr.length === 0 && oldArr.length > 0) {
+  if (countNewImages === 0) {
+  // if (newArr.length === 0 && oldArr.length > 0) {
     
     const dirPath = `static/img/${type}/${_id}`;
     

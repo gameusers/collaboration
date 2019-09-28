@@ -29,6 +29,16 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationForumCommentsName } = require('../../../@database/forum-comments/validations/form');
 
 
 // ---------------------------------------------
@@ -77,7 +87,10 @@ export default injectIntl(class extends React.Component {
       
     }
     
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -97,6 +110,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -110,12 +125,29 @@ export default injectIntl(class extends React.Component {
     
     const { stores, storeForum, intl, _id, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, replyToForumComments_id } = this.props;
     
+    const { loginUsersObj } = stores.data;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   ログインしているかどうか
+    // --------------------------------------------------
+    
+    let login = false; 
+    
+    if (Object.keys(loginUsersObj).length > 0) {
+      login = true;
+    }
+    
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
     const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    
+    
     
     
     // --------------------------------------------------
@@ -126,11 +158,20 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitFormThread,
+      handleSubmitFormComment,
       
     } = storeForum;
     
+    const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
+    const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], false);
     const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
+    
+    
+    // --------------------------------------------------
+    //   Validation
+    // --------------------------------------------------
+    
+    const validationForumCommentsNameObj = validationForumCommentsName({ value: name });
     
     
     // --------------------------------------------------
@@ -140,24 +181,26 @@ export default injectIntl(class extends React.Component {
     const showFormReply = lodashGet(dataObj, [...this.pathArr, 'show'], false);
     
     
+    // --------------------------------------------------
+    //   Limit
+    // --------------------------------------------------
+    
+    const limit = parseInt(process.env.FORUM_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
+    
+    
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- validationForumThreadsNameObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsNameObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     // console.log(chalk`
-    //   /app/common/forum/components/form-comment.js
+    //   /app/common/forum/components/form-reply.js
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
+    //   replyToForumComments_id: {green ${replyToForumComments_id}}
     // `);
     
     // console.log(`
@@ -167,14 +210,12 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- showFormReplyPathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(showFormReplyPathArr)), { colors: true, depth: null })}\n
+    //   ----- validationForumCommentsNameObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(validationForumCommentsNameObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(chalk`
-    //   this.uniqueID: {green ${this.uniqueID}}
-    // `);
+    
     
     
     // --------------------------------------------------
@@ -182,11 +223,73 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
+      <form
         css={css`
           padding: 12px 0 12px 0;
         `}
+        name={`form-${forumComments_id}-reply`}
+        onSubmit={(eventObj) => handleSubmitFormComment({
+          eventObj,
+          pathArr: this.pathArr,
+          gameCommunities_id,
+          userCommunities_id,
+          forumThreads_id,
+          forumComments_id,
+          replyToForumComments_id,
+        })}
       >
+        
+        
+        {/* 名前 */}
+        {!login &&
+          <div>
+            <TextField
+              css={css`
+                && {
+                  width: 400px;
+                  margin-top: 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    width: 100%;
+                  }
+                }
+              `}
+              id="name"
+              placeholder="名前"
+              value={name}
+              value={validationForumCommentsNameObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...this.pathArr, 'name'],
+                value: eventObj.target.value
+              })}
+              error={validationForumCommentsNameObj.error}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 50,
+              }}
+            />
+          </div>
+        }
+        
+        
+        {/* Anonymity */}
+        {login &&
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={anonymity}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [...this.pathArr, 'anonymity'],
+                    value: eventObj.target.checked
+                  })}
+                />
+              }
+              label="匿名にする"
+            />
+          </div>
+        }
         
         
         {/* Comment */}
@@ -240,7 +343,7 @@ export default injectIntl(class extends React.Component {
             descriptionVideo="返信に表示する動画を登録できます。"
             arrayName="mainArr"
             caption={true}
-            limit={3}
+            limit={limit}
           />
           
         </div>
@@ -260,9 +363,9 @@ export default injectIntl(class extends React.Component {
           
           {/* Submit */}
           <Button
+            type="submit"
             variant="contained"
             color="primary"
-            onClick={() => handleSubmitFormThread({ gameCommunities_id, userCommunities_id, forumComments_id })}
             disabled={buttonDisabled}
           >
             {_id ? '返信を編集する' : '返信を投稿する'}
@@ -292,7 +395,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </div>
+      </form>
     );
     
   }

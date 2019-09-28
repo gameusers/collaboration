@@ -155,7 +155,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, replies } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -583,6 +583,7 @@ export default injectIntl(class extends React.Component {
                 <FormReply
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
                   forumComments_id={forumComments_id}
                   replyToForumComments_id={forumComments2_id}
                 />

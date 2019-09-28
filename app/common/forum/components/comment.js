@@ -670,6 +670,7 @@ export default injectIntl(class extends React.Component {
                 <FormReply
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
+                  forumThreads_id={forumThreads_id}
                   forumComments_id={forumComments_id}
                 />
               }

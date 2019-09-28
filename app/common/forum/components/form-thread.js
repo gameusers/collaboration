@@ -158,6 +158,13 @@ export default injectIntl(class extends React.Component {
     const validationForumThreadsNameObj = validationForumThreadsName({ value: name });
     
     
+    // --------------------------------------------------
+    //   Limit
+    // --------------------------------------------------
+    
+    const limit = parseInt(process.env.FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+    
+    
     
     
     // --------------------------------------------------
@@ -276,7 +283,7 @@ export default injectIntl(class extends React.Component {
             descriptionImage="スレッドに表示する画像をアップロードできます。"
             descriptionVideo="スレッドに表示する動画を登録できます。"
             showImageCaption={true}
-            limit={3}
+            limit={limit}
           />
           
         </div>

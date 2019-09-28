@@ -172,6 +172,13 @@ export default injectIntl(class extends React.Component {
     const validationForumCommentsNameObj = validationForumCommentsName({ value: name });
     
     
+    // --------------------------------------------------
+    //   Limit
+    // --------------------------------------------------
+    
+    const limit = parseInt(process.env.FORUM_COMMENT_IMAGES_AND_VIDEOS_LIMIT, 10);
+    
+    
     
     
     // --------------------------------------------------
@@ -318,7 +325,7 @@ export default injectIntl(class extends React.Component {
             descriptionImage="コメントに表示する画像をアップロードできます。"
             descriptionVideo="コメントに表示する動画を登録できます。"
             showImageCaption={true}
-            limit={20}
+            limit={limit}
           />
           
         </div>

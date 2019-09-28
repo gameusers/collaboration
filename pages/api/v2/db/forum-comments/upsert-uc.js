@@ -26,6 +26,7 @@ const lodashSet = require('lodash/set');
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -45,8 +46,9 @@ const { setAuthority } = require('../../../../../app/@modules/authority');
 
 const { validationIP } = require('../../../../../app/@validations/ip');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationForumThreadsName } = require('../../../../../app/@database/forum-threads/validations/name');
-const { validationForumThreadsComment } = require('../../../../../app/@database/forum-threads/validations/comment');
+const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
+const { validationForumCommentsName } = require('../../../../../app/@database/forum-comments/validations/name');
+const { validationForumCommentsComment } = require('../../../../../app/@database/forum-comments/validations/comment');
 const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
@@ -61,7 +63,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: XfDc_r3br
+//   endpointID: ViCtroXyq
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -103,12 +105,14 @@ export default async (req, res) => {
     
     const bodyObj = JSON.parse(req.body);
     
-    const { 
+    const {
       
       userCommunities_id,
       forumThreads_id,
+      forumComments_id,
       name,
       comment,
+      anonymity,
       imagesAndVideosObj,
       threadListLimit,
       threadLimit,
@@ -120,8 +124,10 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
+    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
+    lodashSet(requestParametersObj, ['anonymity'], anonymity);
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
@@ -144,18 +150,10 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    if (userCommunities_id) {
-      
-      await validationUserCommunities_idServer({ value: userCommunities_id });
-      
-    } else {
-      
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WNajTF52g', messageID: '1YJnibkmh' }] });
-      
-    }
-    
-    await validationForumThreadsName({ throwError: true, value: name });
-    await validationForumThreadsComment({ throwError: true, value: comment });
+    await validationUserCommunities_idServer({ value: userCommunities_id });
+    await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
+    await validationForumCommentsName({ throwError: true, value: name });
+    await validationForumCommentsComment({ throwError: true, value: comment });
     await validationIP({ throwError: true, value: req.ip });
     
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
@@ -167,52 +165,59 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads / スレッドが存在するかチェック
+    //   編集 - 編集するコメントが存在していない場合はエラー
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
     
-    if (forumThreads_id) {
+    if (forumComments_id) {
       
       // データが存在しない、編集権限がない場合はエラーが投げられる
-      const tempOldObj = await ModelForumThreads.findForEdit({
+      const forumCommentsObj = await ModelForumComments.findForEdit({
+        req,
         localeObj,
         loginUsers_id,
-        forumThreads_id,
+        forumComments_id,
       });
       
       // console.log(`
-      //   ----- tempOldObj -----\n
-      //   ${util.inspect(tempOldObj, { colors: true, depth: null })}\n
+      //   ----- forumCommentsObj -----\n
+      //   ${util.inspect(forumCommentsObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
-      oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
+      oldImagesAndVideosObj = lodashGet(forumCommentsObj, ['imagesAndVideosObj'], {});
       
-      // if (Object.keys(tempOldObj).length === 0) {
-      //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'ERb2Rej4K', messageID: 'cvS0qSAlE' }] });
+      // if (Object.keys(forumCommentsObj).length === 0) {
+      //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'XNus5UAAT', messageID: 'cvS0qSAlE' }] });
       // }
       
       
     // --------------------------------------------------
-    //   DB find / Forum Threads / 同じ名前のスレッドが存在するかチェック
+    //   新規投稿 - 同じIPで、同じコメントが10分以内に投稿されている場合はエラー
     // --------------------------------------------------
       
     } else {
       
-      const count = await ModelForumThreads.count({
+      const dateTimeLimit = moment().utc().add(-10, 'minutes');
+      
+      const count = await ModelForumComments.count({
         conditionObj: {
           userCommunities_id,
-          'localesArr.name': name,
+          forumThreads_id,
+          'localesArr.comment': comment,
+          'createdDate': { '$gt': dateTimeLimit },
+          ip: req.ip,
         }
       });
       
       // console.log(chalk`
+      //   dateTimeLimit: {green ${dateTimeLimit}}
       //   count: {green ${count}}
       // `);
       
       if (count > 0) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GhO9a3n1M', messageID: 'ffNAq3wYT' }] });
       }
       
     }
@@ -226,12 +231,6 @@ export default async (req, res) => {
     
     const ISO8601 = moment().toISOString();
     
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // --------------------------------------------------
     //   画像を保存する
@@ -240,8 +239,8 @@ export default async (req, res) => {
     let imagesAndVideosConditionObj = {};
     let imagesAndVideosSaveObj = {};
     let imagesAndVideos_id = '';
-    // let images = 0;
-    // let videos = 0;
+    let images = 0;
+    let videos = 0;
     
     if (imagesAndVideosObj) {
       
@@ -253,8 +252,8 @@ export default async (req, res) => {
       });
       
       imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
-      // images = lodashGet(formatAndSaveObj, ['images'], 0);
-      // videos = lodashGet(formatAndSaveObj, ['videos'], 0);
+      images = lodashGet(formatAndSaveObj, ['images'], 0);
+      videos = lodashGet(formatAndSaveObj, ['videos'], 0);
       
       
       // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
@@ -288,18 +287,22 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   - forum-threads
+    //   - forum-comments
     // ---------------------------------------------
     
-    const forumThreadsConditionObj = {
+    const forumCommentsConditionObj = {
       _id: shortid.generate(),
     };
     
     
-    const forumThreadsSaveObj = {
+    const forumCommentsSaveObj = {
       createdDate: ISO8601,
       updatedDate: ISO8601,
+      gameCommunities_id: '',
       userCommunities_id,
+      forumThreads_id,
+      forumComments_id: '',
+      replyToForumComments_id: '',
       users_id: loginUsers_id,
       localesArr: [
         {
@@ -310,16 +313,31 @@ export default async (req, res) => {
         }
       ],
       imagesAndVideos_id,
-      comments: 0,
-      images: 0,
-      videos: 0,
+      anonymity: anonymity ? true : false,
+      goods: 0,
+      replies: 0,
       ip: req.ip,
       userAgent: lodashGet(req, ['headers', 'user-agent'], '')
     };
     
     
     // ---------------------------------------------
-    //   - user-communities / 更新日時の変更＆スレッド数 + 1
+    //   - forum-threads / コメント数 + 1
+    // ---------------------------------------------
+    
+    const forumThreadsConditionObj = {
+      _id: forumThreads_id,
+    };
+    
+    
+    let forumThreadsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { comments: 1, images, videos }
+    };
+    
+    
+    // ---------------------------------------------
+    //   - user-communities / 更新日時の変更
     // ---------------------------------------------
     
     const userCommunitiesConditionObj = {
@@ -330,7 +348,6 @@ export default async (req, res) => {
     const userCommunitiesSaveObj = {
       updatedDate: ISO8601,
       'updatedDateObj.forum': ISO8601,
-      $inc: { 'forumObj.threadCount': 1 }
     };
     
     
@@ -340,28 +357,35 @@ export default async (req, res) => {
     //   Update
     // --------------------------------------------------
     
-    if (forumThreads_id) {
+    if (forumComments_id) {
       
       
       // ---------------------------------------------
-      //   - forum-threads
+      //   - forum-comments
       // ---------------------------------------------
       
-      forumThreadsConditionObj._id = forumThreads_id;
+      forumCommentsConditionObj._id = forumComments_id;
       
-      delete forumThreadsSaveObj.createdDate;
-      delete forumThreadsSaveObj.userCommunities_id;
-      delete forumThreadsSaveObj.users_id;
-      delete forumThreadsSaveObj.comments;
-      delete forumThreadsSaveObj.images;
-      delete forumThreadsSaveObj.videos;
+      delete forumCommentsSaveObj.createdDate;
+      delete forumCommentsSaveObj.gameCommunities_id;
+      delete forumCommentsSaveObj.userCommunities_id;
+      delete forumCommentsSaveObj.forumThreads_id;
+      delete forumCommentsSaveObj.forumComments_id;
+      delete forumCommentsSaveObj.replyToForumComments_id;
+      delete forumCommentsSaveObj.users_id;
+      delete forumCommentsSaveObj.goods;
+      delete forumCommentsSaveObj.replies;
       
       
       // ---------------------------------------------
-      //   - user-communities / 更新日時の変更
+      //   - forum-threads / 更新日時の変更
       // ---------------------------------------------
       
-      delete userCommunitiesSaveObj.$inc;
+      forumThreadsSaveObj = {
+        updatedDate: ISO8601,
+        $inc: { images, videos }
+      };
+      // delete forumThreadsSaveObj.$inc;
       
       
     }
@@ -370,11 +394,13 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB insert Transaction / Forum Threads & Images And Videos & User Communities
+    //   DB insert Transaction
     // --------------------------------------------------
     
-    await ModelForumThreads.transactionForUpsertThread({
+    await ModelForumComments.transactionForUpsert({
       
+      forumCommentsConditionObj,
+      forumCommentsSaveObj,
       forumThreadsConditionObj,
       forumThreadsSaveObj,
       imagesAndVideosConditionObj,
@@ -385,6 +411,21 @@ export default async (req, res) => {
     });
     
     
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum
+    // --------------------------------------------------
+    
+    // const forumObj = await ModelForumThreads.findForThreads({
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunities_id,
+    // });
+    
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsAndRepliesObj = forumObj.forumCommentsAndRepliesObj;
     
     
     // --------------------------------------------------
@@ -445,8 +486,8 @@ export default async (req, res) => {
     //   Set Authority
     // --------------------------------------------------
     
-    if (!loginUsers_id && !forumThreads_id) {
-      setAuthority({ req, _id: forumThreadsConditionObj._id });
+    if (!forumThreads_id) {
+      setAuthority({ req, _id: forumCommentsConditionObj._id });
     }
     
     
@@ -459,8 +500,10 @@ export default async (req, res) => {
     // console.log(chalk`
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
     //   name: {green ${name} / ${typeof name}}
     //   comment: {green ${comment} / ${typeof comment}}
+    //   anonymity: {green ${anonymity} / ${typeof anonymity}}
     //   IP: {green ${req.ip}}
     //   User Agent: {green ${req.headers['user-agent']}}
     // `);
@@ -490,7 +533,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'XfDc_r3br',
+      endpointID: 'ViCtroXyq',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

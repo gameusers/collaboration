@@ -102,10 +102,11 @@ export default async (req, res) => {
       
       gameCommunities_id,
       userCommunities_id,
-      forumComments_id,
-      forumThreads_idArr,
-      threadPage,
-      threadLimit,
+      // forumComments_id,
+      // forumThreads_idArr,
+      forumComments_idArr,
+      // threadPage,
+      // threadLimit,
       commentPage, 
       commentLimit,
       replyPage,
@@ -116,37 +117,15 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
-    lodashSet(requestParametersObj, ['forumThreads_idArr'], forumThreads_idArr);
-    lodashSet(requestParametersObj, ['threadPage'], threadPage);
-    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    // lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
+    // lodashSet(requestParametersObj, ['forumThreads_idArr'], forumThreads_idArr);
+    lodashSet(requestParametersObj, ['forumComments_idArr'], forumComments_idArr);
+    // lodashSet(requestParametersObj, ['threadPage'], threadPage);
+    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyPage'], replyPage);
     lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
-    
-    
-    // console.log(chalk`
-    //   /pages/api/v2/db/forum-comments/read-replies.js
-      
-    //   loginUsers_id: {green ${loginUsers_id}}
-      
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
-    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
-    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    // `);
-    
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -175,8 +154,8 @@ export default async (req, res) => {
     }
     
     // Thread Page & Limit
-    await validationInteger({ throwError: true, required: true, value: threadPage });
-    await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
+    // await validationInteger({ throwError: true, required: true, value: threadPage });
+    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
     
     // Comment Page & Limit
     await validationInteger({ throwError: true, required: true, value: commentPage });
@@ -193,13 +172,13 @@ export default async (req, res) => {
     //   DB find / Forum Comments - Replies
     // --------------------------------------------------
     
-    returnObj.forumRepliesObj = await ModelForumComments.findRepliesByForumComment_id({
+    returnObj.forumRepliesObj = await ModelForumComments.findRepliesByForumComments_idArr({
       
       req,
       localeObj,
       loginUsers_id,
       userCommunities_id,
-      forumComments_id,
+      forumComments_idArr,
       commentPage,
       commentLimit,
       replyPage,
@@ -214,34 +193,31 @@ export default async (req, res) => {
     //   DB find / Forum Threads
     // --------------------------------------------------
     
-    if (forumThreads_idArr.length > 0) {
+    // if (forumThreads_idArr.length > 0) {
       
-      const forumObj = await ModelForumThreads.findForForum({
+    //   const forumObj = await ModelForumThreads.findForForum({
         
-        req,
-        localeObj,
-        loginUsers_id,
-        userCommunities_id,
-        forumThreads_idArr,
-        threadPage,
-        threadLimit,
-        commentPage,
-        commentLimit,
-        replyPage: 1,
-        replyLimit,
+    //     req,
+    //     localeObj,
+    //     loginUsers_id,
+    //     userCommunities_id,
+    //     forumThreads_idArr,
+    //     threadPage,
+    //     threadLimit,
+    //     commentPage,
+    //     commentLimit,
+    //     replyPage: 1,
+    //     replyLimit,
         
-      });
+    //   });
       
-      // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-      // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    //   returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    //   returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    //   returnObj.forumRepliesObj = lodashMerge(forumObj.forumRepliesObj, returnObj.forumRepliesObj);
       
-      // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
+    //   // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
       
-      returnObj.forumRepliesObj = lodashMerge(forumObj.forumRepliesObj, returnObj.forumRepliesObj);
-      
-    }
-    
-    
+    // }
     
     
     
@@ -249,6 +225,35 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   /pages/api/v2/db/forum-comments/read-replies.js
+      
+    //   loginUsers_id: {green ${loginUsers_id}}
+      
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreads_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumComments_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // console.log(`
     //   ----- forumObj -----\n
@@ -271,6 +276,12 @@ export default async (req, res) => {
     // console.log(`
     //   ----- returnObj.forumRepliesObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj.forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

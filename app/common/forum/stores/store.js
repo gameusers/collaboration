@@ -1872,7 +1872,7 @@ class Store {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
-    replyToForumComments_id,
+    // replyToForumComments_id,
     
   }) {
     
@@ -1948,14 +1948,14 @@ class Store {
       //   Loading 表示
       // ---------------------------------------------
       
-      // storeLayout.handleLoadingShow({});
+      storeLayout.handleLoadingShow({});
       
       
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
       
-      // storeLayout.handleButtonDisable({ pathArr });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
@@ -1979,7 +1979,6 @@ class Store {
         userCommunities_id: {green ${userCommunities_id}}
         forumThreads_id: {green ${forumThreads_id}}
         forumComments_id: {green ${forumComments_id}}
-        replyToForumComments_id: {green ${replyToForumComments_id}}
         name: {green ${name}}
         anonymity: {green ${anonymity}}
         typeof anonymity: {green ${typeof anonymity}}
@@ -1992,7 +1991,7 @@ class Store {
         --------------------\n
       `);
       
-      return;
+      // return;
       
       
       
@@ -2016,6 +2015,10 @@ class Store {
       if (forumComments_id) {
         formDataObj.forumComments_id = forumComments_id;
       }
+      
+      // if (replyToForumComments_id) {
+      //   formDataObj.replyToForumComments_id = replyToForumComments_id;
+      // }
       
       if (anonymity) {
         formDataObj.anonymity = anonymity;
@@ -2053,11 +2056,11 @@ class Store {
       }
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -2250,7 +2253,7 @@ class Store {
         limit = changeLimit;
       }
       
-      const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      // const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
       const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
       
       
@@ -2395,29 +2398,72 @@ class Store {
       //   forumThreads_idArr
       // ---------------------------------------------
       
-      let forumThreads_idArr = [];
+      // let forumThreads_idArr = [];
       
       // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
-      if (changeLimit) {
+      // if (changeLimit) {
         
-        const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
-        const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-        forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+      //   const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
+      //   const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
+      //   forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
         
-        // 現在表示しているスレッドのIDを取得して、そのIDだけを除去する
-        const forumThreads_id = lodashGet(forumObj, ['forumCommentsObj', 'dataObj', forumComments_id, 'forumThreads_id'], '');
+      //   // 現在表示しているスレッドのIDを取得して、そのIDだけを除去する
+      //   const forumThreads_id = lodashGet(forumObj, ['forumCommentsObj', 'dataObj', forumComments_id, 'forumThreads_id'], '');
         
-        // console.log(chalk`
-        //   forumThreads_id: {green ${forumThreads_id}}
-        // `);
+      //   forumThreads_idArr = forumThreads_idArr.filter(_id => _id !== forumThreads_id);
         
-        forumThreads_idArr = forumThreads_idArr.filter(_id => _id !== forumThreads_id);
+      //   // console.log(chalk`
+      //   //   forumThreads_id: {green ${forumThreads_id}}
+      //   // `);
         
-      }
+      // }
       
       // console.log(`
       //   ----- forumThreads_idArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      // ---------------------------------------------
+      //   forumComments_idArr
+      // ---------------------------------------------
+      
+      let forumComments_idArr = [forumComments_id];
+      
+      // 表示件数を変更する場合は他の返信も一緒に更新するため、現在表示されているコメントのIDを取得する
+      if (changeLimit) {
+        
+        const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
+        const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
+        const forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
+        
+        
+        forumComments_idArr = [];
+        
+        for (let forumThreads_id of forumThreads_idArr.values()) {
+          
+          // console.log(forumThreads_id);
+          
+          const forumCommentsPage = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, 'page'], 1);
+          const tempForumComments_idArr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);
+          
+          // console.log(`
+          //   ----- tempForumComments_idArr -----\n
+          //   ${util.inspect(JSON.parse(JSON.stringify(tempForumComments_idArr)), { colors: true, depth: null })}\n
+          //   --------------------\n
+          // `);
+          
+          forumComments_idArr = forumComments_idArr.concat(tempForumComments_idArr);
+          
+        }
+        
+      }
+      
+      // console.log(`
+      //   ----- forumComments_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -2432,10 +2478,10 @@ class Store {
         
         gameCommunities_id,
         userCommunities_id,
-        forumComments_id,
-        forumThreads_idArr,
-        threadPage: 1,
-        threadLimit,
+        // forumThreads_idArr,
+        forumComments_idArr,
+        // threadPage: 1,
+        // threadLimit,
         commentPage: 1,
         commentLimit,
         replyPage: page,
@@ -2465,9 +2511,12 @@ class Store {
       }
       
       
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
       // return;
       
       
@@ -2488,12 +2537,12 @@ class Store {
       //   forumThreadsObj
       // ---------------------------------------------
       
-      const forumThreadsOldObj = lodashGet(forumObj, ['forumThreadsObj'], {});
-      const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      // const forumThreadsOldObj = lodashGet(forumObj, ['forumThreadsObj'], {});
+      // const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
       
-      const forumThreadsMergedObj = lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
+      // const forumThreadsMergedObj = lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
       
-      lodashSet(clonedObj, ['forumThreadsObj'], forumThreadsMergedObj);
+      // lodashSet(clonedObj, ['forumThreadsObj'], forumThreadsMergedObj);
       
       
       // console.log(`
@@ -2508,16 +2557,17 @@ class Store {
       //   --------------------\n
       // `);
       
+      
       // ---------------------------------------------
       //   forumCommentObj
       // ---------------------------------------------
       
-      const forumCommentsOldObj = lodashGet(forumObj, ['forumCommentsObj'], {});
-      const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      // const forumCommentsOldObj = lodashGet(forumObj, ['forumCommentsObj'], {});
+      // const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
       
-      const forumCommentsMergedObj = lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
+      // const forumCommentsMergedObj = lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
       
-      lodashSet(clonedObj, ['forumCommentsObj'], forumCommentsMergedObj);
+      // lodashSet(clonedObj, ['forumCommentsObj'], forumCommentsMergedObj);
       
       
       // ---------------------------------------------
@@ -2527,6 +2577,7 @@ class Store {
       const forumRepliesOldObj = lodashGet(forumObj, ['forumRepliesObj'], {});
       const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
       
+      // const forumRepliesMergedObj = lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
       const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
       
       lodashSet(clonedObj, ['forumRepliesObj'], forumRepliesMergedObj);
@@ -2613,17 +2664,17 @@ class Store {
       storeLayout.handleLoadingHide({});
       
       
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
       
-      // // ---------------------------------------------
-      // //   Scroll
-      // // ---------------------------------------------
-      
-      // scroller.scrollTo('forumThreads', {
-      //   duration: 800,
-      //   delay: 0,
-      //   smooth: 'easeInOutQuart',
-      //   offset: -100,
-      // });
+      storeLayout.handleScrollTo({
+        to: `forumReplies-${forumComments_id}`,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -100,
+      });
       
       
     }
@@ -2631,6 +2682,356 @@ class Store {
     
   };
   
+  
+  
+  
+  /**
+   * 返信作成・編集フォームを送信する
+   * @param {Object} eventObj - イベント
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   */
+  @action.bound
+  async handleSubmitFormReply({
+    
+    eventObj,
+    pathArr = [],
+    gameCommunities_id,
+    userCommunities_id,
+    forumThreads_id,
+    forumComments_id,
+    replyToForumComments_id,
+    
+  }) {
+    
+    
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
+    eventObj.preventDefault();
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Property
+    // ---------------------------------------------
+    
+    const communities_id = gameCommunities_id || userCommunities_id;
+    
+    const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+    const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], false);
+    const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
+    
+    const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
+    
+    
+    const forumObj = lodashGet(this.dataObj, [communities_id], {});
+    const clonedObj = lodashCloneDeep(forumObj);
+    
+    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    
+    
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   communities_id または forumThreads_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!communities_id || !forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: 'ooDR_zAOu', messageID: '1YJnibkmh' }] });
+      }
+      
+      
+      // ---------------------------------------------
+      //   Validation
+      // ---------------------------------------------
+      
+      const validationForumCommentsNameObj = validationForumCommentsName({ value: name });
+      const validationForumCommentsCommentObj = validationForumCommentsComment({ value: comment });
+      
+      
+      // ---------------------------------------------
+      //   Validation Error
+      // ---------------------------------------------
+      
+      if (
+        validationForumCommentsNameObj.error ||
+        validationForumCommentsCommentObj.error
+      ) {
+        throw new CustomError({ errorsArr: [{ code: 'evE70gDt0', messageID: 'uwHIKBy7c' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      console.log(chalk`
+        \n---------- handleSubmitFormComment ----------\n
+      `);
+      
+      console.log(`
+        ----- pathArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(chalk`
+        gameCommunities_id: {green ${gameCommunities_id}}
+        userCommunities_id: {green ${userCommunities_id}}
+        forumThreads_id: {green ${forumThreads_id}}
+        forumComments_id: {green ${forumComments_id}}
+        replyToForumComments_id: {green ${replyToForumComments_id}}
+        name: {green ${name}}
+        anonymity: {green ${anonymity}}
+        typeof anonymity: {green ${typeof anonymity}}
+        comment: {green ${comment}}
+      `);
+      
+      console.log(`
+        ----- imagesAndVideosObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      // return;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        gameCommunities_id,
+        userCommunities_id,
+        forumThreads_id,
+        name,
+        comment,
+        threadListLimit,
+        threadLimit,
+        commentLimit,
+        replyLimit,
+      };
+      
+      if (forumComments_id) {
+        formDataObj.forumComments_id = forumComments_id;
+      }
+      
+      if (replyToForumComments_id) {
+        formDataObj.replyToForumComments_id = replyToForumComments_id;
+      }
+      
+      if (anonymity) {
+        formDataObj.anonymity = anonymity;
+      }
+      
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = {};
+      
+      if (gameCommunities_id) {
+        
+        
+        
+      } else if (userCommunities_id) {
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-comments/reply-upsert-uc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
+        
+      } else {
+        
+        
+        
+      }
+      
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsForListObj
+      // ---------------------------------------------
+      
+      clonedObj.forumThreadsForListObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsObj
+      // ---------------------------------------------
+      
+      clonedObj.forumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumCommentsObj
+      // ---------------------------------------------
+      
+      clonedObj.forumCommentsObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumRepliesObj
+      // ---------------------------------------------
+      
+      clonedObj.forumRepliesObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   UpdatedDateObj
+      // --------------------------------------------------
+      
+      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   Update
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [communities_id],
+        value: clonedObj
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Close Form & Reset Form
+      // ---------------------------------------------
+      
+      if (forumThreads_id) {
+        
+        lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], false);
+        
+      } else {
+        
+        lodashSet(this.dataObj, [...pathArr, 'name'], '');
+        lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+        
+        storeImageAndVideoForm.handleResetForm({ pathArr });
+        
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+      });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: forumComments_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
+      
+      
+    }
+    
+    
+  };
   
   
   

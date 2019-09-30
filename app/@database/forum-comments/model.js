@@ -776,13 +776,14 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
  * @param {number} replyLimit - 返信のリミット
  * @return {Array} 取得データ
  */
-const findRepliesByForumComment_id = async ({
+const findRepliesByForumComments_idArr = async ({
   
   req,
   localeObj,
   loginUsers_id,
   userCommunities_id,
   forumComments_id,
+  forumComments_idArr,
   commentPage = 1,
   commentLimit = process.env.FORUM_COMMENT_LIMIT,
   replyPage = 1,
@@ -791,7 +792,7 @@ const findRepliesByForumComment_id = async ({
 }) => {
   
   // console.log(chalk`
-  //   ----- model / findRepliesByForumComment_id -----
+  //   ----- model / findRepliesByForumComments_idArr -----
     
   //   userCommunities_id: {green ${userCommunities_id}}
   //   forumComments_id: {green ${forumComments_id}}
@@ -828,7 +829,7 @@ const findRepliesByForumComment_id = async ({
       {
         $match: {
           $and: [
-            { _id: forumComments_id },
+            { _id: { $in: forumComments_idArr } },
             { userCommunities_id },
           ]
         },
@@ -2659,59 +2660,59 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- forumCommentsConditionObj -----\n
-    //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumCommentsConditionObj -----\n
+      ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- forumCommentsSaveObj -----\n
-    //   ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumCommentsSaveObj -----\n
+      ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- forumThreadsConditionObj -----\n
-    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumThreadsConditionObj -----\n
+      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- forumThreadsSaveObj -----\n
-    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumThreadsSaveObj -----\n
+      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- userCommunitiesConditionObj -----\n
-    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesConditionObj -----\n
+      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- userCommunitiesSaveObj -----\n
-    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesSaveObj -----\n
+      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -2767,10 +2768,7 @@ module.exports = {
   deleteMany,
   
   findCommentsAndRepliesByForumThreads_idsArr,
-  findRepliesByForumComment_id,
-  // findForForumCommentsAndReplies,
-  // findCommentByForumComment_id,
-  // findRepliesByForumComment_id,
+  findRepliesByForumComments_idArr,
   findForEdit,
   transactionForUpsert,
   

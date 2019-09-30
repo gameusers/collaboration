@@ -17,8 +17,8 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
-import { Element } from 'react-scroll';
 import moment from 'moment';
+import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
@@ -667,12 +667,18 @@ export default injectIntl(class extends React.Component {
               
               {/* Form Reply */}
               {showFormReply &&
-                <FormReply
-                  gameCommunities_id={gameCommunities_id}
-                  userCommunities_id={userCommunities_id}
-                  forumThreads_id={forumThreads_id}
-                  forumComments_id={forumComments_id}
-                />
+                <div
+                  css={css`
+                    margin: 6px 0 0 0;
+                  `}
+                >
+                  <FormReply
+                    gameCommunities_id={gameCommunities_id}
+                    userCommunities_id={userCommunities_id}
+                    forumThreads_id={forumThreads_id}
+                    forumComments_id={forumComments_id}
+                  />
+                </div>
               }
               
               

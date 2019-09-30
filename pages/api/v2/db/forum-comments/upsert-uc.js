@@ -110,6 +110,7 @@ export default async (req, res) => {
       userCommunities_id,
       forumThreads_id,
       forumComments_id,
+      replyToForumComments_id,
       name,
       comment,
       anonymity,
@@ -125,6 +126,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
+    lodashSet(requestParametersObj, ['replyToForumComments_id'], replyToForumComments_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['anonymity'], anonymity);
@@ -301,8 +303,8 @@ export default async (req, res) => {
       gameCommunities_id: '',
       userCommunities_id,
       forumThreads_id,
-      forumComments_id: '',
-      replyToForumComments_id: '',
+      forumComments_id,
+      replyToForumComments_id,
       users_id: loginUsers_id,
       localesArr: [
         {

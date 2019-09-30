@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
+import { Element } from 'react-scroll';
 import Pagination from 'rc-pagination';
 import localeInfo from 'rc-pagination/lib/locale/ja_JP';
 import lodashGet from 'lodash/get';
@@ -608,10 +609,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <div
-        css={css`
-          // margin: 24px 0 0 0;
-        `}
+      <Element
+        name={`forumReplies-${forumComments_id}`}
       >
         
         
@@ -697,7 +696,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
       
-      </div>
+      </Element>
     );
     
   }

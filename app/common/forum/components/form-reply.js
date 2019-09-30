@@ -158,7 +158,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitFormComment,
+      handleSubmitFormReply,
       
     } = storeForum;
     
@@ -228,7 +228,7 @@ export default injectIntl(class extends React.Component {
           padding: 12px 0 12px 0;
         `}
         name={`form-${forumComments_id}-reply`}
-        onSubmit={(eventObj) => handleSubmitFormComment({
+        onSubmit={(eventObj) => handleSubmitFormReply({
           eventObj,
           pathArr: this.pathArr,
           gameCommunities_id,

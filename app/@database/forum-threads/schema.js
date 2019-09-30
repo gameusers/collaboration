@@ -26,6 +26,7 @@ const schema = mongoose.Schema({
   ],
   imagesAndVideos_id: { type: String },
   comments: { type: Number, default: 0, required: true },
+  replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
   ip: { type: String, required: true },

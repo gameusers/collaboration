@@ -73,7 +73,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // 編集時
-    this.pathArr = [props._id, 'formReplyObj'];
+    this.pathArr = [props.forumReplies_id, 'formReplyObj'];
     
     // 新規追加時　返信に対する返信
     if (props.forumComments_id && props.replyToForumComments_id) {
@@ -123,7 +123,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, _id, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, replyToForumComments_id } = this.props;
+    const {
+      
+      stores,
+      storeForum,
+      intl,
+      gameCommunities_id,
+      userCommunities_id,
+      forumThreads_id,
+      forumComments_id,
+      forumReplies_id,
+      replyToForumComments_id,
+      
+    } = this.props;
     
     const { loginUsersObj } = stores.data;
     
@@ -235,6 +247,7 @@ export default injectIntl(class extends React.Component {
           userCommunities_id,
           forumThreads_id,
           forumComments_id,
+          forumReplies_id,
           replyToForumComments_id,
         })}
       >
@@ -319,10 +332,11 @@ export default injectIntl(class extends React.Component {
             placeholder="返信を書き込んでください"
             value={comment}
             onChange={(eventObj) => handleEdit({
-            pathArr: [...this.pathArr, 'comment'],
-            value: eventObj.target.value
-          })}
+              pathArr: [...this.pathArr, 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
+            disabled={buttonDisabled}
           />
           
         </div>
@@ -368,7 +382,7 @@ export default injectIntl(class extends React.Component {
             color="primary"
             disabled={buttonDisabled}
           >
-            {_id ? '返信を編集する' : '返信を投稿する'}
+            {forumReplies_id ? '返信を編集する' : '返信を投稿する'}
           </Button>
           
           

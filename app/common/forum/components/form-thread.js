@@ -259,10 +259,11 @@ export default injectIntl(class extends React.Component {
             placeholder="スレッドについての説明、書き込みルールなどがあれば、こちらに記述してください。"
             value={comment}
             onChange={(eventObj) => handleEdit({
-            pathArr: [...this.pathArr, 'comment'],
-            value: eventObj.target.value
-          })}
+              pathArr: [...this.pathArr, 'comment'],
+              value: eventObj.target.value
+            })}
             maxLength={3000}
+            disabled={buttonDisabled}
           />
           
         </div>

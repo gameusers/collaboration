@@ -181,6 +181,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleReadReplies,
+      handleShowFormReply,
       
     } = storeForum;
     
@@ -278,9 +279,19 @@ export default injectIntl(class extends React.Component {
       //   Datetime
       // --------------------------------------------------
       
-      const datetimeNow = moment().utcOffset(0);
-      const datetimeUpdated = moment(repliesDataObj.updatedDate).utcOffset(0);
-      const datetimeFrom = datetimeUpdated.from(datetimeNow);
+      let datetimeCurrent = moment(stores.data.datetimeCurrent);
+      const datetimeUpdated = moment(repliesDataObj.updatedDate);
+      
+      if (datetimeUpdated.isAfter(datetimeCurrent)) {
+        datetimeCurrent = datetimeUpdated;
+      }
+      
+      const datetimeFrom = datetimeUpdated.from(datetimeCurrent);
+      
+      
+      // --------------------------------------------------
+      //   Good
+      // --------------------------------------------------
       
       const goods = lodashGet(repliesDataObj, ['goods'], 0);
       
@@ -555,7 +566,10 @@ export default injectIntl(class extends React.Component {
                     `}
                     variant="outlined"
                     color="primary"
-                    // onClick={() => handleCommentUpdateFormOpen(`${value.id}-comment-update`)}
+                    onClick={() => handleShowFormReply({
+                      pathArr: this.pathArr,
+                      forumComments_id: forumComments2_id,
+                    })}
                   >
                     <IconEdit
                       css={css`

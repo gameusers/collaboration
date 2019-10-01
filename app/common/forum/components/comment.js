@@ -287,20 +287,19 @@ export default injectIntl(class extends React.Component {
       //   Datetime
       // --------------------------------------------------
       
-      // const datetimeCurrent = moment().utcOffset(0);
-      const datetimeCurrent = moment(stores.data.datetimeCurrent);
-      // const datetimeCurrent = moment(moment().toISOString());
+      let datetimeCurrent = moment(stores.data.datetimeCurrent);
+      const datetimeUpdated = moment(commentsDataObj.updatedDate);
       
+      if (datetimeUpdated.isAfter(datetimeCurrent)) {
+        datetimeCurrent = datetimeUpdated;
+      }
       
-      // console.log(chalk`
-      //   /app/common/forum/components/comment.js
-      //   stores.data.datetimeCurrent: {green ${stores.data.datetimeCurrent}}
-      // `);
-      
-      // console.log(datetimeCurrent);
-      
-      const datetimeUpdated = moment(commentsDataObj.updatedDate).utcOffset(0);
       const datetimeFrom = datetimeUpdated.from(datetimeCurrent);
+      
+      
+      // --------------------------------------------------
+      //   Good
+      // --------------------------------------------------
       
       const goods = lodashGet(commentsDataObj, ['goods'], 0);
       
@@ -341,17 +340,7 @@ export default injectIntl(class extends React.Component {
             key={index}
             name={forumComments_id}
           >
-          
-          {/*<div
-            css={css`
-              border-top: 1px solid;
-              border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-              border-image-slice: 1;
-              padding: 24px 0 0 0;
-              margin: 24px 0 0 0;
-            `}
-            key={index}
-          >*/}
+            
             
             <div
               css={css`
@@ -365,6 +354,7 @@ export default injectIntl(class extends React.Component {
                 forumComments_id={forumComments_id}
               />
             </div>
+            
             
           </Element>
           
@@ -390,17 +380,6 @@ export default injectIntl(class extends React.Component {
             key={index}
             name={forumComments_id}
           >
-          
-          {/*<div
-            css={css`
-              border-top: 1px solid;
-              border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
-              border-image-slice: 1;
-              padding: 24px 0 0 0;
-              margin: 24px 0 0 0;
-            `}
-            key={index}
-          >*/}
             
             
             {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}

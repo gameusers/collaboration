@@ -2553,6 +2553,8 @@ const findForEdit = async ({
  * Transaction 挿入 / 更新する
  * コメント、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
  * 
+ * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumRepliesSaveObj - DB forum-comments 保存データ
  * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
  * @param {Object} forumCommentsSaveObj - DB forum-comments 保存データ
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
@@ -2565,6 +2567,8 @@ const findForEdit = async ({
  */
 const transactionForUpsert = async ({
   
+  forumRepliesConditionObj,
+  forumRepliesSaveObj,
   forumCommentsConditionObj,
   forumCommentsSaveObj,
   forumThreadsConditionObj,
@@ -2608,6 +2612,11 @@ const transactionForUpsert = async ({
     // --------------------------------------------------
     //   DB updateOne
     // --------------------------------------------------
+    
+    if (forumRepliesConditionObj && forumRepliesSaveObj) {
+      await SchemaForumComments.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
+    }
+    
     
     await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
@@ -2659,6 +2668,18 @@ const transactionForUpsert = async ({
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    console.log(`
+      ----- forumRepliesConditionObj -----\n
+      ${util.inspect(forumRepliesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- forumRepliesSaveObj -----\n
+      ${util.inspect(forumRepliesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     console.log(`
       ----- forumCommentsConditionObj -----\n

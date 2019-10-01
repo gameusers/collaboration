@@ -1837,13 +1837,13 @@ class Store {
       //   Scroll
       // ---------------------------------------------
       
-      storeLayout.handleScrollTo({
-        to: forumComments_id,
-        duration: 0,
-        delay: 0,
-        smooth: 'easeInOutQuart',
-        offset: -50,
-      });
+      // storeLayout.handleScrollTo({
+      //   to: forumComments_id,
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
+      // });
       
       
     }
@@ -1872,7 +1872,6 @@ class Store {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
-    // replyToForumComments_id,
     
   }) {
     
@@ -1964,32 +1963,32 @@ class Store {
       //   console.log
       // ---------------------------------------------
       
-      console.log(chalk`
-        \n---------- handleSubmitFormComment ----------\n
-      `);
+      // console.log(chalk`
+      //   \n---------- handleSubmitFormComment ----------\n
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        forumThreads_id: {green ${forumThreads_id}}
-        forumComments_id: {green ${forumComments_id}}
-        name: {green ${name}}
-        anonymity: {green ${anonymity}}
-        typeof anonymity: {green ${typeof anonymity}}
-        comment: {green ${comment}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   forumComments_id: {green ${forumComments_id}}
+      //   name: {green ${name}}
+      //   anonymity: {green ${anonymity}}
+      //   typeof anonymity: {green ${typeof anonymity}}
+      //   comment: {green ${comment}}
+      // `);
       
-      console.log(`
-        ----- imagesAndVideosObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // return;
       
@@ -2016,10 +2015,6 @@ class Store {
         formDataObj.forumComments_id = forumComments_id;
       }
       
-      // if (replyToForumComments_id) {
-      //   formDataObj.replyToForumComments_id = replyToForumComments_id;
-      // }
-      
       if (anonymity) {
         formDataObj.anonymity = anonymity;
       }
@@ -2044,14 +2039,10 @@ class Store {
       } else if (userCommunities_id) {
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/forum-comments/upsert-uc`,
+          urlApi: `${process.env.URL_API}/v2/db/forum-comments/upsert-comment-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
         });
-        
-      } else {
-        
-        
         
       }
       
@@ -2127,12 +2118,12 @@ class Store {
       //   Close Form & Reset Form
       // ---------------------------------------------
       
-      if (forumThreads_id) {
-        
+      if (forumComments_id) {
+        // console.log('Close');
         lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], false);
         
       } else {
-        
+        // console.log('Reset');
         lodashSet(this.dataObj, [...pathArr, 'name'], '');
         lodashSet(this.dataObj, [...pathArr, 'comment'], '');
         
@@ -2686,6 +2677,177 @@ class Store {
   
   
   /**
+   * 返信編集フォームを表示する
+   * @param {Array} pathArr - パス
+   * @param {string} forumComments_id - DB forum-comments _id
+   */
+  @action.bound
+  async handleShowFormReply({ pathArr, forumComments_id }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   forumComments_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!forumComments_id) {
+        throw new CustomError({ errorsArr: [{ code: '3cWrPpMq8', messageID: 'Error' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        forumComments_id
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/forum-comments/get-edit-data`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj)
+      });
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(chalk`
+      //   forumComments_id: {green ${forumComments_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- handleShowFormComment / pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Form Data
+      // ---------------------------------------------
+      
+      const name = lodashGet(resultObj, ['data', 'name'], '');
+      const comment = lodashGet(resultObj, ['data', 'comment'], '');
+      const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
+      
+      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'name'], name);
+      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'comment'], comment);
+      lodashSet(storeImageAndVideoForm, ['dataObj', forumComments_id, 'formCommentObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+      
+      
+      // console.log(`
+      //   ----- storeImageAndVideoForm.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Show Form
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [forumComments_id, 'formReplyObj', 'show'], true);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      // storeLayout.handleScrollTo({
+      //   to: forumComments_id,
+      //   duration: 0,
+      //   delay: 0,
+      //   smooth: 'easeInOutQuart',
+      //   offset: -50,
+      // });
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
    * 返信作成・編集フォームを送信する
    * @param {Object} eventObj - イベント
    * @param {Array} pathArr - パス
@@ -2693,6 +2855,7 @@ class Store {
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
    * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   * @param {string} forumReplies_id - DB forum-comments _id / 返信のID（コメントと返信は同じコレクションなので、コメントのIDと同じもの）
    */
   @action.bound
   async handleSubmitFormReply({
@@ -2703,6 +2866,7 @@ class Store {
     userCommunities_id,
     forumThreads_id,
     forumComments_id,
+    forumReplies_id,
     replyToForumComments_id,
     
   }) {
@@ -2795,33 +2959,34 @@ class Store {
       //   console.log
       // ---------------------------------------------
       
-      console.log(chalk`
-        \n---------- handleSubmitFormComment ----------\n
-      `);
+      // console.log(chalk`
+      //   \n---------- handleSubmitFormReply ----------\n
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-        forumThreads_id: {green ${forumThreads_id}}
-        forumComments_id: {green ${forumComments_id}}
-        replyToForumComments_id: {green ${replyToForumComments_id}}
-        name: {green ${name}}
-        anonymity: {green ${anonymity}}
-        typeof anonymity: {green ${typeof anonymity}}
-        comment: {green ${comment}}
-      `);
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   forumComments_id: {green ${forumComments_id}}
+      //   forumReplies_id: {green ${forumReplies_id}}
+      //   replyToForumComments_id: {green ${replyToForumComments_id}}
+      //   name: {green ${name}}
+      //   anonymity: {green ${anonymity}}
+      //   typeof anonymity: {green ${typeof anonymity}}
+      //   comment: {green ${comment}}
+      // `);
       
-      console.log(`
-        ----- imagesAndVideosObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // return;
       
@@ -2836,6 +3001,7 @@ class Store {
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
+        forumComments_id,
         name,
         comment,
         threadListLimit,
@@ -2844,8 +3010,8 @@ class Store {
         replyLimit,
       };
       
-      if (forumComments_id) {
-        formDataObj.forumComments_id = forumComments_id;
+      if (forumReplies_id) {
+        formDataObj.forumReplies_id = forumReplies_id;
       }
       
       if (replyToForumComments_id) {
@@ -2876,23 +3042,19 @@ class Store {
       } else if (userCommunities_id) {
         
         resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/forum-comments/reply-upsert-uc`,
+          urlApi: `${process.env.URL_API}/v2/db/forum-comments/upsert-reply-uc`,
           methodType: 'POST',
           formData: JSON.stringify(formDataObj),
         });
         
-      } else {
-        
-        
-        
       }
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -2959,18 +3121,13 @@ class Store {
       //   Close Form & Reset Form
       // ---------------------------------------------
       
-      if (forumThreads_id) {
-        
-        lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'show'], false);
-        
-      } else {
-        
-        lodashSet(this.dataObj, [...pathArr, 'name'], '');
-        lodashSet(this.dataObj, [...pathArr, 'comment'], '');
-        
-        storeImageAndVideoForm.handleResetForm({ pathArr });
-        
-      }
+      // lodashSet(this.dataObj, [forumComments_id, 'formReplyObj', 'show'], false);
+      lodashSet(this.dataObj, [...pathArr, 'show'], false);
+      
+      lodashSet(this.dataObj, [...pathArr, 'name'], '');
+      lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+      
+      storeImageAndVideoForm.handleResetForm({ pathArr });
       
       
       

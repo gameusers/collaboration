@@ -73,10 +73,12 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // 編集時
-    this.pathArr = [props.forumReplies_id, 'formReplyObj'];
-    
+    if (props.forumReplies_id) {
+      
+      this.pathArr = [props.forumReplies_id, 'formReplyObj'];
+      
     // 新規追加時　返信に対する返信
-    if (props.forumComments_id && props.replyToForumComments_id) {
+    } else if (props.forumComments_id && props.replyToForumComments_id) {
       
       this.pathArr = [props.forumComments_id, props.replyToForumComments_id, 'formReplyObj'];
       

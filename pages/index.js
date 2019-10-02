@@ -362,7 +362,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>GTA5について語ろう！</CardTitle>
                       <Typography component="p">
@@ -389,7 +389,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         Grand Theft Auto V
@@ -457,7 +457,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>Metal Gear Solid Vについて語ろう！</CardTitle>
                       <Typography component="p">
@@ -484,7 +484,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         Metal Gear Solid V: The Phantom Pain
@@ -508,7 +508,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>ゼルダの伝説 ブレス オブ ザ ワイルドについて語ろう！</CardTitle>
                       <Typography component="p">
@@ -535,7 +535,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         ゼルダの伝説 ブレス オブ ザ ワイルド
@@ -568,7 +568,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>ギルドメンバーを募集しています</CardTitle>
                       <Typography component="p">
@@ -595,7 +595,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         フォーオナー
@@ -662,7 +662,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>一緒に遊びましょう！</CardTitle>
                       <Typography component="p">
@@ -689,7 +689,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         どうぶつの森 ポケットキャンプ
@@ -713,7 +713,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>フレンド募集</CardTitle>
                       <Typography component="p">
@@ -740,7 +740,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         マリオテニス エース

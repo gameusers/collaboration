@@ -17,7 +17,7 @@ const hardwares = require('../../@database/hardwares/api');
 const ids = require('../../@database/ids/api');
 const emailConfirmations = require('../../@database/email-confirmations/api');
 // const forumThreads = require('../../@database/forum-threads/api');
-const forumComments = require('../../@database/forum-comments/api');
+// const forumComments = require('../../@database/forum-comments/api');
 
 
 // --------------------------------------------------
@@ -42,6 +42,6 @@ router.use('/hardwares', hardwares);
 router.use('/ids', ids);
 router.use('/email-confirmations', emailConfirmations);
 // router.use('/forum-threads', forumThreads);
-router.use('/forum-comments', forumComments);
+// router.use('/forum-comments', forumComments);
 
 module.exports = router;

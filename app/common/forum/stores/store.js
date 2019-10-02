@@ -2679,10 +2679,10 @@ class Store {
   /**
    * 返信編集フォームを表示する
    * @param {Array} pathArr - パス
-   * @param {string} forumComments_id - DB forum-comments _id
+   * @param {string} forumReplies_id - DB forum-comments _id
    */
   @action.bound
-  async handleShowFormReply({ pathArr, forumComments_id }) {
+  async handleShowFormReply({ pathArr, forumReplies_id }) {
     
     
     try {
@@ -2692,7 +2692,7 @@ class Store {
       //   forumComments_id が存在しない場合エラー
       // ---------------------------------------------
       
-      if (!forumComments_id) {
+      if (!forumReplies_id) {
         throw new CustomError({ errorsArr: [{ code: '3cWrPpMq8', messageID: 'Error' }] });
       }
       
@@ -2720,7 +2720,7 @@ class Store {
       // ---------------------------------------------
       
       const formDataObj = {
-        forumComments_id
+        forumComments_id: forumReplies_id,
       };
       
       
@@ -2733,6 +2733,8 @@ class Store {
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
+      
+      
       
       
       // ---------------------------------------------
@@ -2749,11 +2751,11 @@ class Store {
       //   --------------------\n
       // `);
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       
@@ -2777,9 +2779,9 @@ class Store {
       const comment = lodashGet(resultObj, ['data', 'comment'], '');
       const imagesAndVideosObj = lodashGet(resultObj, ['data', 'imagesAndVideosObj'], '');
       
-      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'name'], name);
-      lodashSet(this.dataObj, [forumComments_id, 'formCommentObj', 'comment'], comment);
-      lodashSet(storeImageAndVideoForm, ['dataObj', forumComments_id, 'formCommentObj', 'imagesAndVideosObj'], imagesAndVideosObj);
+      lodashSet(this.dataObj, [forumReplies_id, 'formReplyObj', 'name'], name);
+      lodashSet(this.dataObj, [forumReplies_id, 'formReplyObj', 'comment'], comment);
+      lodashSet(storeImageAndVideoForm, ['dataObj', forumReplies_id, 'formReplyObj', 'imagesAndVideosObj'], imagesAndVideosObj);
       
       
       // console.log(`
@@ -2793,7 +2795,7 @@ class Store {
       //   Show Form
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, [forumComments_id, 'formReplyObj', 'show'], true);
+      lodashSet(this.dataObj, [forumReplies_id, 'formReplyObj', 'show'], true);
       
       
     } catch (errorObj) {

@@ -225,6 +225,18 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(dataObj, [communities_id, 'forumCommentsObj'], {}))), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(dataObj, [communities_id, 'forumRepliesObj'], {}))), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     
@@ -428,22 +440,44 @@ export default injectIntl(class extends React.Component {
               >
                 
                 
+                {/* Reply To */}
+                <div
+                  css={css`
+                    display: flex;
+                    flex-flow: row nowrap;
+                    margin: 0 0 12px 0;
+                    color: #7401DF;
+                  `}
+                >
+                  <IconReply
+                    css={css`
+                      && {
+                        font-size: 16px;
+                        margin: 4px 4px 0 0;
+                      }
+                    `}
+                  />
+                  <p
+                    css={css`
+                      // font-weight: bold;
+                      
+                    `}
+                  >
+                    マリオ
+                  </p>
+                </div>
+                
+                
+                
                 {/* Comment */}
                 <div
                   css={css`
                     font-size: 14px;
                     line-height: 1.6em;
+                    margin 4px 0 0 0;
                   `}
                 >
-                  
-                  <div
-                    css={css`
-                      margin 4px 0 0 0;
-                    `}
-                  >
-                    <Paragraph text={comment} />
-                  </div>
-                  
+                  <Paragraph text={comment} />
                 </div>
                 
                 

@@ -1132,6 +1132,88 @@ const findRepliesByForumComments_idArr = async ({
               },
               
               
+              
+              
+              // replyTo用のデータ取得
+              {
+                $lookup:
+                  {
+                    from: 'forum-comments',
+                    let: { forumRepliesReplyToForumComments_id: '$replyToForumComments_id' },
+                    pipeline: [
+                      
+                      
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$forumRepliesReplyToForumComments_id'] },
+                        }
+                      },
+                      
+                      
+                      // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+                      {
+                        $lookup:
+                          {
+                            from: 'card-players',
+                            let: { forumRepliesReplyToUsers_id: '$users_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $and:
+                                    [
+                                      { $eq: ['$language', localeObj.language] },
+                                      { $eq: ['$users_id', '$$forumRepliesReplyToUsers_id'] },
+                                    ]
+                                  },
+                                }
+                              },
+                              
+                              
+                              { $project:
+                                {
+                                  name: '$nameObj.value',
+                                }
+                              }
+                            ],
+                            as: 'cardPlayersObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind: {
+                          path: '$cardPlayersObj',
+                          preserveNullAndEmptyArrays: true,
+                        }
+                      },
+                      
+                      
+                      { $project:
+                        {
+                          _id: 0,
+                          localesArr: 1,
+                          cardPlayersObj: 1,
+                        }
+                      }
+                      
+                      
+                    ],
+                    as: 'replyToObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$replyToObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              
+              
+              
+              
+              
               { $project:
                 {
                   createdDate: 0,
@@ -1168,7 +1250,11 @@ const findRepliesByForumComments_idArr = async ({
       
     ]).exec();
     
-    
+    // console.log(`
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -1197,16 +1283,16 @@ const findRepliesByForumComments_idArr = async ({
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- docArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- formattedObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- formattedObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -1297,7 +1383,11 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
   //   --------------------\n
   // `);
   
-  
+  // console.log(`
+  //   ----- arr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   // --------------------------------------------------
@@ -1391,7 +1481,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
       //   Name & Description
       // --------------------------------------------------
       
-      const filteredArr = valueObj.localesArr.filter((filterObj) => {
+      let filteredArr = valueObj.localesArr.filter((filterObj) => {
         return filterObj.language === localeObj.language;
       });
       
@@ -1407,6 +1497,51 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
         clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
         
       }
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   Reply to: Name
+      // --------------------------------------------------
+      
+      if (valueObj.replyToForumComments_id) {
+        
+        console.log(`\n---------- valueObj ----------\n`);
+        console.dir(valueObj);
+        console.log(`\n-----------------------------------\n`);
+        
+        clonedObj.replyToName = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
+        
+        if (!clonedObj.replyToName) {
+          
+          const localesArr = lodashGet(valueObj, ['replyToObj', 'localesArr'], []);
+          
+          filteredArr = localesArr.filter((filterObj) => {
+            return filterObj.language === localeObj.language;
+          });
+          
+          
+          if (lodashHas(filteredArr, [0])) {
+            
+            clonedObj.replyToName = lodashGet(filteredArr, [0, 'name'], '');
+            
+          } else {
+            
+            clonedObj.replyToName = lodashGet(localesArr, [0, 'name'], '');
+            
+          }
+          
+        }
+        
+        console.log(chalk`
+          valueObj.replyToForumComments_id: {green ${valueObj.replyToForumComments_id}}
+          clonedObj.replyToName: {green ${clonedObj.replyToName}}
+        `);
+        
+      }
+      
+      
       
       
       
@@ -1590,767 +1725,6 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * コメントと返信を取得する
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} forumThreads_idArr - DB forum-threads _id / _idが入っている配列
- * @param {number} commentPage - コメントのページ
- * @param {number} commentLimit - コメントのリミット
- * @param {number} replyPage - 返信のページ
- * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
- */
-// const findForForumCommentsAndReplies = async ({
-  
-//   localeObj,
-//   loginUsers_id,
-//   forumThreads_idArr,
-//   commentPage = 1,
-//   commentLimit = process.env.FORUM_COMMENT_LIMIT,
-//   replyPage = 1,
-//   replyLimit = process.env.FORUM_REPLY_LIMIT,
-  
-// }) => {
-  
-//   // console.log(chalk`
-//   //   ----- findForForumCommentsAndReplies -----
-//   //   commentPage: {green ${commentPage}}
-//   //   commentLimit: {green ${commentLimit}}
-//   //   replyPage: {green ${replyPage}}
-//   //   replyLimit: {green ${replyLimit}}
-//   // `);
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Forum Comments & Replies データ取得
-//     //   $in, sort, limit を使って最新のコメントを取得すると、古いコメントが limit で削られてしまうため
-//     //   あるスレッドでは古いコメントが表示されないという事態になってしまう
-//     //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
-//     // --------------------------------------------------
-    
-//     let resultArr = [];
-    
-    
-//     for (let value of forumThreads_idArr.values()) {
-      
-      
-//       const docArr = await SchemaForumComments.aggregate([
-        
-        
-//         // --------------------------------------------------
-//         //   コメント
-//         // --------------------------------------------------
-        
-//         // forumComments_id: '' この場合は親のコメントがないので、返信ではなくコメントということ
-//         {
-//           $match: {
-//             $and: [
-//               { forumThreads_id: value },
-//               { forumComments_id: '' },
-//             ]
-//           },
-//         },
-        
-        
-//         // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
-//         {
-//           $lookup:
-//             {
-//               from: 'card-players',
-//               let: { forumCommentsUsers_id: '$users_id' },
-//               pipeline: [
-//                 { $match:
-//                   { $expr:
-//                     { $and:
-//                       [
-//                         { $eq: ['$language', localeObj.language] },
-//                         { $eq: ['$users_id', '$$forumCommentsUsers_id'] },
-//                       ]
-//                     },
-//                   }
-//                 },
-                
-                
-//                 // サムネイルを取得
-//                 {
-//                   $lookup:
-//                     {
-//                       from: 'images-and-videos',
-//                       let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//                       pipeline: [
-//                         { $match:
-//                           { $expr:
-//                             { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
-//                           }
-//                         },
-//                         { $project:
-//                           {
-//                             // _id: 0,
-//                             createdDate: 0,
-//                             updatedDate: 0,
-//                             users_id: 0,
-//                             __v: 0,
-//                           }
-//                         }
-//                       ],
-//                       as: 'imagesAndVideosThumbnailObj'
-//                     }
-//                 },
-                
-//                 {
-//                   $unwind: {
-//                     path: '$imagesAndVideosThumbnailObj',
-//                     preserveNullAndEmptyArrays: true,
-//                   }
-//                 },
-                
-                
-//                 { $project:
-//                   {
-//                     // _id: 0,
-//                     // users_id: 1,
-//                     name: '$nameObj.value',
-//                     status: '$statusObj.value',
-//                     imagesAndVideosThumbnailObj: 1,
-//                   }
-//                 }
-//               ],
-//               as: 'cardPlayersObj'
-//             }
-//         },
-        
-//         {
-//           $unwind: {
-//             path: '$cardPlayersObj',
-//             preserveNullAndEmptyArrays: true,
-//           }
-//         },
-        
-        
-//         // ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
-//         {
-//           $lookup:
-//             {
-//               from: 'users',
-//               let: { forumCommentsUsers_id: '$users_id' },
-//               pipeline: [
-//                 { $match:
-//                   { $expr:
-//                     { $eq: ['$_id', '$$forumCommentsUsers_id'] },
-//                   }
-//                 },
-//                 { $project:
-//                   {
-//                     _id: 0,
-//                     accessDate: 1,
-//                     exp: 1,
-//                     userID: 1,
-//                   }
-//                 }
-//               ],
-//               as: 'usersObj'
-//             }
-//         },
-        
-//         {
-//           $unwind: {
-//             path: '$usersObj',
-//             preserveNullAndEmptyArrays: true,
-//           }
-//         },
-        
-        
-//         // 画像と動画を取得
-//         {
-//           $lookup:
-//             {
-//               from: 'images-and-videos',
-//               let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
-//               pipeline: [
-//                 { $match:
-//                   { $expr:
-//                     { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
-//                   }
-//                 },
-//                 { $project:
-//                   {
-//                     // _id: 0,
-//                     createdDate: 0,
-//                     updatedDate: 0,
-//                     users_id: 0,
-//                     __v: 0,
-//                   }
-//                 }
-//               ],
-//               as: 'imagesAndVideosObj'
-//             }
-//         },
-        
-//         {
-//           $unwind: {
-//             path: '$imagesAndVideosObj',
-//             preserveNullAndEmptyArrays: true,
-//           }
-//         },
-        
-        
-        
-        
-//         // --------------------------------------------------
-//         //   返信（内部の処理は上記コメントと同じ）
-//         // --------------------------------------------------
-        
-//         {
-//           $lookup:
-//             {
-//               from: 'forum-comments',
-//               let: { forumComments_id: '$_id' },
-//               pipeline: [
-                
-//                 { $match:
-//                   { $expr:
-//                     { $eq: ['$forumComments_id', '$$forumComments_id'] }
-//                   }
-//                 },
-                
-                
-//                 // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
-//                 {
-//                   $lookup:
-//                     {
-//                       from: 'card-players',
-//                       let: { forumRepliesUsers_id: '$users_id' },
-//                       pipeline: [
-//                         { $match:
-//                           { $expr:
-//                             { $and:
-//                               [
-//                                 { $eq: ['$language', localeObj.language] },
-//                                 { $eq: ['$users_id', '$$forumRepliesUsers_id'] },
-//                               ]
-//                             },
-//                           }
-//                         },
-                        
-                        
-//                         // サムネイルを取得
-//                         {
-//                           $lookup:
-//                             {
-//                               from: 'images-and-videos',
-//                               let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//                               pipeline: [
-//                                 { $match:
-//                                   { $expr:
-//                                     { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
-//                                   }
-//                                 },
-//                                 { $project:
-//                                   {
-//                                     // _id: 0,
-//                                     createdDate: 0,
-//                                     updatedDate: 0,
-//                                     users_id: 0,
-//                                     __v: 0,
-//                                   }
-//                                 }
-//                               ],
-//                               as: 'imagesAndVideosThumbnailObj'
-//                             }
-//                         },
-                        
-//                         {
-//                           $unwind: {
-//                             path: '$imagesAndVideosThumbnailObj',
-//                             preserveNullAndEmptyArrays: true,
-//                           }
-//                         },
-                        
-                        
-//                         { $project:
-//                           {
-//                             // _id: 0,
-//                             // users_id: 1,
-//                             name: '$nameObj.value',
-//                             status: '$statusObj.value',
-//                             imagesAndVideosThumbnailObj: 1,
-//                           }
-//                         }
-//                       ],
-//                       as: 'cardPlayersObj'
-//                     }
-//                 },
-                
-//                 {
-//                   $unwind: {
-//                     path: '$cardPlayersObj',
-//                     preserveNullAndEmptyArrays: true,
-//                   }
-//                 },
-                
-                
-//                 // ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
-//                 {
-//                   $lookup:
-//                     {
-//                       from: 'users',
-//                       let: { forumRepliesUsers_id: '$users_id' },
-//                       pipeline: [
-//                         { $match:
-//                           { $expr:
-//                             { $eq: ['$_id', '$$forumRepliesUsers_id'] },
-//                           }
-//                         },
-//                         { $project:
-//                           {
-//                             _id: 0,
-//                             accessDate: 1,
-//                             exp: 1,
-//                             userID: 1,
-//                           }
-//                         }
-//                       ],
-//                       as: 'usersObj'
-//                     }
-//                 },
-                
-//                 {
-//                   $unwind: {
-//                     path: '$usersObj',
-//                     preserveNullAndEmptyArrays: true,
-//                   }
-//                 },
-                
-                
-//                 // 画像と動画を取得
-//                 {
-//                   $lookup:
-//                     {
-//                       from: 'images-and-videos',
-//                       let: { forumRepliesImagesAndVideos_id: '$imagesAndVideos_id' },
-//                       pipeline: [
-//                         { $match:
-//                           { $expr:
-//                             { $eq: ['$_id', '$$forumRepliesImagesAndVideos_id'] },
-//                           }
-//                         },
-//                         { $project:
-//                           {
-//                             // _id: 0,
-//                             createdDate: 0,
-//                             updatedDate: 0,
-//                             users_id: 0,
-//                             __v: 0,
-//                           }
-//                         }
-//                       ],
-//                       as: 'imagesAndVideosObj'
-//                     }
-//                 },
-                
-//                 {
-//                   $unwind: {
-//                     path: '$imagesAndVideosObj',
-//                     preserveNullAndEmptyArrays: true,
-//                   }
-//                 },
-                
-                
-//                 { $project:
-//                   {
-//                     createdDate: 0,
-//                     imagesAndVideos_id: 0,
-//                     __v: 0,
-//                   }
-//                 },
-                
-                
-//                 { '$sort': { 'updatedDate': -1 } },
-//                 { $skip: (replyPage - 1) * replyLimit },
-//                 { $limit: parseInt(replyLimit, 10) },
-                
-                
-//               ],
-//               as: 'forumRepliesArr'
-//             }
-//         },
-        
-        
-//         { $project:
-//           {
-//             createdDate: 0,
-//             imagesAndVideos_id: 0,
-//             __v: 0,
-//           }
-//         },
-        
-        
-//         // { '$sort': { 'updatedDate': -1 } },
-//         // { $skip: (commentPage - 1) * 1 },
-//         // { $limit: parseInt(1, 10) },
-        
-//         { '$sort': { 'updatedDate': -1 } },
-//         { $skip: (commentPage - 1) * commentLimit },
-//         { $limit: parseInt(commentLimit, 10) },
-        
-        
-//       ]).exec();
-      
-      
-      
-//       // console.log(chalk`
-//       //   value: {green ${value}}
-//       // `);
-      
-//       // console.log(chalk`
-//       //   commentPage2: {green ${commentPage}}
-//       //   commentLimit2: {green ${commentLimit}}
-//       // `);
-      
-//       // console.log(`
-//       //   ----- docArr -----\n
-//       //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
-//       //   --------------------\n
-//       // `);
-      
-      
-      
-      
-//       // --------------------------------------------------
-//       //   配列を結合する
-//       // --------------------------------------------------
-      
-//       if (docArr.length > 0) {
-//         resultArr = resultArr.concat(docArr);
-//       }
-      
-      
-//     }
-    
-    
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   Format
-//     // --------------------------------------------------
-    
-//     const formattedObj = format({
-//       localeObj,
-//       loginUsers_id,
-//       arr: resultArr,
-//       commentPage,
-//       // commentLimit,
-//       replyPage,
-//       // replyLimit,
-//     });
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(`
-//     //   ----- localeObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-    
-//     // console.log(`
-//     //   ----- formattedObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- Comments And Replies -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return formattedObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
-
-
-
-
-
-
-
-
-/**
-* DBから取得した情報をフォーマットする
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @return {Array} フォーマット後のデータ
-*/
-// const format = ({ localeObj, loginUsers_id, arr, commentPage, replyPage }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Loop
-//   // --------------------------------------------------
-  
-//   const ISO8601 = moment().toISOString();
-  
-//   for (let valueObj of arr.values()) {
-//     // console.log(`\n---------- valueObj ----------\n`);
-//     // console.dir(valueObj);
-//     // console.log(`\n-----------------------------------\n`);
-    
-//     // --------------------------------------------------
-//     //   Deep Copy
-//     // --------------------------------------------------
-    
-//     const clonedObj = lodashCloneDeep(valueObj);
-    
-    
-//     // --------------------------------------------------
-//     //   画像と動画の処理
-//     // --------------------------------------------------
-    
-//     const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-    
-//     if (formattedObj) {
-      
-//       clonedObj.imagesAndVideosObj = formattedObj;
-      
-//     } else {
-      
-//       delete clonedObj.imagesAndVideosObj;
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   画像と動画の処理 - ユーザーサムネイル
-//     // --------------------------------------------------
-    
-//     if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'])) {
-      
-//       const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], {});
-      
-//       // console.log(`
-//       //   ----- imagesAndVideosThumbnailObj -----\n
-//       //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-//       //   --------------------\n
-//       // `);
-      
-//       const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: imagesAndVideosThumbnailObj });
-      
-//       if (formattedThumbnailObj) {
-        
-//         lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], formattedThumbnailObj);
-        
-//       } else {
-        
-//         delete clonedObj.cardPlayersObj.imagesAndVideosThumbnailObj;
-        
-//       }
-      
-//     }
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   編集権限
-//     // --------------------------------------------------
-    
-//     clonedObj.editable = false;
-    
-//     if (loginUsers_id && valueObj.users_id === loginUsers_id) {
-//       clonedObj.editable = true;
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Name & Description
-//     // --------------------------------------------------
-    
-//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
-//       return filterObj.language === localeObj.language;
-//     });
-    
-    
-//     if (lodashHas(filteredArr, [0])) {
-      
-//       clonedObj.name = lodashGet(filteredArr, [0, 'name'], '');
-//       clonedObj.comment = lodashGet(filteredArr, [0, 'comment'], '');
-      
-//     } else {
-      
-//       clonedObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-//       clonedObj.comment = lodashGet(valueObj, ['localesArr', 0, 'comment'], '');
-      
-//     }
-    
-    
-    
-//     // console.log(`
-//     //   ----- filteredArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-    
-//     // --------------------------------------------------
-//     //   匿名の場合の処理 - Card Players 
-//     // --------------------------------------------------
-    
-//     if (valueObj.anonymity) {
-      
-//       delete clonedObj.cardPlayersObj;
-//       delete clonedObj.usersObj;
-      
-//     } else if (lodashHas(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'])) {
-      
-//       // --------------------------------------------------
-//       //   サムネイル画像の処理 - Card Players
-//       // --------------------------------------------------
-      
-//       const thumbnailArr = lodashGet(valueObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
-//       lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosObj', 'thumbnailArr'], formatImagesAndVideosArr({ arr: thumbnailArr }));
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Format - Reply
-//     // --------------------------------------------------
-    
-//     let formattedReplyObj = {};
-    
-//     if (lodashHas(valueObj, ['forumRepliesArr'])) {
-      
-//       const forumRepliesArr = lodashGet(valueObj, ['forumRepliesArr'], []);
-      
-//       formattedReplyObj = format({
-//         localeObj,
-//         loginUsers_id,
-//         arr: forumRepliesArr,
-//         commentPage,
-//         replyPage,
-//       });
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   不要な項目を削除する
-//     // --------------------------------------------------
-    
-//     delete clonedObj.createdDate;
-//     delete clonedObj.users_id;
-//     delete clonedObj.localesArr;
-//     delete clonedObj.anonymity;
-//     delete clonedObj.forumRepliesArr;
-//     delete clonedObj.ip;
-//     delete clonedObj.userAgent;
-//     delete clonedObj.__v;
-    
-//     // console.log(`\n---------- clonedObj ----------\n`);
-//     // console.dir(clonedObj);
-//     // console.log(`\n-----------------------------------\n`);
-    
-    
-    
-    
-//     // --------------------------------------------------
-//     //   オブジェクト生成
-//     // --------------------------------------------------
-    
-//     // コメント
-//     let parent_id = valueObj.forumThreads_id;
-//     let page = commentPage;
-    
-//     // 返信
-//     if (valueObj.forumComments_id) {
-//       parent_id = valueObj.forumComments_id;
-//       page = replyPage;
-//     }
-    
-//     if (parent_id) {
-      
-//       lodashSet(returnObj, [parent_id, 'page'], page);
-//       // lodashSet(returnObj, [parent_id, 'commentLimit'], parseInt(commentLimit, 10));
-//       // lodashSet(returnObj, [parent_id, 'replyLimit'], parseInt(replyLimit, 10));
-      
-//       lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
-      
-//       const arr = lodashGet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'arr'], []);
-//       arr.push(clonedObj);
-//       lodashSet(returnObj, [parent_id, 'dataObj', `page${page}Obj`, 'arr'], arr);
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Merge - コメントと返信をひとつのオブジェクトにマージする
-//     // --------------------------------------------------
-    
-//     returnObj = lodashMerge(returnObj, formattedReplyObj);
-    
-    
-//   }
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return returnObj;
-  
-  
-// };
 
 
 

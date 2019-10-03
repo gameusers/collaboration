@@ -2751,11 +2751,11 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       

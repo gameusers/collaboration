@@ -35,6 +35,13 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
+//   Material UI / Icon
+// ---------------------------------------------
+
+import IconReply from '@material-ui/icons/Reply';
+
+
+// ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
@@ -46,6 +53,24 @@ const { validationForumCommentsName } = require('../../../@database/forum-commen
 // ---------------------------------------------
 
 import ImageAndVideoForm from '../../image-and-video/components/form';
+
+
+
+
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssNew = css`
+  border-top: 1px dashed #BDBDBD;
+  margin: 12px 0 0 0;
+  padding: 20px 0 12px 0;
+`;
+
+const cssEdit = css`
+  padding: 0 0 12px 0;
+`;
 
 
 
@@ -71,6 +96,9 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     //   Path Array
     // --------------------------------------------------
+    
+    this.communities_id = props.gameCommunities_id || props.userCommunities_id;
+    
     
     // 編集時
     if (props.forumReplies_id) {
@@ -202,20 +230,57 @@ export default injectIntl(class extends React.Component {
     const limit = parseInt(process.env.FORUM_REPLY_IMAGES_AND_VIDEOS_LIMIT, 10);
     
     
+    // --------------------------------------------------
+    //   Reply to
+    // --------------------------------------------------
+    
+    let replyToName = '';
+    let repliesDataObj = {};
+    let replyTo = '';
+    
+    if (forumReplies_id) {
+      
+      repliesDataObj = lodashGet(dataObj, [this.communities_id, 'forumRepliesObj', 'dataObj', forumReplies_id], {});
+      replyToName = lodashGet(repliesDataObj, ['replyToName'], '');
+      
+    } else if (replyToForumComments_id) {
+      
+      repliesDataObj = lodashGet(dataObj, [this.communities_id, 'forumRepliesObj', 'dataObj', replyToForumComments_id], {});
+      replyToName = lodashGet(repliesDataObj, ['cardPlayersObj', 'name'], repliesDataObj.name);
+      
+      if (!replyToName) {
+        replyToName = 'ななしさん';
+      }
+      
+    }
+    
+    if (replyToName) {
+      replyTo = `${replyToName} | ${replyToForumComments_id} への返信`;
+    }
+    
+    
+    console.log(`
+      ----- repliesDataObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   /app/common/forum/components/form-reply.js
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   replyToForumComments_id: {green ${replyToForumComments_id}}
-    // `);
+    console.log(chalk`
+      /app/common/forum/components/form-reply.js
+      gameCommunities_id: {green ${gameCommunities_id}}
+      userCommunities_id: {green ${userCommunities_id}}
+      forumThreads_id: {green ${forumThreads_id}}
+      forumComments_id: {green ${forumComments_id}}
+      forumReplies_id: {green ${forumReplies_id}}
+      replyToForumComments_id: {green ${replyToForumComments_id}}
+    `);
     
     // console.log(`
     //   ----- this.pathArr -----\n
@@ -238,9 +303,10 @@ export default injectIntl(class extends React.Component {
     
     return (
       <form
-        css={css`
-          padding: 12px 0 12px 0;
-        `}
+        css={forumReplies_id ? cssEdit : cssNew}
+        // css={css`
+        //   ${forumReplies_id ? 'padding: 0 0 12px 0;' : 'padding: 24px 0 12px 0;'}
+        // `}
         name={`form-${forumComments_id}-reply`}
         onSubmit={(eventObj) => handleSubmitFormReply({
           eventObj,
@@ -253,6 +319,29 @@ export default injectIntl(class extends React.Component {
           replyToForumComments_id,
         })}
       >
+        
+        
+        {/* Reply To */}
+        {replyTo &&
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              margin: 0 0 12px 0;
+              color: #7401DF;
+            `}
+          >
+            <IconReply
+              css={css`
+                && {
+                  font-size: 16px;
+                  margin: 4px 4px 0 0;
+                }
+              `}
+            />
+            <p>{replyTo}</p>
+          </div>
+        }
         
         
         {/* 名前 */}
@@ -305,6 +394,9 @@ export default injectIntl(class extends React.Component {
             />
           </div>
         }
+        
+        
+        
         
         
         {/* Comment */}

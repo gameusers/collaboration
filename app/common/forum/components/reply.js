@@ -326,6 +326,21 @@ export default injectIntl(class extends React.Component {
       const showFormNewReply = lodashGet(dataObj, [forumComments_id, forumReplies_id, 'formReplyObj', 'show'], false);
       
       
+      // --------------------------------------------------
+      //   Reply to
+      // --------------------------------------------------
+      
+      const replyToForumComments_id = lodashGet(repliesDataObj, ['replyToForumComments_id'], '');
+      
+      let replyToName = lodashGet(repliesDataObj, ['replyToName'], '');
+      
+      if (!replyToName) {
+        replyToName = 'ななしさん';
+      }
+      
+      const replyTo = `${replyToName} | ${replyToForumComments_id}`;
+      
+      
       
       
       // --------------------------------------------------
@@ -441,32 +456,26 @@ export default injectIntl(class extends React.Component {
                 
                 
                 {/* Reply To */}
-                <div
-                  css={css`
-                    display: flex;
-                    flex-flow: row nowrap;
-                    margin: 0 0 12px 0;
-                    color: #7401DF;
-                  `}
-                >
-                  <IconReply
+                {replyToForumComments_id &&
+                  <div
                     css={css`
-                      && {
-                        font-size: 16px;
-                        margin: 4px 4px 0 0;
-                      }
-                    `}
-                  />
-                  <p
-                    css={css`
-                      // font-weight: bold;
-                      
+                      display: flex;
+                      flex-flow: row nowrap;
+                      margin: 0 0 12px 0;
+                      color: #7401DF;
                     `}
                   >
-                    マリオ
-                  </p>
-                </div>
-                
+                    <IconReply
+                      css={css`
+                        && {
+                          font-size: 16px;
+                          margin: 4px 4px 0 0;
+                        }
+                      `}
+                    />
+                    <p>{replyTo}</p>
+                  </div>
+                }
                 
                 
                 {/* Comment */}

@@ -122,3 +122,4 @@
 {"logID":"BNwtk1ne","date":"2019-10-01T12:14:18.602Z","endpointID":"TelTK88TV","users_id":"","ip":"2600:1f18:234b:7202:9d32:f469:ea58:6d53","requestParametersObj":{},"errorsArr":[{"code":"BNwtk1ne","messageID":"Error"}],"level":"error","message":"Unexpected end of JSON input"}
 {"logID":"zOXb3dtQ","date":"2019-10-01T15:27:21.595Z","endpointID":"TelTK88TV","users_id":"","ip":"2600:1f18:234b:7202:9d32:f469:ea58:6d53","requestParametersObj":{},"errorsArr":[{"code":"zOXb3dtQ","messageID":"Error"}],"level":"error","message":"Unexpected end of JSON input"}
 {"logID":"WPqQVxck","date":"2019-10-03T13:16:36.545Z","endpointID":"AQOnS_hsz","users_id":"","ip":"2600:1f18:43b8:af02:17a6:1840:9712:5d27","requestParametersObj":{},"errorsArr":[{"code":"WPqQVxck","messageID":"Error"}],"level":"error","message":"Unexpected end of JSON input"}
+{"level":"error","message":""}

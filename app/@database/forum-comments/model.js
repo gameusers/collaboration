@@ -631,6 +631,82 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
+                
+                // replyTo 用のデータ取得
+                {
+                  $lookup:
+                    {
+                      from: 'forum-comments',
+                      let: { forumRepliesReplyToForumComments_id: '$replyToForumComments_id' },
+                      pipeline: [
+                        
+                        
+                        { $match:
+                          { $expr:
+                            { $eq: ['$_id', '$$forumRepliesReplyToForumComments_id'] },
+                          }
+                        },
+                        
+                        
+                        // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+                        {
+                          $lookup:
+                            {
+                              from: 'card-players',
+                              let: { forumRepliesReplyToUsers_id: '$users_id' },
+                              pipeline: [
+                                { $match:
+                                  { $expr:
+                                    { $and:
+                                      [
+                                        { $eq: ['$language', localeObj.language] },
+                                        { $eq: ['$users_id', '$$forumRepliesReplyToUsers_id'] },
+                                      ]
+                                    },
+                                  }
+                                },
+                                
+                                
+                                { $project:
+                                  {
+                                    name: '$nameObj.value',
+                                  }
+                                }
+                              ],
+                              as: 'cardPlayersObj'
+                            }
+                        },
+                        
+                        {
+                          $unwind: {
+                            path: '$cardPlayersObj',
+                            preserveNullAndEmptyArrays: true,
+                          }
+                        },
+                        
+                        
+                        { $project:
+                          {
+                            _id: 0,
+                            localesArr: 1,
+                            cardPlayersObj: 1,
+                          }
+                        }
+                        
+                        
+                      ],
+                      as: 'replyToObj'
+                    }
+                },
+                
+                {
+                  $unwind: {
+                    path: '$replyToObj',
+                    preserveNullAndEmptyArrays: true,
+                  }
+                },
+                
+                
                 { $project:
                   {
                     createdDate: 0,
@@ -640,7 +716,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 },
                 
                 
-                { '$sort': { 'updatedDate': -1 } },
+                { '$sort': { 'createdDate': 1 } },
                 { $skip: (replyPage - 1) * intReplyLimit },
                 { $limit: parseInt(intReplyLimit, 10) },
                 
@@ -1134,7 +1210,7 @@ const findRepliesByForumComments_idArr = async ({
               
               
               
-              // replyTo用のデータ取得
+              // replyTo 用のデータ取得
               {
                 $lookup:
                   {
@@ -1209,11 +1285,6 @@ const findRepliesByForumComments_idArr = async ({
               },
               
               
-              
-              
-              
-              
-              
               { $project:
                 {
                   createdDate: 0,
@@ -1223,7 +1294,7 @@ const findRepliesByForumComments_idArr = async ({
               },
               
               
-              { '$sort': { 'updatedDate': -1 } },
+              { '$sort': { 'createdDate': 1 } },
               { $skip: (replyPage - 1) * intReplyLimit },
               { $limit: parseInt(intReplyLimit, 10) },
               
@@ -1250,11 +1321,11 @@ const findRepliesByForumComments_idArr = async ({
       
     ]).exec();
     
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -1505,13 +1576,13 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
       //   Reply to: Name
       // --------------------------------------------------
       
-      if (valueObj.replyToForumComments_id) {
+      if (valueObj.replyToObj) {
         
-        console.log(`\n---------- valueObj ----------\n`);
-        console.dir(valueObj);
-        console.log(`\n-----------------------------------\n`);
+        // console.log(`\n---------- valueObj ----------\n`);
+        // console.dir(valueObj);
+        // console.log(`\n-----------------------------------\n`);
         
-        clonedObj.replyToName = lodashGet(valueObj, ['cardPlayersObj', 'name'], '');
+        clonedObj.replyToName = lodashGet(valueObj, ['replyToObj', 'cardPlayersObj', 'name'], '');
         
         if (!clonedObj.replyToName) {
           
@@ -1534,10 +1605,10 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
           
         }
         
-        console.log(chalk`
-          valueObj.replyToForumComments_id: {green ${valueObj.replyToForumComments_id}}
-          clonedObj.replyToName: {green ${clonedObj.replyToName}}
-        `);
+        // console.log(chalk`
+        //   valueObj.replyToForumComments_id: {green ${valueObj.replyToForumComments_id}}
+        //   clonedObj.replyToName: {green ${clonedObj.replyToName}}
+        // `);
         
       }
       
@@ -1588,6 +1659,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
       delete clonedObj.localesArr;
       delete clonedObj.anonymity;
       delete clonedObj.forumRepliesArr;
+      delete clonedObj.replyToObj;
       delete clonedObj.ip;
       delete clonedObj.userAgent;
       delete clonedObj.__v;

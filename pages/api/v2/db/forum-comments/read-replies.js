@@ -16,7 +16,7 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
-const lodashMerge = require('lodash/merge');
+// const lodashMerge = require('lodash/merge');
 
 
 // ---------------------------------------------
@@ -24,7 +24,7 @@ const lodashMerge = require('lodash/merge');
 // ---------------------------------------------
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+// const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
 const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
 
@@ -42,7 +42,7 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+// const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
 

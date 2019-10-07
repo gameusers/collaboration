@@ -11,8 +11,11 @@ const crypto = require('crypto');
 //   Property
 // --------------------------------------------------
 
-const key = new Buffer(process.env.CRYPTO_KEY, 'utf8');
-const iv = new Buffer(process.env.CRYPTO_IV, 'utf8');
+const key = Buffer.from(process.env.CRYPTO_KEY, 'utf8');
+const iv = Buffer.from(process.env.CRYPTO_IV, 'utf8');
+
+// const key = new Buffer(process.env.CRYPTO_KEY, 'utf8');
+// const iv = new Buffer(process.env.CRYPTO_IV, 'utf8');
 
 
 

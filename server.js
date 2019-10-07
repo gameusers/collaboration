@@ -131,6 +131,7 @@ app.prepare().then(() => {
   
   mongoose.connect('mongodb://localhost:27017/gameusers', {
     useCreateIndex: true,
+    useUnifiedTopology: true,
     useNewUrlParser: true,
     useFindAndModify: false,
   });

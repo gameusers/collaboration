@@ -389,7 +389,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
         
         // ---------------------------------------------
-        //   画像をリサイズ＆圧縮す��
+        //   画像をリサイズ＆圧縮する
         // ---------------------------------------------
         
         let buff = Buffer.from(src.slice(src.indexOf('base64') + 7), 'base64');

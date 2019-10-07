@@ -32,6 +32,11 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -201,6 +206,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleSubmitFormReply,
+      handleDeleteReply,
       
     } = storeForum;
     
@@ -259,11 +265,11 @@ export default injectIntl(class extends React.Component {
     }
     
     
-    console.log(`
-      ----- repliesDataObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // --------------------------------------------------
+    //   返信を削除するか尋ねるダイアログを表示するための変数
+    // --------------------------------------------------
+    
+    const showDeleteDialog = lodashGet(dataObj, [...this.pathArr, 'showDeleteDialog'], false);
     
     
     
@@ -272,15 +278,15 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      /app/common/forum/components/form-reply.js
-      gameCommunities_id: {green ${gameCommunities_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      forumThreads_id: {green ${forumThreads_id}}
-      forumComments_id: {green ${forumComments_id}}
-      forumReplies_id: {green ${forumReplies_id}}
-      replyToForumComments_id: {green ${replyToForumComments_id}}
-    `);
+    // console.log(chalk`
+    //   /app/common/forum/components/form-reply.js
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+    //   replyToForumComments_id: {green ${replyToForumComments_id}}
+    // `);
     
     // console.log(`
     //   ----- this.pathArr -----\n
@@ -304,9 +310,6 @@ export default injectIntl(class extends React.Component {
     return (
       <form
         css={forumReplies_id ? cssEdit : cssNew}
-        // css={css`
-        //   ${forumReplies_id ? 'padding: 0 0 12px 0;' : 'padding: 24px 0 12px 0;'}
-        // `}
         name={`form-${forumComments_id}-reply`}
         onSubmit={(eventObj) => handleSubmitFormReply({
           eventObj,
@@ -398,7 +401,6 @@ export default injectIntl(class extends React.Component {
         
         
         
-        
         {/* Comment */}
         <div
           css={css`
@@ -480,6 +482,26 @@ export default injectIntl(class extends React.Component {
           </Button>
           
           
+          {/* Submit */}
+          <div
+            css={css`
+              margin: 0 0 0 24px;
+            `}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDeleteDialog'],
+                value: true,
+              })}
+              disabled={buttonDisabled}
+            >
+              削除する
+            </Button>
+          </div>
+          
+          
           {/* Close */}
           <div
             css={css`
@@ -501,6 +523,63 @@ export default injectIntl(class extends React.Component {
           
           
         </div>
+        
+        
+        
+        
+        {/* 返信を削除するか尋ねるダイアログ */}
+        <Dialog
+          open={showDeleteDialog}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDeleteDialog'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          
+          <DialogTitle id="alert-dialog-title">返信削除</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              返信を削除しますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleDeleteReply({
+                  pathArr: this.pathArr,
+                  gameCommunities_id,
+                  userCommunities_id,
+                  forumThreads_id,
+                  forumComments_id,
+                  forumReplies_id,
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDeleteDialog'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
         
         
       </form>

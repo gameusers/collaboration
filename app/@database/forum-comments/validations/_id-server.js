@@ -39,7 +39,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {string} userCommunities_id - DB user-community _id
  * @return {Object} バリデーション結果
  */
-const validationForumComments_idServerUC = async ({ forumComments_id, userCommunities_id }) => {
+const validationForumComments_idServerUC = async ({ forumComments_id, forumThreads_id, userCommunities_id }) => {
   
   
   // ---------------------------------------------
@@ -88,6 +88,7 @@ const validationForumComments_idServerUC = async ({ forumComments_id, userCommun
   const count = await Model.count({
     conditionObj: {
       _id: forumComments_id,
+      forumThreads_id,
       userCommunities_id,
     }
   });

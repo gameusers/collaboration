@@ -109,6 +109,13 @@ export default async (req, res) => {
   // console.dir(req);
   // console.log(`\n-----------------------------------\n`);
   
+  // const encrypted = encrypt('AAA');
+  // const decrypted = decrypt(encrypted);
+  
+  // console.log(chalk`
+  //   encrypted: {green ${encrypted}}
+  //   decrypted: {green ${decrypted}}
+  // `);
   
   
   

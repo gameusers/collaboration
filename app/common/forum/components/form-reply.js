@@ -448,11 +448,11 @@ export default injectIntl(class extends React.Component {
         >
           
           <ImageAndVideoForm
-            pathArr={[...this.pathArr, 'formImagesAndVideosObj']}
+            pathArr={this.pathArr}
+            type="forum"
             descriptionImage="返信に表示する画像をアップロードできます。"
             descriptionVideo="返信に表示する動画を登録できます。"
-            arrayName="mainArr"
-            caption={true}
+            showImageCaption={true}
             limit={limit}
           />
           

@@ -14,8 +14,9 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
+// const shortid = require('shortid');
 const moment = require('moment');
+const rimraf = require('rimraf');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -35,9 +36,7 @@ const ModelForumComments = require('../../../../../app/@database/forum-comments/
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
-// const { CustomError } = require('../../../../../app/@modules/error/custom');
-// const { formatAndSave } = require('../../../../../app/@modules/image/save');
-// const { setAuthority } = require('../../../../../app/@modules/authority');
+const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
@@ -47,7 +46,6 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { validationIP } = require('../../../../../app/@validations/ip');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
-// const { validationForumComments_idServerUC } = require('../../../../../app/@database/forum-comments/validations/_id-server');
 const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
@@ -146,7 +144,6 @@ export default async (req, res) => {
     await validationUserCommunities_idServer({ value: userCommunities_id });
     
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
-    // await validationForumComments_idServerUC({ forumComments_id, forumThreads_id, userCommunities_id });
     
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
@@ -163,36 +160,53 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const forumCommentsObj = await ModelForumComments.findForEdit({
+    const forumCommentsObj = await ModelForumComments.findForDelete({
       req,
       localeObj,
       loginUsers_id,
-      forumComments_id: forumReplies_id,
+      userCommunities_id,
+      forumThreads_id,
+      forumComments_id,
+      forumReplies_id,
     });
     
-    console.log(`
-      ----- forumCommentsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
     
     // --------------------------------------------------
-    //   編集権限がない場合は処理停止
+    //   images & videos
     // --------------------------------------------------
     
-    // const editable = verifyAuthority({
-    //   req,
-    //   users_id: lodashGet(resultArr, [0, 'users_id'], ''),
-    //   loginUsers_id,
-    //   ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-    //   _id: lodashGet(resultArr, [0, '_id'], '')
-    // });
+    const imagesAndVideos_id = lodashGet(forumCommentsObj, ['imagesAndVideosObj', '_id'], '');
+    const imagesAndVideosArr = lodashGet(forumCommentsObj, ['imagesAndVideosObj', 'arr'], []);
     
-    // if (!editable) {
-    //   throw new CustomError({ level: 'error', errorsArr: [{ code: '-2ENyEiaJ', messageID: 'DSRlEoL29' }] });
-    // }
+    let images = 0;
+    let videos = 0;
     
+    for (let valueObj of imagesAndVideosArr.values()) {
+      
+      if (valueObj.type === 'image') {
+        images -= 1;
+      } else if (valueObj.type === 'video') {
+        videos -= 1;
+      }
+      
+    }
+    
+    
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+      
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
     
     
     
@@ -201,71 +215,80 @@ export default async (req, res) => {
     //   Datetime
     // --------------------------------------------------
     
-    // const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().toISOString();
     
     
     
     
-    // // --------------------------------------------------
-    // //   Insert
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Delete
+    // --------------------------------------------------
     
-    // // ---------------------------------------------
-    // //   - forum-comments / 返信
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - forum-comments / 返信
+    // ---------------------------------------------
     
-    // const forumRepliesConditionObj = {
-    //   _id: forumReplies_id,
-    // };
-    
-    
-    // // ---------------------------------------------
-    // //   - forum-threads / 更新日時の変更 & 返信数 - 1 & 画像数と動画数の変更
-    // // ---------------------------------------------
-    
-    // const forumThreadsConditionObj = {
-    //   _id: forumThreads_id,
-    // };
+    const forumRepliesConditionObj = {
+      _id: forumReplies_id,
+    };
     
     
-    // let forumThreadsSaveObj = {
-    //   updatedDate: ISO8601,
-    //   $inc: { replies: -1, images, videos }
-    // };
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
+    
+    let imagesAndVideosConditionObj = {};
+    
+    if (imagesAndVideos_id) {
+      imagesAndVideosConditionObj = {
+        _id: imagesAndVideos_id,
+      };
+    }
     
     
-    // // ---------------------------------------------
-    // //   - forum-comments / 更新日時の変更 & 返信数 - 1
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - forum-comments / 更新日時の変更 & 返信数 - 1
+    // ---------------------------------------------
     
-    // const forumCommentsConditionObj = {
-    //   _id: forumComments_id,
-    // };
-    
-    
-    // let forumCommentsSaveObj = {
-    //   updatedDate: ISO8601,
-    //   $inc: { replies: -1 }
-    // };
+    const forumCommentsConditionObj = {
+      _id: forumComments_id,
+    };
     
     
-    // // ---------------------------------------------
-    // //   - user-communities / 更新日時の変更
-    // // ---------------------------------------------
-    
-    // const userCommunitiesConditionObj = {
-    //   _id: userCommunities_id,
-    // };
+    let forumCommentsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { replies: -1 }
+    };
     
     
-    // const userCommunitiesSaveObj = {
-    //   updatedDate: ISO8601,
-    //   'updatedDateObj.forum': ISO8601,
-    // };
+    // ---------------------------------------------
+    //   - forum-threads / 更新日時の変更 & 返信数 - 1 & 画像数と動画数の変更
+    // ---------------------------------------------
+    
+    const forumThreadsConditionObj = {
+      _id: forumThreads_id,
+    };
     
     
+    let forumThreadsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { replies: -1, images, videos }
+    };
     
     
+    // ---------------------------------------------
+    //   - user-communities / 更新日時の変更
+    // ---------------------------------------------
+    
+    const userCommunitiesConditionObj = {
+      _id: userCommunities_id,
+    };
+    
+    
+    const userCommunitiesSaveObj = {
+      updatedDate: ISO8601,
+      'updatedDateObj.forum': ISO8601,
+    };
     
     
     
@@ -274,20 +297,37 @@ export default async (req, res) => {
     //   DB insert Transaction
     // --------------------------------------------------
     
-    // await ModelForumComments.transactionForUpsert({
+    await ModelForumComments.transactionForDelete({
       
-    //   forumRepliesConditionObj,
-    //   forumRepliesSaveObj,
-    //   forumCommentsConditionObj,
-    //   forumCommentsSaveObj,
-    //   forumThreadsConditionObj,
-    //   forumThreadsSaveObj,
-    //   imagesAndVideosConditionObj,
-    //   imagesAndVideosSaveObj,
-    //   userCommunitiesConditionObj,
-    //   userCommunitiesSaveObj,
+      forumRepliesConditionObj,
+      imagesAndVideosConditionObj,
+      forumCommentsConditionObj,
+      forumCommentsSaveObj,
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
+      userCommunitiesConditionObj,
+      userCommunitiesSaveObj,
       
-    // });
+    });
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   画像を削除する
+    // ---------------------------------------------
+    
+    const dirPath = `static/img/forum/${imagesAndVideos_id}`;
+    
+    if (imagesAndVideos_id && images !== 0) {
+      
+      rimraf(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+        }
+      });
+      
+    }
     
     
     
@@ -354,17 +394,9 @@ export default async (req, res) => {
     //   userCommunities_id: {green ${userCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
-    //   name: {green ${name} / ${typeof name}}
-    //   comment: {green ${comment} / ${typeof comment}}
     //   anonymity: {green ${anonymity} / ${typeof anonymity}}
     //   IP: {green ${req.ip}}
     //   User Agent: {green ${req.headers['user-agent']}}
-    // `);
-    
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
     // `);
     
     

@@ -3196,7 +3196,7 @@ class Store {
   
   
   /**
-   * 返信作成・編集フォームを送信する
+   * 返信を削除する
    * @param {Array} pathArr - パス
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
@@ -3426,7 +3426,7 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: forumComments_id ? 'NKsMLWvkt' : 'fhi9lUaap',
+        messageID: 'o4fiADvZR',
       });
       
       

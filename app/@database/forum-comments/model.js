@@ -2003,7 +2003,182 @@ const findForEdit = async ({
  * @param {string} forumComments_id - DB forum-comments _id / コメントのID
  * @return {Array} 取得データ
  */
-const findForDelete = async ({
+const findForDeleteComment = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  userCommunities_id,
+  forumThreads_id,
+  forumComments_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumComments.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match : {
+          _id: forumComments_id,
+          userCommunities_id,
+          forumThreads_id,
+          // forumComments_id: '',
+        }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (resultArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'jmtpSHPXH', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    // const editable = verifyAuthority({
+    //   req,
+    //   users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+    //   loginUsers_id,
+    //   ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+    //   _id: lodashGet(resultArr, [0, '_id'], ''),
+    // });
+    
+    // if (!editable) {
+    //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+    // }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const _id = lodashGet(resultArr, [0, '_id'], '');
+    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    
+    const returnObj = {
+      _id,
+      imagesAndVideosObj,
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   forumComments_id: {green ${forumComments_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * コメント＆返信データを取得する　削除用
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+ * @return {Array} 取得データ
+ */
+const findForDeleteReply = async ({
   
   req,
   localeObj,
@@ -2396,7 +2571,170 @@ const transactionForUpsert = async ({
 
 
 /**
- * Transaction 削除する
+ * Transaction コメントを削除する
+ * コメントを削除して、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
+ * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
+ * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
+ * @return {Object}
+ */
+const transactionForDeleteComment = async ({
+  
+  forumRepliesConditionObj,
+  forumCommentsConditionObj,
+  imagesAndVideosConditionObj,
+  forumThreadsConditionObj,
+  forumThreadsSaveObj,
+  userCommunitiesConditionObj,
+  userCommunitiesSaveObj,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await SchemaForumThreads.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    // --------------------------------------------------
+    //   DB
+    // --------------------------------------------------
+    
+    await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
+    await SchemaForumComments.deleteOne(forumCommentsConditionObj, { session });
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
+      await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
+    }
+    
+    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
+    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- forumCommentsConditionObj -----\n
+    //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunitiesSaveObj -----\n
+    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * Transaction 返信を削除する
  * 返信を削除して、コメント、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
  * 
  * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
@@ -2409,7 +2747,7 @@ const transactionForUpsert = async ({
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object} 
  */
-const transactionForDelete = async ({
+const transactionForDeleteReply = async ({
   
   forumRepliesConditionObj,
   imagesAndVideosConditionObj,
@@ -2591,8 +2929,10 @@ module.exports = {
   findCommentsAndRepliesByForumThreads_idsArr,
   findRepliesByForumComments_idArr,
   findForEdit,
-  findForDelete,
+  findForDeleteComment,
+  findForDeleteReply,
   transactionForUpsert,
-  transactionForDelete,
+  transactionForDeleteComment,
+  transactionForDeleteReply,
   
 };

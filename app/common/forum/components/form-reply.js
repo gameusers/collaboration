@@ -482,7 +482,7 @@ export default injectIntl(class extends React.Component {
           </Button>
           
           
-          {/* Submit */}
+          {/* 削除ボタン */}
           <div
             css={css`
               margin: 0 0 0 24px;

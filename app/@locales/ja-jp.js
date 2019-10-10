@@ -238,6 +238,7 @@ const ja_JP = {
   'fhi9lUaap': 'コメントを投稿しました',
   'NKsMLWvkt': 'コメントを編集しました',
   
+  'GERzvKtUN': 'コメントを削除しました',
   'o4fiADvZR': '返信を削除しました',
   
   

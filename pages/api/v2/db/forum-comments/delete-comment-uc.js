@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const shortid = require('shortid');
 const moment = require('moment');
 const rimraf = require('rimraf');
 const lodashGet = require('lodash/get');
@@ -60,7 +59,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: diXcNSat_
+//   endpointID: ErUxb0Syw
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -107,7 +106,6 @@ export default async (req, res) => {
       userCommunities_id,
       forumThreads_id,
       forumComments_id,
-      forumReplies_id,
       threadListLimit,
       threadLimit,
       commentLimit,
@@ -119,7 +117,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
-    lodashSet(requestParametersObj, ['forumReplies_id'], forumReplies_id);
     lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
@@ -160,14 +157,13 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const forumCommentsObj = await ModelForumComments.findForDelete({
+    const forumCommentsObj = await ModelForumComments.findForDeleteComment({
       req,
       localeObj,
       loginUsers_id,
       userCommunities_id,
       forumThreads_id,
       forumComments_id,
-      forumReplies_id,
     });
     
     
@@ -175,7 +171,6 @@ export default async (req, res) => {
     //   images & videos
     // --------------------------------------------------
     
-    const imagesAndVideos_id = lodashGet(forumCommentsObj, ['imagesAndVideosObj', '_id'], '');
     const imagesAndVideosArr = lodashGet(forumCommentsObj, ['imagesAndVideosObj', 'arr'], []);
     
     let images = 0;
@@ -192,21 +187,65 @@ export default async (req, res) => {
     }
     
     
-    // console.log(`
-    //   ----- forumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumCommentsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   forumReplies_id: {green ${forumReplies_id}}
+    console.log(chalk`
+      userCommunities_id: {green ${userCommunities_id}}
+      forumThreads_id: {green ${forumThreads_id}}
+      forumComments_id: {green ${forumComments_id}}
       
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
+      images: {green ${images}}
+      videos: {green ${videos}}
+    `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   imagesAndVideos_id
+    // --------------------------------------------------
+    
+    const imagesAndVideos_id = lodashGet(forumCommentsObj, ['imagesAndVideosObj', '_id'], '');
+    
+    let imagesAndVideos_idsArr = [];
+    
+    if (imagesAndVideos_id) {
+      imagesAndVideos_idsArr = [imagesAndVideos_id];
+    }
+    
+    
+    const forumRepliesArr = await ModelForumComments.find({
+      
+      conditionObj: {
+        forumComments_id,
+      }
+      
+    });
+    
+    for (let valueObj of forumRepliesArr.values()) {
+      
+      if (valueObj.imagesAndVideos_id) {
+        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+      
+    }
+    
+    
+    console.log(`
+      ----- forumRepliesArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideos_idsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -229,7 +268,16 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const forumRepliesConditionObj = {
-      _id: forumReplies_id,
+      forumComments_id,
+    };
+    
+    
+    // ---------------------------------------------
+    //   - forum-comments / コメント
+    // ---------------------------------------------
+    
+    const forumCommentsConditionObj = {
+      _id: forumComments_id,
     };
     
     
@@ -247,21 +295,6 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - forum-comments / 更新日時の変更 & 返信数 - 1
-    // ---------------------------------------------
-    
-    const forumCommentsConditionObj = {
-      _id: forumComments_id,
-    };
-    
-    
-    let forumCommentsSaveObj = {
-      updatedDate: ISO8601,
-      $inc: { replies: -1 }
-    };
-    
-    
-    // ---------------------------------------------
     //   - forum-threads / 更新日時の変更 & 返信数 - 1 & 画像数と動画数の変更
     // ---------------------------------------------
     
@@ -272,7 +305,7 @@ export default async (req, res) => {
     
     let forumThreadsSaveObj = {
       updatedDate: ISO8601,
-      $inc: { replies: -1, images, videos }
+      $inc: { comments: -1, images, videos }
     };
     
     
@@ -297,12 +330,11 @@ export default async (req, res) => {
     //   DB insert Transaction
     // --------------------------------------------------
     
-    await ModelForumComments.transactionForDelete({
+    await ModelForumComments.transactionForDeleteComment({
       
       forumRepliesConditionObj,
-      imagesAndVideosConditionObj,
       forumCommentsConditionObj,
-      forumCommentsSaveObj,
+      imagesAndVideosConditionObj,
       forumThreadsConditionObj,
       forumThreadsSaveObj,
       userCommunitiesConditionObj,
@@ -317,17 +349,25 @@ export default async (req, res) => {
     //   画像を削除する
     // ---------------------------------------------
     
-    const dirPath = `static/img/forum/${imagesAndVideos_id}`;
-    
-    if (imagesAndVideos_id && images !== 0) {
+    for (let value of imagesAndVideos_idsArr.values()) {
       
-      rimraf(dirPath, (err) => {
-        if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
-        }
-      });
+      const dirPath = `static/img/forum/${value}`;
+      console.log(dirPath);
+      
+      
+      if (imagesAndVideos_id && images !== 0) {
+        
+        rimraf(dirPath, (err) => {
+          if (err) {
+            throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+          }
+        });
+        
+      }
       
     }
+    
+    
     
     
     
@@ -418,7 +458,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'diXcNSat_',
+      endpointID: 'ErUxb0Syw',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,
@@ -435,15 +475,4 @@ export default async (req, res) => {
   }
   
   
-};
-
-
-
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '25mb',
-    },
-  },
 };

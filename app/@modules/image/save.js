@@ -503,22 +503,22 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
   
   
-  console.log(`
-    ----- newArr -----\n
-    ${util.inspect(newArr, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- newArr -----\n
+  //   ${util.inspect(newArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(`
-    ----- oldArr -----\n
-    ${util.inspect(oldArr, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- oldArr -----\n
+  //   ${util.inspect(oldArr, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
-  console.log(chalk`
-    countNewImages: {green ${countNewImages}}
-    countOldImages: {green ${countOldImages}}
-  `);
+  // console.log(chalk`
+  //   countNewImages: {green ${countNewImages}}
+  //   countOldImages: {green ${countOldImages}}
+  // `);
   
   
   // ---------------------------------------------

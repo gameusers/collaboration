@@ -595,6 +595,8 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       updatedDate,
       users_id: loginUsers_id,
       type,
+      images: countNewImages,
+      videos: countNewVideos,
       arr: returnArr,
     },
     images,

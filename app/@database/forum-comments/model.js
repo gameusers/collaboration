@@ -1995,6 +1995,211 @@ const findForEdit = async ({
 
 
 
+
+
+
+/**
+ * コメント＆返信データを取得する　削除用
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+ * @return {Array} 取得データ
+ */
+const findForDeleteCommentSum = async ({
+  
+  forumComments_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumComments.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match:
+          { $or:
+            [
+              { _id: forumComments_id },
+              { forumComments_id },
+            ]
+          },
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              },
+              // {
+              //   $group:
+              //     {
+              //       _id: null,
+              //       images: { $sum: '$imagesAndVideosObj.images' }
+              //     }
+              // },
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // 画像と動画を取得
+      // {
+      //   $group:
+      //     {
+      //       _id: null,
+      //       images: { $sum: '$imagesAndVideosObj.images' }
+      //     }
+      // },
+      
+      
+      { $project:
+        {
+          createdDate: 0,
+          // imagesAndVideos_id: 0,
+          __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (resultArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'jiSBn7Gb-', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    let imagesAndVideos_idsArr = [];
+    let images = 0;
+    let videos = 0;
+    
+    for (let valueObj of resultArr.values()) {
+      
+      if (valueObj.imagesAndVideos_id) {
+        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+      
+      const image = lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
+      const video = lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
+      
+      images += image;
+      videos += video;
+      
+      // console.log(value);
+    }
+    
+    
+    const _id = lodashGet(resultArr, [0, '_id'], '');
+    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    
+    const returnObj = {
+      _id,
+      imagesAndVideosObj,
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      forumComments_id: {green ${forumComments_id}}
+      images: {green ${images}}
+      videos: {green ${videos}}
+    `);
+    
+    console.log(`
+      ----- imagesAndVideos_idsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+
+
+
 /**
  * コメント＆返信データを取得する　削除用
  * @param {Object} req - リクエスト
@@ -2929,6 +3134,7 @@ module.exports = {
   findCommentsAndRepliesByForumThreads_idsArr,
   findRepliesByForumComments_idArr,
   findForEdit,
+  findForDeleteCommentSum,
   findForDeleteComment,
   findForDeleteReply,
   transactionForUpsert,

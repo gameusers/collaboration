@@ -187,20 +187,20 @@ export default async (req, res) => {
     }
     
     
-    console.log(`
-      ----- forumCommentsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      userCommunities_id: {green ${userCommunities_id}}
-      forumThreads_id: {green ${forumThreads_id}}
-      forumComments_id: {green ${forumComments_id}}
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
       
-      images: {green ${images}}
-      videos: {green ${videos}}
-    `);
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
     
     
     
@@ -235,17 +235,27 @@ export default async (req, res) => {
     }
     
     
-    console.log(`
-      ----- forumRepliesArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(forumRepliesArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumRepliesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideos_idsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideos_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    
+    const dataArr = await ModelForumComments.findForDeleteCommentSum({
+      
+      forumComments_id,
+      
+    });
     
     
     
@@ -330,17 +340,17 @@ export default async (req, res) => {
     //   DB insert Transaction
     // --------------------------------------------------
     
-    await ModelForumComments.transactionForDeleteComment({
+    // await ModelForumComments.transactionForDeleteComment({
       
-      forumRepliesConditionObj,
-      forumCommentsConditionObj,
-      imagesAndVideosConditionObj,
-      forumThreadsConditionObj,
-      forumThreadsSaveObj,
-      userCommunitiesConditionObj,
-      userCommunitiesSaveObj,
+    //   forumRepliesConditionObj,
+    //   forumCommentsConditionObj,
+    //   imagesAndVideosConditionObj,
+    //   forumThreadsConditionObj,
+    //   forumThreadsSaveObj,
+    //   userCommunitiesConditionObj,
+    //   userCommunitiesSaveObj,
       
-    });
+    // });
     
     
     
@@ -352,18 +362,18 @@ export default async (req, res) => {
     for (let value of imagesAndVideos_idsArr.values()) {
       
       const dirPath = `static/img/forum/${value}`;
-      console.log(dirPath);
+      // console.log(dirPath);
       
       
-      if (imagesAndVideos_id && images !== 0) {
+      // if (imagesAndVideos_id && images !== 0) {
         
-        rimraf(dirPath, (err) => {
-          if (err) {
-            throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
-          }
-        });
+      //   rimraf(dirPath, (err) => {
+      //     if (err) {
+      //       throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+      //     }
+      //   });
         
-      }
+      // }
       
     }
     

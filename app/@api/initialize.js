@@ -2127,7 +2127,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         pcObj: {
           model: '自作PC',
-          comment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなどを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
+          comment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブ���どを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
     
     グラボを積んでいないのですが、Ryzen 3 2200Gの機能で昔のゲームや2Dゲームなら普通に動きます。比較的最近のゲームですが、ダーケストダンジョンもいけました。`,
           specsObj: {
@@ -2438,6 +2438,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '',
         type: 'game',
+        images: 2,
+        videos: 0,
         arr: [
           
           {
@@ -2524,6 +2526,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '',
         type: 'game',
+        images: 1,
+        videos: 0,
         arr: [
           
           {
@@ -2555,6 +2559,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '',
         type: 'game',
+        images: 2,
+        videos: 0,
         arr: [
           
           {
@@ -2654,6 +2660,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '',
         type: 'game',
+        images: 1,
+        videos: 0,
         arr: [
           
           {
@@ -2685,6 +2693,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '',
         type: 'game',
+        images: 1,
+        videos: 0,
         arr: [
           
           {
@@ -2716,6 +2726,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         type: 'player',
+        images: 1,
+        videos: 0,
         arr: [
           
           {
@@ -2763,6 +2775,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
         type: 'player',
+        images: 1,
+        videos: 0,
         arr: [
           
           {
@@ -2794,6 +2808,8 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         users_id: '',
         type: 'forum',
+        images: 7,
+        videos: 2,
         arr: [
           
           {

@@ -2006,8 +2006,11 @@ const findForEdit = async ({
  * @param {string} forumComments_id - DB forum-comments _id / コメントのID
  * @return {Array} 取得データ
  */
-const findForDeleteCommentSum = async ({
+const findForDeleteComment = async ({
   
+  req,
+  localeObj,
+  loginUsers_id,
   forumComments_id,
   
 }) => {
@@ -2049,19 +2052,10 @@ const findForDeleteCommentSum = async ({
               },
               { $project:
                 {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
+                  images: 1,
+                  videos: 1,
                 }
               },
-              // {
-              //   $group:
-              //     {
-              //       _id: null,
-              //       images: { $sum: '$imagesAndVideosObj.images' }
-              //     }
-              // },
             ],
             as: 'imagesAndVideosObj'
           }
@@ -2075,21 +2069,11 @@ const findForDeleteCommentSum = async ({
       },
       
       
-      // 画像と動画を取得
-      // {
-      //   $group:
-      //     {
-      //       _id: null,
-      //       images: { $sum: '$imagesAndVideosObj.images' }
-      //     }
-      // },
-      
-      
       { $project:
         {
-          createdDate: 0,
-          // imagesAndVideos_id: 0,
-          __v: 0,
+          replies: 1,
+          imagesAndVideos_id: 1,
+          imagesAndVideosObj: 1,
         }
       },
       
@@ -2105,195 +2089,6 @@ const findForDeleteCommentSum = async ({
     
     if (resultArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'jiSBn7Gb-', messageID: 'cvS0qSAlE' }] });
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Format
-    // --------------------------------------------------
-    
-    let imagesAndVideos_idsArr = [];
-    let images = 0;
-    let videos = 0;
-    
-    for (let valueObj of resultArr.values()) {
-      
-      if (valueObj.imagesAndVideos_id) {
-        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
-      }
-      
-      const image = lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
-      const video = lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
-      
-      images += image;
-      videos += video;
-      
-      // console.log(value);
-    }
-    
-    
-    const _id = lodashGet(resultArr, [0, '_id'], '');
-    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
-    
-    const returnObj = {
-      _id,
-      imagesAndVideosObj,
-    };
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    console.log(chalk`
-      forumComments_id: {green ${forumComments_id}}
-      images: {green ${images}}
-      videos: {green ${videos}}
-    `);
-    
-    console.log(`
-      ----- imagesAndVideos_idsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-  
-};
-
-
-
-
-
-
-
-/**
- * コメント＆返信データを取得する　削除用
- * @param {Object} req - リクエスト
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumComments_id - DB forum-comments _id / コメントのID
- * @return {Array} 取得データ
- */
-const findForDeleteComment = async ({
-  
-  req,
-  localeObj,
-  loginUsers_id,
-  userCommunities_id,
-  forumThreads_id,
-  forumComments_id,
-  
-}) => {
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Aggregate
-    // --------------------------------------------------
-    
-    const resultArr = await SchemaForumComments.aggregate([
-      
-      
-      // スレッドを取得
-      {
-        $match : {
-          _id: forumComments_id,
-          userCommunities_id,
-          forumThreads_id,
-          // forumComments_id: '',
-        }
-      },
-      
-      
-      // 画像と動画を取得
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
-                }
-              },
-              { $project:
-                {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
-                }
-              }
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
-      
-      {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
-      },
-      
-      
-      { $project:
-        {
-          createdDate: 0,
-          imagesAndVideos_id: 0,
-          __v: 0,
-        }
-      },
-      
-      
-    ]).exec();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   配列が空の場合は処理停止
-    // --------------------------------------------------
-    
-    if (resultArr.length === 0) {
-      throw new CustomError({ level: 'error', errorsArr: [{ code: 'jmtpSHPXH', messageID: 'cvS0qSAlE' }] });
     }
     
     
@@ -2322,12 +2117,32 @@ const findForDeleteComment = async ({
     //   Format
     // --------------------------------------------------
     
-    const _id = lodashGet(resultArr, [0, '_id'], '');
-    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    let replies = 0;
+    let imagesAndVideos_idsArr = [];
+    let images = 0;
+    let videos = 0;
+    
+    for (let valueObj of resultArr.values()) {
+      
+      if (valueObj.imagesAndVideos_id) {
+        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+      
+      const reply = lodashGet(valueObj, ['replies'], 0);
+      const image = lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
+      const video = lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
+      
+      replies -= reply;
+      images -= image;
+      videos -= video;
+      
+    }
     
     const returnObj = {
-      _id,
-      imagesAndVideosObj,
+      replies,
+      imagesAndVideos_idsArr,
+      images,
+      videos,
     };
     
     
@@ -2339,6 +2154,14 @@ const findForDeleteComment = async ({
     
     // console.log(chalk`
     //   forumComments_id: {green ${forumComments_id}}
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideos_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -2376,11 +2199,14 @@ const findForDeleteComment = async ({
 
 
 /**
- * コメント＆返信データを取得する　削除用
+ * 返信データを取得する　削除用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+ * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
  * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+ * @param {string} forumReplies_id - DB forum-comments _id / 返信のID
  * @return {Array} 取得データ
  */
 const findForDeleteReply = async ({
@@ -2431,10 +2257,8 @@ const findForDeleteReply = async ({
               },
               { $project:
                 {
-                  createdDate: 0,
-                  updatedDate: 0,
-                  users_id: 0,
-                  __v: 0,
+                  images: 1,
+                  videos: 1,
                 }
               }
             ],
@@ -2452,9 +2276,11 @@ const findForDeleteReply = async ({
       
       { $project:
         {
-          createdDate: 0,
-          imagesAndVideos_id: 0,
-          __v: 0,
+          createdDate: 1,
+          users_id: 1,
+          // replies: 1,
+          imagesAndVideos_id: 1,
+          imagesAndVideosObj: 1,
         }
       },
       
@@ -2473,23 +2299,27 @@ const findForDeleteReply = async ({
     }
     
     
-    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // --------------------------------------------------
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
     
-    // const editable = verifyAuthority({
-    //   req,
-    //   users_id: lodashGet(resultArr, [0, 'users_id'], ''),
-    //   loginUsers_id,
-    //   ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-    //   _id: lodashGet(resultArr, [0, '_id'], ''),
-    // });
+    const editable = verifyAuthority({
+      req,
+      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+      _id: lodashGet(resultArr, [0, '_id'], ''),
+    });
     
-    // if (!editable) {
-    //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
-    // }
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'HdsQle2ZZ', messageID: 'DSRlEoL29' }] });
+    }
     
     
     
@@ -2498,13 +2328,23 @@ const findForDeleteReply = async ({
     //   Format
     // --------------------------------------------------
     
-    const _id = lodashGet(resultArr, [0, '_id'], '');
-    const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    const imagesAndVideos_id = lodashGet(resultArr, [0, 'imagesAndVideos_id'], '');
+    const images = - lodashGet(resultArr, [0, 'imagesAndVideosObj', 'images'], 0);
+    const videos = - lodashGet(resultArr, [0, 'imagesAndVideosObj', 'videos'], 0);
     
     const returnObj = {
-      _id,
-      imagesAndVideosObj,
+      imagesAndVideos_id,
+      images,
+      videos,
     };
+    
+    // const _id = lodashGet(resultArr, [0, '_id'], '');
+    // const imagesAndVideosObj = lodashGet(resultArr, [0, 'imagesAndVideosObj'], {});
+    
+    // const returnObj = {
+    //   _id,
+    //   imagesAndVideosObj,
+    // };
     
     
     
@@ -2777,7 +2617,7 @@ const transactionForUpsert = async ({
 
 /**
  * Transaction コメントを削除する
- * コメントを削除して、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * コメントと返信を削除して、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
  * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
@@ -2835,7 +2675,7 @@ const transactionForDeleteComment = async ({
     await SchemaForumComments.deleteOne(forumCommentsConditionObj, { session });
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
-      await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
+      await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
     }
     
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
@@ -3134,7 +2974,7 @@ module.exports = {
   findCommentsAndRepliesByForumThreads_idsArr,
   findRepliesByForumComments_idArr,
   findForEdit,
-  findForDeleteCommentSum,
+  // findForDeleteCommentSum,
   findForDeleteComment,
   findForDeleteReply,
   transactionForUpsert,

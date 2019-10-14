@@ -157,105 +157,16 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const forumCommentsObj = await ModelForumComments.findForDeleteComment({
-      req,
-      localeObj,
-      loginUsers_id,
-      userCommunities_id,
-      forumThreads_id,
-      forumComments_id,
-    });
-    
-    
-    // --------------------------------------------------
-    //   images & videos
-    // --------------------------------------------------
-    
-    const imagesAndVideosArr = lodashGet(forumCommentsObj, ['imagesAndVideosObj', 'arr'], []);
-    
-    let images = 0;
-    let videos = 0;
-    
-    for (let valueObj of imagesAndVideosArr.values()) {
-      
-      if (valueObj.type === 'image') {
-        images -= 1;
-      } else if (valueObj.type === 'video') {
-        videos -= 1;
-      }
-      
-    }
-    
-    
-    // console.log(`
-    //   ----- forumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-      
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   imagesAndVideos_id
-    // --------------------------------------------------
-    
-    const imagesAndVideos_id = lodashGet(forumCommentsObj, ['imagesAndVideosObj', '_id'], '');
-    
-    let imagesAndVideos_idsArr = [];
-    
-    if (imagesAndVideos_id) {
-      imagesAndVideos_idsArr = [imagesAndVideos_id];
-    }
-    
-    
-    const forumRepliesArr = await ModelForumComments.find({
-      
-      conditionObj: {
-        forumComments_id,
-      }
-      
-    });
-    
-    for (let valueObj of forumRepliesArr.values()) {
-      
-      if (valueObj.imagesAndVideos_id) {
-        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
-      }
-      
-    }
-    
-    
-    // console.log(`
-    //   ----- forumRepliesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- imagesAndVideos_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    
-    const dataArr = await ModelForumComments.findForDeleteCommentSum({
+    const returnObj = await ModelForumComments.findForDeleteComment({
       
       forumComments_id,
       
     });
+    
+    const replies = lodashGet(returnObj, ['replies'], 0);
+    const imagesAndVideos_idsArr = lodashGet(returnObj, ['imagesAndVideos_idsArr'], []);
+    const images = lodashGet(returnObj, ['images'], 0);
+    const videos = lodashGet(returnObj, ['videos'], 0);
     
     
     
@@ -274,7 +185,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   - forum-comments / 返信
+    //   - forum-comments / 返信削除
     // ---------------------------------------------
     
     const forumRepliesConditionObj = {
@@ -283,7 +194,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - forum-comments / コメント
+    //   - forum-comments / コメント削除
     // ---------------------------------------------
     
     const forumCommentsConditionObj = {
@@ -292,20 +203,20 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - images-and-videos
+    //   - images-and-videos 削除
     // ---------------------------------------------
     
     let imagesAndVideosConditionObj = {};
     
-    if (imagesAndVideos_id) {
+    if (imagesAndVideos_idsArr.length > 0) {
       imagesAndVideosConditionObj = {
-        _id: imagesAndVideos_id,
+        _id: { $in: imagesAndVideos_idsArr }
       };
     }
     
     
     // ---------------------------------------------
-    //   - forum-threads / 更新日時の変更 & 返信数 - 1 & 画像数と動画数の変更
+    //   - forum-threads / 更新日時の変更 & コメント数 - 1 & 返信数 - ○○ & 画像数と動画数の変更
     // ---------------------------------------------
     
     const forumThreadsConditionObj = {
@@ -315,7 +226,7 @@ export default async (req, res) => {
     
     let forumThreadsSaveObj = {
       updatedDate: ISO8601,
-      $inc: { comments: -1, images, videos }
+      $inc: { comments: -1, replies, images, videos }
     };
     
     
@@ -340,17 +251,17 @@ export default async (req, res) => {
     //   DB insert Transaction
     // --------------------------------------------------
     
-    // await ModelForumComments.transactionForDeleteComment({
+    await ModelForumComments.transactionForDeleteComment({
       
-    //   forumRepliesConditionObj,
-    //   forumCommentsConditionObj,
-    //   imagesAndVideosConditionObj,
-    //   forumThreadsConditionObj,
-    //   forumThreadsSaveObj,
-    //   userCommunitiesConditionObj,
-    //   userCommunitiesSaveObj,
+      forumRepliesConditionObj,
+      forumCommentsConditionObj,
+      imagesAndVideosConditionObj,
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
+      userCommunitiesConditionObj,
+      userCommunitiesSaveObj,
       
-    // });
+    });
     
     
     
@@ -364,20 +275,13 @@ export default async (req, res) => {
       const dirPath = `static/img/forum/${value}`;
       // console.log(dirPath);
       
-      
-      // if (imagesAndVideos_id && images !== 0) {
-        
-      //   rimraf(dirPath, (err) => {
-      //     if (err) {
-      //       throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
-      //     }
-      //   });
-        
-      // }
+      rimraf(dirPath, (err) => {
+        if (err) {
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+        }
+      });
       
     }
-    
-    
     
     
     

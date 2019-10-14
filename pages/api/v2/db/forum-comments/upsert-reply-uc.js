@@ -501,7 +501,7 @@ export default async (req, res) => {
     //   Set Authority
     // --------------------------------------------------
     
-    if (!loginUsers_id && !forumComments_id) {
+    if (!loginUsers_id) {
       setAuthority({ req, _id: forumRepliesConditionObj._id });
     }
     

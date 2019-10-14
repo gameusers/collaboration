@@ -159,7 +159,8 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const forumCommentsObj = await ModelForumComments.findForDeleteReply({
+    const resultObj = await ModelForumComments.findForDeleteReply({
+      
       req,
       localeObj,
       loginUsers_id,
@@ -167,6 +168,7 @@ export default async (req, res) => {
       forumThreads_id,
       forumComments_id,
       forumReplies_id,
+      
     });
     
     
@@ -174,21 +176,9 @@ export default async (req, res) => {
     //   images & videos
     // --------------------------------------------------
     
-    const imagesAndVideos_id = lodashGet(forumCommentsObj, ['imagesAndVideosObj', '_id'], '');
-    const imagesAndVideosArr = lodashGet(forumCommentsObj, ['imagesAndVideosObj', 'arr'], []);
-    
-    let images = 0;
-    let videos = 0;
-    
-    for (let valueObj of imagesAndVideosArr.values()) {
-      
-      if (valueObj.type === 'image') {
-        images -= 1;
-      } else if (valueObj.type === 'video') {
-        videos -= 1;
-      }
-      
-    }
+    const imagesAndVideos_id = lodashGet(resultObj, ['imagesAndVideos_id'], '');
+    const images = lodashGet(resultObj, ['images'], 0);
+    const videos = lodashGet(resultObj, ['images'], 0);
     
     
     // console.log(`
@@ -202,7 +192,7 @@ export default async (req, res) => {
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
     //   forumReplies_id: {green ${forumReplies_id}}
-      
+    //   imagesAndVideos_id: {green ${imagesAndVideos_id}}
     //   images: {green ${images}}
     //   videos: {green ${videos}}
     // `);

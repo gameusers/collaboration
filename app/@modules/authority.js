@@ -110,7 +110,12 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
     const dateTimeLimit = moment(ISO8601).utc().add(1, 'hour');
     const dateTimeNow = moment().utc();
     
-    if (dateTimeLimit.isAfter(dateTimeNow)) {
+    // console.log(chalk`
+    //   dateTimeLimit: {green ${dateTimeLimit}}
+    //   dateTimeNow: {green ${dateTimeNow}}
+    // `);
+    
+    if (dateTimeNow.isAfter(dateTimeLimit)) {
       // console.log('false / 1時間以内にアクセスしていない');
       return false;
     }
@@ -133,7 +138,7 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
     }
     
     // console.log(`
-    //   ----- verifyAuthority2 / authorityArr -----\n
+    //   ----- authorityArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(authorityArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);

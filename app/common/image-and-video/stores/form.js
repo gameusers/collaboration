@@ -121,6 +121,10 @@ class Store {
    */
   @action.bound
   handleResetForm({ pathArr }) {
+    
+    lodashSet(this.dataObj, [...pathArr, 'showFormImage'], false);
+    lodashSet(this.dataObj, [...pathArr, 'showFormVideo'], false);
+    
     lodashSet(this.dataObj, [...pathArr, 'imageObj'], {});
     
     lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
@@ -129,6 +133,7 @@ class Store {
     
     lodashSet(this.dataObj, [...pathArr, 'videoChannel'], 'youtube');
     lodashSet(this.dataObj, [...pathArr, 'videoURL'], '');
+    
   };
   
   

@@ -30,6 +30,11 @@ import { css, jsx } from '@emotion/core';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -139,6 +144,7 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleSubmitFormThread,
+      handleDeleteThread,
       
     } = storeForum;
     
@@ -163,6 +169,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const limit = parseInt(process.env.FORUM_THREAD_IMAGES_AND_VIDEOS_LIMIT, 10);
+    
+    
+    // --------------------------------------------------
+    //   スレッドを削除するか尋ねるダイアログを表示するための変数
+    // --------------------------------------------------
+    
+    const showDeleteDialog = lodashGet(dataObj, [...this.pathArr, 'showDeleteDialog'], false);
     
     
     
@@ -313,6 +326,26 @@ export default injectIntl(class extends React.Component {
           </Button>
           
           
+          {/* 削除ボタン */}
+          <div
+            css={css`
+              margin: 0 0 0 24px;
+            `}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDeleteDialog'],
+                value: true,
+              })}
+              disabled={buttonDisabled}
+            >
+              削除する
+            </Button>
+          </div>
+          
+          
           {/* Close */}
           {forumThreads_id &&
             <div
@@ -335,6 +368,61 @@ export default injectIntl(class extends React.Component {
           }
           
         </div>
+        
+        
+        
+        
+        {/* スレッドを削除するか尋ねるダイアログ */}
+        <Dialog
+          open={showDeleteDialog}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDeleteDialog'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          
+          <DialogTitle id="alert-dialog-title">スレッド削除</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              スレッドを削除しますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleDeleteThread({
+                  pathArr: this.pathArr,
+                  gameCommunities_id,
+                  userCommunities_id,
+                  forumThreads_id,
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDeleteDialog'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
         
         
       </form>

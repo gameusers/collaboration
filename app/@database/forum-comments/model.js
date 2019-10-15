@@ -2071,6 +2071,8 @@ const findForDeleteComment = async ({
       
       { $project:
         {
+          createdDate: 1,
+          users_id: 1,
           replies: 1,
           imagesAndVideos_id: 1,
           imagesAndVideosObj: 1,
@@ -2098,17 +2100,17 @@ const findForDeleteComment = async ({
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
     
-    // const editable = verifyAuthority({
-    //   req,
-    //   users_id: lodashGet(resultArr, [0, 'users_id'], ''),
-    //   loginUsers_id,
-    //   ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-    //   _id: lodashGet(resultArr, [0, '_id'], ''),
-    // });
+    const editable = verifyAuthority({
+      req,
+      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+      _id: lodashGet(resultArr, [0, '_id'], ''),
+    });
     
-    // if (!editable) {
-    //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
-    // }
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+    }
     
     
     
@@ -2278,7 +2280,6 @@ const findForDeleteReply = async ({
         {
           createdDate: 1,
           users_id: 1,
-          // replies: 1,
           imagesAndVideos_id: 1,
           imagesAndVideosObj: 1,
         }
@@ -2974,7 +2975,6 @@ module.exports = {
   findCommentsAndRepliesByForumThreads_idsArr,
   findRepliesByForumComments_idArr,
   findForEdit,
-  // findForDeleteCommentSum,
   findForDeleteComment,
   findForDeleteReply,
   transactionForUpsert,

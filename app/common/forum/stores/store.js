@@ -1243,6 +1243,284 @@ class Store {
   
   
   
+  /**
+   * スレッドを削除する
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+   */
+  @action.bound
+  async handleDeleteThread({
+    
+    pathArr = [],
+    gameCommunities_id,
+    userCommunities_id,
+    forumThreads_id,
+    
+  }) {
+    
+    
+    // ---------------------------------------------
+    //   Property
+    // ---------------------------------------------
+    
+    const communities_id = gameCommunities_id || userCommunities_id;
+    
+    const forumObj = lodashGet(this.dataObj, [communities_id], {});
+    const clonedObj = lodashCloneDeep(forumObj);
+    
+    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    
+    
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   communities_id または forumThreads_id が存在しない場合エラー
+      // ---------------------------------------------
+      
+      if (!communities_id || !forumThreads_id) {
+        throw new CustomError({ errorsArr: [{ code: 'cGHv25p8q', messageID: '1YJnibkmh' }] });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   削除用ダイアログ非表示
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'showDeleteDialog'],
+        value: false,
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   console.log
+      // ---------------------------------------------
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(chalk`
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   forumThreads_id: {green ${forumThreads_id}}
+      // `);
+      
+      // return;
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        gameCommunities_id,
+        userCommunities_id,
+        forumThreads_id,
+        threadListLimit,
+        threadLimit,
+        commentLimit,
+        replyLimit,
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = {};
+      
+      if (gameCommunities_id) {
+        
+        
+        
+      } else if (userCommunities_id) {
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-threads/delete-uc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
+        
+      }
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsForListObj
+      // ---------------------------------------------
+      
+      clonedObj.forumThreadsForListObj = lodashGet(resultObj, ['data', 'forumThreadsForListObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumThreadsObj
+      // ---------------------------------------------
+      
+      clonedObj.forumThreadsObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumCommentsObj
+      // ---------------------------------------------
+      
+      clonedObj.forumCommentsObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   forumRepliesObj
+      // ---------------------------------------------
+      
+      clonedObj.forumRepliesObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   UpdatedDateObj
+      // --------------------------------------------------
+      
+      clonedObj.updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
+      
+      
+      // ---------------------------------------------
+      //   Update
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [communities_id],
+        value: clonedObj
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Close Form & Reset Form
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'show'], false);
+      
+      lodashSet(this.dataObj, [...pathArr, 'name'], '');
+      lodashSet(this.dataObj, [...pathArr, 'comment'], '');
+      
+      storeImageAndVideoForm.handleResetForm({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'KBPPfi4f9',
+      });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: forumThreads_id,
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
   
   
   // ---------------------------------------------

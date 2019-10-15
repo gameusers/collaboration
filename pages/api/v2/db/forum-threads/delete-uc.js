@@ -59,7 +59,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: ErUxb0Syw
+//   endpointID: W1ND-2YO2
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -105,7 +105,6 @@ export default async (req, res) => {
       
       userCommunities_id,
       forumThreads_id,
-      forumComments_id,
       threadListLimit,
       threadLimit,
       commentLimit,
@@ -116,7 +115,6 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
-    lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
     lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
     lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
@@ -157,12 +155,12 @@ export default async (req, res) => {
     //   データが存在しない、編集権限がない場合はエラーが投げられる
     // --------------------------------------------------
     
-    const returnObj = await ModelForumComments.findForDeleteComment({
+    const returnObj = await ModelForumThreads.findForDeleteThread({
       
       req,
       localeObj,
       loginUsers_id,
-      forumComments_id,
+      forumThreads_id,
       
     });
     
@@ -191,100 +189,100 @@ export default async (req, res) => {
     //   - forum-comments / 返信削除
     // ---------------------------------------------
     
-    const forumRepliesConditionObj = {
-      forumComments_id,
-    };
+    // const forumRepliesConditionObj = {
+    //   forumComments_id,
+    // };
     
     
-    // ---------------------------------------------
-    //   - forum-comments / コメント削除
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   - forum-comments / コメント削除
+    // // ---------------------------------------------
     
-    const forumCommentsConditionObj = {
-      _id: forumComments_id,
-    };
-    
-    
-    // ---------------------------------------------
-    //   - images-and-videos 削除
-    // ---------------------------------------------
-    
-    let imagesAndVideosConditionObj = {};
-    
-    if (imagesAndVideos_idsArr.length > 0) {
-      imagesAndVideosConditionObj = {
-        _id: { $in: imagesAndVideos_idsArr }
-      };
-    }
+    // const forumCommentsConditionObj = {
+    //   _id: forumComments_id,
+    // };
     
     
-    // ---------------------------------------------
-    //   - forum-threads / 更新日時の変更 & コメント数 - 1 & 返信数 - ○○ & 画像数と動画数の変更
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   - images-and-videos 削除
+    // // ---------------------------------------------
     
-    const forumThreadsConditionObj = {
-      _id: forumThreads_id,
-    };
+    // let imagesAndVideosConditionObj = {};
     
-    
-    let forumThreadsSaveObj = {
-      updatedDate: ISO8601,
-      $inc: { comments: -1, replies, images, videos }
-    };
+    // if (imagesAndVideos_idsArr.length > 0) {
+    //   imagesAndVideosConditionObj = {
+    //     _id: { $in: imagesAndVideos_idsArr }
+    //   };
+    // }
     
     
-    // ---------------------------------------------
-    //   - user-communities / 更新日時の変更
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   - forum-threads / 更新日時の変更 & コメント数 - 1 & 返信数 - ○○ & 画像数と動画数の変更
+    // // ---------------------------------------------
     
-    const userCommunitiesConditionObj = {
-      _id: userCommunities_id,
-    };
-    
-    
-    const userCommunitiesSaveObj = {
-      updatedDate: ISO8601,
-      'updatedDateObj.forum': ISO8601,
-    };
+    // const forumThreadsConditionObj = {
+    //   _id: forumThreads_id,
+    // };
     
     
+    // let forumThreadsSaveObj = {
+    //   updatedDate: ISO8601,
+    //   $inc: { comments: -1, replies, images, videos }
+    // };
     
     
-    // --------------------------------------------------
-    //   DB insert Transaction
-    // --------------------------------------------------
+    // // ---------------------------------------------
+    // //   - user-communities / 更新日時の変更
+    // // ---------------------------------------------
     
-    await ModelForumComments.transactionForDeleteComment({
+    // const userCommunitiesConditionObj = {
+    //   _id: userCommunities_id,
+    // };
+    
+    
+    // const userCommunitiesSaveObj = {
+    //   updatedDate: ISO8601,
+    //   'updatedDateObj.forum': ISO8601,
+    // };
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   DB insert Transaction
+    // // --------------------------------------------------
+    
+    // await ModelForumComments.transactionForDeleteComment({
       
-      forumRepliesConditionObj,
-      forumCommentsConditionObj,
-      imagesAndVideosConditionObj,
-      forumThreadsConditionObj,
-      forumThreadsSaveObj,
-      userCommunitiesConditionObj,
-      userCommunitiesSaveObj,
+    //   forumRepliesConditionObj,
+    //   forumCommentsConditionObj,
+    //   imagesAndVideosConditionObj,
+    //   forumThreadsConditionObj,
+    //   forumThreadsSaveObj,
+    //   userCommunitiesConditionObj,
+    //   userCommunitiesSaveObj,
       
-    });
+    // });
     
     
     
     
-    // ---------------------------------------------
-    //   画像を削除する
-    // ---------------------------------------------
+    // // ---------------------------------------------
+    // //   画像を削除する
+    // // ---------------------------------------------
     
-    for (let value of imagesAndVideos_idsArr.values()) {
+    // for (let value of imagesAndVideos_idsArr.values()) {
       
-      const dirPath = `static/img/forum/${value}`;
-      // console.log(dirPath);
+    //   const dirPath = `static/img/forum/${value}`;
+    //   // console.log(dirPath);
       
-      rimraf(dirPath, (err) => {
-        if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
-        }
-      });
+    //   rimraf(dirPath, (err) => {
+    //     if (err) {
+    //       throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+    //     }
+    //   });
       
-    }
+    // }
     
     
     
@@ -375,7 +373,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'ErUxb0Syw',
+      endpointID: 'W1ND-2YO2',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

@@ -176,6 +176,7 @@ export default async (req, res) => {
       
       // データが存在しない、編集権限がない場合はエラーが投げられる
       const tempOldObj = await ModelForumThreads.findForEdit({
+        req,
         localeObj,
         loginUsers_id,
         forumThreads_id,
@@ -240,8 +241,8 @@ export default async (req, res) => {
     let imagesAndVideosConditionObj = {};
     let imagesAndVideosSaveObj = {};
     let imagesAndVideos_id = '';
-    // let images = 0;
-    // let videos = 0;
+    let images = 0;
+    let videos = 0;
     
     if (imagesAndVideosObj) {
       
@@ -253,8 +254,8 @@ export default async (req, res) => {
       });
       
       imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
-      // images = lodashGet(formatAndSaveObj, ['images'], 0);
-      // videos = lodashGet(formatAndSaveObj, ['videos'], 0);
+      images = lodashGet(formatAndSaveObj, ['images'], 0);
+      videos = lodashGet(formatAndSaveObj, ['videos'], 0);
       
       
       // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
@@ -311,8 +312,9 @@ export default async (req, res) => {
       ],
       imagesAndVideos_id,
       comments: 0,
-      images: 0,
-      videos: 0,
+      replies: 0,
+      images,
+      videos,
       ip: req.ip,
       userAgent: lodashGet(req, ['headers', 'user-agent'], '')
     };
@@ -333,7 +335,10 @@ export default async (req, res) => {
       $inc: { 'forumObj.threadCount': 1 }
     };
     
-    
+    console.log(chalk`
+      images: {green ${images}}
+      videos: {green ${videos}}
+    `);
     
     
     // --------------------------------------------------
@@ -355,6 +360,8 @@ export default async (req, res) => {
       delete forumThreadsSaveObj.comments;
       delete forumThreadsSaveObj.images;
       delete forumThreadsSaveObj.videos;
+      
+      forumThreadsSaveObj.$inc = { images, videos };
       
       
       // ---------------------------------------------
@@ -383,6 +390,17 @@ export default async (req, res) => {
       userCommunitiesSaveObj,
       
     });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Set Authority
+    // --------------------------------------------------
+    
+    if (!loginUsers_id) {
+      setAuthority({ req, _id: forumThreadsConditionObj._id });
+    }
     
     
     
@@ -441,13 +459,7 @@ export default async (req, res) => {
     
     
     
-    // --------------------------------------------------
-    //   Set Authority
-    // --------------------------------------------------
     
-    if (!loginUsers_id && !forumThreads_id) {
-      setAuthority({ req, _id: forumThreadsConditionObj._id });
-    }
     
     
     

@@ -26,6 +26,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 // ---------------------------------------------
 
 const SchemaForumThreads = require('./schema');
+const SchemaForumComments = require('../forum-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 
@@ -936,6 +937,211 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
 
 
 
+
+/**
+ * コメント＆返信データを取得する　削除用
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+ * @return {Array} 取得データ
+ */
+const findForDeleteThread = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  forumThreads_id,
+  forumComments_id,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Aggregate
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaForumComments.aggregate([
+      
+      
+      // スレッドを取得
+      {
+        $match:
+          { $or:
+            [
+              { _id: forumComments_id },
+              { forumComments_id },
+            ]
+          },
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  images: 1,
+                  videos: 1,
+                }
+              },
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 1,
+          users_id: 1,
+          replies: 1,
+          imagesAndVideos_id: 1,
+          imagesAndVideosObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   配列が空の場合は処理停止
+    // --------------------------------------------------
+    
+    if (resultArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'jiSBn7Gb-', messageID: 'cvS0qSAlE' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   編集権限がない場合は処理停止
+    // --------------------------------------------------
+    
+    const editable = verifyAuthority({
+      req,
+      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+      _id: lodashGet(resultArr, [0, '_id'], ''),
+    });
+    
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    // let replies = 0;
+    // let imagesAndVideos_idsArr = [];
+    // let images = 0;
+    // let videos = 0;
+    
+    // for (let valueObj of resultArr.values()) {
+      
+    //   if (valueObj.imagesAndVideos_id) {
+    //     imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+    //   }
+      
+    //   const reply = lodashGet(valueObj, ['replies'], 0);
+    //   const image = lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
+    //   const video = lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
+      
+    //   replies -= reply;
+    //   images -= image;
+    //   videos -= video;
+      
+    // }
+    
+    // const returnObj = {
+    //   replies,
+    //   imagesAndVideos_idsArr,
+    //   images,
+    //   videos,
+    // };
+    
+    
+    let images = 0;
+    let videos = 0;
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      forumComments_id: {green ${forumComments_id}}
+      images: {green ${images}}
+      videos: {green ${videos}}
+    `);
+    
+    // console.log(`
+    //   ----- imagesAndVideos_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideos_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
 /**
  * スレッドを取得する　編集用
  * @param {Object} req - リクエスト
@@ -1197,7 +1403,7 @@ const transactionForUpsertThread = async ({
       
       if (arr.length === 0) {
         
-        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
         
         
       // --------------------------------------------------
@@ -1213,7 +1419,6 @@ const transactionForUpsertThread = async ({
     }
     
     
-    // throw new Error();
     await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     
     
@@ -1233,41 +1438,41 @@ const transactionForUpsertThread = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- forumThreadsConditionObj -----\n
-    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumThreadsConditionObj -----\n
+      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- forumThreadsSaveObj -----\n
-    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- forumThreadsSaveObj -----\n
+      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosConditionObj -----\n
-    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- imagesAndVideosSaveObj -----\n
-    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- userCommunitiesConditionObj -----\n
-    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesConditionObj -----\n
+      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- userCommunitiesSaveObj -----\n
-    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunitiesSaveObj -----\n
+      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -1330,9 +1535,8 @@ module.exports = {
   
   findForThreadsList,
   findForForum,
-  // findThreadsByForumThreads_idArr,
-  // findForThreads,
   findForEdit,
+  findForDeleteThread,
   transactionForUpsertThread,
   
 };

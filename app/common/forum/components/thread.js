@@ -242,8 +242,8 @@ export default injectIntl(class extends React.Component {
       const imagesAndVideosObj = lodashGet(threadsDataObj, ['imagesAndVideosObj'], {});
       
       // 管理者権限がある、またはスレッドを建てた本人の場合、編集ボタンを表示する
-      // const editable = lodashGet(threadsDataObj, ['editable'], false);
-      const editable = true;
+      const editable = lodashGet(threadsDataObj, ['editable'], false);
+      // const editable = true;
       
       const comments = lodashGet(threadsDataObj, ['comments'], 0);
       

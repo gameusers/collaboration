@@ -943,7 +943,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} forumComments_id - DB forum-comments _id / コメントのID
+ * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
  * @return {Array} 取得データ
  */
 const findForDeleteThread = async ({
@@ -952,7 +952,6 @@ const findForDeleteThread = async ({
   localeObj,
   loginUsers_id,
   forumThreads_id,
-  forumComments_id,
   
 }) => {
   
@@ -961,52 +960,14 @@ const findForDeleteThread = async ({
     
     
     // --------------------------------------------------
-    //   Aggregate
+    //   Thread
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumComments.aggregate([
+    const forumThreadsArr = await SchemaForumThreads.aggregate([
       
-      
-      // スレッドを取得
-      {
-        $match:
-          { $or:
-            [
-              { _id: forumComments_id },
-              { forumComments_id },
-            ]
-          },
-      },
-      
-      
-      // 画像と動画を取得
-      {
-        $lookup:
-          {
-            from: 'images-and-videos',
-            let: { forumCommentsImagesAndVideos_id: '$imagesAndVideos_id' },
-            pipeline: [
-              { $match:
-                { $expr:
-                  { $eq: ['$_id', '$$forumCommentsImagesAndVideos_id'] },
-                }
-              },
-              { $project:
-                {
-                  images: 1,
-                  videos: 1,
-                }
-              },
-            ],
-            as: 'imagesAndVideosObj'
-          }
-      },
       
       {
-        $unwind: {
-          path: '$imagesAndVideosObj',
-          preserveNullAndEmptyArrays: true,
-        }
+        $match: { _id: forumThreads_id },
       },
       
       
@@ -1014,9 +975,33 @@ const findForDeleteThread = async ({
         {
           createdDate: 1,
           users_id: 1,
-          replies: 1,
           imagesAndVideos_id: 1,
-          imagesAndVideosObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Comments & Replies
+    // --------------------------------------------------
+    
+    const forumCommentsArr = await SchemaForumComments.aggregate([
+      
+      
+      {
+        $match: { forumThreads_id },
+      },
+      
+      
+      { $project:
+        {
+          createdDate: 1,
+          users_id: 1,
+          imagesAndVideos_id: 1,
         }
       },
       
@@ -1030,8 +1015,8 @@ const findForDeleteThread = async ({
     //   配列が空の場合は処理停止
     // --------------------------------------------------
     
-    if (resultArr.length === 0) {
-      throw new CustomError({ level: 'error', errorsArr: [{ code: 'jiSBn7Gb-', messageID: 'cvS0qSAlE' }] });
+    if (forumThreadsArr.length === 0) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'Wwc1vpiQ-', messageID: 'cvS0qSAlE' }] });
     }
     
     
@@ -1043,14 +1028,14 @@ const findForDeleteThread = async ({
     
     const editable = verifyAuthority({
       req,
-      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      users_id: lodashGet(forumThreadsArr, [0, 'users_id'], ''),
       loginUsers_id,
-      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-      _id: lodashGet(resultArr, [0, '_id'], ''),
+      ISO8601: lodashGet(forumThreadsArr, [0, 'createdDate'], ''),
+      _id: lodashGet(forumThreadsArr, [0, '_id'], ''),
     });
     
     if (!editable) {
-      throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'M2XmqnE4r', messageID: 'DSRlEoL29' }] });
     }
     
     
@@ -1060,47 +1045,36 @@ const findForDeleteThread = async ({
     //   Format
     // --------------------------------------------------
     
-    // let replies = 0;
-    // let imagesAndVideos_idsArr = [];
-    // let images = 0;
-    // let videos = 0;
+    const imagesAndVideos_id = lodashGet(forumThreadsArr, [0, 'imagesAndVideos_id'], '');
     
-    // for (let valueObj of resultArr.values()) {
-      
-    //   if (valueObj.imagesAndVideos_id) {
-    //     imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
-    //   }
-      
-    //   const reply = lodashGet(valueObj, ['replies'], 0);
-    //   const image = lodashGet(valueObj, ['imagesAndVideosObj', 'images'], 0);
-    //   const video = lodashGet(valueObj, ['imagesAndVideosObj', 'videos'], 0);
-      
-    //   replies -= reply;
-    //   images -= image;
-    //   videos -= video;
-      
-    // }
+    let imagesAndVideos_idsArr = [];
     
-    // const returnObj = {
-    //   replies,
-    //   imagesAndVideos_idsArr,
-    //   images,
-    //   videos,
-    // };
+    if (imagesAndVideos_id) {
+      imagesAndVideos_idsArr = [imagesAndVideos_id];
+    }
     
     
-    let images = 0;
-    let videos = 0;
+    for (let valueObj of forumCommentsArr.values()) {
+      
+      if (valueObj.imagesAndVideos_id) {
+        imagesAndVideos_idsArr.push(valueObj.imagesAndVideos_id);
+      }
+      
+    }
+    
+    const returnObj = {
+      imagesAndVideos_idsArr,
+    };
+    
+    
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      forumComments_id: {green ${forumComments_id}}
-      images: {green ${images}}
-      videos: {green ${videos}}
-    `);
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    // `);
     
     // console.log(`
     //   ----- imagesAndVideos_idsArr -----\n
@@ -1108,9 +1082,16 @@ const findForDeleteThread = async ({
     //   --------------------\n
     // `);
     
+    
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1143,7 +1124,7 @@ const findForDeleteThread = async ({
 
 
 /**
- * スレッドを取得する　編集用
+ * スレッドを取得する / 編集用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -1230,6 +1211,8 @@ const findForEdit = async ({
     if (resultArr.length === 0) {
       throw new CustomError({ level: 'error', errorsArr: [{ code: 'V2oFFcQIl', messageID: 'cvS0qSAlE' }] });
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -1518,6 +1501,166 @@ const transactionForUpsertThread = async ({
 
 
 
+/**
+ * Transaction スレッドを削除する
+ * スレッド、コメント、返信、画像＆動画を削除して、ユーザーコミュニティを更新する
+ * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
+ * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
+ * @return {Object} 
+ */
+const transactionForDeleteThread = async ({
+  
+  forumRepliesConditionObj,
+  forumCommentsConditionObj,
+  forumThreadsConditionObj,
+  imagesAndVideosConditionObj = {},
+  userCommunitiesConditionObj,
+  userCommunitiesSaveObj,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await SchemaForumThreads.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    // --------------------------------------------------
+    //   DB updateOne
+    // --------------------------------------------------
+    
+    await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
+    await SchemaForumComments.deleteMany(forumCommentsConditionObj, { session });
+    await SchemaForumThreads.deleteOne(forumThreadsConditionObj, { session });
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
+      await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
+    }
+    
+    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- forumRepliesConditionObj -----\n
+    //   ${util.inspect(forumRepliesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsConditionObj -----\n
+    //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunitiesSaveObj -----\n
+    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
 
 
 // --------------------------------------------------
@@ -1538,5 +1681,6 @@ module.exports = {
   findForEdit,
   findForDeleteThread,
   transactionForUpsertThread,
+  transactionForDeleteThread,
   
 };

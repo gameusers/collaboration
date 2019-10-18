@@ -300,64 +300,20 @@ export default injectIntl(class extends React.Component {
     
     let componentTabs = '';
     
-    if (sidebar) {
-      
-      componentTabs =
+    componentTabs =
+      <React.Fragment>
         
+        
+        {/* PC＆タブレット */}
         <Tabs
           css={css`
             && {
               padding: 0 12px;
-            }
-          `}
-          value={openedTabNo}
-          indicatorColor="primary"
-          textColor="primary"
-          // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
-        >
-          
-          
-          <Tooltip title="スレッド一覧">
-            <Tab
-              style={{
-                minWidth: '92px',
-              }}
-              icon={<IconListAlt />}
-            />
-          </Tooltip>
-          
-          
-          <Tooltip title="スレッド作成">
-            <Tab
-              style={{
-                minWidth: '92px',
-              }}
-              icon={<IconCreate />}
-            />
-          </Tooltip>
-          
-          
-          {/*<Tooltip title="検索">
-            <Tab
-              style={{
-                minWidth: '92px',
-              }}
-              icon={<IconSearch />}
-            />
-          </Tooltip>*/}
-          
-          
-        </Tabs>
-        
-      ;
-      
-    } else {
-      
-      componentTabs =
-        <Tabs
-          css={css`
-            && {
-              padding: 0 12px;
+              display: none;
+              
+              @media screen and (max-width: 947px) {
+                display: inline;
+              }
             }
           `}
           value={openedTabNo}
@@ -369,13 +325,263 @@ export default injectIntl(class extends React.Component {
             value
           })}
         >
+          
           <Tab label="スレッド一覧" />
+          
           <Tab label="スレッド作成" />
-          {/*<Tab label="検索" />*/}
+          
         </Tabs>
-      ;
+        
+        
+        
+        
+        {/* スマートフォン */}
+        <Tabs
+          css={css`
+            && {
+              padding: 0 12px;
+              
+              @media screen and (max-width: 947px) {
+                display: none;
+              }
+            }
+          `}
+          value={openedTabNo}
+          indicatorColor="primary"
+          textColor="primary"
+          
+          onChange={(eventObj, value) => handleEdit({
+            pathArr: [...this.pathArr, 'openedTabNo'],
+            value
+          })}
+        >
+          
+          
+          {/* スレッド一覧 */}
+          <Tooltip
+            css={css`
+              && {
+                @media screen and (max-width: 947px) {
+                  display: none;
+                }
+              }
+            `}
+            title="スレッド一覧"
+          >
+            <Tab
+              style={{
+                minWidth: '92px',
+              }}
+              icon={<IconListAlt />}
+            />
+          </Tooltip>
+          
+          
+          {/* スレッド作成 */}
+          <Tooltip
+            css={css`
+              && {
+                @media screen and (max-width: 947px) {
+                  display: none;
+                }
+              }
+            `}
+            title="スレッド作成"
+          >
+            <Tab
+              style={{
+                minWidth: '92px',
+              }}
+              icon={<IconCreate />}
+            />
+          </Tooltip>
+          
+          
+        </Tabs>
+        
+        
+      </React.Fragment>
+    ;
+    
+    // componentTabs =
+    //   <Tabs
+    //     css={css`
+    //       && {
+    //         padding: 0 12px;
+    //       }
+    //     `}
+    //     value={openedTabNo}
+    //     indicatorColor="primary"
+    //     textColor="primary"
+        
+    //     onChange={(eventObj, value) => handleEdit({
+    //       pathArr: [...this.pathArr, 'openedTabNo'],
+    //       value
+    //     })}
+    //   >
+        
+        
+    //     {/* スレッド一覧 */}
+    //     <Tooltip
+    //       css={css`
+    //         && {
+    //           @media screen and (max-width: 947px) {
+    //             display: none;
+    //           }
+    //         }
+    //       `}
+    //       title="スレッド一覧"
+    //     >
+    //       <Tab
+    //         style={{
+    //           minWidth: '92px',
+    //         }}
+    //         icon={<IconListAlt />}
+    //       />
+    //     </Tooltip>
+        
+        
+    //     {/* スレッド作成 */}
+    //     <Tooltip
+    //       css={css`
+    //         && {
+    //           @media screen and (max-width: 947px) {
+    //             display: none;
+    //           }
+    //         }
+    //       `}
+    //       title="スレッド作成"
+    //     >
+    //       <Tab
+    //         style={{
+    //           minWidth: '92px',
+    //         }}
+    //         icon={<IconCreate />}
+    //       />
+    //     </Tooltip>
+        
+        
+    //     <div
+    //       css={css`
+    //         display: none;
+            
+    //         @media screen and (max-width: 947px) {
+    //           display: inline;
+    //         }
+    //       `}
+    //     >
+    //     <Tab
+          
+    //       label="スレッド一覧"
+    //     />
+    //     </div>
+        
+        
+    //     <div
+    //       css={css`
+    //         display: none;
+            
+    //         @media screen and (max-width: 947px) {
+    //           display: inline;
+    //         }
+    //       `}
+    //     >
+    //     <Tab
+    //       // css={css`
+    //       //   && {
+    //       //     display: none;
+              
+    //       //     @media screen and (max-width: 947px) {
+    //       //       display: inline;
+    //       //     }
+    //       //   }
+    //       // `}
+    //       label="スレッド作成"
+    //     />
+    //     </div>
+        
+    //     {/*<Tab label="スレッド作成" />*/}
+    //     {/*<Tab label="検索" />*/}
+    //   </Tabs>
+    // ;
+    
+    
+    // if (sidebar) {
       
-    }
+    //   componentTabs =
+        
+    //     <Tabs
+    //       css={css`
+    //         && {
+    //           padding: 0 12px;
+    //         }
+    //       `}
+    //       value={openedTabNo}
+    //       indicatorColor="primary"
+    //       textColor="primary"
+    //       // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
+    //     >
+          
+          
+    //       <Tooltip title="スレッド一覧">
+    //         <Tab
+    //           style={{
+    //             minWidth: '92px',
+    //           }}
+    //           icon={<IconListAlt />}
+    //         />
+    //       </Tooltip>
+          
+          
+    //       <Tooltip title="スレッド作成">
+    //         <Tab
+    //           style={{
+    //             minWidth: '92px',
+    //           }}
+    //           icon={<IconCreate />}
+    //         />
+    //       </Tooltip>
+          
+          
+    //       {/*<Tooltip title="検索">
+    //         <Tab
+    //           style={{
+    //             minWidth: '92px',
+    //           }}
+    //           icon={<IconSearch />}
+    //         />
+    //       </Tooltip>*/}
+          
+          
+    //     </Tabs>
+        
+    //   ;
+      
+    // } else {
+      
+    //   componentTabs =
+    //     <Tabs
+    //       css={css`
+    //         && {
+    //           padding: 0 12px;
+    //         }
+    //       `}
+    //       value={openedTabNo}
+    //       indicatorColor="primary"
+    //       textColor="primary"
+          
+    //       onChange={(eventObj, value) => handleEdit({
+    //         pathArr: [...this.pathArr, 'openedTabNo'],
+    //         value
+    //       })}
+    //     >
+    //       <Tab label="スレッド一覧" />
+    //       <Tab label="スレッド作成" />
+    //       {/*<Tab label="検索" />*/}
+    //     </Tabs>
+    //   ;
+      
+    // }
     
     
     

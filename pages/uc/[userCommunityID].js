@@ -319,34 +319,6 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Card Players
-    // --------------------------------------------------
-    
-    let userName = '';
-    
-    const componentCardsArr = [];
-    
-    // for (const [index, valueObj] of this.props.initialPropsObj.cardsArr.entries()) {
-      
-    //   if ('cardPlayers_id' in valueObj) {
-        
-    //     const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
-    //     userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-        
-    //     componentCardsArr.push(
-    //       <CardPlayer
-    //         _id={valueObj.cardPlayers_id}
-    //         showFollow={true}
-    //         key={index}
-    //       />
-    //     );
-        
-    //   }
-      
-    // }
-    
-    
-    // --------------------------------------------------
     //   Header Title
     // --------------------------------------------------
     
@@ -389,44 +361,41 @@ export default class extends React.Component {
               display: flex;
               flex-flow: row nowrap;
               justify-content: center;
-              // width: 100%;
               margin: 0 auto;
               padding: 16px;
               
-              @media screen and (max-width: 947px) {//989px　947px
+              @media screen and (max-width: 947px) {
+                display: flex;
+                flex-flow: column nowrap;
                 padding: 10px 0 10px 0;
               }
             `}
           >
             
             
-            {/* Sidebar */}
+            {/* 2カラム時はサイドバー */}
             <div
               css={css`
                 width: 300px;
                 margin: 0 16px 0 0;
-                padding: 0;
                 
                 @media screen and (max-width: 947px) {
-                  display: none;
+                  width: auto;
+                  margin: 0 0 16px 0;
                 }
               `}
             >
-              <img
+              
+              
+              {/* フォーラムのナビゲーション */}
+              <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+              
+              
+              {/*<img
                 src="/static/img/common/advertisement/300x250.jpg"
                 width="300"
                 height="250"
-              />
-              
-              
-              {/*<div style={{ marginTop: '14px' }}></div>
-              
-              
-              <ForumNavigation
-                userCommunities_id={this.props.userCommunities_id}
-                sidebar={true}
               />*/}
-              
             </div>
             
             
@@ -435,17 +404,19 @@ export default class extends React.Component {
             {/* Main */}
             <div
               css={css`
-                width: 100%;
+                max-width: 800px;
               `}
             >
               
               
-              <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
-              
-              
+              {/* フォーラム */}
               <Element
                 css={css`
-                  margin 12px 0 0 0;
+                  // margin 12px 0 0 0;
+                  
+                  // @media screen and (max-width: 947px) {
+                  //   margin: 0;
+                  // }
                 `}
                 name="forumThreads"
               >
@@ -453,10 +424,6 @@ export default class extends React.Component {
                 <ForumThread userCommunities_id={this.props.userCommunities_id} />
                 
               </Element>
-              
-              
-              {/* プレイヤーカード */}
-              {componentCardsArr}
               
               
             </div>

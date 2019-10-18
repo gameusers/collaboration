@@ -327,23 +327,25 @@ export default injectIntl(class extends React.Component {
           
           
           {/* 削除ボタン */}
-          <div
-            css={css`
-              margin: 0 0 0 24px;
-            `}
-          >
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => handleEdit({
-                pathArr: [...this.pathArr, 'showDeleteDialog'],
-                value: true,
-              })}
-              disabled={buttonDisabled}
+          {forumThreads_id &&
+            <div
+              css={css`
+                margin: 0 0 0 24px;
+              `}
             >
-              削除する
-            </Button>
-          </div>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => handleEdit({
+                  pathArr: [...this.pathArr, 'showDeleteDialog'],
+                  value: true,
+                })}
+                disabled={buttonDisabled}
+              >
+                削除する
+              </Button>
+            </div>
+          }
           
           
           {/* Close */}

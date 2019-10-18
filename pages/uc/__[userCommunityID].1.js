@@ -18,6 +18,7 @@ import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
+import { Element } from 'react-scroll';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -29,7 +30,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
-// import { createCsrfToken } from '../../app/@modules/csrf';
+import { createCsrfToken } from '../../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -50,6 +51,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 import Layout from '../../app/common/layout/components/layout';
 import Drawer from '../../app/common/layout/components/drawer';
 import ForumNavigation from '../../app/common/forum/components/navigation';
+import ForumThread from '../../app/common/forum/components/thread';
 import VideoModal from '../../app/common/image-and-video/components/video-modal';
 // import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
@@ -69,17 +71,24 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query }) {
+  static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
     
     
-    console.log('[userCommunityID].js / getInitialProps');
+    // console.log('[userCommunityID].js / getInitialProps');
+    // const isServer = !!req;
+    
+    // console.log(chalk`
+    //   login: {green ${login}}
+    //   datetimeCurrent: {green ${datetimeCurrent}}
+    //   isServer: {green ${isServer}}
+    // `);
     
     
     // --------------------------------------------------
     //   CSRF
     // --------------------------------------------------
     
-    // createCsrfToken(req, res);
+    createCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -96,13 +105,13 @@ export default class extends React.Component {
     //   userCommunityID: {green ${userCommunityID}}
     // `);
     
+    
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      // urlApi: encodeURI(`${process.env.URL_API}/v2/uc/community?userCommunityID=${userCommunityID}`),
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/uc/community/?userCommunityID=${userCommunityID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -117,18 +126,14 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- initialPropsObj.userCommunityObj.updatedDateObj -----\n
-    //   ${util.inspect(initialPropsObj.userCommunityObj.updatedDateObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id: 'cxO8tEGty' };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, datetimeCurrent };
     
     
   }
@@ -180,6 +185,15 @@ export default class extends React.Component {
       this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
       
+      
+      
+      // --------------------------------------------------
+      //   Update Data - Datetime Current
+      // --------------------------------------------------
+      
+      stores.data.setDatetimeCurrent(props.datetimeCurrent);
+      
+      
       // --------------------------------------------------
       //   Update Data - Pathname
       // --------------------------------------------------
@@ -218,12 +232,52 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
+      //   Update Data - forumThreadsForListObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
+        value: props.initialPropsObj.forumThreadsForListObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumObj'],
+        value: props.initialPropsObj.forumObj,
+      });
+      
+      
+      // --------------------------------------------------
       //   Update Data - forumThreadsObj
       // --------------------------------------------------
       
       this.storeForum.handleEdit({
         pathArr: [props.userCommunities_id, 'forumThreadsObj'],
         value: props.initialPropsObj.forumThreadsObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumCommentsObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumCommentsObj'],
+        value: props.initialPropsObj.forumCommentsObj,
+      });
+      
+      
+      // --------------------------------------------------
+      //   Update Data - forumRepliesObj
+      // --------------------------------------------------
+      
+      this.storeForum.handleEdit({
+        pathArr: [props.userCommunities_id, 'forumRepliesObj'],
+        value: props.initialPropsObj.forumRepliesObj,
       });
       
       
@@ -265,7 +319,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Player Card
+    //   Card Players
     // --------------------------------------------------
     
     let userName = '';
@@ -365,15 +419,17 @@ export default class extends React.Component {
               />
               
               
-              <div style={{ marginTop: '14px' }}></div>
+              {/*<div style={{ marginTop: '14px' }}></div>
               
               
-              {/*<ForumNavigation
-                _id={this.props.userCommunities_id}
+              <ForumNavigation
+                userCommunities_id={this.props.userCommunities_id}
                 sidebar={true}
               />*/}
               
             </div>
+            
+            
             
             
             {/* Main */}
@@ -385,6 +441,18 @@ export default class extends React.Component {
               
               
               <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+              
+              
+              <Element
+                css={css`
+                  margin 12px 0 0 0;
+                `}
+                name="forumThreads"
+              >
+                
+                <ForumThread userCommunities_id={this.props.userCommunities_id} />
+                
+              </Element>
               
               
               {/* プレイヤーカード */}

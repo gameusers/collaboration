@@ -278,7 +278,7 @@ export default injectIntl(class extends React.Component {
           
           <ExpansionPanel
             css={css`
-              margin: 16px 0 !important;
+              margin: 0 0 16px 0 !important;
             `}
             expanded={panelExpanded}
           >
@@ -290,7 +290,7 @@ export default injectIntl(class extends React.Component {
                 && {
                   cursor: default !important;
                   background-color: white !important;
-                  margin: 20px 0 0 0 !important; 
+                  // margin: 0 0 20px 0 !important; 
                   
                   @media screen and (max-width: 480px) {
                     padding: 0 16px;

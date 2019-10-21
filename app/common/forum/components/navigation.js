@@ -304,7 +304,7 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* PC＆タブレット */}
+        {/* PC＆タブレット用 - タブをテキストで表示する */}
         <Tabs
           css={css`
             && {
@@ -335,7 +335,7 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* スマートフォン */}
+        {/* スマートフォン用 - タブをアイコンで表示する */}
         <Tabs
           css={css`
             && {
@@ -403,186 +403,6 @@ export default injectIntl(class extends React.Component {
       </React.Fragment>
     ;
     
-    // componentTabs =
-    //   <Tabs
-    //     css={css`
-    //       && {
-    //         padding: 0 12px;
-    //       }
-    //     `}
-    //     value={openedTabNo}
-    //     indicatorColor="primary"
-    //     textColor="primary"
-        
-    //     onChange={(eventObj, value) => handleEdit({
-    //       pathArr: [...this.pathArr, 'openedTabNo'],
-    //       value
-    //     })}
-    //   >
-        
-        
-    //     {/* スレッド一覧 */}
-    //     <Tooltip
-    //       css={css`
-    //         && {
-    //           @media screen and (max-width: 947px) {
-    //             display: none;
-    //           }
-    //         }
-    //       `}
-    //       title="スレッド一覧"
-    //     >
-    //       <Tab
-    //         style={{
-    //           minWidth: '92px',
-    //         }}
-    //         icon={<IconListAlt />}
-    //       />
-    //     </Tooltip>
-        
-        
-    //     {/* スレッド作成 */}
-    //     <Tooltip
-    //       css={css`
-    //         && {
-    //           @media screen and (max-width: 947px) {
-    //             display: none;
-    //           }
-    //         }
-    //       `}
-    //       title="スレッド作成"
-    //     >
-    //       <Tab
-    //         style={{
-    //           minWidth: '92px',
-    //         }}
-    //         icon={<IconCreate />}
-    //       />
-    //     </Tooltip>
-        
-        
-    //     <div
-    //       css={css`
-    //         display: none;
-            
-    //         @media screen and (max-width: 947px) {
-    //           display: inline;
-    //         }
-    //       `}
-    //     >
-    //     <Tab
-          
-    //       label="スレッド一覧"
-    //     />
-    //     </div>
-        
-        
-    //     <div
-    //       css={css`
-    //         display: none;
-            
-    //         @media screen and (max-width: 947px) {
-    //           display: inline;
-    //         }
-    //       `}
-    //     >
-    //     <Tab
-    //       // css={css`
-    //       //   && {
-    //       //     display: none;
-              
-    //       //     @media screen and (max-width: 947px) {
-    //       //       display: inline;
-    //       //     }
-    //       //   }
-    //       // `}
-    //       label="スレッド作成"
-    //     />
-    //     </div>
-        
-    //     {/*<Tab label="スレッド作成" />*/}
-    //     {/*<Tab label="検索" />*/}
-    //   </Tabs>
-    // ;
-    
-    
-    // if (sidebar) {
-      
-    //   componentTabs =
-        
-    //     <Tabs
-    //       css={css`
-    //         && {
-    //           padding: 0 12px;
-    //         }
-    //       `}
-    //       value={openedTabNo}
-    //       indicatorColor="primary"
-    //       textColor="primary"
-    //       // onChange={(event, value) => handleOpenedTabNo(event, value, id)}
-    //     >
-          
-          
-    //       <Tooltip title="スレッド一覧">
-    //         <Tab
-    //           style={{
-    //             minWidth: '92px',
-    //           }}
-    //           icon={<IconListAlt />}
-    //         />
-    //       </Tooltip>
-          
-          
-    //       <Tooltip title="スレッド作成">
-    //         <Tab
-    //           style={{
-    //             minWidth: '92px',
-    //           }}
-    //           icon={<IconCreate />}
-    //         />
-    //       </Tooltip>
-          
-          
-    //       {/*<Tooltip title="検索">
-    //         <Tab
-    //           style={{
-    //             minWidth: '92px',
-    //           }}
-    //           icon={<IconSearch />}
-    //         />
-    //       </Tooltip>*/}
-          
-          
-    //     </Tabs>
-        
-    //   ;
-      
-    // } else {
-      
-    //   componentTabs =
-    //     <Tabs
-    //       css={css`
-    //         && {
-    //           padding: 0 12px;
-    //         }
-    //       `}
-    //       value={openedTabNo}
-    //       indicatorColor="primary"
-    //       textColor="primary"
-          
-    //       onChange={(eventObj, value) => handleEdit({
-    //         pathArr: [...this.pathArr, 'openedTabNo'],
-    //         value
-    //       })}
-    //     >
-    //       <Tab label="スレッド一覧" />
-    //       <Tab label="スレッド作成" />
-    //       {/*<Tab label="検索" />*/}
-    //     </Tabs>
-    //   ;
-      
-    // }
-    
     
     
     
@@ -612,13 +432,17 @@ export default injectIntl(class extends React.Component {
             <TableCell
               css={css`
                 && {
-                  ${sidebar && 'min-width: 268px;'}
+                  min-width: 268px;
                   cursor: pointer;
                   padding: 14px 0 14px 16px;
                   
-                  @media screen and (max-width: 640px) {
-                    min-width: 268px;
-                  }
+                  // @media screen and (max-width: 947px) {
+                  //   padding: 14px 0 14px 0;
+                  // }
+                  
+                  // @media screen and (max-width: 724px) {
+                  //   min-width: 268px;
+                  // }
                 }
               `}
               padding="none"
@@ -630,6 +454,7 @@ export default injectIntl(class extends React.Component {
             </TableCell>
             <TableCell css={cssTableCell}>{threadsDataObj.updatedDate}</TableCell>
             <TableCell css={cssTableCell} align="right">{threadsDataObj.comments}</TableCell>
+            <TableCell css={cssTableCell} align="right">{threadsDataObj.replies}</TableCell>
             <TableCell css={cssTableCell} align="right">{threadsDataObj.images}</TableCell>
             <TableCell css={cssTableCell} align="right">{threadsDataObj.videos}</TableCell>
           </TableRow>
@@ -652,6 +477,7 @@ export default injectIntl(class extends React.Component {
                 <TableCell css={cssTableCell}>名前</TableCell>
                 <TableCell css={cssTableCell}>最終更新日</TableCell>
                 <TableCell css={cssTableCell} align="right">コメント</TableCell>
+                <TableCell css={cssTableCell} align="right">返信</TableCell>
                 <TableCell css={cssTableCell} align="right">画像</TableCell>
                 <TableCell css={cssTableCell} align="right">動画</TableCell>
               </TableRow>
@@ -895,7 +721,6 @@ export default injectIntl(class extends React.Component {
             {openedTabNo === 0 &&
               <div
                 css={css`
-                  overflow-x: auto;
                   padding: 4px 0 0;
                 `}
               >

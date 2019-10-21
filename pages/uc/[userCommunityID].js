@@ -49,6 +49,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
+import Sidebar from '../../app/common/layout/components/sidebar';
 import Drawer from '../../app/common/layout/components/drawer';
 import ForumNavigation from '../../app/common/forum/components/navigation';
 import ForumThread from '../../app/common/forum/components/thread';
@@ -388,7 +389,42 @@ export default class extends React.Component {
               
               
               {/* フォーラムのナビゲーション */}
-              <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+              <Sidebar>
+                <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+              </Sidebar>
+              
+              
+              {/*<div
+                css={css`
+                  position: sticky;
+                  top: 46px;
+                `}
+              >
+                <img
+                  src="/static/img/sample/knight_f_idle_anim_f0.png"
+                  width="32"
+                  height="56"
+                />
+              </div>*/}
+              
+              
+              
+              
+              
+              {/*<div
+                css={css`
+                  position: sticky;
+                  top: 0;
+                  // top: 102px;
+                `}
+              >
+                <img
+                  src="/static/img/sample/knight_f_idle_anim_f0.png"
+                  width="32"
+                  height="56"
+                />
+                <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+              </div>*/}
               
               
               {/*<img
@@ -405,6 +441,10 @@ export default class extends React.Component {
             <div
               css={css`
                 max-width: 800px;
+                
+                @media screen and (max-width: 947px) {
+                  max-width: none;
+                }
               `}
             >
               

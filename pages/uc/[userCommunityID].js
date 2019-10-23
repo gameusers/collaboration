@@ -75,16 +75,6 @@ export default class extends React.Component {
   static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
     
     
-    // console.log('[userCommunityID].js / getInitialProps');
-    // const isServer = !!req;
-    
-    // console.log(chalk`
-    //   login: {green ${login}}
-    //   datetimeCurrent: {green ${datetimeCurrent}}
-    //   isServer: {green ${isServer}}
-    // `);
-    
-    
     // --------------------------------------------------
     //   CSRF
     // --------------------------------------------------
@@ -101,11 +91,6 @@ export default class extends React.Component {
     const userCommunityID = query.userCommunityID;
     const pathname = `/uc/${userCommunityID}`;
     
-    // console.log(chalk`
-    //   getInitialProps
-    //   userCommunityID: {green ${userCommunityID}}
-    // `);
-    
     
     // --------------------------------------------------
     //   Fetch
@@ -121,20 +106,36 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
+    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
+    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // const isServer = !!req;
+    
+    // console.log(chalk`
+    //   login: {green ${login}}
+    //   datetimeCurrent: {green ${datetimeCurrent}}
+    //   isServer: {green ${isServer}}
+    //   userCommunityID: {green ${userCommunityID}}
+    //   userCommunityName: {green ${userCommunityName}}
+    // `);
+    
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
-    
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, datetimeCurrent };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, userCommunityName, datetimeCurrent };
     
     
   }
@@ -165,13 +166,14 @@ export default class extends React.Component {
       //   Error
       // --------------------------------------------------
       
-      // if (
-      //   this.props.statusCode !== 200 ||
-      //   'cardPlayersObj' in props.initialPropsObj === false ||
-      //   'cardsArr' in props.initialPropsObj === false
-      // ) {
-      //   throw new Error();
-      // }
+      if (
+        this.props.statusCode !== 200 ||
+        this.props.userCommunities_id === ''
+      ) {
+        throw new Error();
+      }
+      
+      
       
       
       // --------------------------------------------------
@@ -323,14 +325,7 @@ export default class extends React.Component {
     //   Header Title
     // --------------------------------------------------
     
-    // const topPagesObj = this.storePlPlayer.pagesArr.find((valueObj) => {
-    //   return valueObj.type === 'top';
-    // });
-    
-    // const topPageName = lodashGet(topPagesObj, ['name'], '');
-    // const title = topPageName ? topPageName : `${userName} - Game Users`;
-    
-    const title = 'ユーザーコミュニティ';
+    const title = this.props.userCommunityName;
     
     
     
@@ -374,7 +369,7 @@ export default class extends React.Component {
           >
             
             
-            {/* 2カラム時はサイドバー */}
+            {/* Sidebar */}
             <div
               css={css`
                 width: 300px;
@@ -394,44 +389,6 @@ export default class extends React.Component {
               </Sidebar>
               
               
-              {/*<div
-                css={css`
-                  position: sticky;
-                  top: 46px;
-                `}
-              >
-                <img
-                  src="/static/img/sample/knight_f_idle_anim_f0.png"
-                  width="32"
-                  height="56"
-                />
-              </div>*/}
-              
-              
-              
-              
-              
-              {/*<div
-                css={css`
-                  position: sticky;
-                  top: 0;
-                  // top: 102px;
-                `}
-              >
-                <img
-                  src="/static/img/sample/knight_f_idle_anim_f0.png"
-                  width="32"
-                  height="56"
-                />
-                <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
-              </div>*/}
-              
-              
-              {/*<img
-                src="/static/img/common/advertisement/300x250.jpg"
-                width="300"
-                height="250"
-              />*/}
             </div>
             
             
@@ -451,18 +408,9 @@ export default class extends React.Component {
               
               {/* フォーラム */}
               <Element
-                css={css`
-                  // margin 12px 0 0 0;
-                  
-                  // @media screen and (max-width: 947px) {
-                  //   margin: 0;
-                  // }
-                `}
                 name="forumThreads"
               >
-                
                 <ForumThread userCommunities_id={this.props.userCommunities_id} />
-                
               </Element>
               
               
@@ -484,6 +432,7 @@ export default class extends React.Component {
           <Drawer>
             Drawer
           </Drawer>
+          
           
           
           

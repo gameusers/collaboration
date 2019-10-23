@@ -24,11 +24,6 @@ import lodashThrottle from 'lodash/throttle';
 import { css, jsx } from '@emotion/core';
 
 
-// ---------------------------------------------
-//   Components
-// ---------------------------------------------
-
-
 
 
 // --------------------------------------------------
@@ -38,14 +33,21 @@ import { css, jsx } from '@emotion/core';
 const Container = ({ children, lower }) => {
   
   const props = useSpring({
-    transform: lower ? 'translateY(0px)' : 'translateY(-53px)',
+    transform: lower ? 'translateY(0px)' : 'translateY(52px)',
     config: { duration: 250 },
   });
   
   return <animated.div
       css={css`
+        width: 300px;
+        
         position: sticky;
-        top: 102px;
+        top: 52px;
+        
+        @media screen and (max-width: 947px) {
+          width: 100%;
+          position: static;
+        }
       `}
       style={props}
     >
@@ -132,7 +134,7 @@ export default class extends React.Component {
     
     let scrollUp = false;
     let showNavTop = true;
-    let lower = false;
+    let lower = true;
     
     
     // ---------------------------------------------
@@ -147,10 +149,8 @@ export default class extends React.Component {
       // ---------------------------------------------
       
       if (scrollY > this.scrollYOffset) {
-        // console.log('scrollDown');
         scrollUp = false;
       } else {
-        // console.log('scrollUp');
         scrollUp = true;
       }
       
@@ -177,7 +177,7 @@ export default class extends React.Component {
       if (this.navTopHeight + this.heroImageHeight < scrollY) {
         
         if (scrollUp && showNavTop) {
-          lower = true;
+          lower = false;
         }
         
       }
@@ -192,12 +192,22 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
+    //   サイドバーがない場合は下げる
+    // ---------------------------------------------
+    
+    if (window.innerWidth <= 947) {
+      lower = true;
+    }
+    
+    
+    // ---------------------------------------------
     //   console.log
     // ---------------------------------------------
     
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   scrollUp: {green ${scrollUp}}
+    //   showNavTop: {green ${showNavTop}}
     //   lower: {green ${lower}}
     // `);
     
@@ -206,17 +216,13 @@ export default class extends React.Component {
     //   setState
     // ---------------------------------------------
     
-    if (this.state.lowerNavMain !== lower) {
+    if (this.state.lower !== lower) {
       
       this.setState({
         lower,
       });
       
     }
-    
-    // this.setState({
-    //   lower: scrollUp,
-    // });
     
     
   }, 100);
@@ -246,11 +252,11 @@ export default class extends React.Component {
       <Container lower={this.state.lower}>
         
         
-        <img
+        {/*<img
           src="/static/img/sample/knight_f_idle_anim_f0.png"
           width="32"
-          height="56"
-        />
+          height="40"
+        />*/}
         
         
         {/* Contents */}

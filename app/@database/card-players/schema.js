@@ -129,4 +129,17 @@ const schema = mongoose.Schema({
   ]
 });
 
-module.exports = mongoose.model('card-players', schema);
+
+// --------------------------------------------------
+//   Exports
+// --------------------------------------------------
+
+let model = '';
+
+if (mongoose.models['card-players']) {
+  model = mongoose.model('card-players');
+} else {
+  model = mongoose.model('card-players', schema);
+}
+
+module.exports = model;

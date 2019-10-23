@@ -60,8 +60,6 @@ const { locale } = require('../../../../../app/@locales/locale');
 export default async (req, res) => {
   
   
-  // console.log('/pages/api/v2/db/forum-threads/read-threads.js');
-  
   // --------------------------------------------------
   //   Status Code
   // --------------------------------------------------
@@ -86,6 +84,12 @@ export default async (req, res) => {
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
   
   // console.log(`
   //   ----- req.cookies -----\n
@@ -116,6 +120,7 @@ export default async (req, res) => {
   //   encrypted: {green ${encrypted}}
   //   decrypted: {green ${decrypted}}
   // `);
+  
   
   
   

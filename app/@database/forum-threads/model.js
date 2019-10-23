@@ -43,13 +43,6 @@ const { CustomError } = require('../../@modules/error/custom');
 const { verifyAuthority } = require('../../@modules/authority');
 
 
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { formatImagesAndVideosArr } = require('../../@format/image');
-
-
 
 
 // --------------------------------------------------

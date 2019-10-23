@@ -81,13 +81,16 @@ export default class extends React.Component {
     const userID = query.userID;
     const pathname = `/ur/${userID}`;
     
-    
+    // console.log(chalk`
+    //   /pages/ur/[userID].js
+    //   userID: {green ${userID}}
+    // `);
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/ur/user/?userID=${userID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/ur/${userID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -96,16 +99,21 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
     // console.log(chalk`
     //   userID: {green ${userID}}
     //   pathname: {green ${pathname}}
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -152,6 +160,8 @@ export default class extends React.Component {
       }
       
       
+      
+      
       // --------------------------------------------------
       //   Store
       // --------------------------------------------------
@@ -164,6 +174,8 @@ export default class extends React.Component {
       this.storeGameForm = initStoreGameForm({});
       this.storeImageAndVideo = initStoreImageAndVideo({});
       this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
+      
+      
       
       
       // --------------------------------------------------
@@ -210,7 +222,6 @@ export default class extends React.Component {
       
       
     } catch (e) {
-      // console.log(e.message);
       this.error = true;
     }
     

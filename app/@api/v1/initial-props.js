@@ -28,11 +28,11 @@ const lodashSet = require('lodash/set');
 
 const ModelUsers = require('../../@database/users/model');
 const ModelGames = require('../../@database/games/model');
-const ModelCardPlayers = require('../../@database/card-players/model');
+// const ModelCardPlayers = require('../../@database/card-players/model');
 const ModelEmailConfirmations = require('../../@database/email-confirmations/model');
 const ModelUserCommunities = require('../../@database/user-communities/model');
 const ModelForumThreads = require('../../@database/forum-threads/model');
-const ModelForumComments = require('../../@database/forum-comments/model');
+// const ModelForumComments = require('../../@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -176,172 +176,172 @@ router.get('/common', upload.none(), async (req, res, next) => {
 //   endpointID: P3ut9x3Fj
 // --------------------------------------------------
 
-router.get('/ur/user', upload.none(), async (req, res, next) => {
+// router.get('/ur/user', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {
-    usersObj: {},
-    cardsArr: [],
-  };
-  
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
-  try {
-    
-    
-    // --------------------------------------------------
-    //   GET Data
-    // --------------------------------------------------
-    
-    const userID = req.query.userID;
-    
-    lodashSet(requestParametersObj, ['userID'], userID);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Users
-    //   アクセスしたページ所有者のユーザー情報
-    //   users_id を取得するために利用
-    // --------------------------------------------------
-    
-    const usersObj = await ModelUsers.findOne({
-      conditionObj: {
-        userID,
-      }
-    });
-    
-    
-    // --------------------------------------------------
-    //   ユーザー情報が存在しない場合はエラー
-    // --------------------------------------------------
-    
-    const users_id = lodashGet(usersObj, ['_id'], '');
-    
-    if (!users_id) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'IVX1dL1pJ', messageID: 'Error' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   pagesArr
-    // --------------------------------------------------
-    
-    returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
-    
-    const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
-      localeObj,
-      users_id,
-      loginUsers_id
-    });
-    
-    returnObj.cardPlayersObj = cardPlayersObj;
-    
-    
-    // --------------------------------------------------
-    //   カードを一覧で表示するための配列を作成する
-    // --------------------------------------------------
-    
-    const cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    if (cardPlayersKeysArr.length > 0) {
-      returnObj.cardsArr.push({
-        cardPlayers_id: cardPlayersKeysArr[0]
-      });
-    }
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   {green ur/player/api/player / initial-props}
-    //   userID: {green ${userID}}
-    //   users_id：{green ${users_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'P3ut9x3Fj',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
   
-});
+//   const returnObj = {
+//     usersObj: {},
+//     cardsArr: [],
+//   };
+  
+//   const requestParametersObj = {};
+//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   GET Data
+//     // --------------------------------------------------
+    
+//     const userID = req.query.userID;
+    
+//     lodashSet(requestParametersObj, ['userID'], userID);
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得 / Users
+//     //   アクセスしたページ所有者のユーザー情報
+//     //   users_id を取得するために利用
+//     // --------------------------------------------------
+    
+//     const usersObj = await ModelUsers.findOne({
+//       conditionObj: {
+//         userID,
+//       }
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   ユーザー情報が存在しない場合はエラー
+//     // --------------------------------------------------
+    
+//     const users_id = lodashGet(usersObj, ['_id'], '');
+    
+//     if (!users_id) {
+//       statusCode = 404;
+//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'IVX1dL1pJ', messageID: 'Error' }] });
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   pagesArr
+//     // --------------------------------------------------
+    
+//     returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得 / Card Players
+//     //   アクセスしたページ所有者のプレイヤーカード情報
+//     // --------------------------------------------------
+    
+//     const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+//       localeObj,
+//       users_id,
+//       loginUsers_id
+//     });
+    
+//     returnObj.cardPlayersObj = cardPlayersObj;
+    
+    
+//     // --------------------------------------------------
+//     //   カードを一覧で表示するための配列を作成する
+//     // --------------------------------------------------
+    
+//     const cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    
+//     if (cardPlayersKeysArr.length > 0) {
+//       returnObj.cardsArr.push({
+//         cardPlayers_id: cardPlayersKeysArr[0]
+//       });
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   {green ur/player/api/player / initial-props}
+//     //   userID: {green ${userID}}
+//     //   users_id：{green ${users_id}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- localeObj -----\n
+//     //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- usersObj -----\n
+//     //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- cardPlayersObj -----\n
+//     //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // ---------------------------------------------
+//     //   Return Json Object / Success
+//     // ---------------------------------------------
+    
+//     return res.status(200).json(returnObj);
+    
+    
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Log
+//     // ---------------------------------------------
+    
+//     const resultErrorObj = returnErrorsArr({
+//       errorObj,
+//       endpointID: 'P3ut9x3Fj',
+//       users_id: loginUsers_id,
+//       ip: req.ip,
+//       requestParametersObj,
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
+  
+// });
 
 
 

@@ -39,6 +39,7 @@ import { createCsrfToken } from '../../app/@modules/csrf';
 
 import initStoreRoot from '../../app/@stores/root';
 import initStoreUserCommunity from '../../app/uc/community/stores/store';
+import initStoreCardPlayer from '../../app/common/card/player/stores/player';
 import initStoreForum from '../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
@@ -54,7 +55,7 @@ import Drawer from '../../app/common/layout/components/drawer';
 import ForumNavigation from '../../app/common/forum/components/navigation';
 import ForumThread from '../../app/common/forum/components/thread';
 import VideoModal from '../../app/common/image-and-video/components/video-modal';
-// import CardPlayerDialog from '../../app/common/card/player/components/dialog';
+import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 
 
@@ -183,6 +184,7 @@ export default class extends React.Component {
       const stores = initStoreRoot({});
       
       this.storeUserCommunity = initStoreUserCommunity({});
+      this.storeCardPlayer = initStoreCardPlayer({});
       this.storeForum = initStoreForum({});
       this.storeImageAndVideo = initStoreImageAndVideo({});
       this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
@@ -337,6 +339,7 @@ export default class extends React.Component {
     return (
       <Provider
         storeUserCommunity={this.storeUserCommunity}
+        storeCardPlayer={this.storeCardPlayer}
         storeForum={this.storeForum}
         storeImageAndVideo={this.storeImageAndVideo}
         storeImageAndVideoForm={this.storeImageAndVideoForm}
@@ -423,7 +426,7 @@ export default class extends React.Component {
           
           
           {/* プレイヤーカードを表示するダイアログ */}
-          {/*<CardPlayerDialog />*/}
+          <CardPlayerDialog />
           
           
           

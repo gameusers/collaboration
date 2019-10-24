@@ -77,11 +77,6 @@ const cssNameNoColor = css`
 //   Status
 // ---------------------------------------------
 
-// const cssStatusBox = css`
-//   display: flex;
-//   flex-flow: row wrap;
-// `;
-
 const cssIconHealing = css`
   && {
     font-size: 18px;
@@ -190,9 +185,6 @@ export default class extends React.Component {
       this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     }
     
-    // this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardPlayers_id}-card-player` });
-    // this.props.stores.layout.handleButtonEnable({ _id: `${this.props.cardGames_id}-card-game` });
-    
     
   }
   
@@ -221,19 +213,12 @@ export default class extends React.Component {
       
       gameName,
       gameUrlID,
-      // showGameName,
       
       exp,
       
       cardPlayers_id,
-      // showCardPlayerButton,
-      
-      // cardGames_id,
-      // showCardGameButton
       
     } = this.props;
-    
-    // const { buttonDisabledObj } = stores.layout;
     
     const { handleCardPlayerDialogOpen } = this.storeCardPlayer;
     
@@ -432,7 +417,7 @@ export default class extends React.Component {
           <Button
             css={cssButton}
             variant="outlined"
-            onClick={() => handleCardPlayerDialogOpen('player', cardPlayers_id)}
+            onClick={() => handleCardPlayerDialogOpen({ cardPlayers_id })}
             disabled={buttonDisabled}
             key="cardPlayersButton"
           >

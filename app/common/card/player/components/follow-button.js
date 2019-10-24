@@ -92,9 +92,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeCardPlayer, users_id, followedCount, followed } = this.props;
-    
-    const { buttonDisabledObj } = stores.layout;
+    const { stores, storeCardPlayer, pathArr, users_id, followedCount, followed } = this.props;
     
     const { loginUsersObj } = stores.data;
     
@@ -131,15 +129,17 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Button
+    //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
-    if (`${users_id}-follow` in buttonDisabledObj) {
-      buttonDisabled = buttonDisabledObj[`${users_id}-follow`];
-    }
     
+    
+    
+    // --------------------------------------------------
+    //   Component - Button
+    // --------------------------------------------------
     
     let componentButton =
         <Button
@@ -195,6 +195,7 @@ export default class extends React.Component {
     //   followedCount: {green ${followedCount}}
     //   followed: {green ${followed}}
     // `);
+    
     
     
     

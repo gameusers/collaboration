@@ -52,7 +52,7 @@ const { formatImagesAndVideosArr } = require('../../@format/image');
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async ({ localeObj, users_id, loginUsers_id }) => {
+const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -70,16 +70,44 @@ const findForCardPlayer = async ({ localeObj, users_id, loginUsers_id }) => {
     
     
     // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [
+      {
+        $match : { users_id }
+      },
+    ];
+    
+    if (cardPlayers_id) {
+      
+      matchConditionArr = [
+        {
+          $match : { _id: cardPlayers_id }
+        },
+      ];
+      
+    }
+    
+    // console.log(`
+    //   ----- matchConditionArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
     //   Card Players のデータを取得
     // --------------------------------------------------
     
     let resultArr = await Model.aggregate([
       
+      ...matchConditionArr,
       
       // Card Players を取得する
-      {
-        $match : { users_id }
-      },
+      // {
+      //   $match : { users_id }
+      // },
       
       
       // 画像と動画を取得
@@ -347,21 +375,23 @@ const findForCardPlayer = async ({ localeObj, users_id, loginUsers_id }) => {
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findOneBy_id = async (argumentsObj) => {
+const findOneBy_id = async ({
+  
+  _id,
+  localeObj,
+  loginUsers_id,
+  
+}) => {
   
   
   // --------------------------------------------------
-  //   Property
+  //   console.log
   // --------------------------------------------------
   
-  const {
-    
-    _id,
-    language,
-    country,
-    loginUsers_id
-    
-  } = argumentsObj;
+  // console.log(chalk`
+  //   _id: {green ${_id}}
+  //   loginUsers_id: {green ${loginUsers_id}}
+  // `);
   
   
   // --------------------------------------------------
@@ -435,15 +465,15 @@ const findOneBy_id = async (argumentsObj) => {
                     [
                       { $and:
                         [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
                         ]
                       },
                       { $and:
                         [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
                         ]
                       }
@@ -504,17 +534,10 @@ const findOneBy_id = async (argumentsObj) => {
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
-      language,
-      country,
+      localeObj,
       loginUsers_id,
       arr: ids_idArr,
     });
-    
-    // console.log(`
-    //   ----- resultCardPlayersArr -----\n
-    //   ${util.inspect(resultCardPlayersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -526,13 +549,21 @@ const findOneBy_id = async (argumentsObj) => {
     returnObj = format({
       loginUsers_id,
       cardPlayersArr: resultCardPlayersArr,
-      idsObj: resultIDsObj
+      idsObj: resultIDsObj,
     });
     
     
+    
+    
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- resultCardPlayersArr -----\n
@@ -1256,6 +1287,7 @@ const deleteMany = async ({ conditionObj }) => {
 // --------------------------------------------------
 
 module.exports = {
+  
   findForCardPlayer,
   findOneBy_id,
   findOneBy_idForEditForm,
@@ -1263,5 +1295,6 @@ module.exports = {
   count,
   upsert,
   insertMany,
-  deleteMany
+  deleteMany,
+  
 };

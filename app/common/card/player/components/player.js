@@ -30,7 +30,6 @@ import { css, jsx } from '@emotion/core';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-// import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 
 
@@ -132,7 +131,8 @@ export default class extends React.Component {
       stores,
       storeCardPlayer,
       cardPlayers_id,
-      showFollow
+      showFollow,
+      showEditButton,
       
     } = this.props;
     
@@ -277,7 +277,7 @@ export default class extends React.Component {
     //   ID
     // ---------------------------------------------
     
-    const idArr = lodashGet(cardPlayersObj, ['idArr'], []);
+    const idArr = lodashGet(cardPlayersObj, ['ids_idArr'], []);
     
     
     // ---------------------------------------------
@@ -430,6 +430,12 @@ export default class extends React.Component {
                   && {
                     font-size: 14px;
                     padding-bottom: 16px !important;
+                    
+                    ${Object.keys(imagesAndVideosObj).length === 0 &&
+                      `border-top: 1px dashed;
+                       border-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.50), rgba(0,0,0,0));
+                       border-image-slice: 1;`
+                    }
                   }
                 `}
               >
@@ -528,6 +534,7 @@ export default class extends React.Component {
                 {/* フォローボタン */}
                 {showFollow &&
                   <FollowButton
+                    pathArr={this.pathArr}
                     users_id={users_id}
                     followedCount={followedCount}
                     followed={followed}
@@ -536,11 +543,13 @@ export default class extends React.Component {
                 
                 
                 {/* 編集ボタン */}
-                <EditButton
-                  pathArr={this.pathArr}
-                  cardPlayers_id={cardPlayers_id}
-                  users_id={users_id}
-                />
+                {showEditButton &&
+                  <EditButton
+                    pathArr={this.pathArr}
+                    cardPlayers_id={cardPlayers_id}
+                    users_id={users_id}
+                  />
+                }
                 
                 
               </CardContent>

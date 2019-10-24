@@ -64,13 +64,6 @@ export default class extends React.Component {
     this.props.stores.layout.handleButtonEnable({ pathArr: this.props.pathArr });
     
     
-    // --------------------------------------------------
-    //   Button - Enable
-    // --------------------------------------------------
-    
-    // this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-editButton` });
-    
-    
   }
   
   
@@ -88,8 +81,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores, storeCardPlayer, cardPlayers_id, users_id, pathArr } = this.props;
-    
-    // const { buttonDisabledObj } = stores.layout;
     
     const { loginUsersObj } = stores.data;
     
@@ -130,12 +121,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     //   Component - Button
     // --------------------------------------------------
-    
-    // let buttonDisabled = true;
-    
-    // if (`${_id}-editButton` in buttonDisabledObj) {
-    //   buttonDisabled = buttonDisabledObj[`${_id}-editButton`];
-    // }
     
     let componentButton =
       <Button

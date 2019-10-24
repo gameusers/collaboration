@@ -223,12 +223,6 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
       ids_idArr,
     });
     
-    // console.log(`
-    //   ----- resultIDsArr -----\n
-    //   ${util.inspect(resultIDsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // --------------------------------------------------
     //   フォーマット
@@ -247,14 +241,12 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   language: {green ${language}}
-    //   country: {green ${country}}
     //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(arr, { colors: true, depth: null })}\n
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -764,6 +756,7 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
 // --------------------------------------------------
 
 module.exports = {
+  
   find,
   count,
   upsert,
@@ -771,4 +764,5 @@ module.exports = {
   deleteMany,
   findForCardPlayer,
   findBy_Users_idForForm,
+  
 };

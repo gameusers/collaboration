@@ -88,6 +88,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -122,7 +124,6 @@ export default class extends React.Component {
     let component = '';
     
     if (cardPlayerDialogObj.type === 'player') {
-      // console.log(cardPlayerDialogObj._id);
       
       
       // --------------------------------------------------
@@ -132,8 +133,9 @@ export default class extends React.Component {
       component =
         <Dialog
           open={cardPlayerDialog}
+          maxWidth='md'
           onClose={() => handleCardPlayerDialogClose()}
-          scroll="paper"
+          scroll='paper'
           classes={{
             paper: classes.paper
           }}
@@ -141,9 +143,8 @@ export default class extends React.Component {
           <DialogContent css={cssDialogContent}>
             <CardPlayer
               cardPlayers_id={cardPlayerDialogObj._id}
-              showCardPlayerButton={false}
-              showCardGameButton={false}
               showFollow={true}
+              showEditButton={false}
             />
           </DialogContent>
         </Dialog>

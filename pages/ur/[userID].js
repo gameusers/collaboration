@@ -49,6 +49,7 @@ import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
+import Sidebar from '../../app/common/layout/components/sidebar';
 import Drawer from '../../app/common/layout/components/drawer';
 import CardPlayer from '../../app/common/card/player/components/player';
 import CardPlayerDialog from '../../app/common/card/player/components/dialog';
@@ -109,11 +110,7 @@ export default class extends React.Component {
     //   pathname: {green ${pathname}}
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // line
     
     
     // --------------------------------------------------
@@ -277,6 +274,7 @@ export default class extends React.Component {
           <CardPlayer
             cardPlayers_id={valueObj.cardPlayers_id}
             showFollow={true}
+            showEditButton={true}
             key={index}
           />
         );
@@ -297,7 +295,7 @@ export default class extends React.Component {
     const topPageName = lodashGet(topPagesObj, ['name'], '');
     const title = topPageName ? topPageName : `${userName} - Game Users`;
     
-    // console.log('AAA');
+    
     
     
     // --------------------------------------------------
@@ -334,6 +332,8 @@ export default class extends React.Component {
               padding: 16px;
               
               @media screen and (max-width: 947px) {
+                display: flex;
+                flex-flow: column nowrap;
                 padding: 10px 0 10px 0;
               }
             `}
@@ -345,34 +345,46 @@ export default class extends React.Component {
               css={css`
                 width: 300px;
                 margin: 0 16px 0 0;
-                padding: 0;
                 
                 @media screen and (max-width: 947px) {
-                  display: none;
+                  width: auto;
+                  margin: 0 0 16px 0;
                 }
               `}
             >
-              <img
-                src="/static/img/common/advertisement/300x250.jpg"
-                width="300"
-                height="250"
-              />
+              
+              
+              <Sidebar>
+                <img
+                  src="/static/img/common/advertisement/300x250.jpg"
+                  width="300"
+                  height="250"
+                />
+              </Sidebar>
+              
               
               Sidebar
+              
             </div>
+            
+            
             
             
             {/* Main */}
             <div
               css={css`
                 max-width: 800px;
-                margin: 0;
-                padding: 0;
+                
+                @media screen and (max-width: 947px) {
+                  max-width: none;
+                }
               `}
             >
               
+              
               {/* プレイヤーカード */}
               {componentCardsArr}
+              
               
             </div>
             

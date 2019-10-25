@@ -22,29 +22,29 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../app/@database/forum-threads/model');
+const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
+const ModelForumThreads = require('../../../../../../app/@database/forum-threads/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { returnErrorsArr } = require('../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../app/@modules/error/custom');
+const { returnErrorsArr } = require('../../../../../../app/@modules/log/log');
+const { CustomError } = require('../../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../app/@locales/locale');
+const { locale } = require('../../../../../../app/@locales/locale');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: hc7YMP_C8
+//   endpointID: w4Dpv8Rf1
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -85,10 +85,15 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userCommunityID = req.query.userCommunityID;
+    const forumID = req.query.forumID;
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    lodashSet(requestParametersObj, ['forumID'], forumID);
     
-    
+    console.log(chalk`
+      userCommunityID: {green ${userCommunityID}}
+      forumID: {green ${forumID}}
+    `);
     
     
     // --------------------------------------------------
@@ -101,15 +106,9 @@ export default async (req, res) => {
       userCommunityID,
     });
     
-    // console.log(`
-    //   ----- userCommunityArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(userCommunityArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     if (userCommunityArr.length === 0) {
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AULmon_4K', messageID: 'Error' }] });
     }
     
     const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
@@ -128,20 +127,12 @@ export default async (req, res) => {
       userCommunities_id,
     });
     
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
     
     // --------------------------------------------------
     //   DB find / Forum
     // --------------------------------------------------
     
-    const forumObj = await ModelForumThreads.findForForum({
+    const forumObj = await ModelForumThreads.findForForumBy_forumID({
       req,
       localeObj,
       loginUsers_id,
@@ -171,7 +162,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'hc7YMP_C8',
+      endpointID: 'w4Dpv8Rf1',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

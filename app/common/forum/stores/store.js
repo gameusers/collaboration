@@ -126,13 +126,16 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumThreadsForListObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumThreadsForListObj', `page${page}Obj`, 'arr'], []);
       
-      let limit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      let limit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
       
       if (changeLimit) {
         limit = changeLimit;
       }
       
-      
+      // console.log(chalk`
+      //   handleReadThreadsList
+      //   limit: {green ${limit}}
+      // `);
       
       
       // ---------------------------------------------
@@ -334,8 +337,13 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Update forumThreadsForListObj
+      //   Update forumThreadListLimit & forumThreadsForListObj
       // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: ['forumThreadListLimit'],
+        value: limit,
+      });
       
       this.handleEdit({
         pathArr: [communities_id],
@@ -415,14 +423,13 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'arr'], []);
       
-      let limit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      let limit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       if (changeLimit) {
         limit = changeLimit;
       }
-      
-      const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       
       
@@ -698,9 +705,16 @@ class Store {
       clonedObj.updatedDateObj = updatedDateObj;
       
       
+      
+      
       // ---------------------------------------------
       //   Update
       // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: ['forumThreadLimit'],
+        value: limit,
+      });
       
       this.handleEdit({
         pathArr: [communities_id],
@@ -957,10 +971,10 @@ class Store {
       const forumObj = lodashGet(this.dataObj, [communities_id], {});
       const clonedObj = lodashCloneDeep(forumObj);
       
-      const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-      const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       
       
@@ -1271,10 +1285,10 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -1564,14 +1578,13 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumCommentsObj ', forumThreads_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
       
-      let limit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      let limit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       if (changeLimit) {
         limit = changeLimit;
       }
-      
-      const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       
       
@@ -1672,9 +1685,9 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(chalk`
-        reload: {green ${reload}}
-      `);
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
       
       
       
@@ -1899,9 +1912,16 @@ class Store {
       clonedObj.updatedDateObj = updatedDateObj;
       
       
+      
+      
       // ---------------------------------------------
       //   Update
       // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: ['forumCommentLimit'],
+        value: limit,
+      });
       
       this.handleEdit({
         pathArr: [communities_id],
@@ -2179,10 +2199,10 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -2502,10 +2522,10 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -2798,14 +2818,12 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumRepliesObj ', forumComments_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr'], []);
       
-      let limit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      let limit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       if (changeLimit) {
         limit = changeLimit;
       }
-      
-      // const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
       
       
       
@@ -2896,9 +2914,9 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(chalk`
-        reload: {green ${reload}}
-      `);
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
       
       // return;
       
@@ -3175,9 +3193,16 @@ class Store {
       clonedObj.updatedDateObj = updatedDateObj;
       
       
+      
+      
       // ---------------------------------------------
       //   Update
       // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: ['forumReplyLimit'],
+        value: limit,
+      });
       
       this.handleEdit({
         pathArr: [communities_id],
@@ -3459,10 +3484,10 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -3786,10 +3811,10 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(forumObj, ['forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(forumObj, ['forumThreadsObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(forumObj, ['forumCommentsObj', 'limit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(forumObj, ['forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     

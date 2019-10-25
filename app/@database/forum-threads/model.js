@@ -319,14 +319,6 @@ const findForThreadsList = async ({
       //   Datetime
       // --------------------------------------------------
       
-      // const timezone = moment.tz.guess();
-      // clonedObj.updatedDate = moment.tz(valueObj.updatedDate, timezone).format('YYYY/MM/DD HH:mm');
-      
-      // console.log(chalk`
-      //   valueObj.updatedDate: {green ${valueObj.updatedDate}}
-      //   timezone: {green ${timezone}}
-      // `);
-      // console.log(moment.tz.guess());
       clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD HH:mm');
       
       
@@ -400,13 +392,23 @@ const findForThreadsList = async ({
     const returnObj = {
       count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
       page,
-      limit: intLimit,
     };
     
     lodashSet(returnObj, ['dataObj'], dataObj);
     
     lodashSet(returnObj, [`page${page}Obj`, 'loadedDate'], ISO8601);
     lodashSet(returnObj, [`page${page}Obj`, 'arr'], arr);
+    
+    // const returnObj = {
+    //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+    //   page,
+    //   limit: intLimit,
+    // };
+    
+    // lodashSet(returnObj, ['dataObj'], dataObj);
+    
+    // lodashSet(returnObj, [`page${page}Obj`, 'loadedDate'], ISO8601);
+    // lodashSet(returnObj, [`page${page}Obj`, 'arr'], arr);
     
     // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
     // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], arr);
@@ -637,7 +639,6 @@ const findForForum = async ({
       loginUsers_id,
       arr: resultArr,
       threadPage,
-      threadLimit: intThreadLimit,
       threadCount,
     });
     
@@ -743,6 +744,292 @@ const findForForum = async ({
 
 
 /**
+ * スレッドを取得する - スレッドまたはコメントの _id で検索
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
+ * @param {number} threadPage - スレッドのページ
+ * @param {number} threadLimit - スレッドのリミット
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const findForForumBy_forumID = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  _id,
+  userCommunities_id,
+  threadPage = 1,
+  threadLimit = process.env.FORUM_THREAD_LIMIT,
+  commentPage = 1,
+  commentLimit = process.env.FORUM_COMMENT_LIMIT,
+  replyPage = 1,
+  replyLimit = process.env.FORUM_REPLY_LIMIT,
+  
+}) => {
+  
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Parse
+    // --------------------------------------------------
+    
+    const intThreadLimit = parseInt(threadLimit, 10);
+    const intCommentLimit = parseInt(commentLimit, 10);
+    const intReplyLimit = parseInt(replyLimit, 10);
+    
+    
+    // --------------------------------------------------
+    //   DB find / Forum Comments & Replies
+    // --------------------------------------------------
+    
+    const forumCommentsAndRepliesObj = await ModelForumComments.findOne({
+      
+      conditionObj: {
+        _id
+      }
+      
+    });
+    
+    
+    console.log(`
+      ----- forumCommentsAndRepliesObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    // let matchConditionArr = [
+    //   {
+    //     $match : { userCommunities_id }
+    //   },
+    // ];
+    
+    // if (forumThreads_idArr.length > 0) {
+      
+    //   matchConditionArr = [
+    //     {
+    //       $match: {
+    //         $and: [
+    //           { _id: { $in: forumThreads_idArr } },
+    //           { userCommunities_id },
+    //         ]
+    //       },
+    //     }
+    //   ];
+      
+    // }
+    
+    // // console.log(`
+    // //   ----- matchConditionArr -----\n
+    // //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
+    // //   --------------------\n
+    // // `);
+    
+    
+    // // --------------------------------------------------
+    // //   Aggregation
+    // // --------------------------------------------------
+    
+    // const resultArr = await SchemaForumThreads.aggregate([
+      
+    //   ...matchConditionArr,
+      
+      
+    //   // 画像と動画を取得
+    //   {
+    //     $lookup:
+    //       {
+    //         from: 'images-and-videos',
+    //         let: { forumThreadsImagesAndVideos_id: '$imagesAndVideos_id' },
+    //         pipeline: [
+    //           { $match:
+    //             { $expr:
+    //               { $eq: ['$_id', '$$forumThreadsImagesAndVideos_id'] },
+    //             }
+    //           },
+    //           { $project:
+    //             {
+    //               createdDate: 0,
+    //               updatedDate: 0,
+    //               users_id: 0,
+    //               __v: 0,
+    //             }
+    //           }
+    //         ],
+    //         as: 'imagesAndVideosObj'
+    //       }
+    //   },
+      
+    //   {
+    //     $unwind: {
+    //       path: '$imagesAndVideosObj',
+    //       preserveNullAndEmptyArrays: true,
+    //     }
+    //   },
+      
+      
+    //   { $project:
+    //     {
+    //       imagesAndVideos_id: 0,
+    //       __v: 0,
+    //     }
+    //   },
+      
+      
+    //   { '$sort': { 'updatedDate': -1 } },
+    //   { $skip: (threadPage - 1) * intThreadLimit },
+    //   { $limit: intThreadLimit },
+      
+      
+    // ]).exec();
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   コミュニティデータ取得 - コミュニティのスレッド数取得用
+    // // --------------------------------------------------
+    
+    // const userCommunityArr = await ModelUserCommunities.find({
+    //   conditionObj: {
+    //     _id: userCommunities_id
+    //   }
+    // });
+    
+    
+    // // --------------------------------------------------
+    // //   Format
+    // // --------------------------------------------------
+    
+    // const threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+    
+    // const formattedThreadsObj = formatVer2({
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   arr: resultArr,
+    //   threadPage,
+    //   threadLimit: intThreadLimit,
+    //   threadCount,
+    // });
+    
+    // const forumThreadsObj = lodashGet(formattedThreadsObj, ['forumThreadsObj'], {});
+    // const forumThreads_idsForCommentArr = lodashGet(formattedThreadsObj, ['forumThreads_idsForCommentArr'], []);
+    
+    
+    
+    
+    // // --------------------------------------------------
+    // //   DB find / Forum Comments & Replies
+    // // --------------------------------------------------
+    
+    // const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   forumThreads_idsArr: forumThreads_idsForCommentArr,
+    //   forumThreadsObj,
+    //   commentPage,
+    //   commentLimit: intCommentLimit,
+    //   replyPage,
+    //   replyLimit: intReplyLimit,
+    // });
+    
+    // const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+    // const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${page}}
+    //   limit: {green ${limit}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsAndRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsAndRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- forumRepliesObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return {};
+    
+    // return {
+    //   forumThreadsObj,
+    //   forumCommentsObj,
+    //   forumRepliesObj,
+    // };
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
 * DBから取得した情報をフォーマットする
 * @param {Object} req - リクエスト
 * @param {Object} localeObj - ロケール
@@ -750,7 +1037,7 @@ const findForForum = async ({
 * @param {Array} arr - 配列
 * @return {Array} フォーマット後のデータ
 */
-const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimit, threadCount }) => {
+const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCount }) => {
   
   
   // --------------------------------------------------
@@ -759,7 +1046,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadLimi
   
   const forumThreadsObj = {
     page: threadPage,
-    limit: threadLimit,
+    // limit: threadLimit,
     count: threadCount,
     dataObj: {},
   };
@@ -1671,6 +1958,7 @@ module.exports = {
   
   findForThreadsList,
   findForForum,
+  findForForumBy_forumID,
   findForEdit,
   findForDeleteThread,
   transactionForUpsertThread,

@@ -60,25 +60,6 @@ class Store {
   
   
   
-  // ---------------------------------------------
-  //   Header - Navigation / Top & Main
-  //   scrollToで移動した場合は、スクロールを上にした時と同じ動作にする
-  // ---------------------------------------------
-  
-  /**
-   * scrollToを開始 - 開始するとナビゲーションを
-   * @type {boolean}
-   */
-  headerNavForceScrollUpBegin = false;
-  
-  
-  /**
-   * scrollToを終了
-   * @type {boolean}
-   */
-  headerNavForceScrollUpEnd = false;
-  
-  
   
   
   
@@ -670,6 +651,33 @@ class Store {
   //   Scroll To
   // ---------------------------------------------
   
+  // ---------------------------------------------
+  //   Header - Navigation / Top & Main
+  //   scrollToで移動した場合は、スクロールを上にした時と同じ動作にする
+  // ---------------------------------------------
+  
+  /**
+   * scrollToを開始 - 開始するとナビゲーションを
+   * @type {boolean}
+   */
+  headerNavForceScrollUpBegin = false;
+  
+  
+  /**
+   * scrollToを終了
+   * @type {boolean}
+   */
+  headerNavForceScrollUpEnd = false;
+  
+  
+  /**
+   * scrollToを終了
+   * @type {boolean}
+   */
+  @observable headerNavForceScrollUpBegin2 = false;
+  
+  
+  
   /**
    * 特定の場所へスクロールする
    * 移動先は <Element name="..."></Element> で囲む / name に入力した値を to に指定すると移動できる
@@ -684,6 +692,7 @@ class Store {
     }
     
     this.headerNavForceScrollUpBegin = true;
+    this.headerNavForceScrollUpBegin2 = true;
     
     scroller.scrollTo(to, {
       duration,
@@ -693,8 +702,9 @@ class Store {
     });
     
     Events.scrollEvent.register('end', (to, element) => {
-      // console.log('Events.scrollEvent.register(end)');
+      console.log('Events.scrollEvent.register(end)');
       this.headerNavForceScrollUpEnd = true;
+      this.headerNavForceScrollUpBegin2 = false;
     });
     
   };

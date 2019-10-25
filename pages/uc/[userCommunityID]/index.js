@@ -17,9 +17,11 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
+import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import { Element } from 'react-scroll';
 import lodashGet from 'lodash/get';
+import lodashHas from 'lodash/has';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -29,33 +31,33 @@ import { css, jsx } from '@emotion/core';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../app/@modules/fetch';
-import { createCsrfToken } from '../../app/@modules/csrf';
+import { fetchWrapper } from '../../../app/@modules/fetch';
+import { createCsrfToken } from '../../../app/@modules/csrf';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../app/@stores/root';
-import initStoreUserCommunity from '../../app/uc/community/stores/store';
-import initStoreCardPlayer from '../../app/common/card/player/stores/player';
-import initStoreForum from '../../app/common/forum/stores/store';
-import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
+import initStoreRoot from '../../../app/@stores/root';
+import initStoreUserCommunity from '../../../app/uc/community/stores/store';
+import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
+import initStoreForum from '../../../app/common/forum/stores/store';
+import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
+import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../app/common/layout/components/layout';
-import Sidebar from '../../app/common/layout/components/sidebar';
-import Drawer from '../../app/common/layout/components/drawer';
-import ForumNavigation from '../../app/common/forum/components/navigation';
-import ForumThread from '../../app/common/forum/components/thread';
-import VideoModal from '../../app/common/image-and-video/components/video-modal';
-import CardPlayerDialog from '../../app/common/card/player/components/dialog';
+import Layout from '../../../app/common/layout/components/layout';
+import Sidebar from '../../../app/common/layout/components/sidebar';
+import Drawer from '../../../app/common/layout/components/drawer';
+import ForumNavigation from '../../../app/common/forum/components/navigation';
+import ForumThread from '../../../app/common/forum/components/thread';
+import VideoModal from '../../../app/common/image-and-video/components/video-modal';
+import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
 
 
 
@@ -202,7 +204,10 @@ export default class extends React.Component {
       // --------------------------------------------------
       //   Update Data - Pathname
       // --------------------------------------------------
-      
+      // console.log(chalk`
+      //   /pages/uc/[userCommunityID]/index.js
+      //   stores.layout.pathname: {green ${stores.layout.pathname}}
+      // `);
       stores.layout.replacePathname(props.pathname);
       
       
@@ -213,12 +218,12 @@ export default class extends React.Component {
       const headerNavMainArr = [
         {
           name: 'トップ',
-          href: `/uc/community?userCommunityID=${props.userCommunityID}`,
+          href: `/uc/[userCommunityID]?userCommunityID=${props.userCommunityID}`,
           as: `/uc/${props.userCommunityID}`,
         },
         {
           name: '設定',
-          href: `/uc/settings?userCommunityID=${props.userCommunityID}`,
+          href: `/uc/[userCommunityID]/settings?userCommunityID=${props.userCommunityID}`,
           as: `/uc/${props.userCommunityID}/settings`,
         }
       ];
@@ -240,10 +245,48 @@ export default class extends React.Component {
       //   Update Data - forumThreadsForListObj
       // --------------------------------------------------
       
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
-        value: props.initialPropsObj.forumThreadsForListObj,
-      });
+      // const forumThreadsForListObj = lodashGet(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj'], null);
+      
+      // console.log(`
+      //   ----- lodashHas(this.storeForum, [props.userCommunities_id, 'forumThreadsForListObj']) -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(lodashHas(this.storeForum, [props.userCommunities_id, 'forumThreadsForListObj']))), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- forumThreadsForListObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsForListObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // if (lodashHas(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj']) === false) {
+        
+      //   this.storeForum.handleEdit({
+      //     pathArr: ['forumThreadListLimit'],
+      //     value: props.initialPropsObj.forumThreadsForListObj.limit,
+      //   });
+        
+      // }
+      
+      if (lodashHas(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj']) === false) {
+        
+        this.storeForum.handleEdit({
+          pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
+          value: props.initialPropsObj.forumThreadsForListObj,
+        });
+        
+        
+        // console.log(`
+        //   ----- props.initialPropsObj.forumThreadsForListObj.obj -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(props.initialPropsObj.forumThreadsForListObj.obj)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        // console.log('new');
+        
+      }
+      
+      
+      
       
       
       // --------------------------------------------------
@@ -352,6 +395,12 @@ export default class extends React.Component {
           <Head>
             <title>{title}</title>
           </Head>
+          
+          
+          {/* テスト用リンク */}
+          <Link href="/uc/[userCommunityID]/forum/[forumID]?userCommunityID=community1&forumID=qNiOLKdRt" as="/uc/community1/forum/qNiOLKdRt">
+            <a>/uc/community1/forum/qNiOLKdRt</a>
+          </Link>
           
           
           {/* 2 Column */}

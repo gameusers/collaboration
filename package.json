@@ -58,7 +58,7 @@
     "mobx-react": "^6.1.4",
     "moment": "^2.24.0",
     "mongo-express": "^0.53.0",
-    "mongoose": "^5.7.6",
+    "mongoose": "^5.7.7",
     "multer": "^1.4.2",
     "next": "^9.1.1",
     "nodemailer": "^6.3.1",

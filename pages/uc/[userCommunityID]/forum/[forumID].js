@@ -17,9 +17,11 @@ import util from 'util';
 import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
+import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import { Element } from 'react-scroll';
 import lodashGet from 'lodash/get';
+import lodashHas from 'lodash/has';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -29,31 +31,33 @@ import { css, jsx } from '@emotion/core';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../app/@modules/fetch';
-import { createCsrfToken } from '../../app/@modules/csrf';
+import { fetchWrapper } from '../../../../app/@modules/fetch';
+import { createCsrfToken } from '../../../../app/@modules/csrf';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../app/@stores/root';
-import initStoreUserCommunity from '../../app/uc/community/stores/store';
-import initStoreForum from '../../app/common/forum/stores/store';
-import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../app/common/image-and-video/stores/form';
+import initStoreRoot from '../../../../app/@stores/root';
+import initStoreUserCommunity from '../../../../app/uc/community/stores/store';
+import initStoreCardPlayer from '../../../../app/common/card/player/stores/player';
+import initStoreForum from '../../../../app/common/forum/stores/store';
+import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video';
+import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../app/common/layout/components/layout';
-import Drawer from '../../app/common/layout/components/drawer';
-import ForumNavigation from '../../app/common/forum/components/navigation';
-import ForumThread from '../../app/common/forum/components/thread';
-import VideoModal from '../../app/common/image-and-video/components/video-modal';
-// import CardPlayerDialog from '../../app/common/card/player/components/dialog';
+import Layout from '../../../../app/common/layout/components/layout';
+import Sidebar from '../../../../app/common/layout/components/sidebar';
+import Drawer from '../../../../app/common/layout/components/drawer';
+import ForumNavigation from '../../../../app/common/forum/components/navigation';
+import ForumThread from '../../../../app/common/forum/components/thread';
+import VideoModal from '../../../../app/common/image-and-video/components/video-modal';
+import CardPlayerDialog from '../../../../app/common/card/player/components/dialog';
 
 
 
@@ -74,16 +78,6 @@ export default class extends React.Component {
   static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
     
     
-    // console.log('[userCommunityID].js / getInitialProps');
-    // const isServer = !!req;
-    
-    // console.log(chalk`
-    //   login: {green ${login}}
-    //   datetimeCurrent: {green ${datetimeCurrent}}
-    //   isServer: {green ${isServer}}
-    // `);
-    
-    
     // --------------------------------------------------
     //   CSRF
     // --------------------------------------------------
@@ -98,12 +92,23 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userCommunityID = query.userCommunityID;
+    const forumID = query.forumID;
     const pathname = `/uc/${userCommunityID}`;
     
+    
+    const storeForum = initStoreForum({});
+    const dataObj = lodashGet(storeForum, ['dataObj'], {});
+    // const limit = lodashGet(storeForum, ['dataObj', userCommunityID, 'forumRepliesObj', 'limit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    
     // console.log(chalk`
-    //   getInitialProps
-    //   userCommunityID: {green ${userCommunityID}}
+    //   limit: {green ${limit}}
     // `);
+    
+    console.log(`
+      ----- dataObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -111,7 +116,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/forum/${forumID}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -120,20 +125,34 @@ export default class extends React.Component {
     const statusCode = resultObj.statusCode;
     const initialPropsObj = resultObj.data;
     
+    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
+    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   login: {green ${login}}
+    //   datetimeCurrent: {green ${datetimeCurrent}}
+    //   userCommunityID: {green ${userCommunityID}}
+    //   forumID: {green ${forumID}}
+    //   userCommunityName: {green ${userCommunityName}}
+    // `);
+    
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
-    
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, datetimeCurrent };
+    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, userCommunityName, datetimeCurrent };
     
     
   }
@@ -164,13 +183,14 @@ export default class extends React.Component {
       //   Error
       // --------------------------------------------------
       
-      // if (
-      //   this.props.statusCode !== 200 ||
-      //   'cardPlayersObj' in props.initialPropsObj === false ||
-      //   'cardsArr' in props.initialPropsObj === false
-      // ) {
-      //   throw new Error();
-      // }
+      if (
+        this.props.statusCode !== 200 ||
+        this.props.userCommunities_id === ''
+      ) {
+        throw new Error();
+      }
+      
+      
       
       
       // --------------------------------------------------
@@ -180,6 +200,7 @@ export default class extends React.Component {
       const stores = initStoreRoot({});
       
       this.storeUserCommunity = initStoreUserCommunity({});
+      this.storeCardPlayer = initStoreCardPlayer({});
       this.storeForum = initStoreForum({});
       this.storeImageAndVideo = initStoreImageAndVideo({});
       this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
@@ -197,7 +218,10 @@ export default class extends React.Component {
       // --------------------------------------------------
       //   Update Data - Pathname
       // --------------------------------------------------
-      
+      // console.log(chalk`
+      //   /pages/uc/[userCommunityID]/forum/[forumID].js
+      //   stores.layout.pathname: {green ${stores.layout.pathname}}
+      // `);
       stores.layout.replacePathname(props.pathname);
       
       
@@ -235,10 +259,14 @@ export default class extends React.Component {
       //   Update Data - forumThreadsForListObj
       // --------------------------------------------------
       
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
-        value: props.initialPropsObj.forumThreadsForListObj,
-      });
+      if (lodashHas(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj']) === false) {
+        
+        this.storeForum.handleEdit({
+          pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
+          value: props.initialPropsObj.forumThreadsForListObj,
+        });
+        
+      }
       
       
       // --------------------------------------------------
@@ -319,45 +347,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Card Players
-    // --------------------------------------------------
-    
-    let userName = '';
-    
-    const componentCardsArr = [];
-    
-    // for (const [index, valueObj] of this.props.initialPropsObj.cardsArr.entries()) {
-      
-    //   if ('cardPlayers_id' in valueObj) {
-        
-    //     const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
-    //     userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-        
-    //     componentCardsArr.push(
-    //       <CardPlayer
-    //         _id={valueObj.cardPlayers_id}
-    //         showFollow={true}
-    //         key={index}
-    //       />
-    //     );
-        
-    //   }
-      
-    // }
-    
-    
-    // --------------------------------------------------
     //   Header Title
     // --------------------------------------------------
     
-    // const topPagesObj = this.storePlPlayer.pagesArr.find((valueObj) => {
-    //   return valueObj.type === 'top';
-    // });
-    
-    // const topPageName = lodashGet(topPagesObj, ['name'], '');
-    // const title = topPageName ? topPageName : `${userName} - Game Users`;
-    
-    const title = 'ユーザーコミュニティ';
+    const title = this.props.userCommunityName;
     
     
     
@@ -369,6 +362,7 @@ export default class extends React.Component {
     return (
       <Provider
         storeUserCommunity={this.storeUserCommunity}
+        storeCardPlayer={this.storeCardPlayer}
         storeForum={this.storeForum}
         storeImageAndVideo={this.storeImageAndVideo}
         storeImageAndVideoForm={this.storeImageAndVideoForm}
@@ -383,17 +377,24 @@ export default class extends React.Component {
           </Head>
           
           
+          {/* テスト用リンク */}
+          <Link href="/uc/[userCommunityID]?userCommunityID=community1" as="/uc/community1">
+            <a>/uc/community1</a>
+          </Link>
+          
+          
           {/* 2 Column */}
           <div
             css={css`
               display: flex;
               flex-flow: row nowrap;
               justify-content: center;
-              // width: 100%;
               margin: 0 auto;
               padding: 16px;
               
-              @media screen and (max-width: 947px) {//989px　947px
+              @media screen and (max-width: 947px) {
+                display: flex;
+                flex-flow: column nowrap;
                 padding: 10px 0 10px 0;
               }
             `}
@@ -405,27 +406,20 @@ export default class extends React.Component {
               css={css`
                 width: 300px;
                 margin: 0 16px 0 0;
-                padding: 0;
                 
                 @media screen and (max-width: 947px) {
-                  display: none;
+                  width: auto;
+                  margin: 0 0 16px 0;
                 }
               `}
             >
-              <img
-                src="/static/img/common/advertisement/300x250.jpg"
-                width="300"
-                height="250"
-              />
               
               
-              {/*<div style={{ marginTop: '14px' }}></div>
+              {/* フォーラムのナビゲーション */}
+              <Sidebar>
+                <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+              </Sidebar>
               
-              
-              <ForumNavigation
-                userCommunities_id={this.props.userCommunities_id}
-                sidebar={true}
-              />*/}
               
             </div>
             
@@ -435,28 +429,21 @@ export default class extends React.Component {
             {/* Main */}
             <div
               css={css`
-                width: 100%;
+                max-width: 800px;
+                
+                @media screen and (max-width: 947px) {
+                  max-width: none;
+                }
               `}
             >
               
               
-              <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
-              
-              
+              {/* フォーラム */}
               <Element
-                css={css`
-                  margin 12px 0 0 0;
-                `}
                 name="forumThreads"
               >
-                
                 <ForumThread userCommunities_id={this.props.userCommunities_id} />
-                
               </Element>
-              
-              
-              {/* プレイヤーカード */}
-              {componentCardsArr}
               
               
             </div>
@@ -468,7 +455,7 @@ export default class extends React.Component {
           
           
           {/* プレイヤーカードを表示するダイアログ */}
-          {/*<CardPlayerDialog />*/}
+          <CardPlayerDialog />
           
           
           
@@ -477,6 +464,7 @@ export default class extends React.Component {
           <Drawer>
             Drawer
           </Drawer>
+          
           
           
           

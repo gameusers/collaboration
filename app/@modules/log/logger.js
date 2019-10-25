@@ -11,6 +11,7 @@ const winston = require('winston');
 // --------------------------------------------------
 
 const logger = winston.createLogger({
+  
   level: 'info',
   transports: [
     //
@@ -28,6 +29,7 @@ const logger = winston.createLogger({
       maxsize: 1048576,
     })
   ]
+  
 });
 
 
@@ -35,12 +37,15 @@ const logger = winston.createLogger({
 // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `
 // 
 if (process.env.NODE_ENV !== 'production') {
+  
   logger.add(new winston.transports.Console({
     format: winston.format.combine(
       winston.format.colorize({ all: true }),
-      winston.format.simple()
+      winston.format.simple(),
     )
   }));
+  
 }
+
 
 module.exports = logger;

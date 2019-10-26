@@ -102,11 +102,7 @@ export default async (req, res) => {
       
       gameCommunities_id,
       userCommunities_id,
-      // forumComments_id,
-      // forumThreads_idArr,
       forumComments_idArr,
-      // threadPage,
-      // threadLimit,
       commentPage, 
       commentLimit,
       replyPage,
@@ -117,11 +113,7 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    // lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
-    // lodashSet(requestParametersObj, ['forumThreads_idArr'], forumThreads_idArr);
     lodashSet(requestParametersObj, ['forumComments_idArr'], forumComments_idArr);
-    // lodashSet(requestParametersObj, ['threadPage'], threadPage);
-    // lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
     lodashSet(requestParametersObj, ['commentPage'], commentPage);
     lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
     lodashSet(requestParametersObj, ['replyPage'], replyPage);
@@ -153,10 +145,6 @@ export default async (req, res) => {
       
     }
     
-    // Thread Page & Limit
-    // await validationInteger({ throwError: true, required: true, value: threadPage });
-    // await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
-    
     // Comment Page & Limit
     await validationInteger({ throwError: true, required: true, value: commentPage });
     await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -187,37 +175,17 @@ export default async (req, res) => {
     });
     
     
-    
-    
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / User Communities
     // --------------------------------------------------
     
-    // if (forumThreads_idArr.length > 0) {
-      
-    //   const forumObj = await ModelForumThreads.findForForum({
-        
-    //     req,
-    //     localeObj,
-    //     loginUsers_id,
-    //     userCommunities_id,
-    //     forumThreads_idArr,
-    //     threadPage,
-    //     threadLimit,
-    //     commentPage,
-    //     commentLimit,
-    //     replyPage: 1,
-    //     replyLimit,
-        
-    //   });
-      
-    //   returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    //   returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    //   returnObj.forumRepliesObj = lodashMerge(forumObj.forumRepliesObj, returnObj.forumRepliesObj);
-      
-    //   // returnObj.forumThreadsObj.dataObj['_XDDSTWV_'].name = 'AAA';
-      
-    // }
+    const userCommunityArr = await ModelUserCommunities.find({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     
@@ -233,19 +201,10 @@ export default async (req, res) => {
       
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumComments_id: {green ${forumComments_id}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
     //   commentPage: {green ${commentPage} / ${typeof commentPage}}
     //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
     //   replyPage: {green ${replyPage} / ${typeof replyPage}}
     //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    // `);
-    
-    // console.log(`
-    //   ----- forumThreads_idArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
     // `);
     
     // console.log(`
@@ -254,51 +213,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    
-    // console.log(`
-    //   ----- forumObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumObj.forumRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumObj.forumRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj.forumRepliesObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj.forumRepliesObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities
-    // --------------------------------------------------
-    
-    const userCommunityArr = await ModelUserCommunities.find({
-      conditionObj: {
-        _id: userCommunities_id
-      }
-    });
-    
-    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

@@ -856,8 +856,8 @@ const findRepliesByForumComments_idArr = async ({
   localeObj,
   loginUsers_id,
   userCommunities_id,
-  forumComments_id,
-  forumComments_idArr,
+  // forumComments_id,
+  forumComments_idArr = [],
   commentPage = 1,
   commentLimit = process.env.FORUM_COMMENT_LIMIT,
   replyPage = 1,
@@ -865,16 +865,6 @@ const findRepliesByForumComments_idArr = async ({
   
 }) => {
   
-  // console.log(chalk`
-  //   ----- model / findRepliesByForumComments_idArr -----
-    
-  //   userCommunities_id: {green ${userCommunities_id}}
-  //   forumComments_id: {green ${forumComments_id}}
-  //   commentPage: {green ${commentPage}}
-  //   commentLimit: {green ${commentLimit}}
-  //   replyPage: {green ${replyPage}}
-  //   replyLimit: {green ${replyLimit}}
-  // `);
   
   try {
     
@@ -883,8 +873,11 @@ const findRepliesByForumComments_idArr = async ({
     //   parse
     // --------------------------------------------------
     
-    const intCommentLimit = parseInt(commentLimit, 10);
+    const intCommentLimit = forumComments_idArr.length;
     const intReplyLimit = parseInt(replyLimit, 10);
+    
+    // const intCommentLimit = parseInt(commentLimit, 10);
+    // const intReplyLimit = parseInt(replyLimit, 10);
     
     
     
@@ -1294,7 +1287,7 @@ const findRepliesByForumComments_idArr = async ({
               
               { '$sort': { 'createdDate': 1 } },
               { $skip: (replyPage - 1) * intReplyLimit },
-              { $limit: parseInt(intReplyLimit, 10) },
+              { $limit: intReplyLimit },
               
               
             ],
@@ -1314,16 +1307,12 @@ const findRepliesByForumComments_idArr = async ({
       
       { '$sort': { 'updatedDate': -1 } },
       { $skip: (commentPage - 1) * intCommentLimit },
-      { $limit: parseInt(intCommentLimit, 10) },
+      { $limit: intCommentLimit },
       
       
     ]).exec();
     
-    console.log(`
-      ----- docArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    
     
     
     // --------------------------------------------------
@@ -1349,17 +1338,33 @@ const findRepliesByForumComments_idArr = async ({
     //   console.log
     // --------------------------------------------------
     
+    // console.log(chalk`
+    //   ----- model / findRepliesByForumComments_idArr -----
+      
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   commentPage: {green ${commentPage}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyPage: {green ${replyPage}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- forumComments_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(`
     //   ----- docArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(docArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- formattedObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- formattedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
@@ -30,19 +31,7 @@ import { css, jsx } from '@emotion/core';
 //   react-spring
 // --------------------------------------------------
 
-const Container = ({ children, initial, headerNavForceScrollUpBegin2 }) => {
-  
-  let initialPosition = initial;
-  
-  if (!headerNavForceScrollUpBegin2) {
-    initialPosition = true;
-  }
-  
-  console.log(chalk`
-    initial: {green ${initial}}
-    headerNavForceScrollUpBegin2: {green ${headerNavForceScrollUpBegin2}}
-  `);
-    
+const Container = ({ children, initialPosition }) => {
   
   const props = useSpring({
     transform: initialPosition ? 'translateY(0px)' : 'translateY(52px)',
@@ -94,7 +83,7 @@ export default class extends React.Component {
     // ---------------------------------------------
     
     this.state = {
-      initial: true,
+      initialPosition: true,
     };
     
     
@@ -146,7 +135,7 @@ export default class extends React.Component {
     
     let scrollUp = false;
     let showNavTop = true;
-    let initial = true;
+    let initialPosition = true;
     
     
     // ---------------------------------------------
@@ -189,7 +178,7 @@ export default class extends React.Component {
       if (this.navTopHeight + this.heroImageHeight < scrollY) {
         
         if (scrollUp && showNavTop) {
-          initial = false;
+          initialPosition = false;
         }
         
       }
@@ -204,47 +193,41 @@ export default class extends React.Component {
     
     
     // ---------------------------------------------
-    //   scrollToで移動する場合、上げる
+    //   scrollToで移動する場合、初期位置にする
     // ---------------------------------------------
     
     // console.log('Sidebar Scroll');
     
-    // const headerNavForceScrollUpBegin = lodashGet(this.props, ['stores', 'layout', 'headerNavForceScrollUpBegin'], false);
-    // const headerNavForceScrollUpEnd = lodashGet(this.props, ['stores', 'layout', 'headerNavForceScrollUpEnd'], false);
+    const headerScrollToBeginForSidebar = lodashGet(this.props, ['stores', 'layout', 'headerScrollToBeginForSidebar'], false);
     
-    // console.log(chalk`
-    //   headerNavForceScrollUpBegin: {green ${headerNavForceScrollUpBegin}}
-    //   headerNavForceScrollUpEnd: {green ${headerNavForceScrollUpEnd}}
-    // `);
-    
-    
-    
-    // if (headerNavForceScrollUpBegin) {
+    if (headerScrollToBeginForSidebar) {
       
-    //   console.log('Sidebar Begin');
+      // console.log('Sidebar Begin');
       
-    //   initial = false;
+      const headerScrollToEndForSidebar = lodashGet(this.props, ['stores', 'layout', 'headerScrollToEndForSidebar'], false);
       
-      
-      
-    //   if (headerNavForceScrollUpEnd) {
+      if (headerScrollToEndForSidebar) {
         
-    //     console.log('Sidebar End');
+        // console.log('Sidebar End');
         
+        lodashSet(this.props, ['stores', 'layout', 'headerScrollToBeginForSidebar'], false);
+        lodashSet(this.props, ['stores', 'layout', 'headerScrollToEndForSidebar'], false);
         
-    //   }
+      }
       
-    // }
+      initialPosition = true;
+      
+    }
     
     
     
     
     // ---------------------------------------------
-    //   サイドバーがない場合は下げる
+    //   サイドバーがない場合は初期位置にする
     // ---------------------------------------------
     
     if (window.innerWidth <= 947) {
-      initial = true;
+      initialPosition = true;
     }
     
     
@@ -256,7 +239,7 @@ export default class extends React.Component {
     //   scrollY: {green ${scrollY}}
     //   scrollUp: {green ${scrollUp}}
     //   showNavTop: {green ${showNavTop}}
-    //   initial: {green ${initial}}
+    //   initialPosition: {green ${initialPosition}}
     // `);
     
     
@@ -264,10 +247,10 @@ export default class extends React.Component {
     //   setState
     // ---------------------------------------------
     
-    if (this.state.initial !== initial) {
+    if (this.state.initialPosition !== initialPosition) {
       
       this.setState({
-        initial,
+        initialPosition,
       });
       
     }
@@ -289,19 +272,17 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores } = this.props;
+    // const { stores } = this.props;
     
-    const headerNavForceScrollUpBegin2 = stores.layout.headerNavForceScrollUpBegin2;
+    // const headerNavForceScrollUpBegin2 = stores.layout.headerNavForceScrollUpBegin2;
     
     
-    
-    // initial={this.state.initial}
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <Container initial={this.state.initial} headerNavForceScrollUpBegin2={headerNavForceScrollUpBegin2}>
+      <Container initialPosition={this.state.initialPosition}>
         
         
         {/*<img

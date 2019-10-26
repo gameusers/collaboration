@@ -671,10 +671,17 @@ class Store {
   
   
   /**
-   * scrollToを終了
+   * scrollToを開始 / サイドバー用
    * @type {boolean}
    */
-  @observable headerNavForceScrollUpBegin2 = false;
+  headerScrollToBeginForSidebar = false;
+  
+  
+  /**
+   * scrollToを終了 / サイドバー用
+   * @type {boolean}
+   */
+  headerScrollToEndForSidebar = false;
   
   
   
@@ -692,7 +699,7 @@ class Store {
     }
     
     this.headerNavForceScrollUpBegin = true;
-    this.headerNavForceScrollUpBegin2 = true;
+    this.headerScrollToBeginForSidebar = true;
     
     scroller.scrollTo(to, {
       duration,
@@ -702,9 +709,9 @@ class Store {
     });
     
     Events.scrollEvent.register('end', (to, element) => {
-      console.log('Events.scrollEvent.register(end)');
+      // console.log('Events.scrollEvent.register(end)');
       this.headerNavForceScrollUpEnd = true;
-      this.headerNavForceScrollUpBegin2 = false;
+      this.headerScrollToEndForSidebar = true;
     });
     
   };

@@ -218,10 +218,7 @@ export default class extends React.Component {
       // --------------------------------------------------
       //   Update Data - Pathname
       // --------------------------------------------------
-      // console.log(chalk`
-      //   /pages/uc/[userCommunityID]/forum/[forumID].js
-      //   stores.layout.pathname: {green ${stores.layout.pathname}}
-      // `);
+      
       stores.layout.replacePathname(props.pathname);
       
       
@@ -429,6 +426,7 @@ export default class extends React.Component {
             {/* Main */}
             <div
               css={css`
+                width: 100%;
                 max-width: 800px;
                 
                 @media screen and (max-width: 947px) {

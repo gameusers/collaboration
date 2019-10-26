@@ -153,13 +153,6 @@ class Store {
         
         
         // ---------------------------------------------
-        //   表示件数変更
-        // ---------------------------------------------
-        
-        clonedObj.forumThreadsForListObj.limit = limit;
-        
-        
-        // ---------------------------------------------
         //   再読込
         // ---------------------------------------------
         
@@ -431,6 +424,8 @@ class Store {
         limit = changeLimit;
       }
       
+      const reloadThreads = lodashGet(forumObj, ['reloadThreads'], false);
+      // const reloadComments = lodashGet(forumObj, ['reloadComments'], false);
       
       
       
@@ -486,14 +481,15 @@ class Store {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (changeLimit) {
+      if (changeLimit || reloadThreads) {
         
         
         // ---------------------------------------------
-        //   表示件数変更
+        //   スレッド＆コメント　次回の読み込み時に強制リロード
         // ---------------------------------------------
         
-        lodashSet(clonedObj, ['forumThreadsObj', 'limit'], parseInt(changeLimit, 10));
+        lodashSet(clonedObj, ['reloadThreads'], false);
+        lodashSet(clonedObj, ['reloadComments'], false);
         
         
         // ---------------------------------------------
@@ -1586,6 +1582,8 @@ class Store {
         limit = changeLimit;
       }
       
+      const reloadComments = lodashGet(forumObj, ['reloadComments'], false);
+      
       
       
       
@@ -1600,14 +1598,15 @@ class Store {
       //   1ページに表示する件数を変更した場合、再読込
       // ---------------------------------------------
       
-      if (changeLimit) {
+      if (changeLimit || reloadComments) {
         
         
         // ---------------------------------------------
-        //   表示件数変更
+        //   スレッド＆コメント　次回の読み込み時に強制リロード
         // ---------------------------------------------
         
-        lodashSet(clonedObj, ['forumObj', 'commentLimit'], parseInt(changeLimit, 10));
+        lodashSet(clonedObj, ['reloadThreads'], true);
+        lodashSet(clonedObj, ['reloadComments'], false);
         
         
         // ---------------------------------------------
@@ -1630,6 +1629,11 @@ class Store {
         const datetimeForumUpdated = moment(forumUpdatedDate).utcOffset(0);
         const datetimeNow = moment().utcOffset(0);
         const datetimeReloadLimit = moment(loadedDate).add(process.env.FORUM_RELOAD_MINUTES, 'm').utcOffset(0);
+        
+        // console.log(chalk`
+        //   datetimeForumUpdated: {green ${datetimeForumUpdated}}
+        //   datetimeNow: {green ${datetimeNow}}
+        // `);
         
         if (
           datetimeForumUpdated.isAfter(datetimeLoaded) ||
@@ -1685,9 +1689,9 @@ class Store {
       //   --------------------\n
       // `);
       
-      // console.log(chalk`
-      //   reload: {green ${reload}}
-      // `);
+      console.log(chalk`
+        reload: {green ${reload}}
+      `);
       
       
       
@@ -2843,10 +2847,11 @@ class Store {
         
         
         // ---------------------------------------------
-        //   表示件数変更
+        //   スレッド＆コメント　次回の読み込み時に強制リロード
         // ---------------------------------------------
         
-        lodashSet(clonedObj, ['forumRepliesObj', 'limit'], parseInt(changeLimit, 10));
+        lodashSet(clonedObj, ['reloadThreads'], true);
+        lodashSet(clonedObj, ['reloadComments'], true);
         
         
         // ---------------------------------------------
@@ -2964,38 +2969,6 @@ class Store {
       
       
       // ---------------------------------------------
-      //   forumThreads_idArr
-      // ---------------------------------------------
-      
-      // let forumThreads_idArr = [];
-      
-      // 表示件数を変更する場合は他のスレッドも一緒に更新するため、現在表示されているスレッドのIDを取得する
-      // if (changeLimit) {
-        
-      //   const forumThreadsObj = lodashGet(forumObj, ['forumThreadsObj'], {});
-      //   const forumThreadsPage = lodashGet(forumThreadsObj, ['page'], 1);
-      //   forumThreads_idArr = lodashGet(forumThreadsObj, [`page${forumThreadsPage}Obj`, 'arr'], []);
-        
-      //   // 現在表示しているスレッドのIDを取得して、そのIDだけを除去する
-      //   const forumThreads_id = lodashGet(forumObj, ['forumCommentsObj', 'dataObj', forumComments_id, 'forumThreads_id'], '');
-        
-      //   forumThreads_idArr = forumThreads_idArr.filter(_id => _id !== forumThreads_id);
-        
-      //   // console.log(chalk`
-      //   //   forumThreads_id: {green ${forumThreads_id}}
-      //   // `);
-        
-      // }
-      
-      // console.log(`
-      //   ----- forumThreads_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      // ---------------------------------------------
       //   forumComments_idArr
       // ---------------------------------------------
       
@@ -3013,28 +2986,14 @@ class Store {
         
         for (let forumThreads_id of forumThreads_idArr.values()) {
           
-          // console.log(forumThreads_id);
-          
           const forumCommentsPage = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, 'page'], 1);
           const tempForumComments_idArr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${forumCommentsPage}Obj`, 'arr'], []);
-          
-          // console.log(`
-          //   ----- tempForumComments_idArr -----\n
-          //   ${util.inspect(JSON.parse(JSON.stringify(tempForumComments_idArr)), { colors: true, depth: null })}\n
-          //   --------------------\n
-          // `);
           
           forumComments_idArr = forumComments_idArr.concat(tempForumComments_idArr);
           
         }
         
       }
-      
-      // console.log(`
-      //   ----- forumComments_idArr -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumComments_idArr)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       
@@ -3047,10 +3006,7 @@ class Store {
         
         gameCommunities_id,
         userCommunities_id,
-        // forumThreads_idArr,
         forumComments_idArr,
-        // threadPage: 1,
-        // threadLimit,
         commentPage: 1,
         commentLimit,
         replyPage: page,
@@ -3103,50 +3059,12 @@ class Store {
       
       
       // ---------------------------------------------
-      //   forumThreadsObj
-      // ---------------------------------------------
-      
-      // const forumThreadsOldObj = lodashGet(forumObj, ['forumThreadsObj'], {});
-      // const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
-      
-      // const forumThreadsMergedObj = lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
-      
-      // lodashSet(clonedObj, ['forumThreadsObj'], forumThreadsMergedObj);
-      
-      
-      // console.log(`
-      //   ----- forumThreadsOldObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- forumThreadsNewObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   forumCommentObj
-      // ---------------------------------------------
-      
-      // const forumCommentsOldObj = lodashGet(forumObj, ['forumCommentsObj'], {});
-      // const forumCommentsNewObj = lodashGet(resultObj, ['data', 'forumCommentsObj'], {});
-      
-      // const forumCommentsMergedObj = lodashMerge(forumCommentsOldObj, forumCommentsNewObj);
-      
-      // lodashSet(clonedObj, ['forumCommentsObj'], forumCommentsMergedObj);
-      
-      
-      // ---------------------------------------------
       //   forumRepliesObj
       // ---------------------------------------------
       
       const forumRepliesOldObj = lodashGet(forumObj, ['forumRepliesObj'], {});
       const forumRepliesNewObj = lodashGet(resultObj, ['data', 'forumRepliesObj'], {});
       
-      // const forumRepliesMergedObj = lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
       const forumRepliesMergedObj = reload ? forumRepliesNewObj : lodashMerge(forumRepliesOldObj, forumRepliesNewObj);
       
       lodashSet(clonedObj, ['forumRepliesObj'], forumRepliesMergedObj);

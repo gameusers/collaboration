@@ -204,10 +204,7 @@ export default class extends React.Component {
       // --------------------------------------------------
       //   Update Data - Pathname
       // --------------------------------------------------
-      // console.log(chalk`
-      //   /pages/uc/[userCommunityID]/index.js
-      //   stores.layout.pathname: {green ${stores.layout.pathname}}
-      // `);
+      
       stores.layout.replacePathname(props.pathname);
       
       
@@ -245,29 +242,6 @@ export default class extends React.Component {
       //   Update Data - forumThreadsForListObj
       // --------------------------------------------------
       
-      // const forumThreadsForListObj = lodashGet(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj'], null);
-      
-      // console.log(`
-      //   ----- lodashHas(this.storeForum, [props.userCommunities_id, 'forumThreadsForListObj']) -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(lodashHas(this.storeForum, [props.userCommunities_id, 'forumThreadsForListObj']))), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- forumThreadsForListObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsForListObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // if (lodashHas(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj']) === false) {
-        
-      //   this.storeForum.handleEdit({
-      //     pathArr: ['forumThreadListLimit'],
-      //     value: props.initialPropsObj.forumThreadsForListObj.limit,
-      //   });
-        
-      // }
-      
       if (lodashHas(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj']) === false) {
         
         this.storeForum.handleEdit({
@@ -275,18 +249,7 @@ export default class extends React.Component {
           value: props.initialPropsObj.forumThreadsForListObj,
         });
         
-        
-        // console.log(`
-        //   ----- props.initialPropsObj.forumThreadsForListObj.obj -----\n
-        //   ${util.inspect(JSON.parse(JSON.stringify(props.initialPropsObj.forumThreadsForListObj.obj)), { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        // console.log('new');
-        
       }
-      
-      
-      
       
       
       // --------------------------------------------------
@@ -449,6 +412,7 @@ export default class extends React.Component {
             {/* Main */}
             <div
               css={css`
+                width: 100%;
                 max-width: 800px;
                 
                 @media screen and (max-width: 947px) {

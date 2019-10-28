@@ -1796,6 +1796,161 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
 
 
 
+/**
+ * コメントと返信を取得する - forumThreads_idsArr で検索
+ * @param {Object} req - リクエスト
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {Array} forumThreads_idArr - DB forum-threads _id / _idが入っている配列
+ * @param {Object} forumThreadsObj - スレッド情報の入ったオブジェクト / カウントの取得に使う
+ * @param {number} commentPage - コメントのページ
+ * @param {number} commentLimit - コメントのリミット
+ * @param {number} replyPage - 返信のページ
+ * @param {number} replyLimit - 返信のリミット
+ * @return {Array} 取得データ
+ */
+const getPage = async ({
+  
+  req,
+  localeObj,
+  loginUsers_id,
+  forumThreads_id,
+  forumComments_id,
+  forumReplies_id,
+  commentLimit,
+  replyLimit,
+  
+}) => {
+  
+  // console.log(chalk`
+  //   ----- findForForumCommentsAndReplies -----
+  //   commentPage: {green ${commentPage}}
+  //   commentLimit: {green ${commentLimit}}
+  //   replyPage: {green ${replyPage}}
+  //   replyLimit: {green ${replyLimit}}
+  // `);
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Forum Comments & Replies データ取得
+    //   $in, sort, limit を使って最新のコメントを取得すると、古いコメントが limit で削られてしまうため
+    //   あるスレッドでは古いコメントが表示されないという事態になってしまう
+    //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
+    // --------------------------------------------------
+    
+    const commentsArr = await SchemaForumComments.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   コメント
+      // --------------------------------------------------
+      
+      // forumComments_id: '' この場合は親のコメントがないので、返信ではなくコメントということ
+      {
+        $match: {
+          $and: [
+            { forumThreads_id },
+            { forumComments_id: '' },
+          ]
+        },
+      },
+      
+      
+      { $project:
+        {
+          _id: 1,
+        }
+      },
+      
+      
+      { '$sort': { 'updatedDate': -1 } },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Format
+    // --------------------------------------------------
+    
+    const commentIndex = commentsArr.findIndex((valueObj) => {
+      return valueObj._id === forumComments_id;
+    });
+    
+    const commentPage = Math.ceil(commentIndex / commentLimit);
+    
+    
+    // console.log(chalk`
+    //   Math.ceil(10 / 1): {green ${Math.ceil(10 / 1)}}
+    //   Math.ceil(10 / 2): {green ${Math.ceil(10 / 2)}}
+    //   Math.ceil(10 / 3): {green ${Math.ceil(10 / 3)}}
+    //   Math.ceil(10 / 4): {green ${Math.ceil(10 / 4)}}
+    //   Math.ceil(10 / 5): {green ${Math.ceil(10 / 5)}}
+    //   Math.ceil(10 / 6): {green ${Math.ceil(10 / 6)}}
+    //   Math.ceil(10 / 7): {green ${Math.ceil(10 / 7)}}
+    //   Math.ceil(10 / 8): {green ${Math.ceil(10 / 8)}}
+    //   Math.ceil(10 / 9): {green ${Math.ceil(10 / 9)}}
+    //   Math.ceil(10 / 10): {green ${Math.ceil(10 / 10)}}
+    //   Math.ceil(10 / 11): {green ${Math.ceil(10 / 11)}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    console.log(chalk`
+      forumThreads_id: {green ${forumThreads_id}}
+      forumComments_id: {green ${forumComments_id}}
+      forumReplies_id: {green ${forumReplies_id}}
+      commentLimit: {green ${commentLimit}}
+      replyLimit: {green ${replyLimit}}
+    `);
+    
+    console.log(chalk`
+      commentIndex: {green ${commentIndex}}
+      commentPage: {green ${commentPage}}
+    `);
+    
+    console.log(`
+      ----- commentsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(commentsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- formattedObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    // return formattedObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+
+
 
 
 /**
@@ -2971,6 +3126,7 @@ module.exports = {
   
   findCommentsAndRepliesByForumThreads_idsArr,
   findRepliesByForumComments_idArr,
+  getPage,
   findForEdit,
   findForDeleteComment,
   findForDeleteReply,

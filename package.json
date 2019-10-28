@@ -84,7 +84,7 @@
     "simple-icons-react-component": "^1.0.0",
     "smooth-scrollbar": "^8.5.0",
     "styled-components": "^4.4.0",
-    "validator": "^11.1.0",
+    "validator": "^12.0.0",
     "velocity-react": "^1.4.3",
     "winston": "^3.2.1",
     "zxcvbn": "^4.4.2"

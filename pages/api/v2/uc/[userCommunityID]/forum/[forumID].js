@@ -90,10 +90,10 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['forumID'], forumID);
     
-    console.log(chalk`
-      userCommunityID: {green ${userCommunityID}}
-      forumID: {green ${forumID}}
-    `);
+    // console.log(chalk`
+    //   userCommunityID: {green ${userCommunityID}}
+    //   forumID: {green ${forumID}}
+    // `);
     
     
     // --------------------------------------------------
@@ -136,6 +136,7 @@ export default async (req, res) => {
       req,
       localeObj,
       loginUsers_id,
+      _id: forumID,
       userCommunities_id,
     });
     

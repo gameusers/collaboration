@@ -104,11 +104,11 @@ export default class extends React.Component {
     //   limit: {green ${limit}}
     // `);
     
-    console.log(`
-      ----- dataObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

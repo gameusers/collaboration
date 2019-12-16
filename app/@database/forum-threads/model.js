@@ -786,8 +786,10 @@ const findForForumBy_forumID = async ({
     const intReplyLimit = parseInt(replyLimit, 10);
     
     
+    
+    
     // --------------------------------------------------
-    //   DB find / Forum Comments & Replies
+    //   DB find / スレッド、コメント、または返信のIDを取得する
     // --------------------------------------------------
     
     const forumCommentsAndRepliesObj = await ModelForumComments.findOne({
@@ -805,18 +807,16 @@ const findForForumBy_forumID = async ({
     let forumComments_id = '';
     let forumReplies_id = '';
     
-    // console.log(lodashHas(forumCommentsAndRepliesObj, '_id'));
-    // console.log(forumCommentsAndRepliesObj._id);
-    
     if (forumCommentsAndRepliesObj) {
       
       if (forumCommentsAndRepliesObj.forumComments_id === '') {
         
         forumComments_id = forumCommentsAndRepliesObj._id;
+        forumReplies_id = '';
         
       } else {
         
-        // forumComments_id = forumCommentsAndRepliesObj.forumComments_id;
+        forumComments_id = forumCommentsAndRepliesObj.forumComments_id;
         forumReplies_id = forumCommentsAndRepliesObj._id;
         
       }
@@ -838,6 +838,11 @@ const findForForumBy_forumID = async ({
     // `);
     
     
+    
+    // ------------------------------------------------------------
+    //   スレッドのデータを取得する、ここはすべてに共通
+    // ------------------------------------------------------------
+    
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
@@ -848,30 +853,9 @@ const findForForumBy_forumID = async ({
       },
     ];
     
-    // if (forumThreads_idArr.length > 0) {
-      
-    //   matchConditionArr = [
-    //     {
-    //       $match: {
-    //         $and: [
-    //           { _id: { $in: forumThreads_idArr } },
-    //           { userCommunities_id },
-    //         ]
-    //       },
-    //     }
-    //   ];
-      
-    // }
-    
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     // --------------------------------------------------
-    //   Aggregation
+    //   Aggregation / スレッドデータ取得
     // --------------------------------------------------
     
     const resultArr = await SchemaForumThreads.aggregate([
@@ -941,12 +925,12 @@ const findForForumBy_forumID = async ({
       }
     });
     
+    const threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+    
     
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
-    const threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
     
     const formattedThreadsObj = formatVer2({
       req,
@@ -963,45 +947,138 @@ const findForForumBy_forumID = async ({
     
     
     
+    
+    
+    
+    // ------------------------------------------------------------
+    //   コメント＆返信を取得する
+    // ------------------------------------------------------------
+    
+    let forumCommentsObj = {};
+    let forumRepliesObj = {};
+    
+    
     // --------------------------------------------------
-    //   DB find / Forum Comments & Replies
+    //   ForumIDがスレッドの場合
     // --------------------------------------------------
     
-    const commentsIndex = await ModelForumComments.getPage({
-      req,
-      localeObj,
-      loginUsers_id,
-      forumThreads_id,
-      forumComments_id,
-      forumReplies_id,
-      commentLimit,
-      replyLimit,
-    });
+    if (forumComments_id === '' && forumReplies_id === '') {
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_idsArr: forumThreads_idsForCommentArr,
+        forumThreadsObj,
+        commentPage,
+        commentLimit: intCommentLimit,
+        replyPage,
+        replyLimit: intReplyLimit,
+      });
+      
+      forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+      forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+      
+      
+      
+    // --------------------------------------------------
+    //   ForumIDがコメントの場合
+    // --------------------------------------------------
     
-    // console.log(chalk`
-    //   commentsIndex: {green ${commentsIndex}}
-    // `);
+    } else if (forumComments_id && forumReplies_id === '') {
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const pageObj = await ModelForumComments.getPage({
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_id,
+        forumComments_id,
+        forumReplies_id,
+        commentLimit,
+        replyLimit,
+      });
+      
+      const newCommentPage = lodashGet(pageObj, ['commentPage'], 1);
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_idsArr: forumThreads_idsForCommentArr,
+        forumThreadsObj,
+        commentPage: newCommentPage,
+        commentLimit: intCommentLimit,
+        replyPage,
+        replyLimit: intReplyLimit,
+      });
+      
+      forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+      forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+      
+      
+    // --------------------------------------------------
+    //   ForumIDが返信の場合
+    // --------------------------------------------------
     
+    } else if (forumComments_id && forumReplies_id) {
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const pageObj = await ModelForumComments.getPage({
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_id,
+        forumComments_id,
+        forumReplies_id,
+        commentLimit,
+        replyLimit,
+      });
+      
+      const newCommentPage = lodashGet(pageObj, ['commentPage'], 1);
+      const newReplyPage = lodashGet(pageObj, ['replyPage'], 1);
+      
+      
+      // --------------------------------------------------
+      //   DB find / Forum Comments & Replies
+      // --------------------------------------------------
+      
+      const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
+        req,
+        localeObj,
+        loginUsers_id,
+        forumThreads_idsArr: forumThreads_idsForCommentArr,
+        forumThreadsObj,
+        commentPage: newCommentPage,
+        commentLimit: intCommentLimit,
+        replyPage: newReplyPage,
+        replyLimit: intReplyLimit,
+      });
+      
+      forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
+      forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
+      
+      
+    }
     
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum Comments & Replies
-    // // --------------------------------------------------
-    
-    // const forumCommentsAndRepliesObj = await ModelForumComments.findCommentsAndRepliesByForumThreads_idsArr({
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   forumThreads_idsArr: forumThreads_idsForCommentArr,
-    //   forumThreadsObj,
-    //   commentPage,
-    //   commentLimit: intCommentLimit,
-    //   replyPage,
-    //   replyLimit: intReplyLimit,
-    // });
-    
-    // const forumCommentsObj = lodashGet(forumCommentsAndRepliesObj, ['forumCommentsObj'], {});
-    // const forumRepliesObj = lodashGet(forumCommentsAndRepliesObj, ['forumRepliesObj'], {});
     
     
     
@@ -1066,13 +1143,13 @@ const findForForumBy_forumID = async ({
     //   Return
     // --------------------------------------------------
     
-    return {};
+    // return {};
     
-    // return {
-    //   forumThreadsObj,
-    //   forumCommentsObj,
-    //   forumRepliesObj,
-    // };
+    return {
+      forumThreadsObj,
+      forumCommentsObj,
+      forumRepliesObj,
+    };
     
     
   } catch (err) {

@@ -1833,14 +1833,15 @@ const getPage = async ({
   try {
     
     
+    // ------------------------------------------------------------
+    //   コメントのページ番号を取得する
+    // ------------------------------------------------------------
+    
     // --------------------------------------------------
-    //   Forum Comments & Replies データ取得
-    //   $in, sort, limit を使って最新のコメントを取得すると、古いコメントが limit で削られてしまうため
-    //   あるスレッドでは古いコメントが表示されないという事態になってしまう
-    //   そのため for のループで検索している　ただ良くない書き方だと思うので可能なら改善した方がいい
+    //   _idをすべて取得する
     // --------------------------------------------------
     
-    const commentsArr = await SchemaForumComments.aggregate([
+    const comment_idsArr = await SchemaForumComments.aggregate([
       
       
       // --------------------------------------------------
@@ -1858,6 +1859,9 @@ const getPage = async ({
       },
       
       
+      { '$sort': { 'updatedDate': -1 } },
+      
+      
       { $project:
         {
           _id: 1,
@@ -1865,23 +1869,101 @@ const getPage = async ({
       },
       
       
-      { '$sort': { 'updatedDate': -1 } },
-      
-      
     ]).exec();
-    
-    
     
     
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
     
-    const commentIndex = commentsArr.findIndex((valueObj) => {
+    const commentIndex = comment_idsArr.findIndex((valueObj) => {
       return valueObj._id === forumComments_id;
     });
     
-    const commentPage = Math.ceil(commentIndex / commentLimit);
+    let commentPage = Math.ceil(commentIndex / commentLimit) + 1;
+    
+    if (commentPage === 0) {
+      commentPage = 1;
+    }
+    
+    
+    
+    // ------------------------------------------------------------
+    //   返信のページ番号を取得する
+    // ------------------------------------------------------------
+    
+    let replyPage = 1;
+    
+    if (forumReplies_id) {
+      
+      
+      // --------------------------------------------------
+      //   _idをすべて取得する
+      // --------------------------------------------------
+      
+      const reply_idsArr = await SchemaForumComments.aggregate([
+        
+        
+        // --------------------------------------------------
+        //   コメント
+        // --------------------------------------------------
+        
+        {
+          $match: {
+            $and: [
+              { forumThreads_id },
+              { forumComments_id },
+            ]
+          },
+        },
+        
+        
+        { '$sort': { 'createdDate': 1 } },
+        
+        
+        { $project:
+          {
+            _id: 1,
+          }
+        },
+        
+        
+      ]).exec();
+      
+      
+      // --------------------------------------------------
+      //   Format
+      // --------------------------------------------------
+      
+      const replyIndex = reply_idsArr.findIndex((valueObj) => {
+        return valueObj._id === forumReplies_id;
+      });
+      
+      replyPage = Math.ceil(replyIndex / replyLimit) + 1;
+      
+      if (replyPage === 0) {
+        replyPage = 1;
+      }
+      
+      console.log(chalk`
+        replyIndex: {green ${replyIndex}}
+        replyPage: {green ${replyPage}}
+      `);
+      
+      console.log(`
+        ----- reply_idsArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(reply_idsArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+    }
+    
+    
+    
+    
+    
+    
     
     
     // console.log(chalk`
@@ -1902,6 +1984,7 @@ const getPage = async ({
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
     console.log(chalk`
       forumThreads_id: {green ${forumThreads_id}}
       forumComments_id: {green ${forumComments_id}}
@@ -1916,8 +1999,8 @@ const getPage = async ({
     `);
     
     console.log(`
-      ----- commentsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(commentsArr)), { colors: true, depth: null })}\n
+      ----- comment_idsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(comment_idsArr)), { colors: true, depth: null })}\n
       --------------------\n
     `);
     
@@ -1934,7 +2017,10 @@ const getPage = async ({
     //   Return
     // --------------------------------------------------
     
-    // return formattedObj;
+    return {
+      commentPage,
+      replyPage,
+    };
     
     
   } catch (err) {

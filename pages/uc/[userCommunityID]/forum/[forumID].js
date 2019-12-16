@@ -64,7 +64,7 @@ import CardPlayerDialog from '../../../../app/common/card/player/components/dial
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/uc/***
+//   URL: http://dev-1.gameusers.org:8080/uc/***/forum/***
 // --------------------------------------------------
 
 @observer

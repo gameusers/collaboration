@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -162,6 +163,7 @@ export default injectIntl(class extends React.Component {
       stores,
       storeForum,
       intl,
+      userCommunityID,
       gameCommunities_id,
       userCommunities_id,
       forumThreads_id,
@@ -201,8 +203,6 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, 'count'], 0);
     const limit = lodashGet(dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     const arr = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr'], []);
-    
-    
     
     
     // --------------------------------------------------
@@ -322,6 +322,21 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const goods = lodashGet(repliesDataObj, ['goods'], 0);
+      
+      
+      // --------------------------------------------------
+      //   Link
+      // --------------------------------------------------
+      
+      let linkHref = '';
+      let linkAs = '';
+      
+      if (userCommunityID) {
+        
+        linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumReplies_id}`;
+        linkAs = `/uc/${userCommunityID}/forum/${forumReplies_id}`;
+        
+      }
       
       
       // --------------------------------------------------
@@ -597,7 +612,9 @@ export default injectIntl(class extends React.Component {
                         margin: 4px 0 0 0;
                       `}
                     >
-                      {forumReplies_id}
+                      <Link href={linkHref} as={linkAs}>
+                        <a>{forumReplies_id}</a>
+                      </Link>
                     </div>
                   </div>
                   

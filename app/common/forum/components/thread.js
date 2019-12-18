@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import { Element } from 'react-scroll';
@@ -54,6 +55,7 @@ import IconExpandMore from '@material-ui/icons/ExpandMore';
 import IconAssignment from '@material-ui/icons/Assignment';
 import IconPublic from '@material-ui/icons/Public';
 import IconEdit from '@material-ui/icons/Edit';
+import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
@@ -153,7 +155,18 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id } = this.props;
+    const {
+      
+      classes,
+      stores,
+      storeForum,
+      intl,
+      userCommunityID,
+      gameCommunities_id,
+      userCommunities_id,
+      individual,
+      
+    } = this.props;
     
     
     
@@ -198,6 +211,19 @@ export default injectIntl(class extends React.Component {
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${page}Obj`, 'arr'], []);
     
     
+    // --------------------------------------------------
+    //   Link Return Top
+    // --------------------------------------------------
+    
+    let linkReturnTopHref = '';
+    let linkReturnTopAs = '';
+    
+    if (userCommunityID) {
+      
+      linkReturnTopHref = `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`;
+      linkReturnTopAs = `/uc/${userCommunityID}`;
+      
+    }
     
     
     // --------------------------------------------------
@@ -209,6 +235,8 @@ export default injectIntl(class extends React.Component {
     //   page: {green ${page}}
     //   count: {green ${count}}
     //   limit: {green ${limit}}
+    //   userCommunityID: {green ${userCommunityID}}
+    //   linkUrlBase: {green ${linkUrlBase}}
     // `);
     
     // console.log(`
@@ -246,6 +274,21 @@ export default injectIntl(class extends React.Component {
       // const editable = true;
       
       const comments = lodashGet(threadsDataObj, ['comments'], 0);
+      
+      
+      // --------------------------------------------------
+      //   Link
+      // --------------------------------------------------
+      
+      let linkHref = '';
+      let linkAs = '';
+      
+      if (userCommunityID) {
+        
+        linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
+        linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
+        
+      }
       
       
       // --------------------------------------------------
@@ -482,7 +525,10 @@ export default injectIntl(class extends React.Component {
                           margin: 2px 0 0 0;
                         `}
                       >
-                        {forumThreads_id}
+                        
+                        <Link href={linkHref} as={linkAs}>
+                          <a>{forumThreads_id}</a>
+                        </Link>
                       </div>
                       
                     </div>
@@ -599,6 +645,7 @@ export default injectIntl(class extends React.Component {
                 
                 {/* Comment */}
                 <Comment
+                  userCommunityID={userCommunityID}
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
                   forumThreads_id={forumThreads_id}
@@ -633,87 +680,126 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Pagination */}
-        <Paper
-          css={css`
-            display: flex;
-            flex-flow: row wrap;
-            padding: 0 8px 8px 8px;
-          `}
-        >
+        {individual ? (
           
-          
-          {/* Pagination */}
           <div
             css={css`
-              margin: 8px 24px 0 0;
+              margin: 24px 0 8px 0;
+            `}
+          >
+          
+          <Paper
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              padding: 12px 0 12px 12px;
             `}
           >
             
-            <Pagination
-              disabled={buttonDisabled}
-              onChange={(page) => handleReadThreads({
-                pathArr: this.pathArr,
-                gameCommunities_id,
-                userCommunities_id,
-                page,
-                // limit,
-                // commentPage: 1,
-                // commentLimit,
-                // replyPage: 1,
-                // replyLimit,
-              })}
-              pageSize={limit}
-              current={page}
-              total={count}
-              locale={localeInfo}
-            />
+            <Link href={linkReturnTopHref} as={linkReturnTopAs}>
+              <Button
+                type="submit"
+                variant="outlined"
+                // color="primary"
+                size="small"
+                disabled={buttonDisabled}
+              >
+                <IconDoubleArrow
+                  css={css`
+                    && {
+                      // font-size: 16px;
+                      margin: 0 3px 0 0;
+                      
+                      // @media screen and (max-width: 480px) {
+                      //   display: none;
+                      // }
+                    }
+                  `}
+                />
+                フォーラムトップに戻る
+              </Button>
+            </Link>
+            
+            </Paper>
             
           </div>
           
+        ) : (
           
-          {/* Rows Per Page */}
-          <FormControl
+          <Paper
             css={css`
-              margin: 8px 0 0 0 !important;
+              display: flex;
+              flex-flow: row wrap;
+              padding: 0 8px 8px 8px;
             `}
-            variant="outlined"
           >
             
-            <Select
-              value={limit}
-              onChange={(eventObj) => handleReadThreads({
-                pathArr: this.pathArr,
-                gameCommunities_id: gameCommunities_id,
-                userCommunities_id: userCommunities_id,
-                page: 1,
-                changeLimit: eventObj.target.value,
-                // commentPage: 1,
-                // commentLimit,
-                // replyPage: 1,
-                // replyLimit,
-              })}
-              input={
-                <OutlinedInput
-                  classes={{
-                    input: classes.input
-                  }}
-                  name="forum-threads-pagination"
-                  id="outlined-rows-per-page"
-                />
-              }
-            >
-              <MenuItem value={1}>1</MenuItem>
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-            </Select>
             
-          </FormControl>
+            {/* Pagination */}
+            <div
+              css={css`
+                margin: 8px 24px 0 0;
+              `}
+            >
+              
+              <Pagination
+                disabled={buttonDisabled}
+                onChange={(page) => handleReadThreads({
+                  pathArr: this.pathArr,
+                  gameCommunities_id,
+                  userCommunities_id,
+                  page,
+                })}
+                pageSize={limit}
+                current={page}
+                total={count}
+                locale={localeInfo}
+              />
+              
+            </div>
+            
+            
+            {/* Rows Per Page */}
+            <FormControl
+              css={css`
+                margin: 8px 0 0 0 !important;
+              `}
+              variant="outlined"
+            >
+              
+              <Select
+                value={limit}
+                onChange={(eventObj) => handleReadThreads({
+                  pathArr: this.pathArr,
+                  gameCommunities_id: gameCommunities_id,
+                  userCommunities_id: userCommunities_id,
+                  page: 1,
+                  changeLimit: eventObj.target.value,
+                })}
+                input={
+                  <OutlinedInput
+                    classes={{
+                      input: classes.input
+                    }}
+                    name="forum-threads-pagination"
+                    id="outlined-rows-per-page"
+                  />
+                }
+              >
+                <MenuItem value={1}>1</MenuItem>
+                <MenuItem value={3}>3</MenuItem>
+                <MenuItem value={5}>5</MenuItem>
+                <MenuItem value={10}>10</MenuItem>
+                <MenuItem value={20}>20</MenuItem>
+                <MenuItem value={50}>50</MenuItem>
+              </Select>
+              
+            </FormControl>
+            
+            
+          </Paper>
           
-          
-        </Paper>
+        )}
         
         
       </React.Fragment>

@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 // import TextareaAutosize from 'react-autosize-textarea';
@@ -186,7 +187,18 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, sidebar } = this.props;
+    const {
+      
+      classes,
+      stores,
+      storeForum,
+      intl,
+      userCommunityID,
+      gameCommunities_id,
+      userCommunities_id,
+      // sidebar
+      
+    } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -428,6 +440,22 @@ export default injectIntl(class extends React.Component {
         const threadsDataObj = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'dataObj', forumThreads_id], {});
         
         
+        // --------------------------------------------------
+        //   Link
+        // --------------------------------------------------
+        
+        let linkHref = '';
+        let linkAs = '';
+        
+        if (userCommunityID) {
+          // console.log(userCommunityID);
+          // console.log(forumThreads_id);
+          linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
+          linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
+          
+        }
+        
+        
         componentTableDataArr.push(
           <TableRow key={index}>
             <TableCell
@@ -451,7 +479,9 @@ export default injectIntl(class extends React.Component {
               scope="row"
               // onClick={() => handleReadThread(value.id)}
             >
-              {threadsDataObj.name}
+              <Link href={linkHref} as={linkAs}>
+                <a>{threadsDataObj.name}</a>
+              </Link>
             </TableCell>
             <TableCell css={cssTableCell}>{threadsDataObj.updatedDate}</TableCell>
             <TableCell css={cssTableCell} align="right">{threadsDataObj.comments}</TableCell>

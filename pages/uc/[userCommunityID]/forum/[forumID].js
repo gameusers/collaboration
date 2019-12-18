@@ -133,19 +133,19 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   login: {green ${login}}
-    //   datetimeCurrent: {green ${datetimeCurrent}}
-    //   userCommunityID: {green ${userCommunityID}}
-    //   forumID: {green ${forumID}}
-    //   userCommunityName: {green ${userCommunityName}}
-    // `);
+    console.log(chalk`
+      login: {green ${login}}
+      datetimeCurrent: {green ${datetimeCurrent}}
+      userCommunityID: {green ${userCommunityID}}
+      forumID: {green ${forumID}}
+      userCommunityName: {green ${userCommunityName}}
+    `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -174,7 +174,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     this.error = false;
-    
+    console.log('constructor');
     
     try {
       
@@ -375,9 +375,9 @@ export default class extends React.Component {
           
           
           {/* テスト用リンク */}
-          <Link href="/uc/[userCommunityID]?userCommunityID=community1" as="/uc/community1">
+          {/*<Link href="/uc/[userCommunityID]?userCommunityID=community1" as="/uc/community1">
             <a>/uc/community1</a>
-          </Link>
+          </Link>*/}
           
           
           {/* 2 Column */}
@@ -414,7 +414,10 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+                <ForumNavigation
+                  userCommunityID={this.props.userCommunityID}
+                  userCommunities_id={this.props.userCommunities_id}
+                />
               </Sidebar>
               
               
@@ -440,9 +443,12 @@ export default class extends React.Component {
               <Element
                 name="forumThreads"
               >
-                <ForumThread userCommunities_id={this.props.userCommunities_id} />
+                <ForumThread
+                  userCommunityID={this.props.userCommunityID}
+                  userCommunities_id={this.props.userCommunities_id}
+                  individual={true}
+                />
               </Element>
-              
               
             </div>
             

@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -159,7 +160,18 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    const {
+      
+      classes,
+      stores,
+      storeForum,
+      intl,
+      userCommunityID,
+      gameCommunities_id,
+      userCommunities_id,
+      forumThreads_id
+      
+    } = this.props;
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -193,8 +205,6 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'count'], 0);
     const limit = lodashGet(dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
-    
-    
     
     
     // --------------------------------------------------
@@ -309,6 +319,21 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const replies = lodashGet(commentsDataObj, ['replies'], 0);
+      
+      
+      // --------------------------------------------------
+      //   Link
+      // --------------------------------------------------
+      
+      let linkHref = '';
+      let linkAs = '';
+      
+      if (userCommunityID) {
+        
+        linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumComments_id}`;
+        linkAs = `/uc/${userCommunityID}/forum/${forumComments_id}`;
+        
+      }
       
       
       // --------------------------------------------------
@@ -546,7 +571,9 @@ export default injectIntl(class extends React.Component {
                       margin: 4px 0 0 0;
                     `}
                   >
-                    {forumComments_id}
+                    <Link href={linkHref} as={linkAs}>
+                      <a>{forumComments_id}</a>
+                    </Link>
                   </div>
                 </div>
                 
@@ -663,6 +690,7 @@ export default injectIntl(class extends React.Component {
               
               {/* Reply */}
               <Reply
+                userCommunityID={userCommunityID}
                 gameCommunities_id={gameCommunities_id}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}

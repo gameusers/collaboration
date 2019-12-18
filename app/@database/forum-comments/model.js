@@ -1945,16 +1945,16 @@ const getPage = async ({
         replyPage = 1;
       }
       
-      console.log(chalk`
-        replyIndex: {green ${replyIndex}}
-        replyPage: {green ${replyPage}}
-      `);
+      // console.log(chalk`
+      //   replyIndex: {green ${replyIndex}}
+      //   replyPage: {green ${replyPage}}
+      // `);
       
-      console.log(`
-        ----- reply_idsArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(reply_idsArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- reply_idsArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(reply_idsArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     }
@@ -1985,24 +1985,24 @@ const getPage = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      forumThreads_id: {green ${forumThreads_id}}
-      forumComments_id: {green ${forumComments_id}}
-      forumReplies_id: {green ${forumReplies_id}}
-      commentLimit: {green ${commentLimit}}
-      replyLimit: {green ${replyLimit}}
-    `);
+    // console.log(chalk`
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   forumComments_id: {green ${forumComments_id}}
+    //   forumReplies_id: {green ${forumReplies_id}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
+    // `);
     
-    console.log(chalk`
-      commentIndex: {green ${commentIndex}}
-      commentPage: {green ${commentPage}}
-    `);
+    // console.log(chalk`
+    //   commentIndex: {green ${commentIndex}}
+    //   commentPage: {green ${commentPage}}
+    // `);
     
-    console.log(`
-      ----- comment_idsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(comment_idsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- comment_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(comment_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- formattedObj -----\n

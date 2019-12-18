@@ -361,9 +361,9 @@ export default class extends React.Component {
           
           
           {/* テスト用リンク */}
-          <Link href="/uc/[userCommunityID]/forum/[forumID]?userCommunityID=community1&forumID=qNiOLKdRt" as="/uc/community1/forum/qNiOLKdRt">
+          {/*<Link href="/uc/[userCommunityID]/forum/[forumID]?userCommunityID=community1&forumID=qNiOLKdRt" as="/uc/community1/forum/qNiOLKdRt">
             <a>/uc/community1/forum/qNiOLKdRt</a>
-          </Link>
+          </Link>*/}
           
           
           {/* 2 Column */}
@@ -400,7 +400,10 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                <ForumNavigation userCommunities_id={this.props.userCommunities_id} />
+                <ForumNavigation
+                  userCommunityID={this.props.userCommunityID}
+                  userCommunities_id={this.props.userCommunities_id}
+                />
               </Sidebar>
               
               
@@ -426,7 +429,10 @@ export default class extends React.Component {
               <Element
                 name="forumThreads"
               >
-                <ForumThread userCommunities_id={this.props.userCommunities_id} />
+                <ForumThread
+                  userCommunityID={this.props.userCommunityID}
+                  userCommunities_id={this.props.userCommunities_id}
+                />
               </Element>
               
               

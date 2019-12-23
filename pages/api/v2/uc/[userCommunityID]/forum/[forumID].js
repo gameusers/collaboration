@@ -41,6 +41,13 @@ const { CustomError } = require('../../../../../../app/@modules/error/custom');
 const { locale } = require('../../../../../../app/@locales/locale');
 
 
+// ---------------------------------------------
+//   API
+// ---------------------------------------------
+
+const { initialProps } = require('../../../../../../app/@api/v2/common');
+
+
 
 
 // --------------------------------------------------
@@ -94,6 +101,20 @@ export default async (req, res) => {
     //   userCommunityID: {green ${userCommunityID}}
     //   forumID: {green ${forumID}}
     // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+    
+    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
+    
+    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    
+    
     
     
     // --------------------------------------------------

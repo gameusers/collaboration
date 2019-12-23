@@ -253,7 +253,7 @@ export default injectIntl(class extends React.Component {
                   }
                 }
               `}
-              id="name"
+              id={`name-${forumThreads_id}`}
               placeholder="名前"
               value={name}
               value={validationForumCommentsNameObj.value}

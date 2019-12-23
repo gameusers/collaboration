@@ -69,17 +69,28 @@ import initStoreRoot from '../app/@stores/root';
 @observer
 class MyApp extends App {
   
-  static async getInitialProps({ Component, ctx }) {
+  static async getInitialProps({ Component, ctx, query }) {
     
     
-    // console.log('_app.js / getInitialProps');
+    // const isServer = !process.browser;
+    
+    // if (isServer) {
+      
+    //   console.log('_app.js / Server: getInitialProps');
+      
+    // } else {
+      
+    //   console.log('_app.js / Client: getInitialProps');
+      
+    // }
+    
+    
     
     
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
-    // const pathname = lodashGet(ctx, ['pathname'], '');
     const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
     
@@ -106,7 +117,6 @@ class MyApp extends App {
     // `);
     
     // console.log(chalk`
-    //   pathname: {green ${pathname}}
     //   reqHeadersCookie: {green ${reqHeadersCookie}}
     //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
     // `);
@@ -118,15 +128,15 @@ class MyApp extends App {
     //   Stores
     // --------------------------------------------------
     
-    const stores = initStoreRoot();
+    const stores = initStoreRoot({});
     
     
     // --------------------------------------------------
     //   Update Data - datetime
     // --------------------------------------------------
     
-    const datetimeCurrent = moment().toISOString();
-    stores.data.datetimeCurrent = datetimeCurrent;
+    // const datetimeCurrent = moment().toISOString();
+    // stores.data.datetimeCurrent = datetimeCurrent;
     
     
     // --------------------------------------------------
@@ -144,18 +154,18 @@ class MyApp extends App {
     }
     
     
-    // --------------------------------------------------
-    //   Update Data - Header
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Update Data - Header
+    // // --------------------------------------------------
     
-    stores.data.replaceHeaderObj(lodashGet(initialPropsObj, ['headerObj'], {}));
+    // stores.data.replaceHeaderObj(lodashGet(initialPropsObj, ['headerObj'], {}));
     
     
-    // --------------------------------------------------
-    //   Update Data - Login User
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Update Data - Login User
+    // // --------------------------------------------------
     
-    stores.data.replaceLoginUsersObj(lodashGet(initialPropsObj, ['loginUsersObj'], {}));
+    // stores.data.replaceLoginUsersObj(lodashGet(initialPropsObj, ['loginUsersObj'], {}));
     
     
     // console.log(chalk`
@@ -176,8 +186,8 @@ class MyApp extends App {
     //   参考：https://github.com/zeit/next.js/blob/canary/examples/with-mobx/pages/_app.js
     // --------------------------------------------------
     
-    const login = lodashGet(initialPropsObj, ['login'], false);
-    ctx.login = login;
+    // const login = lodashGet(initialPropsObj, ['login'], false);
+    // ctx.login = login;
     
     
     // --------------------------------------------------
@@ -187,7 +197,7 @@ class MyApp extends App {
     //   これによってアクセス日時（20分前など）の表示に差が生まれないようにする
     // --------------------------------------------------
     
-    ctx.datetimeCurrent = datetimeCurrent;
+    ctx.datetimeCurrent = moment().toISOString();
     
     
     // --------------------------------------------------
@@ -224,6 +234,20 @@ class MyApp extends App {
     super(props);
     
     
+    // const isServer = !process.browser;
+    
+    // if (isServer) {
+      
+    //   console.log('_app.js / Server: constructor');
+      
+    // } else {
+      
+    //   console.log('_app.js / Client: constructor');
+      
+    // }
+    
+    
+    
     // --------------------------------------------------
     //   Property / Error Flag
     // --------------------------------------------------
@@ -253,18 +277,12 @@ class MyApp extends App {
       
       const isServer = !process.browser;
       
-      // this.stores = isServer ? props.stores : initStoreRoot({});
-      // console.log('_app.js / constructor');
-      
-      
       if (isServer) {
         
-        // console.log('constructor / isServer');
         this.stores = props.stores;
         
       } else {
         
-        // console.log('constructor / client');
         this.stores = initStoreRoot({});
         
         
@@ -283,18 +301,18 @@ class MyApp extends App {
         }
         
         
-        // --------------------------------------------------
-        //   Update Data - Header
-        // --------------------------------------------------
+        // // --------------------------------------------------
+        // //   Update Data - Header
+        // // --------------------------------------------------
         
-        this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
+        // this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
         
         
-        // --------------------------------------------------
-        //   Update Data - Login User
-        // --------------------------------------------------
+        // // --------------------------------------------------
+        // //   Update Data - Login User
+        // // --------------------------------------------------
         
-        this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
+        // this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
         
         
       }

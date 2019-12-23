@@ -4,18 +4,9 @@
 
 import { action, observable } from 'mobx';
 import moment from 'moment';
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// import { addLocaleData } from 'react-intl';
-// import en from 'react-intl/locale-data/en';
-// import ja from 'react-intl/locale-data/ja';
-// addLocaleData([...en, ...ja]);
-
-// import { locale } from '../@locales/locale';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 
@@ -34,25 +25,6 @@ let storeData = null;
 // --------------------------------------------------
 
 class Store {
-  
-  
-  // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  // constructor({ reqAcceptLanguage, headerObj, loginUsersObj }) {
-  //   console.log('data.js / constructor');
-  //   // this.pathname = argumentsObj.pathname;
-    
-    
-  //   const localeObj = locale({
-  //     acceptLanguage: reqAcceptLanguage
-  //   });
-    
-  //   this.replaceLocaleObj(localeObj);
-    
-  // }
-  
   
   
   // ---------------------------------------------
@@ -310,59 +282,61 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreData() {
+export default function initStoreData({ initialPropsObj }) {
+  
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
   
   if (storeData === null) {
     storeData = new Store();
   }
   
-  return storeData;
   
   // --------------------------------------------------
-  //   new Store()
+  //   Initial Props
   // --------------------------------------------------
   
-  // if (storeData === null) {
-  //   storeData = new Store();
-  // }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   Update Data - Locale
-  // --------------------------------------------------
-  
-//   const localeObj = locale({
-//     acceptLanguage: reqAcceptLanguage
-//   });
-  
-//   storeData.replaceLocaleObj(localeObj);
-  
-  
-//   // --------------------------------------------------
-//   //   Update Data - Header
-//   // --------------------------------------------------
-  
-//   storeData.replaceHeaderObj(headerObj);
-// //   console.log(`\n---------- headerObj ----------\n`);
-// // console.dir(headerObj);
-// // console.log(`\n-----------------------------------\n`);
-  
-//   // --------------------------------------------------
-//   //   Update Data - Login User
-//   // --------------------------------------------------
-  
-//   storeData.replaceLoginUsersObj(loginUsersObj);
-  
-  
+  if (initialPropsObj) {
+    
+    
+    // --------------------------------------------------
+    //   Header
+    // --------------------------------------------------
+    
+    if (lodashHas(initialPropsObj, ['headerObj'])) {
+      storeData.headerObj = initialPropsObj.headerObj;
+      // storeData.replaceHeaderObj(initialPropsObj.headerObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   Login Users
+    // --------------------------------------------------
+    
+    if (lodashHas(initialPropsObj, ['loginUsersObj'])) {
+      storeData.loginUsersObj = initialPropsObj.loginUsersObj;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Datetime Current
+    // --------------------------------------------------
+    
+    if (lodashHas(initialPropsObj, ['datetimeCurrent'])) {
+      storeData.setDatetimeCurrent({ ISO8601: initialPropsObj.datetimeCurrent });
+    }
+    
+    
+  }
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  // return storeData;
+  return storeData;
   
   
 }

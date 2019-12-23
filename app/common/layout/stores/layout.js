@@ -18,6 +18,7 @@ import { action, observable } from 'mobx';
 import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 
@@ -79,10 +80,10 @@ class Store {
   * 現在アクセスしているページのpathを置き換える
   * @param {string} pathname - 置き換えるpath
   */
-  @action.bound
-  replacePathname(pathname) {
-    this.pathname = pathname;
-  };
+  // @action.bound
+  // replacePathname(pathname) {
+  //   this.pathname = pathname;
+  // };
   
   
   /**
@@ -96,10 +97,10 @@ class Store {
   * Navigation Main の情報を置き換える
   * @param {Array} arr - 置き換える配列
   */
-  @action.bound
-  replaceHeaderNavMainArr(arr) {
-    this.headerNavMainArr = arr;
-  };
+  // @action.bound
+  // replaceHeaderNavMainArr(arr) {
+  //   this.headerNavMainArr = arr;
+  // };
   
   
   
@@ -727,11 +728,49 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLayout() {
+export default function initStoreLayout({ initialPropsObj }) {
+  
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
   
   if (storeLayout === null) {
     storeLayout = new Store();
   }
+  
+  
+  // --------------------------------------------------
+  //   Initial Props
+  // --------------------------------------------------
+  
+  if (initialPropsObj) {
+    
+    
+    // --------------------------------------------------
+    //   Pathname
+    // --------------------------------------------------
+    
+    if (lodashHas(initialPropsObj, ['pathname'])) {
+      storeLayout.pathname = initialPropsObj.pathname;
+    }
+    
+    
+    // --------------------------------------------------
+    //   HeaderNavMainArr
+    // --------------------------------------------------
+    
+    if (lodashHas(initialPropsObj, ['headerNavMainArr'])) {
+      storeLayout.headerNavMainArr = initialPropsObj.headerNavMainArr;
+    }
+    
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
   
   return storeLayout;
   

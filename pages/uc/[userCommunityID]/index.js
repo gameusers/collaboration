@@ -77,6 +77,19 @@ export default class extends React.Component {
   
   static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
     
+    const isServer = !process.browser;
+    
+    if (isServer) {
+      
+      console.log('Server: getInitialProps');
+      
+    } else {
+      
+      console.log('Client: getInitialProps');
+      
+    }
+    
+    
     
     // --------------------------------------------------
     //   CSRF
@@ -154,6 +167,18 @@ export default class extends React.Component {
     
     super(props);
     
+    
+    const isServer = !process.browser;
+    
+    if (isServer) {
+      
+      console.log('Server: constructor');
+      
+    } else {
+      
+      console.log('Client: constructor');
+      
+    }
     
     // --------------------------------------------------
     //   Property / Error Flag

@@ -62,6 +62,46 @@ import CardPlayerDialog from '../../../app/common/card/player/components/dialog'
 
 
 
+/**
+ * ストアを読み込む、または作成する
+ * @param {Object} propsObj - ストアに入れる値
+ */
+const getOrCreateStore = ({ propsObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Stores
+  // --------------------------------------------------
+  
+  initStoreRoot({ propsObj });
+  
+  const storeUserCommunity = initStoreUserCommunity({});
+  const storeCardPlayer = initStoreCardPlayer({});
+  const storeForum = initStoreForum({ propsObj });
+  const storeImageAndVideo = initStoreImageAndVideo({});
+  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return {
+    
+    storeUserCommunity,
+    storeCardPlayer,
+    storeForum,
+    storeImageAndVideo,
+    storeImageAndVideoForm,
+    
+  };
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Class
 //   URL: http://dev-1.gameusers.org:8080/uc/***
@@ -77,17 +117,17 @@ export default class extends React.Component {
   
   static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
     
-    const isServer = !process.browser;
+    // const isServer = !process.browser;
     
-    if (isServer) {
+    // if (isServer) {
       
-      console.log('Server: getInitialProps');
+    //   console.log('Server: getInitialProps');
       
-    } else {
+    // } else {
       
-      console.log('Client: getInitialProps');
+    //   console.log('Client: getInitialProps');
       
-    }
+    // }
     
     
     
@@ -120,10 +160,33 @@ export default class extends React.Component {
     });
     
     const statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
+    let propsObj = resultObj.data;
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    
+    
+    // --------------------------------------------------
+    //   Stores
+    // --------------------------------------------------
+    
+    const headerNavMainArr = [
+      {
+        name: 'トップ',
+        href: `/uc/community?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}`,
+      },
+      {
+        name: '設定',
+        href: `/uc/settings?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}/settings`,
+      }
+    ];
+    
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
+    
+    const storesObj = getOrCreateStore({ propsObj });
+    
     
     
     // --------------------------------------------------
@@ -151,7 +214,17 @@ export default class extends React.Component {
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userCommunityID, userCommunities_id, userCommunityName, datetimeCurrent };
+    return { 
+      
+      propsObj,
+      statusCode,
+      reqAcceptLanguage,
+      userCommunityID,
+      userCommunities_id,
+      userCommunityName,
+      storesObj,
+      
+    };
     
     
   }
@@ -168,17 +241,17 @@ export default class extends React.Component {
     super(props);
     
     
-    const isServer = !process.browser;
+    // const isServer = !process.browser;
     
-    if (isServer) {
+    // if (isServer) {
       
-      console.log('Server: constructor');
+    //   console.log('Server: constructor');
       
-    } else {
+    // } else {
       
-      console.log('Client: constructor');
+    //   console.log('Client: constructor');
       
-    }
+    // }
     
     // --------------------------------------------------
     //   Property / Error Flag
@@ -202,119 +275,17 @@ export default class extends React.Component {
       }
       
       
-      
-      
       // --------------------------------------------------
-      //   Store
+      //   Stores
       // --------------------------------------------------
       
-      const stores = initStoreRoot({});
+      const isServer = !process.browser;
       
-      this.storeUserCommunity = initStoreUserCommunity({});
-      this.storeCardPlayer = initStoreCardPlayer({});
-      this.storeForum = initStoreForum({});
-      this.storeImageAndVideo = initStoreImageAndVideo({});
-      this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Datetime Current
-      // --------------------------------------------------
-      
-      stores.data.setDatetimeCurrent(props.datetimeCurrent);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Pathname
-      // --------------------------------------------------
-      
-      stores.layout.replacePathname(props.pathname);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Header Navigation Main
-      // --------------------------------------------------
-      
-      const headerNavMainArr = [
-        {
-          name: 'トップ',
-          href: `/uc/[userCommunityID]?userCommunityID=${props.userCommunityID}`,
-          as: `/uc/${props.userCommunityID}`,
-        },
-        {
-          name: '設定',
-          href: `/uc/[userCommunityID]/settings?userCommunityID=${props.userCommunityID}`,
-          as: `/uc/${props.userCommunityID}/settings`,
-        }
-      ];
-      
-      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - UpdatedDateObj
-      // --------------------------------------------------
-      
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'updatedDateObj'],
-        value: props.initialPropsObj.userCommunityObj.updatedDateObj,
-      });
-      
-      
-      // --------------------------------------------------
-      //   Update Data - forumThreadsForListObj
-      // --------------------------------------------------
-      
-      if (lodashHas(this.storeForum, ['dataObj', props.userCommunities_id, 'forumThreadsForListObj']) === false) {
-        
-        this.storeForum.handleEdit({
-          pathArr: [props.userCommunities_id, 'forumThreadsForListObj'],
-          value: props.initialPropsObj.forumThreadsForListObj,
-        });
-        
+      if (isServer) {
+        this.storesObj = props.storesObj;
+      } else {
+        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
       }
-      
-      
-      // --------------------------------------------------
-      //   Update Data - forumObj
-      // --------------------------------------------------
-      
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumObj'],
-        value: props.initialPropsObj.forumObj,
-      });
-      
-      
-      // --------------------------------------------------
-      //   Update Data - forumThreadsObj
-      // --------------------------------------------------
-      
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumThreadsObj'],
-        value: props.initialPropsObj.forumThreadsObj,
-      });
-      
-      
-      // --------------------------------------------------
-      //   Update Data - forumCommentsObj
-      // --------------------------------------------------
-      
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumCommentsObj'],
-        value: props.initialPropsObj.forumCommentsObj,
-      });
-      
-      
-      // --------------------------------------------------
-      //   Update Data - forumRepliesObj
-      // --------------------------------------------------
-      
-      this.storeForum.handleEdit({
-        pathArr: [props.userCommunities_id, 'forumRepliesObj'],
-        value: props.initialPropsObj.forumRepliesObj,
-      });
       
       
     } catch (e) {
@@ -345,16 +316,6 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Props
-    // --------------------------------------------------
-    
-    const stores = this.stores;
-    
-    // const drawerOpen = lodashGet(stores, ['layout', 'drawerOpen'], false);
-    // const handleDrawerClose = lodashGet(stores, ['layout', 'handleDrawerClose'], () => {});
-    
-    
-    // --------------------------------------------------
     //   Header Title
     // --------------------------------------------------
     
@@ -368,13 +329,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider
-        storeUserCommunity={this.storeUserCommunity}
-        storeCardPlayer={this.storeCardPlayer}
-        storeForum={this.storeForum}
-        storeImageAndVideo={this.storeImageAndVideo}
-        storeImageAndVideoForm={this.storeImageAndVideoForm}
-      >
+      <Provider { ...this.storesObj }>
         
         <Layout>
           
@@ -383,12 +338,6 @@ export default class extends React.Component {
           <Head>
             <title>{title}</title>
           </Head>
-          
-          
-          {/* テスト用リンク */}
-          {/*<Link href="/uc/[userCommunityID]/forum/[forumID]?userCommunityID=community1&forumID=qNiOLKdRt" as="/uc/community1/forum/qNiOLKdRt">
-            <a>/uc/community1/forum/qNiOLKdRt</a>
-          </Link>*/}
           
           
           {/* 2 Column */}

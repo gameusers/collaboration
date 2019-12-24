@@ -85,43 +85,12 @@ class MyApp extends App {
     // }
     
     
-    
-    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
     
-    const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
+    // const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
-    
-    
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/common/initial-props`),
-      methodType: 'GET',
-      reqHeadersCookie,
-      reqAcceptLanguage,
-    });
-    
-    const statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
-    
-    
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   reqHeadersCookie: {green ${reqHeadersCookie}}
-    //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
-    // `);
-    
-    
     
     
     // --------------------------------------------------
@@ -132,15 +101,7 @@ class MyApp extends App {
     
     
     // --------------------------------------------------
-    //   Update Data - datetime
-    // --------------------------------------------------
-    
-    // const datetimeCurrent = moment().toISOString();
-    // stores.data.datetimeCurrent = datetimeCurrent;
-    
-    
-    // --------------------------------------------------
-    //   Update Data - Locale
+    //   Data - Locale
     // --------------------------------------------------
     
     if (Object.keys(stores.data.localeObj).length === 0) {
@@ -152,42 +113,6 @@ class MyApp extends App {
       stores.data.replaceLocaleObj(localeObj);
       
     }
-    
-    
-    // // --------------------------------------------------
-    // //   Update Data - Header
-    // // --------------------------------------------------
-    
-    // stores.data.replaceHeaderObj(lodashGet(initialPropsObj, ['headerObj'], {}));
-    
-    
-    // // --------------------------------------------------
-    // //   Update Data - Login User
-    // // --------------------------------------------------
-    
-    // stores.data.replaceLoginUsersObj(lodashGet(initialPropsObj, ['loginUsersObj'], {}));
-    
-    
-    // console.log(chalk`
-    //   _app.js / getInitialProps: {green ${lodashGet(stores, ['layout', 'handleHeaderHeroImageSize'], '')}}
-    // `);
-    
-    
-    // console.log(chalk`
-    //   _app.js / getInitialProps: {green ${lodashGet(initialPropsObj, ['loginUsersObj'], '')}}
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   login情報(true / false)をctxの中に入れて、各ページのgetInitialPropsで読み込めるようにする
-    //   ログインせずにログインが必要なページにアクセスした場合、ログインページに飛ばすため
-    //   参考：https://github.com/zeit/next.js/blob/canary/examples/with-mobx/pages/_app.js
-    // --------------------------------------------------
-    
-    // const login = lodashGet(initialPropsObj, ['login'], false);
-    // ctx.login = login;
     
     
     // --------------------------------------------------
@@ -211,13 +136,11 @@ class MyApp extends App {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pageProps, initialPropsObj, statusCode, reqAcceptLanguage, stores };
+    return { pageProps, reqAcceptLanguage, stores };
     
     
   }
@@ -263,15 +186,6 @@ class MyApp extends App {
       
       
       // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
-      
-      if (this.props.statusCode !== 200) {
-        throw new Error();
-      }
-      
-      
-      // --------------------------------------------------
       //   Store
       // --------------------------------------------------
       
@@ -287,7 +201,7 @@ class MyApp extends App {
         
         
         // --------------------------------------------------
-        //   Update Data - Locale
+        //   Data - Locale
         // --------------------------------------------------
         
         if (Object.keys(this.stores.data.localeObj).length === 0) {
@@ -301,24 +215,12 @@ class MyApp extends App {
         }
         
         
-        // // --------------------------------------------------
-        // //   Update Data - Header
-        // // --------------------------------------------------
-        
-        // this.stores.data.replaceHeaderObj(lodashGet(props, ['initialPropsObj', 'headerObj'], {}));
-        
-        
-        // // --------------------------------------------------
-        // //   Update Data - Login User
-        // // --------------------------------------------------
-        
-        // this.stores.data.replaceLoginUsersObj(lodashGet(props, ['initialPropsObj', 'loginUsersObj'], {}));
-        
-        
       }
       
       
-      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
       
       // console.log(`
       //   ----- props.stores -----\n

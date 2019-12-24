@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -39,6 +39,13 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { locale } = require('../../../../../app/@locales/locale');
+
+
+// ---------------------------------------------
+//   API
+// ---------------------------------------------
+
+const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 
@@ -87,6 +94,18 @@ export default async (req, res) => {
     const userCommunityID = req.query.userCommunityID;
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+    
+    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
+    
+    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     
     

@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -36,8 +36,8 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
-const { validationForumThreadsComment } = require('../../../@database/forum-threads/validations/comment');
+import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
+import { validationForumThreadsComment } from '../../../@database/forum-threads/validations/name';
 
 import { validationForumCommentsName } from '../../../@database/forum-comments/validations/name';
 import { validationForumCommentsComment } from '../../../@database/forum-comments/validations/comment';
@@ -3992,12 +3992,118 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreForum({}) {
+export default function initStoreForum({ propsObj }) {
+  
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
   
   if (storeForum === null) {
     storeForum = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
+  
+  if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   userCommunities_id
+    // --------------------------------------------------
+    
+    const userCommunities_id = lodashGet(propsObj, ['userCommunities_id'], '');
+    
+    
+    // console.log(`
+    //   ----- propsObj -----\n
+    //   ${util.inspect(propsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // --------------------------------------------------
+    //   UpdatedDateObj
+    // --------------------------------------------------
+    
+    const updatedDateObj = lodashGet(propsObj, ['userCommunityObj', 'updatedDateObj'], null);
+    
+    if (updatedDateObj) {
+      lodashSet(storeForum.dataObj, [userCommunities_id, 'updatedDateObj'], updatedDateObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   forumThreadsForListObj
+    // --------------------------------------------------
+    
+    const forumThreadsForListObj = lodashGet(propsObj, ['forumThreadsForListObj'], null);
+    
+    if (forumThreadsForListObj) {
+      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumThreadsForListObj'], forumThreadsForListObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   forumThreadsObj
+    // --------------------------------------------------
+    
+    const forumThreadsObj = lodashGet(propsObj, ['forumThreadsObj'], null);
+    
+    if (forumThreadsObj) {
+      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumThreadsObj'], forumThreadsObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   forumCommentsObj
+    // --------------------------------------------------
+    
+    const forumCommentsObj = lodashGet(propsObj, ['forumCommentsObj'], null);
+    
+    if (forumCommentsObj) {
+      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumCommentsObj'], forumCommentsObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   forumRepliesObj
+    // --------------------------------------------------
+    
+    const forumRepliesObj = lodashGet(propsObj, ['forumRepliesObj'], null);
+    
+    if (forumRepliesObj) {
+      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumRepliesObj'], forumRepliesObj);
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- updatedDateObj -----\n
+    //   ${util.inspect(updatedDateObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeForum;
+  
   
 }

@@ -278,11 +278,12 @@ class Store {
 
 
 
+
 // --------------------------------------------------
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreData({ initialPropsObj }) {
+export default function initStoreData({ propsObj }) {
   
   
   // --------------------------------------------------
@@ -295,19 +296,18 @@ export default function initStoreData({ initialPropsObj }) {
   
   
   // --------------------------------------------------
-  //   Initial Props
+  //   Props
   // --------------------------------------------------
   
-  if (initialPropsObj) {
+  if (propsObj) {
     
     
     // --------------------------------------------------
     //   Header
     // --------------------------------------------------
     
-    if (lodashHas(initialPropsObj, ['headerObj'])) {
-      storeData.headerObj = initialPropsObj.headerObj;
-      // storeData.replaceHeaderObj(initialPropsObj.headerObj);
+    if (lodashHas(propsObj, ['headerObj'])) {
+      storeData.headerObj = propsObj.headerObj;
     }
     
     
@@ -315,8 +315,8 @@ export default function initStoreData({ initialPropsObj }) {
     //   Login Users
     // --------------------------------------------------
     
-    if (lodashHas(initialPropsObj, ['loginUsersObj'])) {
-      storeData.loginUsersObj = initialPropsObj.loginUsersObj;
+    if (lodashHas(propsObj, ['loginUsersObj'])) {
+      storeData.loginUsersObj = propsObj.loginUsersObj;
     }
     
     
@@ -324,8 +324,8 @@ export default function initStoreData({ initialPropsObj }) {
     //   Datetime Current
     // --------------------------------------------------
     
-    if (lodashHas(initialPropsObj, ['datetimeCurrent'])) {
-      storeData.setDatetimeCurrent({ ISO8601: initialPropsObj.datetimeCurrent });
+    if (lodashHas(propsObj, ['datetimeCurrent'])) {
+      storeData.setDatetimeCurrent({ ISO8601: propsObj.datetimeCurrent });
     }
     
     

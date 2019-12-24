@@ -728,7 +728,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLayout({ initialPropsObj }) {
+export default function initStoreLayout({ propsObj }) {
   
   
   // --------------------------------------------------
@@ -741,18 +741,18 @@ export default function initStoreLayout({ initialPropsObj }) {
   
   
   // --------------------------------------------------
-  //   Initial Props
+  //   Props
   // --------------------------------------------------
   
-  if (initialPropsObj) {
+  if (propsObj) {
     
     
     // --------------------------------------------------
     //   Pathname
     // --------------------------------------------------
     
-    if (lodashHas(initialPropsObj, ['pathname'])) {
-      storeLayout.pathname = initialPropsObj.pathname;
+    if (lodashHas(propsObj, ['pathname'])) {
+      storeLayout.pathname = propsObj.pathname;
     }
     
     
@@ -760,8 +760,8 @@ export default function initStoreLayout({ initialPropsObj }) {
     //   HeaderNavMainArr
     // --------------------------------------------------
     
-    if (lodashHas(initialPropsObj, ['headerNavMainArr'])) {
-      storeLayout.headerNavMainArr = initialPropsObj.headerNavMainArr;
+    if (lodashHas(propsObj, ['headerNavMainArr'])) {
+      storeLayout.headerNavMainArr = propsObj.headerNavMainArr;
     }
     
     

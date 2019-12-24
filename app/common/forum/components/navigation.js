@@ -203,6 +203,13 @@ export default injectIntl(class extends React.Component {
     const communities_id = gameCommunities_id || userCommunities_id;
     
     
+    // --------------------------------------------------
+    //   Pathname
+    // --------------------------------------------------
+    
+    const pathname = lodashGet(stores, ['layout', 'pathname'], '');
+    
+    
     
     
     // --------------------------------------------------
@@ -448,41 +455,67 @@ export default injectIntl(class extends React.Component {
         let linkAs = '';
         
         if (userCommunityID) {
-          // console.log(userCommunityID);
-          // console.log(forumThreads_id);
           linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
           linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
-          
         }
         
+        // console.log(userCommunityID);
+        // console.log(forumThreads_id);
+        // console.log(pathname);
         
-        componentTableDataArr.push(
-          <TableRow key={index}>
+        
+        // --------------------------------------------------
+        //   リンクあり
+        // --------------------------------------------------
+        
+        let tableCellName = 
+          <Link href={linkHref} as={linkAs}>
             <TableCell
               css={css`
                 && {
                   min-width: 268px;
                   cursor: pointer;
                   padding: 14px 0 14px 16px;
-                  
-                  // @media screen and (max-width: 947px) {
-                  //   padding: 14px 0 14px 0;
-                  // }
-                  
-                  // @media screen and (max-width: 724px) {
-                  //   min-width: 268px;
-                  // }
                 }
               `}
               padding="none"
               component="th"
               scope="row"
-              // onClick={() => handleReadThread(value.id)}
             >
-              <Link href={linkHref} as={linkAs}>
-                <a>{threadsDataObj.name}</a>
-              </Link>
+              <a>{threadsDataObj.name}</a>
             </TableCell>
+          </Link>
+        ;
+        
+        
+        // --------------------------------------------------
+        //   リンクなし（現在、表示しているスレッドの場合）
+        // --------------------------------------------------
+        
+        if (pathname.indexOf(forumThreads_id) !== -1) {
+          
+          tableCellName = 
+            <TableCell
+              css={css`
+                && {
+                  min-width: 268px;
+                  padding: 14px 0 14px 16px;
+                }
+              `}
+              padding="none"
+              component="th"
+              scope="row"
+            >
+              {threadsDataObj.name}
+            </TableCell>
+          ;
+          
+        }
+        
+        
+        componentTableDataArr.push(
+          <TableRow key={index}>
+            {tableCellName}
             <TableCell css={cssTableCell}>{threadsDataObj.updatedDate}</TableCell>
             <TableCell css={cssTableCell} align="right">{threadsDataObj.comments}</TableCell>
             <TableCell css={cssTableCell} align="right">{threadsDataObj.replies}</TableCell>

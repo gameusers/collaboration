@@ -16,6 +16,7 @@ import util from 'util';
 
 import { action, observable } from 'mobx';
 import moment from 'moment';
+import Cookies from 'js-cookie';
 // import { animateScroll as scroll, scrollSpy, scroller, Events } from 'react-scroll';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
@@ -47,6 +48,7 @@ import { validationForumCommentsComment } from '../../../@database/forum-comment
 //   Stores
 // --------------------------------------------------
 
+import initStoreData from '../../../@stores/data';
 import initStoreLayout from '../../layout/stores/layout';
 import initStoreImageAndVideoForm from '../../image-and-video/stores/form';
 
@@ -56,6 +58,7 @@ import initStoreImageAndVideoForm from '../../image-and-video/stores/form';
 // --------------------------------------------------
 
 let storeForum = null;
+let storeData = initStoreData({});
 let storeLayout = initStoreLayout({});
 let storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
@@ -108,7 +111,7 @@ class Store {
    * @param {number} changeLimit - スレッド一覧の1ページの表示件数を変更する場合に入力する
    */
   @action.bound
-  async handleReadThreadsList({ pathArr, gameCommunities_id, userCommunities_id, page, changeLimit }) {
+  async handleReadThreadsList({ pathArr, temporaryDataID, gameCommunities_id, userCommunities_id, page, changeLimit }) {
     
     
     try {
@@ -129,7 +132,18 @@ class Store {
       let limit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
       
       if (changeLimit) {
+        
         limit = changeLimit;
+        
+        
+        // ---------------------------------------------
+        //   Set Cookie - ForumThreadListLimit
+        // ---------------------------------------------
+        
+        console.log('changeLimit = ' + changeLimit);
+        Cookies.set('forumThreadListLimit', changeLimit);
+        
+        
       }
       
       // console.log(chalk`
@@ -193,6 +207,11 @@ class Store {
         
         console.log('store');
         
+        
+        // ---------------------------------------------
+        //  Page 更新
+        // ---------------------------------------------
+        
         clonedObj.forumThreadsForListObj.page = page;
         
         this.handleEdit({
@@ -200,7 +219,20 @@ class Store {
           value: clonedObj
         });
         
+        
+        // ---------------------------------------------
+        //   Set Temporary Data - ForumThreadListPage
+        // ---------------------------------------------
+        
+        storeData.setTemporaryDataForumThreadListPage({ temporaryDataID, value: page });
+        
+        
+        // ---------------------------------------------
+        //   Return
+        // ---------------------------------------------
+        
         return;
+        
         
       }
       
@@ -342,6 +374,20 @@ class Store {
         pathArr: [communities_id],
         value: clonedObj
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Temporary Data - ForumThreadListPage
+      // ---------------------------------------------
+      
+      storeData.setTemporaryDataForumThreadListPage({ temporaryDataID, value: page });
+      
+      // console.log(chalk`
+      //   temporaryDataID: {green ${temporaryDataID}}
+      //   page: {green ${storeData.getTemporaryDataForumThreadListPage({ temporaryDataID })}}
+      // `);
       
       
     } catch (errorObj) {

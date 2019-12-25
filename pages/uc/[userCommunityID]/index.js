@@ -20,6 +20,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import { Element } from 'react-scroll';
+import Cookies from 'js-cookie';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -33,6 +34,7 @@ import { css, jsx } from '@emotion/core';
 
 import { fetchWrapper } from '../../../app/@modules/fetch';
 import { createCsrfToken } from '../../../app/@modules/csrf';
+import { getCookie } from '../../../app/@modules/cookie';
 
 
 // ---------------------------------------------
@@ -146,6 +148,31 @@ export default class extends React.Component {
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userCommunityID = query.userCommunityID;
     const pathname = `/uc/${userCommunityID}`;
+    const temporaryDataID = `/uc/${userCommunityID}`;
+    
+    
+    // --------------------------------------------------
+    //   Get Temporary Data for Fetch
+    // --------------------------------------------------
+    
+    const stores = initStoreRoot({});
+    
+    const forumThreadListPage = stores.data.getTemporaryDataForumThreadListPage({ temporaryDataID });
+    const forumThreadListLimit = getCookie({ cookie: reqHeadersCookie, key: 'forumThreadListLimit' });
+    
+    // const forumThreadListLimit = Cookies.get('forumThreadListLimit');
+    
+    
+    console.log(chalk`
+      forumThreadListPage: {green ${forumThreadListPage}}
+      forumThreadListLimit: {green ${forumThreadListLimit}}
+    `);
+    
+    console.log(`
+      ----- reqHeadersCookie -----\n
+      ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -216,13 +243,14 @@ export default class extends React.Component {
     
     return { 
       
-      propsObj,
       statusCode,
       reqAcceptLanguage,
+      temporaryDataID,
       userCommunityID,
       userCommunities_id,
       userCommunityName,
       storesObj,
+      propsObj,
       
     };
     
@@ -252,6 +280,7 @@ export default class extends React.Component {
     //   console.log('Client: constructor');
       
     // }
+    
     
     // --------------------------------------------------
     //   Property / Error Flag
@@ -375,6 +404,7 @@ export default class extends React.Component {
               {/* フォーラムのナビゲーション */}
               <Sidebar>
                 <ForumNavigation
+                  temporaryDataID={this.props.temporaryDataID}
                   userCommunityID={this.props.userCommunityID}
                   userCommunities_id={this.props.userCommunities_id}
                 />
@@ -404,6 +434,7 @@ export default class extends React.Component {
                 name="forumThreads"
               >
                 <ForumThread
+                  temporaryDataID={this.props.temporaryDataID}
                   userCommunityID={this.props.userCommunityID}
                   userCommunities_id={this.props.userCommunities_id}
                 />

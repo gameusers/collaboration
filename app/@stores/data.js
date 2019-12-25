@@ -90,31 +90,50 @@ class Store {
   
   
   /**
-   * intl.formatMessage 用
-   * @type {Object}
-   */
-  // @observable intl = {};
-  
-  
-  /**
    * Localeオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
    */
   @action.bound
   replaceLocaleObj(obj) {
     this.localeObj = obj;
-    
-    // console.log('replaceLocaleObj');
-    // 以下削除予定
-    // const intlProvider = new IntlProvider({
-    //   locale: this.localeObj.languageArr[0],
-    //   messages: this.localeObj.dataObj
-    // }, {});
-    
-    // const { intl } = intlProvider.getChildContext();
-    // this.intl = intl;
-    
   };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Temporary Data Object
+  // ---------------------------------------------
+  
+  temporaryDataObj = {};
+  
+  // temporaryDataObj = {
+    
+  //   '/uc/community1': {
+  //     forumNavigationPage: 1,
+  //     forumPage: 1,
+  //   }
+    
+  // };
+  
+  getTemporaryDataForumThreadListPage({ temporaryDataID }) {
+    return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadListPage'], 1);
+  };
+  
+  setTemporaryDataForumThreadListPage({ temporaryDataID, value }) {
+    lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadListPage'], value);
+  };
+  
+  
+  getTemporaryDataForumThreadPage({ temporaryDataID }) {
+    return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], 1);
+  };
+  
+  setTemporaryDataForumThreadPage({ temporaryDataID, value }) {
+    lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], value);
+  };
+  
+  
   
   
   

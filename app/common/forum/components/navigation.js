@@ -193,6 +193,7 @@ export default injectIntl(class extends React.Component {
       stores,
       storeForum,
       intl,
+      temporaryDataID,
       userCommunityID,
       gameCommunities_id,
       userCommunities_id,
@@ -573,6 +574,7 @@ export default injectIntl(class extends React.Component {
             }}
             onChangeRowsPerPage={(eventObj) => handleReadThreadsList({
               pathArr: this.pathArr,
+              temporaryDataID,
               gameCommunities_id,
               userCommunities_id,
               page: 1,
@@ -580,6 +582,7 @@ export default injectIntl(class extends React.Component {
             })}
             onChangePage={(eventObj, value) => handleReadThreadsList({
               pathArr: this.pathArr,
+              temporaryDataID,
               gameCommunities_id,
               userCommunities_id,
               page: value + 1,

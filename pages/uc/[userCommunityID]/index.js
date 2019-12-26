@@ -20,7 +20,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import { Element } from 'react-scroll';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -34,7 +34,7 @@ import { css, jsx } from '@emotion/core';
 
 import { fetchWrapper } from '../../../app/@modules/fetch';
 import { createCsrfToken } from '../../../app/@modules/csrf';
-import { getCookie } from '../../../app/@modules/cookie';
+// import { getCookie } from '../../../app/@modules/cookie';
 
 
 // ---------------------------------------------
@@ -152,27 +152,35 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Get Temporary Data for Fetch
+    //   Get Cookie & Temporary Data for Fetch
     // --------------------------------------------------
     
     const stores = initStoreRoot({});
     
     const forumThreadListPage = stores.data.getTemporaryDataForumThreadListPage({ temporaryDataID });
-    const forumThreadListLimit = getCookie({ cookie: reqHeadersCookie, key: 'forumThreadListLimit' });
+    const forumThreadListLimit = stores.data.getCookie({ key: 'forumThreadListLimit' });
     
-    // const forumThreadListLimit = Cookies.get('forumThreadListLimit');
+    const forumThreadPage = stores.data.getTemporaryDataForumThreadPage({ temporaryDataID });
+    const forumThreadLimit = stores.data.getCookie({ key: 'forumThreadLimit' });
+    const forumCommentLimit = stores.data.getCookie({ key: 'forumCommentLimit' });
+    const forumReplyLimit = stores.data.getCookie({ key: 'forumReplyLimit' });
     
     
-    console.log(chalk`
-      forumThreadListPage: {green ${forumThreadListPage}}
-      forumThreadListLimit: {green ${forumThreadListLimit}}
-    `);
+    // console.log(chalk`
+    //   forumThreadListLimit: {green ${forumThreadListLimit}}
+    //   forumThreadLimit: {green ${forumThreadLimit}}
+    //   forumCommentLimit: {green ${forumCommentLimit}}
+    //   forumReplyLimit: {green ${forumReplyLimit}}
+      
+    //   forumThreadListPage: {green ${forumThreadListPage}}
+    //   forumThreadPage: {green ${forumThreadPage}}
+    // `);
     
-    console.log(`
-      ----- reqHeadersCookie -----\n
-      ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- reqHeadersCookie -----\n
+    //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -180,7 +188,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}?forumThreadListPage=${forumThreadListPage}&forumThreadListLimit=${forumThreadListLimit}&forumThreadPage=${forumThreadPage}&forumThreadLimit=${forumThreadLimit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,

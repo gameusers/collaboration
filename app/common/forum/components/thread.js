@@ -161,6 +161,7 @@ export default injectIntl(class extends React.Component {
       stores,
       storeForum,
       intl,
+      temporaryDataID,
       userCommunityID,
       gameCommunities_id,
       userCommunities_id,
@@ -207,7 +208,7 @@ export default injectIntl(class extends React.Component {
     
     const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
     const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
-    const limit = lodashGet(dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    const limit = parseInt((stores.data.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
     const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${page}Obj`, 'arr'], []);
     
     
@@ -236,7 +237,6 @@ export default injectIntl(class extends React.Component {
     //   count: {green ${count}}
     //   limit: {green ${limit}}
     //   userCommunityID: {green ${userCommunityID}}
-    //   linkUrlBase: {green ${linkUrlBase}}
     // `);
     
     // console.log(`
@@ -746,6 +746,7 @@ export default injectIntl(class extends React.Component {
                 disabled={buttonDisabled}
                 onChange={(page) => handleReadThreads({
                   pathArr: this.pathArr,
+                  temporaryDataID,
                   gameCommunities_id,
                   userCommunities_id,
                   page,
@@ -771,8 +772,9 @@ export default injectIntl(class extends React.Component {
                 value={limit}
                 onChange={(eventObj) => handleReadThreads({
                   pathArr: this.pathArr,
-                  gameCommunities_id: gameCommunities_id,
-                  userCommunities_id: userCommunities_id,
+                  temporaryDataID,
+                  gameCommunities_id,
+                  userCommunities_id,
                   page: 1,
                   changeLimit: eventObj.target.value,
                 })}

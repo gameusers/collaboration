@@ -113,7 +113,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   parseInt
+    //   console.log
     // ---------------------------------------------
     
     // console.log(chalk`

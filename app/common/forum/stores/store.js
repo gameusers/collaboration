@@ -105,6 +105,7 @@ class Store {
   /**
    * スレッド一覧を読み込む
    * @param {Array} pathArr - パス
+   * @param {string} temporaryDataID - ページの固有ID　例）/uc/community1
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {number} page - スレッド一覧のページ
@@ -131,16 +132,17 @@ class Store {
       
       let limit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
       
+      
       if (changeLimit) {
+        
         
         limit = changeLimit;
         
         
         // ---------------------------------------------
-        //   Set Cookie - ForumThreadListLimit
+        //   Set Cookie - forumThreadListLimit
         // ---------------------------------------------
         
-        console.log('changeLimit = ' + changeLimit);
         Cookies.set('forumThreadListLimit', changeLimit);
         
         
@@ -282,8 +284,6 @@ class Store {
         
         gameCommunities_id,
         userCommunities_id,
-        threadPage: page,
-        threadLimit: limit,
         page,
         limit,
         
@@ -430,6 +430,7 @@ class Store {
   /**
    * スレッドを読み込む
    * @param {Array} pathArr - パス
+   * @param {string} temporaryDataID - ページの固有ID　例）/uc/community1
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {number} page - スレッドのページ
@@ -439,6 +440,7 @@ class Store {
   async handleReadThreads({
     
     pathArr,
+    temporaryDataID,
     gameCommunities_id,
     userCommunities_id,
     page,
@@ -462,12 +464,27 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'arr'], []);
       
-      let limit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      let threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+      // let limit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      
       
       if (changeLimit) {
-        limit = changeLimit;
+        
+        
+        threadLimit = changeLimit;
+        
+        
+        // ---------------------------------------------
+        //   Set Cookie - forumThreadLimit
+        // ---------------------------------------------
+        
+        Cookies.set('forumThreadLimit', changeLimit);
+        
+        
       }
       
       const reloadThreads = lodashGet(forumObj, ['reloadThreads'], false);
@@ -580,7 +597,12 @@ class Store {
       
       if (!reload && arr.length > 0) {
         
+        
         console.log('store');
+        
+        // ---------------------------------------------
+        //  Page 更新
+        // ---------------------------------------------
         
         clonedObj.forumThreadsObj.page = page;
         
@@ -589,7 +611,20 @@ class Store {
           value: clonedObj
         });
         
+        
+        // ---------------------------------------------
+        //   Set Temporary Data - ForumThreadPage
+        // ---------------------------------------------
+        
+        storeData.setTemporaryDataForumThreadPage({ temporaryDataID, value: page });
+        
+        
+        // ---------------------------------------------
+        //   Return
+        // ---------------------------------------------
+        
         return;
+        
         
       }
       
@@ -623,7 +658,7 @@ class Store {
         gameCommunities_id,
         userCommunities_id,
         threadPage: page,
-        threadLimit: limit,
+        threadLimit,
         commentPage: 1,
         commentLimit,
         replyPage: 1,
@@ -755,13 +790,22 @@ class Store {
       
       this.handleEdit({
         pathArr: ['forumThreadLimit'],
-        value: limit,
+        value: threadLimit,
       });
       
       this.handleEdit({
         pathArr: [communities_id],
         value: clonedObj
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Set Temporary Data - ForumThreadPage
+      // ---------------------------------------------
+      
+      storeData.setTemporaryDataForumThreadPage({ temporaryDataID, value: page });
       
       
     } catch (errorObj) {
@@ -1620,12 +1664,27 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumCommentsObj ', forumThreads_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
       
-      const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      let limit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+      let commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+      
+      // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      // let limit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       if (changeLimit) {
-        limit = changeLimit;
+        
+        
+        commentLimit = changeLimit;
+        
+        
+        // ---------------------------------------------
+        //   Set Cookie - forumCommentLimit
+        // ---------------------------------------------
+        
+        Cookies.set('forumCommentLimit', changeLimit);
+        
+        
       }
       
       const reloadComments = lodashGet(forumObj, ['reloadComments'], false);
@@ -1824,7 +1883,7 @@ class Store {
         threadPage: 1,
         threadLimit,
         commentPage: page,
-        commentLimit: limit,
+        commentLimit,
         replyPage: 1,
         replyLimit,
         
@@ -1970,7 +2029,7 @@ class Store {
       
       this.handleEdit({
         pathArr: ['forumCommentLimit'],
-        value: limit,
+        value: commentLimit,
       });
       
       this.handleEdit({
@@ -2868,11 +2927,26 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumRepliesObj ', forumComments_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr'], []);
       
-      const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      let limit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      // const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+      let replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+      
+      // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      // let limit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       if (changeLimit) {
-        limit = changeLimit;
+        
+        
+        replyLimit = changeLimit;
+        
+        
+        // ---------------------------------------------
+        //   Set Cookie - forumReplyLimit
+        // ---------------------------------------------
+        
+        Cookies.set('forumReplyLimit', changeLimit);
+        
+        
       }
       
       
@@ -3056,7 +3130,7 @@ class Store {
         commentPage: 1,
         commentLimit,
         replyPage: page,
-        replyLimit: limit,
+        replyLimit,
         
       };
       
@@ -3165,7 +3239,7 @@ class Store {
       
       this.handleEdit({
         pathArr: ['forumReplyLimit'],
-        value: limit,
+        value: replyLimit,
       });
       
       this.handleEdit({

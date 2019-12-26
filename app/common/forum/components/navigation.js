@@ -19,6 +19,7 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 // import TextareaAutosize from 'react-autosize-textarea';
+import Cookies from 'js-cookie';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -67,6 +68,13 @@ import IconOndemandVideo from '@material-ui/icons/OndemandVideo';
 import IconListAlt from '@material-ui/icons/ListAlt';
 import IconCreate from '@material-ui/icons/Create';
 import IconSearch from '@material-ui/icons/Search';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+// import { getCookie } from '../../../@modules/cookie';
 
 
 // ---------------------------------------------
@@ -251,9 +259,7 @@ export default injectIntl(class extends React.Component {
     
     const threadListCount = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'count'], 0);
     const threadListPage = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'page'], 1);
-    // const threadListLimit = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', 'limit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadListLimit = lodashGet(dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    
+    const threadListLimit = parseInt((stores.data.getCookie({ key: 'forumThreadListLimit' }) || process.env.FORUM_THREAD_LIST_LIMIT), 10);
     const forumThreadsArr = lodashGet(dataObj, [communities_id, 'forumThreadsForListObj', `page${threadListPage}Obj`, 'arr'], []);
     
     

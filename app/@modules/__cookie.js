@@ -14,6 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const Cookies = require('js-cookie');
 const lodashGet = require('lodash/get');
 
 
@@ -25,13 +26,14 @@ const lodashGet = require('lodash/get');
 
 /**
  * Cookieからデータを取得する
- * https://nodemailer.com/about/
  * @param {string} cookie - document.cookie
  * @param {string} key - 取得したいkey
  */
 const getCookie = ({ cookie, key }) => {
   
-  return ((cookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+  const value = Cookies.get(key) || ((cookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+  
+  return value;
   
 };
 

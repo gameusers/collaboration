@@ -89,7 +89,7 @@ class MyApp extends App {
     //   Property
     // --------------------------------------------------
     
-    // const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
+    const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
     
     
@@ -97,7 +97,12 @@ class MyApp extends App {
     //   Stores
     // --------------------------------------------------
     
-    const stores = initStoreRoot({});
+    // Set Cookie Data
+    const propsObj = {
+      cookie: reqHeadersCookie
+    };
+    
+    const stores = initStoreRoot({ propsObj });
     
     
     // --------------------------------------------------

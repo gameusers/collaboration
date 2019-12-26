@@ -2,8 +2,21 @@
 //   Import
 // --------------------------------------------------
 
+// ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
 import { action, observable } from 'mobx';
 import moment from 'moment';
+import Cookies from 'js-cookie';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
@@ -102,7 +115,26 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Temporary Data Object
+  //   Cookie
+  // ---------------------------------------------
+  
+  cookie = '';
+  
+  
+  /**
+   * Cookie からデータを取得する
+   * this.cookie には reqHeadersCookie が入っている。サーバー側で取得したクッキーのデータ。
+   * @param {String} key - 取得するキー
+   */
+  getCookie({ key }) {
+    return Cookies.get(key) || ((this.cookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Temporary Data Object / リロードした際に消えてもいいような情報を入れる　現在表示してるページNoなど
   // ---------------------------------------------
   
   temporaryDataObj = {};
@@ -126,14 +158,19 @@ class Store {
   
   
   getTemporaryDataForumThreadPage({ temporaryDataID }) {
+    
+    // console.log(`
+    //   ----- this.temporaryDataObj -----\n
+    //   ${util.inspect(this.temporaryDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], 1);
   };
   
   setTemporaryDataForumThreadPage({ temporaryDataID, value }) {
     lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], value);
   };
-  
-  
   
   
   
@@ -319,6 +356,15 @@ export default function initStoreData({ propsObj }) {
   // --------------------------------------------------
   
   if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   Header
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['cookie'])) {
+      storeData.cookie = propsObj.cookie;
+    }
     
     
     // --------------------------------------------------

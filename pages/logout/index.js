@@ -19,9 +19,18 @@ import Error from 'next/error';
 import Head from 'next/head';
 import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
+import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../app/@modules/fetch';
+import { createCsrfToken } from '../../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -42,6 +51,38 @@ import FormLogout from '../../app/logout/index/components/form-logout';
 
 
 
+/**
+ * ストアを読み込む、または作成する
+ * @param {Object} propsObj - ストアに入れる値
+ */
+const getOrCreateStore = ({ propsObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Stores
+  // --------------------------------------------------
+  
+  initStoreRoot({ propsObj });
+  
+  const storeLogoutIndex = initStoreLogoutIndex({});
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return {
+    
+    storeLogoutIndex,
+    
+  };
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Class
 //   URL: http://dev-1.gameusers.org:8080/logout
@@ -55,7 +96,40 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res, login }) {
+  static async getInitialProps({ req, res, datetimeCurrent }) {
+    
+    
+    // --------------------------------------------------
+    //   CSRF
+    // --------------------------------------------------
+    
+    createCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    const pathname = `/logout`;
+    // const temporaryDataID = `/uc/${userCommunityID}`;
+    
+    
+    // --------------------------------------------------
+    //   Fetch
+    // --------------------------------------------------
+    
+    const resultObj = await fetchWrapper({
+      urlApi: encodeURI(`${process.env.URL_API}/v2/common/initial-props`),
+      methodType: 'GET',
+      reqHeadersCookie,
+      reqAcceptLanguage,
+    });
+    
+    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+    let propsObj = lodashGet(resultObj, ['data'], {});
+    const login = lodashGet(resultObj, ['data', 'login'], false);
     
     
     // --------------------------------------------------
@@ -79,10 +153,35 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Stores
+    // --------------------------------------------------
+    
+    const headerNavMainArr = [
+      {
+        name: 'ログアウト',
+        href: '/logout',
+        as: '/logout',
+      },
+    ];
+    
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
+    
+    const storesObj = getOrCreateStore({ propsObj });
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, statusCode: 200 };
+    return { 
+      
+      statusCode,
+      reqAcceptLanguage,
+      storesObj,
+      propsObj,
+      
+    };
+    
     
   }
   
@@ -122,33 +221,16 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Store
+      //   Stores
       // --------------------------------------------------
       
-      const stores = initStoreRoot({});
-      this.storeLogoutIndex = initStoreLogoutIndex({});
+      const isServer = !process.browser;
       
-      
-      // --------------------------------------------------
-      //   Update Data - Pathname
-      // --------------------------------------------------
-      
-      stores.layout.replacePathname(props.pathname);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Header Navigation Main
-      // --------------------------------------------------
-      
-      const headerNavMainArr = [
-        {
-          name: 'ログアウト',
-          href: '/logout',
-          as: '/logout',
-        },
-      ];
-      
-      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
+      if (isServer) {
+        this.storesObj = props.storesObj;
+      } else {
+        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
+      }
       
       
     } catch (e) {
@@ -183,7 +265,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider storeLogoutIndex={this.storeLogoutIndex}>
+      <Provider { ...this.storesObj }>
         
         <Layout>
           

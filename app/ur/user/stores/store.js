@@ -3,10 +3,21 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
+//   Console
+// ---------------------------------------------
+
+import chalk from 'chalk';
+import util from 'util';
+
+
+// ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 
@@ -53,12 +64,42 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStorePlPlayer({}) {
+export default function initStorePlPlayer({ propsObj }) {
+  
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
   
   if (storePlPlayer === null) {
     storePlPlayer = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
+  
+  if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   pagesArr
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['pagesArr'])) {
+      storePlPlayer.pagesArr = propsObj.pagesArr;
+    }
+    
+    
+  }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storePlPlayer;
+  
   
 }

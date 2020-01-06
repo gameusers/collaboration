@@ -20,9 +20,18 @@ import Head from 'next/head';
 import Router from 'next/router';
 import { observer, Provider } from 'mobx-react';
 import { loadReCaptcha, ReCaptcha } from 'react-recaptcha-v3';
+import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
+
+
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../app/@modules/fetch';
+import { createCsrfToken } from '../../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -43,6 +52,38 @@ import FormCreateAccount from '../../app/login/account/components/form-create-ac
 
 
 
+/**
+ * ストアを読み込む、または作成する
+ * @param {Object} propsObj - ストアに入れる値
+ */
+const getOrCreateStore = ({ propsObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Stores
+  // --------------------------------------------------
+  
+  initStoreRoot({ propsObj });
+  
+  const storeLoginAccount = initStoreLoginAccount({});
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return {
+    
+    storeLoginAccount,
+    
+  };
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Class
 //   URL: http://dev-1.gameusers.org:8080/login/account
@@ -56,7 +97,40 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ pathname, req, res, login }) {
+  static async getInitialProps({ req, res, datetimeCurrent }) {
+    
+    
+    // --------------------------------------------------
+    //   CSRF
+    // --------------------------------------------------
+    
+    createCsrfToken(req, res);
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
+    const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
+    const pathname = `/login/account`;
+    // const temporaryDataID = `/uc/${userCommunityID}`;
+    
+    
+    // --------------------------------------------------
+    //   Fetch
+    // --------------------------------------------------
+    
+    const resultObj = await fetchWrapper({
+      urlApi: encodeURI(`${process.env.URL_API}/v2/common/initial-props`),
+      methodType: 'GET',
+      reqHeadersCookie,
+      reqAcceptLanguage,
+    });
+    
+    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+    let propsObj = lodashGet(resultObj, ['data'], {});
+    const login = lodashGet(resultObj, ['data', 'login'], false);
     
     
     // --------------------------------------------------
@@ -80,10 +154,40 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Stores
+    // --------------------------------------------------
+    
+    const headerNavMainArr = [
+      {
+        name: 'ログイン',
+        href: '/login',
+        as: '/login',
+      },
+      {
+        name: 'アカウント作成',
+        href: '/login/account',
+        as: '/login/account',
+      }
+    ];
+    
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
+    
+    const storesObj = getOrCreateStore({ propsObj });
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, statusCode: 200 };
+    return { 
+      
+      statusCode,
+      reqAcceptLanguage,
+      storesObj,
+      propsObj,
+      
+    };
+    
     
   }
   
@@ -119,38 +223,16 @@ export default class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Store
+      //   Stores
       // --------------------------------------------------
       
-      const stores = initStoreRoot({});
-      this.storeLoginAccount = initStoreLoginAccount({});
+      const isServer = !process.browser;
       
-      
-      // --------------------------------------------------
-      //   Update Data - Pathname
-      // --------------------------------------------------
-      
-      stores.layout.replacePathname(props.pathname);
-      
-      
-      // --------------------------------------------------
-      //   Update Data - Header Navigation Main
-      // --------------------------------------------------
-      
-      const headerNavMainArr = [
-        {
-          name: 'ログイン',
-          href: '/login',
-          as: '/login',
-        },
-        {
-          name: 'アカウント作成',
-          href: '/login/account',
-          as: '/login/account',
-        }
-      ];
-      
-      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
+      if (isServer) {
+        this.storesObj = props.storesObj;
+      } else {
+        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
+      }
       
       
     } catch (e) {
@@ -204,7 +286,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider storeLoginAccount={this.storeLoginAccount}>
+      <Provider { ...this.storesObj }>
         
         <Layout>
           
@@ -232,7 +314,7 @@ export default class extends React.Component {
               ref={ref => this.recaptcha = ref}
               sitekey={process.env.RECAPTCHA_SITE_KEY}
               action='createAccount'
-              verifyCallback={(response) => this.storeLoginAccount.handleRecaptchaResponse({
+              verifyCallback={(response) => this.storesObj.storeLoginAccount.handleRecaptchaResponse({
                 response,
                 ref: this.recaptcha,
               })}

@@ -164,7 +164,19 @@ export default class extends React.Component {
     
     this.scrollYOffset = 0;
     this.navTopHeight = 53;
-    this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
+    // this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
+    
+    // console.log(`
+    //   ----- this.temporaryDataObj -----\n
+    //   ${util.inspect(lodashGet(this.props, ['stores', 'layout'], 0), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   componentDidMount
+    //   this.heroImageHeight1: {green ${this.heroImageHeight}}
+    //   this.heroImageHeight2: {green ${lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0)}}
+    // `);
     
     window.addEventListener('scroll', this.handleScroll);
     
@@ -193,6 +205,7 @@ export default class extends React.Component {
     
     
     const scrollY = window.scrollY;
+    const headerHeroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
     
     let scrollUp = false;
     let showNavTop = true;
@@ -220,8 +233,46 @@ export default class extends React.Component {
       //   Show Navigation Top
       // ---------------------------------------------
       
-      if (this.heroImageHeight < scrollY) {
+      
+      // console.log(chalk`
+      //   scrollY: {green ${scrollY}}
+      //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
+      // `);
+      
+      // console.log(chalk`
+      //   handleScroll
+      //   this.heroImageHeight1: {green ${this.heroImageHeight}}
+      //   this.heroImageHeight2: {green ${lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0)}}
+      // `);
+      
+      // if (this.heroImageHeight === 0) {
         
+      //   showNavTop = true;
+        
+      // } else if (this.heroImageHeight < scrollY) {
+        
+      //   // console.log(chalk`
+      //   //   scrollY: {green ${scrollY}}
+      //   //   this.heroImageHeight: {green ${this.heroImageHeight}}
+      //   // `);
+        
+      //   // console.log('Show Navigation Top');
+      //   if (scrollUp) {
+      //     showNavTop = true;
+      //   } else {
+      //     showNavTop = false;
+      //   }
+        
+      // }
+      
+      if (headerHeroImageHeight < scrollY) {
+        
+        // console.log(chalk`
+        //   scrollY: {green ${scrollY}}
+        //   this.heroImageHeight: {green ${this.heroImageHeight}}
+        // `);
+        
+        // console.log('Show Navigation Top');
         if (scrollUp) {
           showNavTop = true;
         } else {
@@ -266,10 +317,9 @@ export default class extends React.Component {
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   this.navTopHeight: {green ${this.navTopHeight}}
-    //   this.heroImageHeight: {green ${this.heroImageHeight}}
+    //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
     //   scrollUp: {green ${scrollUp}}
     //   showNavTop: {green ${showNavTop}}
-    //   immediate: {green ${immediate}}
     // `);
     
     
@@ -284,6 +334,7 @@ export default class extends React.Component {
       });
       
     }
+    
     
   }, 100);
   
@@ -418,7 +469,6 @@ export default class extends React.Component {
               }
             `}
             onClick={stores.layout.handleHeaderLoginMenuOpen}
-            // onClick={(eventObj) => stores.layout.handleHeaderLoginMenuOpen({ eventObj })}
           >
             <Avatar
               alt="ログインメニュー"

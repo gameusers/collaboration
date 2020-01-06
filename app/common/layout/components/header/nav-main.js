@@ -125,7 +125,7 @@ export default class extends React.Component {
     
     this.scrollYOffset = 0;
     this.navTopHeight = 53;
-    this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
+    // this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
     
     window.addEventListener('scroll', this.handleScroll);
     
@@ -154,6 +154,7 @@ export default class extends React.Component {
     
     
     const scrollY = window.scrollY;
+    const headerHeroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
     
     let scrollUp = false;
     let showNavTop = true;
@@ -184,7 +185,7 @@ export default class extends React.Component {
       //   Show Navigation Top
       // ---------------------------------------------
       
-      if (this.heroImageHeight < scrollY) {
+      if (headerHeroImageHeight < scrollY) {
         
         if (scrollUp) {
           showNavTop = true;
@@ -199,7 +200,7 @@ export default class extends React.Component {
       //   Lower Navigation Main
       // ---------------------------------------------
       
-      if (this.navTopHeight + this.heroImageHeight < scrollY) {
+      if (this.navTopHeight + headerHeroImageHeight < scrollY) {
         
         if (scrollUp && showNavTop) {
           lowerNavMain = true;
@@ -253,7 +254,7 @@ export default class extends React.Component {
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   this.navTopHeight: {green ${this.navTopHeight}}
-    //   this.heroImageHeight: {green ${this.heroImageHeight}}
+    //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
     //   scrollUp: {green ${scrollUp}}
     //   showNavTop: {green ${showNavTop}}
     //   lowerNavMain: {green ${lowerNavMain}}

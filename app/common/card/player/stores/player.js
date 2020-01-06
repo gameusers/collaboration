@@ -1582,12 +1582,23 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreCardPlayer({}) {
+export default function initStoreCardPlayer({ propsObj }) {
+  
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
   
   if (storeCardPlayer === null) {
     storeCardPlayer = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeCardPlayer;
+  
   
 }

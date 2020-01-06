@@ -359,7 +359,7 @@ export default function initStoreData({ propsObj }) {
     
     
     // --------------------------------------------------
-    //   Header
+    //   cookie
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['cookie'])) {
@@ -391,6 +391,15 @@ export default function initStoreData({ propsObj }) {
     
     if (lodashHas(propsObj, ['datetimeCurrent'])) {
       storeData.setDatetimeCurrent({ ISO8601: propsObj.datetimeCurrent });
+    }
+    
+    
+    // --------------------------------------------------
+    //   cardPlayersObj
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['cardPlayersObj'])) {
+      storeData.cardPlayersObj = propsObj.cardPlayersObj;
     }
     
     

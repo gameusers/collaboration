@@ -22,7 +22,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelGames = require('../../../../app/@database/games/model');
+// const ModelGames = require('../../../../app/@database/games/model');
 
 
 // ---------------------------------------------
@@ -37,6 +37,13 @@ const { returnErrorsArr } = require('../../../../app/@modules/log/log');
 // ---------------------------------------------
 
 const { locale } = require('../../../../app/@locales/locale');
+
+
+// ---------------------------------------------
+//   API
+// ---------------------------------------------
+
+const { initialProps } = require('../../../../app/@api/v2/common');
 
 
 
@@ -82,23 +89,33 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   Common Initial Props
+    // --------------------------------------------------
+    
+    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
+    
+    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    
+    
+    // --------------------------------------------------
     //   ログインしているユーザー情報＆ログインチェック
     // --------------------------------------------------
     
-    if (req.isAuthenticated() && req.user) {
-      returnObj.loginUsersObj = req.user;
-      returnObj.login = true;
-    }
+    // if (req.isAuthenticated() && req.user) {
+    //   returnObj.loginUsersObj = req.user;
+    //   returnObj.login = true;
+    // }
     
     
-    // --------------------------------------------------
-    //   データ取得 / Games
-    //   ヘッダーヒーローイメージ用
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   データ取得 / Games
+    // //   ヘッダーヒーローイメージ用
+    // // --------------------------------------------------
     
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      localeObj,
-    });
+    // returnObj.headerObj = await ModelGames.findForHeroImage({
+    //   localeObj,
+    // });
     
     
     // ---------------------------------------------

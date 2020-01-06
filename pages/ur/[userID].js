@@ -29,6 +29,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../../app/@modules/fetch';
+import { createCsrfToken } from '../../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -57,6 +58,48 @@ import CardPlayerDialog from '../../app/common/card/player/components/dialog';
 
 
 
+/**
+ * ストアを読み込む、または作成する
+ * @param {Object} propsObj - ストアに入れる値
+ */
+const getOrCreateStore = ({ propsObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Stores
+  // --------------------------------------------------
+  
+  initStoreRoot({ propsObj });
+  
+  const storePlPlayer = initStorePlPlayer({ propsObj });
+  const storeCardPlayer = initStoreCardPlayer({});
+  const storeIDForm = initStoreIDForm({});
+  const storeGameForm = initStoreGameForm({});
+  const storeImageAndVideo = initStoreImageAndVideo({});
+  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return {
+    
+    storePlPlayer,
+    storeCardPlayer,
+    storeIDForm,
+    storeGameForm,
+    storeImageAndVideo,
+    storeImageAndVideoForm,
+    
+  };
+  
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Class
 //   URL: http://dev-1.gameusers.org:8080/ur/***
@@ -70,7 +113,14 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query }) {
+  static async getInitialProps({ req, res, query, datetimeCurrent }) {
+    
+    
+    // --------------------------------------------------
+    //   CSRF
+    // --------------------------------------------------
+    
+    createCsrfToken(req, res);
     
     
     // --------------------------------------------------
@@ -82,10 +132,7 @@ export default class extends React.Component {
     const userID = query.userID;
     const pathname = `/ur/${userID}`;
     
-    // console.log(chalk`
-    //   /pages/ur/[userID].js
-    //   userID: {green ${userID}}
-    // `);
+    
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
@@ -97,8 +144,34 @@ export default class extends React.Component {
       reqAcceptLanguage,
     });
     
-    const statusCode = resultObj.statusCode;
-    const initialPropsObj = resultObj.data;
+    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+    let propsObj = lodashGet(resultObj, ['data'], {});
+    // const login = lodashGet(resultObj, ['data', 'login'], false);
+    
+    const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
+    const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
+    
+    
+    // --------------------------------------------------
+    //   Stores
+    // --------------------------------------------------
+    
+    const headerNavMainArr = [
+      {
+        name: 'プロフィール',
+        href: `/ur/user?userID=${userID}`,// エラーが出るからとりあえずコメントアウト
+        as: `/ur/${userID}`,
+      },
+      {
+        name: '設定',
+        href: `/ur/settings?userID=${userID}`,
+        as: `/ur/${userID}/settings`,
+      }
+    ];
+    
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, cardPlayersObj, pagesArr };
+    
+    const storesObj = getOrCreateStore({ propsObj });
     
     
     // --------------------------------------------------
@@ -110,14 +183,27 @@ export default class extends React.Component {
     //   pathname: {green ${pathname}}
     // `);
     
-    // line
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return { pathname, initialPropsObj, statusCode, reqAcceptLanguage, userID };
+    return { 
+      
+      statusCode,
+      reqAcceptLanguage,
+      storesObj,
+      propsObj,
+      
+    };
+    
+    // return { pathname, propsObj, statusCode, reqAcceptLanguage, userID };
     
     
   }
@@ -150,72 +236,83 @@ export default class extends React.Component {
       
       if (
         this.props.statusCode !== 200 ||
-        'cardPlayersObj' in props.initialPropsObj === false ||
-        'cardsArr' in props.initialPropsObj === false
+        'cardPlayersObj' in props.propsObj === false ||
+        'cardsArr' in props.propsObj === false
       ) {
         throw new Error();
       }
       
       
+      // --------------------------------------------------
+      //   Stores
+      // --------------------------------------------------
+      
+      const isServer = !process.browser;
+      
+      if (isServer) {
+        this.storesObj = props.storesObj;
+      } else {
+        this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
+      }
       
       
       // --------------------------------------------------
       //   Store
       // --------------------------------------------------
       
-      const stores = initStoreRoot({});
+      // const stores = initStoreRoot({});
       
-      this.storePlPlayer = initStorePlPlayer({});
-      this.storeCardPlayer = initStoreCardPlayer({});
-      this.storeIDForm = initStoreIDForm({});
-      this.storeGameForm = initStoreGameForm({});
-      this.storeImageAndVideo = initStoreImageAndVideo({});
-      this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
-      
-      
+      // this.storePlPlayer = initStorePlPlayer({});
+      // this.storeCardPlayer = initStoreCardPlayer({});
+      // this.storeIDForm = initStoreIDForm({});
+      // this.storeGameForm = initStoreGameForm({});
+      // this.storeImageAndVideo = initStoreImageAndVideo({});
+      // this.storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
       
-      // --------------------------------------------------
-      //   Update Data - Pathname
-      // --------------------------------------------------
-      
-      stores.layout.replacePathname(props.pathname);
       
       
-      // --------------------------------------------------
-      //   Update Data - Header Navigation Main
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   Update Data - Pathname
+      // // --------------------------------------------------
       
-      const headerNavMainArr = [
-        {
-          name: 'プロフィール',
-          href: `/ur/user?userID=${props.userID}`,// エラーが出るからとりあえずコメントアウト
-          // href: '/',
-          as: `/ur/${props.userID}`,
-        },
-        {
-          name: '設定',
-          href: `/ur/settings?userID=${props.userID}`,
-          // href: '/',
-          as: `/ur/${props.userID}/settings`,
-        }
-      ];
-      
-      stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
+      // stores.layout.replacePathname(props.pathname);
       
       
-      // --------------------------------------------------
-      //   Update Data - Card Players
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   Update Data - Header Navigation Main
+      // // --------------------------------------------------
       
-      stores.data.replaceCardPlayersObj(props.initialPropsObj.cardPlayersObj);
+      // const headerNavMainArr = [
+      //   {
+      //     name: 'プロフィール',
+      //     href: `/ur/user?userID=${props.userID}`,// エラーが出るからとりあえずコメントアウト
+      //     // href: '/',
+      //     as: `/ur/${props.userID}`,
+      //   },
+      //   {
+      //     name: '設定',
+      //     href: `/ur/settings?userID=${props.userID}`,
+      //     // href: '/',
+      //     as: `/ur/${props.userID}/settings`,
+      //   }
+      // ];
+      
+      // stores.layout.replaceHeaderNavMainArr(headerNavMainArr);
       
       
-      // --------------------------------------------------
-      //   Update Data - Pages Array
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   Update Data - Card Players
+      // // --------------------------------------------------
       
-      this.storePlPlayer.replacePagesArr(props.initialPropsObj.pagesArr);
+      // stores.data.replaceCardPlayersObj(props.propsObj.cardPlayersObj);
+      
+      
+      // // --------------------------------------------------
+      // //   Update Data - Pages Array
+      // // --------------------------------------------------
+      
+      // this.storePlPlayer.replacePagesArr(props.propsObj.pagesArr);
       
       
     } catch (e) {
@@ -251,6 +348,14 @@ export default class extends React.Component {
     
     const stores = this.stores;
     
+    const cardsArr = lodashGet(this.props, ['propsObj', 'cardsArr'], []);
+    
+    // console.log(`
+    //   ----- cardsArr -----\n
+    //   ${util.inspect(cardsArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // const drawerOpen = lodashGet(stores, ['layout', 'drawerOpen'], false);
     // const handleDrawerClose = lodashGet(stores, ['layout', 'handleDrawerClose'], () => {});
     
@@ -263,7 +368,7 @@ export default class extends React.Component {
     
     const componentCardsArr = [];
     
-    for (const [index, valueObj] of this.props.initialPropsObj.cardsArr.entries()) {
+    for (const [index, valueObj] of cardsArr.entries()) {
       
       if ('cardPlayers_id' in valueObj) {
         
@@ -288,7 +393,7 @@ export default class extends React.Component {
     //   Header Title
     // --------------------------------------------------
     
-    const topPagesObj = this.storePlPlayer.pagesArr.find((valueObj) => {
+    const topPagesObj = this.storesObj.storePlPlayer.pagesArr.find((valueObj) => {
       return valueObj.type === 'top';
     });
     
@@ -303,14 +408,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Provider
-        storePlPlayer={this.storePlPlayer}
-        storeCardPlayer={this.storeCardPlayer}
-        storeIDForm={this.storeIDForm}
-        storeGameForm={this.storeGameForm}
-        storeImageAndVideo={this.storeImageAndVideo}
-        storeImageAndVideoForm={this.storeImageAndVideoForm}
-      >
+      <Provider { ...this.storesObj }>
         
         <Layout>
           

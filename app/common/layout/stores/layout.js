@@ -55,8 +55,14 @@ class Store {
    */
   @action.bound
   handleHeaderHeroImageSize({ dimensionsObj }) {
+    // console.log(dimensionsObj);
     this.headerHeroImageHeight = dimensionsObj.height;
   };
+  
+  
+  // getHeaderHeroImageSize() {
+  //   return this.headerHeroImageHeight;
+  // };
   
   
   

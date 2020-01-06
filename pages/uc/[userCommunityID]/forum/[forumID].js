@@ -122,7 +122,7 @@ export default class extends React.Component {
   //   getInitialProps
   // --------------------------------------------------
   
-  static async getInitialProps({ req, res, query, login, datetimeCurrent }) {
+  static async getInitialProps({ req, res, query, datetimeCurrent }) {
     
     
     // const isServer = !process.browser;
@@ -182,8 +182,9 @@ export default class extends React.Component {
       reqAcceptLanguage,
     });
     
-    const statusCode = resultObj.statusCode;
-    let propsObj = resultObj.data;
+    const statusCode = lodashGet(resultObj, ['statusCode'], 400);
+    let propsObj = lodashGet(resultObj, ['data'], {});
+    // const login = lodashGet(resultObj, ['data', 'login'], false);
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');

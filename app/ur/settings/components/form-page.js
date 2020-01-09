@@ -16,9 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -26,12 +28,7 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -42,9 +39,9 @@ import Select from '@material-ui/core/Select';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconPlayerID from '@material-ui/icons/Mood';
+// import IconExpandLess from '@material-ui/icons/ExpandLess';
+// import IconExpandMore from '@material-ui/icons/ExpandMore';
+// import IconPlayerID from '@material-ui/icons/Mood';
 
 
 // ---------------------------------------------
@@ -55,129 +52,11 @@ import { validationUsersPlayerID } from '../../../../app/@database/users/validat
 import { validationUsersPagesName } from '../../../../app/@database/users/validations/pages';
 
 
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-
 // ---------------------------------------------
-//   Panel
+//   Components
 // ---------------------------------------------
 
-const StyledExpansionPanel = styled(ExpansionPanel)`
-  && {
-    margin: 16px 0 0 0 !important;
-  }
-`;
-
-const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
-  && {
-    cursor: default !important;
-    padding-right: 16px;
-  }
-`;
-
-const Heading = styled.h2`
-  font-weight: bold;
-  font-size: 18px;
-`;
-
-const Description = styled.p`
-  margin: 0 0 16px 0;
-`;
-
-const ExpandMoreBox = styled.div`
-  margin: 0 0 0 auto;
-  padding: 0 !important;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  && {
-    margin: 0;
-    padding: 4px;
-  }
-`;
-
-const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
-  && {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Form Box
-// ---------------------------------------------
-
-const FormBox = styled.div`
-  margin: 48px 0 0 0;
-`;
-
-const FormHeading = styled.h3`
-  font-weight: bold;
-  margin: 0 0 6px 0;
-`;
-
-const FormDescription = styled.p`
-  margin: 0 0 16px 0;
-`;
-
-const FormDescriptionBottom = styled.p`
-  margin: 0 0 24px 0;
-`;
-
-
-// ---------------------------------------------
-//   Text Field
-// ---------------------------------------------
-
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-
-// ---------------------------------------------
-//   Pages Array
-// ---------------------------------------------
-
-const PagesBox = styled.div`
-  margin: 0;
-`;
-
-const StyledSelect = styled(Select)`
-  && {
-    width: 200px;
-  }
-`;
-
-const PagesTextFieldBox = styled.div`
-  margin: 8px 0 12px 0;
-`;
-
-
-// ---------------------------------------------
-//   Submit Button
-// ---------------------------------------------
-
-const SubmitButtonBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 20px 0 0 0;
-`;
-
-const ButtonBox = styled.div`
-  margin: 0 16px 0 0;
-`;
+import Panel from '../../../../app/common/layout/components/panel';
 
 
 
@@ -186,7 +65,7 @@ const ButtonBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeUrSettings')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -211,7 +90,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'settingsFormPage' });
+    this.props.stores.layout.handleButtonEnable({ _id: 'urSettingsFormPage' });
     
     
   }
@@ -228,7 +107,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl } = this.props;
+    const { stores, storeUrSettings, intl } = this.props;
     
     const {
       
@@ -236,7 +115,7 @@ export default injectIntl(class extends React.Component {
       handleEdit,
       handleSubmitPages,
       
-    } = stores.playerSettings;
+    } = storeUrSettings;
     
     
     
@@ -245,15 +124,15 @@ export default injectIntl(class extends React.Component {
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'settingsFormPage'], true);
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
+    // const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'urSettingsFormPage'], true);
+    // const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'settingsFormPage'], true);
+    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'urSettingsFormPage'], true);
     
     
     
@@ -274,6 +153,23 @@ export default injectIntl(class extends React.Component {
     
     const pagesArr = lodashGet(dataObj, ['pagesArr'], []);
     
+    // console.log(`
+    //   ----- storeUrSettings -----\n
+    //   ${util.inspect(storeUrSettings, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- dataObj -----\n
+    //   ${util.inspect(dataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- form-page / pagesArr -----\n
+    //   ${util.inspect(pagesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     const componentsArr = [];
     
@@ -293,12 +189,23 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       componentsArr.push(
-        
-        <PagesBox key={index}>
+        <div key={index}>
           
-          <FormControl disabled={buttonDisabled}>
-            <InputLabel htmlFor="pageType">タイトルを変更するページ</InputLabel>
-            <StyledSelect
+          
+          <FormControl
+            css={css`
+              margin: 8px 0 0 0 !important;
+            `}
+            // variant="outlined"
+            disabled={buttonDisabled}
+          >
+            
+            <InputLabel htmlFor="pageType">変更するページ</InputLabel>
+            
+            <Select
+              css={css`
+                width: 250px;
+              `}
               value={valueObj.type}
               onChange={(eventObj) => handleEdit({
                 pathArr: ['pagesArr', 0, 'type'],
@@ -310,12 +217,26 @@ export default injectIntl(class extends React.Component {
               }}
             >
               <MenuItem value={'top'}>トップページ</MenuItem>
-            </StyledSelect>
+            </Select>
+            
           </FormControl>
           
           
-          <PagesTextFieldBox>
-            <StyledTextFieldWide
+          
+          
+          <div
+            css={css`
+              margin: 8px 0 12px 0;
+            `}
+          >
+            <TextField
+              css={css`
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              `}
               id="name"
               label="タイトル"
               value={validationUsersPagesNameObj.value}
@@ -331,12 +252,19 @@ export default injectIntl(class extends React.Component {
                 maxLength: 100,
               }}
             />
-          </PagesTextFieldBox>
+          </div>
+          
+          
           
           
           <FormControl disabled={buttonDisabled}>
+            
             <InputLabel htmlFor="pageLanguage">タイトルの言語</InputLabel>
-            <StyledSelect
+            
+            <Select
+              css={css`
+                width: 250px;
+              `}
               value={valueObj.language}
               onChange={(eventObj) => handleEdit({
                 pathArr: ['pagesArr', 0, 'language'],
@@ -348,12 +276,14 @@ export default injectIntl(class extends React.Component {
               }}
             >
               <MenuItem value={'ja'}>日本語</MenuItem>
-            </StyledSelect>
+            </Select>
+            
           </FormControl>
           
-        </PagesBox>
-        
+          
+        </div>
       );
+      
       
       // console.log(`
       //   ----- valueObj -----\n
@@ -394,130 +324,146 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <Panel _id="panelPage" heading="ユーザーページ設定">
+        
+        <p>
+          ユーザーページの設定を行います。ユーザーページというのは、各ユーザーごとに用意される固有のページになります。URLやタイトルを変更することが可能です。
+        </p>
         
         
-        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        
+        
+        <form>
           
           
-          {/* Heading */}
-          <StyledExpansionPanelSummary>
-          
-            <Heading>プレイヤーページ設定</Heading>
+          {/* URL */}
+          <div
+            css={css`
+              margin: 36px 0 0 0;
+            `}
+          >
             
-            {/* Expansion Button */}
-            <ExpandMoreBox>
-              <StyledIconButton
-                onClick={() => handlePanelExpand({ _id: 'settingsFormPage' })}
-                aria-expanded={panelExpanded}
-                aria-label="Show more"
-                disabled={buttonDisabled}
-              >
-                {panelExpanded ? (
-                  <IconExpandLess />
-                ) : (
-                  <IconExpandMore />
-                )}
-              </StyledIconButton>
-            </ExpandMoreBox>
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              URL変更
+            </h3>
             
-          </StyledExpansionPanelSummary>
-          
-          
-          
-          
-          {/* Contents */}
-          <StyledExpansionPanelDetails>
+            <p
+            >
+              URLを入力してください。次の形のURLになります。https://gameusers.org/ur/***
+            </p>
             
-            <Description>
-              プレイヤーページの設定を行います。プレイヤーページのURLや、タイトルを変更することができます。
-            </Description>
-            
-            <p>
-              プレイヤーページというのは各ユーザーごとに用意される固有のページで、こちらの設定ページもプレイヤーページの一部になります。
+            <p
+              css={css`
+                margin: 0 0 8px 0;
+              `}
+            >
+              利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。3文字以上、32文字以内。
             </p>
             
             
+            <div>
+              <TextField
+                css={css`
+                  width: 400px;
+                  
+                  @media screen and (max-width: 480px) {
+                    width: 100%;
+                  }
+                `}
+                id="userID"
+                label="URL"
+                value={validationUsersPlayerIDObj.value}
+                onChange={(eventObj) => handleEdit({
+                  pathArr: ['userID'],
+                  value: eventObj.target.value
+                })}
+                error={validationUsersPlayerIDObj.error}
+                helperText={intl.formatMessage({ id: validationUsersPlayerIDObj.messageID }, { numberOfCharacters: validationUsersPlayerIDObj.numberOfCharacters })}
+                disabled={buttonDisabled}
+                margin="normal"
+                inputProps={{
+                  maxLength: 32,
+                }}
+                // InputProps={{
+                //   startAdornment: (
+                //     <InputAdornment position="start">
+                //       <IconPlayerID />
+                //     </InputAdornment>
+                //   ),
+                // }}
+              />
+            </div>
             
-            
-            {/* Player ID */}
-            <FormBox>
-              
-              <FormHeading>Player ID</FormHeading>
-              
-              <FormDescription>Player IDを入力してください。Player IDはプレイヤーページのURLになります。https://gameusers.org/ur/***</FormDescription>
-              
-              <FormDescription>利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。3文字以上、32文字以内。</FormDescription>
-              
-              
-              <div>
-                <StyledTextFieldWide
-                  id="userID"
-                  label="Player ID"
-                  value={validationUsersPlayerIDObj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: ['userID'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationUsersPlayerIDObj.error}
-                  helperText={intl.formatMessage({ id: validationUsersPlayerIDObj.messageID }, { numberOfCharacters: validationUsersPlayerIDObj.numberOfCharacters })}
-                  disabled={buttonDisabled}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 100,
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconPlayerID />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              
-            </FormBox>
-            
-            
-            
-            
-            {/* Pages Array */}
-            <FormBox>
-              
-              <FormHeading>タイトル変更</FormHeading>
-              
-              <FormDescriptionBottom>プレイヤーページのタイトルを変更できます。</FormDescriptionBottom>
-              
-              {componentsArr}
-            
-            </FormBox>
-            
-            
-            
-            
-            {/* Submit Button */}
-            <SubmitButtonBox>
-              
-              <ButtonBox>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleSubmitPages()}
-                  disabled={buttonDisabled}
-                >
-                  送信する
-                </Button>
-              </ButtonBox>
-              
-            </SubmitButtonBox>
-            
-            
-          </StyledExpansionPanelDetails>
+          </div>
           
-        </StyledExpansionPanel>
+          
+          
+          
+          {/* Title */}
+          <div
+            css={css`
+              margin: 48px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              タイトル変更
+            </h3>
+            
+            
+            <p
+              css={css`
+                margin: 0 0 24px 0;
+              `}
+            >
+              ユーザーページのタイトルを変更できます。
+            </p>
+            
+            
+            {componentsArr}
+            
+          
+          </div>
+          
+          
+          
+          
+          {/* Submit Button */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 48px 0 0 0;
+            `}
+          >
+            
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleSubmitPages()}
+              disabled={buttonDisabled}
+            >
+              送信する
+            </Button>
+            
+          </div>
+          
+          
+          
+          
+        </form>
         
-        
-      </React.Fragment>
+      </Panel>
     );
     
   }

@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -17,6 +17,7 @@ const util = require('util');
 import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -31,20 +32,32 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validation
 // ---------------------------------------------
 
-const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
-const { validationUsersEmail } = require('../../../@database/users/validations/email');
+import { validationUsersLoginID } from '../../../@database/users/validations/login-id';
+import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../@database/users/validations/login-password';
+import { validationUsersEmail } from '../../../@database/users/validations/email';
+
+// const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
+// const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
+// const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
+// --------------------------------------------------
+//   Stores
+// --------------------------------------------------
+
+import initStoreData from '../../../@stores/data';
+import initStoreLayout from '../../../common/layout/stores/layout';
+import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/form';
 
 
 // --------------------------------------------------
 //   Store
 // --------------------------------------------------
 
-let storePlSettings = null;
-let storeLayout = null;
-let storeData = null;
+let storeUrSettings = null;
+let storeData = initStoreData({});
+let storeLayout = initStoreLayout({});
+let storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
 
 
@@ -676,32 +689,65 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStorePlayerSettings(argumentsObj, storeInstanceObj) {
-  
-  const isServer = argumentsObj.isServer;
+export default function initStoreUrSettings({ propsObj }) {
   
   
-  if ('layout' in storeInstanceObj) {
-    storeLayout = storeInstanceObj.layout;
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
+  if (storeUrSettings === null) {
+    storeUrSettings = new Store();
   }
   
-  if ('data' in storeInstanceObj) {
-    storeData = storeInstanceObj.data;
-  }
   
+  // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
   
-  if (isServer) {
+  if (propsObj) {
     
-    return new Store();
     
-  } else {
+    // --------------------------------------------------
+    //   pagesArr
+    // --------------------------------------------------
     
-    if (storePlSettings === null) {
-      storePlSettings = new Store();
+    if (lodashHas(propsObj, ['pagesArr'])) {
+      // console.log(`
+      //   ----- propsObj.pagesArr -----\n
+      //   ${util.inspect(propsObj.pagesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      lodashSet(storeUrSettings, ['dataObj', 'pagesArr'], propsObj.pagesArr);
+      // storeUrSettings.pagesArr = propsObj.pagesArr;
     }
     
-    return storePlSettings;
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- propsObj -----\n
+    //   ${util.inspect(propsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
   }
+  
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
+  return storeUrSettings;
+  
   
 }

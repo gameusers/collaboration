@@ -156,21 +156,6 @@ export default class extends React.Component {
     const pathname = `/uc/${userCommunityID}/forum/${forumID}`;
     
     
-    // const storeForum = initStoreForum({});
-    // const page = lodashGet(storeForum, ['dataObj', userCommunities_id, 'forumThreadsForListObj', 'page'], 1);
-    // const cloneObj = lodashGet(storeForum, ['dataObj', userCommunities_id, 'forumThreadsForListObj'], {});
-    
-    // console.log(chalk`
-    //   page: {green ${page}}
-    // `);
-    
-    // console.log(`
-    //   ----- cloneObj -----\n
-    //   ${util.inspect(cloneObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
@@ -189,12 +174,11 @@ export default class extends React.Component {
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
     
+    const threadDataObj = lodashGet(resultObj, ['data', 'forumThreadsObj', 'dataObj'], {});
+    const threadID = Object.keys(threadDataObj)[0];
+    const threadName = lodashGet(resultObj, ['data', 'forumThreadsObj', 'dataObj', threadID, 'name'], '');
     
-    
-    
-    
-    // const forumObj = lodashGet(storeForum, ['dataObj', userCommunities_id, 'forumThreadsForListObj', 'page'], 1);
-    // forumThreadsForListObj.page = page;
+    const title = `${userCommunityName}: ${threadName}`;
     
     
     // --------------------------------------------------
@@ -251,7 +235,7 @@ export default class extends React.Component {
       reqAcceptLanguage,
       userCommunityID,
       userCommunities_id,
-      userCommunityName,
+      title,
       storesObj,
       
     };
@@ -267,6 +251,11 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
     
     super(props);
     
@@ -351,7 +340,7 @@ export default class extends React.Component {
     //   Header Title
     // --------------------------------------------------
     
-    const title = this.props.userCommunityName;
+    // const title = this.props.userCommunityName;
     
     
     
@@ -368,7 +357,7 @@ export default class extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>{title}</title>
+            <title>{this.props.title}</title>
           </Head>
           
           

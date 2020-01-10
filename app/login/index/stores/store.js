@@ -248,6 +248,7 @@ class Store {
       
       
       
+      
       // console.log(chalk`
       //   \n---------- handleLogin ----------\n
       //   loginID: {green ${loginID}}
@@ -267,6 +268,13 @@ class Store {
       
       
       // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr: ['formLogin'] });
+      
+      
+      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
@@ -283,8 +291,9 @@ class Store {
       
       const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v1/users/login`,
+        // urlApi: `${process.env.URL_API}/v2/db/users/login`,
         methodType: 'POST',
-        formData: formData
+        formData
       });
       
       
@@ -350,7 +359,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: 'login' });
+      storeLayout.handleButtonEnable({ pathArr: ['formLogin'] });
       
       
       // ---------------------------------------------
@@ -377,10 +386,21 @@ class Store {
 
 export default function initStoreLoginIndex({}) {
   
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
   if (storeLoginIndex === null) {
     storeLoginIndex = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeLoginIndex;
+  
   
 }

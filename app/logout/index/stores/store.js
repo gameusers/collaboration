@@ -55,7 +55,7 @@ class Store {
    * ログアウトフォームで送信ボタンを押すと呼び出される
    */
   @action.bound
-  async handleLogout() {
+  async handleLogout({ pathArr }) {
     
     
     try {
@@ -72,7 +72,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: 'logout' });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       // ---------------------------------------------
@@ -120,7 +120,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Page Transition
+      //   Page Transition / トップページに移動
       // ---------------------------------------------
       
       window.location.href = process.env.URL_BASE;
@@ -146,7 +146,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: 'logout' });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -173,10 +173,21 @@ class Store {
 
 export default function initStoreLogoutIndex({}) {
   
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
   if (storeLogoutIndex === null) {
     storeLogoutIndex = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeLogoutIndex;
+  
   
 }

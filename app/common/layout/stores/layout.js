@@ -487,8 +487,9 @@ class Store {
    * パネルの状態を取得する
    * @param {Array} pathArr - path
    */
-  handleGetPanelExpanded({ pathArr }) {
-    return lodashGet(this.panelExpandedObj, pathArr, true);
+  // @action.bound
+  handleGetPanelExpanded({ pathArr, defaultExpanded = true }) {
+    return lodashGet(this.panelExpandedObj, pathArr, defaultExpanded);
   };
   
   
@@ -498,22 +499,55 @@ class Store {
    * @param {Array} pathArr - データを保存する場所を配列で指定する
    */
   @action.bound
-  handlePanelExpand({ _id, pathArr }) {
+  handlePanelExpand({ pathArr, defaultExpanded = true }) {
     
-    if (pathArr) {
+    // const expanded = lodashGet(this.panelExpandedObj, pathArr, defaultExpanded);
+    const expanded = this.handleGetPanelExpanded({ pathArr, defaultExpanded });
+    
+    // console.log(`
+    //   ----- handlePanelExpand / pathArr -----\n
+    //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.panelExpandedObj -----\n
+    //   ${util.inspect(this.panelExpandedObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
       
-      const expanded = lodashGet(this.panelExpandedObj, pathArr, true);
-      lodashSet(this.panelExpandedObj, pathArr, !expanded);
+    //   Current expanded: {green ${expanded}}
+    //   Set expanded: {green ${!expanded}}
+    // `);
+    
+    
+    
+    
+    lodashSet(this.panelExpandedObj, pathArr, !expanded);
+    
+    
+    // if (pathArr) {
       
-    } else {// _idを削除後は消すこと
+    //   const expanded = lodashGet(this.panelExpandedObj, pathArr, true);
       
-      if (_id in this.panelExpandedObj) {
-        this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
-      } else {
-        this.panelExpandedObj[_id] = false;
-      }
+    //   console.log(chalk`
+    //     expanded: {green ${expanded}}
+    //   `);
       
-    }
+      
+    //   lodashSet(this.panelExpandedObj, pathArr, !expanded);
+      
+    // } else {// _idを削除後は消すこと
+      
+    //   if (_id in this.panelExpandedObj) {
+    //     this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
+    //   } else {
+    //     this.panelExpandedObj[_id] = false;
+    //   }
+      
+    // }
     
   };
   

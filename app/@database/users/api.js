@@ -56,8 +56,8 @@ const { validationUsersLoginID } = require('./validations/login-id');
 const { validationUsersLoginIDServer } = require('./validations/login-id-server');
 const { validationUsersLoginPassword } = require('./validations/login-password');
 const { validationUsersEmailServer } = require('./validations/email-server');
-const { validationUsersPlayerIDServer } = require('./validations/player-id-server');
-const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
+// const { validationUsersUserIDServer } = require('./validations/user-id-server');
+// const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('./validations/pages');
 
 
 // ---------------------------------------------
@@ -146,6 +146,8 @@ router.post('/login', upload.none(), (req, res, next) => {
       lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
       
       
+      
+      
       // ---------------------------------------------
       //   Verify CSRF
       // ---------------------------------------------
@@ -160,6 +162,8 @@ router.post('/login', upload.none(), (req, res, next) => {
       await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
       
       
+      
+      
       // --------------------------------------------------
       //   Login Check
       // --------------------------------------------------
@@ -168,6 +172,8 @@ router.post('/login', upload.none(), (req, res, next) => {
         statusCode = 401;
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'yyaAiB5f-', messageID: 'V9vI1Cl1S' }] });
       }
+      
+      
       
       
       // --------------------------------------------------
@@ -1119,172 +1125,172 @@ router.post('/email', upload.none(), async (req, res, next) => {
 //   プレイヤーページ設定 / endpointID: OeLTc2B7G
 // --------------------------------------------------
 
-router.post('/pages', upload.none(), async (req, res, next) => {
+// router.post('/pages', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
   
-  const returnObj = {
-    pageTransition: false
-  };
+//   const returnObj = {
+//     pageTransition: false
+//   };
   
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+//   const requestParametersObj = {};
+//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   POST Data
+//     // --------------------------------------------------
     
-    const { userID, pagesArr } = req.body;
+//     const { userID, pagesArr } = req.body;
     
-    lodashSet(requestParametersObj, ['userID'], userID);
-    lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
+//     lodashSet(requestParametersObj, ['userID'], userID);
+//     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
     
-    const parsedPagesArr = JSON.parse(pagesArr);
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
+//     const parsedPagesArr = JSON.parse(pagesArr);
     
     
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
+//     // ---------------------------------------------
+//     //   Verify CSRF
+//     // ---------------------------------------------
     
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GTWHMVVkX', messageID: 'xLLNIpo6a' }] });
-    }
+//     verifyCsrfToken(req, res);
     
     
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Login Check
+//     // --------------------------------------------------
     
-    const newPagesArr = [];
+//     if (!req.isAuthenticated()) {
+//       statusCode = 401;
+//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GTWHMVVkX', messageID: 'xLLNIpo6a' }] });
+//     }
     
-    await validationUsersPlayerIDServer({ value: userID, loginUsers_id });
     
-    for (let valueObj of parsedPagesArr.values()) {
+//     // --------------------------------------------------
+//     //   Validation
+//     // --------------------------------------------------
+    
+//     const newPagesArr = [];
+    
+//     await validationUsersPlayerIDServer({ value: userID, loginUsers_id });
+    
+//     for (let valueObj of parsedPagesArr.values()) {
       
-      await validationUsersPagesType({ throwError: true, value: valueObj.type });
-      await validationUsersPagesName({ throwError: true, value: valueObj.name });
-      await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
+//       await validationUsersPagesType({ throwError: true, value: valueObj.type });
+//       await validationUsersPagesName({ throwError: true, value: valueObj.name });
+//       await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
       
-      newPagesArr.push({
-        _id: shortid.generate(),
-        type: valueObj.type,
-        name: valueObj.name,
-        language: valueObj.language,
-      });
+//       newPagesArr.push({
+//         _id: shortid.generate(),
+//         type: valueObj.type,
+//         name: valueObj.name,
+//         language: valueObj.language,
+//       });
       
-    }
+//     }
     
     
-    // --------------------------------------------------
-    //   Find One - Page Transition
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Find One - Page Transition
+//     // --------------------------------------------------
     
-    let conditionObj = {
-      _id: loginUsers_id
-    };
+//     let conditionObj = {
+//       _id: loginUsers_id
+//     };
     
-    let docObj = await ModelUsers.findOne({ conditionObj });
+//     let docObj = await ModelUsers.findOne({ conditionObj });
     
-    if (docObj.userID !== userID) {
-      returnObj.pageTransition = true;
-    }
+//     if (docObj.userID !== userID) {
+//       returnObj.pageTransition = true;
+//     }
     
-    // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
-    
-    const ISO8601 = moment().toISOString();
-    
-    conditionObj = {
-      _id: loginUsers_id
-    };
-    
-    const saveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        userID,
-        pagesArr: newPagesArr,
-      }
-    };
-    
-    await ModelUsers.upsert({ conditionObj, saveObj });
+//     // console.log(`
+//     //   ----- docObj -----\n
+//     //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Update
+//     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   userID: {green ${userID}}
-    // `);
+//     const ISO8601 = moment().toISOString();
     
-    // console.log(`\n---------- parsedPagesArr ----------\n`);
-    // console.dir(parsedPagesArr);
-    // console.log(`\n-----------------------------------\n`);
+//     conditionObj = {
+//       _id: loginUsers_id
+//     };
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     const saveObj = {
+//       $set: {
+//         updatedDate: ISO8601,
+//         userID,
+//         pagesArr: newPagesArr,
+//       }
+//     };
     
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
+//     await ModelUsers.upsert({ conditionObj, saveObj });
     
     
-  } catch (errorObj) {
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   userID: {green ${userID}}
+//     // `);
+    
+//     // console.log(`\n---------- parsedPagesArr ----------\n`);
+//     // console.dir(parsedPagesArr);
+//     // console.log(`\n-----------------------------------\n`);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
     
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
+//     // ---------------------------------------------
+//     //   Return Json Object / Success
+//     // ---------------------------------------------
     
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'OeLTc2B7G',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
+//     return res.status(200).json(returnObj);
     
     
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
+//   } catch (errorObj) {
     
     
-  }
+//     // ---------------------------------------------
+//     //   Log
+//     // ---------------------------------------------
+    
+//     const resultErrorObj = returnErrorsArr({
+//       errorObj,
+//       endpointID: 'OeLTc2B7G',
+//       users_id: loginUsers_id,
+//       ip: req.ip,
+//       requestParametersObj,
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
   
   
-});
+// });
 
 
 

@@ -53,7 +53,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = ['formLogout'];
+    
+    
   }
   
   
@@ -70,7 +80,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'logout' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -91,12 +101,21 @@ export default injectIntl(class extends React.Component {
     
     const { stores, storeLogoutIndex, intl } = this.props;
     
+    const {
+      
+      handleLogout,
+      
+    } = storeLogoutIndex;
+    
+    
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'logout'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    
+    
     
     
     // --------------------------------------------------
@@ -104,7 +123,10 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Panel _id="panelLogout" heading="ログアウト">
+      <Panel
+        heading="ログアウト"
+        pathArr={this.pathArr}
+      >
         
         
         <p>
@@ -121,7 +143,7 @@ export default injectIntl(class extends React.Component {
           <Button
             variant="contained"
             color="primary"
-            onClick={storeLogoutIndex.handleLogout}
+            onClick={() => handleLogout({ pathArr: this.pathArr })}
             disabled={buttonDisabled}
           >
             ログアウト

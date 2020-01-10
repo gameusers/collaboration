@@ -74,7 +74,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = ['formLogin'];
+    
+    
   }
   
   
@@ -91,7 +101,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'login' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -123,17 +133,19 @@ export default injectIntl(class extends React.Component {
     } = storeLoginIndex;
     
     
+    
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'login'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
     
     // --------------------------------------------------
-    //   Login ID
+    //   Login ID - Validation
     // --------------------------------------------------
     
     const loginID = lodashGet(dataObj, ['loginID'], '');
@@ -141,7 +153,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Login Password
+    //   Login Password - Validation
     // --------------------------------------------------
     
     const loginPasswordShow = lodashGet(dataObj, ['loginPasswordShow'], false);
@@ -185,7 +197,10 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Panel _id="panelLogin" heading="ログイン - ID & パスワード">
+      <Panel
+        heading="ログイン - ID & パスワード"
+        pathArr={this.pathArr}
+      >
         
         
         <p>

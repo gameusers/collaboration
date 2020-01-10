@@ -567,10 +567,10 @@ class Store {
   
   
   /**
-   * プレイヤーページ設定フォームを送信する
+   * ユーザーページ設定フォームを送信する
    */
   @action.bound
-  async handleSubmitPages() {
+  async handleSubmitPages({ pathArr }) {
     
     
     try {
@@ -580,7 +580,7 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: 'settingsFormPage' });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       // ---------------------------------------------
@@ -595,10 +595,7 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      let formData = new FormData();
-      
-      formData.append('userID', userID);
-      formData.append('pagesArr', JSON.stringify(pagesArr));
+      const formDataObj = { userID, pagesArr };
       
       
       // ---------------------------------------------
@@ -606,13 +603,15 @@ class Store {
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/pages`,
+        urlApi: `${process.env.URL_API}/v2/db/users/upsert-pages`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj)
       });
+      
       // console.log(`\n---------- resultObj ----------\n`);
       // console.dir(resultObj);
       // console.log(`\n-----------------------------------\n`);
+      
       
       // ---------------------------------------------
       //   Error
@@ -629,12 +628,12 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: 'CquCU7BtA',
+        messageID: '5o6-p-Pkz',
       });
       
       
       // ---------------------------------------------
-      //   Page Transition
+      //   Page Transition / URLを変更した場合にリロードする
       // ---------------------------------------------
       
       const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
@@ -664,7 +663,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: 'settingsFormPage' });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -709,17 +708,20 @@ export default function initStoreUrSettings({ propsObj }) {
     
     
     // --------------------------------------------------
+    //   userID
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['userID'])) {
+      lodashSet(storeUrSettings, ['dataObj', 'userID'], propsObj.userID);
+    }
+    
+    
+    // --------------------------------------------------
     //   pagesArr
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['pagesArr'])) {
-      // console.log(`
-      //   ----- propsObj.pagesArr -----\n
-      //   ${util.inspect(propsObj.pagesArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       lodashSet(storeUrSettings, ['dataObj', 'pagesArr'], propsObj.pagesArr);
-      // storeUrSettings.pagesArr = propsObj.pagesArr;
     }
     
     

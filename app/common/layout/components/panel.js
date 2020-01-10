@@ -89,14 +89,14 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, _id, heading } = this.props;
+    const { stores, _id, heading, pathArr, defaultExpanded = true } = this.props;
     
     
     // --------------------------------------------------
     //   Panel
     // --------------------------------------------------
     
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', _id], true);
+    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr, defaultExpanded });
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
@@ -106,7 +106,11 @@ export default injectIntl(class extends React.Component {
     
     const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', _id], true);
     
-    
+    // console.log(chalk`
+    //   /app/common/layout/components/panel.js
+    //   defaultExpanded: {green ${defaultExpanded}}
+    //   panelExpanded: {green ${panelExpanded}}
+    // `);
     
     
     // --------------------------------------------------
@@ -118,7 +122,6 @@ export default injectIntl(class extends React.Component {
         css={css`
           margin: 0 !important;
         `}
-        defaultExpanded={true}
         expanded={panelExpanded}
       >
         
@@ -153,7 +156,7 @@ export default injectIntl(class extends React.Component {
                   padding: 4px;
                 }
               `}
-              onClick={() => handlePanelExpand({ _id })}
+              onClick={() => handlePanelExpand({ pathArr, defaultExpanded })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={buttonDisabled}

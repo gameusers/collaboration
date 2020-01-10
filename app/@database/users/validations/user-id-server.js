@@ -39,7 +39,7 @@ const { CustomError } = require('../../../@modules/error/custom');
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} バリデーション結果
  */
-const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
+const validationUsersUserIDServer = async ({ value, loginUsers_id }) => {
   
   
   // ---------------------------------------------
@@ -114,5 +114,5 @@ const validationUsersPlayerIDServer = async ({ value, loginUsers_id }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersPlayerIDServer
+  validationUsersUserIDServer
 };

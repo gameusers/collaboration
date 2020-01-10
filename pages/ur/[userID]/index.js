@@ -163,12 +163,12 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'プロフィール',
-        href: `/ur/user?userID=${userID}`,// エラーが出るからとりあえずコメントアウト
+        href: `/ur/[userID]?userID=${userID}`,
         as: `/ur/${userID}`,
       },
       {
         name: '設定',
-        href: `/ur/settings?userID=${userID}`,
+        href: `/ur/[userID]/settings?userID=${userID}`,
         as: `/ur/${userID}/settings`,
       }
     ];

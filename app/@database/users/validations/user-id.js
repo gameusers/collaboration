@@ -28,12 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Player ID
+ * User ID
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationUsersPlayerID = ({ throwError = false, value }) => {
+const validationUsersUserID = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -125,5 +125,5 @@ const validationUsersPlayerID = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationUsersPlayerID,
+  validationUsersUserID,
 };

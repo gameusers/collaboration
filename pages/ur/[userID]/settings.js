@@ -76,11 +76,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   const storeUrSettings = initStoreUrSettings({ propsObj });
   
-  // console.log(`
-  //     ----- storeUrSettings -----\n
-  //     ${util.inspect(storeUrSettings, { colors: true, depth: null })}\n
-  //     --------------------\n
-  //   `);
+  
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
@@ -157,7 +153,7 @@ export default class extends React.Component {
     let propsObj = lodashGet(resultObj, ['data'], {});
     // const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    // const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
+    // const userID = lodashGet(resultObj, ['data', 'userID'], '');
     const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
     
     const title = `ユーザー設定`;
@@ -170,17 +166,17 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'プロフィール',
-        href: `/ur/user?userID=${userID}`,
+        href: `/ur/[userID]?userID=${userID}`,
         as: `/ur/${userID}`,
       },
       {
         name: '設定',
-        href: `/ur/settings?userID=${userID}`,
+        href: `/ur/[userID]/settings?userID=${userID}`,
         as: `/ur/${userID}/settings`,
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pagesArr };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userID, pagesArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -231,17 +227,11 @@ export default class extends React.Component {
     //   pathname: {green ${pathname}}
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -253,13 +243,12 @@ export default class extends React.Component {
       statusCode,
       reqAcceptLanguage,
       title,
+      userID,
       storesObj,
       propsObj,
       
     };
     
-    
-    // return { isServer, pathname, initialPropsObj, statusCode, reqAcceptLanguage, userID };
     
   }
   
@@ -443,7 +432,7 @@ export default class extends React.Component {
               
               
               {/* プレイヤーページ設定 */}
-              <FormPage />
+              <FormPage userID={this.props.userID} />
               
               
               {/* アカウント編集 */}

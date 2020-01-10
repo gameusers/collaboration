@@ -14,6 +14,8 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const shortid = require('shortid');
+const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -23,7 +25,6 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
-// const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
 // ---------------------------------------------
@@ -36,23 +37,25 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationIP } = require('../../../../../app/@validations/ip');
+const { validationUsersUserIDServer } = require('../../../../../app/@database/users/validations/user-id-server');
+const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('../../../../../app/@database/users/validations/pages');
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
-
-
-// ---------------------------------------------
-//   API
-// ---------------------------------------------
-
-const { initialProps } = require('../../../../../app/@api/v2/common');
+// const { locale } = require('../../../../../app/@locales/locale');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: Rounc2BcR
+//   endpointID: 0qiGkIA99
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -69,18 +72,16 @@ export default async (req, res) => {
   //   Locale
   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
+  // const localeObj = locale({
+  //   acceptLanguage: req.headers['accept-language']
+  // });
   
   
   // --------------------------------------------------
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {
-    cardsArr: [],
-  };
+  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -96,26 +97,38 @@ export default async (req, res) => {
     
     const bodyObj = JSON.parse(req.body);
     
-    const {
+    const { 
       
-      userID
+      userID,
+      pagesArr,
       
     } = bodyObj;
     
+    
+    // --------------------------------------------------
+    //   Log Data
+    // --------------------------------------------------
+    
+    lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['userID'], userID);
-    
-    // console.log(chalk`
-    //   /pages/api/v2/ur/[userID]/settings.js
-    //   userID: {green ${userID}}
-    // `);
-    
-    // console.log(`
-    //   ----- req.body -----\n
-    //   ${util.inspect(req.body, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
     
     
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(chalk`
+      /pages/api/v2/db/users/upsert-pages.js
+      loginUsers_id: {green ${loginUsers_id}}
+      userID: {green ${userID}}
+    `);
+    
+    console.log(`
+      ----- pagesArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(pagesArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // ---------------------------------------------
@@ -131,106 +144,84 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '-A7OeA6CQ', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'V5Ww_uLNM', messageID: 'xLLNIpo6a' }] });
     }
     
     
     
     
     // --------------------------------------------------
-    //   データ取得 / Users
-    //   アクセスしたページ所有者のユーザー情報
-    //   users_id を取得するために利用
+    //   Validation
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOne({
-      conditionObj: {
+    await validationIP({ throwError: true, value: req.ip });
+    await validationUsersUserIDServer({ throwError: true, value: userID, loginUsers_id });
+    
+    
+    // --------------------------------------------------
+    //   Validation / Pages
+    // --------------------------------------------------
+    
+    const newPagesArr = [];
+    
+    for (let valueObj of pagesArr.values()) {
+      
+      await validationUsersPagesType({ throwError: true, value: valueObj.type });
+      await validationUsersPagesName({ throwError: true, value: valueObj.name });
+      await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
+      
+      newPagesArr.push({
+        _id: shortid.generate(),
+        type: valueObj.type,
+        name: valueObj.name,
+        language: valueObj.language,
+      });
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   Find One - Page Transition
+    // --------------------------------------------------
+    
+    let conditionObj = {
+      _id: loginUsers_id
+    };
+    
+    let docObj = await ModelUsers.findOne({ conditionObj });
+    
+    if (docObj.userID !== userID) {
+      returnObj.pageTransition = true;
+    }
+    
+    console.log(`
+      ----- docObj -----\n
+      ${util.inspect(docObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    conditionObj = {
+      _id: loginUsers_id
+    };
+    
+    const saveObj = {
+      $set: {
+        updatedDate: ISO8601,
         userID,
+        pagesArr: newPagesArr,
       }
-    });
+    };
     
-    const users_id = lodashGet(usersObj, ['_id'], '');
-    
-    
-    // --------------------------------------------------
-    //   ユーザー情報が存在しない場合はエラー
-    // --------------------------------------------------
-    
-    if (!users_id) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WILn3VVWP', messageID: 'Error' }] });
-    }
+    await ModelUsers.upsert({ conditionObj, saveObj });
     
     
-    // --------------------------------------------------
-    //   違うユーザーの設定ページにアクセスした場合はエラー
-    // --------------------------------------------------
-    
-    if (users_id !== loginUsers_id) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RZuemJfef', messageID: 'Error' }] });
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Common Initial Props
-    // --------------------------------------------------
-    
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   userID
-    // --------------------------------------------------
-    
-    // returnObj.userID = lodashGet(usersObj, ['userID'], '');
-    
-    
-    // --------------------------------------------------
-    //   pagesArr
-    // --------------------------------------------------
-    
-    returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
-    
-    // const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
-    //   localeObj,
-    //   users_id,
-    //   loginUsers_id
-    // });
-    
-    // returnObj.cardPlayersObj = cardPlayersObj;
-    
-    
-    // // --------------------------------------------------
-    // //   カードを一覧で表示するための配列を作成する
-    // // --------------------------------------------------
-    
-    // const cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    // if (cardPlayersKeysArr.length > 0) {
-    //   returnObj.cardsArr.push({
-    //     cardPlayers_id: cardPlayersKeysArr[0]
-    //   });
-    // }
     
     
     // --------------------------------------------------
@@ -238,32 +229,17 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   {green ur/player/api/player / initial-props}
-    //   userID: {green ${userID}}
-    //   users_id：{green ${users_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   forumThreads_id: {green ${forumThreads_id}}
+    //   name: {green ${name} / ${typeof name}}
+    //   comment: {green ${comment} / ${typeof comment}}
+    //   IP: {green ${req.ip}}
+    //   User Agent: {green ${req.headers['user-agent']}}
     // `);
     
     // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -286,7 +262,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'Rounc2BcR',
+      endpointID: '0qiGkIA99',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

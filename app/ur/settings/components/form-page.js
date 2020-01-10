@@ -29,10 +29,10 @@ import { css, jsx } from '@emotion/core';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import FormControl from '@material-ui/core/FormControl';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import Select from '@material-ui/core/Select';
 
 
 // ---------------------------------------------
@@ -48,7 +48,7 @@ import Select from '@material-ui/core/Select';
 //   Validations
 // ---------------------------------------------
 
-import { validationUsersPlayerID } from '../../../../app/@database/users/validations/player-id';
+import { validationUsersUserID } from '../../../../app/@database/users/validations/user-id';
 import { validationUsersPagesName } from '../../../../app/@database/users/validations/pages';
 
 
@@ -75,7 +75,17 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.userID, 'urSettingsFormPage'];
+    
+    
   }
   
   
@@ -90,7 +100,8 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'urSettingsFormPage' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    // this.props.stores.layout.handleButtonEnable({ _id: 'urSettingsFormPage' });
     
     
   }
@@ -121,28 +132,21 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Panel
-    // --------------------------------------------------
-    
-    // const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'urSettingsFormPage'], true);
-    // const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
-    
-    
-    // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'urSettingsFormPage'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'urSettingsFormPage'], true);
     
     
     
     
     // --------------------------------------------------
-    //   Player ID
+    //   Validation User ID
     // --------------------------------------------------
     
     const userID = lodashGet(dataObj, ['userID'], '');
-    const validationUsersPlayerIDObj = validationUsersPlayerID({ value: userID });
+    const validationUsersUserIDObj = validationUsersUserID({ value: userID });
     
     
     
@@ -192,7 +196,7 @@ export default injectIntl(class extends React.Component {
         <div key={index}>
           
           
-          <FormControl
+          {/*<FormControl
             css={css`
               margin: 8px 0 0 0 !important;
             `}
@@ -219,14 +223,14 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'top'}>トップページ</MenuItem>
             </Select>
             
-          </FormControl>
+          </FormControl>*/}
           
           
           
           
           <div
             css={css`
-              margin: 8px 0 12px 0;
+              // margin: 8px 0 12px 0;
             `}
           >
             <TextField
@@ -257,7 +261,7 @@ export default injectIntl(class extends React.Component {
           
           
           
-          <FormControl disabled={buttonDisabled}>
+          {/*<FormControl disabled={buttonDisabled}>
             
             <InputLabel htmlFor="pageLanguage">タイトルの言語</InputLabel>
             
@@ -278,7 +282,7 @@ export default injectIntl(class extends React.Component {
               <MenuItem value={'ja'}>日本語</MenuItem>
             </Select>
             
-          </FormControl>
+          </FormControl>*/}
           
           
         </div>
@@ -296,6 +300,7 @@ export default injectIntl(class extends React.Component {
       //   ${util.inspect(validationUsersPagesNameObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
       
     }
     
@@ -324,10 +329,14 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Panel _id="panelPage" heading="ユーザーページ設定">
+      <Panel
+        heading="ユーザーページ設定"
+        pathArr={this.pathArr}
+        // defaultExpanded={false}
+      >
         
         <p>
-          ユーザーページの設定を行います。ユーザーページというのは、各ユーザーごとに用意される固有のページになります。URLやタイトルを変更することが可能です。
+          ユーザーページの設定を行います。ユーザーページというのは、各ユーザーごとに用意される固有のページになります。URLやページのタイトルを変更することが可能です。
         </p>
         
         
@@ -354,7 +363,7 @@ export default injectIntl(class extends React.Component {
             
             <p
             >
-              URLを入力してください。次の形のURLになります。https://gameusers.org/ur/***
+              ユーザーページのURLを入力してください。次の形式のURLになります。https://gameusers.org/ur/<span css={css`color: red;`}>***</span>　赤文字部分の文字列を入力してください。
             </p>
             
             <p
@@ -377,25 +386,18 @@ export default injectIntl(class extends React.Component {
                 `}
                 id="userID"
                 label="URL"
-                value={validationUsersPlayerIDObj.value}
+                value={validationUsersUserIDObj.value}
                 onChange={(eventObj) => handleEdit({
                   pathArr: ['userID'],
                   value: eventObj.target.value
                 })}
-                error={validationUsersPlayerIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersPlayerIDObj.messageID }, { numberOfCharacters: validationUsersPlayerIDObj.numberOfCharacters })}
+                error={validationUsersUserIDObj.error}
+                helperText={intl.formatMessage({ id: validationUsersUserIDObj.messageID }, { numberOfCharacters: validationUsersUserIDObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{
                   maxLength: 32,
                 }}
-                // InputProps={{
-                //   startAdornment: (
-                //     <InputAdornment position="start">
-                //       <IconPlayerID />
-                //     </InputAdornment>
-                //   ),
-                // }}
               />
             </div>
             
@@ -417,13 +419,13 @@ export default injectIntl(class extends React.Component {
                 margin: 0 0 6px 0;
               `}
             >
-              タイトル変更
+              ページのタイトル変更
             </h3>
             
             
             <p
               css={css`
-                margin: 0 0 24px 0;
+                margin: 0 0 12px 0;
               `}
             >
               ユーザーページのタイトルを変更できます。
@@ -450,7 +452,7 @@ export default injectIntl(class extends React.Component {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleSubmitPages()}
+              onClick={() => handleSubmitPages({ pathArr: this.pathArr })}
               disabled={buttonDisabled}
             >
               送信する

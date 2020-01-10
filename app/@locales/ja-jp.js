@@ -188,10 +188,11 @@ const ja_JP = {
   
   
   // ---------------------------------------------
-  //   Player / Settings
+  //   User Page / Settings
   // ---------------------------------------------
   
   // /app/ur/settings/stores/store.js
+  '5o6-p-Pkz': 'ユーザーページ設定を編集しました',
   'nhn2yers2': 'ログイン情報を編集しました',
   '84FmVC7RZ': 'E-Mailを登録しました',
   'hbRy4HpaP': 'E-Mailの登録を解除しました',

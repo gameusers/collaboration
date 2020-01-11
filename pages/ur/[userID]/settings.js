@@ -153,7 +153,6 @@ export default class extends React.Component {
     let propsObj = lodashGet(resultObj, ['data'], {});
     // const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    // const userID = lodashGet(resultObj, ['data', 'userID'], '');
     const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
     
     const title = `ユーザー設定`;

@@ -21,7 +21,7 @@ const lodashGet = require('lodash/get');
 //   Model
 // ---------------------------------------------
 
-const SchemaUsers = require('./schema');
+const SchemaDevelopersPublishers = require('./schema');
 
 
 
@@ -39,13 +39,6 @@ const findOne = async ({ conditionObj }) => {
   
   
   // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
   //   Database
   // --------------------------------------------------
   
@@ -53,21 +46,19 @@ const findOne = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
-    //   FindOne
+    //   Error
     // --------------------------------------------------
     
-    const docObj = await SchemaUsers.findOne(conditionObj).exec();
-    
-    if (docObj === null) {
-      return returnObj;
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
     }
     
     
     // --------------------------------------------------
-    //   Return
+    //   FindOne
     // --------------------------------------------------
     
-    return docObj;
+    return await SchemaDevelopersPublishers.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -75,6 +66,45 @@ const findOne = async ({ conditionObj }) => {
     throw err;
     
   }
+  
+  
+  // --------------------------------------------------
+  //   Return Value
+  // --------------------------------------------------
+  
+  // let returnObj = {};
+  
+  
+  // // --------------------------------------------------
+  // //   Database
+  // // --------------------------------------------------
+  
+  // try {
+    
+    
+  //   // --------------------------------------------------
+  //   //   FindOne
+  //   // --------------------------------------------------
+    
+  //   const docObj = await SchemaDevelopersPublishers.findOne(conditionObj).exec();
+    
+  //   if (docObj === null) {
+  //     return returnObj;
+  //   }
+    
+    
+  //   // --------------------------------------------------
+  //   //   Return
+  //   // --------------------------------------------------
+    
+  //   return docObj;
+    
+    
+  // } catch (err) {
+    
+  //   throw err;
+    
+  // }
   
   
 };
@@ -98,10 +128,19 @@ const find = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.find(conditionObj).exec();
+    return await SchemaDevelopersPublishers.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -131,10 +170,19 @@ const count = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.countDocuments(conditionObj).exec();
+    return await SchemaDevelopersPublishers.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -150,7 +198,8 @@ const count = async ({ conditionObj }) => {
 
 /**
  * 挿入 / 更新する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ
  * @return {Array} 
  */
 const upsert = async ({ conditionObj, saveObj }) => {
@@ -164,10 +213,23 @@ const upsert = async ({ conditionObj, saveObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaDevelopersPublishers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -182,8 +244,8 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
- * 挿入する
- * @param {Object} argumentsObj - 引数
+ * 大量に挿入する
+ * @param {Array} saveArr - 保存するデータ
  * @return {Array} 
  */
 const insertMany = async ({ saveArr }) => {
@@ -197,10 +259,19 @@ const insertMany = async ({ saveArr }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!saveArr || !saveArr.length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaUsers.insertMany(saveArr);
+    return await SchemaDevelopersPublishers.insertMany(saveArr);
     
     
   } catch (err) {
@@ -230,10 +301,19 @@ const deleteMany = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaUsers.deleteMany(conditionObj);
+    return await SchemaDevelopersPublishers.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -252,10 +332,12 @@ const deleteMany = async ({ conditionObj }) => {
 // --------------------------------------------------
 
 module.exports = {
+  
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
+  
 };

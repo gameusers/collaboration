@@ -40,6 +40,15 @@ const findOne = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
     
@@ -71,6 +80,15 @@ const find = async ({ conditionObj }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -107,6 +125,15 @@ const count = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
@@ -126,7 +153,8 @@ const count = async ({ conditionObj }) => {
 
 /**
  * 挿入 / 更新する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ
  * @return {Array} 
  */
 const upsert = async ({ conditionObj, saveObj }) => {
@@ -137,6 +165,19 @@ const upsert = async ({ conditionObj, saveObj }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -158,8 +199,8 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
- * 挿入する
- * @param {Object} argumentsObj - 引数
+ * 大量に挿入する
+ * @param {Array} saveArr - 保存するデータ
  * @return {Array} 
  */
 const insertMany = async ({ saveArr }) => {
@@ -170,6 +211,15 @@ const insertMany = async ({ saveArr }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!saveArr || !saveArr.length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -206,6 +256,15 @@ const deleteMany = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
     
@@ -219,6 +278,8 @@ const deleteMany = async ({ conditionObj }) => {
   }
   
 };
+
+
 
 
 
@@ -361,11 +422,14 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
 // --------------------------------------------------
 
 module.exports = {
+  
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
+  
   transactionForEmailConfirmation,
+  
 };

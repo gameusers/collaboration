@@ -25,18 +25,14 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaForumThreads = require('./schema');
-const SchemaUserCommunities = require('../user-communities/schema');
-
-const ModelForumComments = require('../forum-comments/model');
-const ModelUserCommunities = require('../user-communities/model');
+const SchemaForumThreadsImagesAndVideos = require('./schema');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr } = require('../../@format/image');
+// const { formatImagesAndVideosArr } = require('../../@format/image');
 
 
 
@@ -61,10 +57,19 @@ const findOne = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaForumThreads.findOne(conditionObj).exec();
+    return await SchemaForumThreadsImagesAndVideos.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -95,10 +100,19 @@ const find = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumThreads.find(conditionObj).exec();
+    return await SchemaForumThreadsImagesAndVideos.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -128,10 +142,19 @@ const count = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumThreads.countDocuments(conditionObj).exec();
+    return await SchemaForumThreadsImagesAndVideos.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -147,7 +170,8 @@ const count = async ({ conditionObj }) => {
 
 /**
  * 挿入 / 更新する
- * @param {Object} argumentsObj - 引数
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ
  * @return {Array} 
  */
 const upsert = async ({ conditionObj, saveObj }) => {
@@ -161,10 +185,23 @@ const upsert = async ({ conditionObj, saveObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaForumThreads.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaForumThreadsImagesAndVideos.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -180,7 +217,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 /**
  * 挿入する
- * @param {Object} argumentsObj - 引数
+ * @param {Array} saveArr - 保存するデータ
  * @return {Array} 
  */
 const insertMany = async ({ saveArr }) => {
@@ -194,10 +231,19 @@ const insertMany = async ({ saveArr }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!saveArr || !saveArr.length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaForumThreads.insertMany(saveArr);
+    return await SchemaForumThreadsImagesAndVideos.insertMany(saveArr);
     
     
   } catch (err) {
@@ -227,10 +273,19 @@ const deleteMany = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaForumThreads.deleteMany(conditionObj);
+    return await SchemaForumThreadsImagesAndVideos.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -249,10 +304,12 @@ const deleteMany = async ({ conditionObj }) => {
 // --------------------------------------------------
 
 module.exports = {
+  
   findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
+  
 };

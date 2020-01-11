@@ -31,40 +31,32 @@ import { css, jsx } from '@emotion/core';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../../../../app/@modules/fetch';
-import { createCsrfToken } from '../../../../app/@modules/csrf';
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../../../../app/@locales/locale');
+import { fetchWrapper } from '../../../app/@modules/fetch';
+import { createCsrfToken } from '../../../app/@modules/csrf';
 
 
 // ---------------------------------------------
 //   Stores
 // ---------------------------------------------
 
-import initStoreRoot from '../../../../app/@stores/root';
-import initStoreUserCommunity from '../../../../app/uc/community/stores/store';
-import initStoreCardPlayer from '../../../../app/common/card/player/stores/player';
-import initStoreForum from '../../../../app/common/forum/stores/store';
-import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../../app/common/image-and-video/stores/form';
+import initStoreRoot from '../../../app/@stores/root';
+import initStoreUcSettings from '../../../app/uc/settings/stores/store';
+import initStoreUserCommunity from '../../../app/uc/community/stores/store';
+import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
+import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
+import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 
 
 // ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Layout from '../../../../app/common/layout/components/layout';
-import Sidebar from '../../../../app/common/layout/components/sidebar';
-import Drawer from '../../../../app/common/layout/components/drawer';
-// import ForumNavigation from '../../../../app/common/forum/components/navigation';
-// import FormEvent from '../../../../app/common/event/components/form';
-import VideoModal from '../../../../app/common/image-and-video/components/video-modal';
-import CardPlayerDialog from '../../../../app/common/card/player/components/dialog';
+import Layout from '../../../app/common/layout/components/layout';
+import Sidebar from '../../../app/common/layout/components/sidebar';
+import Drawer from '../../../app/common/layout/components/drawer';
+import FormCommunity from '../../../app/uc/settings/components/form-community';
+import VideoModal from '../../../app/common/image-and-video/components/video-modal';
+import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
 
 
 
@@ -82,9 +74,9 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
+  const storeUcSettings = initStoreUcSettings({ propsObj });
   const storeUserCommunity = initStoreUserCommunity({});
-  // const storeCardPlayer = initStoreCardPlayer({});
-  const storeForum = initStoreForum({ propsObj });
+  const storeCardPlayer = initStoreCardPlayer({});
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   
@@ -95,9 +87,9 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
+    storeUcSettings,
     storeUserCommunity,
-    // storeCardPlayer,
-    storeForum,
+    storeCardPlayer,
     storeImageAndVideo,
     storeImageAndVideoForm,
     
@@ -111,7 +103,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/uc/***/event
+//   URL: http://dev-1.gameusers.org:8080/uc/***/settings
 // --------------------------------------------------
 
 @observer
@@ -139,8 +131,19 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userCommunityID = query.userCommunityID;
-    // const forumID = query.forumID;
-    const pathname = `/uc/${userCommunityID}/event`;
+    const pathname = `/uc/${userCommunityID}/settings`;
+    const temporaryDataID = `/uc/${userCommunityID}`;
+    
+    
+    // ---------------------------------------------
+    //   FormData
+    // ---------------------------------------------
+    
+    const formDataObj = {
+      
+      userCommunityID,
+      
+    };
     
     
     // --------------------------------------------------
@@ -148,10 +151,11 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/event`),
-      methodType: 'GET',
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/settings`),
+      methodType: 'POST',
       reqHeadersCookie,
       reqAcceptLanguage,
+      formData: JSON.stringify(formDataObj),
     });
     
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
@@ -161,7 +165,7 @@ export default class extends React.Component {
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
     
-    const title = `${userCommunityName}: イベント`;
+    const title = `${userCommunityName}: 設定`;
     
     
     // --------------------------------------------------
@@ -171,12 +175,12 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'トップ',
-        href: `/uc/community?userCommunityID=${userCommunityID}`,
+        href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}`,
       },
       {
         name: '設定',
-        href: `/uc/settings?userCommunityID=${userCommunityID}`,
+        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}/settings`,
       }
     ];
@@ -187,16 +191,17 @@ export default class extends React.Component {
     
     
     
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
+    // const isServer = !!req;
+    
     // console.log(chalk`
     //   login: {green ${login}}
     //   datetimeCurrent: {green ${datetimeCurrent}}
+    //   isServer: {green ${isServer}}
     //   userCommunityID: {green ${userCommunityID}}
-    //   forumID: {green ${forumID}}
     //   userCommunityName: {green ${userCommunityName}}
     // `);
     
@@ -213,14 +218,14 @@ export default class extends React.Component {
     
     return { 
       
-      propsObj,
       statusCode,
       reqAcceptLanguage,
+      temporaryDataID,
       userCommunityID,
       userCommunities_id,
-      // userCommunityName,
       title,
       storesObj,
+      propsObj,
       
     };
     
@@ -262,7 +267,6 @@ export default class extends React.Component {
         this.props.statusCode !== 200 ||
         this.props.userCommunities_id === ''
       ) {
-        
         throw new Error();
       }
       
@@ -307,13 +311,6 @@ export default class extends React.Component {
     }
     
     
-    // --------------------------------------------------
-    //   Header Title
-    // --------------------------------------------------
-    
-    // const title = this.props.userCommunityName;
-    
-    
     
     
     // --------------------------------------------------
@@ -330,8 +327,6 @@ export default class extends React.Component {
           <Head>
             <title>{this.props.title}</title>
           </Head>
-          
-          
           
           
           {/* 2 Column */}
@@ -365,14 +360,16 @@ export default class extends React.Component {
               `}
             >
               
-              Sidebar
-              {/* フォーラムのナビゲーション */}
-              {/*<Sidebar>
-                <ForumNavigation
-                  userCommunityID={this.props.userCommunityID}
-                  userCommunities_id={this.props.userCommunities_id}
+              
+              <Sidebar>
+                <img
+                  src="/static/img/common/advertisement/300x250.jpg"
+                  width="300"
+                  height="250"
                 />
-              </Sidebar>*/}
+              </Sidebar>
+              
+              Sidebar
               
               
             </div>
@@ -393,20 +390,13 @@ export default class extends React.Component {
             >
               
               
-              {/*<FormEvent
-                _id={this.props.userCommunities_id}
-              />*/}
-              
-              {/* フォーラム */}
-              {/*<Element
-                name="forumThreads"
+              {/* コミュニティ設定 */}
+              <Element
+                name="ucSettings"
               >
-                <ForumThread
-                  userCommunityID={this.props.userCommunityID}
-                  userCommunities_id={this.props.userCommunities_id}
-                  individual={true}
-                />
-              </Element>*/}
+                <FormCommunity userCommunities_id={this.props.userCommunities_id} />
+              </Element>
+              
               
             </div>
             
@@ -417,7 +407,7 @@ export default class extends React.Component {
           
           
           {/* プレイヤーカードを表示するダイアログ */}
-          {/*<CardPlayerDialog />*/}
+          <CardPlayerDialog />
           
           
           

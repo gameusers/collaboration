@@ -211,12 +211,12 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'トップ',
-        href: `/uc/community?userCommunityID=${userCommunityID}`,
+        href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}`,
       },
       {
         name: '設定',
-        href: `/uc/settings?userCommunityID=${userCommunityID}`,
+        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}/settings`,
       }
     ];

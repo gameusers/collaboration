@@ -65,6 +65,15 @@ const findOne = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   FindOne
     // --------------------------------------------------
     
@@ -86,7 +95,7 @@ const findOne = async ({ conditionObj }) => {
 /**
  * 取得する
  * @param {Object} conditionObj - 検索条件
- * @return {Array} 取得データ
+ * @return {Array}取得データ
  */
 const find = async ({ conditionObj }) => {
   
@@ -96,6 +105,15 @@ const find = async ({ conditionObj }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -132,6 +150,15 @@ const count = async ({ conditionObj }) => {
     
     
     // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
     //   Find
     // --------------------------------------------------
     
@@ -151,8 +178,9 @@ const count = async ({ conditionObj }) => {
 
 /**
  * 挿入 / 更新する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ
+ * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
   
@@ -162,6 +190,19 @@ const upsert = async ({ conditionObj, saveObj }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -183,9 +224,9 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
- * 挿入する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 
+ * 大量に挿入する
+ * @param {Array} saveArr - 保存するデータ
+ * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
   
@@ -195,6 +236,15 @@ const insertMany = async ({ saveArr }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!saveArr || !saveArr.length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -218,7 +268,7 @@ const insertMany = async ({ saveArr }) => {
 /**
  * 削除する
  * @param {Object} conditionObj - 検索条件
- * @return {Array} 
+ * @return {Array}
  */
 const deleteMany = async ({ conditionObj }) => {
   
@@ -228,6 +278,15 @@ const deleteMany = async ({ conditionObj }) => {
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
     
     
     // --------------------------------------------------
@@ -261,7 +320,7 @@ const deleteMany = async ({ conditionObj }) => {
  * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
  * @param {number} page - ページ
  * @param {number} limit - 1ページに表示する件数
- * @return {Array} 取得データ
+ * @return {Array}取得データ
  */
 const findForThreadsList = async ({
   
@@ -493,7 +552,7 @@ const findForThreadsList = async ({
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
+ * @return {Array}取得データ
  */
 const findForForum = async ({
   
@@ -755,7 +814,7 @@ const findForForum = async ({
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
- * @return {Array} 取得データ
+ * @return {Array}取得データ
  */
 const findForForumBy_forumID = async ({
   
@@ -1170,7 +1229,7 @@ const findForForumBy_forumID = async ({
 * @param {Object} localeObj - ロケール
 * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
 * @param {Array} arr - 配列
-* @return {Array} フォーマット後のデータ
+* @return {Array}フォーマット後のデータ
 */
 const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCount }) => {
   
@@ -1359,7 +1418,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCoun
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
- * @return {Array} 取得データ
+ * @return {Array}取得データ
  */
 const findForDeleteThread = async ({
   
@@ -1544,7 +1603,7 @@ const findForDeleteThread = async ({
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} forumThreads_id - DB forum-threads _id / スレッドID
- * @return {Array} 取得データ
+ * @return {Array}取得データ
  */
 const findForEdit = async ({
   

@@ -71,7 +71,20 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeImageAndVideoForm, intl, pathArr = [], type, descriptionImage, descriptionVideo, showImageCaption, limit } = this.props;
+    const {
+      
+      storeImageAndVideoForm,
+      intl,
+      pathArr = [],
+      type,
+      showImageButton = true,
+      showVideoButton = true,
+      descriptionImage,
+      descriptionVideo,
+      showImageCaption,
+      limit,
+      
+    } = this.props;
     
     const {
       
@@ -124,8 +137,15 @@ export default injectIntl(class extends React.Component {
           `}
           color="primary"
         >
-          <Button onClick={() => handleShowFormImage({ pathArr })}>画像</Button>
-          <Button onClick={() => handleShowFormVideo({ pathArr })}>動画</Button>
+          
+          {showImageButton &&
+            <Button onClick={() => handleShowFormImage({ pathArr })}>画像</Button>
+          }
+          
+          {showVideoButton &&
+            <Button onClick={() => handleShowFormVideo({ pathArr })}>動画</Button>
+          }
+          
         </ButtonGroup>
         
         

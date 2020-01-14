@@ -185,18 +185,18 @@ class Store {
   /**
    * TextField を変更する
    * 文字が入力されるたびに Fetch でサジェストデータを取得しにいく
-   * @param {Array} pathArr - パス
+   * @param {string} _id - ID
    * @param {string} value - 値
    */
   @action.bound
-  async handleKeyword({ pathArr, value }) {
+  async handleKeyword({ _id, value }) {
     
     
     // ---------------------------------------------
     //   TextField の値変更
     // ---------------------------------------------
     
-    lodashSet(this.dataObj, [...pathArr, 'keyword'], value);
+    lodashSet(this.dataObj, [_id, 'keyword'], value);
     
     
     // ---------------------------------------------
@@ -219,11 +219,9 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      const formDataObj = {
-        
-        keyword: value,
-        
-      };
+      const formData = new FormData();
+      
+      formData.append('keyword', value);
       
       
       // ---------------------------------------------
@@ -231,9 +229,9 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/games/read-suggestion`,
+        urlApi: `${process.env.URL_API}/v1/games/find-by-search-keywords-arr-for-suggestion`,
         methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
+        formData: formData
       });
       
       
@@ -251,11 +249,10 @@ class Store {
       // ---------------------------------------------
       
       // サジェストのキーボードでの選択状態をクリア
-      lodashSet(this.dataObj, [...pathArr, 'selected'], null);
-      // delete this.dataObj[_id].selected;
+      delete this.dataObj[_id].selected;
       
       // サジェストのデータを更新
-      lodashSet(this.dataObj, [...pathArr, 'suggestionArr'], resultObj.data);
+      lodashSet(this.dataObj, [_id, 'suggestionArr'], resultObj.data);
       
       
       // console.log(`\n---------- resultObj.data ----------\n`);

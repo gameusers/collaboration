@@ -56,8 +56,8 @@
     "js-cookie": "^2.2.1",
     "keycode": "^2.2.0",
     "lodash": "^4.17.15",
-    "mobx": "^5.15.1",
-    "mobx-react": "^6.1.4",
+    "mobx": "^5.15.2",
+    "mobx-react": "^6.1.5",
     "moment": "^2.24.0",
     "mongo-express": "^0.54.0",
     "mongoose": "^5.8.7",
@@ -92,8 +92,8 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.7.4",
-    "@babel/plugin-proposal-decorators": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-proposal-decorators": "^7.8.3",
     "babel-plugin-styled-components": "^1.10.6",
     "cpx": "^1.5.0",
     "mkdirp": "^0.5.1",

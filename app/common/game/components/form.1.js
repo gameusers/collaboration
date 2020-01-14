@@ -71,7 +71,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeGameForm, pathArr, _id, gamesArr = [], func, funcDelete } = this.props;
+    const { storeGameForm, _id, gamesArr, func, funcDelete } = this.props;
     
     const {
       
@@ -93,7 +93,6 @@ export default injectIntl(class extends React.Component {
     
     let componentSelected = '';
     let componentSelectedArr = [];
-    
     
     if (gamesArr.length > 0) {
       
@@ -150,14 +149,14 @@ export default injectIntl(class extends React.Component {
     //   Keyword
     // --------------------------------------------------
     
-    const keyword = lodashGet(dataObj, [...pathArr, 'keyword'], '');
+    const keyword = lodashGet(dataObj, [_id, 'keyword'], '');
     
     
     // --------------------------------------------------
     //   Text Field Focus
     // --------------------------------------------------
     
-    const onFocus = lodashGet(dataObj, [...pathArr, 'focus'], false);
+    const onFocus = lodashGet(dataObj, [_id, 'focus'], false);
     
     
     
@@ -167,14 +166,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // サジェストのデータ配列
-    const suggestionArr = lodashGet(dataObj, [...pathArr, 'suggestionArr'], []);
-    
-    console.log(`
-      ----- suggestionArr -----\n
-      ${util.inspect(suggestionArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
+    const suggestionArr = lodashGet(dataObj, [_id, 'suggestionArr'], []);
     
     // サジェストのメニューを作成
     let componentSuggestionMenuItemsArr = [];
@@ -183,7 +175,7 @@ export default injectIntl(class extends React.Component {
     if (onFocus && keyword && suggestionArr.length > 0) {
       
       // キーボードの↓↑でハードウェアを選択するための番号、初期値は影響のない9999にしておく
-      const selectedIndex = lodashGet(dataObj, [...pathArr, 'selectedIndex'], 9999);
+      const selectedIndex = lodashGet(dataObj, [_id, 'selectedIndex'], 9999);
       
       for (const [index, valueObj] of suggestionArr.entries()) {
         
@@ -241,14 +233,7 @@ export default injectIntl(class extends React.Component {
     if (componentSuggestionMenuItemsArr.length > 0) {
       
       componentSuggestion = 
-        <Paper
-          css={css`
-            && {
-              margin: 12px 0 0 0;
-            }
-          `}
-          square
-        >
+        <Paper square>
           <MenuList>
             {componentSuggestionMenuItemsArr}
           </MenuList>
@@ -287,14 +272,13 @@ export default injectIntl(class extends React.Component {
         {componentSelected}
         
         
-        {/* TextField */}
         <div
           onFocus={() => handleEdit({
-            pathArr: [...pathArr, 'focus'],
+            pathArr: [_id, 'focus'],
             value: true
           })}
           onBlur={() => handleEdit({
-            pathArr: [...pathArr, 'focus'],
+            pathArr: [_id, 'focus'],
             value: false
           })}
         >
@@ -310,9 +294,9 @@ export default injectIntl(class extends React.Component {
               }
             `}
             id="hardwareActive"
-            label="ゲーム名"
+            label="ゲーム"
             value={keyword}
-            onChange={(eventObj) => handleKeyword({ pathArr, value: eventObj.target.value })}
+            onChange={(eventObj) => handleKeyword({ _id, value: eventObj.target.value })}
             onKeyDown={(eventObj) => handleSuggestionOnKeyDown({ eventObj, _id, func })}
             helperText="ゲーム名の一部を入力して、検索結果から選んでください"
             margin="normal"

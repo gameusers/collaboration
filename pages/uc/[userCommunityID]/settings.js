@@ -42,6 +42,7 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 import initStoreRoot from '../../../app/@stores/root';
 import initStoreUcSettings from '../../../app/uc/settings/stores/store';
 import initStoreUserCommunity from '../../../app/uc/community/stores/store';
+import initStoreGameForm from '../../../app/common/game/stores/form';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
@@ -76,6 +77,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   const storeUcSettings = initStoreUcSettings({ propsObj });
   const storeUserCommunity = initStoreUserCommunity({});
+  const storeGameForm = initStoreGameForm({});
   const storeCardPlayer = initStoreCardPlayer({});
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
@@ -89,6 +91,7 @@ const getOrCreateStore = ({ propsObj }) => {
     
     storeUcSettings,
     storeUserCommunity,
+    storeGameForm,
     storeCardPlayer,
     storeImageAndVideo,
     storeImageAndVideoForm,

@@ -17,6 +17,7 @@ import util from 'util';
 import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
+import TextareaAutosize from 'react-autosize-textarea';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -29,19 +30,6 @@ import { css, jsx } from '@emotion/core';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import FormControl from '@material-ui/core/FormControl';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import Select from '@material-ui/core/Select';
-
-
-// ---------------------------------------------
-//   Material UI / Icons
-// ---------------------------------------------
-
-// import IconExpandLess from '@material-ui/icons/ExpandLess';
-// import IconExpandMore from '@material-ui/icons/ExpandMore';
-// import IconPlayerID from '@material-ui/icons/Mood';
 
 
 // ---------------------------------------------
@@ -57,6 +45,9 @@ import { validationUsersPagesName } from '../../../../app/@database/users/valida
 // ---------------------------------------------
 
 import Panel from '../../../../app/common/layout/components/panel';
+import ImageAndVideoForm from '../../../../app/common/image-and-video/components/form';
+// import ImageAndVideoFormImage from '../../../../app/common/image-and-video/components/form-image';
+import GameForm from '../../../../app/common/game/components/form';
 
 
 
@@ -83,7 +74,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props.userID, 'urSettingsFormPage'];
+    this.pathArr = [props.userCommunities_id, 'ucSettingsFormCommunity'];
     
     
   }
@@ -101,7 +92,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    // this.props.stores.layout.handleButtonEnable({ _id: 'urSettingsFormPage' });
     
     
   }
@@ -136,7 +126,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
-    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'urSettingsFormPage'], true);
     
     
     
@@ -147,162 +136,6 @@ export default injectIntl(class extends React.Component {
     
     const userID = lodashGet(dataObj, ['userID'], '');
     const validationUsersUserIDObj = validationUsersUserID({ value: userID });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Pages Array
-    // --------------------------------------------------
-    
-    const pagesArr = lodashGet(dataObj, ['pagesArr'], []);
-    
-    // console.log(`
-    //   ----- storeUcSettings -----\n
-    //   ${util.inspect(storeUcSettings, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- dataObj -----\n
-    //   ${util.inspect(dataObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- form-page / pagesArr -----\n
-    //   ${util.inspect(pagesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    const componentsArr = [];
-    
-    for (const [index, valueObj] of pagesArr.entries()) {
-      
-      
-      // --------------------------------------------------
-      //   Validation
-      // --------------------------------------------------
-      
-      const name = lodashGet(valueObj, ['name'], '');
-      const validationUsersPagesNameObj = validationUsersPagesName({ value: name });
-      
-      
-      // --------------------------------------------------
-      //   Component
-      // --------------------------------------------------
-      
-      componentsArr.push(
-        <div key={index}>
-          
-          
-          {/*<FormControl
-            css={css`
-              margin: 8px 0 0 0 !important;
-            `}
-            // variant="outlined"
-            disabled={buttonDisabled}
-          >
-            
-            <InputLabel htmlFor="pageType">変更するページ</InputLabel>
-            
-            <Select
-              css={css`
-                width: 250px;
-              `}
-              value={valueObj.type}
-              onChange={(eventObj) => handleEdit({
-                pathArr: ['pagesArr', 0, 'type'],
-                value: eventObj.target.value
-              })}
-              inputProps={{
-                name: 'pageType',
-                id: 'pageType',
-              }}
-            >
-              <MenuItem value={'top'}>トップページ</MenuItem>
-            </Select>
-            
-          </FormControl>*/}
-          
-          
-          
-          
-          <div
-            css={css`
-              // margin: 8px 0 12px 0;
-            `}
-          >
-            <TextField
-              css={css`
-                width: 400px;
-                
-                @media screen and (max-width: 480px) {
-                  width: 100%;
-                }
-              `}
-              id="name"
-              label="タイトル"
-              value={validationUsersPagesNameObj.value}
-              onChange={(eventObj) => handleEdit({
-                pathArr: ['pagesArr', 0, 'name'],
-                value: eventObj.target.value
-              })}
-              error={validationUsersPagesNameObj.error}
-              helperText={intl.formatMessage({ id: validationUsersPagesNameObj.messageID }, { numberOfCharacters: validationUsersPagesNameObj.numberOfCharacters })}
-              disabled={buttonDisabled}
-              margin="normal"
-              inputProps={{
-                maxLength: 100,
-              }}
-            />
-          </div>
-          
-          
-          
-          
-          {/*<FormControl disabled={buttonDisabled}>
-            
-            <InputLabel htmlFor="pageLanguage">タイトルの言語</InputLabel>
-            
-            <Select
-              css={css`
-                width: 250px;
-              `}
-              value={valueObj.language}
-              onChange={(eventObj) => handleEdit({
-                pathArr: ['pagesArr', 0, 'language'],
-                value: eventObj.target.value
-              })}
-              inputProps={{
-                name: 'pageLanguage',
-                id: 'pageLanguage',
-              }}
-            >
-              <MenuItem value={'ja'}>日本語</MenuItem>
-            </Select>
-            
-          </FormControl>*/}
-          
-          
-        </div>
-      );
-      
-      
-      // console.log(`
-      //   ----- valueObj -----\n
-      //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      // console.log(`
-      //   ----- validationUsersPagesNameObj -----\n
-      //   ${util.inspect(validationUsersPagesNameObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-    }
     
     
     
@@ -330,13 +163,12 @@ export default injectIntl(class extends React.Component {
     
     return (
       <Panel
-        heading="ユーザーページ設定"
+        heading="ユーザーコミュニティ設定"
         pathArr={this.pathArr}
-        // defaultExpanded={false}
       >
         
         <p>
-          ユーザーページの設定を行います。ユーザーページというのは、各ユーザーごとに用意される固有のページになります。URLやページのタイトルを変更することが可能です。
+          ユーザーコミュニティの設定を行います。
         </p>
         
         
@@ -345,10 +177,12 @@ export default injectIntl(class extends React.Component {
         <form>
           
           
-          {/* URL */}
+          {/* 基本情報 */}
           <div
             css={css`
+              border-top: 1px dashed #848484;
               margin: 36px 0 0 0;
+              padding: 24px 0 0 0;
             `}
           >
             
@@ -358,12 +192,238 @@ export default injectIntl(class extends React.Component {
                 margin: 0 0 6px 0;
               `}
             >
-              URL変更
+              基本情報
+            </h3>
+            
+            
+            <div>
+              <TextField
+                css={css`
+                  width: 100%;
+                `}
+                id="userID"
+                label="コミュニティの名前"
+                value={validationUsersUserIDObj.value}
+                onChange={(eventObj) => handleEdit({
+                  pathArr: [...this.pathArr, 'name'],
+                  value: eventObj.target.value
+                })}
+                error={validationUsersUserIDObj.error}
+                helperText={intl.formatMessage({ id: validationUsersUserIDObj.messageID }, { numberOfCharacters: validationUsersUserIDObj.numberOfCharacters })}
+                disabled={buttonDisabled}
+                margin="normal"
+                inputProps={{
+                  maxLength: 50,
+                }}
+              />
+            </div>
+            
+          </div>
+          
+          
+          
+          
+          {/* Description */}
+          <div
+            css={css`
+              margin: 24px 0 0 0;
+            `}
+          >
+            
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              コミュニティの説明文 (3000文字以内)
+            </h3>
+            
+            
+            <TextareaAutosize
+              css={css`
+                && {
+                  width: 100%;
+                  border-radius: 4px;
+                  box-sizing: border-box;
+                  padding: 8px 12px;
+                  line-height: 1.8;
+                  
+                  &:focus {
+                    outline: 1px #A9F5F2 solid;
+                  }
+                  
+                  resize: none;
+                }
+              `}
+              rows={5}
+              placeholder="コミュニティについての説明文を入力してください。"
+              // value={comment}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...this.pathArr, 'description'],
+                value: eventObj.target.value
+              })}
+              maxLength={3000}
+              disabled={buttonDisabled}
+            />
+            
+          </div>
+          
+          
+          
+          
+          {/* Description Short */}
+          <div
+            css={css`
+              margin: 24px 0 0 0;
+            `}
+          >
+            
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              短いコミュニティの説明文 (100文字以内)
+            </h3>
+            
+            
+            <TextareaAutosize
+              css={css`
+                && {
+                  width: 100%;
+                  border-radius: 4px;
+                  box-sizing: border-box;
+                  padding: 8px 12px;
+                  line-height: 1.8;
+                  
+                  &:focus {
+                    outline: 1px #A9F5F2 solid;
+                  }
+                  
+                  resize: none;
+                }
+              `}
+              rows={2}
+              placeholder="コミュニティを一覧表示する際に表示される短い説明文を入力してください。"
+              // value={comment}
+              onChange={(eventObj) => handleEdit({
+                pathArr: [...this.pathArr, 'descriptionShort'],
+                value: eventObj.target.value
+              })}
+              maxLength={100}
+              disabled={buttonDisabled}
+            />
+            
+          </div>
+          
+          
+          
+          
+          {/* Image Top */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              トップ画像
             </h3>
             
             <p
             >
-              ユーザーページのURLを入力してください。次の形式のURLになります。https://gameusers.org/ur/<span css={css`color: red;`}>***</span>　赤文字部分の文字列を入力してください。
+              コミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x 1080 ピクセル）をアップロードしてください。
+            </p>
+            
+            {/*<ImageAndVideoFormImage
+              pathArr={this.pathArr}
+              type="ucTop"
+              // description="トップページに表示される大きな画像です。"
+              showImageCaption={false}
+              limit={1}
+            />*/}
+            
+            <ImageAndVideoForm
+              pathArr={[...this.pathArr, 'top']}
+              type="ucTop"
+              showVideoButton={false}
+              showImageCaption={false}
+              limit={1}
+            />
+            
+          </div>
+          
+          
+          
+          
+          {/* Image Thumbnail */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              サムネイル画像
+            </h3>
+            
+            <p
+            >
+              コミュニティを一覧表示する際に表示される小さな画像です。正方形の画像（推奨サイズ 256 x 256 ピクセル以上）をアップロードしてください。
+            </p>
+            
+            <ImageAndVideoForm
+              pathArr={[...this.pathArr, 'thumbnail']}
+              type="ucThumbnail"
+              showVideoButton={false}
+              showImageCaption={false}
+              limit={1}
+            />
+            
+          </div>
+          
+          
+          
+          
+          {/* URL */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              URL
+            </h3>
+            
+            <p
+            >
+              コミュニティのURLを入力してください。次の形式のURLになります。https://gameusers.org/uc/<span css={css`color: red;`}>***</span>　赤文字部分の文字列を入力してください。
             </p>
             
             <p
@@ -406,10 +466,13 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* Title */}
+          {/* 関連ゲーム */}
           <div
             css={css`
-              margin: 48px 0 0 0;
+              border-top: 1px dashed #848484;
+              border-bottom: 1px dashed #848484;
+              margin: 24px 0 24px 0;
+              padding: 24px 0 24px 0;
             `}
           >
             
@@ -419,22 +482,31 @@ export default injectIntl(class extends React.Component {
                 margin: 0 0 6px 0;
               `}
             >
-              ページのタイトル変更
+              関連ゲーム
             </h3>
             
+            <p
+            >
+              このコミュニティに関連するゲームを選択してください。ユーザーコミュニティを検索した際に、そのゲームに関連するコミュニティとして表示されます。
+            </p>
             
             <p
               css={css`
-                margin: 0 0 12px 0;
+                margin: 0 0 8px 0;
               `}
             >
-              ユーザーページのタイトルを変更できます。
+              またトップ画像をアップロードしていない場合、こちらで選択したゲームの情報が代わりに表示されるようになります。
             </p>
             
             
-            {componentsArr}
+            <GameForm
+              pathArr={this.pathArr}
+              // _id={_id}
+              // gamesArr={gamesArr}
+              // func={handleGame}
+              // funcDelete={handleGameDelete}
+            />
             
-          
           </div>
           
           
@@ -445,7 +517,7 @@ export default injectIntl(class extends React.Component {
             css={css`
               display: flex;
               flex-flow: row wrap;
-              margin: 48px 0 0 0;
+              margin: 36px 0 0 0;
             `}
           >
             

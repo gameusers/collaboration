@@ -31,6 +31,7 @@ import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuList from '@material-ui/core/MenuList';
 import MenuItem from '@material-ui/core/MenuItem';
+import Avatar from '@material-ui/core/Avatar';
 
 
 // ---------------------------------------------
@@ -71,14 +72,14 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeGameForm, pathArr, _id, gamesArr = [], func, funcDelete } = this.props;
+    const { storeGameForm, pathArr } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
+      handleGetGamesArr,
       handleAdd,
-      handleRemove,
       handleKeyword,
       handleSuggestionOnKeyDown,
       
@@ -94,6 +95,15 @@ export default injectIntl(class extends React.Component {
     let componentSelected = '';
     let componentSelectedArr = [];
     
+    const gamesArr = handleGetGamesArr({ pathArr });
+    // const gamesArr = lodashGet(dataObj, [...pathArr, 'gamesArr'], []);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     if (gamesArr.length > 0) {
       
@@ -105,21 +115,19 @@ export default injectIntl(class extends React.Component {
         //   --------------------\n
         // `);
         
+        // console.log(chalk`
+        //   valueObj._id: {green ${valueObj._id}}
+        //   valueObj.name: {green ${valueObj.name}}
+        // `);
+        
         componentSelectedArr.push(
           <GameChip
-            _id={valueObj.games_id}
-            gameID={valueObj.gameID}
-            imagesAndVideosObj={valueObj.imagesAndVideosObj}
-            name={valueObj.name}
-            funcDelete={() => handleRemove({
-              _id,
-              games_id: valueObj._id,
-              gameID: valueObj.gameID,
-              imagesAndVideosObj: valueObj.imagesAndVideosObj,
-              name: valueObj.name,
-              funcDelete
-            })}
             key={index}
+            pathArr={pathArr}
+            _id={valueObj._id}
+            gameID={valueObj.gameID}
+            name={valueObj.name}
+            imagesAndVideosObj={valueObj.imagesAndVideosObj}
           />
         );
         
@@ -130,7 +138,7 @@ export default injectIntl(class extends React.Component {
           css={css`
             display: flex;
             flex-flow: row wrap;
-            margin: 12px 0 0 0;
+            margin: 12px 0;
             
             @media screen and (max-width: 480px) {
               flex-flow: column wrap;
@@ -169,11 +177,11 @@ export default injectIntl(class extends React.Component {
     // サジェストのデータ配列
     const suggestionArr = lodashGet(dataObj, [...pathArr, 'suggestionArr'], []);
     
-    console.log(`
-      ----- suggestionArr -----\n
-      ${util.inspect(suggestionArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- suggestionArr -----\n
+    //   ${util.inspect(suggestionArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // サジェストのメニューを作成
@@ -187,10 +195,29 @@ export default injectIntl(class extends React.Component {
       
       for (const [index, valueObj] of suggestionArr.entries()) {
         
-        // すでに選択されているハードウェアを太字で表示するためのindex
+        
+        // --------------------------------------------------
+        //   すでに選択されているハードウェアを太字で表示するためのindex
+        // --------------------------------------------------
+        
         const index2 = gamesArr.findIndex((value2Obj) => {
-          return value2Obj.games_id === valueObj._id;
+          return value2Obj._id === valueObj._id;
         });
+        
+        // const index2 = -1;
+        
+        
+        // --------------------------------------------------
+        //   Thumbnail
+        // --------------------------------------------------
+        
+        const thumbnailSrc = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
+        const thumbnailSrcSet = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'srcSet'], '');
+        
+        // console.log(chalk`
+        //   thumbnailSrc: {green ${thumbnailSrc}}
+        //   thumbnailSrcSet: {green ${thumbnailSrcSet}}
+        // `);
         
         // console.log(chalk`
         //   selectedIndex: {green ${selectedIndex}}
@@ -209,25 +236,52 @@ export default injectIntl(class extends React.Component {
         //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
+
         
         componentSuggestionMenuItemsArr.push(
           <MenuItem
+            css={css`
+              && {
+                font-size: 12px;
+                white-space: normal;
+              }
+            `}
             key={index}
             component="div"
+            disabled={index2 !== -1}
             selected={index === selectedIndex}
             onMouseDown={() => handleAdd({
-              _id,
-              games_id: valueObj._id,
-              gameID: valueObj.gameID,
-              imagesAndVideosObj: valueObj.imagesAndVideosObj,
-              name: valueObj.name,
-              func
+              pathArr,
+              obj: valueObj,
+              // _id,
+              // games_id: valueObj._id,
+              // gameID: valueObj.gameID,
+              // imagesAndVideosObj: valueObj.imagesAndVideosObj,
+              // name: valueObj.name,
+              // func
             })}
-            style={{
-              fontWeight: index2 !== -1 ? 'bold' : 'normal',
-            }}
+            // style={{
+            //   fontWeight: index2 !== -1 ? 'bold' : 'normal',
+            // }}
           >
-            {valueObj.name}
+            <Avatar
+              css={css`
+                && {
+                  width: 24px;
+                  height: 24px;
+                }
+              `}
+              alt="valueObj.name"
+              src={thumbnailSrc}
+              srcSet={thumbnailSrcSet}
+            />
+            <span
+              css={css`
+                margin: 0 0 0 8px;
+              `}
+            >
+              {valueObj.name}
+            </span>
           </MenuItem>
         );
         
@@ -313,7 +367,7 @@ export default injectIntl(class extends React.Component {
             label="ゲーム名"
             value={keyword}
             onChange={(eventObj) => handleKeyword({ pathArr, value: eventObj.target.value })}
-            onKeyDown={(eventObj) => handleSuggestionOnKeyDown({ eventObj, _id, func })}
+            onKeyDown={(eventObj) => handleSuggestionOnKeyDown({ eventObj, pathArr })}
             helperText="ゲーム名の一部を入力して、検索結果から選んでください"
             margin="normal"
             autoComplete="off"

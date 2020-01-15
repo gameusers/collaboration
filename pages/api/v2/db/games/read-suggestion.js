@@ -143,8 +143,9 @@ export default async (req, res) => {
     
     returnObj = await ModelGames.findBySearchKeywordsArrForSuggestion({
       
-      language: localeObj.language,
-      country: localeObj.country,
+      localeObj,
+      // language: localeObj.language,
+      // country: localeObj.country,
       keyword,
       
     });

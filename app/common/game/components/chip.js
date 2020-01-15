@@ -15,7 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -44,6 +44,7 @@ import IconClose from '@material-ui/icons/Close';
 //   Class
 // --------------------------------------------------
 
+@inject('storeGameForm')
 @observer
 export default class extends React.Component {
   
@@ -68,7 +69,13 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { _id, gameID, imagesAndVideosObj, name, funcDelete, funcDeleteArgumentsObj } = this.props;
+    const { storeGameForm, pathArr, _id, gameID, name, imagesAndVideosObj } = this.props;
+    
+    const {
+      
+      handleRemove,
+      
+    } = storeGameForm;
     
     
     // --------------------------------------------------
@@ -80,17 +87,22 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Component - Avatar
     // --------------------------------------------------
     
     let componentAvatar = '';
     
-    const thumbnailArr = lodashGet(imagesAndVideosObj, ['thumbnailArr'], []);
+    // const thumbnailArr = lodashGet(imagesAndVideosObj, ['thumbnailArr'], []);
     
-    if (thumbnailArr.length > 0) {
-      
-      const src = lodashGet(thumbnailArr, [0, 'srcSetArr', 0, 'src'], '');
+    
+    const thumbnailSrc = lodashGet(imagesAndVideosObj, ['arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
+    const thumbnailSrcSet = lodashGet(imagesAndVideosObj, ['arr', 0, 'srcSet'], '');
+    
+    
+    if (thumbnailSrc) {
       
       componentAvatar =
         <Avatar
@@ -102,7 +114,8 @@ export default class extends React.Component {
             }
           `}
           alt={name}
-          src={src}
+          src={thumbnailSrc}
+          srcSet={thumbnailSrcSet}
         />
       ;
       
@@ -200,7 +213,7 @@ export default class extends React.Component {
                 background-color: #3f51b5;
               }
             `}
-            onClick={() => funcDelete(funcDeleteArgumentsObj)}
+            onClick={() => handleRemove({ pathArr, _id })}
           >
             <IconClose
               css={css`

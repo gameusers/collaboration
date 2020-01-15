@@ -16,13 +16,15 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
+const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const Model = require('./schema');
+const SchemaGames = require('./schema');
 
 
 // ---------------------------------------------
@@ -57,7 +59,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Model.find(conditionObj).exec();
+    return await SchemaGames.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -90,7 +92,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await Model.countDocuments(conditionObj).exec();
+    return await SchemaGames.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -123,7 +125,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await SchemaGames.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -156,7 +158,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await Model.insertMany(saveArr);
+    return await SchemaGames.insertMany(saveArr);
     
     
   } catch (err) {
@@ -189,7 +191,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await Model.deleteMany(conditionObj);
+    return await SchemaGames.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -222,7 +224,7 @@ const findForHeroImage = async ({ localeObj }) => {
     //   Find
     // --------------------------------------------------
     
-    let resultArr = await Model.aggregate([
+    let resultArr = await SchemaGames.aggregate([
       
       
       // 画像＆動画が登録されているゲームを取得する
@@ -486,7 +488,7 @@ const findForHeroImage = async ({ localeObj }) => {
  * @param {string} keyword - 検索キーワード
  * @return {Array} 取得データ
  */
-const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword }) => {
+const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
   
   
   // --------------------------------------------------
@@ -497,14 +499,148 @@ const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword
     
     
     // --------------------------------------------------
-    //   Find
+    //   Property
     // --------------------------------------------------
     
     const pattern = new RegExp(`.*${keyword}.*`);
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
     
-    return await Model.find(
-      { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    ).select('gameID imagesAndVideosObj name').limit(10).exec();
+    // return await .find(
+    //   { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
+    // ).select('gameID imagesAndVideosObj name').limit(10).exec();
+    
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const resultArr = await SchemaGames.aggregate([
+      
+      
+      {
+        $match : { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } }
+      },
+      
+      
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          gameID: 1,
+          name: 1,
+          imagesAndVideosObj: 1,
+          // imagesAndVideos_id: 0,
+          // imagesAndVideos_id: 0,
+          // __v: 0,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Loop
+    // --------------------------------------------------
+    
+    const returnArr = [];
+    
+    for (let valueObj of resultArr.values()) {
+      
+      // console.log(`\n---------- valueObj ----------\n`);
+      // console.dir(valueObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      // --------------------------------------------------
+      //   Deep Copy
+      // --------------------------------------------------
+      
+      const clonedObj = lodashCloneDeep(valueObj);
+      
+      
+      // --------------------------------------------------
+      //   画像と動画の処理
+      // --------------------------------------------------
+      
+      const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
+      
+      if (formattedObj) {
+        
+        clonedObj.imagesAndVideosObj = formattedObj;
+        
+      } else {
+        
+        delete clonedObj.imagesAndVideosObj;
+        
+      }
+      
+      console.log(`\n---------- clonedObj ----------\n`);
+      console.dir(clonedObj);
+      console.log(`\n-----------------------------------\n`);
+      // --------------------------------------------------
+      //   Push
+      // --------------------------------------------------
+      
+      returnArr.push(clonedObj);
+      
+      
+    }
+    
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    console.log(`
+      ----- returnArr -----\n
+      ${util.inspect(returnArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnArr;
     
     
   } catch (err) {

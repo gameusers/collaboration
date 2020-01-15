@@ -201,7 +201,7 @@ export default injectIntl(class extends React.Component {
                 css={css`
                   width: 100%;
                 `}
-                id="userID"
+                id="name"
                 label="コミュニティの名前"
                 value={validationUsersUserIDObj.value}
                 onChange={(eventObj) => handleEdit({
@@ -444,11 +444,11 @@ export default injectIntl(class extends React.Component {
                     width: 100%;
                   }
                 `}
-                id="userID"
+                id="urlID"
                 label="URL"
                 value={validationUsersUserIDObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: ['userID'],
+                  pathArr: [...this.pathArr, 'urlID'],
                   value: eventObj.target.value
                 })}
                 error={validationUsersUserIDObj.error}

@@ -68,6 +68,16 @@ class Store {
   };
   
   
+  /**
+   * gamesArr を取得する　チップのデータ
+   * @param {Array} pathArr - パス
+   */
+  @action.bound
+  handleGetGamesArr({ pathArr }) {
+    return lodashGet(this.dataObj, [...pathArr, 'gamesArr'], []);
+  };
+  
+  
   
   
   // ---------------------------------------------
@@ -76,31 +86,83 @@ class Store {
   
   /**
    * ゲームを選択する
-   * @param {string} _id - ID
-   * @param {string} games_id - DB games games_id
-   * @param {string} gameID - DB games gameID
-   * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
-   * @param {string} name - ゲーム名
+   * @param {Array} pathArr - パス
+   * @param {Object} obj - 追加するゲームのデータ
    */
   @action.bound
-  handleAdd({ _id, games_id, gameID, imagesAndVideosObj, name, func }) {
+  handleAdd({ pathArr, obj }) {
+    
+    const gamesArr = this.handleGetGamesArr({ pathArr });
+    const _id = lodashGet(obj, ['_id'], '');
+    
+    
+    // 配列内に存在しているかチェック
+    const index = gamesArr.findIndex((valueObj) => {
+      return valueObj._id === _id;
+    });
+    
+    
+    // console.log(chalk`
+    //   index: {green ${index}}
+    // `);
+    
+    // 配列内に存在していない場合はpushする
+    if (_id && index === -1) {
+      
+      gamesArr.push(obj);
+      lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
+      
+    }
+    
+    
     
     // 受け渡された関数を実行する
-    func({ _id, games_id, gameID, imagesAndVideosObj, name });
+    // func({ _id, games_id, gameID, imagesAndVideosObj, name });
     
   };
   
   
   /**
    * ゲームを削除する
+   * @param {Array} pathArr - パス
    * @param {string} _id - ID
-   * @param {string} games_id - DB games games_id
    */
   @action.bound
-  handleRemove({ _id, games_id, gameID, imagesAndVideosObj, name, funcDelete }) {
+  handleRemove({ pathArr, _id }) {
+    
+    const gamesArr = this.handleGetGamesArr({ pathArr });
+    
+    
+    // 配列内に存在しているかチェック
+    const index = gamesArr.findIndex((valueObj) => {
+      return valueObj._id === _id;
+    });
+    
+    
+    // console.log(chalk`
+    //   index: {green ${index}}
+    // `);
+    
+    
+    // 配列内に存在している場合は削除する
+    if (_id && index !== -1) {
+      
+      gamesArr.splice(index, 1);
+      lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
+      
+      
+      // console.log(`
+      //   ----- gamesArr -----\n
+      //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    }
+    
     
     // 受け渡された関数を実行する
-    funcDelete({ _id, games_id, gameID, imagesAndVideosObj, name });
+    // funcDelete({ _id, games_id, gameID, imagesAndVideosObj, name });
     
   };
   
@@ -116,24 +178,31 @@ class Store {
   * ↓ ↑ で現在の選択状態を変更する
   * Enter で現在選択されているゲームを登録する
   * @param {Object} eventObj - イベント
-  * @param {string} _id - ID
-  * @param {function} func - 実行する関数
+  * @param {Array} pathArr - パス
   */
   @action.bound
-  handleSuggestionOnKeyDown({ eventObj, _id, func }) {
+  handleSuggestionOnKeyDown({ eventObj, pathArr }) {
     
     
     // サジェストで現在選択されている番号
-    const selectedIndex = lodashGet(this.dataObj, [_id, 'selectedIndex'], null);
+    const selectedIndex = lodashGet(this.dataObj, [...pathArr, 'selectedIndex'], null);
     
     // サジェストのデータ
-    const suggestionArr = lodashGet(this.dataObj, [_id, 'suggestionArr'], []);
+    const suggestionArr = lodashGet(this.dataObj, [...pathArr, 'suggestionArr'], []);
     
     
     // console.log(chalk`
     //   keycode(eventObj): {green ${keycode(eventObj)}}
     //   selectedIndex: {green ${selectedIndex}}
     // `);
+    
+    // console.log(`
+    //   ----- suggestionArr -----\n
+    //   ${util.inspect(suggestionArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     // ---------------------------------------------
     //   キーボードの ↓ を押したとき
@@ -143,9 +212,9 @@ class Store {
     if (keycode(eventObj) === 'down') {
       
       if (selectedIndex === null) {
-        lodashSet(this.dataObj, [_id, 'selectedIndex'], 0);
+        lodashSet(this.dataObj, [...pathArr, 'selectedIndex'], 0);
       } else if (selectedIndex < suggestionArr.length - 1) {
-        lodashSet(this.dataObj, [_id, 'selectedIndex'], selectedIndex + 1);
+        lodashSet(this.dataObj, [...pathArr, 'selectedIndex'], selectedIndex + 1);
       }
       
       
@@ -157,7 +226,7 @@ class Store {
     } else if (keycode(eventObj) === 'up') {
       
       if (selectedIndex !== null && selectedIndex > 0) {
-        lodashSet(this.dataObj, [_id, 'selectedIndex'], selectedIndex - 1);
+        lodashSet(this.dataObj, [...pathArr, 'selectedIndex'], selectedIndex - 1);
       }
       
       
@@ -168,8 +237,8 @@ class Store {
       
     } else if (keycode(eventObj) === 'enter' && selectedIndex !== null) {
       
-      const { _id: games_id, gameID, imagesAndVideosObj, name } = suggestionArr[selectedIndex];
-      this.handleAdd({ _id, games_id, gameID, imagesAndVideosObj, name, func });
+      // const { _id: games_id, gameID, imagesAndVideosObj, name } = suggestionArr[selectedIndex];
+      this.handleAdd({ pathArr, obj: suggestionArr[selectedIndex] });
       
     }
     

@@ -386,9 +386,9 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
   returnObj.arr = returnArr;
   
   
-  console.log(`\n---------- returnObj ----------\n`);
-  console.dir(JSON.parse(JSON.stringify(returnObj)));
-  console.log(`\n-----------------------------------\n`);
+  // console.log(`\n---------- returnObj ----------\n`);
+  // console.dir(JSON.parse(JSON.stringify(returnObj)));
+  // console.log(`\n-----------------------------------\n`);
   
   
   return returnObj;

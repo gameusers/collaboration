@@ -21,7 +21,7 @@ const lodashGet = require('lodash/get');
 //   Model
 // ---------------------------------------------
 
-const SchemaUsers = require('./schema');
+const Schema = require('./schema');
 const SchemaEmailConfirmations = require('../email-confirmations/schema');
 const SchemaCardPlayers = require('../card-players/schema');
 
@@ -67,7 +67,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaUsers.findOne(conditionObj).exec();
+    return await Schema.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -110,7 +110,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.find(conditionObj).exec();
+    return await Schema.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -152,7 +152,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaUsers.countDocuments(conditionObj).exec();
+    return await Schema.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -199,7 +199,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaUsers.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -241,7 +241,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaUsers.insertMany(saveArr);
+    return await Schema.insertMany(saveArr);
     
     
   } catch (err) {
@@ -258,9 +258,10 @@ const insertMany = async ({ saveArr }) => {
 /**
  * 削除する
  * @param {Object} conditionObj - 検索条件
+ * @param {boolean} reset - trueでデータをすべて削除する
  * @return {Array} 
  */
-const deleteMany = async ({ conditionObj }) => {
+const deleteMany = async ({ conditionObj, reset = false }) => {
   
   
   // --------------------------------------------------
@@ -274,7 +275,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Error
     // --------------------------------------------------
     
-    if (!conditionObj || !Object.keys(conditionObj).length) {
+    if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
     
@@ -283,7 +284,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaUsers.deleteMany(conditionObj);
+    return await Schema.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -323,7 +324,7 @@ const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
     //   データ取得
     // --------------------------------------------------
     
-    let resultArr = await SchemaUsers.aggregate([
+    let resultArr = await Schema.aggregate([
       
       {
         $match : conditionObj
@@ -556,7 +557,7 @@ const findFormatted = async (conditionObj, loginUsers_id) => {
     //   FindOne
     // --------------------------------------------------
     
-    const docArr = await SchemaUsers.find(conditionObj).select('_id accessDate name status playerId exp followArr followCount followedArr followedCount role').exec();
+    const docArr = await Schema.find(conditionObj).select('_id accessDate name status playerId exp followArr followCount followedArr followedCount role').exec();
     
     if (docArr === null) {
       return returnObj;
@@ -668,7 +669,7 @@ const updateForFollow = async (loginUsers_id, users_id) => {
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await SchemaUsers.startSession();
+  const session = await Schema.startSession();
   
   
   // --------------------------------------------------
@@ -690,10 +691,10 @@ const updateForFollow = async (loginUsers_id, users_id) => {
     // --------------------------------------------------
     
     const conditionFindOne1Obj = { _id: loginUsers_id };
-    const users1Obj = await SchemaUsers.findOne(conditionFindOne1Obj).exec();
+    const users1Obj = await Schema.findOne(conditionFindOne1Obj).exec();
     
     const conditionFindOne2Obj = { _id: users_id };
-    const users2Obj = await SchemaUsers.findOne(conditionFindOne2Obj).exec();
+    const users2Obj = await Schema.findOne(conditionFindOne2Obj).exec();
     
     if (users1Obj === null || users2Obj === null) {
       throw new Error('必要なユーザーが存在しません。');
@@ -714,12 +715,12 @@ const updateForFollow = async (loginUsers_id, users_id) => {
       const condition1Obj = { _id: loginUsers_id };
       const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
       const option1Obj = { session: session };
-      await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
+      await Schema.update(condition1Obj, save1Obj, option1Obj).exec();
       
       const condition2Obj = { _id: users_id };
       const save2Obj = { $pull: { followedArr: loginUsers_id }, $inc: { followedCount: -1 }  };
       const option2Obj = { session: session };
-      await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
+      await Schema.update(condition2Obj, save2Obj, option2Obj).exec();
       
       
     // --------------------------------------------------
@@ -736,12 +737,12 @@ const updateForFollow = async (loginUsers_id, users_id) => {
       const condition1Obj = { _id: loginUsers_id };
       const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
       const option1Obj = { session: session };
-      await SchemaUsers.update(condition1Obj, save1Obj, option1Obj).exec();
+      await Schema.update(condition1Obj, save1Obj, option1Obj).exec();
       
       const condition2Obj = { _id: users_id };
       const save2Obj = { $addToSet: { followedArr: loginUsers_id }, $inc: { followedCount: 1 }  };
       const option2Obj = { session: session };
-      await SchemaUsers.update(condition2Obj, save2Obj, option2Obj).exec();
+      await Schema.update(condition2Obj, save2Obj, option2Obj).exec();
       
       
     }
@@ -839,7 +840,7 @@ const transactionForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr, e
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await SchemaUsers.startSession();
+  const session = await Schema.startSession();
   
   
   // --------------------------------------------------
@@ -860,7 +861,7 @@ const transactionForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr, e
     //   DB Insert
     // --------------------------------------------------
     
-    await SchemaUsers.create(usersSaveArr, { session: session });
+    await Schema.create(usersSaveArr, { session: session });
     await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
     
     // E-Mailが入力されたときだけ、メール確認データベースに挿入する
@@ -870,7 +871,7 @@ const transactionForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr, e
     
     
     
-    // await SchemaUsers.create(usersSaveArr, { session: session });
+    // await Schema.create(usersSaveArr, { session: session });
     // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
     // await SchemaEmailConfirmations.create(cardPlayersSaveArr, { session: session });
     
@@ -964,7 +965,7 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await SchemaUsers.startSession();
+  const session = await Schema.startSession();
   
   
   // --------------------------------------------------
@@ -985,10 +986,10 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
     //   DB Insert
     // --------------------------------------------------
     
-    await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
+    await Schema.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
     await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
     
-    // await SchemaUsers.create(usersSaveArr, { session });
+    // await Schema.create(usersSaveArr, { session });
     // throw new Error('Dy16VjjQL');
     // throw new Error();
     // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });

@@ -253,7 +253,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    await SchemaUsers.deleteMany({});
+    await SchemaUsers.deleteMany({ reset: true });
     returnObj = await SchemaUsers.insertMany({ saveArr });
     
     
@@ -676,7 +676,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Upsert
     // ---------------------------------------------
     
-    await SchemaGames.deleteMany({});
+    await SchemaGames.deleteMany({ reset: true });
     returnObj = await SchemaGames.insertMany({ saveArr });
     
     
@@ -956,7 +956,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await SchemaGameGenres.deleteMany({});
+    await SchemaGameGenres.deleteMany({ reset: true });
     returnObj = await SchemaGameGenres.insertMany({ saveArr });
     
     
@@ -1764,7 +1764,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await SchemaHardwares.deleteMany({});
+    await SchemaHardwares.deleteMany({ reset: true });
     returnObj = await SchemaHardwares.insertMany({ saveArr });
     
     
@@ -1836,7 +1836,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await SchemaDevelopersPublishers.deleteMany({});
+    await SchemaDevelopersPublishers.deleteMany({ reset: true });
     returnObj = await SchemaDevelopersPublishers.insertMany({ saveArr });
     
     
@@ -2050,7 +2050,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await SchemaIDs.deleteMany({});
+    await SchemaIDs.deleteMany({ reset: true });
     returnObj = await SchemaIDs.insertMany({ saveArr });
     
     
@@ -2400,7 +2400,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   insertMany
     // --------------------------------------------------
     
-    await SchemaCardPlayers.deleteMany({});
+    await SchemaCardPlayers.deleteMany({ reset: true });
     returnObj = await SchemaCardPlayers.insertMany({ saveArr });
     
     
@@ -2414,7 +2414,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   deleteMany
     // --------------------------------------------------
     
-    await SchemaEmailConfirmations.deleteMany({});
+    await SchemaEmailConfirmations.deleteMany({ reset: true });
     
     
     
@@ -2725,7 +2725,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        type: 'player',
+        type: 'user',
         images: 1,
         videos: 0,
         arr: [
@@ -2774,7 +2774,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        type: 'player',
+        type: 'user',
         images: 1,
         videos: 0,
         arr: [
@@ -2797,6 +2797,92 @@ router.post('/db', upload.none(), async (req, res, next) => {
         
       },
       
+      
+      
+      // uc / community1 - top
+      {
+        
+        _id: 'pg6-XZehF',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: 'jun-deE4J',
+        type: 'uc',
+        images: 1,
+        videos: 0,
+        arr: [
+          
+          {
+            _id: 'kDcX0KUa_',
+            type: 'image',
+            imageType: 'JPEG',
+            srcSetArr: [
+              {
+                _id: 'ldrGV5Pcu',
+                w: '320w',
+                width: 320,
+                height: 135,
+              },
+              {
+                _id: 'aUWTLwA1N',
+                w: '480w',
+                width: 480,
+                height: 202,
+              },
+              {
+                _id: 'pGwmd5W2O',
+                w: '640w',
+                width: 640,
+                height: 269,
+              },
+              {
+                _id: '6EixTGJ_i',
+                w: '800w',
+                width: 800,
+                height: 337,
+              },
+              {
+                _id: 'XY8iTeQoP',
+                w: '1920w',
+                width: 1920,
+                height: 808,
+              },
+            ],
+          },
+          
+        ]
+        
+      },
+      
+      
+      // uc / community1 - thumbnail
+      {
+        
+        _id: 'ed38Uf030',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        users_id: 'jun-deE4J',
+        type: 'uc',
+        images: 1,
+        videos: 0,
+        arr: [
+          
+          {
+            _id: 'wRCzuPBqS',
+            type: 'image',
+            imageType: 'PNG',
+            srcSetArr: [
+              {
+                _id: '34bkMkDRg',
+                w: '320w',
+                width: 256,
+                height: 256,
+              },
+            ],
+          },
+          
+        ]
+        
+      },
       
       
       
@@ -3043,7 +3129,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Insert
     // ---------------------------------------------
     
-    await SchemaImagesAndVideos.deleteMany({});
+    await SchemaImagesAndVideos.deleteMany({ reset: true });
     returnObj = await SchemaImagesAndVideos.insertMany({ saveArr });
     
     
@@ -3073,9 +3159,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
             descriptionShort: 'descriptionShort',
           },
         ],
-        imagesAndVideos_id: '',
-        imagesAndVideosThumbnail_id: '',
-        gameIDArr: [],
+        imagesAndVideos_id: 'pg6-XZehF',
+        imagesAndVideosThumbnail_id: 'ed38Uf030',
+        gameIDArr: ['Jk92aglWl', 'lxdubg6IY', 'WMHFmAp8e'],
         memberObj: {
           count: 0,
           membersArr: [],
@@ -3095,7 +3181,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     //   Insert
     // ---------------------------------------------
     
-    await SchemaUserCommunities.deleteMany({});
+    await SchemaUserCommunities.deleteMany({ reset: true });
     returnObj = await SchemaUserCommunities.insertMany({ saveArr });
     
     
@@ -3287,7 +3373,7 @@ emotion: https://emotion.sh/docs/introduction`,
     //   Insert
     // ---------------------------------------------
     
-    await SchemaForumThreads.deleteMany({});
+    await SchemaForumThreads.deleteMany({ reset: true });
     returnObj = await SchemaForumThreads.insertMany({ saveArr });
     
     
@@ -3575,7 +3661,7 @@ emotion: https://emotion.sh/docs/introduction`,
     //   Insert
     // ---------------------------------------------
     
-    await SchemaForumComments.deleteMany({});
+    await SchemaForumComments.deleteMany({ reset: true });
     returnObj = await SchemaForumComments.insertMany({ saveArr });
     
     

@@ -14,7 +14,7 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   users_id: { type: String },
-  type: { type: String, enum: ['game', 'player', 'forum'], required: true },
+  type: { type: String, enum: ['game', 'user', 'forum', 'uc'], required: true },
   images: { type: Number, default: 0, required: true },
   videos: { type: Number, default: 0, required: true },
   arr: [

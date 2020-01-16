@@ -159,22 +159,8 @@ export default async (req, res) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const conditionObj = {
-      userCommunityID,
-      // userCommunityID: 'aaa',
-    };
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunityID });
     
-    const userCommunityObj = await ModelUserCommunities.findOne({ conditionObj });
-    // const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunityID,
-    // });
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
     const userCommunitiesUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
     
@@ -220,64 +206,6 @@ export default async (req, res) => {
     //   ${util.inspect(userCommunityArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum Threads For List
-    // // --------------------------------------------------
-    
-    // let argumentsObj = {
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    // };
-    
-    // if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
-    //   argumentsObj.page = forumThreadListPage;
-    // }
-    
-    // if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
-    //   argumentsObj.limit = forumThreadListLimit;
-    // }
-    
-    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Forum
-    // // --------------------------------------------------
-    
-    // argumentsObj = {
-    //   req,
-    //   localeObj,
-    //   loginUsers_id,
-    //   userCommunities_id,
-    // };
-    
-    // if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
-    //   argumentsObj.threadPage = forumThreadPage;
-    // }
-    
-    // if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
-    //   argumentsObj.threadLimit = forumThreadLimit;
-    // }
-    
-    // if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
-    //   argumentsObj.commentLimit = forumCommentLimit;
-    // }
-    
-    // if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
-    //   argumentsObj.replyLimit = forumReplyLimit;
-    // }
-    
-    // const forumObj = await ModelForumThreads.findForForum(argumentsObj);
-    
-    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-    
-    
     
     
     // ---------------------------------------------

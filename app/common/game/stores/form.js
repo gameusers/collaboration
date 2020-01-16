@@ -68,6 +68,12 @@ class Store {
   };
   
   
+  
+  
+  // ---------------------------------------------
+  //   ゲームを選択・削除する / gamesArr
+  // ---------------------------------------------
+  
   /**
    * gamesArr を取得する　チップのデータ
    * @param {Array} pathArr - パス
@@ -77,12 +83,6 @@ class Store {
     return lodashGet(this.dataObj, [...pathArr, 'gamesArr'], []);
   };
   
-  
-  
-  
-  // ---------------------------------------------
-  //   ゲームを選択・削除する
-  // ---------------------------------------------
   
   /**
    * ゲームを選択する
@@ -101,10 +101,10 @@ class Store {
       return valueObj._id === _id;
     });
     
-    
     // console.log(chalk`
     //   index: {green ${index}}
     // `);
+    
     
     // 配列内に存在していない場合はpushする
     if (_id && index === -1) {
@@ -113,11 +113,6 @@ class Store {
       lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
       
     }
-    
-    
-    
-    // 受け渡された関数を実行する
-    // func({ _id, games_id, gameID, imagesAndVideosObj, name });
     
   };
   
@@ -150,19 +145,13 @@ class Store {
       gamesArr.splice(index, 1);
       lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
       
-      
       // console.log(`
       //   ----- gamesArr -----\n
       //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
-      
     }
-    
-    
-    // 受け渡された関数を実行する
-    // funcDelete({ _id, games_id, gameID, imagesAndVideosObj, name });
     
   };
   
@@ -237,7 +226,6 @@ class Store {
       
     } else if (keycode(eventObj) === 'enter' && selectedIndex !== null) {
       
-      // const { _id: games_id, gameID, imagesAndVideosObj, name } = suggestionArr[selectedIndex];
       this.handleAdd({ pathArr, obj: suggestionArr[selectedIndex] });
       
     }

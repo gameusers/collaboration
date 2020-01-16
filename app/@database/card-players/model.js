@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -21,7 +21,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const Model = require('./schema');
+const Schema = require('./schema');
 const ModelIDs = require('../ids/model');
 
 
@@ -44,6 +44,269 @@ const { formatImagesAndVideosArr } = require('../../@format/image');
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
+
+/**
+ * 検索してデータを取得する / 1件だけ
+ * @param {Object} conditionObj - 検索条件
+ * @return {Object} 取得データ
+ */
+const findOne = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   FindOne
+    // --------------------------------------------------
+    
+    return await Schema.findOne(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
+ * 取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {Array} 取得データ
+ */
+const find = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Schema.find(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * カウントを取得する
+ * @param {Object} conditionObj - 検索条件
+ * @return {number} カウント数
+ */
+const count = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Find
+    // --------------------------------------------------
+    
+    return await Schema.countDocuments(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 挿入 / 更新する
+ * @param {Object} conditionObj - 検索条件
+ * @param {Object} saveObj - 保存するデータ
+ * @return {Array} 
+ */
+const upsert = async ({ conditionObj, saveObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    if (!saveObj || !Object.keys(saveObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Upsert
+    // --------------------------------------------------
+    
+    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 大量に挿入する
+ * @param {Array} saveArr - 保存するデータ
+ * @return {Array} 
+ */
+const insertMany = async ({ saveArr }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!saveArr || !saveArr.length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   insertMany
+    // --------------------------------------------------
+    
+    return await Schema.insertMany(saveArr);
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+/**
+ * 削除する
+ * @param {Object} conditionObj - 検索条件
+ * @param {boolean} reset - trueでデータをすべて削除する
+ * @return {Array} 
+ */
+const deleteMany = async ({ conditionObj, reset = false }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   Delete
+    // --------------------------------------------------
+    
+    return await Schema.deleteMany(conditionObj);
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+};
+
+
+
+
+
+
+
 
 /**
  * 取得する
@@ -100,7 +363,7 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     //   Card Players のデータを取得
     // --------------------------------------------------
     
-    let resultArr = await Model.aggregate([
+    let resultArr = await Schema.aggregate([
       
       ...matchConditionArr,
       
@@ -412,7 +675,7 @@ const findOneBy_id = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    let resultCardPlayersArr = await Model.aggregate([
+    let resultCardPlayersArr = await Schema.aggregate([
       
       {
         $match : { _id }
@@ -638,7 +901,7 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     //   Aggregate
     // --------------------------------------------------
     
-    let resultCardPlayersArr = await Model.aggregate([
+    let resultCardPlayersArr = await Schema.aggregate([
       
       {
         $match:
@@ -1122,162 +1385,162 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
  * @param {Object} conditionObj - 検索条件
  * @return {Array} 取得データ
  */
-const find = async ({ conditionObj }) => {
+// const find = async ({ conditionObj }) => {
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Find
+//     // --------------------------------------------------
     
-    return await Model.find(conditionObj).exec();
+//     return await Schema.find(conditionObj).exec();
     
     
-  } catch (err) {
+//   } catch (err) {
     
-    throw err;
+//     throw err;
     
-  }
+//   }
   
-};
+// };
 
 
 
 
-/**
- * カウントを取得する
- * @param {Object} conditionObj - 検索条件
- * @return {number} カウント数
- */
-const count = async ({ conditionObj }) => {
+// /**
+// * カウントを取得する
+// * @param {Object} conditionObj - 検索条件
+// * @return {number} カウント数
+// */
+// const count = async ({ conditionObj }) => {
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   Find
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Find
+//     // --------------------------------------------------
     
-    return await Model.countDocuments(conditionObj).exec();
+//     return await Schema.countDocuments(conditionObj).exec();
     
     
-  } catch (err) {
+//   } catch (err) {
     
-    throw err;
+//     throw err;
     
-  }
+//   }
   
-};
+// };
 
 
 
 
-/**
- * 挿入 / 更新する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 
- */
-const upsert = async ({ conditionObj, saveObj }) => {
+// /**
+// * 挿入 / 更新する
+// * @param {Object} argumentsObj - 引数
+// * @return {Array} 
+// */
+// const upsert = async ({ conditionObj, saveObj }) => {
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   Upsert
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Upsert
+//     // --------------------------------------------------
     
-    return await Model.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+//     return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
-  } catch (err) {
+//   } catch (err) {
     
-    throw err;
+//     throw err;
     
-  }
+//   }
   
-};
+// };
 
 
 
 
-/**
- * 挿入する
- * @param {Object} argumentsObj - 引数
- * @return {Array} 
- */
-const insertMany = async ({ saveArr }) => {
+// /**
+// * 挿入する
+// * @param {Object} argumentsObj - 引数
+// * @return {Array} 
+// */
+// const insertMany = async ({ saveArr }) => {
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   insertMany
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   insertMany
+//     // --------------------------------------------------
     
-    return await Model.insertMany(saveArr);
+//     return await Schema.insertMany(saveArr);
     
     
-  } catch (err) {
+//   } catch (err) {
     
-    throw err;
+//     throw err;
     
-  }
+//   }
   
-};
+// };
 
 
 
 
-/**
- * 削除する
- * @param {Object} conditionObj - 検索条件
- * @return {Array} 
- */
-const deleteMany = async ({ conditionObj }) => {
+// /**
+// * 削除する
+// * @param {Object} conditionObj - 検索条件
+// * @return {Array} 
+// */
+// const deleteMany = async ({ conditionObj }) => {
   
   
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
   
-  try {
+//   try {
     
     
-    // --------------------------------------------------
-    //   Delete
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Delete
+//     // --------------------------------------------------
     
-    return await Model.deleteMany(conditionObj);
+//     return await Schema.deleteMany(conditionObj);
     
     
-  } catch (err) {
+//   } catch (err) {
     
-    throw err;
+//     throw err;
     
-  }
+//   }
   
-};
+// };
 
 
 
@@ -1288,13 +1551,15 @@ const deleteMany = async ({ conditionObj }) => {
 
 module.exports = {
   
-  findForCardPlayer,
-  findOneBy_id,
-  findOneBy_idForEditForm,
+  findOne,
   find,
   count,
   upsert,
   insertMany,
   deleteMany,
+  
+  findForCardPlayer,
+  findOneBy_id,
+  findOneBy_idForEditForm,
   
 };

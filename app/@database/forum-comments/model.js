@@ -26,7 +26,7 @@ const lodashMerge = require('lodash/merge');
 //   Model
 // ---------------------------------------------
 
-const SchemaForumComments = require('./schema');
+const Schema = require('./schema');
 const SchemaForumThreads = require('../forum-threads/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
@@ -53,6 +53,7 @@ const { formatImagesAndVideosArr } = require('../../@format/image');
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
+
 
 /**
  * 検索してデータを取得する / 1件だけ
@@ -82,7 +83,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaForumComments.findOne(conditionObj).exec();
+    return await Schema.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -125,7 +126,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumComments.find(conditionObj).exec();
+    return await Schema.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -167,7 +168,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumComments.countDocuments(conditionObj).exec();
+    return await Schema.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -185,7 +186,7 @@ const count = async ({ conditionObj }) => {
  * 挿入 / 更新する
  * @param {Object} conditionObj - 検索条件
  * @param {Object} saveObj - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
   
@@ -214,7 +215,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaForumComments.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -231,7 +232,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
 /**
  * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
   
@@ -256,7 +257,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaForumComments.insertMany(saveArr);
+    return await Schema.insertMany(saveArr);
     
     
   } catch (err) {
@@ -273,9 +274,10 @@ const insertMany = async ({ saveArr }) => {
 /**
  * 削除する
  * @param {Object} conditionObj - 検索条件
+ * @param {boolean} reset - trueでデータをすべて削除する
  * @return {Array} 
  */
-const deleteMany = async ({ conditionObj }) => {
+const deleteMany = async ({ conditionObj, reset = false }) => {
   
   
   // --------------------------------------------------
@@ -289,7 +291,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Error
     // --------------------------------------------------
     
-    if (!conditionObj || !Object.keys(conditionObj).length) {
+    if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
     
@@ -298,7 +300,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaForumComments.deleteMany(conditionObj);
+    return await Schema.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -308,6 +310,7 @@ const deleteMany = async ({ conditionObj }) => {
   }
   
 };
+
 
 
 
@@ -368,7 +371,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
     for (let value of forumThreads_idsArr.values()) {
       
       
-      const docArr = await SchemaForumComments.aggregate([
+      const docArr = await Schema.aggregate([
         
         
         // --------------------------------------------------
@@ -945,7 +948,7 @@ const findRepliesByForumComments_idArr = async ({
     //   Aggregation
     // --------------------------------------------------
     
-    const docArr = await SchemaForumComments.aggregate([
+    const docArr = await Schema.aggregate([
       
       
       // --------------------------------------------------
@@ -1900,7 +1903,7 @@ const getPage = async ({
     //   _idをすべて取得する
     // --------------------------------------------------
     
-    const comment_idsArr = await SchemaForumComments.aggregate([
+    const comment_idsArr = await Schema.aggregate([
       
       
       // --------------------------------------------------
@@ -1960,7 +1963,7 @@ const getPage = async ({
       //   _idをすべて取得する
       // --------------------------------------------------
       
-      const reply_idsArr = await SchemaForumComments.aggregate([
+      const reply_idsArr = await Schema.aggregate([
         
         
         // --------------------------------------------------
@@ -2123,7 +2126,7 @@ const findForEdit = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumComments.aggregate([
+    const resultArr = await Schema.aggregate([
       
       
       // スレッドを取得
@@ -2320,7 +2323,7 @@ const findForDeleteComment = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumComments.aggregate([
+    const resultArr = await Schema.aggregate([
       
       
       // スレッドを取得
@@ -2528,7 +2531,7 @@ const findForDeleteReply = async ({
     //   Aggregate
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumComments.aggregate([
+    const resultArr = await Schema.aggregate([
       
       
       // スレッドを取得
@@ -2754,11 +2757,11 @@ const transactionForUpsert = async ({
     // --------------------------------------------------
     
     if (forumRepliesConditionObj && forumRepliesSaveObj) {
-      await SchemaForumComments.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
+      await Schema.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
     }
     
     
-    await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
+    await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     
     
@@ -2969,8 +2972,8 @@ const transactionForDeleteComment = async ({
     //   DB
     // --------------------------------------------------
     
-    await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
-    await SchemaForumComments.deleteOne(forumCommentsConditionObj, { session });
+    await Schema.deleteMany(forumRepliesConditionObj, { session });
+    await Schema.deleteOne(forumCommentsConditionObj, { session });
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
       await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
@@ -3136,8 +3139,8 @@ const transactionForDeleteReply = async ({
     //   DB updateOne
     // --------------------------------------------------
     
-    await SchemaForumComments.deleteOne(forumRepliesConditionObj);
-    await SchemaForumComments.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session });
+    await Schema.deleteOne(forumRepliesConditionObj);
+    await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {

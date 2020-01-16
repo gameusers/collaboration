@@ -14,7 +14,7 @@ const util = require('util');
 //   Model
 // ---------------------------------------------
 
-const SchemaEmailConfirmations = require('./schema');
+const Schema = require('./schema');
 const SchemaUsers = require('../users/schema');
 
 
@@ -23,6 +23,7 @@ const SchemaUsers = require('../users/schema');
 // --------------------------------------------------
 //   Function
 // --------------------------------------------------
+
 
 /**
  * 検索してデータを取得する / 1件だけ
@@ -52,7 +53,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaEmailConfirmations.findOne(conditionObj).exec();
+    return await Schema.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -95,7 +96,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaEmailConfirmations.find(conditionObj).exec();
+    return await Schema.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -137,7 +138,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaEmailConfirmations.countDocuments(conditionObj).exec();
+    return await Schema.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -155,7 +156,7 @@ const count = async ({ conditionObj }) => {
  * 挿入 / 更新する
  * @param {Object} conditionObj - 検索条件
  * @param {Object} saveObj - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
   
@@ -184,7 +185,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaEmailConfirmations.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -201,7 +202,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
 /**
  * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
   
@@ -226,7 +227,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaEmailConfirmations.insertMany(saveArr);
+    return await Schema.insertMany(saveArr);
     
     
   } catch (err) {
@@ -243,9 +244,10 @@ const insertMany = async ({ saveArr }) => {
 /**
  * 削除する
  * @param {Object} conditionObj - 検索条件
+ * @param {boolean} reset - trueでデータをすべて削除する
  * @return {Array} 
  */
-const deleteMany = async ({ conditionObj }) => {
+const deleteMany = async ({ conditionObj, reset = false }) => {
   
   
   // --------------------------------------------------
@@ -259,7 +261,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Error
     // --------------------------------------------------
     
-    if (!conditionObj || !Object.keys(conditionObj).length) {
+    if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
     
@@ -268,7 +270,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaEmailConfirmations.deleteMany(conditionObj);
+    return await Schema.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -278,6 +280,7 @@ const deleteMany = async ({ conditionObj }) => {
   }
   
 };
+
 
 
 
@@ -306,7 +309,7 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await SchemaEmailConfirmations.startSession();
+  const session = await Schema.startSession();
   
   
   // --------------------------------------------------
@@ -327,8 +330,8 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
     //   DB deleteOne & updateOne
     // --------------------------------------------------
     
-    // await SchemaEmailConfirmations.deleteMany(emailConfirmationsConditionObj, { session });
-    await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session });
+    // await Schema.deleteMany(emailConfirmationsConditionObj, { session });
+    await Schema.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session });
     // throw new Error();
     await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
     

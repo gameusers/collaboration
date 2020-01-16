@@ -166,9 +166,23 @@ export default class extends React.Component {
     // const login = lodashGet(resultObj, ['data', 'login'], false);
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
-    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'name'], '');
+    const userCommunityDescription = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'description'], '');
+    const userCommunityDescriptionShort = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'descriptionShort'], '');
+    
+    
+    // --------------------------------------------------
+    //   Title
+    // --------------------------------------------------
     
     const title = `${userCommunityName}: 設定`;
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const pathArr = [userCommunities_id, 'ucSettingsFormCommunity'];
     
     
     // --------------------------------------------------
@@ -188,7 +202,7 @@ export default class extends React.Component {
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userCommunityName, userCommunityDescription, userCommunityDescriptionShort, userCommunityID };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -226,6 +240,7 @@ export default class extends React.Component {
       temporaryDataID,
       userCommunityID,
       userCommunities_id,
+      pathArr,
       title,
       storesObj,
       propsObj,
@@ -397,7 +412,7 @@ export default class extends React.Component {
               <Element
                 name="ucSettings"
               >
-                <FormCommunity userCommunities_id={this.props.userCommunities_id} />
+                <FormCommunity pathArr={this.props.pathArr} />
               </Element>
               
               

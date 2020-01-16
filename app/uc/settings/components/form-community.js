@@ -36,8 +36,8 @@ import TextField from '@material-ui/core/TextField';
 //   Validations
 // ---------------------------------------------
 
-import { validationUsersUserID } from '../../../../app/@database/users/validations/user-id';
-import { validationUsersPagesName } from '../../../../app/@database/users/validations/pages';
+import { validationUserCommunitiesName } from '../../../../app/@database/user-communities/validations/name';
+import { validationUserCommunitiesUserCommunityID } from '../../../../app/@database/user-communities/validations/user-community-id';
 
 
 // ---------------------------------------------
@@ -74,7 +74,8 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props.userCommunities_id, 'ucSettingsFormCommunity'];
+    this.pathArr = props.pathArr;
+    // this.pathArr = [props.userCommunities_id, 'ucSettingsFormCommunity'];
     
     
   }
@@ -131,12 +132,33 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Validation User ID
+    //   Name
     // --------------------------------------------------
     
-    const userID = lodashGet(dataObj, ['userID'], '');
-    const validationUsersUserIDObj = validationUsersUserID({ value: userID });
+    const userCommunityName = lodashGet(dataObj, [...this.pathArr, 'userCommunityName'], '');
+    const validationUserCommunitiesNameObj = validationUserCommunitiesName({ value: userCommunityName });
     
+    
+    // --------------------------------------------------
+    //   Description
+    // --------------------------------------------------
+    
+    const userCommunityDescription = lodashGet(dataObj, [...this.pathArr, 'userCommunityDescription'], '');
+    
+    
+    // --------------------------------------------------
+    //   Description Short
+    // --------------------------------------------------
+    
+    const userCommunityDescriptionShort = lodashGet(dataObj, [...this.pathArr, 'userCommunityDescriptionShort'], '');
+    
+    
+    // --------------------------------------------------
+    //   userCommunityID
+    // --------------------------------------------------
+    
+    const userCommunityID = lodashGet(dataObj, [...this.pathArr, 'userCommunityID'], '');
+    const validationUserCommunitiesUserCommunityIDObj = validationUserCommunitiesUserCommunityID({ value: userCommunityID });
     
     
     
@@ -201,15 +223,15 @@ export default injectIntl(class extends React.Component {
                 css={css`
                   width: 100%;
                 `}
-                id="name"
+                id="userCommunityName"
                 label="コミュニティの名前"
-                value={validationUsersUserIDObj.value}
+                value={validationUserCommunitiesNameObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: [...this.pathArr, 'name'],
+                  pathArr: [...this.pathArr, 'userCommunityName'],
                   value: eventObj.target.value
                 })}
-                error={validationUsersUserIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersUserIDObj.messageID }, { numberOfCharacters: validationUsersUserIDObj.numberOfCharacters })}
+                error={validationUserCommunitiesNameObj.error}
+                helperText={intl.formatMessage({ id: validationUserCommunitiesNameObj.messageID }, { numberOfCharacters: validationUserCommunitiesNameObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{
@@ -259,9 +281,9 @@ export default injectIntl(class extends React.Component {
               `}
               rows={5}
               placeholder="コミュニティについての説明文を入力してください。"
-              // value={comment}
+              value={userCommunityDescription}
               onChange={(eventObj) => handleEdit({
-                pathArr: [...this.pathArr, 'description'],
+                pathArr: [...this.pathArr, 'userCommunityDescription'],
                 value: eventObj.target.value
               })}
               maxLength={3000}
@@ -309,9 +331,9 @@ export default injectIntl(class extends React.Component {
               `}
               rows={2}
               placeholder="コミュニティを一覧表示する際に表示される短い説明文を入力してください。"
-              // value={comment}
+              value={userCommunityDescriptionShort}
               onChange={(eventObj) => handleEdit({
-                pathArr: [...this.pathArr, 'descriptionShort'],
+                pathArr: [...this.pathArr, 'userCommunityDescriptionShort'],
                 value: eventObj.target.value
               })}
               maxLength={100}
@@ -444,15 +466,15 @@ export default injectIntl(class extends React.Component {
                     width: 100%;
                   }
                 `}
-                id="urlID"
+                id="userCommunityID"
                 label="URL"
-                value={validationUsersUserIDObj.value}
+                value={validationUserCommunitiesUserCommunityIDObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: [...this.pathArr, 'urlID'],
+                  pathArr: [...this.pathArr, 'userCommunityID'],
                   value: eventObj.target.value
                 })}
-                error={validationUsersUserIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersUserIDObj.messageID }, { numberOfCharacters: validationUsersUserIDObj.numberOfCharacters })}
+                error={validationUserCommunitiesUserCommunityIDObj.error}
+                helperText={intl.formatMessage({ id: validationUserCommunitiesUserCommunityIDObj.messageID }, { numberOfCharacters: validationUserCommunitiesUserCommunityIDObj.numberOfCharacters })}
                 disabled={buttonDisabled}
                 margin="normal"
                 inputProps={{

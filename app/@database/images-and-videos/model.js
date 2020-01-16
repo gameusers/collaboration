@@ -25,7 +25,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaForumThreadsImagesAndVideos = require('./schema');
+const Schema = require('./schema');
 
 
 // ---------------------------------------------
@@ -69,7 +69,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaForumThreadsImagesAndVideos.findOne(conditionObj).exec();
+    return await Schema.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -112,7 +112,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumThreadsImagesAndVideos.find(conditionObj).exec();
+    return await Schema.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -154,7 +154,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumThreadsImagesAndVideos.countDocuments(conditionObj).exec();
+    return await Schema.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -172,7 +172,7 @@ const count = async ({ conditionObj }) => {
  * 挿入 / 更新する
  * @param {Object} conditionObj - 検索条件
  * @param {Object} saveObj - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const upsert = async ({ conditionObj, saveObj }) => {
   
@@ -201,7 +201,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaForumThreadsImagesAndVideos.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -216,9 +216,9 @@ const upsert = async ({ conditionObj, saveObj }) => {
 
 
 /**
- * 挿入する
+ * 大量に挿入する
  * @param {Array} saveArr - 保存するデータ
- * @return {Array} 
+ * @return {Array}
  */
 const insertMany = async ({ saveArr }) => {
   
@@ -243,7 +243,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaForumThreadsImagesAndVideos.insertMany(saveArr);
+    return await Schema.insertMany(saveArr);
     
     
   } catch (err) {
@@ -260,9 +260,10 @@ const insertMany = async ({ saveArr }) => {
 /**
  * 削除する
  * @param {Object} conditionObj - 検索条件
+ * @param {boolean} reset - trueでデータをすべて削除する
  * @return {Array} 
  */
-const deleteMany = async ({ conditionObj }) => {
+const deleteMany = async ({ conditionObj, reset = false }) => {
   
   
   // --------------------------------------------------
@@ -276,7 +277,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Error
     // --------------------------------------------------
     
-    if (!conditionObj || !Object.keys(conditionObj).length) {
+    if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
     
@@ -285,7 +286,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaForumThreadsImagesAndVideos.deleteMany(conditionObj);
+    return await Schema.deleteMany(conditionObj);
     
     
   } catch (err) {

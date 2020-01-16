@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -28,12 +28,20 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Type
+ * Name
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationType = ({ throwError = false, value }) => {
+const validationUserCommunitiesName = ({ throwError = false, value }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 1;
+  const maxLength = 50;
   
   
   // ---------------------------------------------
@@ -46,7 +54,7 @@ const validationType = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'PH8jcw-VF',
+    messageID: 'yhgyXHqZu',
     error: false,
   };
   
@@ -55,11 +63,11 @@ const validationType = ({ throwError = false, value }) => {
     
     
     // ---------------------------------------------
-    //   適切な値が選択されているかチェック
+    //   文字数チェック
     // ---------------------------------------------
     
-    if (!validator.isIn(value, ['game', 'user', 'forum'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '6ga1Plxon', messageID: 'PH8jcw-VF' }] });
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'V22rTosNf', messageID: 'yhgyXHqZu' }] });
     }
     
     
@@ -108,5 +116,5 @@ const validationType = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationType
+  validationUserCommunitiesName,
 };

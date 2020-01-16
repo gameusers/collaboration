@@ -25,7 +25,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 //   Model
 // ---------------------------------------------
 
-const SchemaForumThreads = require('./schema');
+const Schema = require('./schema');
 const SchemaForumComments = require('../forum-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
@@ -77,7 +77,7 @@ const findOne = async ({ conditionObj }) => {
     //   FindOne
     // --------------------------------------------------
     
-    return await SchemaForumThreads.findOne(conditionObj).exec();
+    return await Schema.findOne(conditionObj).exec();
     
     
   } catch (err) {
@@ -95,7 +95,7 @@ const findOne = async ({ conditionObj }) => {
 /**
  * 取得する
  * @param {Object} conditionObj - 検索条件
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const find = async ({ conditionObj }) => {
   
@@ -120,7 +120,7 @@ const find = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumThreads.find(conditionObj).exec();
+    return await Schema.find(conditionObj).exec();
     
     
   } catch (err) {
@@ -162,7 +162,7 @@ const count = async ({ conditionObj }) => {
     //   Find
     // --------------------------------------------------
     
-    return await SchemaForumThreads.countDocuments(conditionObj).exec();
+    return await Schema.countDocuments(conditionObj).exec();
     
     
   } catch (err) {
@@ -209,7 +209,7 @@ const upsert = async ({ conditionObj, saveObj }) => {
     //   Upsert
     // --------------------------------------------------
     
-    return await SchemaForumThreads.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
+    return await Schema.findOneAndUpdate(conditionObj, saveObj, { upsert: true, new: true, setDefaultsOnInsert: true }).exec();
     
     
   } catch (err) {
@@ -251,7 +251,7 @@ const insertMany = async ({ saveArr }) => {
     //   insertMany
     // --------------------------------------------------
     
-    return await SchemaForumThreads.insertMany(saveArr);
+    return await Schema.insertMany(saveArr);
     
     
   } catch (err) {
@@ -268,9 +268,10 @@ const insertMany = async ({ saveArr }) => {
 /**
  * 削除する
  * @param {Object} conditionObj - 検索条件
- * @return {Array}
+ * @param {boolean} reset - trueでデータをすべて削除する
+ * @return {Array} 
  */
-const deleteMany = async ({ conditionObj }) => {
+const deleteMany = async ({ conditionObj, reset = false }) => {
   
   
   // --------------------------------------------------
@@ -284,7 +285,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Error
     // --------------------------------------------------
     
-    if (!conditionObj || !Object.keys(conditionObj).length) {
+    if (!reset && (!conditionObj || !Object.keys(conditionObj).length)) {
       throw new Error();
     }
     
@@ -293,7 +294,7 @@ const deleteMany = async ({ conditionObj }) => {
     //   Delete
     // --------------------------------------------------
     
-    return await SchemaForumThreads.deleteMany(conditionObj);
+    return await Schema.deleteMany(conditionObj);
     
     
   } catch (err) {
@@ -351,7 +352,7 @@ const findForThreadsList = async ({
     
     const intLimit = parseInt(limit, 10);
     
-    const resultArr = await SchemaForumThreads.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(intLimit).exec();
+    const resultArr = await Schema.find(conditionObj).sort({ updatedDate: -1 }).skip((page - 1) * limit).limit(intLimit).exec();
     
     
     
@@ -619,7 +620,7 @@ const findForForum = async ({
     //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumThreads.aggregate([
+    const resultArr = await Schema.aggregate([
       
       ...matchConditionArr,
       
@@ -917,7 +918,7 @@ const findForForumBy_forumID = async ({
     //   Aggregation / スレッドデータ取得
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumThreads.aggregate([
+    const resultArr = await Schema.aggregate([
       
       ...matchConditionArr,
       
@@ -1437,7 +1438,7 @@ const findForDeleteThread = async ({
     //   Thread
     // --------------------------------------------------
     
-    const forumThreadsArr = await SchemaForumThreads.aggregate([
+    const forumThreadsArr = await Schema.aggregate([
       
       
       {
@@ -1622,7 +1623,7 @@ const findForEdit = async ({
     //   Find
     // --------------------------------------------------
     
-    const resultArr = await SchemaForumThreads.aggregate([
+    const resultArr = await Schema.aggregate([
       
       
       // スレッドを取得
@@ -1825,7 +1826,7 @@ const transactionForUpsertThread = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await SchemaForumThreads.startSession();
+  const session = await Schema.startSession();
   
   
   // --------------------------------------------------
@@ -1846,7 +1847,7 @@ const transactionForUpsertThread = async ({
     //   DB updateOne
     // --------------------------------------------------
     
-    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    await Schema.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
@@ -2009,7 +2010,7 @@ const transactionForDeleteThread = async ({
   //   Transaction / Session
   // --------------------------------------------------
   
-  const session = await SchemaForumThreads.startSession();
+  const session = await Schema.startSession();
   
   
   // --------------------------------------------------
@@ -2032,7 +2033,7 @@ const transactionForDeleteThread = async ({
     
     await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });
     await SchemaForumComments.deleteMany(forumCommentsConditionObj, { session });
-    await SchemaForumThreads.deleteOne(forumThreadsConditionObj, { session });
+    await Schema.deleteOne(forumThreadsConditionObj, { session });
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
       await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });

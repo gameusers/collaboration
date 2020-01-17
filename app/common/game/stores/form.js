@@ -18,6 +18,7 @@ import { action, observable } from 'mobx';
 import keycode from 'keycode';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -71,11 +72,11 @@ class Store {
   
   
   // ---------------------------------------------
-  //   ゲームを選択・削除する / gamesArr
+  //   Getter & Setter ゲームデータ / gamesArr
   // ---------------------------------------------
   
   /**
-   * gamesArr を取得する　チップのデータ
+   * gamesArr を取得する
    * @param {Array} pathArr - パス
    */
   @action.bound
@@ -85,7 +86,34 @@ class Store {
   
   
   /**
-   * ゲームを選択する
+   * gamesArr を置き換える
+   * @param {Array} pathArr - パス
+   * @param {Array} gamesArr - 置き換えるデータの入った配列
+   */
+  @action.bound
+  handleSetGamesArr({ pathArr, gamesArr }) {
+    lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   ゲーム追加・削除する / gamesArr
+  // ---------------------------------------------
+  
+  /**
+   * gamesArr を取得する　チップのデータ
+   * @param {Array} pathArr - パス
+   */
+  // @action.bound
+  // handleGetGamesArr({ pathArr }) {
+  //   return lodashGet(this.dataObj, [...pathArr, 'gamesArr'], []);
+  // };
+  
+  
+  /**
+   * ゲームを追加する
    * @param {Array} pathArr - パス
    * @param {Object} obj - 追加するゲームのデータ
    */
@@ -336,7 +364,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreGameForm({}) {
+export default function initStoreGameForm({ propsObj }) {
   
   
   // --------------------------------------------------
@@ -345,6 +373,39 @@ export default function initStoreGameForm({}) {
   
   if (storeGameForm === null) {
     storeGameForm = new Store();
+  }
+  
+  
+  
+   // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
+  
+  if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   pathArr
+    // --------------------------------------------------
+    
+    const pathArr = lodashGet(propsObj, ['pathArr'], []);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // --------------------------------------------------
+    //   gamesArr
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['gamesArr'])) {
+      storeGameForm.handleSetGamesArr({ pathArr, gamesArr: propsObj.gamesArr });
+      // lodashSet(storeGameForm, ['dataObj', ...pathArr], propsObj.gamesArr);
+    }
+    
+    
   }
   
   

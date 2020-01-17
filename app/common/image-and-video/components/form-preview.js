@@ -49,7 +49,7 @@ import cyan from '@material-ui/core/colors/cyan';
 // ---------------------------------------------
 
 import { imageCalculateSize } from '../../../@modules/image/calculate';
-import { formatImagesAndVideosObj } from '../../../@modules/image/format';
+import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
 
 
 // ---------------------------------------------
@@ -126,10 +126,10 @@ export default injectIntl(class extends React.Component {
     
     const { handleLightboxOpen, handleModalVideoOpen } = storeImageAndVideo;
     
-    const { dataObj, handleRemovePreview } = storeImageAndVideoForm;
+    const { dataObj, handleGetImagesAndVideosObj, handleRemovePreview } = storeImageAndVideoForm;
     
     
-    const imagesAndVideosObj = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj'], {});
+    const imagesAndVideosObj = handleGetImagesAndVideosObj({ pathArr });
     const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     
     const type = lodashGet(formattedObj, ['type'], '');
@@ -161,6 +161,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   必要なデータがない場合は処理停止
     // --------------------------------------------------
@@ -168,6 +170,8 @@ export default injectIntl(class extends React.Component {
     if (!type || arr.length === 0) {
       return null;
     }
+    
+    
     
     
     // --------------------------------------------------

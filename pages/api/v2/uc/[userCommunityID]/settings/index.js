@@ -23,7 +23,7 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../../../app/@database/forum-threads/model');
+// const ModelForumThreads = require('../../../../../../app/@database/forum-threads/model');
 
 
 // ---------------------------------------------
@@ -39,9 +39,9 @@ const { CustomError } = require('../../../../../../app/@modules/error/custom');
 //   Validations
 // ---------------------------------------------
 
-const { validationInteger } = require('../../../../../../app/@validations/integer');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../../app/@database/forum-comments/validations/limit');
+// const { validationInteger } = require('../../../../../../app/@validations/integer');
+// const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../../app/@database/forum-threads/validations/limit');
+// const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../../app/@database/forum-comments/validations/limit');
 
 
 // ---------------------------------------------
@@ -143,16 +143,6 @@ export default async (req, res) => {
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     
-    // const saveArr = [1];
-    
-    // if (!saveArr || !saveArr.length) {
-    //   console.log('error');
-    // }
-    
-    // console.log(chalk`
-    //   save
-    //   !saveArr.length: {green ${!saveArr.length}}
-    // `);
     
     
     // --------------------------------------------------

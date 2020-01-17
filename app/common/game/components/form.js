@@ -35,6 +35,13 @@ import Avatar from '@material-ui/core/Avatar';
 
 
 // ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
+
+
+// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
@@ -47,7 +54,7 @@ import GameChip from './chip';
 //   Class
 // --------------------------------------------------
 
-@inject('storeGameForm')
+@inject('stores', 'storeGameForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -72,7 +79,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeGameForm, pathArr } = this.props;
+    const { stores, storeGameForm, pathArr } = this.props;
     
     const {
       
@@ -85,6 +92,7 @@ export default injectIntl(class extends React.Component {
       
     } = storeGameForm;
     
+    // const { handleGetImagesAndVideosObj } = storeImageAndVideoForm;
     
     
     
@@ -112,6 +120,12 @@ export default injectIntl(class extends React.Component {
         // console.log(`
         //   ----- valueObj -----\n
         //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- valueObj.imagesAndVideosObj -----\n
+        //   ${util.inspect(valueObj.imagesAndVideosObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
         
@@ -211,8 +225,17 @@ export default injectIntl(class extends React.Component {
         //   Thumbnail
         // --------------------------------------------------
         
-        const thumbnailSrc = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
-        const thumbnailSrcSet = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'srcSet'], '');
+        const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: valueObj.imagesAndVideosObj });
+        
+        // console.log(`
+        //   ----- formattedObj -----\n
+        //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        
+        const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
+        const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
         
         // console.log(chalk`
         //   thumbnailSrc: {green ${thumbnailSrc}}
@@ -253,16 +276,7 @@ export default injectIntl(class extends React.Component {
             onMouseDown={() => handleAdd({
               pathArr,
               obj: valueObj,
-              // _id,
-              // games_id: valueObj._id,
-              // gameID: valueObj.gameID,
-              // imagesAndVideosObj: valueObj.imagesAndVideosObj,
-              // name: valueObj.name,
-              // func
             })}
-            // style={{
-            //   fontWeight: index2 !== -1 ? 'bold' : 'normal',
-            // }}
           >
             <Avatar
               css={css`

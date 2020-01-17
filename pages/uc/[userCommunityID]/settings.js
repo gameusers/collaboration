@@ -77,10 +77,10 @@ const getOrCreateStore = ({ propsObj }) => {
   
   const storeUcSettings = initStoreUcSettings({ propsObj });
   const storeUserCommunity = initStoreUserCommunity({});
-  const storeGameForm = initStoreGameForm({});
+  const storeGameForm = initStoreGameForm({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
   const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  const storeImageAndVideoForm = initStoreImageAndVideoForm({ propsObj });
   
   
   // --------------------------------------------------
@@ -169,6 +169,9 @@ export default class extends React.Component {
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'name'], '');
     const userCommunityDescription = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'description'], '');
     const userCommunityDescriptionShort = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'descriptionShort'], '');
+    const imagesAndVideosObj = lodashGet(resultObj, ['data', 'userCommunityObj', 'imagesAndVideosObj'], {});
+    const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'userCommunityObj', 'imagesAndVideosThumbnailObj'], {});
+    const gamesArr = lodashGet(resultObj, ['data', 'userCommunityObj', 'gamesArr'], []);
     
     
     // --------------------------------------------------
@@ -202,7 +205,7 @@ export default class extends React.Component {
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userCommunityName, userCommunityDescription, userCommunityDescriptionShort, userCommunityID };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userCommunityName, userCommunityDescription, userCommunityDescriptionShort, userCommunityID, imagesAndVideosObj, imagesAndVideosThumbnailObj, gamesArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -222,11 +225,11 @@ export default class extends React.Component {
     //   userCommunityName: {green ${userCommunityName}}
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------

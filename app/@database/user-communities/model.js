@@ -708,16 +708,18 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
     //   Format
     // --------------------------------------------------
     
-    const ucObj = lodashGet(resultArr, [0], {});
+    const returnObj = lodashGet(resultArr, [0], {});
     
-    const formattedUcArr = formatImagesAndVideosArr({ localeObj, arr: resultArr });
-    const formattedUcObj = lodashGet(formattedUcArr, [0], {});
+    // const ucObj = lodashGet(resultArr, [0], {});
     
-    const gamesArr = lodashGet(ucObj, ['gamesArr'], []);
-    const formattedGamesArr = formatImagesAndVideosArr({ localeObj, arr: gamesArr });
+    // const formattedUcArr = formatImagesAndVideosArr({ localeObj, arr: resultArr });
+    // const formattedUcObj = lodashGet(formattedUcArr, [0], {});
     
-    const returnObj = formattedUcObj;
-    returnObj.gamesArr = formattedGamesArr;
+    // const gamesArr = lodashGet(ucObj, ['gamesArr'], []);
+    // const formattedGamesArr = formatImagesAndVideosArr({ localeObj, arr: gamesArr });
+    
+    // const returnObj = formattedUcObj;
+    // returnObj.gamesArr = formattedGamesArr;
     
     
     // --------------------------------------------------

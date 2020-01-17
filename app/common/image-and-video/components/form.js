@@ -105,12 +105,11 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`\n---------- form / imagesAndVideosArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosArr)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
+    // console.log(`
+    //   /app/common/image-and-video/components/form.js\n
+    //   ----- pathArr -----\n
+    //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     

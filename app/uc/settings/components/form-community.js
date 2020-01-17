@@ -171,8 +171,9 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- topObj -----\n
-    //   ${util.inspect(topObj, { colors: true, depth: null })}\n
+    //   /app/uc/settings/components/form-community.js\n
+    //   ----- this.pathArr -----\n
+    //   ${util.inspect(this.pathArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -368,16 +369,8 @@ export default injectIntl(class extends React.Component {
               コミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x 1080 ピクセル）をアップロードしてください。
             </p>
             
-            {/*<ImageAndVideoFormImage
-              pathArr={this.pathArr}
-              type="ucTop"
-              // description="トップページに表示される大きな画像です。"
-              showImageCaption={false}
-              limit={1}
-            />*/}
-            
             <ImageAndVideoForm
-              pathArr={[...this.pathArr, 'top']}
+              pathArr={this.pathArr}
               type="ucTop"
               showVideoButton={false}
               showImageCaption={false}
@@ -413,7 +406,7 @@ export default injectIntl(class extends React.Component {
             </p>
             
             <ImageAndVideoForm
-              pathArr={[...this.pathArr, 'thumbnail']}
+              pathArr={[...this.pathArr, 'thumbnailObj']}
               type="ucThumbnail"
               showVideoButton={false}
               showImageCaption={false}

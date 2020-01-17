@@ -674,50 +674,50 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     //   Loop
     // --------------------------------------------------
     
-    const returnArr = [];
+    // const returnArr = [];
     
-    for (let valueObj of resultArr.values()) {
+    // for (let valueObj of resultArr.values()) {
       
-      // console.log(`\n---------- valueObj ----------\n`);
-      // console.dir(valueObj);
-      // console.log(`\n-----------------------------------\n`);
-      
-      
-      // --------------------------------------------------
-      //   Deep Copy
-      // --------------------------------------------------
-      
-      const clonedObj = lodashCloneDeep(valueObj);
+    //   // console.log(`\n---------- valueObj ----------\n`);
+    //   // console.dir(valueObj);
+    //   // console.log(`\n-----------------------------------\n`);
       
       
-      // --------------------------------------------------
-      //   画像と動画の処理
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Deep Copy
+    //   // --------------------------------------------------
       
-      const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
+    //   const clonedObj = lodashCloneDeep(valueObj);
       
-      if (formattedObj) {
+      
+    //   // --------------------------------------------------
+    //   //   画像と動画の処理
+    //   // --------------------------------------------------
+      
+    //   const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
+      
+    //   if (formattedObj) {
         
-        clonedObj.imagesAndVideosObj = formattedObj;
+    //     clonedObj.imagesAndVideosObj = formattedObj;
         
-      } else {
+    //   } else {
         
-        delete clonedObj.imagesAndVideosObj;
+    //     delete clonedObj.imagesAndVideosObj;
         
-      }
+    //   }
       
-      // console.log(`\n---------- clonedObj ----------\n`);
-      // console.dir(clonedObj);
-      // console.log(`\n-----------------------------------\n`);
+    //   // console.log(`\n---------- clonedObj ----------\n`);
+    //   // console.dir(clonedObj);
+    //   // console.log(`\n-----------------------------------\n`);
       
-      // --------------------------------------------------
-      //   Push
-      // --------------------------------------------------
+    //   // --------------------------------------------------
+    //   //   Push
+    //   // --------------------------------------------------
       
-      returnArr.push(clonedObj);
+    //   returnArr.push(clonedObj);
       
       
-    }
+    // }
     
     
     // console.log(`
@@ -737,7 +737,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     //   Return
     // --------------------------------------------------
     
-    return returnArr;
+    return resultArr;
     
     
   } catch (err) {

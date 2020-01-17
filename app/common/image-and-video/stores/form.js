@@ -15,9 +15,10 @@ import util from 'util';
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import shortid from 'shortid';
+// import shortid from 'shortid';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
@@ -77,36 +78,23 @@ class Store {
   
   /**
    * imagesAndVideosObjを取得する
-   * @param {Array} pathArr - データを保存する場所を配列で指定する
+   * @param {Array} pathArr - データを取得する場所を配列で指定する
    */
-  // @action.bound
-  // handleGetImagesAndVideosObj({ pathArr }) {
-  //   const obj = lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});
-    
-  //   // console.log(chalk`
-  //   //   \n---------- handleGetImagesAndVideosObj ----------\n
-  //   //   _id: {green ${_id}}
-  //   // `);
-    
-  //   // console.log(`
-  //   //   ----- imagesAndVideosObj -----\n
-  //   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-  //   return obj;
-  // };
+  @action.bound
+  handleGetImagesAndVideosObj({ pathArr }) {
+    return lodashGet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], {});;
+  };
   
   
   /**
-   * imagesAndVideosObjを更新する
+   * imagesAndVideosObjを置き換える
    * @param {Array} pathArr - データを保存する場所を配列で指定する
+   * @param {Object} imagesAndVideosObj - 保存するデータ
    */
-  // @action.bound
-  // handleSetImagesAndVideosObj({ pathArr, value }) {
-  //   const obj = lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], value);
-  //   return obj;
-  // };
+  @action.bound
+  handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj }) {
+    lodashSet(this.dataObj, [...pathArr, 'imagesAndVideosObj'], imagesAndVideosObj);
+  };
   
   
   
@@ -697,12 +685,65 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreImageAndVideoForm({}) {
+export default function initStoreImageAndVideoForm({ propsObj }) {
+  
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
   
   if (storeImageAndVideoForm === null) {
     storeImageAndVideoForm = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
+  
+  if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   pathArr
+    // --------------------------------------------------
+    
+    const pathArr = lodashGet(propsObj, ['pathArr'], []);
+    
+    // console.log(`
+    //   /app/common/image-and-video/stores/form.js\n
+    //   ----- pathArr -----\n
+    //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   imagesAndVideosObj
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['imagesAndVideosObj'])) {
+      storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr, imagesAndVideosObj: propsObj.imagesAndVideosObj });
+    }
+    
+    
+    // --------------------------------------------------
+    //   imagesAndVideosThumbnailObj
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['imagesAndVideosThumbnailObj'])) {
+      storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr: [...pathArr, 'thumbnailObj'], imagesAndVideosObj: propsObj.imagesAndVideosThumbnailObj });
+    }
+    
+    
+  }
+    
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeImageAndVideoForm;
+  
   
 }

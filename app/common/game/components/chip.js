@@ -38,13 +38,20 @@ import IconGrade from '@material-ui/icons/Grade';
 import IconClose from '@material-ui/icons/Close';
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
+
+
 
 
 // --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
-@inject('storeGameForm')
+@inject('stores', 'storeGameForm')
 @observer
 export default class extends React.Component {
   
@@ -69,7 +76,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { storeGameForm, pathArr, _id, gameID, name, imagesAndVideosObj } = this.props;
+    const { stores, storeGameForm, pathArr, _id, gameID, name, imagesAndVideosObj } = this.props;
     
     const {
       
@@ -96,10 +103,10 @@ export default class extends React.Component {
     let componentAvatar = '';
     
     // const thumbnailArr = lodashGet(imagesAndVideosObj, ['thumbnailArr'], []);
+    const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     
-    
-    const thumbnailSrc = lodashGet(imagesAndVideosObj, ['arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
-    const thumbnailSrcSet = lodashGet(imagesAndVideosObj, ['arr', 0, 'srcSet'], '');
+    const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
+    const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
     
     
     if (thumbnailSrc) {

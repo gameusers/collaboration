@@ -14,7 +14,7 @@ const schema = mongoose.Schema({
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
   users_id: { type: String, required: true },
-  gameID: { type: String, required: true },
+  gameCommunities_id: { type: String, required: true },
   language: { type: String, enum: ['en', 'ja'], required: true },
   theme: String,
   nameObj: {

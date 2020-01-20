@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Node Packages
+//   Validation
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -22,19 +22,18 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 
 
 /**
- * Boolean
+ * Community Type
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
- * @param {boolean} required - 必須 true / 必須でない false
- * @param {boolean} value - 値
+ * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationBoolean = ({ throwError = false, required = false, value }) => {
+const validationUserCommunitiesCommunityType = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -47,7 +46,7 @@ const validationBoolean = ({ throwError = false, required = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Error',
+    messageID: 'PH8jcw-VF',
     error: false,
   };
   
@@ -56,26 +55,11 @@ const validationBoolean = ({ throwError = false, required = false, value }) => {
     
     
     // ---------------------------------------------
-    //   空の場合、処理停止
+    //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'K9D1fwzSP', messageID: 'cFbXmuFVh' }] });
-      }
-      
-      return resultObj;
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   Booleanチェック
-    // ---------------------------------------------
-    
-    if (!validator.isBoolean(data)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '6LhHyZWR_', messageID: 'PH8jcw-VF' }] });
+    if (!validator.isIn(value, ['open', 'closed'])) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'm7dII4m_8', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -124,5 +108,5 @@ const validationBoolean = ({ throwError = false, required = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationBoolean
+  validationUserCommunitiesCommunityType
 };

@@ -819,7 +819,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   platform: {green ${platform}}
-    //   gameID: {green ${gameID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   label: {green ${label}}
     //   id: {green ${id}}
     //   publicSetting: {green ${publicSetting}}

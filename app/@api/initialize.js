@@ -46,9 +46,11 @@ const SchemaHardwares = require('../@database/hardwares/model');
 const SchemaDevelopersPublishers = require('../@database/developers-publishers/model');
 const SchemaEmailConfirmations = require('../@database/email-confirmations/model');
 const SchemaImagesAndVideos = require('../@database/images-and-videos/model');
+const SchemaGameCommunities = require('../@database/game-communities/model');
 const SchemaUserCommunities = require('../@database/user-communities/model');
 const SchemaForumThreads = require('../@database/forum-threads/model');
 const SchemaForumComments = require('../@database/forum-comments/model');
+const SchemaFollows = require('../@database/follows/model');
 
 
 // ---------------------------------------------
@@ -274,7 +276,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'w_zkqpr3R',
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        gameID: 'Jk92aglWl',
+        gameCommunities_id: 'Jk92aglWl',
         urlID: 'Dead-by-Daylight',
         language: 'ja',
         country: 'JP',
@@ -370,7 +372,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'dhjc8SPwK',
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        gameID: 'Jk92aglWl',
+        gameCommunities_id: 'Jk92aglWl',
         urlID: 'Dead-by-Daylight',
         language: 'en',
         country: 'US',
@@ -413,7 +415,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: '8OKcZy3R-',
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        gameID: 'lxdubg6IY',
+        gameCommunities_id: 'lxdubg6IY',
         urlID: 'Super-Smash-Bros-SPECIAL',
         language: 'ja',
         country: 'JP',
@@ -464,7 +466,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: '007_qLOR2',
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        gameID: 'lxdubg6IY',
+        gameCommunities_id: 'lxdubg6IY',
         urlID: 'Super-Smash-Bros-Ultimate',
         language: 'en',
         country: 'US',
@@ -512,7 +514,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'PdWVRzkoW',
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        gameID: 'YcIvt9hf7',
+        gameCommunities_id: 'YcIvt9hf7',
         urlID: 'Dragon-Quest-Builders2',
         language: 'ja',
         country: 'JP',
@@ -571,7 +573,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         _id: 'LQevTtUuJ',
         createdDate: ISO8601,
         updatedDate: ISO8601,
-        gameID: 'WMHFmAp8e',
+        gameCommunities_id: 'WMHFmAp8e',
         urlID: 'Overcooked2',
         language: 'ja',
         country: 'JP',
@@ -1856,7 +1858,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'PlayStation',
         label: '',
         id: 'PSN-ID',
@@ -1868,7 +1870,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Xbox',// ゲーマータグ
         label: '',
         id: 'Xbox-ID',
@@ -1880,7 +1882,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Nintendo',// フレンドコード
         label: '',
         id: 'Nintendo-ID',
@@ -1892,7 +1894,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Steam',
         label: '',
         id: 'Steam-ID',
@@ -1904,7 +1906,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: 'Jk92aglWl',
+        gameCommunities_id: 'Jk92aglWl',
         platform: 'PC',
         label: '',
         id: 'DbD-ID',
@@ -1916,7 +1918,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: 'lxdubg6IY',
+        gameCommunities_id: 'lxdubg6IY',
         platform: 'Other',
         label: 'スマブラSP',
         id: 'Super-Smash-Bros-SPECIAL-ID',
@@ -1928,7 +1930,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Other',
         label: '未選択',
         id: 'Unselected-ID',
@@ -1940,7 +1942,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: 'YcIvt9hf7',
+        gameCommunities_id: 'YcIvt9hf7',
         platform: 'PC',
         label: '',
         id: 'PC-ID',
@@ -1952,7 +1954,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Android',
         label: '',
         id: 'Android-ID',
@@ -1964,7 +1966,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'iOS',
         label: '',
         id: 'iOS-ID',
@@ -1976,7 +1978,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'P7UJMuUnx',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'PlayStation',
         label: '',
         id: 'User2-PlayStation-ID',
@@ -1988,7 +1990,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Origin',
         label: '',
         id: 'Origin-ID',
@@ -2000,7 +2002,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Discord',
         label: '',
         id: 'Discord-ID',
@@ -2012,7 +2014,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Skype',
         label: '',
         id: 'Skype-ID',
@@ -2024,7 +2026,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'ICQ',
         label: '',
         id: 'ICQ-ID',
@@ -2036,7 +2038,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        gameID: '',
+        gameCommunities_id: '',
         platform: 'Line',
         label: '',
         id: 'Line-ID',
@@ -3136,6 +3138,86 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     
     // --------------------------------------------------
+    //   DB / Game Community
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'Jk92aglWl',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        forumObj: {
+          threadCount: 0,
+        },
+        updatedDateObj: {
+          notification: ISO8601,
+          forum: ISO8601,
+        },
+        anonymity: true,
+      },
+      
+      
+      {
+        _id: 'lxdubg6IY',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        forumObj: {
+          threadCount: 0,
+        },
+        updatedDateObj: {
+          notification: ISO8601,
+          forum: ISO8601,
+        },
+        anonymity: true,
+      },
+      
+      
+      {
+        _id: 'YcIvt9hf7',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        forumObj: {
+          threadCount: 0,
+        },
+        updatedDateObj: {
+          notification: ISO8601,
+          forum: ISO8601,
+        },
+        anonymity: true,
+      },
+      
+      
+      {
+        _id: 'WMHFmAp8e',
+        createdDate: ISO8601,
+        updatedDate: ISO8601,
+        forumObj: {
+          threadCount: 0,
+        },
+        updatedDateObj: {
+          notification: ISO8601,
+          forum: ISO8601,
+        },
+        anonymity: true,
+      },
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaGameCommunities.deleteMany({ reset: true });
+    returnObj = await SchemaGameCommunities.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
     //   DB / User Community
     // --------------------------------------------------
     
@@ -3161,7 +3243,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         ],
         imagesAndVideos_id: 'pg6-XZehF',
         imagesAndVideosThumbnail_id: 'ed38Uf030',
-        gameIDArr: ['Jk92aglWl', 'lxdubg6IY', 'WMHFmAp8e'],
+        gameCommunities_idsArr: ['Jk92aglWl', 'lxdubg6IY', 'WMHFmAp8e'],
         memberObj: {
           count: 0,
           membersArr: [],
@@ -3172,7 +3254,9 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDateObj: {
           notification: ISO8601,
           forum: ISO8601,
-        }
+        },
+        communityType: 'open',
+        anonymity: true,
       },
     ];
     
@@ -3663,6 +3747,41 @@ emotion: https://emotion.sh/docs/introduction`,
     
     await SchemaForumComments.deleteMany({ reset: true });
     returnObj = await SchemaForumComments.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Follows
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    saveArr = [
+      {
+        _id: 'rys6GHf1g',
+        updatedDate: ISO8601,
+        gameCommunities_id: '',
+        userCommunities_id: 'cxO8tEGty',
+        users_id: '',
+        approval: false,
+        membersArr: ['jun-deE4J', 'P7UJMuUnx'],
+        membersApprovalArr: [],
+        membersBlockedArr: [],
+        count: 2
+      },
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaFollows.deleteMany({ reset: true });
+    returnObj = await SchemaFollows.insertMany({ saveArr });
+    
     
     
     

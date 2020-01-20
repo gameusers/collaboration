@@ -13,24 +13,6 @@ const schema = mongoose.Schema({
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
-  userCommunityID: { type: String },
-  users_id: { type: String },
-  localesArr: [
-    {
-      _id: { type: String, required: true },
-      language: { type: String, enum: ['en', 'ja'] },
-      name: { type: String, required: true },
-      description: { type: String, required: true },
-      descriptionShort: { type: String, required: true },
-    }
-  ],
-  imagesAndVideos_id: { type: String },
-  imagesAndVideosThumbnail_id: { type: String },
-  gameCommunities_idsArr: [String],
-  memberObj: {
-    count: { type: Number, default: 0, required: true },
-    membersArr: [String],
-  },
   forumObj: {
     threadCount: { type: Number, default: 0, required: true },
   },
@@ -38,7 +20,6 @@ const schema = mongoose.Schema({
     notification: { type: Date, required: true },
     forum: { type: Date, required: true },
   },
-  communityType: { type: String, required: true },
   anonymity: { type: Boolean, required: true }
 });
 
@@ -49,10 +30,10 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models['user-communities']) {
-  model = mongoose.model('user-communities');
+if (mongoose.models['game-communities']) {
+  model = mongoose.model('game-communities');
 } else {
-  model = mongoose.model('user-communities', schema);
+  model = mongoose.model('game-communities', schema);
 }
 
 module.exports = model;

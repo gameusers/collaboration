@@ -554,7 +554,7 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
         $lookup:
           {
             from: 'games',
-            let: { gameIDArr: '$gameIDArr' },
+            let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
             pipeline: [
               
               { $match:
@@ -563,7 +563,7 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
                     [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $in: ['$gameID', '$$gameIDArr'] },
+                      { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
                     ]
                   },
                 }
@@ -605,7 +605,7 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
               
               { $project:
                 {
-                  gameID: 1,
+                  gameCommunities_id: 1,
                   name: 1,
                   imagesAndVideosObj: 1,
                 }
@@ -689,14 +689,48 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
       },
       
       
+      // Follows
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { uc_id: '$_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$userCommunities_id', '$$uc_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  approval: 1,
+                }
+              }
+            ],
+            as: 'followsObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$followsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
       { $project:
         {
           userCommunityID: 1,
           users_id: 1,
           localesArr: 1,
+          communityType: 1,
+          anonymity: 1,
           imagesAndVideosObj: 1,
           imagesAndVideosThumbnailObj: 1,
           gamesArr: 1,
+          followsObj: 1,
         }
       },
       

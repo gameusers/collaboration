@@ -7,13 +7,7 @@
 // ---------------------------------------------
 
 const chalk = require('chalk');
-
-
-// ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-const Model = require('../model');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -26,18 +20,11 @@ const validator = require('validator');
 
 
 /**
- * gameCommunities_id
- * @param {string} value - 値
+ * Boolean
+ * @param {boolean} required - Required
+ * @param {boolean} value
  */
-const validationGamesGameCommunities_idServer = async ({ value, language, country }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 7;
-  const maxLength = 14;
+const validationBoolean = ({ required, value }) => {
   
   
   // ---------------------------------------------
@@ -47,7 +34,7 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
   const data = String(value);
   
   let resultObj = {
-    value: data,
+    value,
     error: false,
     errorCodeArr: []
   };
@@ -60,32 +47,19 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
     //   Validation
     // ---------------------------------------------
     
-    // 空の場合、バリデーションスルー
-    if (validator.isEmpty(data)) {
+    // Not Required で入力値が空の場合、処理停止
+    if (!required && validator.isEmpty(data)) {
       return resultObj;
     }
     
-    // 文字数チェック
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      resultObj.errorCodeArr.push('7m7YndDi5');
+    // 存在チェック
+    if (validator.isEmpty(data)) {
+      resultObj.errorCodeArr.push('xQjF_ZOgn');
     }
     
-    // 英数と -_ のみ
-    if (data.match(/^[\w\-]+$/) === null) {
-      resultObj.errorCodeArr.push('OE9r_zJNY');
-    }
-    
-    // データベースに存在しているか＆編集権限チェック
-    const count = await Model.count({
-      conditionObj: {
-        language,
-        country,
-        gameCommunities_id: value,
-      }
-    });
-    
-    if (count !== 1) {
-      resultObj.errorCodeArr.push('zcfXAgyYT');
+    // Booleanチェック
+    if (!validator.isBoolean(data)) {
+      resultObj.errorCodeArr.push('g4oAVWC1X');
     }
     
     
@@ -96,7 +70,7 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
     //   その他のエラー
     // ---------------------------------------------
     
-    resultObj.errorCodeArr.push('atnrDDdeK');
+    resultObj.errorCodeArr.push('G2whS9Xow');
     
     
   } finally {
@@ -117,6 +91,8 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
   }
   
   
+  return resultObj;
+  
 };
 
 
@@ -127,5 +103,5 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
 // --------------------------------------------------
 
 module.exports = {
-  validationGamesGameCommunities_idServer
+  validationBoolean
 };

@@ -30,6 +30,13 @@ import { css, jsx } from '@emotion/core';
 
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+// import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+// import FormLabel from '@material-ui/core/FormLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -115,7 +122,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitPages,
+      handleSubmitSettings,
       
     } = storeUcSettings;
     
@@ -135,22 +142,22 @@ export default injectIntl(class extends React.Component {
     //   Name
     // --------------------------------------------------
     
-    const userCommunityName = lodashGet(dataObj, [...this.pathArr, 'userCommunityName'], '');
-    const validationUserCommunitiesNameObj = validationUserCommunitiesName({ value: userCommunityName });
+    const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
+    const validationUserCommunitiesNameObj = validationUserCommunitiesName({ value: name });
     
     
     // --------------------------------------------------
     //   Description
     // --------------------------------------------------
     
-    const userCommunityDescription = lodashGet(dataObj, [...this.pathArr, 'userCommunityDescription'], '');
+    const description = lodashGet(dataObj, [...this.pathArr, 'description'], '');
     
     
     // --------------------------------------------------
     //   Description Short
     // --------------------------------------------------
     
-    const userCommunityDescriptionShort = lodashGet(dataObj, [...this.pathArr, 'userCommunityDescriptionShort'], '');
+    const descriptionShort = lodashGet(dataObj, [...this.pathArr, 'descriptionShort'], '');
     
     
     // --------------------------------------------------
@@ -159,6 +166,28 @@ export default injectIntl(class extends React.Component {
     
     const userCommunityID = lodashGet(dataObj, [...this.pathArr, 'userCommunityID'], '');
     const validationUserCommunitiesUserCommunityIDObj = validationUserCommunitiesUserCommunityID({ value: userCommunityID });
+    
+    
+    // --------------------------------------------------
+    //   communityType - open / closed
+    // --------------------------------------------------
+    
+    const communityType = lodashGet(dataObj, [...this.pathArr, 'communityType'], 'open');
+    
+    
+    // --------------------------------------------------
+    //   Approval
+    // --------------------------------------------------
+    
+    const approval = lodashGet(dataObj, [...this.pathArr, 'approval'], false);
+    
+    
+    // --------------------------------------------------
+    //   Anonymity
+    // --------------------------------------------------
+    
+    const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], true);
+    
     
     
     
@@ -224,11 +253,11 @@ export default injectIntl(class extends React.Component {
                 css={css`
                   width: 100%;
                 `}
-                id="userCommunityName"
+                id="name"
                 label="コミュニティの名前"
                 value={validationUserCommunitiesNameObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: [...this.pathArr, 'userCommunityName'],
+                  pathArr: [...this.pathArr, 'name'],
                   value: eventObj.target.value
                 })}
                 error={validationUserCommunitiesNameObj.error}
@@ -282,9 +311,9 @@ export default injectIntl(class extends React.Component {
               `}
               rows={5}
               placeholder="コミュニティについての説明文を入力してください。"
-              value={userCommunityDescription}
+              value={description}
               onChange={(eventObj) => handleEdit({
-                pathArr: [...this.pathArr, 'userCommunityDescription'],
+                pathArr: [...this.pathArr, 'description'],
                 value: eventObj.target.value
               })}
               maxLength={3000}
@@ -332,9 +361,9 @@ export default injectIntl(class extends React.Component {
               `}
               rows={2}
               placeholder="コミュニティを一覧表示する際に表示される短い説明文を入力してください。"
-              value={userCommunityDescriptionShort}
+              value={descriptionShort}
               onChange={(eventObj) => handleEdit({
-                pathArr: [...this.pathArr, 'userCommunityDescriptionShort'],
+                pathArr: [...this.pathArr, 'descriptionShort'],
                 value: eventObj.target.value
               })}
               maxLength={100}
@@ -485,9 +514,8 @@ export default injectIntl(class extends React.Component {
           <div
             css={css`
               border-top: 1px dashed #848484;
-              border-bottom: 1px dashed #848484;
-              margin: 24px 0 24px 0;
-              padding: 24px 0 24px 0;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
             `}
           >
             
@@ -516,11 +544,161 @@ export default injectIntl(class extends React.Component {
             
             <GameForm
               pathArr={this.pathArr}
-              // _id={_id}
-              // gamesArr={gamesArr}
-              // func={handleGame}
-              // funcDelete={handleGameDelete}
             />
+            
+          </div>
+          
+          
+          
+          
+          {/* 更新情報の公開範囲 */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 16px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              公開タイプ
+            </h3>
+            
+            <p>
+              コミュニティ内部のコンテンツを閲覧できる相手を選択し、コミュニティの更新情報（フォーラムへの書き込みなど）を Game Users のトップページなどに表示するかどうかの設定になります。
+            </p>
+            
+            <p
+              css={css`
+                margin: 12px 0 0 0;
+              `}
+            >
+              オープン：コミュニティを誰でも閲覧できます。また更新情報が Game Users のトップページにフィードとして掲載されます。
+            </p>
+            
+            <p
+              css={css`
+                margin: 12px 0 12px 0;
+              `}
+            >
+              クローズド：コミュニティの参加メンバーだけが閲覧できます。更新情報は参加メンバーだけに通知されます。身内だけで情報交換をしたい場合はクローズドを選んでください。
+            </p>
+            
+            
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="communityType"
+                name="communityType"
+                value={communityType}
+                onChange={(eventObj) => handleEdit({
+                  pathArr: [...this.pathArr, 'communityType'],
+                  value: eventObj.target.value
+                })}
+              >
+                <FormControlLabel value="open" control={<Radio />} label="オープン" />
+                <FormControlLabel value="closed" control={<Radio />} label="クローズド" />
+              </RadioGroup>
+            </FormControl>
+            
+          </div>
+          
+          
+          
+          
+          {/* 参加条件 */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              参加承認制
+            </h3>
+            
+            <p
+              css={css`
+                margin: 0 0 12px 0;
+              `}
+            >
+              管理者が承認したユーザーだけをコミュニティに参加させる場合は、以下をチェックしてください。チェックを外すと誰でも参加できるようになります。
+            </p>
+            
+            
+            <div>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={approval}
+                    onChange={(eventObj) => handleEdit({
+                      pathArr: [...this.pathArr, 'approval'],
+                      value: eventObj.target.checked
+                    })}
+                  />
+                }
+                label="参加承認制にする"
+              />
+            </div>
+            
+          </div>
+          
+          
+          
+          
+          {/* ななしでの投稿 */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              border-bottom: 1px dashed #848484;
+              margin: 16px 0 0 0;
+              padding: 24px 0 16px 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              ななしでの投稿
+            </h3>
+            
+            <p
+              css={css`
+                margin: 0 0 12px 0;
+              `}
+            >
+              コミュニティ内で、ログイン済みユーザーがななしで投稿できるようになります。ななしでの投稿を認める場合は、以下をチェックしてください。
+            </p>
+            
+            
+            <div>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={anonymity}
+                    onChange={(eventObj) => handleEdit({
+                      pathArr: [...this.pathArr, 'anonymity'],
+                      value: eventObj.target.checked
+                    })}
+                  />
+                }
+                label="認める"
+              />
+            </div>
             
           </div>
           
@@ -539,7 +717,7 @@ export default injectIntl(class extends React.Component {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => handleSubmitPages({ pathArr: this.pathArr })}
+              onClick={() => handleSubmitSettings({ pathArr: this.pathArr })}
               disabled={buttonDisabled}
             >
               送信する

@@ -139,7 +139,7 @@ export default injectIntl(class extends React.Component {
             key={index}
             pathArr={pathArr}
             _id={valueObj._id}
-            gameID={valueObj.gameID}
+            gameCommunities_id={valueObj.gameCommunities_id}
             name={valueObj.name}
             imagesAndVideosObj={valueObj.imagesAndVideosObj}
           />

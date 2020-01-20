@@ -122,13 +122,13 @@ const find = async (argumentsObj) => {
         $lookup:
           {
             from: 'games',
-            let: { cardGamesGameID: '$gameID' },
+            let: { cardGamesGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$gameID', '$$cardGamesGameID'] },
+                      { $eq: ['$gameCommunities_id', '$$cardGamesGameCommunities_id'] },
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
                     ]
@@ -138,7 +138,7 @@ const find = async (argumentsObj) => {
               { $project:
                 {
                   _id: 1,
-                  gameID: 1,
+                  gameCommunities_id: 1,
                   urlID: 1,
                   name: 1,
                   thumbnail: 1
@@ -375,13 +375,13 @@ const findOneBy_id = async (argumentsObj) => {
         $lookup:
           {
             from: 'games',
-            let: { cardGamesGameID: '$gameID' },
+            let: { cardGamesGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
               { $match:
                 { $expr:
                   { $and:
                     [
-                      { $eq: ['$gameID', '$$cardGamesGameID'] },
+                      { $eq: ['$gameCommunities_id', '$$cardGamesGameCommunities_id'] },
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
                     ]
@@ -391,7 +391,7 @@ const findOneBy_id = async (argumentsObj) => {
               { $project:
                 {
                   _id: 1,
-                  gameID: 1,
+                  gameCommunities_id: 1,
                   urlID: 1,
                   name: 1,
                   thumbnail: 1

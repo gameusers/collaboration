@@ -604,7 +604,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     
     // return await .find(
     //   { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    // ).select('gameID imagesAndVideosObj name').limit(10).exec();
+    // ).select('gameCommunities_id imagesAndVideosObj name').limit(10).exec();
     
     
     
@@ -655,7 +655,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
       
       { $project:
         {
-          gameID: 1,
+          gameCommunities_id: 1,
           name: 1,
           imagesAndVideosObj: 1,
           // imagesAndVideos_id: 0,

@@ -454,7 +454,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
         $lookup:
           {
             from: 'games',
-            let: { idsGameID: '$gameID' },
+            let: { idsGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
               { $match:
                 { $expr:
@@ -462,7 +462,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
                     [
                       { $eq: ['$language', language] },
                       { $eq: ['$country', country] },
-                      { $eq: ['$gameID', '$$idsGameID'] }
+                      { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
                     ]
                   },
                 }
@@ -470,7 +470,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
               { $project:
                 {
                   _id: 1,
-                  gameID: 1,
+                  gameCommunities_id: 1,
                   imagesAndVideosObj: 1,
                   // thumbnail: 1,
                   name: 1,
@@ -512,7 +512,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
       
       if ('gamesObj' in valueObj) {
         tempObj.games_id = valueObj.gamesObj._id;
-        tempObj.gamesGameID = valueObj.gamesObj.gameID;
+        tempObj.gamesGameCommunities_id = valueObj.gamesObj.gameCommunities_id;
         tempObj.gamesImagesAndVideosObj = valueObj.gamesObj.imagesAndVideosObj;
         // tempObj.gamesThumbnail = valueObj.gamesObj.thumbnail;
         tempObj.gamesName = valueObj.gamesObj.name;
@@ -789,7 +789,7 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
         $lookup:
           {
             from: 'games',
-            let: { idsGameID: '$gameID' },
+            let: { idsGameCommunities_id: '$gameCommunities_id' },
             pipeline: [
               { $match:
                 { $expr:
@@ -797,7 +797,7 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
                     [
                       { $eq: ['$language', localeObj.language] },
                       { $eq: ['$country', localeObj.country] },
-                      { $eq: ['$gameID', '$$idsGameID'] }
+                      { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
                     ]
                   },
                 }

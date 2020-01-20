@@ -166,19 +166,23 @@ export default class extends React.Component {
     // const login = lodashGet(resultObj, ['data', 'login'], false);
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
-    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'name'], '');
-    const userCommunityDescription = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'description'], '');
-    const userCommunityDescriptionShort = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'descriptionShort'], '');
+    const name = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'name'], '');
+    const description = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'description'], '');
+    const descriptionShort = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'descriptionShort'], '');
+    const communityType = lodashGet(resultObj, ['data', 'userCommunityObj', 'communityType'], 'open');
+    const anonymity = lodashGet(resultObj, ['data', 'userCommunityObj', 'anonymity'], true);
+    const approval = lodashGet(resultObj, ['data', 'userCommunityObj', 'followsObj', 'approval'], false);
     const imagesAndVideosObj = lodashGet(resultObj, ['data', 'userCommunityObj', 'imagesAndVideosObj'], {});
     const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'userCommunityObj', 'imagesAndVideosThumbnailObj'], {});
     const gamesArr = lodashGet(resultObj, ['data', 'userCommunityObj', 'gamesArr'], []);
+    
     
     
     // --------------------------------------------------
     //   Title
     // --------------------------------------------------
     
-    const title = `${userCommunityName}: 設定`;
+    const title = `${name}: 設定`;
     
     
     // --------------------------------------------------
@@ -205,7 +209,7 @@ export default class extends React.Component {
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userCommunityName, userCommunityDescription, userCommunityDescriptionShort, userCommunityID, imagesAndVideosObj, imagesAndVideosThumbnailObj, gamesArr };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, name, description, descriptionShort, userCommunityID, communityType, anonymity, approval, imagesAndVideosObj, imagesAndVideosThumbnailObj, gamesArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     

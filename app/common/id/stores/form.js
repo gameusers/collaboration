@@ -315,7 +315,7 @@ class Store {
     this.handleGame({
       _id,
       games_id: resultObj.games_id,
-      gameID: resultObj.gamesGameID,
+      gameCommunities_id: resultObj.gamesGameCommunities_id,
       imagesAndVideosObj: resultObj.gamesImagesAndVideosObj,
       name: resultObj.gamesName
     });
@@ -341,13 +341,13 @@ class Store {
    * ゲームを変更する
    * @param {string} _id
    * @param {string} games_id - DB games games_id
-   * @param {string} gameID - DB games gameID
+   * @param {string} gameCommunities_id - DB games gameCommunities_id
    * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
    * @param {string} name - ゲーム名
    */
   @action.bound
-  handleGame({ _id, games_id, gameID, imagesAndVideosObj, name }) {
-    lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameID, imagesAndVideosObj, name }]);
+  handleGame({ _id, games_id, gameCommunities_id, imagesAndVideosObj, name }) {
+    lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameCommunities_id, imagesAndVideosObj, name }]);
   };
   
   
@@ -438,7 +438,7 @@ class Store {
       
       // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
-      const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
+      const formGameCommunities_id = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameCommunities_id'], '');
       const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
       const formID = lodashGet(this.dataObj, [_id, 'id'], '');
       const formPublicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
@@ -462,7 +462,7 @@ class Store {
       
       formData.append('_id', form_id);
       formData.append('platform', formPlatform);
-      formData.append('gameID', formGameID);
+      formData.append('gameCommunities_id', formGameCommunities_id);
       formData.append('label',  formLabel);
       formData.append('id', formID);
       formData.append('publicSetting', formPublicSetting);
@@ -774,7 +774,7 @@ class Store {
       // ---------------------------------------------
       
       const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
-      const formGameID = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameID'], '');
+      const formGameCommunities_id = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameCommunities_id'], '');
       const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
       const formID = lodashGet(this.dataObj, [_id, 'id'], '');
       const formPublicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
@@ -799,7 +799,7 @@ class Store {
       const formData = new FormData();
       
       formData.append('platform', formPlatform);
-      formData.append('gameID', formGameID);
+      formData.append('gameCommunities_id', formGameCommunities_id);
       formData.append('label',  formLabel);
       formData.append('id', formID);
       formData.append('publicSetting', formPublicSetting);

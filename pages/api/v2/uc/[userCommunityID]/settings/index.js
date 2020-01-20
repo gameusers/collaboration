@@ -23,7 +23,6 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
-// const ModelForumThreads = require('../../../../../../app/@database/forum-threads/model');
 
 
 // ---------------------------------------------

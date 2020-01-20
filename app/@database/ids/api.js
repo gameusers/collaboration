@@ -43,7 +43,7 @@ const { validationIDsLabel } = require('./validations/label');
 const { validationIDsID } = require('./validations/id');
 const { validationIDsPublicSetting } = require('./validations/public-setting');
 
-const { validationGamesGameIDServer } = require('../games/validations/game-id-server');
+const { validationGamesGameCommunities_idServer } = require('../games/validations/game-id-server');
 
 
 // ---------------------------------------------
@@ -266,7 +266,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     //   POST 取得
     // --------------------------------------------------
     
-    const { _id, platform, gameID, label, id, publicSetting, search } = req.body;
+    const { _id, platform, gameCommunities_id, label, id, publicSetting, search } = req.body;
     
     
     // --------------------------------------------------
@@ -280,7 +280,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
       updatedDate: ISO8601,
       users_id: loginUsers_id,
       platform,
-      gameID: gameID ? gameID : '',
+      gameCommunities_id: gameCommunities_id ? gameCommunities_id : '',
       label: label ? label : '',
       id,
       publicSetting,
@@ -290,7 +290,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   platform: {green ${platform}}
-    //   gameID: {green ${gameID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   label: {green ${label}}
     //   id: {green ${id}}
     //   publicSetting: {green ${publicSetting}}
@@ -345,10 +345,10 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     
     // プラットフォームが以下の配列に含まれていない場合、バリデーションを実行
     if (['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(platform) === -1) {
-      await val(validationGamesGameIDServer, { value: gameID, language: localeObj.language, country: localeObj.country, }, 'Game ID');
-    // 配列に含まれている場合は、gameIDは不要なので削除する
+      await val(validationGamesGameCommunities_idServer, { value: gameCommunities_id, language: localeObj.language, country: localeObj.country, }, 'Game ID');
+    // 配列に含まれている場合は、gameCommunities_idは不要なので削除する
     } else {
-      saveObj.gameID = '';
+      saveObj.gameCommunities_id = '';
     }
     
     
@@ -460,7 +460,7 @@ router.post('/upsert', upload.none(), async (req, res, next) => {
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   platform: {green ${platform}}
-    //   gameID: {green ${gameID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   label: {green ${label}}
     //   id: {green ${id}}
     //   publicSetting: {green ${publicSetting}}

@@ -48,6 +48,7 @@ import { validationUsersEmail } from '../../../@database/users/validations/email
 import initStoreData from '../../../@stores/data';
 import initStoreLayout from '../../../common/layout/stores/layout';
 import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/form';
+import initStoreGameForm from '../../../common/game/stores/form';
 
 
 // --------------------------------------------------
@@ -58,6 +59,7 @@ let storeUcSettings = null;
 let storeData = initStoreData({});
 let storeLayout = initStoreLayout({});
 let storeImageAndVideoForm = initStoreImageAndVideoForm({});
+let storeGameForm = initStoreGameForm({});
       
 
 
@@ -101,6 +103,190 @@ class Store {
   
   
   
+  
+  
+  /**
+   * ユーザーコミュニティ設定フォームを送信する
+   */
+  @action.bound
+  async handleSubmitSettings({ pathArr }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
+      const description = lodashGet(this.dataObj, [...pathArr, 'description'], '');
+      const descriptionShort = lodashGet(this.dataObj, [...pathArr, 'descriptionShort'], '');
+      const userCommunityID = lodashGet(this.dataObj, [...pathArr, 'userCommunityID'], '');
+      const communityType = lodashGet(this.dataObj, [...pathArr, 'communityType'], '');
+      const approval = lodashGet(this.dataObj, [...pathArr, 'approval'], '');
+      const anonymity = lodashGet(this.dataObj, [...pathArr, 'anonymity'], '');
+      
+      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
+      const imagesAndVideosThumbnailObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr: [...pathArr, 'thumbnailObj'] });
+      
+      const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
+      
+      const gameCommunities_idsArr = [];
+      
+      for (let valueObj of gamesArr.values()) {
+        gameCommunities_idsArr.push(valueObj.gameCommunities_id);
+      }
+      
+      
+      
+      
+      console.log(chalk`
+        /app/uc/settings/stores/store.js
+        name: {green ${name}}
+        description: {green ${description}}
+        descriptionShort: {green ${descriptionShort}}
+        userCommunityID: {green ${userCommunityID}}
+        communityType: {green ${communityType}}
+        approval: {green ${approval}}
+        anonymity: {green ${anonymity}}
+      `);
+      
+      console.log(`
+        ----- imagesAndVideosObj -----\n
+        ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- imagesAndVideosThumbnailObj -----\n
+        ${util.inspect(imagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- gamesArr -----\n
+        ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      console.log(`
+        ----- gameCommunities_idsArr -----\n
+        ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        name,
+        description,
+        descriptionShort,
+        userCommunityID,
+        communityType,
+        approval,
+        anonymity,
+        gameCommunities_idsArr,
+        imagesAndVideosObj,
+        imagesAndVideosThumbnailObj,
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      let resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/user-communities/upsert-settings`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj)
+      });
+      
+      // console.log(`\n---------- resultObj ----------\n`);
+      // console.dir(resultObj);
+      // console.log(`\n-----------------------------------\n`);
+      
+      
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
+      
+      
+      // // ---------------------------------------------
+      // //   Snackbar: Success
+      // // ---------------------------------------------
+      
+      // storeLayout.handleSnackbarOpen({
+      //   variant: 'success',
+      //   messageID: '5o6-p-Pkz',
+      // });
+      
+      
+      // // ---------------------------------------------
+      // //   Page Transition / URLを変更した場合にリロードする
+      // // ---------------------------------------------
+      
+      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      // if (pageTransition) {
+      //   window.location.href = `${process.env.URL_BASE}ur/${userID}`;
+      // }
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
 }
 
 
@@ -141,30 +327,31 @@ export default function initStoreUcSettings({ propsObj }) {
     //   --------------------\n
     // `);
     
+    
     // --------------------------------------------------
-    //   userCommunityName
+    //   name
     // --------------------------------------------------
     
-    if (lodashHas(propsObj, ['userCommunityName'])) {
-      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'userCommunityName'], propsObj.userCommunityName);
+    if (lodashHas(propsObj, ['name'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'name'], propsObj.name);
     }
     
     
     // --------------------------------------------------
-    //   userCommunityDescription
+    //   description
     // --------------------------------------------------
     
-    if (lodashHas(propsObj, ['userCommunityDescription'])) {
-      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'userCommunityDescription'], propsObj.userCommunityDescription);
+    if (lodashHas(propsObj, ['description'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'description'], propsObj.description);
     }
     
     
     // --------------------------------------------------
-    //   userCommunityDescriptionShort
+    //   descriptionShort
     // --------------------------------------------------
     
-    if (lodashHas(propsObj, ['userCommunityDescriptionShort'])) {
-      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'userCommunityDescriptionShort'], propsObj.userCommunityDescriptionShort);
+    if (lodashHas(propsObj, ['descriptionShort'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'descriptionShort'], propsObj.descriptionShort);
     }
     
     
@@ -174,6 +361,33 @@ export default function initStoreUcSettings({ propsObj }) {
     
     if (lodashHas(propsObj, ['userCommunityID'])) {
       lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'userCommunityID'], propsObj.userCommunityID);
+    }
+    
+    
+    // --------------------------------------------------
+    //   communityType
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['communityType'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'communityType'], propsObj.communityType);
+    }
+    
+    
+    // --------------------------------------------------
+    //   anonymity
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['anonymity'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'anonymity'], propsObj.anonymity);
+    }
+    
+    
+    // --------------------------------------------------
+    //   approval
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['approval'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'approval'], propsObj.approval);
     }
     
     

@@ -76,7 +76,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeGameForm, pathArr, _id, gameID, name, imagesAndVideosObj } = this.props;
+    const { stores, storeGameForm, pathArr, _id, gameCommunities_id, name, imagesAndVideosObj } = this.props;
     
     const {
       
@@ -89,7 +89,7 @@ export default class extends React.Component {
     //   必要な情報がない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (!_id || !gameID || !name) {
+    if (!_id || !gameCommunities_id || !name) {
       return null;
     }
     

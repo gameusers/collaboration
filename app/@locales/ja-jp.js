@@ -37,6 +37,7 @@ const ja_JP = {
   'f_YBnQcfW': '整数ではありません',
   
   'JBkjlGQMh': '入力できるのは半角英数字とハイフン( - )アンダースコア( _ )です',
+  'sxyL1EamN': '入力したIDは利用できません',
   
   'rIFTJ1O2J': '正しいIPアドレスではありません',
   
@@ -149,6 +150,14 @@ const ja_JP = {
   
   // /app/@database/users/validations/player-id-server.1.js
   'Xt11v41pR': '入力したプレイヤーIDは利用できません',
+  
+  
+  // ---------------------------------------------
+  //   Error / Validation / DB user-communities
+  // ---------------------------------------------
+  
+  // /app/@database/user-communities/validations/user-community-id-server.js
+  // 'sxyL1EamN': '入力したIDは利用できません',
   
   
   // ---------------------------------------------

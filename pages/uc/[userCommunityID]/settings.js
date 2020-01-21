@@ -209,7 +209,7 @@ export default class extends React.Component {
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, name, description, descriptionShort, userCommunityID, communityType, anonymity, approval, imagesAndVideosObj, imagesAndVideosThumbnailObj, gamesArr };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userCommunities_id, name, description, descriptionShort, userCommunityID, communityType, anonymity, approval, imagesAndVideosObj, imagesAndVideosThumbnailObj, gamesArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     

@@ -3244,10 +3244,10 @@ router.post('/db', upload.none(), async (req, res, next) => {
         imagesAndVideos_id: 'pg6-XZehF',
         imagesAndVideosThumbnail_id: 'ed38Uf030',
         gameCommunities_idsArr: ['Jk92aglWl', 'lxdubg6IY', 'WMHFmAp8e'],
-        memberObj: {
-          count: 0,
-          membersArr: [],
-        },
+        // memberObj: {
+        //   count: 0,
+        //   membersArr: [],
+        // },
         forumObj: {
           threadCount: 5,
         },

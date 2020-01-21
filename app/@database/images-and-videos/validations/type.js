@@ -58,7 +58,7 @@ const validationType = ({ throwError = false, value }) => {
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(value, ['game', 'user', 'forum'])) {
+    if (!validator.isIn(value, ['game', 'user', 'forum', 'uc'])) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '6ga1Plxon', messageID: 'PH8jcw-VF' }] });
     }
     

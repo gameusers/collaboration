@@ -24,7 +24,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
+const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 
 
 // ---------------------------------------------
@@ -34,6 +34,7 @@ const ModelUsers = require('../../../../../app/@database/users/model');
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
+const { formatAndSave } = require('../../../../../app/@modules/image/save');
 
 
 // ---------------------------------------------
@@ -42,6 +43,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 const { validationIP } = require('../../../../../app/@validations/ip');
 const { validationBoolean } = require('../../../../../app/@validations/boolean');
+const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationUserCommunitiesName } = require('../../../../../app/@database/user-communities/validations/name');
 const { validationUserCommunitiesDescription } = require('../../../../../app/@database/user-communities/validations/description');
 const { validationUserCommunitiesDescriptionShort } = require('../../../../../app/@database/user-communities/validations/description-short');
@@ -54,7 +56,7 @@ const { validationGameCommunities_idsArrServer } = require('../../../../../app/@
 //   Locales
 // ---------------------------------------------
 
-// const { locale } = require('../../../../../app/@locales/locale');
+const { locale } = require('../../../../../app/@locales/locale');
 
 
 
@@ -77,9 +79,9 @@ export default async (req, res) => {
   //   Locale
   // --------------------------------------------------
   
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
+  const localeObj = locale({
+    acceptLanguage: req.headers['accept-language']
+  });
   
   
   // --------------------------------------------------
@@ -104,6 +106,7 @@ export default async (req, res) => {
     
     const { 
       
+      userCommunities_id,
       name,
       description,
       descriptionShort,
@@ -123,6 +126,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['description'], description);
     lodashSet(requestParametersObj, ['descriptionShort'], descriptionShort);
@@ -133,39 +137,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['gameCommunities_idsArr'], gameCommunities_idsArr);
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    console.log(chalk`
-      /pages/api/v2/db/user-communities/upsert-settings.js
-      loginUsers_id: {green ${loginUsers_id}}
-      name: {green ${name}}
-      description: {green ${description}}
-      descriptionShort: {green ${descriptionShort}}
-      userCommunityID: {green ${userCommunityID}}
-      communityType: {green ${communityType}}
-      approval: {green ${approval}} / {green ${typeof approval}}
-      anonymity: {green ${anonymity}} / {green ${typeof anonymity}}
-    `);
-    
-    console.log(`
-      ----- gameCommunities_idsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(gameCommunities_idsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- imagesAndVideosThumbnailObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
     
     
     // ---------------------------------------------
@@ -192,6 +163,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
+    await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
     await validationUserCommunitiesName({ throwError: true, value: name });
     await validationUserCommunitiesDescription({ throwError: true, value: description });
     await validationUserCommunitiesDescriptionShort({ throwError: true, value: descriptionShort });
@@ -203,68 +175,193 @@ export default async (req, res) => {
     
     
     
-    // // --------------------------------------------------
-    // //   Validation / Pages
-    // // --------------------------------------------------
     
-    // const newPagesArr = [];
+    // --------------------------------------------------
+    //   データ取得
+    // --------------------------------------------------
     
-    // for (let valueObj of pagesArr.values()) {
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunities_id });
+    
+    const oldImagesAndVideosObj = lodashGet(userCommunityObj, ['imagesAndVideosObj'], {});
+    const oldImagesAndVideosThumbnailObj = lodashGet(userCommunityObj, ['imagesAndVideosThumbnailObj'], {});
+    
+    
+    // --------------------------------------------------
+    //   Page Transition
+    // --------------------------------------------------
+    
+    if (userCommunityObj.userCommunityID !== userCommunityID) {
+      returnObj.pageTransition = true;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   画像を保存する - Top 画像
+    // --------------------------------------------------
+    
+    let imagesAndVideosConditionObj = {};
+    let imagesAndVideosSaveObj = {};
+    let imagesAndVideos_id = '';
+    
+    if (imagesAndVideosObj) {
       
-    //   await validationUsersPagesType({ throwError: true, value: valueObj.type });
-    //   await validationUsersPagesName({ throwError: true, value: valueObj.name });
-    //   await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
+      const formatAndSaveObj = await formatAndSave({
+        
+        newObj: imagesAndVideosObj,
+        oldObj: oldImagesAndVideosObj,
+        loginUsers_id,
+        ISO8601,
+        
+      });
       
-    //   newPagesArr.push({
-    //     _id: shortid.generate(),
-    //     type: valueObj.type,
-    //     name: valueObj.name,
-    //     language: valueObj.language,
-    //   });
+      imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
       
-    // }
+      
+      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        imagesAndVideos_id = '';
+      } else {
+        imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+      }
+      
+      imagesAndVideosConditionObj = {
+        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
+      };
+      
+      
+    }
     
     
-    // // --------------------------------------------------
-    // //   Find One - Page Transition
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   画像を保存する - サムネイル画像
+    // --------------------------------------------------
     
-    // let conditionObj = {
-    //   _id: loginUsers_id
-    // };
+    let imagesAndVideosThumbnailConditionObj = {};
+    let imagesAndVideosThumbnailSaveObj = {};
+    let imagesAndVideosThumbnail_id = '';
     
-    // let docObj = await ModelUsers.findOne({ conditionObj });
+    if (imagesAndVideosThumbnailObj) {
+      
+      const formatAndSaveObj = await formatAndSave({
+        
+        newObj: imagesAndVideosThumbnailObj,
+        oldObj: oldImagesAndVideosThumbnailObj,
+        loginUsers_id,
+        ISO8601,
+        
+      });
+      
+      imagesAndVideosThumbnailSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        imagesAndVideosThumbnail_id = '';
+      } else {
+        imagesAndVideosThumbnail_id = lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], '');
+      }
+      
+      imagesAndVideosThumbnailConditionObj = {
+        _id: lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], ''),
+      };
+      
+      
+    }
     
-    // if (docObj.userID !== userID) {
-    //   returnObj.pageTransition = true;
-    // }
-    
-    // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
-    // // --------------------------------------------------
-    // //   Update
-    // // --------------------------------------------------
     
-    // const ISO8601 = moment().toISOString();
+    // --------------------------------------------------
+    //   User Communities
+    // --------------------------------------------------
     
-    // conditionObj = {
-    //   _id: loginUsers_id
-    // };
+    const userCommunitiesConditionObj = {
+      
+      _id: userCommunities_id,
+      
+    };
     
-    // const saveObj = {
-    //   $set: {
-    //     updatedDate: ISO8601,
-    //     userID,
-    //     pagesArr: newPagesArr,
-    //   }
-    // };
+    const userCommunitiesSaveObj = {
+      
+      $set: {
+        
+        userCommunityID,
+        localesArr: [
+          {
+            _id: shortid.generate(),
+            language: 'ja',
+            name,
+            description,
+            descriptionShort,
+          },
+        ],
+        imagesAndVideos_id,
+        imagesAndVideosThumbnail_id,
+        gameCommunities_idsArr,
+        communityType,
+        anonymity,
+        
+      }
+      
+    };
     
-    // await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    
+    
+    // --------------------------------------------------
+    //   Follows
+    // --------------------------------------------------
+    
+    const followsConditionObj = {
+      
+      userCommunities_id,
+      
+    };
+    
+    const followsSaveObj = {
+      
+      $set: {
+        
+        approval,
+        
+      }
+      
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
+    
+    await ModelUserCommunities.transactionForUpsertSettings({
+      
+      userCommunitiesConditionObj,
+      userCommunitiesSaveObj,
+      followsConditionObj,
+      followsSaveObj,
+      imagesAndVideosConditionObj,
+      imagesAndVideosSaveObj,
+      imagesAndVideosThumbnailConditionObj,
+      imagesAndVideosThumbnailSaveObj,
+      
+    });
     
     
     
@@ -274,17 +371,51 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // console.log(chalk`
+    //   /pages/api/v2/db/user-communities/upsert-settings.js
+    //   loginUsers_id: {green ${loginUsers_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   name: {green ${name} / ${typeof name}}
-    //   comment: {green ${comment} / ${typeof comment}}
-    //   IP: {green ${req.ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
+    //   name: {green ${name}}
+    //   description: {green ${description}}
+    //   descriptionShort: {green ${descriptionShort}}
+    //   userCommunityID: {green ${userCommunityID}}
+    //   communityType: {green ${communityType}}
+    //   approval: {green ${approval}} / {green ${typeof approval}}
+    //   anonymity: {green ${anonymity}} / {green ${typeof anonymity}}
+    // `);
+    
+    // console.log(`
+    //   ----- gameCommunities_idsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gameCommunities_idsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
     //   ----- imagesAndVideosObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- oldImagesAndVideosObj -----\n
+    //   ${util.inspect(oldImagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- oldImagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(oldImagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

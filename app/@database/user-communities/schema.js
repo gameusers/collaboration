@@ -27,10 +27,10 @@ const schema = mongoose.Schema({
   imagesAndVideos_id: { type: String },
   imagesAndVideosThumbnail_id: { type: String },
   gameCommunities_idsArr: [String],
-  memberObj: {
-    count: { type: Number, default: 0, required: true },
-    membersArr: [String],
-  },
+  // memberObj: {
+  //   count: { type: Number, default: 0, required: true },
+  //   membersArr: [String],
+  // },
   forumObj: {
     threadCount: { type: Number, default: 0, required: true },
   },

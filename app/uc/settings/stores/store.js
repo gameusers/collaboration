@@ -126,6 +126,7 @@ class Store {
       //   Property
       // ---------------------------------------------
       
+      const userCommunities_id = lodashGet(this.dataObj, [...pathArr, 'userCommunities_id'], '');
       const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
       const description = lodashGet(this.dataObj, [...pathArr, 'description'], '');
       const descriptionShort = lodashGet(this.dataObj, [...pathArr, 'descriptionShort'], '');
@@ -148,40 +149,41 @@ class Store {
       
       
       
-      console.log(chalk`
-        /app/uc/settings/stores/store.js
-        name: {green ${name}}
-        description: {green ${description}}
-        descriptionShort: {green ${descriptionShort}}
-        userCommunityID: {green ${userCommunityID}}
-        communityType: {green ${communityType}}
-        approval: {green ${approval}}
-        anonymity: {green ${anonymity}}
-      `);
+      // console.log(chalk`
+      //   /app/uc/settings/stores/store.js
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   name: {green ${name}}
+      //   description: {green ${description}}
+      //   descriptionShort: {green ${descriptionShort}}
+      //   userCommunityID: {green ${userCommunityID}}
+      //   communityType: {green ${communityType}}
+      //   approval: {green ${approval}}
+      //   anonymity: {green ${anonymity}}
+      // `);
       
-      console.log(`
-        ----- imagesAndVideosObj -----\n
-        ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- imagesAndVideosThumbnailObj -----\n
-        ${util.inspect(imagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- imagesAndVideosThumbnailObj -----\n
+      //   ${util.inspect(imagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- gamesArr -----\n
-        ${util.inspect(gamesArr, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- gamesArr -----\n
+      //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- gameCommunities_idsArr -----\n
-        ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- gameCommunities_idsArr -----\n
+      //   ${util.inspect(gameCommunities_idsArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -192,6 +194,7 @@ class Store {
       
       const formDataObj = {
         
+        userCommunities_id,
         name,
         description,
         descriptionShort,
@@ -221,34 +224,30 @@ class Store {
       // console.log(`\n-----------------------------------\n`);
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
-      
-      
-      // // ---------------------------------------------
-      // //   Snackbar: Success
-      // // ---------------------------------------------
-      
-      // storeLayout.handleSnackbarOpen({
-      //   variant: 'success',
-      //   messageID: '5o6-p-Pkz',
-      // });
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
-      // // ---------------------------------------------
-      // //   Page Transition / URLを変更した場合にリロードする
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
       
-      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: '1DwN0BJVa',
+      });
       
-      // if (pageTransition) {
-      //   window.location.href = `${process.env.URL_BASE}ur/${userID}`;
-      // }
+      
+      // ---------------------------------------------
+      //   リロードする
+      // ---------------------------------------------
+      
+      window.location.href = `${process.env.URL_BASE}uc/${userCommunityID}/settings`;
       
       
     } catch (errorObj) {
@@ -326,6 +325,20 @@ export default function initStoreUcSettings({ propsObj }) {
     //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
+    // --------------------------------------------------
+    //   userCommunities_id
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   /app/uc/settings/stores/store.js
+    //   propsObj.userCommunities_id: {green ${propsObj.userCommunities_id}}
+    // `);
+    
+    if (lodashHas(propsObj, ['userCommunities_id'])) {
+      lodashSet(storeUcSettings, ['dataObj', ...pathArr, 'userCommunities_id'], propsObj.userCommunities_id);
+    }
     
     
     // --------------------------------------------------

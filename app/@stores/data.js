@@ -148,26 +148,40 @@ class Store {
     
   // };
   
+  
+  /**
+   * Get Forum Thread List Page
+   * @type {string} temporaryDataID
+   */
   getTemporaryDataForumThreadListPage({ temporaryDataID }) {
     return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadListPage'], 1);
   };
   
+  
+  /**
+   * Set Forum Thread List Page
+   * @type {string} temporaryDataID
+   * @type {string} value - 値
+   */
   setTemporaryDataForumThreadListPage({ temporaryDataID, value }) {
     lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadListPage'], value);
   };
   
   
+  /**
+   * Get Forum Thread Page
+   * @type {string} temporaryDataID
+   */
   getTemporaryDataForumThreadPage({ temporaryDataID }) {
-    
-    // console.log(`
-    //   ----- this.temporaryDataObj -----\n
-    //   ${util.inspect(this.temporaryDataObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], 1);
   };
   
+  
+  /**
+   * Set Forum Thread Page
+   * @type {string} temporaryDataID
+   * @type {string} value - 値
+   */
   setTemporaryDataForumThreadPage({ temporaryDataID, value }) {
     lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], value);
   };
@@ -199,8 +213,23 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Login Users
+  //   Login
   // ---------------------------------------------
+  
+  /**
+   * ログイン状態
+   * @type {boolean}
+   */
+  @observable login = false;
+  
+  
+  /**
+   * Get Login
+   */
+  getLogin() {
+    return this.login;
+  };
+  
   
   /**
    * ログインユーザー情報を入れるオブジェクト
@@ -373,6 +402,15 @@ export default function initStoreData({ propsObj }) {
     
     if (lodashHas(propsObj, ['headerObj'])) {
       storeData.headerObj = propsObj.headerObj;
+    }
+    
+    
+    // --------------------------------------------------
+    //   Login
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['login'])) {
+      storeData.login = propsObj.login;
     }
     
     

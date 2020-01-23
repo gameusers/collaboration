@@ -132,19 +132,34 @@ export default async (req, res) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
       localeObj,
       loginUsers_id,
       userCommunityID,
     });
     
-    if (userCommunityArr.length === 0) {
+    if (Object.keys(userCommunityObj).length === 0) {
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AULmon_4K', messageID: 'Error' }] });
     }
     
-    const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
-    returnObj.userCommunityObj = userCommunityArr[0];
+    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
+    returnObj.userCommunityObj = userCommunityObj;
+    
+    
+    // const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunityID,
+    // });
+    
+    // if (userCommunityArr.length === 0) {
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AULmon_4K', messageID: 'Error' }] });
+    // }
+    
+    // const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
+    // returnObj.userCommunityObj = userCommunityArr[0];
     
     
     

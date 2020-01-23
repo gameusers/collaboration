@@ -395,7 +395,7 @@ export default injectIntl(class extends React.Component {
             
             <p
             >
-              コミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x 1080 ピクセル）をアップロードしてください。
+              コミュニティのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
             </p>
             
             <ImageAndVideoForm

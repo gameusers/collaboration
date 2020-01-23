@@ -7,12 +7,11 @@
 // ---------------------------------------------
 
 import React from 'react';
-// import styled from 'styled-components';
-// import styled from '@emotion/styled';
 import Head from 'next/head';
 import { inject, observer } from 'mobx-react';
 import Router from 'next/router';
 import NProgress from 'nprogress';
+import Measure from 'react-measure';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -23,7 +22,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import HeaderNavTop from './header/nav-top';
-import Header from './header/header';
+import HeroImage from './header/hero-image';
 import HeaderNavMain from './header/nav-main';
 import Footer from './footer';
 
@@ -80,6 +79,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   componentDidMount
   // --------------------------------------------------
@@ -106,6 +107,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -117,7 +120,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const { stores } = this.props;
+    const { stores } = this.props;
     
     
     // --------------------------------------------------
@@ -142,8 +145,19 @@ export default class extends React.Component {
         <HeaderNavTop />
         
         
-        {/* Header */}
-        <Header />
+        {/* Header - Hero Image */}
+        <Measure
+          bounds
+          onResize={(contentRect) => {
+            stores.layout.handleHeaderHeroImageSize({ dimensionsObj: contentRect.bounds });
+          }}
+        >
+          {({ measureRef }) => (
+            <div ref={measureRef}>
+              <HeroImage />
+            </div>
+          )}
+        </Measure>
         
         
         {/* Header - Navigation Main */}

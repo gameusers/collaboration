@@ -323,30 +323,319 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
     
     
     // --------------------------------------------------
-    //   Condition
+    //   Property
     // --------------------------------------------------
     
-    const conditionObj = {
-      userCommunityID,
-    };
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
     
     
     // --------------------------------------------------
-    //   Find
+    //   Aggregation
     // --------------------------------------------------
     
-    const resultArr = await Schema.find(conditionObj).exec();
+    const resultArr = await Schema.aggregate([
+      
+      
+      {
+        $match : { userCommunityID }
+      },
+      
+      
+      // 関連するゲーム
+      {
+        $lookup:
+          {
+            from: 'games',
+            let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
+            pipeline: [
+              
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$country', country] },
+                      { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
+                    ]
+                  },
+                }
+              },
+              
+              
+              // 画像と動画を取得
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              { $project:
+                {
+                  gameCommunities_id: 1,
+                  name: 1,
+                  imagesAndVideosObj: 1,
+                }
+              },
+            ],
+            as: 'gamesArr'
+          }
+      },
+      
+      
+      // 画像と動画を取得 - トップ画像
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { imagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$imagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // Follows
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { uc_id: '$_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$userCommunities_id', '$$uc_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  approval: 1,
+                  membersArr: 1,
+                  membersApprovalArr: 1,
+                  membersBlockedArr: 1,
+                  membersCount: 1,
+                }
+              }
+            ],
+            as: 'followsObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$followsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          users_id: 1,
+          createdDate: 1,
+          localesArr: 1,
+          communityType: 1,
+          anonymity: 1,
+          imagesAndVideosObj: 1,
+          gamesArr: 1,
+          followsObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(resultArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     // --------------------------------------------------
     //   Format
     // --------------------------------------------------
     
-    const formattedArr = format({
-      localeObj,
-      loginUsers_id,
-      arr: resultArr,
+    const returnObj = lodashGet(resultArr, [0], {});
+    const headerObj = {};
+    
+    
+    // --------------------------------------------------
+    //   画像の処理
+    // --------------------------------------------------
+    
+    if (returnObj.imagesAndVideosObj) {
+      headerObj.imagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.imagesAndVideosObj });
+    }
+    
+    
+    // --------------------------------------------------
+    //   画像の処理 - 関連するゲーム
+    // --------------------------------------------------
+    
+    if (returnObj.gamesArr) {
+      headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+    }
+    
+    
+    // --------------------------------------------------
+    //   Locale / name & description
+    // --------------------------------------------------
+    
+    const localesArr = lodashGet(returnObj, ['localesArr'], []);
+    
+    const filteredArr = localesArr.filter((filterObj) => {
+      return filterObj.language === localeObj.language;
     });
+    
+    
+    if (lodashHas(filteredArr, [0])) {
+      
+      returnObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+      returnObj.description = lodashGet(filteredArr, [0, 'description'], '');
+      
+    } else {
+      
+      returnObj.name = lodashGet(localesArr, [0, 'name'], '');
+      returnObj.description = lodashGet(localesArr, [0, 'description'], '');
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   member
+    // --------------------------------------------------
+    
+    headerObj.author = false;
+    headerObj.member = false;
+    headerObj.memberApproval = false;
+    headerObj.memberBlocked = false;
+    
+    if (loginUsers_id) {
+      
+      const users_id = lodashGet(returnObj, ['users_id'], '');
+      const membersArr = lodashGet(returnObj, ['followsObj', 'membersArr'], []);
+      const membersApprovalArr = lodashGet(returnObj, ['followsObj', 'membersApprovalArr'], []);
+      const membersBlockedArr = lodashGet(returnObj, ['followsObj', 'membersBlockedArr'], []);
+      
+      if (users_id === loginUsers_id) {
+        headerObj.author = true;
+      }
+      
+      if (membersArr.includes(loginUsers_id)) {
+        headerObj.member = true;
+      }
+      
+      if (membersApprovalArr.includes(loginUsers_id)) {
+        headerObj.memberApproval = true;
+      }
+      
+      if (membersBlockedArr.includes(loginUsers_id)) {
+        headerObj.memberBlocked = true;
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   headerObj
+    // --------------------------------------------------
+    
+    headerObj.userCommunities_id = returnObj._id;
+    headerObj.type = 'uc';
+    headerObj.createdDate = returnObj.createdDate;
+    headerObj.name = returnObj.name;
+    headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
+    headerObj.membersCount = lodashGet(returnObj, ['followsObj', 'membersCount'], 0);
+    
+    returnObj.headerObj = headerObj;
+    
+    
+    // --------------------------------------------------
+    //   membersCount
+    // --------------------------------------------------
+    
+    // returnObj.membersCount = lodashGet(returnObj, ['followsObj', 'membersCount'], 0);
+    
+    
+    // console.log(`
+    //   ----- filteredArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    delete returnObj.createdDate;
+    delete returnObj.localesArr;
+    delete returnObj.gamesArr;
+    delete returnObj.imagesAndVideosObj;
+    delete returnObj.followsObj;
+    
+    
+    // const formattedArr = format({
+      
+    //   localeObj,
+    //   loginUsers_id,
+    //   arr: resultArr,
+      
+    // });
     
     
     // --------------------------------------------------
@@ -358,18 +647,18 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
     //   userCommunityID: {green ${userCommunityID}}
     // `);
     
-    // console.log(`
-    //   ----- Threads -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
-    return formattedArr;
+    return returnObj;
     
     
   } catch (err) {
@@ -391,125 +680,125 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
 * @param {Array} arr - 配列
 * @return {Array}フォーマット後のデータ
 */
-const format = ({ localeObj, loginUsers_id, arr }) => {
+// const format = ({ localeObj, loginUsers_id, arr }) => {
   
   
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   console.log
+//   // --------------------------------------------------
   
-  // console.log(`
-  //   ----- localeObj -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
+//   // console.log(`
+//   //   ----- localeObj -----\n
+//   //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
+//   //   --------------------\n
+//   // `);
   
-  // console.log(chalk`
-  //   loginUsers_id: {green ${loginUsers_id}}
-  // `);
+//   // console.log(chalk`
+//   //   loginUsers_id: {green ${loginUsers_id}}
+//   // `);
   
-  // console.log(`
-  //   ----- arr -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnArr = [];
+//   // console.log(`
+//   //   ----- arr -----\n
+//   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+//   //   --------------------\n
+//   // `);
   
   
-  // --------------------------------------------------
-  //   Loop
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return Value
+//   // --------------------------------------------------
   
-  for (let obj of arr.values()) {
+//   let returnArr = [];
+  
+  
+//   // --------------------------------------------------
+//   //   Loop
+//   // --------------------------------------------------
+  
+//   for (let valueObj of arr.values()) {
     
     
-    // --------------------------------------------------
-    //   toJSON
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   toJSON
+//     // --------------------------------------------------
     
-    let valueObj = obj.toJSON();
-    
-    
-    // --------------------------------------------------
-    //   Datetime
-    // --------------------------------------------------
-    
-    // cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+//     // let valueObj = obj.toJSON();
     
     
-    // --------------------------------------------------
-    //   画像の処理
-    // --------------------------------------------------
-    // とりあえず画像の処理はしない
-    // valueObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.thumbnailArr });
-    // valueObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
+//     // --------------------------------------------------
+//     //   Datetime
+//     // --------------------------------------------------
+    
+//     // cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
     
     
-    // --------------------------------------------------
-    //   Locale
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   画像の処理
+//     // --------------------------------------------------
+//     // とりあえず画像の処理はしない
+//     // valueObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.thumbnailArr });
+//     // valueObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
     
-    const filteredArr = valueObj.localesArr.filter((filterObj) => {
-      return filterObj.language === localeObj.language;
-    });
+    
+//     // --------------------------------------------------
+//     //   Locale
+//     // --------------------------------------------------
+    
+//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
+//       return filterObj.language === localeObj.language;
+//     });
     
     
-    if (lodashHas(filteredArr, [0])) {
+//     if (lodashHas(filteredArr, [0])) {
       
-      valueObj.name = lodashGet(filteredArr, [0, 'name'], '');;
-      valueObj.description = lodashGet(filteredArr, [0, 'description'], '');
+//       valueObj.name = lodashGet(filteredArr, [0, 'name'], '');;
+//       valueObj.description = lodashGet(filteredArr, [0, 'description'], '');
       
-    } else {
+//     } else {
       
-      valueObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-      valueObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
+//       valueObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
+//       valueObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
       
-    }
+//     }
     
     
-    // console.log(`
-    //   ----- filteredArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+//     // console.log(`
+//     //   ----- filteredArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
     
-    // --------------------------------------------------
-    //   不要な項目を削除する
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   不要な項目を削除する
+//     // --------------------------------------------------
     
-    delete valueObj.localesArr;
-    delete valueObj.__v;
+//     delete valueObj.localesArr;
+//     delete valueObj.__v;
     
-    // console.log(`\n---------- valueObj ----------\n`);
-    // console.dir(valueObj);
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // --------------------------------------------------
-    //   push
-    // --------------------------------------------------
-    
-    returnArr.push(valueObj);
+//     // console.log(`\n---------- valueObj ----------\n`);
+//     // console.dir(valueObj);
+//     // console.log(`\n-----------------------------------\n`);
     
     
-  }
+//     // --------------------------------------------------
+//     //   push
+//     // --------------------------------------------------
+    
+//     returnArr.push(valueObj);
+    
+    
+//   }
   
   
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return
+//   // --------------------------------------------------
   
-  return returnArr;
+//   return returnArr;
   
   
-};
+// };
 
 
 
@@ -827,6 +1116,242 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
 
 
 
+/**
+ * ユーザーコミュニティ設定用のデータを取得する
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
+ * @param {string} userCommunities_id - DB user-communities _id / _id
+ * @return {Array}取得データ
+ */
+// const findForUserCommunityHeroImage = async ({ localeObj, loginUsers_id, userCommunityID }) => {
+  
+  
+//   // --------------------------------------------------
+//   //   Database
+//   // --------------------------------------------------
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   Property
+//     // --------------------------------------------------
+    
+//     const language = lodashGet(localeObj, ['language'], '');
+//     const country = lodashGet(localeObj, ['country'], '');
+    
+    
+//     // --------------------------------------------------
+//     //   Aggregation
+//     // --------------------------------------------------
+    
+//     const resultArr = await Schema.aggregate([
+      
+      
+//       {
+//         $match : { userCommunityID }
+//       },
+      
+      
+//       // 関連するゲーム
+//       {
+//         $lookup:
+//           {
+//             from: 'games',
+//             let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
+//             pipeline: [
+              
+//               { $match:
+//                 { $expr:
+//                   { $and:
+//                     [
+//                       { $eq: ['$language', language] },
+//                       { $eq: ['$country', country] },
+//                       { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
+//                     ]
+//                   },
+//                 }
+//               },
+              
+              
+//               // 画像と動画を取得
+//               {
+//                 $lookup:
+//                   {
+//                     from: 'images-and-videos',
+//                     let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+//                     pipeline: [
+//                       { $match:
+//                         { $expr:
+//                           { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+//                         }
+//                       },
+//                       { $project:
+//                         {
+//                           createdDate: 0,
+//                           updatedDate: 0,
+//                           users_id: 0,
+//                           __v: 0,
+//                         }
+//                       }
+//                     ],
+//                     as: 'imagesAndVideosObj'
+//                   }
+//               },
+              
+//               {
+//                 $unwind: {
+//                   path: '$imagesAndVideosObj',
+//                   preserveNullAndEmptyArrays: true,
+//                 }
+//               },
+              
+              
+//               { $project:
+//                 {
+//                   gameCommunities_id: 1,
+//                   name: 1,
+//                   imagesAndVideosObj: 1,
+//                 }
+//               },
+//             ],
+//             as: 'gamesArr'
+//           }
+//       },
+      
+      
+//       // 画像と動画を取得 - トップ画像
+//       {
+//         $lookup:
+//           {
+//             from: 'images-and-videos',
+//             let: { imagesAndVideos_id: '$imagesAndVideos_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $eq: ['$_id', '$$imagesAndVideos_id'] },
+//                 }
+//               },
+//               { $project:
+//                 {
+//                   createdDate: 0,
+//                   updatedDate: 0,
+//                   users_id: 0,
+//                   __v: 0,
+//                 }
+//               }
+//             ],
+//             as: 'imagesAndVideosObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: {
+//           path: '$imagesAndVideosObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+      
+      
+//       // Follows
+//       {
+//         $lookup:
+//           {
+//             from: 'follows',
+//             let: { uc_id: '$_id' },
+//             pipeline: [
+//               { $match:
+//                 { $expr:
+//                   { $eq: ['$userCommunities_id', '$$uc_id'] },
+//                 }
+//               },
+//               { $project:
+//                 {
+//                   _id: 0,
+//                   approval: 1,
+//                 }
+//               }
+//             ],
+//             as: 'followsObj'
+//           }
+//       },
+      
+//       {
+//         $unwind: {
+//           path: '$followsObj',
+//           preserveNullAndEmptyArrays: true,
+//         }
+//       },
+      
+      
+//       { $project:
+//         {
+//           userCommunityID: 1,
+//           users_id: 1,
+//           localesArr: 1,
+//           communityType: 1,
+//           anonymity: 1,
+//           imagesAndVideosObj: 1,
+//           imagesAndVideosThumbnailObj: 1,
+//           gamesArr: 1,
+//           followsObj: 1,
+//         }
+//       },
+      
+      
+//     ]).exec();
+    
+    
+//     // --------------------------------------------------
+//     //   Format
+//     // --------------------------------------------------
+    
+//     const returnObj = lodashGet(resultArr, [0], {});
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     //   userCommunityID: {green ${userCommunityID}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- resultArr -----\n
+//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     console.log(`
+//       ----- returnObj -----\n
+//       ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+//       --------------------\n
+//     `);
+    
+    
+//     // --------------------------------------------------
+//     //   Return
+//     // --------------------------------------------------
+    
+//     return returnObj;
+    
+    
+//   } catch (err) {
+    
+//     throw err;
+    
+//   }
+  
+  
+// };
+
+
+
+
+
 
 /**
  * Transaction 挿入 / 更新する
@@ -1086,6 +1611,7 @@ module.exports = {
   
   findForUserCommunity,
   findForUserCommunitySettings,
+  // findForUserCommunityHeroImage,
   
   transactionForUpsertSettings,
   

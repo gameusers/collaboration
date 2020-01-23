@@ -26,7 +26,8 @@ import { css, jsx } from '@emotion/core';
 //   Components
 // ---------------------------------------------
 
-import Data from './data';
+import DataGc from './data-gc';
+import DataUc from './data-uc';
 
 
 
@@ -49,6 +50,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -67,8 +70,11 @@ export default class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    // const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
+    // const login = lodashGet(stores, ['data', 'login'], false);
+    
+    const type = lodashGet(stores, ['data', 'headerObj', 'type'], 'gc');
     const imagesAndVideosObj = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj'], {});
+    
     const thumbnailArr = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
     
     
@@ -79,7 +85,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   headerDataOpen: {green ${headerDataOpen}}
+    //   type: {green ${type}}
+    //   stores.data.getLogin(): {green ${stores.data.getLogin()}}
     // `);
     
     // console.log(`
@@ -120,7 +127,6 @@ export default class extends React.Component {
               min-height: 220px;
               max-width: 100%;
               max-height: 640px;
-              // max-height: 1080px;
               object-fit: cover;
               margin: 0 auto;
             `}
@@ -130,7 +136,11 @@ export default class extends React.Component {
             width={width}
           />
           
-          <Data heroImage={true} />
+          {type === 'gc' ? (
+            <DataGc heroImage={true} />
+          ) : (
+            <DataUc />
+          )}
           
         </div>
       ;
@@ -161,6 +171,7 @@ export default class extends React.Component {
             padding: 15px;
           `}
         >
+          
           <img
             css={css`
               width: 128px;
@@ -178,7 +189,9 @@ export default class extends React.Component {
             `}
             src={imgSrc}
           />
-          <Data heroImage={false} />
+          
+          <DataGc heroImage={false} />
+          
         </div>
       ;
       

@@ -21,6 +21,12 @@ import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+import { fetchWrapper } from '../../../@modules/fetch';
+import { CustomError } from '../../../@modules/error/custom';
 
 
 // --------------------------------------------------
@@ -58,15 +64,6 @@ class Store {
     // console.log(dimensionsObj);
     this.headerHeroImageHeight = dimensionsObj.height;
   };
-  
-  
-  // getHeaderHeroImageSize() {
-  //   return this.headerHeroImageHeight;
-  // };
-  
-  
-  
-  
   
   
   
@@ -138,6 +135,7 @@ class Store {
   handleHeaderNotificationDialogClose() {
     this.headerNotificationDialogOpen = false;
   };
+  
   
   
   
@@ -501,53 +499,8 @@ class Store {
   @action.bound
   handlePanelExpand({ pathArr, defaultExpanded = true }) {
     
-    // const expanded = lodashGet(this.panelExpandedObj, pathArr, defaultExpanded);
     const expanded = this.handleGetPanelExpanded({ pathArr, defaultExpanded });
-    
-    // console.log(`
-    //   ----- handlePanelExpand / pathArr -----\n
-    //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- this.panelExpandedObj -----\n
-    //   ${util.inspect(this.panelExpandedObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-      
-    //   Current expanded: {green ${expanded}}
-    //   Set expanded: {green ${!expanded}}
-    // `);
-    
-    
-    
-    
     lodashSet(this.panelExpandedObj, pathArr, !expanded);
-    
-    
-    // if (pathArr) {
-      
-    //   const expanded = lodashGet(this.panelExpandedObj, pathArr, true);
-      
-    //   console.log(chalk`
-    //     expanded: {green ${expanded}}
-    //   `);
-      
-      
-    //   lodashSet(this.panelExpandedObj, pathArr, !expanded);
-      
-    // } else {// _idを削除後は消すこと
-      
-    //   if (_id in this.panelExpandedObj) {
-    //     this.panelExpandedObj[_id] = !this.panelExpandedObj[_id];
-    //   } else {
-    //     this.panelExpandedObj[_id] = false;
-    //   }
-      
-    // }
     
   };
   
@@ -755,6 +708,160 @@ class Store {
       this.headerScrollToEndForSidebar = true;
     });
     
+  };
+  
+  
+  
+  
+  
+  
+  // ---------------------------------------------
+  //   Follow
+  // ---------------------------------------------
+  
+  /**
+   * フォロー / フォロー解除
+   * @param {Array} pathArr - パス
+   * @param {string} gameCommunities_id - フォローするゲームコミュニティの _id
+   * @param {string} userCommunities_id - フォローするユーザーコミュニティの _id
+   * @param {string} users_id - フォローする相手の _id
+   */
+  @action.bound
+  async handleFollow({ pathArr, gameCommunities_id, userCommunities_id, users_id }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        gameCommunities_id,
+        userCommunities_id,
+        users_id,
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj)
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      // let messageID
+      
+      // if (gameCommunities_id || users_id) {
+        
+      // }
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'RTsMTGw-1',
+      });
+      
+      
+      // ---------------------------------------------
+      //   リロードする
+      // ---------------------------------------------
+      
+      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      // if (pageTransition) {
+      //   // window.location.href = `${process.env.URL_BASE}uc/${userCommunityID}/settings`;
+      // }
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+    }
+    
+  };
+  
+  
+  
+  
+  /**
+   * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
+   * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
+   * @type {Object}
+   */
+  @observable followDialogOpenObj = {};
+  
+  
+  /**
+   * フォロー用ダイアログを開く
+   * @param {string} users_id - ID
+   */
+  @action.bound
+  handleFollowDialogOpen(users_id) {
+    this.followDialogOpenObj[users_id] = true;
+  };
+  
+  
+  /**
+   * フォロー用ダイアログを閉じる
+   * @param {string} users_id - ID
+   */
+  @action.bound
+  handleFollowDialogClose(users_id) {
+    this.followDialogOpenObj[users_id] = false;
   };
   
   

@@ -19,13 +19,6 @@ const lodashSet = require('lodash/set');
 
 
 // ---------------------------------------------
-//   Model
-// ---------------------------------------------
-
-// const ModelGames = require('../../../../app/@database/games/model');
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -96,26 +89,6 @@ export default async (req, res) => {
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
-    
-    
-    // --------------------------------------------------
-    //   ログインしているユーザー情報＆ログインチェック
-    // --------------------------------------------------
-    
-    // if (req.isAuthenticated() && req.user) {
-    //   returnObj.loginUsersObj = req.user;
-    //   returnObj.login = true;
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   データ取得 / Games
-    // //   ヘッダーヒーローイメージ用
-    // // --------------------------------------------------
-    
-    // returnObj.headerObj = await ModelGames.findForHeroImage({
-    //   localeObj,
-    // });
     
     
     // ---------------------------------------------

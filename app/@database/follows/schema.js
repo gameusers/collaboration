@@ -19,7 +19,7 @@ const schema = mongoose.Schema({
   membersArr: [String],
   membersApprovalArr: [String],
   membersBlockedArr: [String],
-  count: { type: Number, default: 0, required: true },
+  membersCount: { type: Number, default: 0, required: true },
 });
 
 

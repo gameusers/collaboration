@@ -16,6 +16,7 @@ import util from 'util';
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
@@ -145,19 +146,23 @@ export default async (req, res) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
       localeObj,
       loginUsers_id,
       userCommunityID,
     });
     
-    if (userCommunityArr.length === 0) {
+    if (Object.keys(userCommunityObj).length === 0) {
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
     }
     
-    const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
-    returnObj.userCommunityObj = userCommunityArr[0];
+    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
+    returnObj.userCommunityObj = userCommunityObj;
+    
+    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+      returnObj.headerObj = userCommunityObj.headerObj;
+    }
     
     
     

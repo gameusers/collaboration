@@ -213,7 +213,7 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = await fetchWrapper({
+      const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v2/db/user-communities/upsert-settings`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)

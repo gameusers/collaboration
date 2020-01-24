@@ -14,7 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
+// const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
@@ -24,6 +24,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
+const ModelFollows = require('../../../../../app/@database/follows/model');
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 
 
@@ -34,7 +35,6 @@ const ModelUserCommunities = require('../../../../../app/@database/user-communit
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { formatAndSave } = require('../../../../../app/@modules/image/save');
 
 
 // ---------------------------------------------
@@ -42,21 +42,17 @@ const { formatAndSave } = require('../../../../../app/@modules/image/save');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationBoolean } = require('../../../../../app/@validations/boolean');
+// const { validationBoolean } = require('../../../../../app/@validations/boolean');
+const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationUserCommunitiesName } = require('../../../../../app/@database/user-communities/validations/name');
-const { validationUserCommunitiesDescription } = require('../../../../../app/@database/user-communities/validations/description');
-const { validationUserCommunitiesDescriptionShort } = require('../../../../../app/@database/user-communities/validations/description-short');
-const { validationUserCommunitiesUserCommunityIDServer } = require('../../../../../app/@database/user-communities/validations/user-community-id-server');
-const { validationUserCommunitiesCommunityType } = require('../../../../../app/@database/user-communities/validations/community-type');
-const { validationGameCommunities_idsArrServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
+const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+// const { locale } = require('../../../../../app/@locales/locale');
 
 
 
@@ -79,9 +75,9 @@ export default async (req, res) => {
   //   Locale
   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
+  // const localeObj = locale({
+  //   acceptLanguage: req.headers['accept-language']
+  // });
   
   
   // --------------------------------------------------
@@ -123,18 +119,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['users_id'], users_id);
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    console.log(chalk`
-      /pages/api/v2/db/follows/upsert-follow.js
-      loginUsers_id: {green ${loginUsers_id}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      users_id: {green ${users_id}}
-    `);
-    
     
     
     // ---------------------------------------------
@@ -157,209 +141,213 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   必要なデータチェック
+    // --------------------------------------------------
+    
+    if (!gameCommunities_id && !userCommunities_id && !users_id) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lK_FPWyJk', messageID: '1YJnibkmh' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Validation
     // --------------------------------------------------
     
-    // await validationIP({ throwError: true, value: req.ip });
-    // await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
-    // await validationUserCommunitiesName({ throwError: true, value: name });
-    // await validationUserCommunitiesDescription({ throwError: true, value: description });
-    // await validationUserCommunitiesDescriptionShort({ throwError: true, value: descriptionShort });
-    // await validationUserCommunitiesUserCommunityIDServer({ throwError: true, value: userCommunityID, loginUsers_id });
-    // await validationUserCommunitiesCommunityType({ throwError: true, value: communityType });
-    // await validationBoolean({ throwError: true, value: approval });
-    // await validationBoolean({ throwError: true, value: anonymity });
-    // await validationGameCommunities_idsArrServer({ throwError: true, arr: gameCommunities_idsArr });
+    await validationIP({ throwError: true, value: req.ip });
     
     
+    // ---------------------------------------------
+    //   - ゲームコミュニティ
+    // ---------------------------------------------
+    
+    if (gameCommunities_id) {
+      await validationGameCommunities_idServer({ throwError: true, value: gameCommunities_id });
+    }
     
     
-    // // --------------------------------------------------
-    // //   データ取得
-    // // --------------------------------------------------
+    // ---------------------------------------------
+    //   - ユーザーコミュニティ
+    // ---------------------------------------------
     
-    // const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunities_id });
-    
-    // const oldImagesAndVideosObj = lodashGet(userCommunityObj, ['imagesAndVideosObj'], {});
-    // const oldImagesAndVideosThumbnailObj = lodashGet(userCommunityObj, ['imagesAndVideosThumbnailObj'], {});
-    
-    
-    // // --------------------------------------------------
-    // //   Page Transition
-    // // --------------------------------------------------
-    
-    // if (userCommunityObj.userCommunityID !== userCommunityID) {
-    //   returnObj.pageTransition = true;
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Datetime
-    // // --------------------------------------------------
-    
-    // const ISO8601 = moment().toISOString();
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   画像を保存する - Top 画像
-    // // --------------------------------------------------
-    
-    // let imagesAndVideosConditionObj = {};
-    // let imagesAndVideosSaveObj = {};
-    // let imagesAndVideos_id = '';
-    
-    // if (imagesAndVideosObj) {
+    if (userCommunities_id) {
       
-    //   const formatAndSaveObj = await formatAndSave({
+      await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
+      
+      
+      // --------------------------------------------------
+      //   自分のコミュニティを抜けようとした場合はエラー
+      // --------------------------------------------------
+      
+      const resultUserCommunitiesObj = await ModelUserCommunities.findOne({ conditionObj: {
+        _id: userCommunities_id
+      }});
+      
+      if (resultUserCommunitiesObj.users_id === loginUsers_id) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y8knFdqtD', messageID: 'qnWsuPcrJ' }] });
+      }
+      
+      // console.log(chalk`
+      //   resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
+      //   loginUsers_id: {green ${loginUsers_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- resultUserCommunitiesObj -----\n
+      //   ${util.inspect(resultUserCommunitiesObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - ユーザー
+    // ---------------------------------------------
+    
+    if (users_id) {
+      await validationUsers_idServer({ throwError: true, value: users_id });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得
+    // --------------------------------------------------
+    
+    const conditionObj = {};
+    
+    if (gameCommunities_id) {
+      
+      conditionObj.gameCommunities_id = gameCommunities_id;
+      
+    } else if (userCommunities_id) {
+      
+      conditionObj.userCommunities_id = userCommunities_id;
+      
+    } else {
+      
+      conditionObj.users_id = users_id;
+      
+    }
+    
+    const resultObj = await ModelFollows.findOne({ conditionObj });
+    
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   メンバーの追加、削除
+    // --------------------------------------------------
+    
+    let membersArr = lodashGet(resultObj, ['membersArr'], []);
+    let membersApprovalArr = lodashGet(resultObj, ['membersApprovalArr'], []);
+    let membersBlockedArr = lodashGet(resultObj, ['membersBlockedArr'], []);
+    let membersCount = lodashGet(resultObj, ['membersCount'], 1);
+    const approval = lodashGet(resultObj, ['approval'], false);
+    
+    returnObj.pageTransition = false;
+    
+    
+    // ---------------------------------------------
+    //   - ブロックされている場合はエラー
+    // ---------------------------------------------
+    
+    if (membersBlockedArr.includes(loginUsers_id)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hPXXX2YIK', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - 承認制
+    // ---------------------------------------------
+    
+    if (approval) {
+      
+      // 承認申請がすでに行われている場合は、配列から削除する
+      if (membersApprovalArr.includes(loginUsers_id)) {
         
-    //     newObj: imagesAndVideosObj,
-    //     oldObj: oldImagesAndVideosObj,
-    //     loginUsers_id,
-    //     ISO8601,
+        membersApprovalArr = membersApprovalArr.filter(value => value !== loginUsers_id);
+        returnObj.memberApproval = false;
         
-    //   });
-      
-    //   imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
-      
-      
-    //   // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
-    //   const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
-      
-    //   if (arr.length === 0) {
-    //     imagesAndVideos_id = '';
-    //   } else {
-    //     imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
-    //   }
-      
-    //   imagesAndVideosConditionObj = {
-    //     _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
-    //   };
-      
-      
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   画像を保存する - サムネイル画像
-    // // --------------------------------------------------
-    
-    // let imagesAndVideosThumbnailConditionObj = {};
-    // let imagesAndVideosThumbnailSaveObj = {};
-    // let imagesAndVideosThumbnail_id = '';
-    
-    // if (imagesAndVideosThumbnailObj) {
-      
-    //   const formatAndSaveObj = await formatAndSave({
+      // 承認申請がまだ行われていない場合は、配列に追加する
+      } else {
         
-    //     newObj: imagesAndVideosThumbnailObj,
-    //     oldObj: oldImagesAndVideosThumbnailObj,
-    //     loginUsers_id,
-    //     ISO8601,
+        membersApprovalArr.push(loginUsers_id);
+        returnObj.memberApproval = true;
         
-    //   });
-      
-    //   imagesAndVideosThumbnailSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      }
       
       
-    //   // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
-    //   const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
-      
-    //   if (arr.length === 0) {
-    //     imagesAndVideosThumbnail_id = '';
-    //   } else {
-    //     imagesAndVideosThumbnail_id = lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], '');
-    //   }
-      
-    //   imagesAndVideosThumbnailConditionObj = {
-    //     _id: lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], ''),
-    //   };
+      // ページを再読み込みする
+      returnObj.pageTransition = true;
       
       
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   User Communities
-    // // --------------------------------------------------
-    
-    // const userCommunitiesConditionObj = {
+    // ---------------------------------------------
+    //   - 誰でも参加できる
+    // ---------------------------------------------
       
-    //   _id: userCommunities_id,
+    } else {
       
-    // };
-    
-    // const userCommunitiesSaveObj = {
-      
-    //   $set: {
+      // すでにメンバーである場合は、配列から削除する
+      if (membersArr.includes(loginUsers_id)) {
         
-    //     userCommunityID,
-    //     localesArr: [
-    //       {
-    //         _id: shortid.generate(),
-    //         language: 'ja',
-    //         name,
-    //         description,
-    //         descriptionShort,
-    //       },
-    //     ],
-    //     imagesAndVideos_id,
-    //     imagesAndVideosThumbnail_id,
-    //     gameCommunities_idsArr,
-    //     communityType,
-    //     anonymity,
+        membersArr = membersArr.filter(value => value !== loginUsers_id);
+        returnObj.member = false;
         
-    //   }
-      
-    // };
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Follows
-    // // --------------------------------------------------
-    
-    // const followsConditionObj = {
-      
-    //   userCommunities_id,
-      
-    // };
-    
-    // const followsSaveObj = {
-      
-    //   $set: {
+      // まだメンバーでない場合は、配列に追加する
+      } else {
         
-    //     approval,
+        membersArr.push(loginUsers_id);
+        returnObj.member = true;
         
-    //   }
+      }
       
-    // };
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Update
-    // // --------------------------------------------------
-    
-    // await ModelUserCommunities.transactionForUpsertSettings({
+      membersCount = membersArr.length;
+      returnObj.membersCount = membersCount;
       
-    //   userCommunitiesConditionObj,
-    //   userCommunitiesSaveObj,
-    //   followsConditionObj,
-    //   followsSaveObj,
-    //   imagesAndVideosConditionObj,
-    //   imagesAndVideosSaveObj,
-    //   imagesAndVideosThumbnailConditionObj,
-    //   imagesAndVideosThumbnailSaveObj,
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Save Object
+    // --------------------------------------------------
+    
+    const saveObj = {
       
-    // });
+      $set: {
+        
+        membersArr,
+        membersApprovalArr,
+        membersBlockedArr,
+        membersCount,
+        updatedDate: moment().toISOString(),
+        
+      }
+      
+    };
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
+    
+    await ModelFollows.upsert({
+      
+      conditionObj,
+      saveObj,
+      
+    });
     
     
     
@@ -369,51 +357,28 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   /pages/api/v2/db/user-communities/upsert-settings.js
+    //   /pages/api/v2/db/follows/upsert-follow.js
     //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   name: {green ${name}}
-    //   description: {green ${description}}
-    //   descriptionShort: {green ${descriptionShort}}
-    //   userCommunityID: {green ${userCommunityID}}
-    //   communityType: {green ${communityType}}
-    //   approval: {green ${approval}} / {green ${typeof approval}}
-    //   anonymity: {green ${anonymity}} / {green ${typeof anonymity}}
+    //   users_id: {green ${users_id}}
     // `);
     
     // console.log(`
-    //   ----- gameCommunities_idsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(gameCommunities_idsArr)), { colors: true, depth: null })}\n
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- imagesAndVideosThumbnailObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- oldImagesAndVideosObj -----\n
-    //   ${util.inspect(oldImagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- oldImagesAndVideosThumbnailObj -----\n
-    //   ${util.inspect(oldImagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

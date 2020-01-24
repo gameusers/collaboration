@@ -722,147 +722,174 @@ class Store {
   /**
    * フォロー / フォロー解除
    * @param {Array} pathArr - パス
+   * @param {string} type - フォロー follow / 
    * @param {string} gameCommunities_id - フォローするゲームコミュニティの _id
    * @param {string} userCommunities_id - フォローするユーザーコミュニティの _id
    * @param {string} users_id - フォローする相手の _id
    */
-  @action.bound
-  async handleFollow({ pathArr, gameCommunities_id, userCommunities_id, users_id }) {
+  // @action.bound
+  // async handleFollow({ pathArr, type, gameCommunities_id, userCommunities_id, users_id }) {
     
     
-    try {
+  //   try {
       
       
-      // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Button Disable
+  //     // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ pathArr });
+  //     storeLayout.handleButtonDisable({ pathArr });
       
       
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   FormData
+  //     // ---------------------------------------------
       
-      const formDataObj = {
+  //     const formDataObj = {
         
-        gameCommunities_id,
-        userCommunities_id,
-        users_id,
+  //       gameCommunities_id,
+  //       userCommunities_id,
+  //       users_id,
         
-      };
+  //     };
       
       
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Fetch
+  //     // ---------------------------------------------
       
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+  //     const resultObj = await fetchWrapper({
+  //       urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow`,
+  //       methodType: 'POST',
+  //       formData: JSON.stringify(formDataObj)
+  //     });
       
       
-      // // ---------------------------------------------
-      // //   Error
-      // // ---------------------------------------------
-      
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+  //     console.log(`
+  //       ----- resultObj -----\n
+  //       ${util.inspect(resultObj, { colors: true, depth: null })}\n
+  //       --------------------\n
+  //     `);
       
       
-      // ---------------------------------------------
-      //   Snackbar: Success
-      // ---------------------------------------------
+  //     // ---------------------------------------------
+  //     //   Error
+  //     // ---------------------------------------------
       
-      // let messageID
+  //     if ('errorsArr' in resultObj) {
+  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
+  //     }
       
-      // if (gameCommunities_id || users_id) {
+      
+      
+  //     // ---------------------------------------------
+  //     //   メンバーかどうか、メンバー数を変更
+  //     // ---------------------------------------------
+      
+  //     if (lodashHas(resultObj, ['data', 'member'])) {
+  //       // lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], formattedThumbnailObj);
+  //     }
+      
+      
+  //     // ---------------------------------------------
+  //     //   Snackbar: Success
+  //     // ---------------------------------------------
+      
+  //     let messageID = 'RTsMTGw-1';
+      
+  //     switch (type) {
         
-      // }
+  //       case 'followUc':
+  //         messageID = 'SY6WWDyxQ';
+  //         break;
+          
+  //       case 'unfollowUc':
+  //         messageID = 'xWAfTONZ6';
+  //         break;
+          
+  //       case 'followApprovalUc':
+  //         messageID = 'PaC4bsJe2';
+  //         break;
+          
+  //       case 'unfollowApprovalUc':
+  //         messageID = 'HOo6u_sXD';
+  //         break;
+          
+  //     }
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'RTsMTGw-1',
-      });
-      
-      
-      // ---------------------------------------------
-      //   リロードする
-      // ---------------------------------------------
-      
-      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-      
-      // if (pageTransition) {
-      //   // window.location.href = `${process.env.URL_BASE}uc/${userCommunityID}/settings`;
-      // }
-      
-      
-    } catch (errorObj) {
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        errorObj,
-      });
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'success',
+  //       messageID,
+  //     });
       
       
-    } finally {
+  //     // ---------------------------------------------
+  //     //   リロードする
+  //     // ---------------------------------------------
+      
+  //     // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+  //     // if (pageTransition) {
+  //     //   // window.location.href = `${process.env.URL_BASE}uc/${userCommunityID}/settings`;
+  //     // }
       
       
-      // ---------------------------------------------
-      //   Button Enable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonEnable({ pathArr });
+  //   } catch (errorObj) {
       
       
-    }
+  //     // ---------------------------------------------
+  //     //   Snackbar: Error
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleSnackbarOpen({
+  //       variant: 'error',
+  //       errorObj,
+  //     });
+      
+      
+  //   } finally {
+      
+      
+  //     // ---------------------------------------------
+  //     //   Button Enable
+  //     // ---------------------------------------------
+      
+  //     storeLayout.handleButtonEnable({ pathArr });
+      
+      
+  //   }
     
-  };
+  // };
   
   
   
   
-  /**
-   * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
-   * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
-   * @type {Object}
-   */
-  @observable followDialogOpenObj = {};
+  // /**
+  // * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
+  // * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
+  // * @type {Object}
+  // */
+  // @observable followDialogOpenObj = {};
   
   
-  /**
-   * フォロー用ダイアログを開く
-   * @param {string} users_id - ID
-   */
-  @action.bound
-  handleFollowDialogOpen(users_id) {
-    this.followDialogOpenObj[users_id] = true;
-  };
+  // /**
+  // * フォロー用ダイアログを開く
+  // * @param {string} users_id - ID
+  // */
+  // @action.bound
+  // handleFollowDialogOpen(users_id) {
+  //   this.followDialogOpenObj[users_id] = true;
+  // };
   
   
-  /**
-   * フォロー用ダイアログを閉じる
-   * @param {string} users_id - ID
-   */
-  @action.bound
-  handleFollowDialogClose(users_id) {
-    this.followDialogOpenObj[users_id] = false;
-  };
+  // /**
+  // * フォロー用ダイアログを閉じる
+  // * @param {string} users_id - ID
+  // */
+  // @action.bound
+  // handleFollowDialogClose(users_id) {
+  //   this.followDialogOpenObj[users_id] = false;
+  // };
   
   
   

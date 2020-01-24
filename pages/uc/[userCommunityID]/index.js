@@ -47,6 +47,7 @@ import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
+import initStoreFollow from '../../../app/common/follow/stores/store';
 
 
 // ---------------------------------------------
@@ -82,6 +83,7 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeForum = initStoreForum({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  const storeFollow = initStoreFollow({});
   
   
   // --------------------------------------------------
@@ -95,6 +97,7 @@ const getOrCreateStore = ({ propsObj }) => {
     storeForum,
     storeImageAndVideo,
     storeImageAndVideoForm,
+    storeFollow,
     
   };
   
@@ -224,7 +227,6 @@ export default class extends React.Component {
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
     
     const storesObj = getOrCreateStore({ propsObj });
-    
     
     
     // --------------------------------------------------

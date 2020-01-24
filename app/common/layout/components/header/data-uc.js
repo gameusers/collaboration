@@ -45,7 +45,7 @@ import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 //   Components
 // ---------------------------------------------
 
-// import LinkIcons from './link-icons';
+import FollowButton from '../../../follow/components/gc-uc-button';
 
 
 
@@ -120,8 +120,9 @@ export default class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    const userCommunities_id = lodashGet(props, ['stores', 'data', 'headerObj', 'userCommunities_id'], '');
-    this.pathArr = [userCommunities_id, 'followButton'];
+    // const userCommunities_id = lodashGet(props, ['stores', 'data', 'headerObj', 'userCommunities_id'], '');
+    
+    // this.pathArr = [userCommunities_id, 'followButton'];
     
     
   }
@@ -140,7 +141,7 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    // this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -160,7 +161,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const { stores } = this.props;
-    const { handleFollow } = stores.layout;
     
     
     
@@ -171,31 +171,12 @@ export default class extends React.Component {
     
     const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
     
-    const userCommunities_id = lodashGet(stores, ['data', 'headerObj', 'userCommunities_id'], '');
     const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
     const createdDate = moment(lodashGet(stores, ['data', 'headerObj', 'createdDate'], '')).format('YYYY/MM/DD');
     
     const membersCount = lodashGet(stores, ['data', 'headerObj', 'membersCount'], 1);
     
     
-    
-    
-    // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
-    
-    // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   buttonDisabled: {green ${buttonDisabled}}
-    // `);
-    
-    // console.log(`
-    //   ----- this.pathArr -----\n
-    //   ${util.inspect(this.pathArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -227,166 +208,6 @@ export default class extends React.Component {
           srcSet={srcSet}
         />
       );
-      
-    }
-    
-    
-    
-         
-    // --------------------------------------------------
-    //   Button
-    // --------------------------------------------------
-    
-    const login = stores.data.getLogin();
-    const approval = lodashGet(stores, ['data', 'headerObj', 'approval'], false);
-    const author = lodashGet(stores, ['data', 'headerObj', 'author'], false);
-    const member = lodashGet(stores, ['data', 'headerObj', 'member'], false);
-    const memberApproval = lodashGet(stores, ['data', 'headerObj', 'memberApproval'], false);
-    const memberBlocked = lodashGet(stores, ['data', 'headerObj', 'memberBlocked'], false);
-    
-    let codeButton =  '';
-    
-    
-    // ---------------------------------------------
-    //   - ログインしていない場合
-    // ---------------------------------------------
-    
-    if (!login) {
-      
-      codeButton = 
-        <Link href="/login">
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-          >
-            コミュニティに参加する
-          </Button>
-        </Link>
-      ;
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   - ログインしていてメンバーでない場合
-    // ---------------------------------------------
-    
-    if (login && !member) {
-      
-      
-      // ---------------------------------------------
-      //   - 承認制
-      // ---------------------------------------------
-      
-      if (approval) {
-        
-        codeButton = 
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            // onClick={() => handleFormOpen({ _id: cardPlayers_id })}
-            disabled={buttonDisabled}
-          >
-            コミュニティに参加申請する
-          </Button>
-        ;
-        
-        
-      // ---------------------------------------------
-      //   - だれでも参加可能
-      // ---------------------------------------------
-        
-      } else {
-        
-        codeButton = 
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            onClick={() => handleFollow({ pathArr: this.pathArr, userCommunities_id })}
-            disabled={buttonDisabled}
-          >
-            コミュニティに参加する
-          </Button>
-        ;
-        
-      }
-      
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   - ログインしていてメンバーである場合
-    // ---------------------------------------------
-    
-    if (login && member) {
-      
-      codeButton = 
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          // onClick={() => handleFormOpen({ _id: cardPlayers_id })}
-          disabled={buttonDisabled}
-        >
-          コミュニティから退会する
-        </Button>
-      ;
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 参加申請済みの場合
-    // ---------------------------------------------
-    
-    if (memberApproval) {
-      
-      codeButton = 
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          // onClick={() => handleFormOpen({ _id: cardPlayers_id })}
-          disabled={buttonDisabled}
-        >
-          参加申請を取り下げる
-        </Button>
-      ;
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   - 作者またはブロックされている場合
-    // ---------------------------------------------
-    
-    let codeButtonBox =  '';
-    
-    if (author || memberBlocked) {
-      codeButton = '';
-    }
-    
-    
-    
-    // ---------------------------------------------
-    //   - 出力用コード作成
-    // ---------------------------------------------
-    
-    if (codeButton) {
-      
-      codeButtonBox =  
-        <div
-          css={css`
-            margin: 12px 12px 4px;
-          `}
-        >
-          {codeButton}
-        </div>
-      ;
       
     }
     
@@ -462,8 +283,8 @@ export default class extends React.Component {
           </div>
           
           
-          {codeButtonBox}
-
+          <FollowButton />
+          
           
         </div>
       ;

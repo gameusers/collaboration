@@ -34,6 +34,80 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
+ * _id
+ * @param {string} value - 値
+ * @return {Object} バリデーション結果
+ */
+const validationGameCommunities_idServer = async ({ value }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 7;
+  const maxLength = 14;
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  
+  let resultObj = {
+    value: data,
+    numberOfCharacters,
+  };
+  
+  
+  // ---------------------------------------------
+  //   文字数チェック
+  // ---------------------------------------------
+  
+  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: '3IEM_Yeh8', messageID: 'Pp_CFyt_3' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   英数と -_ のみ
+  // ---------------------------------------------
+  
+  if (data.match(/^[\w\-]+$/) === null) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ZOunxdwnK', messageID: 'JBkjlGQMh' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   データベースに存在していない場合、エラー
+  // ---------------------------------------------
+  
+  const count = await Model.count({
+    conditionObj: {
+      _id: value,
+    }
+  });
+  
+  if (count === 0) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fo7x4T1hk', messageID: 'cvS0qSAlE' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
+  
+  
+};
+
+
+
+
+/**
  * _id の配列
  * @param {string} value - 値
  * @return {Object} バリデーション結果
@@ -146,5 +220,6 @@ const validationGameCommunities_idsArrServer = async ({ arr }) => {
 // --------------------------------------------------
 
 module.exports = {
+  validationGameCommunities_idServer,
   validationGameCommunities_idsArrServer
 };

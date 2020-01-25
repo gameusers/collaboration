@@ -171,6 +171,8 @@ export default async (req, res) => {
     //   - ユーザーコミュニティ
     // ---------------------------------------------
     
+    let communityType = 'open' ;
+    
     if (userCommunities_id) {
       
       await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
@@ -188,10 +190,22 @@ export default async (req, res) => {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y8knFdqtD', messageID: 'qnWsuPcrJ' }] });
       }
       
-      // console.log(chalk`
-      //   resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
-      //   loginUsers_id: {green ${loginUsers_id}}
-      // `);
+      
+      // --------------------------------------------------
+      //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
+      // --------------------------------------------------
+      
+      communityType = lodashGet(resultUserCommunitiesObj, ['communityType'], 'open');
+      
+      // if (communityType === 'closed') {
+      //   returnObj.pageTransition = true;
+      // }
+      
+      console.log(chalk`
+        resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
+        loginUsers_id: {green ${loginUsers_id}}
+        communityType: {green ${communityType}}
+      `);
       
       // console.log(`
       //   ----- resultUserCommunitiesObj -----\n
@@ -252,7 +266,7 @@ export default async (req, res) => {
     let membersCount = lodashGet(resultObj, ['membersCount'], 1);
     const approval = lodashGet(resultObj, ['approval'], false);
     
-    returnObj.pageTransition = false;
+    // returnObj.pageTransition = false;
     
     
     // ---------------------------------------------
@@ -285,10 +299,6 @@ export default async (req, res) => {
       }
       
       
-      // ページを再読み込みする
-      returnObj.pageTransition = true;
-      
-      
     // ---------------------------------------------
     //   - 誰でも参加できる
     // ---------------------------------------------
@@ -311,6 +321,16 @@ export default async (req, res) => {
       
       membersCount = membersArr.length;
       returnObj.membersCount = membersCount;
+      
+      
+      // --------------------------------------------------
+      //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
+      // --------------------------------------------------
+      
+      if (communityType === 'closed') {
+        returnObj.pageTransition = true;
+      }
+      
       
     }
     

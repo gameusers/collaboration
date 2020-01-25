@@ -2422,9 +2422,10 @@ class Store {
         formDataObj.forumComments_id = forumComments_id;
       }
       
-      if (anonymity) {
-        formDataObj.anonymity = anonymity;
-      }
+      formDataObj.anonymity = anonymity;
+      // if (anonymity) {
+      //   formDataObj.anonymity = anonymity;
+      // }
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
@@ -3643,9 +3644,10 @@ class Store {
         formDataObj.replyToForumComments_id = replyToForumComments_id;
       }
       
-      if (anonymity) {
-        formDataObj.anonymity = anonymity;
-      }
+      formDataObj.anonymity = anonymity;
+      // if (anonymity) {
+      //   formDataObj.anonymity = anonymity;
+      // }
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;

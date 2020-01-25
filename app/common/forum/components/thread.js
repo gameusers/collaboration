@@ -165,11 +165,16 @@ export default injectIntl(class extends React.Component {
       userCommunityID,
       gameCommunities_id,
       userCommunities_id,
+      settingAnonymity,
       individual,
       
     } = this.props;
     
     
+    // console.log(chalk`
+    //   /app/common/forum/components/thread.js
+    //   settingAnonymity: {green ${settingAnonymity}}
+    // `);
     
     
     // --------------------------------------------------
@@ -640,6 +645,7 @@ export default injectIntl(class extends React.Component {
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
                   forumThreads_id={forumThreads_id}
+                  settingAnonymity={settingAnonymity}
                 />
                 
                 
@@ -650,6 +656,7 @@ export default injectIntl(class extends React.Component {
                   userCommunities_id={userCommunities_id}
                   forumThreads_id={forumThreads_id}
                   comments={comments}
+                  settingAnonymity={settingAnonymity}
                 />
                 
                 
@@ -700,22 +707,10 @@ export default injectIntl(class extends React.Component {
               <Button
                 type="submit"
                 variant="outlined"
-                // color="primary"
                 size="small"
                 disabled={buttonDisabled}
               >
-                <IconDoubleArrow
-                  css={css`
-                    && {
-                      // font-size: 16px;
-                      margin: 0 3px 0 0;
-                      
-                      // @media screen and (max-width: 480px) {
-                      //   display: none;
-                      // }
-                    }
-                  `}
-                />
+                <IconDoubleArrow />
                 フォーラムトップに戻る
               </Button>
             </Link>

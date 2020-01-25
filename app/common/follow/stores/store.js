@@ -55,6 +55,30 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Data
+  // ---------------------------------------------
+  
+  /**
+   * フォームのデータを入れるオブジェクト
+   * @type {Object}
+   */
+  @observable dataObj = {};
+  
+  
+  /**
+   * フォーム用のデータを変更する
+   * @param {Array} pathArr - パス
+   * @param {string} value - 値
+   */
+  @action.bound
+  handleEdit({ pathArr, value }) {
+    lodashSet(this.dataObj, pathArr, value);
+  };
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Follow
   // ---------------------------------------------
   
@@ -120,29 +144,21 @@ class Store {
       }
       
       
-      
       // ---------------------------------------------
       //   メンバーかどうか、メンバー数を変更
       // ---------------------------------------------
-      
-      // console.log(chalk`
-      //   resultObj.data.member: {green ${resultObj.data.member}}
-      //   resultObj.data.membersCount: {green ${resultObj.data.membersCount}}
-      // `);
       
       if (lodashHas(resultObj, ['data', 'member'])) {
         lodashSet(storeData, ['headerObj', 'member'], resultObj.data.member);
       }
       
+      if (lodashHas(resultObj, ['data', 'memberApproval'])) {
+        lodashSet(storeData, ['headerObj', 'memberApproval'], resultObj.data.memberApproval);
+      }
+      
       if (lodashHas(resultObj, ['data', 'membersCount'])) {
         lodashSet(storeData, ['headerObj', 'membersCount'], resultObj.data.membersCount);
       }
-      
-      // console.log(`
-      //   ----- storeData.headerObj -----\n
-      //   ${util.inspect(storeData.headerObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       // ---------------------------------------------
@@ -181,11 +197,11 @@ class Store {
       //   リロードする
       // ---------------------------------------------
       
-      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
-      // if (pageTransition) {
-      //   // window.location.href = `${process.env.URL_BASE}uc/${userCommunityID}/settings`;
-      // }
+      if (pageTransition) {
+        window.location.reload();
+      }
       
       
     } catch (errorObj) {
@@ -211,6 +227,22 @@ class Store {
       storeLayout.handleButtonEnable({ pathArr });
       
       
+      // ---------------------------------------------
+      //   ダイアログを非表示にする
+      //   /app/common/follow/components/gc-uc-button.js
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'showDialogUnfollow'],
+        value: false,
+      });
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'showDialogUnfollowApproval'],
+        value: false,
+      });
+      
+      
     }
     
   };
@@ -223,27 +255,27 @@ class Store {
    * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
    * @type {Object}
    */
-  @observable followDialogOpenObj = {};
+  // @observable followDialogOpenObj = {};
   
   
-  /**
-   * フォロー用ダイアログを開く
-   * @param {string} users_id - ID
-   */
-  @action.bound
-  handleFollowDialogOpen(users_id) {
-    this.followDialogOpenObj[users_id] = true;
-  };
+  // /**
+  // * フォロー用ダイアログを開く
+  // * @param {string} users_id - ID
+  // */
+  // @action.bound
+  // handleFollowDialogOpen(users_id) {
+  //   this.followDialogOpenObj[users_id] = true;
+  // };
   
   
-  /**
-   * フォロー用ダイアログを閉じる
-   * @param {string} users_id - ID
-   */
-  @action.bound
-  handleFollowDialogClose(users_id) {
-    this.followDialogOpenObj[users_id] = false;
-  };
+  // /**
+  // * フォロー用ダイアログを閉じる
+  // * @param {string} users_id - ID
+  // */
+  // @action.bound
+  // handleFollowDialogClose(users_id) {
+  //   this.followDialogOpenObj[users_id] = false;
+  // };
   
   
   

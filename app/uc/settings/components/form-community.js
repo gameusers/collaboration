@@ -657,7 +657,7 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* ななしでの投稿 */}
+          {/* 匿名での投稿 */}
           <div
             css={css`
               border-top: 1px dashed #848484;
@@ -673,7 +673,7 @@ export default injectIntl(class extends React.Component {
                 margin: 0 0 6px 0;
               `}
             >
-              ななしでの投稿
+              匿名での投稿
             </h3>
             
             <p
@@ -681,7 +681,7 @@ export default injectIntl(class extends React.Component {
                 margin: 0 0 12px 0;
               `}
             >
-              コミュニティ内で、ログイン済みユーザーがななしで投稿できるようになります。ななしでの投稿を認める場合は、以下をチェックしてください。
+              コミュニティ内で、ログイン済みユーザーが匿名で投稿できるようになります。匿名での投稿を認める場合は、以下をチェックしてください。
             </p>
             
             

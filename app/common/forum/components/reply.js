@@ -168,6 +168,7 @@ export default injectIntl(class extends React.Component {
       userCommunities_id,
       forumThreads_id,
       forumComments_id,
+      settingAnonymity,
       
     } = this.props;
     
@@ -396,6 +397,7 @@ export default injectIntl(class extends React.Component {
                 forumThreads_id={forumThreads_id}
                 forumComments_id={forumComments_id}
                 forumReplies_id={forumReplies_id}
+                settingAnonymity={settingAnonymity}
               />
             </div>
             
@@ -721,6 +723,7 @@ export default injectIntl(class extends React.Component {
                     forumThreads_id={forumThreads_id}
                     forumComments_id={forumComments_id}
                     replyToForumComments_id={forumReplies_id}
+                    settingAnonymity={settingAnonymity}
                   />
                 }
                 

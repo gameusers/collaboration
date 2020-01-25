@@ -335,10 +335,10 @@ export default async (req, res) => {
       $inc: { 'forumObj.threadCount': 1 }
     };
     
-    console.log(chalk`
-      images: {green ${images}}
-      videos: {green ${videos}}
-    `);
+    // console.log(chalk`
+    //   images: {green ${images}}
+    //   videos: {green ${videos}}
+    // `);
     
     
     // --------------------------------------------------

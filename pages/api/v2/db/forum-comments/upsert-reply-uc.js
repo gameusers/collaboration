@@ -45,6 +45,7 @@ const { setAuthority } = require('../../../../../app/@modules/authority');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
+const { validationBoolean } = require('../../../../../app/@validations/boolean');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
 const { validationForumCommentsName } = require('../../../../../app/@database/forum-comments/validations/name');
@@ -155,11 +156,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationUserCommunities_idServer({ value: userCommunities_id });
-    
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
     
     await validationForumCommentsName({ throwError: true, value: name });
     await validationForumCommentsComment({ throwError: true, value: comment });
+    await validationBoolean({ throwError: true, value: anonymity });
     
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
@@ -233,6 +234,38 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB findOne / User Communities / 匿名
+    // --------------------------------------------------
+    
+    const resultUserCommunityObj = await ModelUserCommunities.findOne({
+      conditionObj: {
+        _id: userCommunities_id
+      }
+    });
+    
+    const settingAnonymity = lodashGet(resultUserCommunityObj, ['anonymity'], false);
+    
+    // 匿名での投稿ができないのに匿名にしようとした場合、エラー
+    if (!settingAnonymity && anonymity) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '_TiwS7HD1-X', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // console.log(chalk`
+    //   settingAnonymity: {green ${settingAnonymity}}
+    //   anonymity: {green ${anonymity}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultUserCommunityObj -----\n
+    //   ${util.inspect(resultUserCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

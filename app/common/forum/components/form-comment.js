@@ -121,22 +121,21 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id } = this.props;
+    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, settingAnonymity } = this.props;
     
-    const { loginUsersObj } = stores.data;
+    // const { loginUsersObj } = stores.data;
     
     
-    
+    // console.log(chalk`
+    //   /app/common/forum/components/form-comment.js
+    //   settingAnonymity: {green ${settingAnonymity}}
+    // `);
     
     // --------------------------------------------------
     //   ログインしているかどうか
     // --------------------------------------------------
     
-    let login = false; 
-    
-    if (Object.keys(loginUsersObj).length > 0) {
-      login = true;
-    }
+    const login = stores.data.getLogin();
     
     
     // --------------------------------------------------
@@ -241,7 +240,11 @@ export default injectIntl(class extends React.Component {
         
         {/* 名前 */}
         {!login &&
-          <div>
+          <div
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
             <TextField
               css={css`
                 && {
@@ -273,8 +276,12 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Anonymity */}
-        {login &&
-          <div>
+        {(login && settingAnonymity) &&
+          <div
+            css={css`
+              margin: 0 0 4px 0;
+            `}
+          >
             <FormControlLabel
               control={
                 <Checkbox
@@ -292,12 +299,7 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Comment */}
-        <div
-          css={css`
-            margin: 12px 0 0 0;
-          `}
-        >
-          
+        <div>
           <TextareaAutosize
             css={css`
               && {
@@ -324,7 +326,6 @@ export default injectIntl(class extends React.Component {
             maxLength={3000}
             disabled={buttonDisabled}
           />
-          
         </div>
         
         
@@ -332,7 +333,6 @@ export default injectIntl(class extends React.Component {
         
         {/* Form Images & Videos */}
         <div>
-          
           <ImageAndVideoForm
             pathArr={this.pathArr}
             type="forum"
@@ -341,7 +341,6 @@ export default injectIntl(class extends React.Component {
             showImageCaption={true}
             limit={limit}
           />
-          
         </div>
         
         
@@ -470,7 +469,6 @@ export default injectIntl(class extends React.Component {
           </DialogActions>
           
         </Dialog>
-        
         
         
       </form>

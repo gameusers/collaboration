@@ -20,7 +20,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { observer, Provider } from 'mobx-react';
 import { Element } from 'react-scroll';
-// import Cookies from 'js-cookie';
 import lodashGet from 'lodash/get';
 import lodashHas from 'lodash/has';
 
@@ -34,7 +33,6 @@ import { css, jsx } from '@emotion/core';
 
 import { fetchWrapper } from '../../../app/@modules/fetch';
 import { createCsrfToken } from '../../../app/@modules/csrf';
-// import { getCookie } from '../../../app/@modules/cookie';
 
 
 // ---------------------------------------------
@@ -199,10 +197,15 @@ export default class extends React.Component {
     
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
-    // const login = lodashGet(resultObj, ['data', 'login'], false);
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    const settingAnonymity = lodashGet(resultObj, ['data', 'userCommunityObj', 'anonymity'], false);
+    
+    
+    // --------------------------------------------------
+    //   Title
+    // --------------------------------------------------
     
     const title = `${userCommunityName}`;
     
@@ -233,21 +236,17 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // const isServer = !!req;
-    
     // console.log(chalk`
-    //   login: {green ${login}}
-    //   datetimeCurrent: {green ${datetimeCurrent}}
-    //   isServer: {green ${isServer}}
     //   userCommunityID: {green ${userCommunityID}}
     //   userCommunityName: {green ${userCommunityName}}
+    //   settingAnonymity: {green ${settingAnonymity}}
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -261,6 +260,7 @@ export default class extends React.Component {
       temporaryDataID,
       userCommunityID,
       userCommunities_id,
+      settingAnonymity,
       title,
       storesObj,
       propsObj,
@@ -361,14 +361,17 @@ export default class extends React.Component {
       return <Error statusCode={this.props.statusCode} />;
     }
     
+    // console.log(`
+    //   ----- this.props -----\n
+    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    // --------------------------------------------------
-    //   Header Title
-    // --------------------------------------------------
-    
-    // const title = this.props.userCommunityName;
-    
-    
+    // console.log(chalk`
+    //   this.props.settingAnonymity: {green ${this.props.settingAnonymity}}
+    //   this.settingAnonymity: {green ${this.settingAnonymity}}
+    //   this.props.userCommunities_id: {green ${this.props.userCommunities_id}}
+    // `);
     
     
     // --------------------------------------------------
@@ -455,6 +458,7 @@ export default class extends React.Component {
                   temporaryDataID={this.props.temporaryDataID}
                   userCommunityID={this.props.userCommunityID}
                   userCommunities_id={this.props.userCommunities_id}
+                  settingAnonymity={this.props.settingAnonymity}
                 />
               </Element>
               

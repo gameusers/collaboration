@@ -647,11 +647,11 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
     //   userCommunityID: {green ${userCommunityID}}
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

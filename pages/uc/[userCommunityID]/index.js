@@ -59,6 +59,7 @@ import ForumNavigation from '../../../app/common/forum/components/navigation';
 import ForumThread from '../../../app/common/forum/components/thread';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
+import Abount from '../../../app/uc/community/components/about';
 
 
 
@@ -200,7 +201,9 @@ export default class extends React.Component {
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
-    const settingAnonymity = lodashGet(resultObj, ['data', 'userCommunityObj', 'anonymity'], false);
+    // const userCommunityDescription = lodashGet(resultObj, ['data', 'userCommunityObj', 'description'], '');
+    // const settingAnonymity = lodashGet(resultObj, ['data', 'userCommunityObj', 'anonymity'], false);
+    // const showContents = lodashGet(resultObj, ['data', 'userCommunityObj', 'showContents'], false);
     
     
     // --------------------------------------------------
@@ -240,13 +243,14 @@ export default class extends React.Component {
     //   userCommunityID: {green ${userCommunityID}}
     //   userCommunityName: {green ${userCommunityName}}
     //   settingAnonymity: {green ${settingAnonymity}}
+    //   showContents: {green ${showContents}}
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -260,7 +264,9 @@ export default class extends React.Component {
       temporaryDataID,
       userCommunityID,
       userCommunities_id,
-      settingAnonymity,
+      // userCommunityDescription,
+      // settingAnonymity,
+      // showContents,
       title,
       storesObj,
       propsObj,
@@ -361,11 +367,45 @@ export default class extends React.Component {
       return <Error statusCode={this.props.statusCode} />;
     }
     
-    // console.log(`
-    //   ----- this.props -----\n
-    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
+    // --------------------------------------------------
+    //   Setting
+    // --------------------------------------------------
+    
+    const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
+    const showContents = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'showContents'], false);
+    
+    
+    // --------------------------------------------------
+    //   About
+    // --------------------------------------------------
+    
+    const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
+    const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
+    const membersCount = lodashGet(this.props, ['propsObj', 'headerObj', 'membersCount'], 1);
+    const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
+    
+    
+    console.log(`
+      ----- this.props -----\n
+      ${util.inspect(this.props, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(chalk`
+      createdDate: {green ${createdDate}}
+      description: {green ${description}}
+      membersCount: {green ${membersCount}}
+    `);
+    
+    console.log(`
+      ----- gamesArr -----\n
+      ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+    
     
     // console.log(chalk`
     //   this.props.settingAnonymity: {green ${this.props.settingAnonymity}}
@@ -424,11 +464,13 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                <ForumNavigation
-                  temporaryDataID={this.props.temporaryDataID}
-                  userCommunityID={this.props.userCommunityID}
-                  userCommunities_id={this.props.userCommunities_id}
-                />
+                {showContents &&
+                  <ForumNavigation
+                    temporaryDataID={this.props.temporaryDataID}
+                    userCommunityID={this.props.userCommunityID}
+                    userCommunities_id={this.props.userCommunities_id}
+                  />
+                }
               </Sidebar>
               
               
@@ -451,16 +493,30 @@ export default class extends React.Component {
               
               
               {/* フォーラム */}
-              <Element
-                name="forumThreads"
-              >
-                <ForumThread
-                  temporaryDataID={this.props.temporaryDataID}
-                  userCommunityID={this.props.userCommunityID}
-                  userCommunities_id={this.props.userCommunities_id}
-                  settingAnonymity={this.props.settingAnonymity}
+              {showContents &&
+                <Element
+                  name="forumThreads"
+                >
+                  <ForumThread
+                    temporaryDataID={this.props.temporaryDataID}
+                    userCommunityID={this.props.userCommunityID}
+                    userCommunities_id={this.props.userCommunities_id}
+                    settingAnonymity={settingAnonymity}
+                  />
+                </Element>
+              }
+              
+              
+              {/* Description */}
+              {!showContents &&
+                <Abount
+                  pathArr={[this.props.userCommunities_id, 'about']}
+                  description={description}
+                  createdDate={createdDate}
+                  membersCount={membersCount}
+                  gamesArr={gamesArr}
                 />
-              </Element>
+              }
               
               
             </div>

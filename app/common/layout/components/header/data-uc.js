@@ -269,7 +269,7 @@ export default class extends React.Component {
           
           
           <p css={cssInfo}>開設日 | {createdDate}</p>
-          <p css={cssInfo}>メンバー | {membersCount} 人</p>
+          <p css={cssInfo}>メンバー | {membersCount}人</p>
           
           
           <div

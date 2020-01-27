@@ -399,6 +399,7 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
               { $project:
                 {
                   gameCommunities_id: 1,
+                  urlID: 1,
                   name: 1,
                   imagesAndVideosObj: 1,
                 }

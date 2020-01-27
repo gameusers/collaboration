@@ -3237,7 +3237,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
             _id: 'qFJnYnMDA',
             language: 'ja',
             name: 'User Community 1',
-            description: 'RPG好きが集まるコミュニティです。新旧問わず名作・駄作について話し合いましょう！',
+            description: `RPG好きが集まるコミュニティです。新旧問わず名作・駄作について話し合いましょう！\nドラクエやファイナルファンタジーなど、有名なタイトルから誰も知らないようなタイトルまで、なんの話題でも大丈夫です。\n\nぜひ気軽に参加してください！`,
             descriptionShort: 'descriptionShort',
           },
         ],

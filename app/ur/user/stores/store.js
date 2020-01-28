@@ -26,7 +26,7 @@ import lodashHas from 'lodash/has';
 //   Store
 // --------------------------------------------------
 
-let storePlPlayer = null;
+let storeUrUser = null;
 
 
 
@@ -64,15 +64,15 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStorePlPlayer({ propsObj }) {
+export default function initStoreUrUser({ propsObj }) {
   
   
   // --------------------------------------------------
   //   Store
   // --------------------------------------------------
   
-  if (storePlPlayer === null) {
-    storePlPlayer = new Store();
+  if (storeUrUser === null) {
+    storeUrUser = new Store();
   }
   
   
@@ -88,7 +88,7 @@ export default function initStorePlPlayer({ propsObj }) {
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['pagesArr'])) {
-      storePlPlayer.pagesArr = propsObj.pagesArr;
+      storeUrUser.pagesArr = propsObj.pagesArr;
     }
     
     
@@ -99,7 +99,7 @@ export default function initStorePlPlayer({ propsObj }) {
   //   Return
   // --------------------------------------------------
   
-  return storePlPlayer;
+  return storeUrUser;
   
   
 }

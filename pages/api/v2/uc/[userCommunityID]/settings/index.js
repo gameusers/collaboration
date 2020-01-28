@@ -125,7 +125,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
-      statusCode = 401;
+      statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'xWkmN-gAs', messageID: 'xLLNIpo6a' }] });
     }
     
@@ -171,7 +171,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (userCommunitiesUsers_id !== loginUsers_id) {
-      statusCode = 401;
+      statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '5rP5wjjRU', messageID: 'Error' }] });
     }
     

@@ -118,17 +118,17 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(chalk`
-      /pages/api/v2/db/users/upsert-pages.js
-      loginUsers_id: {green ${loginUsers_id}}
-      userID: {green ${userID}}
-    `);
+    // console.log(chalk`
+    //   /pages/api/v2/db/users/upsert-pages.js
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userID: {green ${userID}}
+    // `);
     
-    console.log(`
-      ----- pagesArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(pagesArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- pagesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pagesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------
@@ -143,7 +143,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
-      statusCode = 401;
+      statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'V5Ww_uLNM', messageID: 'xLLNIpo6a' }] });
     }
     

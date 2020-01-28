@@ -133,7 +133,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
-      statusCode = 401;
+      statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FE6LK-sP4', messageID: 'xLLNIpo6a' }] });
     }
     
@@ -201,11 +201,11 @@ export default async (req, res) => {
       //   returnObj.pageTransition = true;
       // }
       
-      console.log(chalk`
-        resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
-        loginUsers_id: {green ${loginUsers_id}}
-        communityType: {green ${communityType}}
-      `);
+      // console.log(chalk`
+      //   resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
+      //   loginUsers_id: {green ${loginUsers_id}}
+      //   communityType: {green ${communityType}}
+      // `);
       
       // console.log(`
       //   ----- resultUserCommunitiesObj -----\n

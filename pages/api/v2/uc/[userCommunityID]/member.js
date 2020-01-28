@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -16,13 +16,15 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUsers = require('../../../../../app/@database/users/model');
+const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
+const ModelFollows = require('../../../../../app/@database/follows/model');
 const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
@@ -32,6 +34,15 @@ const ModelCardPlayers = require('../../../../../app/@database/card-players/mode
 
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+// const { validationInteger } = require('../../../../../app/@validations/integer');
+// const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+// const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
 
 // ---------------------------------------------
@@ -51,7 +62,7 @@ const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 // --------------------------------------------------
-//   endpointID: P3ut9x3Fj
+//   endpointID: K3yzgjQpD
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -77,9 +88,7 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {
-    cardsArr: [],
-  };
+  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -93,20 +102,9 @@ export default async (req, res) => {
     //   GET Data
     // --------------------------------------------------
     
-    const userID = req.query.userID;
+    const userCommunityID = req.query.userCommunityID;
     
-    lodashSet(requestParametersObj, ['userID'], userID);
-    
-    // console.log(chalk`
-    //   /pages/api/v2/ur/[userID].js
-    //   userID: {green ${userID}}
-    // `);
-    
-    // console.log(`
-    //   ----- req.query -----\n
-    //   ${util.inspect(req.query, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     
     
     
@@ -124,65 +122,97 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   データ取得 / Users
-    //   アクセスしたページ所有者のユーザー情報
-    //   users_id を取得するために利用
+    //   DB find / User Community
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOne({
-      conditionObj: {
-        userID,
-      }
-    });
-    
-    
-    // --------------------------------------------------
-    //   ユーザー情報が存在しない場合はエラー
-    // --------------------------------------------------
-    
-    const users_id = lodashGet(usersObj, ['_id'], '');
-    
-    if (!users_id) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'IVX1dL1pJ', messageID: 'Error' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   pagesArr
-    // --------------------------------------------------
-    
-    returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
-    
-    const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
+      
       localeObj,
-      users_id,
-      loginUsers_id
+      loginUsers_id,
+      userCommunityID,
+      
     });
     
-    returnObj.cardPlayersObj = cardPlayersObj;
     
+    // ---------------------------------------------
+    //   - コミュニティのデータがない場合はエラー
+    // ---------------------------------------------
     
-    // --------------------------------------------------
-    //   カードを一覧で表示するための配列を作成する
-    // --------------------------------------------------
-    
-    const cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    if (cardPlayersKeysArr.length > 0) {
-      returnObj.cardsArr.push({
-        cardPlayers_id: cardPlayersKeysArr[0]
-      });
+    if (Object.keys(userCommunityObj).length === 0) {
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'X0Y2qe9V8', messageID: 'Error' }] });
     }
     
+    
+    // ---------------------------------------------
+    //   - userCommunities_id
+    // ---------------------------------------------
+    
+    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
+    
+    
+    // ---------------------------------------------
+    //   - headerObj
+    // ---------------------------------------------
+    
+    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
+      returnObj.headerObj = userCommunityObj.headerObj;
+    }
+    
+    delete userCommunityObj.headerObj;
+    
+    
+    // ---------------------------------------------
+    //   - userCommunityObj
+    // ---------------------------------------------
+    
+    returnObj.userCommunityObj = userCommunityObj;
+    
+    
+    // ---------------------------------------------
+    //   - コンテンツを表示するかどうか
+    // ---------------------------------------------
+    
+    const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
+    const member = lodashGet(userCommunityObj, ['member'], false);
+    
+    if (communityType === 'closed' && !member) {
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zoqcOuILt', messageID: 'Error' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB find / Follows
+    // --------------------------------------------------
+    
+    const followsObj = await ModelFollows.findOne({
+      
+      conditionObj: {
+        userCommunities_id
+      },
+      
+    });
+    
+    const membersArr = lodashGet(followsObj, ['membersArr'], []);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //    DB find / Card Players
+    // --------------------------------------------------
+    
+    returnObj.cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+      
+      localeObj,
+      users_idsArr: membersArr
+      
+    });
+    
+    // const membersArr = lodashGet(cardPlayersObj, ['membersArr'], []);
     
     
     
@@ -190,35 +220,39 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/uc/[userCommunityID]/member.js
+    `);
+    
     // console.log(chalk`
-    //   {green ur/player/api/player / initial-props}
-    //   userID: {green ${userID}}
-    //   users_id：{green ${users_id}}
+    //   userCommunityID: {green ${userCommunityID}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   communityType: {green ${communityType}}
+    //   member: {green ${member}}
     // `);
     
     // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   ----- followsObj -----\n
+    //   ${util.inspect(followsObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj.cardPlayersObj -----\n
+      ${util.inspect(returnObj.cardPlayersObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----------------------------------------
+    `);
     
     
     
@@ -239,7 +273,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'P3ut9x3Fj',
+      endpointID: 'K3yzgjQpD',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

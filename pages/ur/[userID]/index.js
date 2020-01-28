@@ -37,8 +37,8 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
+import initStoreUrUser from '../../../app/ur/user/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
-import initStorePlPlayer from '../../../app/ur/user/stores/store';
 import initStoreIDForm from '../../../app/common/id/stores/form';
 import initStoreGameForm from '../../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
@@ -71,7 +71,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storePlPlayer = initStorePlPlayer({ propsObj });
+  const storeUrUser = initStoreUrUser({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
   const storeIDForm = initStoreIDForm({});
   const storeGameForm = initStoreGameForm({});
@@ -85,7 +85,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storePlPlayer,
+    storeUrUser,
     storeCardPlayer,
     storeIDForm,
     storeGameForm,
@@ -151,10 +151,6 @@ export default class extends React.Component {
     const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
     const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
     
-    // const threadDataObj = lodashGet(resultObj, ['data', 'forumThreadsObj', 'dataObj'], {});
-    // const cardPlayers_id = Object.keys(cardPlayersObj)[0];
-    // const threadName = lodashGet(resultObj, ['data', 'forumThreadsObj', 'dataObj', threadID, 'name'], '');
-    
     
     // --------------------------------------------------
     //   Stores
@@ -178,20 +174,31 @@ export default class extends React.Component {
     const storesObj = getOrCreateStore({ propsObj });
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /pages/ur/[userID]/index.js
+    `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
     //   pathname: {green ${pathname}}
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----------------------------------------
+    `);
     
     
     // --------------------------------------------------
@@ -206,8 +213,6 @@ export default class extends React.Component {
       propsObj,
       
     };
-    
-    // return { pathname, propsObj, statusCode, reqAcceptLanguage, userID };
     
     
   }
@@ -306,9 +311,6 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    // const drawerOpen = lodashGet(stores, ['layout', 'drawerOpen'], false);
-    // const handleDrawerClose = lodashGet(stores, ['layout', 'handleDrawerClose'], () => {});
-    
     
     // --------------------------------------------------
     //   Player Card
@@ -339,11 +341,13 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Header Title
     // --------------------------------------------------
     
-    const topPagesObj = this.storesObj.storePlPlayer.pagesArr.find((valueObj) => {
+    const topPagesObj = this.storesObj.storeUrUser.pagesArr.find((valueObj) => {
       return valueObj.type === 'top';
     });
     

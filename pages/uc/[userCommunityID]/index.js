@@ -40,7 +40,7 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreUserCommunity from '../../../app/uc/community/stores/store';
+import initStoreUcCommunity from '../../../app/uc/community/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
@@ -77,7 +77,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUserCommunity = initStoreUserCommunity({});
+  const storeUcCommunity = initStoreUcCommunity({});
   const storeCardPlayer = initStoreCardPlayer({});
   const storeForum = initStoreForum({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
@@ -91,7 +91,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeUserCommunity,
+    storeUcCommunity,
     storeCardPlayer,
     storeForum,
     storeImageAndVideo,
@@ -168,23 +168,6 @@ export default class extends React.Component {
     const forumReplyLimit = stores.data.getCookie({ key: 'forumReplyLimit' });
     
     
-    // console.log(chalk`
-    //   forumThreadListLimit: {green ${forumThreadListLimit}}
-    //   forumThreadLimit: {green ${forumThreadLimit}}
-    //   forumCommentLimit: {green ${forumCommentLimit}}
-    //   forumReplyLimit: {green ${forumReplyLimit}}
-      
-    //   forumThreadListPage: {green ${forumThreadListPage}}
-    //   forumThreadPage: {green ${forumThreadPage}}
-    // `);
-    
-    // console.log(`
-    //   ----- reqHeadersCookie -----\n
-    //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
     // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
@@ -201,9 +184,7 @@ export default class extends React.Component {
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
-    // const userCommunityDescription = lodashGet(resultObj, ['data', 'userCommunityObj', 'description'], '');
-    // const settingAnonymity = lodashGet(resultObj, ['data', 'userCommunityObj', 'anonymity'], false);
-    // const showContents = lodashGet(resultObj, ['data', 'userCommunityObj', 'showContents'], false);
+    const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
     
     
     // --------------------------------------------------
@@ -222,34 +203,78 @@ export default class extends React.Component {
         name: 'トップ',
         href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}`,
-      },
-      {
-        name: '設定',
-        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
-        as: `/uc/${userCommunityID}/settings`,
       }
     ];
+    
+    if (author) {
+      headerNavMainArr.push(
+        {
+          name: '設定',
+          href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
+          as: `/uc/${userCommunityID}/settings`,
+        }
+      );
+    }
+    
+    // const headerNavMainArr = [
+    //   {
+    //     name: 'トップ',
+    //     href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
+    //     as: `/uc/${userCommunityID}`,
+    //   },
+    //   {
+    //     name: '設定',
+    //     href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
+    //     as: `/uc/${userCommunityID}/settings`,
+    //   }
+    // ];
     
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
     
     const storesObj = getOrCreateStore({ propsObj });
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/uc/[userCommunityID]/index.js
+    // `);
+    
+    // console.log(chalk`
+    //   forumThreadListLimit: {green ${forumThreadListLimit}}
+    //   forumThreadLimit: {green ${forumThreadLimit}}
+    //   forumCommentLimit: {green ${forumCommentLimit}}
+    //   forumReplyLimit: {green ${forumReplyLimit}}
+      
+    //   forumThreadListPage: {green ${forumThreadListPage}}
+    //   forumThreadPage: {green ${forumThreadPage}}
+    // `);
+    
+    // console.log(`
+    //   ----- reqHeadersCookie -----\n
+    //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
     //   userCommunityID: {green ${userCommunityID}}
     //   userCommunityName: {green ${userCommunityName}}
-    //   settingAnonymity: {green ${settingAnonymity}}
-    //   showContents: {green ${showContents}}
+    //   author: {green ${author}}
     // `);
     
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----------------------------------------
     // `);
     
     
@@ -264,9 +289,6 @@ export default class extends React.Component {
       temporaryDataID,
       userCommunityID,
       userCommunities_id,
-      // userCommunityDescription,
-      // settingAnonymity,
-      // showContents,
       title,
       storesObj,
       propsObj,
@@ -373,7 +395,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
-    const showContents = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'showContents'], false);
+    const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
     
     
     // --------------------------------------------------
@@ -381,28 +403,31 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
+    const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
+    const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
     const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
+    const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
     const membersCount = lodashGet(this.props, ['propsObj', 'headerObj', 'membersCount'], 1);
     const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
     
     
-    console.log(`
-      ----- this.props -----\n
-      ${util.inspect(this.props, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- this.props -----\n
+    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      createdDate: {green ${createdDate}}
-      description: {green ${description}}
-      membersCount: {green ${membersCount}}
-    `);
+    // console.log(chalk`
+    //   createdDate: {green ${createdDate}}
+    //   description: {green ${description}}
+    //   membersCount: {green ${membersCount}}
+    // `);
     
-    console.log(`
-      ----- gamesArr -----\n
-      ${util.inspect(gamesArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -464,7 +489,7 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                {showContents &&
+                {accessRightRead &&
                   <ForumNavigation
                     temporaryDataID={this.props.temporaryDataID}
                     userCommunityID={this.props.userCommunityID}
@@ -493,7 +518,7 @@ export default class extends React.Component {
               
               
               {/* フォーラム */}
-              {showContents &&
+              {accessRightRead &&
                 <Element
                   name="forumThreads"
                 >
@@ -507,16 +532,24 @@ export default class extends React.Component {
               }
               
               
-              {/* Description */}
-              {!showContents &&
+              {/* About Community */}
+              <div
+                css={css`
+                  ${accessRightRead ? 'margin: 32px 0 0 0' : 'margin: 0 0 0 0'};
+                `}
+              >
                 <Abount
                   pathArr={[this.props.userCommunities_id, 'about']}
                   description={description}
                   createdDate={createdDate}
                   membersCount={membersCount}
+                  communityType={communityType}
+                  approval={approval}
+                  anonymity={anonymity}
                   gamesArr={gamesArr}
+                  accessRightRead={accessRightRead}
                 />
-              }
+              </div>
               
               
             </div>

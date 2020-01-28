@@ -312,10 +312,12 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * 取得する
  * @param {Object} localeObj - ロケール
  * @param {string} users_id - DB users _id
+ * @param {string} cardPlayers_id - DB card-players _id
+ * @param {Array} users_idsArr - DB users _id / 配列
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUsers_id }) => {
+const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, users_idsArr, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -352,6 +354,17 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
       
     }
     
+    if (users_idsArr) {
+      
+      matchConditionArr = [
+        {
+          $match : { users_id: { $in: users_idsArr } },
+        },
+      ];
+      
+    }
+    
+    
     // console.log(`
     //   ----- matchConditionArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(matchConditionArr)), { colors: true, depth: null })}\n
@@ -365,12 +378,8 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     
     let resultArr = await Schema.aggregate([
       
-      ...matchConditionArr,
       
-      // Card Players を取得する
-      // {
-      //   $match : { users_id }
-      // },
+      ...matchConditionArr,
       
       
       // 画像と動画を取得
@@ -552,7 +561,7 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     
     
     // --------------------------------------------------
-    //   ID データをまとめて取得
+    //   DB - ID データをまとめて取得
     // --------------------------------------------------
     
     let ids_idArr = [];

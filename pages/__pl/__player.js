@@ -37,7 +37,7 @@ import { fetchWrapper } from '../../app/@modules/fetch';
 
 import initStoreRoot from '../../app/@stores/root';
 import initStoreCardPlayer from '../../app/common/card/player/stores/player';
-import initStorePlPlayer from '../../app/ur/user/stores/store';
+import initStoreUrUser from '../../app/ur/user/stores/store';
 import initStoreIDForm from '../../app/common/id/stores/form';
 import initStoreGameForm from '../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../app/common/image-and-video/stores/image-and-video';
@@ -158,7 +158,7 @@ export default class extends React.Component {
       
       const stores = initStoreRoot({});
       
-      this.storePlPlayer = initStorePlPlayer({});
+      this.storeUrUser = initStoreUrUser({});
       this.storeCardPlayer = initStoreCardPlayer({});
       this.storeIDForm = initStoreIDForm({});
       this.storeGameForm = initStoreGameForm({});
@@ -206,7 +206,7 @@ export default class extends React.Component {
       //   Update Data - Pages Array
       // --------------------------------------------------
       
-      this.storePlPlayer.replacePagesArr(props.initialPropsObj.pagesArr);
+      this.storeUrUser.replacePagesArr(props.initialPropsObj.pagesArr);
       
       
     } catch (e) {
@@ -279,7 +279,7 @@ export default class extends React.Component {
     //   Header Title
     // --------------------------------------------------
     
-    const topPagesObj = this.storePlPlayer.pagesArr.find((valueObj) => {
+    const topPagesObj = this.storeUrUser.pagesArr.find((valueObj) => {
       return valueObj.type === 'top';
     });
     
@@ -295,7 +295,7 @@ export default class extends React.Component {
     
     return (
       <Provider
-        storePlPlayer={this.storePlPlayer}
+        storeUrUser={this.storeUrUser}
         storeCardPlayer={this.storeCardPlayer}
         storeIDForm={this.storeIDForm}
         storeGameForm={this.storeGameForm}

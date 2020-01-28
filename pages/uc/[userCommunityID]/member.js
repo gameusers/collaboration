@@ -40,10 +40,9 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreUcSettings from '../../../app/uc/settings/stores/store';
-import initStoreUcCommunity from '../../../app/uc/community/stores/store';
-import initStoreGameForm from '../../../app/common/game/stores/form';
+import initStoreUcMember from '../../../app/uc/community/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
+import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
@@ -56,8 +55,8 @@ import initStoreFollow from '../../../app/common/follow/stores/store';
 import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
-import FormCommunity from '../../../app/uc/settings/components/form-community';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
+import CardPlayer from '../../../app/common/card/player/components/player';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
 
 
@@ -76,12 +75,11 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUcSettings = initStoreUcSettings({ propsObj });
-  const storeUcCommunity = initStoreUcCommunity({});
-  const storeGameForm = initStoreGameForm({ propsObj });
+  const storeUcMember = initStoreUcMember({});
   const storeCardPlayer = initStoreCardPlayer({});
-  const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({ propsObj });
+  // const storeForum = initStoreForum({ propsObj });
+  // const storeImageAndVideo = initStoreImageAndVideo({});
+  // const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
   
   
@@ -91,12 +89,11 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeUcSettings,
-    storeUcCommunity,
-    storeGameForm,
+    storeUcMember,
     storeCardPlayer,
-    storeImageAndVideo,
-    storeImageAndVideoForm,
+    // storeForum,
+    // storeImageAndVideo,
+    // storeImageAndVideoForm,
     storeFollow,
     
   };
@@ -109,7 +106,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/uc/***/settings
+//   URL: http://dev-1.gameusers.org:8080/uc/***/member
 // --------------------------------------------------
 
 @observer
@@ -137,18 +134,7 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userCommunityID = query.userCommunityID;
-    const pathname = `/uc/${userCommunityID}/settings`;
-    
-    
-    // ---------------------------------------------
-    //   FormData
-    // ---------------------------------------------
-    
-    const formDataObj = {
-      
-      userCommunityID,
-      
-    };
+    const pathname = `/uc/${userCommunityID}/member`;
     
     
     // --------------------------------------------------
@@ -156,41 +142,26 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/settings`),
-      methodType: 'POST',
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member`),
+      methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
-      formData: JSON.stringify(formDataObj),
     });
     
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
-    const name = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'name'], '');
-    const description = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'description'], '');
-    const descriptionShort = lodashGet(resultObj, ['data', 'userCommunityObj', 'localesArr', 0, 'descriptionShort'], '');
-    const communityType = lodashGet(resultObj, ['data', 'userCommunityObj', 'communityType'], 'open');
-    const anonymity = lodashGet(resultObj, ['data', 'userCommunityObj', 'anonymity'], true);
-    const approval = lodashGet(resultObj, ['data', 'userCommunityObj', 'followsObj', 'approval'], false);
-    const imagesAndVideosObj = lodashGet(resultObj, ['data', 'userCommunityObj', 'imagesAndVideosObj'], {});
-    const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', 'userCommunityObj', 'imagesAndVideosThumbnailObj'], {});
-    const gamesArr = lodashGet(resultObj, ['data', 'userCommunityObj', 'gamesArr'], []);
-    
+    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    // const accessRightRead = lodashGet(resultObj, ['data', 'accessRightRead'], false);
+    const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
     
     
     // --------------------------------------------------
     //   Title
     // --------------------------------------------------
     
-    const title = `${name}: 設定`;
-    
-    
-    // --------------------------------------------------
-    //   Path Array
-    // --------------------------------------------------
-    
-    const pathArr = [userCommunities_id, 'ucSettingsFormCommunity'];
+    const title = `${userCommunityName}: メンバー`;
     
     
     // --------------------------------------------------
@@ -204,15 +175,26 @@ export default class extends React.Component {
         as: `/uc/${userCommunityID}`,
       },
       {
-        name: '設定',
-        href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
-        as: `/uc/${userCommunityID}/settings`,
+        name: 'メンバー',
+        href: `/uc/[userCommunityID]/member?userCommunityID=${userCommunityID}`,
+        as: `/uc/${userCommunityID}/member`,
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userCommunities_id, name, description, descriptionShort, userCommunityID, communityType, anonymity, approval, imagesAndVideosObj, imagesAndVideosThumbnailObj, gamesArr };
+    if (author) {
+      headerNavMainArr.push(
+        {
+          name: '設定',
+          href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
+          as: `/uc/${userCommunityID}/settings`,
+        }
+      );
+    }
+    
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
     
     const storesObj = getOrCreateStore({ propsObj });
+    
     
     
     
@@ -220,20 +202,25 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // const isServer = !!req;
+    console.log(`
+      ----------------------------------------\n
+      /pages/uc/[userCommunityID]/member.js
+    `);
     
-    // console.log(chalk`
-    //   login: {green ${login}}
-    //   datetimeCurrent: {green ${datetimeCurrent}}
-    //   isServer: {green ${isServer}}
-    //   userCommunityID: {green ${userCommunityID}}
-    //   userCommunityName: {green ${userCommunityName}}
+    console.log(chalk`
+      userCommunityID: {green ${userCommunityID}}
+      userCommunityName: {green ${userCommunityName}}
+      author: {green ${author}}
+    `);
+    
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
+      ----------------------------------------
     `);
     
     
@@ -247,7 +234,6 @@ export default class extends React.Component {
       reqAcceptLanguage,
       userCommunityID,
       userCommunities_id,
-      pathArr,
       title,
       storesObj,
       propsObj,
@@ -336,6 +322,53 @@ export default class extends React.Component {
     }
     
     
+    // --------------------------------------------------
+    //   Setting
+    // --------------------------------------------------
+    
+    // const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
+    // const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
+    
+    
+    // --------------------------------------------------
+    //   About
+    // --------------------------------------------------
+    
+    // const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
+    // const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
+    // const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
+    // const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
+    // const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
+    // const membersCount = lodashGet(this.props, ['propsObj', 'headerObj', 'membersCount'], 1);
+    // const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
+    
+    
+    // console.log(`
+    //   ----- this.props -----\n
+    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   createdDate: {green ${createdDate}}
+    //   description: {green ${description}}
+    //   membersCount: {green ${membersCount}}
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // console.log(chalk`
+    //   this.props.settingAnonymity: {green ${this.props.settingAnonymity}}
+    //   this.settingAnonymity: {green ${this.settingAnonymity}}
+    //   this.props.userCommunities_id: {green ${this.props.userCommunities_id}}
+    // `);
     
     
     // --------------------------------------------------
@@ -386,15 +419,10 @@ export default class extends React.Component {
             >
               
               
+              {/* フォーラムのナビゲーション */}
               <Sidebar>
-                <img
-                  src="/static/img/common/advertisement/300x250.jpg"
-                  width="300"
-                  height="250"
-                />
+                
               </Sidebar>
-              
-              Sidebar
               
               
             </div>
@@ -415,12 +443,24 @@ export default class extends React.Component {
             >
               
               
-              {/* コミュニティ設定 */}
-              <Element
-                name="ucSettings"
+              {/* About Community */}
+              {/*<div
+                css={css`
+                  ${accessRightRead ? 'margin: 32px 0 0 0' : 'margin: 0 0 0 0'};
+                `}
               >
-                <FormCommunity pathArr={this.props.pathArr} />
-              </Element>
+                <Abount
+                  pathArr={[this.props.userCommunities_id, 'about']}
+                  description={description}
+                  createdDate={createdDate}
+                  membersCount={membersCount}
+                  communityType={communityType}
+                  approval={approval}
+                  anonymity={anonymity}
+                  gamesArr={gamesArr}
+                  accessRightRead={accessRightRead}
+                />
+              </div>*/}
               
               
             </div>

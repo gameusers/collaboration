@@ -151,7 +151,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     if (!req.isAuthenticated()) {
-      statusCode = 401;
+      statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fG0jzFl5Y', messageID: 'xLLNIpo6a' }] });
     }
     

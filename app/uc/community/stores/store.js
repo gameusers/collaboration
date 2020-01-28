@@ -50,7 +50,7 @@ import initStoreLayout from '../../../common/layout/stores/layout';
 //   Store
 // --------------------------------------------------
 
-let storeUserCommunity = null;
+let storeUcCommunity = null;
 let storeLayout = initStoreLayout({});
       
 
@@ -94,12 +94,12 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreUserCommunity({}) {
+export default function initStoreUcCommunity({}) {
   
-  if (storeUserCommunity === null) {
-    storeUserCommunity = new Store();
+  if (storeUcCommunity === null) {
+    storeUcCommunity = new Store();
   }
   
-  return storeUserCommunity;
+  return storeUcCommunity;
   
 }

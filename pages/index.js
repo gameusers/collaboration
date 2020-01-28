@@ -199,7 +199,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  // const storeUserCommunity = initStoreUserCommunity({});
+  // const storeUcCommunity = initStoreUcCommunity({});
   // const storeCardPlayer = initStoreCardPlayer({});
   // const storeForum = initStoreForum({ propsObj });
   // const storeImageAndVideo = initStoreImageAndVideo({});
@@ -212,7 +212,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   // return {
     
-  //   storeUserCommunity,
+  //   storeUcCommunity,
   //   storeCardPlayer,
   //   storeForum,
   //   storeImageAndVideo,

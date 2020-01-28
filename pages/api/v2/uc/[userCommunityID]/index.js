@@ -152,36 +152,85 @@ export default async (req, res) => {
       userCommunityID,
     });
     
+    
+    // ---------------------------------------------
+    //   - コミュニティのデータがない場合はエラー
+    // ---------------------------------------------
+    
     if (Object.keys(userCommunityObj).length === 0) {
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
     }
     
+    
+    // ---------------------------------------------
+    //   - userCommunities_id
+    // ---------------------------------------------
+    
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    returnObj.userCommunityObj = userCommunityObj;
+    
+    
+    // ---------------------------------------------
+    //   - headerObj
+    // ---------------------------------------------
     
     if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
       returnObj.headerObj = userCommunityObj.headerObj;
     }
     
-    const communityType = lodashGet(userCommunityObj, ['communityType'], false);
+    delete userCommunityObj.headerObj;
+    
+    
+    // ---------------------------------------------
+    //   - userCommunityObj
+    // ---------------------------------------------
+    
+    returnObj.userCommunityObj = userCommunityObj;
+    
+    
+    // ---------------------------------------------
+    //   - コンテンツを表示するかどうか
+    // ---------------------------------------------
+    
+    const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
     const member = lodashGet(userCommunityObj, ['member'], false);
-    // const description = lodashGet(userCommunityObj, ['description'], '');
     
+    returnObj.accessRightRead = false;
     
-    returnObj.showContents = false;
-    
-    if (communityType === 'open' && (communityType === 'closed' && member)) {
-      returnObj.showContents = true;
+    if (communityType === 'open' || (communityType === 'closed' && member)) {
+      returnObj.accessRightRead = true;
     }
     
     
     
+    
     // --------------------------------------------------
-    //   公開タイプが open の場合はフォーラムのデータを取得
+    //   console.log
     // --------------------------------------------------
     
-    if (returnObj.showContents) {
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/uc/[userCommunityID]/index.js
+    // `);
+    
+    // console.log(chalk`
+    //   communityType: {green ${communityType}}
+    //   member: {green ${member}}
+    //   returnObj.accessRightRead: {green ${returnObj.accessRightRead}}
+    // `);
+    
+    // console.log(`
+    //   ----------------------------------------
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   コンテンツを表示していい場合はフォーラムのデータを取得
+    // --------------------------------------------------
+    
+    if (returnObj.accessRightRead) {
       
       
       // --------------------------------------------------

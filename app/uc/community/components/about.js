@@ -110,7 +110,21 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl, userCommunities_id, description, createdDate, membersCount, gamesArr } = this.props;
+    const {
+      
+      stores,
+      intl,
+      userCommunities_id,
+      description,
+      createdDate,
+      membersCount,
+      communityType,
+      approval,
+      anonymity,
+      gamesArr,
+      accessRightRead,
+      
+    } = this.props;
     
     
     
@@ -125,20 +139,43 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Data
+    //   パネルを初期状態で開くかどうか
     // --------------------------------------------------
     
-    const createdDateFormatted = moment(createdDate).format('YYYY/MM/DD');
+    const defaultExpanded = accessRightRead ? false : true;
     
     
+    // --------------------------------------------------
+    //   開設日
+    // --------------------------------------------------
+    
+    const codeCreatedDate = moment(createdDate).format('YYYY/MM/DD');
+    
+    
+    // --------------------------------------------------
+    //   公開タイプ
+    // --------------------------------------------------
+    
+    const codeCommunityType = communityType === 'open' ? intl.formatMessage({ id: 'DXeihaDx8' }) : intl.formatMessage({ id: 'QHz1wbGch' });
+    
+    
+    // --------------------------------------------------
+    //   参加
+    // --------------------------------------------------
+    
+    const codeApproval = approval ? intl.formatMessage({ id: 'Da45qlq9l' }) : intl.formatMessage({ id: 'nEtCLmbKz' });
+    
+    
+    // --------------------------------------------------
+    //   匿名での投稿
+    // --------------------------------------------------
+    
+    const codeAnonymity = anonymity ? intl.formatMessage({ id: 'I2lSx_RQh' }) : intl.formatMessage({ id: 'btIZLhdBM' });
     
     
     // --------------------------------------------------
     //   関連するゲーム
     // --------------------------------------------------
-    
-    // const gamesArr = lodashGet(stores, ['data', 'headerObj', 'gamesArr'], []);
-    
     
     const codeGames = [];
     
@@ -198,15 +235,29 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/uc/community/components/about.js
+    // `);
+    
     // console.log(chalk`
-    //   topPageName: {green ${topPageName}}
+    //   createdDate: {green ${createdDate}}
+    //   description: {green ${description}}
+    //   membersCount: {green ${membersCount}}
+    //   communityType: {green ${communityType}}
+    //   approval: {green ${approval}}
+    //   anonymity: {green ${anonymity}}
+    //   accessRightRead: {green ${accessRightRead}}
     // `);
     
     // console.log(`
-    //   /app/uc/settings/components/form-community.js\n
     //   ----- this.pathArr -----\n
     //   ${util.inspect(this.pathArr, { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----------------------------------------
     // `);
     
     
@@ -220,6 +271,7 @@ export default injectIntl(class extends React.Component {
       <Panel
         heading="コミュニティについて"
         pathArr={this.pathArr}
+        defaultExpanded={defaultExpanded}
       >
         
         
@@ -232,7 +284,9 @@ export default injectIntl(class extends React.Component {
         {/* 開設日 */}
         <p
           css={css`
-            margin: 32px 0 0 0;
+            border-top: 1px dashed #848484;
+            margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
           `}
         >
           <span
@@ -241,7 +295,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             開設日
-          </span> | {createdDateFormatted}
+          </span> | {codeCreatedDate}
         </p>
         
         
@@ -277,7 +331,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             公開タイプ
-          </span> | オープン
+          </span> | {codeCommunityType}
         </p>
         
         
@@ -295,7 +349,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             参加
-          </span> | 承認制
+          </span> | {codeApproval}
         </p>
         
         
@@ -313,7 +367,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             匿名での投稿
-          </span> | 認める
+          </span> | {codeAnonymity}
         </p>
         
         
@@ -323,7 +377,9 @@ export default injectIntl(class extends React.Component {
         <p
           css={css`
             font-weight: bold;
+            border-top: 1px dashed #848484;
             margin: 24px 0 0 0;
+            padding: 24px 0 0 0;
           `}
         >
           関連ゲーム

@@ -47,7 +47,7 @@ const { locale } = require('../../../../app/@locales/locale');
 // ---------------------------------------------
 
 import initStoreRoot from '../../../../app/@stores/root';
-import initStoreUserCommunity from '../../../../app/uc/community/stores/store';
+import initStoreUcCommunity from '../../../../app/uc/community/stores/store';
 import initStoreCardPlayer from '../../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../../app/common/image-and-video/stores/image-and-video';
@@ -82,7 +82,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUserCommunity = initStoreUserCommunity({});
+  const storeUcCommunity = initStoreUcCommunity({});
   const storeCardPlayer = initStoreCardPlayer({});
   const storeForum = initStoreForum({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
@@ -95,7 +95,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeUserCommunity,
+    storeUcCommunity,
     storeCardPlayer,
     storeForum,
     storeImageAndVideo,

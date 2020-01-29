@@ -184,6 +184,7 @@ export default class extends React.Component {
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    const accessRightRead = lodashGet(resultObj, ['data', 'accessRightRead'], false);
     const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
     
     
@@ -205,6 +206,16 @@ export default class extends React.Component {
         as: `/uc/${userCommunityID}`,
       }
     ];
+    
+    if (accessRightRead) {
+      headerNavMainArr.push(
+        {
+          name: 'メンバー',
+          href: `/uc/[userCommunityID]/member?userCommunityID=${userCommunityID}`,
+          as: `/uc/${userCommunityID}/member`,
+        }
+      );
+    }
     
     if (author) {
       headerNavMainArr.push(

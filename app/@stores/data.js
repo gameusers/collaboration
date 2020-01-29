@@ -127,7 +127,15 @@ class Store {
    * @param {String} key - 取得するキー
    */
   getCookie({ key }) {
-    return Cookies.get(key) || ((this.cookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+    
+    let returnValue = Cookies.get(key) || ((this.cookie + ';').match(key + '=([^¥S;]*)')||[])[1];
+    
+    if (!returnValue) {
+      returnValue = '';
+    }
+    
+    return returnValue;
+    
   };
   
   
@@ -147,6 +155,16 @@ class Store {
   //   }
     
   // };
+  
+  
+  /**
+   * Get Temporary Data
+   * @type {string} temporaryDataID
+   */
+  getTemporaryData({ pathname, key }) {
+    return lodashGet(this.temporaryDataObj, [pathname, key], '');
+  };
+  
   
   
   /**
@@ -293,6 +311,7 @@ class Store {
    */
   @observable cardPlayersObj = {};
   
+  
   /**
    * プレイヤーカードのオブジェクトを更新する
    * @param {Object} obj - 更新するオブジェクト
@@ -301,6 +320,7 @@ class Store {
   updateCardPlayersObj(obj) {
     this.cardPlayersObj = Object.assign({}, this.cardPlayersObj, obj);
   };
+  
   
   /**
    * プレイヤーカードのオブジェクトを置き換える

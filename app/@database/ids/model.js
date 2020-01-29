@@ -668,7 +668,6 @@ const formatToObject = ({ arr, loginUsers_id }) => {
       if ('gamesObj' in valueObj) {
         tempObj.games_id = valueObj.gamesObj._id;
         tempObj.gamesImagesAndVideosObj = valueObj.gamesObj.imagesAndVideosObj;
-        // tempObj.gamesThumbnail = valueObj.gamesObj.thumbnail;
         tempObj.gamesName = valueObj.gamesObj.name;
       }
       

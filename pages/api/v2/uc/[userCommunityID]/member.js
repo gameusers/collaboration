@@ -103,8 +103,12 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userCommunityID = req.query.userCommunityID;
+    const memberPage = req.query.memberPage;
+    const memberLimit = req.query.memberLimit;
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    lodashSet(requestParametersObj, ['memberPage'], memberPage);
+    lodashSet(requestParametersObj, ['memberLimit'], memberLimit);
     
     
     
@@ -197,6 +201,8 @@ export default async (req, res) => {
     });
     
     const membersArr = lodashGet(followsObj, ['membersArr'], []);
+    const membersCount = lodashGet(followsObj, ['membersCount'], 1);
+    returnObj.membersCount = membersCount;
     
     
     
@@ -205,14 +211,27 @@ export default async (req, res) => {
     //    DB find / Card Players
     // --------------------------------------------------
     
-    returnObj.cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+    const conditionObj = {
       
       localeObj,
-      users_idsArr: membersArr
+      loginUsers_id,
+      users_idsArr: membersArr,
       
-    });
+    };
     
-    // const membersArr = lodashGet(cardPlayersObj, ['membersArr'], []);
+    if (memberPage) {
+      conditionObj.page = memberPage;
+    }
+    
+    if (memberLimit) {
+      conditionObj.limit = memberLimit;
+    }
+    
+    const resultMemberObj = await ModelCardPlayers.findForMember(conditionObj);
+    
+    returnObj.cardPlayersObj = resultMemberObj.cardPlayersObj;
+    returnObj.cardPlayersForOrderArr = resultMemberObj.cardPlayersForOrderArr;
+    
     
     
     
@@ -220,10 +239,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/uc/[userCommunityID]/member.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/uc/[userCommunityID]/member.js
+    // `);
     
     // console.log(chalk`
     //   userCommunityID: {green ${userCommunityID}}
@@ -244,15 +263,15 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj.cardPlayersObj -----\n
-      ${util.inspect(returnObj.cardPlayersObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj.cardPlayersObj -----\n
+    //   ${util.inspect(returnObj.cardPlayersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----------------------------------------
-    `);
+    // console.log(`
+    //   ----------------------------------------
+    // `);
     
     
     

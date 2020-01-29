@@ -113,7 +113,7 @@ export default function initStoreUcMember({ propsObj }) {
   if (storeUcMember === null) {
     storeUcMember = new Store();
   }
-  
+  // console.log('initStoreUcMember');
   
   // --------------------------------------------------
   //   Props
@@ -136,13 +136,39 @@ export default function initStoreUcMember({ propsObj }) {
     
     
     // --------------------------------------------------
-    //   userCommunities_id
+    //   memberPage
     // --------------------------------------------------
     
-    if (lodashHas(propsObj, ['userCommunities_id'])) {
-      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'userCommunities_id'], propsObj.userCommunities_id);
+    if (lodashHas(propsObj, ['memberPage'])) {
+      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'memberPage'], propsObj.memberPage);
     }
     
+    
+    // --------------------------------------------------
+    //   memberLimit
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['memberLimit'])) {
+      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'memberLimit'], propsObj.memberLimit);
+    }
+    
+    
+    // --------------------------------------------------
+    //   membersCount
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['membersCount'])) {
+      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'membersCount'], propsObj.membersCount);
+    }
+    
+    
+    // --------------------------------------------------
+    //   cardPlayersForOrderArr
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['cardPlayersForOrderArr'])) {
+      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'cardPlayersForOrderArr'], propsObj.cardPlayersForOrderArr);
+    }
     
     
     
@@ -155,10 +181,16 @@ export default function initStoreUcMember({ propsObj }) {
     // `);
     
     // console.log(`
-    //   ----- propsObj -----\n
-    //   ${util.inspect(propsObj, { colors: true, depth: null })}\n
+    //   ----- storeUcMember.dataObj -----\n
+    //   ${util.inspect(storeUcMember.dataObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    console.log(`
+      ----- storeUcMember.dataObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(storeUcMember.dataObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
   }

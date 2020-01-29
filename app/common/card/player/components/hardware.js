@@ -207,7 +207,9 @@ export default class extends React.Component {
     return (
       <div
         css={css`
-          margin: 28px 0 0 0;
+          border-top: 1px dashed #A4A4A4;
+          margin: 24px 0 0 0;
+          padding: 24px 0 0 0;
         `}
       >
         

@@ -40,11 +40,10 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreUcMember from '../../../app/uc/community/stores/store';
+import initStoreUcMember from '../../../app/uc/member/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
-import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
+// import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
 
 
@@ -56,8 +55,8 @@ import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
-import CardPlayer from '../../../app/common/card/player/components/player';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
+import Member from '../../../app/uc/member/components/member';
 
 
 
@@ -75,10 +74,9 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUcMember = initStoreUcMember({});
+  const storeUcMember = initStoreUcMember({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
-  // const storeForum = initStoreForum({ propsObj });
-  // const storeImageAndVideo = initStoreImageAndVideo({});
+  const storeImageAndVideo = initStoreImageAndVideo({});
   // const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
   
@@ -91,8 +89,7 @@ const getOrCreateStore = ({ propsObj }) => {
     
     storeUcMember,
     storeCardPlayer,
-    // storeForum,
-    // storeImageAndVideo,
+    storeImageAndVideo,
     // storeImageAndVideoForm,
     storeFollow,
     
@@ -127,6 +124,8 @@ export default class extends React.Component {
     createCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
@@ -138,11 +137,21 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Get Cookie & Temporary Data for Fetch
+    // --------------------------------------------------
+    
+    const stores = initStoreRoot({});
+    
+    const memberPage = stores.data.getTemporaryData({ pathname, key: 'memberPage' });
+    const memberLimit = stores.data.getCookie({ key: 'memberLimit' });
+    
+    
+    // --------------------------------------------------
     //   Fetch
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member?memberPage=${memberPage}&memberLimit=${memberLimit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -153,8 +162,12 @@ export default class extends React.Component {
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
-    // const accessRightRead = lodashGet(resultObj, ['data', 'accessRightRead'], false);
     const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
+    
+    const membersCount = lodashGet(resultObj, ['data', 'membersCount'], 1);
+    const cardPlayersForOrderArr = lodashGet(resultObj, ['data', 'cardPlayersForOrderArr'], []);
+    
+    
     
     
     // --------------------------------------------------
@@ -162,6 +175,15 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const title = `${userCommunityName}: メンバー`;
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const pathArr = [userCommunities_id, 'ucMember'];
+    
+    
     
     
     // --------------------------------------------------
@@ -191,7 +213,7 @@ export default class extends React.Component {
       );
     }
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr, memberPage, memberLimit, membersCount, cardPlayersForOrderArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -202,16 +224,15 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/uc/[userCommunityID]/member.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/uc/[userCommunityID]/member.js
+    // `);
     
-    console.log(chalk`
-      userCommunityID: {green ${userCommunityID}}
-      userCommunityName: {green ${userCommunityName}}
-      author: {green ${author}}
-    `);
+    // console.log(chalk`
+    //   memberPage: {green ${memberPage}}
+    //   memberLimit: {green ${memberLimit}}
+    // `);
     
     // console.log(`
     //   ----- resultObj -----\n
@@ -219,9 +240,9 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----------------------------------------
-    `);
+    // console.log(`
+    //   ----------------------------------------
+    // `);
     
     
     // --------------------------------------------------
@@ -322,53 +343,37 @@ export default class extends React.Component {
     }
     
     
-    // --------------------------------------------------
-    //   Setting
-    // --------------------------------------------------
-    
-    // const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
-    // const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
     
     
     // --------------------------------------------------
-    //   About
+    //   Card Player
     // --------------------------------------------------
     
-    // const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
-    // const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
-    // const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
-    // const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
-    // const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
-    // const membersCount = lodashGet(this.props, ['propsObj', 'headerObj', 'membersCount'], 1);
-    // const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
+    const cardPlayersForOrderArr = lodashGet(this.props, ['propsObj', 'cardPlayersForOrderArr'], []);
+    
+    // const componentCardPlayersArr = [];
+    
+    // for (const [index, value] of cardPlayersForOrderArr.entries()) {
+      
+    //   componentCardPlayersArr.push(
+    //     <div
+    //       css={css`
+    //         ${index === 0 ? 'margin: 0' : 'margin: 16px 0 0 0'};
+    //       `}
+    //       key={index}
+    //     >
+    //       <CardPlayer
+    //         cardPlayers_id={value}
+    //         showFollow={true}
+    //         showEditButton={true}
+    //         defaultExpanded={false}
+    //       />
+    //     </div>
+    //   );
+      
+    // }
     
     
-    // console.log(`
-    //   ----- this.props -----\n
-    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   createdDate: {green ${createdDate}}
-    //   description: {green ${description}}
-    //   membersCount: {green ${membersCount}}
-    // `);
-    
-    // console.log(`
-    //   ----- gamesArr -----\n
-    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // console.log(chalk`
-    //   this.props.settingAnonymity: {green ${this.props.settingAnonymity}}
-    //   this.settingAnonymity: {green ${this.settingAnonymity}}
-    //   this.props.userCommunities_id: {green ${this.props.userCommunities_id}}
-    // `);
     
     
     // --------------------------------------------------
@@ -443,24 +448,11 @@ export default class extends React.Component {
             >
               
               
-              {/* About Community */}
-              {/*<div
-                css={css`
-                  ${accessRightRead ? 'margin: 32px 0 0 0' : 'margin: 0 0 0 0'};
-                `}
-              >
-                <Abount
-                  pathArr={[this.props.userCommunities_id, 'about']}
-                  description={description}
-                  createdDate={createdDate}
-                  membersCount={membersCount}
-                  communityType={communityType}
-                  approval={approval}
-                  anonymity={anonymity}
-                  gamesArr={gamesArr}
-                  accessRightRead={accessRightRead}
-                />
-              </div>*/}
+              {/* Member's Card Players */}
+              <Member
+                userCommunities_id={this.props.userCommunities_id}
+                cardPlayersForOrderArr={cardPlayersForOrderArr}
+              />
               
               
             </div>

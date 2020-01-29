@@ -133,6 +133,7 @@ export default class extends React.Component {
       cardPlayers_id,
       showFollow,
       showEditButton,
+      defaultExpanded = true,
       
     } = this.props;
     
@@ -162,7 +163,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], () => {});
-    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: this.pathArr });
+    const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: this.pathArr, defaultExpanded });
     
     
     // --------------------------------------------------
@@ -202,15 +203,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const imagesAndVideosObj = lodashGet(cardPlayersObj, ['imagesAndVideosObj'], {});
-    
-    
-    // ---------------------------------------------
-    //   Main Image
-    // ---------------------------------------------
-    
-    // const imageSrcSet = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'srcSet'], '');
-    // const imageSrc = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'src'], '');
-    // const imageAlt = lodashGet(cardPlayersObj, ['imagesAndVideosObj', 'mainArr', 0, 'caption'], '');
+    const imagesAndVideosThumbnailObj = lodashGet(cardPlayersObj, ['imagesAndVideosThumbnailObj'], {});
     
     
     // ---------------------------------------------
@@ -328,6 +321,16 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/player/components/player.js
+    // `);
+    
+    // console.log(chalk`
+    //   defaultExpanded: {green ${defaultExpanded}}
+    //   panelExpanded: {green ${panelExpanded}}
+    // `);
+    
     // console.log(chalk`
     //   _id: {green ${_id}}
     //   users_id: {green ${users_id}}
@@ -365,7 +368,7 @@ export default class extends React.Component {
           
           {/* ユーザー情報 - サムネイル画像・ハンドルネームなど */}
           <User
-            thumbnailSrc={thumbnailSrc}
+            imagesAndVideosThumbnailObj={imagesAndVideosThumbnailObj}
             name={name}
             userID={userID}
             status={status}
@@ -381,7 +384,7 @@ export default class extends React.Component {
             `}
           >
             <IconButton
-              onClick={() => handlePanelExpand({ pathArr: this.pathArr })}
+              onClick={() => handlePanelExpand({ pathArr: this.pathArr, defaultExpanded })}
               aria-expanded={panelExpanded}
               aria-label="Show more"
               disabled={buttonDisabled}

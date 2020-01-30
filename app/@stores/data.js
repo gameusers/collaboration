@@ -159,11 +159,24 @@ class Store {
   
   /**
    * Get Temporary Data
-   * @type {string} temporaryDataID
+   * @type {string} pathname
+   * @type {string} key
    */
   getTemporaryData({ pathname, key }) {
     return lodashGet(this.temporaryDataObj, [pathname, key], '');
   };
+  
+  
+  /**
+   * Set Temporary Data
+   * @type {string} pathname
+   * @type {string} key
+   * @type {string} value
+   */
+  setTemporaryData({ pathname, key, value }) {
+    lodashSet(this.temporaryDataObj, [pathname, key], value);
+  };
+  
   
   
   

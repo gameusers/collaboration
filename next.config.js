@@ -16,12 +16,19 @@ module.exports = withCSS({
   
   // https://github.com/zeit/next.js#exposing-configuration-to-the-server--client-side
   env: {
+    
     ENVIRONMENT: process.env.NODE_ENV,
     VERIFY_RECAPTCHA: process.env.VERIFY_RECAPTCHA,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     
+    
     ID_INSERT_LIMIT: process.env.ID_INSERT_LIMIT,
     UPLOAD_IMAGE_SIZE_UPPER_LIMIT: process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT,
+    
+    
+    COMMUNITY_MEMBER_LIMIT: process.env.COMMUNITY_MEMBER_LIMIT,
+    COMMUNITY_MEMBER_RELOAD_MINUTES: process.env.COMMUNITY_MEMBER_RELOAD_MINUTES,
+    
     
     FORUM_THREAD_LIST_LIMIT: process.env.FORUM_THREAD_LIST_LIMIT,
     FORUM_THREAD_LIMIT: process.env.FORUM_THREAD_LIMIT,
@@ -34,8 +41,10 @@ module.exports = withCSS({
     
     FORUM_RELOAD_MINUTES: process.env.FORUM_RELOAD_MINUTES,
     
+    
     URL_BASE: process.env.URL_BASE,
     URL_API: process.env.URL_API,
+    
   }
   
 });

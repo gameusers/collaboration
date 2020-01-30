@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-import chalk from 'chalk';
-import util from 'util';
+const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -17,7 +17,6 @@ import util from 'util';
 const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
@@ -25,14 +24,15 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelFollows = require('../../../../../app/@database/follows/model');
 const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
+const ModelFollows = require('../../../../../app/@database/follows/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
+const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
 
@@ -43,6 +43,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationMemberLimit } = require('../../../../../app/@validations/limit');
+const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 
 
 // ---------------------------------------------
@@ -52,17 +53,10 @@ const { validationMemberLimit } = require('../../../../../app/@validations/limit
 const { locale } = require('../../../../../app/@locales/locale');
 
 
-// ---------------------------------------------
-//   API
-// ---------------------------------------------
-
-const { initialProps } = require('../../../../../app/@api/v2/common');
-
-
 
 
 // --------------------------------------------------
-//   endpointID: K3yzgjQpD
+//   endpointID: 0uSnfUVkb
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -99,38 +93,60 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   GET Data
+    //   POST Data
     // --------------------------------------------------
     
-    const userCommunityID = req.query.userCommunityID;
-    let page = req.query.page;
-    const limit = req.query.limit;
+    const bodyObj = JSON.parse(req.body);
     
-    lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    const { 
+      
+      userCommunities_id,
+      page,
+      limit,
+      
+    } = bodyObj;
+    
+    
+    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
     
     
     
     
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
+    
+    console.log(chalk`
+      /pages/api/v2/db/user-communities/read-members.js
+      
+      loginUsers_id: {green ${loginUsers_id}}
+      
+      userCommunities_id: {green ${userCommunities_id}}
+      page: {green ${page} / ${typeof page}}
+      limit: {green ${limit} / ${typeof limit}}
+    `);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   Verify CSRF
+    // ---------------------------------------------
+    
+    verifyCsrfToken(req, res);
+    
+    
+    
+    
     // --------------------------------------------------
-    //   Validations
+    //   Validation
     // --------------------------------------------------
     
-    await validationInteger({ throwError: true, value: page });
-    await validationMemberLimit({ throwError: true, value: limit });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Common Initial Props
-    // --------------------------------------------------
-    
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    await validationUserCommunities_idServer({ value: userCommunities_id });
+    await validationInteger({ throwError: true, required: true, value: page });
+    await validationMemberLimit({ throwError: true, required: true, value: limit });
     
     
     
@@ -139,14 +155,20 @@ export default async (req, res) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
+    const userCommunityObj = await ModelUserCommunities.findOne({
       
-      localeObj,
-      loginUsers_id,
-      userCommunityID,
+      conditionObj: {
+        _id: userCommunities_id
+      },
       
     });
     
+    
+    console.log(`
+      ----- userCommunityObj -----\n
+      ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
@@ -154,7 +176,7 @@ export default async (req, res) => {
     
     if (Object.keys(userCommunityObj).length === 0) {
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'X0Y2qe9V8', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'em2LtJ-S1', messageID: 'Error' }] });
     }
     
     
@@ -162,25 +184,7 @@ export default async (req, res) => {
     //   - userCommunities_id
     // ---------------------------------------------
     
-    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    
-    
-    // ---------------------------------------------
-    //   - headerObj
-    // ---------------------------------------------
-    
-    if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-      returnObj.headerObj = userCommunityObj.headerObj;
-    }
-    
-    delete userCommunityObj.headerObj;
-    
-    
-    // ---------------------------------------------
-    //   - userCommunityObj
-    // ---------------------------------------------
-    
-    returnObj.userCommunityObj = userCommunityObj;
+    // const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
     
     
     // ---------------------------------------------
@@ -192,7 +196,7 @@ export default async (req, res) => {
     
     if (communityType === 'closed' && !member) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zoqcOuILt', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'MN_BH-td8', messageID: 'Error' }] });
     }
     
     
@@ -261,47 +265,18 @@ export default async (req, res) => {
     
     
     
-    // const membersObj = {
-    //   page: page,
-    //   count: membersCount,
-    //   page1Obj: {
-    //     loadedDate: '2020-01-30T05:14:58.707Z',
-    //     arr: [
-    //       '8xJS6lZCm',
-    //       'KQ_FuEYRu',
-    //       'HpzNGyKQE',
-    //       '_XDDSTWV_',
-    //       'qNiOLKdRt'
-    //     ]
+    
+    // --------------------------------------------------
+    //   DB find / User Communities
+    // --------------------------------------------------
+    
+    // const userCommunityArr = await ModelUserCommunities.find({
+    //   conditionObj: {
+    //     _id: userCommunities_id
     //   }
-    // }
+    // });
     
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/uc/[userCommunityID]/member.js
-    // `);
-    
-    // console.log(chalk`
-    //   userCommunityID: {green ${userCommunityID}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   communityType: {green ${communityType}}
-    //   member: {green ${member}}
-    // `);
-    
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----------------------------------------
-    // `);
+    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     
@@ -322,7 +297,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'K3yzgjQpD',
+      endpointID: '0uSnfUVkb',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

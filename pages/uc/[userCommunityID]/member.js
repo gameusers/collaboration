@@ -151,7 +151,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member?memberPage=${memberPage}&memberLimit=${memberLimit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member?page=${memberPage}&limit=${memberLimit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -164,8 +164,8 @@ export default class extends React.Component {
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
     const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
     
-    const membersCount = lodashGet(resultObj, ['data', 'membersCount'], 1);
-    const cardPlayersForOrderArr = lodashGet(resultObj, ['data', 'cardPlayersForOrderArr'], []);
+    // const membersCount = lodashGet(resultObj, ['data', 'membersCount'], 1);
+    // const cardPlayersForOrderArr = lodashGet(resultObj, ['data', 'cardPlayersForOrderArr'], []);
     
     
     
@@ -213,7 +213,7 @@ export default class extends React.Component {
       );
     }
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr, memberPage, memberLimit, membersCount, cardPlayersForOrderArr };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -346,32 +346,11 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Card Player
+    //   path
     // --------------------------------------------------
     
-    const cardPlayersForOrderArr = lodashGet(this.props, ['propsObj', 'cardPlayersForOrderArr'], []);
-    
-    // const componentCardPlayersArr = [];
-    
-    // for (const [index, value] of cardPlayersForOrderArr.entries()) {
-      
-    //   componentCardPlayersArr.push(
-    //     <div
-    //       css={css`
-    //         ${index === 0 ? 'margin: 0' : 'margin: 16px 0 0 0'};
-    //       `}
-    //       key={index}
-    //     >
-    //       <CardPlayer
-    //         cardPlayers_id={value}
-    //         showFollow={true}
-    //         showEditButton={true}
-    //         defaultExpanded={false}
-    //       />
-    //     </div>
-    //   );
-      
-    // }
+    const pathArr = lodashGet(this.props, ['propsObj', 'pathArr'], []);
+    const pathname = lodashGet(this.props, ['propsObj', 'pathname'], '');
     
     
     
@@ -451,7 +430,8 @@ export default class extends React.Component {
               {/* Member's Card Players */}
               <Member
                 userCommunities_id={this.props.userCommunities_id}
-                cardPlayersForOrderArr={cardPlayersForOrderArr}
+                pathArr={pathArr}
+                pathname={pathname}
               />
               
               

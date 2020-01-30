@@ -62,9 +62,9 @@ import CardPlayer from '../../../common/card/player/components/player';
 
 const stylesObj = {
   
-  expanded: {
-    marginBottom: '0 !important',
-  },
+  // expanded: {
+  //   marginBottom: '0 !important',
+  // },
   
   input: {
     fontSize: '12px',
@@ -82,7 +82,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores')
+@inject('stores', 'storeUcMember')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -142,11 +142,26 @@ export default injectIntl(class extends React.Component {
       
       classes,
       stores,
+      storeUcMember,
       intl,
       userCommunities_id,
-      cardPlayersForOrderArr,
+      pathArr,
+      pathname,
       
     } = this.props;
+    
+    
+    const {
+      
+      handleReadMembers,
+      
+    } = storeUcMember;
+    
+    
+    const page = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', 'page'], 1);
+    const count = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', 'count'], 1);
+    const limit = parseInt((stores.data.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
+    const arr = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
     
     
     
@@ -166,7 +181,7 @@ export default injectIntl(class extends React.Component {
     
     const componentCardPlayersArr = [];
     
-    for (const [index, value] of cardPlayersForOrderArr.entries()) {
+    for (const [index, value] of arr.entries()) {
       
       componentCardPlayersArr.push(
         <div
@@ -195,22 +210,18 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/uc/community/components/about.js
+    //   /app/uc/member/components/member.js
     // `);
     
     // console.log(chalk`
-    //   createdDate: {green ${createdDate}}
-    //   description: {green ${description}}
-    //   membersCount: {green ${membersCount}}
-    //   communityType: {green ${communityType}}
-    //   approval: {green ${approval}}
-    //   anonymity: {green ${anonymity}}
-    //   accessRightRead: {green ${accessRightRead}}
+    //   page: {green ${page}}
+    //   count: {green ${count}}
+    //   limit: {green ${limit}}
     // `);
     
     // console.log(`
-    //   ----- this.pathArr -----\n
-    //   ${util.inspect(this.pathArr, { colors: true, depth: null })}\n
+    //   ----- arr -----\n
+    //   ${util.inspect(arr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -250,12 +261,11 @@ export default injectIntl(class extends React.Component {
             `}
           >
             
-            {/*<Pagination
+            <Pagination
               disabled={buttonDisabled}
-              onChange={(page) => handleReadThreads({
-                pathArr: this.pathArr,
-                temporaryDataID,
-                gameCommunities_id,
+              onChange={(page) => handleReadMembers({
+                pathArr,
+                pathname,
                 userCommunities_id,
                 page,
               })}
@@ -263,7 +273,7 @@ export default injectIntl(class extends React.Component {
               current={page}
               total={count}
               locale={localeInfo}
-            />*/}
+            />
             
           </div>
           

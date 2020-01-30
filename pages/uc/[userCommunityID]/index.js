@@ -227,19 +227,6 @@ export default class extends React.Component {
       );
     }
     
-    // const headerNavMainArr = [
-    //   {
-    //     name: 'トップ',
-    //     href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
-    //     as: `/uc/${userCommunityID}`,
-    //   },
-    //   {
-    //     name: '設定',
-    //     href: `/uc/[userCommunityID]/settings?userCommunityID=${userCommunityID}`,
-    //     as: `/uc/${userCommunityID}/settings`,
-    //   }
-    // ];
-    
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
     
     const storesObj = getOrCreateStore({ propsObj });

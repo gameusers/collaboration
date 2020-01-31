@@ -118,15 +118,15 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
     
-    console.log(chalk`
-      /pages/api/v2/db/user-communities/read-members.js
+    // console.log(chalk`
+    //   /pages/api/v2/db/user-communities/read-members.js
       
-      loginUsers_id: {green ${loginUsers_id}}
+    //   loginUsers_id: {green ${loginUsers_id}}
       
-      userCommunities_id: {green ${userCommunities_id}}
-      page: {green ${page} / ${typeof page}}
-      limit: {green ${limit} / ${typeof limit}}
-    `);
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${page} / ${typeof page}}
+    //   limit: {green ${limit} / ${typeof limit}}
+    // `);
     
     
     
@@ -164,11 +164,12 @@ export default async (req, res) => {
     });
     
     
-    console.log(`
-      ----- userCommunityObj -----\n
-      ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
@@ -178,13 +179,6 @@ export default async (req, res) => {
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'em2LtJ-S1', messageID: 'Error' }] });
     }
-    
-    
-    // ---------------------------------------------
-    //   - userCommunities_id
-    // ---------------------------------------------
-    
-    // const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
     
     
     // ---------------------------------------------
@@ -216,7 +210,6 @@ export default async (req, res) => {
     
     const membersArr = lodashGet(followsObj, ['membersArr'], []);
     const membersCount = lodashGet(followsObj, ['membersCount'], 1);
-    // returnObj.membersCount = membersCount;
     
     
     
@@ -262,21 +255,6 @@ export default async (req, res) => {
     lodashSet(membersObj, [`page${page}Obj`, 'arr'], resultMemberObj.cardPlayersForOrderArr);
     
     returnObj.membersObj = membersObj;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   DB find / User Communities
-    // --------------------------------------------------
-    
-    // const userCommunityArr = await ModelUserCommunities.find({
-    //   conditionObj: {
-    //     _id: userCommunities_id
-    //   }
-    // });
-    
-    // returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
     
     
     

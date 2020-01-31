@@ -112,38 +112,7 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
-    
     super(props);
-    
-    
-    // --------------------------------------------------
-    //   Path Array
-    // --------------------------------------------------
-    
-    // const userCommunities_id = lodashGet(props, ['stores', 'data', 'headerObj', 'userCommunities_id'], '');
-    
-    // this.pathArr = [userCommunities_id, 'followButton'];
-    
-    
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    
-    // --------------------------------------------------
-    //   Button - Enable
-    // --------------------------------------------------
-    
-    // this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    
-    
   }
   
   

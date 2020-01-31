@@ -428,11 +428,15 @@ export default class extends React.Component {
               
               
               {/* Member's Card Players */}
-              <Member
-                userCommunities_id={this.props.userCommunities_id}
-                pathArr={pathArr}
-                pathname={pathname}
-              />
+              <Element
+                name="ucMember"
+              >
+                <Member
+                  userCommunities_id={this.props.userCommunities_id}
+                  pathArr={pathArr}
+                  pathname={pathname}
+                />
+              </Element>
               
               
             </div>

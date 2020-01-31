@@ -109,10 +109,9 @@ class Store {
    * メンバーを読み込む
    * @param {Array} pathArr - パス
    * @param {string} pathname - ページの固有ID　例）/uc/community1
-   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {number} page - スレッドのページ
-   * @param {number} changeLimit - 1ページに表示する件数を変更する場合、値を入力する
+   * @param {number} newLimit - 1ページに表示する件数を変更する場合、値を入力する
    */
   @action.bound
   async handleReadMembers({
@@ -121,7 +120,7 @@ class Store {
     pathname,
     userCommunities_id,
     page,
-    changeLimit,
+    newLimit,
     
   }) {
     
@@ -133,8 +132,8 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
-      const count = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'count'], 1);
+      // const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
+      // const count = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'count'], 1);
       let limit = parseInt((storeData.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
       const arr = lodashGet(this.dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
       
@@ -152,14 +151,14 @@ class Store {
       //   1ページに表示する件数を変更した場合
       // ---------------------------------------------
       
-      if (changeLimit) {
+      if (newLimit) {
         
         
         // ---------------------------------------------
         //   Set Cookie - memberLimit
         // ---------------------------------------------
         
-        limit = changeLimit;
+        limit = newLimit;
         Cookies.set('memberLimit', limit);
         
         
@@ -190,30 +189,30 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/uc/member/stores/store.js
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/uc/member/stores/store.js
+      // `);
       
-      console.log(chalk`
-        page: {green ${page}}
-        count: {green ${count}}
-        limit: {green ${limit}}
-        loadedDate: {green ${loadedDate}}
-        reload: {green ${reload}}
-      `);
+      // console.log(chalk`
+      //   page: {green ${page}}
+      //   newLimit: {green ${newLimit}}
+      //   limit: {green ${limit}}
+      //   loadedDate: {green ${loadedDate}}
+      //   reload: {green ${reload}}
+      // `);
       
-      console.log(`
-        ----- membersObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(membersObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- membersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(membersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // console.log(`
       //   ----- arr -----\n
@@ -235,13 +234,13 @@ class Store {
         
         
         // ---------------------------------------------
-        //  Page 更新
+        //   更新
         // ---------------------------------------------
         
         clonedMembersObj.page = page;
         
         this.handleEdit({
-          pathArr,
+          pathArr: [...pathArr, 'membersObj'],
           value: clonedMembersObj
         });
         
@@ -313,21 +312,14 @@ class Store {
       //   --------------------\n
       // `);
       
-      const newCardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-      const newMembersObj = lodashGet(resultObj, ['data', 'membersObj'], {});
+      
+      // console.log(`
+      //   ----- newCardPlayersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newCardPlayersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-      console.log(`
-        ----- newCardPlayersObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(newCardPlayersObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
-      
-      console.log(`
-        ----- newMembersObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(newMembersObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
       
       
       
@@ -342,79 +334,75 @@ class Store {
       
       
       
-      // // ---------------------------------------------
-      // //   forumThreadsObj
-      // // ---------------------------------------------
+      // console.log(`
+      //   ----- storeData.cardPlayersObj 1 -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      // const forumThreadsOldObj = lodashGet(forumObj, ['forumThreadsObj'], {});
-      // const forumThreadsNewObj = lodashGet(resultObj, ['data', 'forumThreadsObj'], {});
+      // ---------------------------------------------
+      //   updateCardPlayersObj
+      // ---------------------------------------------
       
-      // // 再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // const forumThreadsMergedObj = reload ? forumThreadsNewObj : lodashMerge(forumThreadsOldObj, forumThreadsNewObj);
+      const newCardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
+      storeData.updateCardPlayersObj(newCardPlayersObj);
       
-      // clonedObj.forumThreadsObj = forumThreadsMergedObj;
       
-      // // console.log(`
-      // //   ----- forumThreadsOldObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsOldObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      // // console.log(`
-      // //   ----- forumThreadsNewObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsNewObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      // // console.log(`
-      // //   ----- forumThreadsMergedObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsMergedObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----- storeData.cardPlayersObj 2 -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
+      // ---------------------------------------------
+      //   membersObj
+      //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      // ---------------------------------------------
       
+      // console.log(`
+      //   ----- clonedMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(clonedMembersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      // // ---------------------------------------------
-      // //   Page
-      // // ---------------------------------------------
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
       
-      // clonedObj.forumThreadsObj.page = page;
+      const newMembersObj = lodashGet(resultObj, ['data', 'membersObj'], {});
+      const mergedMembersObj = reload ? newMembersObj : lodashMerge(clonedMembersObj, newMembersObj);
       
+      // console.log(`
+      //   ----- newMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newMembersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      // // --------------------------------------------------
-      // //   Community UpdatedDateObj
-      // // --------------------------------------------------
-      
-      // const updatedDateObj = lodashGet(resultObj, ['data', 'updatedDateObj'], {});
-      // clonedObj.updatedDateObj = updatedDateObj;
-      
-      
-      
-      
-      // // ---------------------------------------------
-      // //   Update
-      // // ---------------------------------------------
-      
-      // this.handleEdit({
-      //   pathArr: ['forumThreadLimit'],
-      //   value: threadLimit,
-      // });
-      
-      // this.handleEdit({
-      //   pathArr: [communities_id],
-      //   value: clonedObj
-      // });
+      // console.log(`
+      //   ----- mergedMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(mergedMembersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
+      // ---------------------------------------------
+      //   更新
+      // ---------------------------------------------
       
-      // // ---------------------------------------------
-      // //   Set Temporary Data - ForumThreadPage
-      // // ---------------------------------------------
+      this.handleEdit({
+        pathArr: [...pathArr, 'membersObj'],
+        value: mergedMembersObj
+      });
       
-      // storeData.setTemporaryDataForumThreadPage({ pathname, value: page });
+      
+      // ---------------------------------------------
+      //   Set Temporary Data - memberPage
+      // ---------------------------------------------
+      
+      storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
       
       
     } catch (errorObj) {
@@ -431,7 +419,7 @@ class Store {
       
       
     } finally {
-      // console.log('finally');
+      
       
       // ---------------------------------------------
       //   Button Enable
@@ -452,7 +440,7 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleScrollTo({
-        to: 'forumThreads',
+        to: 'ucMember',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',

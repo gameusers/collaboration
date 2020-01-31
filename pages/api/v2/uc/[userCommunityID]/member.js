@@ -212,7 +212,6 @@ export default async (req, res) => {
     
     const membersArr = lodashGet(followsObj, ['membersArr'], []);
     const membersCount = lodashGet(followsObj, ['membersCount'], 1);
-    // returnObj.membersCount = membersCount;
     
     
     
@@ -260,21 +259,6 @@ export default async (req, res) => {
     returnObj.membersObj = membersObj;
     
     
-    
-    // const membersObj = {
-    //   page: page,
-    //   count: membersCount,
-    //   page1Obj: {
-    //     loadedDate: '2020-01-30T05:14:58.707Z',
-    //     arr: [
-    //       '8xJS6lZCm',
-    //       'KQ_FuEYRu',
-    //       'HpzNGyKQE',
-    //       '_XDDSTWV_',
-    //       'qNiOLKdRt'
-    //     ]
-    //   }
-    // }
     
     
     // --------------------------------------------------

@@ -33,13 +33,9 @@ import { css, jsx } from '@emotion/core';
 
 import { withStyles } from '@material-ui/core/styles';
 
-// import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-// import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-// import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-// import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Button from '@material-ui/core/Button';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Paper from '@material-ui/core/Paper';
-
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -56,15 +52,29 @@ import CardPlayer from '../../../common/card/player/components/player';
 
 
 // --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssButton = css`
+  && {
+    font-size: 12px;
+    min-width: 40px;
+    min-height: 24px;
+    margin: 0 12px 0 0;
+    padding: 2px 8px 0;
+  }
+`;
+
+
+
+
+// --------------------------------------------------
 //   Material UI Style Overrides
 //   https://material-ui.com/styles/basics/
 // --------------------------------------------------
 
 const stylesObj = {
-  
-  // expanded: {
-  //   marginBottom: '0 !important',
-  // },
   
   input: {
     fontSize: '12px',
@@ -164,6 +174,13 @@ export default injectIntl(class extends React.Component {
     const arr = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
     
     
+    // const membersObj = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj'], {});
+    
+    // console.log(`
+    //   ----- membersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(membersObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -176,7 +193,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   関連するゲーム
+    //   メンバー
     // --------------------------------------------------
     
     const componentCardPlayersArr = [];
@@ -190,12 +207,46 @@ export default injectIntl(class extends React.Component {
           `}
           key={index}
         >
+          
+          
+          {/* Card Player */}
           <CardPlayer
             cardPlayers_id={value}
             showFollow={true}
             showEditButton={true}
             defaultExpanded={false}
           />
+          
+          
+          {/* Buttons */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 12px 0 16px 0;
+            `}
+          >
+            
+            <Button
+              css={cssButton}
+              variant="contained"
+              color="secondary"
+            >
+              参加承認
+            </Button>
+            
+            
+            <Button
+              css={cssButton}
+              variant="contained"
+              color="primary"
+            >
+              ブロック
+            </Button>
+            
+          </div>
+          
+          
         </div>
       );
       
@@ -240,6 +291,21 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
+        {/* Control Buttons */}
+        <div
+          css={css`
+            margin: 0 0 24px 0;
+          `}
+        >
+          <ButtonGroup variant="contained" aria-label="contained primary button group">
+            <Button>メンバー</Button>
+            <Button>承認申請 (99+)</Button>
+            <Button>ブロック</Button>
+          </ButtonGroup>
+        </div>
+        
+        
+        {/* Member's Card Players */}
         {componentCardPlayersArr}
         
         
@@ -286,15 +352,14 @@ export default injectIntl(class extends React.Component {
             variant="outlined"
           >
             
-            {/*<Select
+            <Select
               value={limit}
-              onChange={(eventObj) => handleReadThreads({
-                pathArr: this.pathArr,
-                temporaryDataID,
-                gameCommunities_id,
+              onChange={(eventObj) => handleReadMembers({
+                pathArr,
+                pathname,
                 userCommunities_id,
                 page: 1,
-                changeLimit: eventObj.target.value,
+                newLimit: eventObj.target.value,
               })}
               input={
                 <OutlinedInput
@@ -306,10 +371,11 @@ export default injectIntl(class extends React.Component {
                 />
               }
             >
+              <MenuItem value={1}>1</MenuItem>
               <MenuItem value={10}>10</MenuItem>
               <MenuItem value={20}>20</MenuItem>
               <MenuItem value={50}>50</MenuItem>
-            </Select>*/}
+            </Select>
             
           </FormControl>
           

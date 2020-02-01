@@ -117,7 +117,7 @@ export default injectIntl(class extends React.Component {
       userCommunities_id,
       description,
       createdDate,
-      membersCount,
+      followedCount,
       communityType,
       approval,
       anonymity,
@@ -243,7 +243,7 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   createdDate: {green ${createdDate}}
     //   description: {green ${description}}
-    //   membersCount: {green ${membersCount}}
+    //   followedCount: {green ${followedCount}}
     //   communityType: {green ${communityType}}
     //   approval: {green ${approval}}
     //   anonymity: {green ${anonymity}}
@@ -313,7 +313,7 @@ export default injectIntl(class extends React.Component {
             `}
           >
             メンバー
-          </span> | {membersCount}人
+          </span> | {followedCount}人
         </p>
         
         

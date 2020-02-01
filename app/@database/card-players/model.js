@@ -471,9 +471,9 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
                   accessDate: 1,
                   exp: 1,
                   userID: 1,
-                  followArr: 1,
-                  followedArr: 1,
-                  followedCount: 1,
+                  // followArr: 1,
+                  // followedArr: 1,
+                  // followedCount: 1,
                 }
               }
             ],
@@ -528,6 +528,36 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
             ],
             as: 'hardwaresArr'
           }
+      },
+      
+      
+      // Follows
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { cardPlayersUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  followArr: 1,
+                  followedArr: 1,
+                  followedCount: 1,
+                }
+              }
+            ],
+            as: 'followsObj'
+          }
+      },
+      
+      {
+        $unwind: '$followsObj'
       },
       
       
@@ -711,9 +741,9 @@ const findOneBy_id = async ({
                   accessDate: 1,
                   exp: 1,
                   userID: 1,
-                  followArr: 1,
-                  followedArr: 1,
-                  followedCount: 1,
+                  // followArr: 1,
+                  // followedArr: 1,
+                  // followedCount: 1,
                 }
               }
             ],
@@ -766,6 +796,36 @@ const findOneBy_id = async ({
             ],
             as: 'hardwaresArr'
           }
+      },
+      
+      
+      // Follows
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { cardPlayersUsers_id: '$users_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                }
+              },
+              { $project:
+                {
+                  _id: 0,
+                  followArr: 1,
+                  followedArr: 1,
+                  followedCount: 1,
+                }
+              }
+            ],
+            as: 'followsObj'
+          }
+      },
+      
+      {
+        $unwind: '$followsObj'
       },
       
       
@@ -1244,9 +1304,9 @@ const findForMember = async ({
                           accessDate: 1,
                           exp: 1,
                           userID: 1,
-                          followArr: 1,
-                          followedArr: 1,
-                          followedCount: 1,
+                          // followArr: 1,
+                          // followedArr: 1,
+                          // followedCount: 1,
                         }
                       }
                     ],
@@ -1301,6 +1361,36 @@ const findForMember = async ({
                     ],
                     as: 'hardwaresArr'
                   }
+              },
+              
+              
+              // Follows
+              {
+                $lookup:
+                  {
+                    from: 'follows',
+                    let: { cardPlayersUsers_id: '$users_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 0,
+                          followArr: 1,
+                          followedArr: 1,
+                          followedCount: 1,
+                        }
+                      }
+                    ],
+                    as: 'followsObj'
+                  }
+              },
+              
+              {
+                $unwind: '$followsObj'
               },
               
               
@@ -1622,19 +1712,19 @@ const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
     //   Follow の処理
     // --------------------------------------------------
     
-    clonedObj.usersObj.follow = false;
-    clonedObj.usersObj.followed = false;
+    clonedObj.followsObj.follow = false;
+    clonedObj.followsObj.followed = false;
     
     if (loginUsers_id) {
       
       if (clonedObj.users_id !== loginUsers_id) {
         
-        if (clonedObj.usersObj.followArr.includes(loginUsers_id)) {
-          clonedObj.usersObj.follow = true;
+        if (clonedObj.followsObj.followArr.includes(loginUsers_id)) {
+          clonedObj.followsObj.follow = true;
         }
         
-        if (clonedObj.usersObj.followedArr.includes(loginUsers_id)) {
-          clonedObj.usersObj.followed = true;
+        if (clonedObj.followsObj.followedArr.includes(loginUsers_id)) {
+          clonedObj.followsObj.followed = true;
         }
         
       }
@@ -1662,8 +1752,8 @@ const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
     // --------------------------------------------------
     
     delete clonedObj._id;
-    delete clonedObj.usersObj.followArr;
-    delete clonedObj.usersObj.followedArr;
+    delete clonedObj.followsObj.followArr;
+    delete clonedObj.followsObj.followedArr;
     delete clonedObj.hardwareActiveObj;
     delete clonedObj.hardwareInactiveObj;
     delete clonedObj.hardwaresArr;

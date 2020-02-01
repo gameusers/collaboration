@@ -143,7 +143,7 @@ export default class extends React.Component {
     const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
     const createdDate = moment(lodashGet(stores, ['data', 'headerObj', 'createdDate'], '')).format('YYYY/MM/DD');
     
-    const membersCount = lodashGet(stores, ['data', 'headerObj', 'membersCount'], 1);
+    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followedCount'], 1);
     
     
     
@@ -238,7 +238,7 @@ export default class extends React.Component {
           
           
           <p css={cssInfo}>開設日 | {createdDate}</p>
-          <p css={cssInfo}>メンバー | {membersCount}人</p>
+          <p css={cssInfo}>メンバー | {followedCount}人</p>
           
           
           <div

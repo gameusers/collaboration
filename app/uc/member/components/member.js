@@ -110,7 +110,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props.userCommunities_id, 'member'];
+    this.pathArr = props.pathArr;
     
     
   }
@@ -157,21 +157,36 @@ export default injectIntl(class extends React.Component {
       userCommunities_id,
       pathArr,
       pathname,
+      author,
       
     } = this.props;
     
     
     const {
       
+      handleEdit,
       handleReadMembers,
       
     } = storeUcMember;
     
     
+    const type = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'type'], 'member');
     const page = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', 'page'], 1);
     const count = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', 'count'], 1);
     const limit = parseInt((stores.data.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
     const arr = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
+    
+    let approvalCount = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'approvalCount'], 0);
+    
+    if (approvalCount > 99) {
+      approvalCount = '99+';
+    }
+    
+    let blockCount = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'blockCount'], 0);
+    
+    if (blockCount > 99) {
+      blockCount = '99+';
+    }
     
     
     // const membersObj = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj'], {});
@@ -183,11 +198,13 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -219,32 +236,38 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Buttons */}
-          <div
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              margin: 12px 0 16px 0;
-            `}
-          >
-            
-            <Button
-              css={cssButton}
-              variant="contained"
-              color="secondary"
+          {author &&
+            <div
+              css={css`
+                display: flex;
+                flex-flow: row wrap;
+                margin: 12px 0 16px 0;
+              `}
             >
-              参加承認
-            </Button>
-            
-            
-            <Button
-              css={cssButton}
-              variant="contained"
-              color="primary"
-            >
-              ブロック
-            </Button>
-            
-          </div>
+              
+              {type === 'approval' &&
+                <Button
+                  css={cssButton}
+                  variant="contained"
+                  color="secondary"
+                  disabled={buttonDisabled}
+                >
+                  参加承認
+                </Button>
+              }
+              
+              
+              <Button
+                css={cssButton}
+                variant="contained"
+                color="primary"
+                disabled={buttonDisabled}
+              >
+                ブロック
+              </Button>
+              
+            </div>
+          }
           
           
         </div>
@@ -265,6 +288,7 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
+    //   type: {green ${type}}
     //   page: {green ${page}}
     //   count: {green ${count}}
     //   limit: {green ${limit}}
@@ -292,17 +316,57 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Control Buttons */}
-        <div
-          css={css`
-            margin: 0 0 24px 0;
-          `}
-        >
-          <ButtonGroup variant="contained" aria-label="contained primary button group">
-            <Button>メンバー</Button>
-            <Button>承認申請 (99+)</Button>
-            <Button>ブロック</Button>
-          </ButtonGroup>
-        </div>
+        {author &&
+          <div
+            css={css`
+              margin: 0 0 24px 0;
+            `}
+          >
+            <ButtonGroup
+              variant="contained"
+              aria-label="contained primary button group"
+              disabled={buttonDisabled}
+            >
+            
+              <Button
+                onClick={() => handleReadMembers({
+                  pathArr,
+                  pathname,
+                  userCommunities_id,
+                  newType: 'member',
+                  page: 1,
+                })}
+              >
+                メンバー
+              </Button>
+              
+              <Button
+                onClick={() => handleReadMembers({
+                  pathArr,
+                  pathname,
+                  userCommunities_id,
+                  newType: 'approval',
+                  page: 1,
+                })}
+              >
+                承認申請 ({approvalCount})
+              </Button>
+              
+              <Button
+                onClick={() => handleReadMembers({
+                  pathArr,
+                  pathname,
+                  userCommunities_id,
+                  newType: 'block',
+                  page: 1,
+                })}
+              >
+                ブロック ({blockCount})
+              </Button>
+              
+            </ButtonGroup>
+          </div>
+        }
         
         
         {/* Member's Card Players */}
@@ -350,6 +414,7 @@ export default injectIntl(class extends React.Component {
               margin: 8px 0 0 0 !important;
             `}
             variant="outlined"
+            disabled={buttonDisabled}
           >
             
             <Select

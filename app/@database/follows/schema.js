@@ -16,10 +16,14 @@ const schema = mongoose.Schema({
   userCommunities_id: { type: String },
   users_id: { type: String },
   approval: { type: Boolean, required: true },
-  membersArr: [String],
-  membersApprovalArr: [String],
-  membersBlockedArr: [String],
-  membersCount: { type: Number, default: 0, required: true },
+  followArr: [String],
+  followCount: { type: Number, default: 0, required: true },
+  followedArr: [String],
+  followedCount: { type: Number, default: 0, required: true },
+  approvalArr: [String],
+  approvalCount: { type: Number, default: 0, required: true },
+  blockArr: [String],
+  blockCount: { type: Number, default: 0, required: true },
 });
 
 

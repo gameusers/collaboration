@@ -29,7 +29,7 @@ const schema = mongoose.Schema({
   gameCommunities_idsArr: [String],
   // memberObj: {
   //   count: { type: Number, default: 0, required: true },
-  //   membersArr: [String],
+  //   followedArr: [String],
   // },
   forumObj: {
     threadCount: { type: Number, default: 0, required: true },

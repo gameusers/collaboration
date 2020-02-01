@@ -156,8 +156,8 @@ class Store {
         lodashSet(storeData, ['headerObj', 'memberApproval'], resultObj.data.memberApproval);
       }
       
-      if (lodashHas(resultObj, ['data', 'membersCount'])) {
-        lodashSet(storeData, ['headerObj', 'membersCount'], resultObj.data.membersCount);
+      if (lodashHas(resultObj, ['data', 'followedCount'])) {
+        lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
       }
       
       

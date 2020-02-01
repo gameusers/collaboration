@@ -42,8 +42,9 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationMemberLimit } = require('../../../../../app/@validations/limit');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+const { validationMemberLimit } = require('../../../../../app/@database/follows/validations/member-limit');
+const { validationMemberType } = require('../../../../../app/@database/follows/validations/member-type');
 
 
 // ---------------------------------------------
@@ -101,6 +102,7 @@ export default async (req, res) => {
     const { 
       
       userCommunities_id,
+      type,
       page,
       limit,
       
@@ -108,6 +110,7 @@ export default async (req, res) => {
     
     
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['type'], type);
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
     
@@ -146,6 +149,7 @@ export default async (req, res) => {
     
     await validationUserCommunities_idServer({ value: userCommunities_id });
     await validationInteger({ throwError: true, required: true, value: page });
+    await validationMemberType({ throwError: true, required: true, value: type });
     await validationMemberLimit({ throwError: true, required: true, value: limit });
     
     
@@ -155,11 +159,11 @@ export default async (req, res) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityObj = await ModelUserCommunities.findOne({
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
       
-      conditionObj: {
-        _id: userCommunities_id
-      },
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
       
     });
     
@@ -200,6 +204,8 @@ export default async (req, res) => {
     //   DB find / Follows
     // --------------------------------------------------
     
+    const author = lodashGet(userCommunityObj, ['headerObj', 'author'], false);
+    
     const followsObj = await ModelFollows.findOne({
       
       conditionObj: {
@@ -208,8 +214,38 @@ export default async (req, res) => {
       
     });
     
-    const membersArr = lodashGet(followsObj, ['membersArr'], []);
-    const membersCount = lodashGet(followsObj, ['membersCount'], 1);
+    const followedArr = lodashGet(followsObj, ['followedArr'], []);
+    const followedCount = lodashGet(followsObj, ['followedCount'], 1);
+    
+    let users_idsArr = followedArr;
+    let count = followedCount;
+    
+    if (author) {
+      
+      if (type === 'approval') {
+        
+        users_idsArr = lodashGet(followsObj, ['approvalArr'], []);
+        count = lodashGet(followsObj, ['approvalCount'], 0);
+        
+      } else if (type === 'block') {
+        
+        users_idsArr = lodashGet(followsObj, ['blockArr'], []);
+        count = lodashGet(followsObj, ['approvalCount'], 0);
+        
+      }
+      
+      // const approvalArr = lodashGet(followsObj, ['approvalArr'], []);
+      // const approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
+      // const blockArr = lodashGet(followsObj, ['blockArr'], []);
+      // const blockCount = lodashGet(followsObj, ['blockCount'], 0);
+      
+    }
+    
+    // console.log(`
+    //   ----- approvalArr -----\n
+    //   ${util.inspect(approvalArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -226,7 +262,7 @@ export default async (req, res) => {
       
       localeObj,
       loginUsers_id,
-      users_idsArr: membersArr,
+      users_idsArr,
       page,
       
     };
@@ -248,7 +284,7 @@ export default async (req, res) => {
     
     const membersObj = {
       page,
-      count: membersCount,
+      count,
     };
     
     lodashSet(membersObj, [`page${page}Obj`, 'loadedDate'], moment().toISOString());

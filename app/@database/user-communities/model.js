@@ -309,10 +309,11 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * 検索してデータを取得する / For User Community
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userCommunities_id - DB user-communities _id
  * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
  * @return {Array}取得データ
  */
-const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID }) => {
+const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_id, userCommunityID }) => {
   
   
   // --------------------------------------------------
@@ -331,15 +332,34 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
     
     
     // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [
+      {
+        $match : { _id: userCommunities_id }
+      },
+    ];
+    
+    if (userCommunityID) {
+      
+      matchConditionArr = [
+        {
+          $match : { userCommunityID }
+        },
+      ];
+      
+    }
+    
+    
+    // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
     
     const resultArr = await Schema.aggregate([
       
       
-      {
-        $match : { userCommunityID }
-      },
+      ...matchConditionArr,
       
       
       // 関連するゲーム
@@ -459,10 +479,10 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
                 {
                   _id: 0,
                   approval: 1,
-                  membersArr: 1,
-                  membersApprovalArr: 1,
-                  membersBlockedArr: 1,
-                  membersCount: 1,
+                  followedArr: 1,
+                  approvalArr: 1,
+                  blockArr: 1,
+                  followedCount: 1,
                 }
               }
             ],
@@ -566,23 +586,23 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
     if (loginUsers_id) {
       
       const users_id = lodashGet(returnObj, ['users_id'], '');
-      const membersArr = lodashGet(returnObj, ['followsObj', 'membersArr'], []);
-      const membersApprovalArr = lodashGet(returnObj, ['followsObj', 'membersApprovalArr'], []);
-      const membersBlockedArr = lodashGet(returnObj, ['followsObj', 'membersBlockedArr'], []);
+      const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
+      const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
+      const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
       
       if (users_id === loginUsers_id) {
         headerObj.author = true;
       }
       
-      if (membersArr.includes(loginUsers_id)) {
+      if (followedArr.includes(loginUsers_id)) {
         headerObj.member = true;
       }
       
-      if (membersApprovalArr.includes(loginUsers_id)) {
+      if (approvalArr.includes(loginUsers_id)) {
         headerObj.memberApproval = true;
       }
       
-      if (membersBlockedArr.includes(loginUsers_id)) {
+      if (blockArr.includes(loginUsers_id)) {
         headerObj.memberBlocked = true;
       }
       
@@ -600,16 +620,16 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunityID 
     headerObj.createdDate = returnObj.createdDate;
     headerObj.name = returnObj.name;
     headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
-    headerObj.membersCount = lodashGet(returnObj, ['followsObj', 'membersCount'], 0);
+    headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
     
     returnObj.headerObj = headerObj;
     
     
     // --------------------------------------------------
-    //   membersCount
+    //   followedCount
     // --------------------------------------------------
     
-    // returnObj.membersCount = lodashGet(returnObj, ['followsObj', 'membersCount'], 0);
+    // returnObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
     
     
     // console.log(`

@@ -260,10 +260,10 @@ export default async (req, res) => {
     //   メンバーの追加、削除
     // --------------------------------------------------
     
-    let membersArr = lodashGet(resultObj, ['membersArr'], []);
-    let membersApprovalArr = lodashGet(resultObj, ['membersApprovalArr'], []);
-    let membersBlockedArr = lodashGet(resultObj, ['membersBlockedArr'], []);
-    let membersCount = lodashGet(resultObj, ['membersCount'], 1);
+    let followedArr = lodashGet(resultObj, ['followedArr'], []);
+    let approvalArr = lodashGet(resultObj, ['approvalArr'], []);
+    let blockArr = lodashGet(resultObj, ['blockArr'], []);
+    let followedCount = lodashGet(resultObj, ['followedCount'], 1);
     const approval = lodashGet(resultObj, ['approval'], false);
     
     // returnObj.pageTransition = false;
@@ -273,7 +273,7 @@ export default async (req, res) => {
     //   - ブロックされている場合はエラー
     // ---------------------------------------------
     
-    if (membersBlockedArr.includes(loginUsers_id)) {
+    if (blockArr.includes(loginUsers_id)) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hPXXX2YIK', messageID: 'qnWsuPcrJ' }] });
     }
     
@@ -285,15 +285,15 @@ export default async (req, res) => {
     if (approval) {
       
       // 承認申請がすでに行われている場合は、配列から削除する
-      if (membersApprovalArr.includes(loginUsers_id)) {
+      if (approvalArr.includes(loginUsers_id)) {
         
-        membersApprovalArr = membersApprovalArr.filter(value => value !== loginUsers_id);
+        approvalArr = approvalArr.filter(value => value !== loginUsers_id);
         returnObj.memberApproval = false;
         
       // 承認申請がまだ行われていない場合は、配列に追加する
       } else {
         
-        membersApprovalArr.push(loginUsers_id);
+        approvalArr.push(loginUsers_id);
         returnObj.memberApproval = true;
         
       }
@@ -306,21 +306,21 @@ export default async (req, res) => {
     } else {
       
       // すでにメンバーである場合は、配列から削除する
-      if (membersArr.includes(loginUsers_id)) {
+      if (followedArr.includes(loginUsers_id)) {
         
-        membersArr = membersArr.filter(value => value !== loginUsers_id);
+        followedArr = followedArr.filter(value => value !== loginUsers_id);
         returnObj.member = false;
         
       // まだメンバーでない場合は、配列に追加する
       } else {
         
-        membersArr.push(loginUsers_id);
+        followedArr.push(loginUsers_id);
         returnObj.member = true;
         
       }
       
-      membersCount = membersArr.length;
-      returnObj.membersCount = membersCount;
+      followedCount = followedArr.length;
+      returnObj.followedCount = followedCount;
       
       
       // --------------------------------------------------
@@ -345,10 +345,10 @@ export default async (req, res) => {
       
       $set: {
         
-        membersArr,
-        membersApprovalArr,
-        membersBlockedArr,
-        membersCount,
+        followedArr,
+        approvalArr,
+        blockArr,
+        followedCount,
         updatedDate: moment().toISOString(),
         
       }

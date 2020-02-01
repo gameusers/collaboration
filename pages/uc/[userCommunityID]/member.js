@@ -164,7 +164,7 @@ export default class extends React.Component {
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
     const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
     
-    // const membersCount = lodashGet(resultObj, ['data', 'membersCount'], 1);
+    // const followedCount = lodashGet(resultObj, ['data', 'followedCount'], 1);
     // const cardPlayersForOrderArr = lodashGet(resultObj, ['data', 'cardPlayersForOrderArr'], []);
     
     
@@ -255,6 +255,7 @@ export default class extends React.Component {
       reqAcceptLanguage,
       userCommunityID,
       userCommunities_id,
+      author,
       title,
       storesObj,
       propsObj,
@@ -435,6 +436,7 @@ export default class extends React.Component {
                   userCommunities_id={this.props.userCommunities_id}
                   pathArr={pathArr}
                   pathname={pathname}
+                  author={this.props.author}
                 />
               </Element>
               

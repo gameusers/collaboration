@@ -42,7 +42,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationMemberLimit } = require('../../../../../app/@validations/limit');
+const { validationMemberLimit } = require('../../../../../app/@database/follows/validations/member-limit');
 
 
 // ---------------------------------------------
@@ -146,7 +146,11 @@ export default async (req, res) => {
       userCommunityID,
       
     });
-    
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
@@ -159,11 +163,15 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - userCommunities_id
+    //   - userCommunities_id & author
     // ---------------------------------------------
     
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    
+    const author = lodashGet(userCommunityObj, ['headerObj', 'author'], false);
+    // console.log(chalk`
+    //   userCommunityObj.headerObj.author: {green ${userCommunityObj.headerObj.author}}
+    //   author: {green ${author}}
+    // `);
     
     // ---------------------------------------------
     //   - headerObj
@@ -210,9 +218,15 @@ export default async (req, res) => {
       
     });
     
-    const membersArr = lodashGet(followsObj, ['membersArr'], []);
-    const membersCount = lodashGet(followsObj, ['membersCount'], 1);
+    const followedArr = lodashGet(followsObj, ['followedArr'], []);
+    const followedCount = lodashGet(followsObj, ['followedCount'], 1);
     
+    if (author) {
+      
+      returnObj.approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
+      returnObj.blockCount = lodashGet(followsObj, ['blockCount'], 0);
+      
+    }
     
     
     
@@ -228,7 +242,7 @@ export default async (req, res) => {
       
       localeObj,
       loginUsers_id,
-      users_idsArr: membersArr,
+      users_idsArr: followedArr,
       page,
       
     };
@@ -250,7 +264,7 @@ export default async (req, res) => {
     
     const membersObj = {
       page,
-      count: membersCount,
+      count: followedCount,
     };
     
     lodashSet(membersObj, [`page${page}Obj`, 'loadedDate'], moment().toISOString());
@@ -280,6 +294,12 @@ export default async (req, res) => {
     // console.log(`
     //   ----- userCommunityObj -----\n
     //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

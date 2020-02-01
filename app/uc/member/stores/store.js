@@ -102,7 +102,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   スレッド
+  //   メンバー
   // ---------------------------------------------
   
   /**
@@ -119,6 +119,7 @@ class Store {
     pathArr,
     pathname,
     userCommunities_id,
+    newType,
     page,
     newLimit,
     
@@ -134,6 +135,9 @@ class Store {
       
       // const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
       // const count = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'count'], 1);
+      
+      let type = lodashGet(this.dataObj, [...pathArr, 'type'], 'member');
+      
       let limit = parseInt((storeData.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
       const arr = lodashGet(this.dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
       
@@ -148,10 +152,31 @@ class Store {
       
       
       // ---------------------------------------------
+      //   type を変更する場合
+      // ---------------------------------------------
+      
+      if (newType) {
+        
+        
+        // ---------------------------------------------
+        //   Set type
+        // ---------------------------------------------
+        
+        type = newType;
+        
+        
+        // ---------------------------------------------
+        //   再読込する
+        // ---------------------------------------------
+        
+        reload = true;
+      
+      
+      // ---------------------------------------------
       //   1ページに表示する件数を変更した場合
       // ---------------------------------------------
       
-      if (newLimit) {
+      } else if (newLimit) {
         
         
         // ---------------------------------------------
@@ -289,6 +314,7 @@ class Store {
       const formDataObj = {
         
         userCommunities_id,
+        type,
         page,
         limit,
         
@@ -306,19 +332,11 @@ class Store {
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // console.log(`
-      //   ----- newCardPlayersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(newCardPlayersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       
@@ -501,6 +519,24 @@ export default function initStoreUcMember({ propsObj }) {
     
     if (lodashHas(propsObj, ['membersObj'])) {
       lodashSet(storeUcMember, ['dataObj', ...pathArr, 'membersObj'], propsObj.membersObj);
+    }
+    
+    
+    // --------------------------------------------------
+    //   approvalCount
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['approvalCount'])) {
+      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'approvalCount'], propsObj.approvalCount);
+    }
+    
+    
+    // --------------------------------------------------
+    //   membersObj
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['blockCount'])) {
+      lodashSet(storeUcMember, ['dataObj', ...pathArr, 'blockCount'], propsObj.blockCount);
     }
     
     

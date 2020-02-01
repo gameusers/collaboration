@@ -22,7 +22,7 @@ const lodashGet = require('lodash/get');
 //   Modules
 // ---------------------------------------------
 
-const { CustomError } = require('../@modules/error/custom');
+const { CustomError } = require('../../../@modules/error/custom');
 
 
 

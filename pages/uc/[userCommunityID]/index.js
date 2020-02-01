@@ -405,7 +405,7 @@ export default class extends React.Component {
     const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
     const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
     const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
-    const membersCount = lodashGet(this.props, ['propsObj', 'headerObj', 'membersCount'], 1);
+    const followedCount = lodashGet(this.props, ['propsObj', 'headerObj', 'followedCount'], 1);
     const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
     
     
@@ -418,7 +418,7 @@ export default class extends React.Component {
     // console.log(chalk`
     //   createdDate: {green ${createdDate}}
     //   description: {green ${description}}
-    //   membersCount: {green ${membersCount}}
+    //   followedCount: {green ${followedCount}}
     // `);
     
     // console.log(`
@@ -540,7 +540,7 @@ export default class extends React.Component {
                   pathArr={[this.props.userCommunities_id, 'about']}
                   description={description}
                   createdDate={createdDate}
-                  membersCount={membersCount}
+                  followedCount={followedCount}
                   communityType={communityType}
                   approval={approval}
                   anonymity={anonymity}

@@ -327,7 +327,7 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
         //   src
         // --------------------------------------------------
         
-        tempObj.src = `/static/img/${type}/${_id}/${_id2}/${w}${extension}`;
+        tempObj.src = `/img/${type}/${_id}/${_id2}/${w}${extension}`;
         
         
         // --------------------------------------------------

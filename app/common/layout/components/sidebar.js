@@ -286,7 +286,7 @@ export default class extends React.Component {
         
         
         {/*<img
-          src="/static/img/sample/knight_f_idle_anim_f0.png"
+          src="/img/sample/knight_f_idle_anim_f0.png"
           width="32"
           height="40"
         />*/}

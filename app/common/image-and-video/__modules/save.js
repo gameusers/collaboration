@@ -114,7 +114,7 @@ const imageSave = async ({ newObj, oldObj, directoryPath, minSize, square }) => 
   //   関係のないパスが送られた場合は処理停止
   // ---------------------------------------------
   
-  // if (!directoryPath.startsWith('static/img/')) {
+  // if (!directoryPath.startsWith('img/')) {
   //   throw new Error('imageSave 1');
   // }
   // console.log('BBB');
@@ -194,7 +194,7 @@ const imageSave = async ({ newObj, oldObj, directoryPath, minSize, square }) => 
       //   ディレクトリ作成
       // ---------------------------------------------
       
-      const dirPath = `static/img/${type}/${_id}/${_id2}`;
+      const dirPath = `img/${type}/${_id}/${_id2}`;
       
       // mkdirp.sync(dirPath, (err) => {
       //   if (err) {
@@ -362,7 +362,7 @@ const imageSave = async ({ newObj, oldObj, directoryPath, minSize, square }) => 
   //   if (_idsArr.includes(valueObj._id) === false) {
       
   //     const dirPath = `${directoryPath}${valueObj._id}/`;
-  //     // const dirPath = `static/img/card/players/test/glbzJb34t/`;
+  //     // const dirPath = `img/card/players/test/glbzJb34t/`;
       
       
   //     rimraf(dirPath, (err) => {

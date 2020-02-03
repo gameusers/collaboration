@@ -234,7 +234,7 @@ export default injectIntl(class extends React.Component {
         // `);
         
         
-        const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
+        const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
         const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
         
         // console.log(chalk`

@@ -159,7 +159,7 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of gamesArr.entries()) {
       
-      const src = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/static/img/common/thumbnail/none-game.jpg');
+      const src = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
       const srcSet = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'srcSet'], '');
       
       codeGames.push(

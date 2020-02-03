@@ -275,7 +275,7 @@ export default async (req, res) => {
     
     for (let value of imagesAndVideos_idsArr.values()) {
       
-      const dirPath = `static/img/forum/${value}`;
+      const dirPath = `img/forum/${value}`;
       // console.log(dirPath);
       
       rimraf(dirPath, (err) => {

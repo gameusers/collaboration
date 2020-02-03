@@ -259,7 +259,7 @@ class Store {
         
         
         // ---------------------------------------------
-        //   更新
+        //   更新 - メンバー
         // ---------------------------------------------
         
         clonedMembersObj.page = page;
@@ -275,6 +275,16 @@ class Store {
         // ---------------------------------------------
         
         storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
+        
+        
+        // ---------------------------------------------
+        //   更新 - type
+        // ---------------------------------------------
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'type'],
+          value: type
+        });
         
         
         // ---------------------------------------------
@@ -332,11 +342,11 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -407,7 +417,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   更新
+      //   更新 - メンバー
       // ---------------------------------------------
       
       this.handleEdit({
@@ -421,6 +431,16 @@ class Store {
       // ---------------------------------------------
       
       storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
+      
+      
+      // ---------------------------------------------
+      //   更新 - type
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'type'],
+        value: type
+      });
       
       
     } catch (errorObj) {
@@ -464,6 +484,364 @@ class Store {
         smooth: 'easeInOutQuart',
         offset: -50,
       });
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * ダイアログを開く
+   * @param {Array} pathArr - パス
+   * @param {string} managedUsers_id - DB users _id / ユーザーのID
+   * @param {string} type - 処理のタイプ / unfollow / approval
+   */
+  @action.bound
+  async handleOpenDialog({
+    
+    pathArr,
+    managedUsers_id,
+    type,
+    
+  }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   managedUsers_id
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'managedUsers_id'],
+        value: managedUsers_id,
+      });
+      
+      
+      // ---------------------------------------------
+      //   Dialog Open
+      // ---------------------------------------------
+      
+      if (type === 'unfollow') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnfollow'],
+          value: true,
+        });
+        
+      } else if (type === 'approval') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogApproval'],
+          value: true,
+        });
+        
+      } else if (type === 'unapproval') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnapproval'],
+          value: true,
+        });
+        
+      } else if (type === 'block') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogBlock'],
+          value: true,
+        });
+        
+      } else if (type === 'unblock') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnblock'],
+          value: true,
+        });
+        
+      }
+      
+      
+    } catch (errorObj) {
+      
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * メンバーの処理（管理者用）　退会させる / 
+   * @param {Array} pathArr - パス
+   * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {string} type - 処理のタイプ / unfollow / approval
+   */
+  @action.bound
+  async handleMembers({
+    
+    pathArr,
+    userCommunities_id,
+    type,
+    
+  }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Property
+      // ---------------------------------------------
+      
+      const managedUsers_id = lodashGet(this.dataObj, [...pathArr, 'managedUsers_id'], '');
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      console.log(`
+        ----------------------------------------\n
+        /app/uc/member/stores/store.js / handleMembers
+      `);
+      
+      console.log(chalk`
+        userCommunities_id: {green ${userCommunities_id}}
+        managedUsers_id: {green ${managedUsers_id}}
+        type: {green ${type}}
+      `);
+      
+      console.log(`
+        ----- pathArr -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        userCommunities_id,
+        managedUsers_id,
+        type,
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-members`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+      });
+      
+      
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // // console.log(`
+      // //   ----- storeData.cardPlayersObj 1 -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      // // ---------------------------------------------
+      // //   updateCardPlayersObj
+      // // ---------------------------------------------
+      
+      // const newCardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
+      // storeData.updateCardPlayersObj(newCardPlayersObj);
+      
+      
+      // // console.log(`
+      // //   ----- storeData.cardPlayersObj 2 -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      
+      
+      // // ---------------------------------------------
+      // //   membersObj
+      // //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
+      // // ---------------------------------------------
+      
+      // // console.log(`
+      // //   ----- clonedMembersObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(clonedMembersObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      // // console.log(chalk`
+      // //   reload: {green ${reload}}
+      // // `);
+      
+      // const newMembersObj = lodashGet(resultObj, ['data', 'membersObj'], {});
+      // const mergedMembersObj = reload ? newMembersObj : lodashMerge(clonedMembersObj, newMembersObj);
+      
+      // // console.log(`
+      // //   ----- newMembersObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(newMembersObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      // // console.log(`
+      // //   ----- mergedMembersObj -----\n
+      // //   ${util.inspect(JSON.parse(JSON.stringify(mergedMembersObj)), { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      
+      
+      // // ---------------------------------------------
+      // //   更新 - メンバー
+      // // ---------------------------------------------
+      
+      // this.handleEdit({
+      //   pathArr: [...pathArr, 'membersObj'],
+      //   value: mergedMembersObj
+      // });
+      
+      
+      // // ---------------------------------------------
+      // //   Set Temporary Data - memberPage
+      // // ---------------------------------------------
+      
+      // storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
+      
+      
+      // // ---------------------------------------------
+      // //   更新 - type
+      // // ---------------------------------------------
+      
+      // this.handleEdit({
+      //   pathArr: [...pathArr, 'type'],
+      //   value: type
+      // });
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Dialog Close
+      // ---------------------------------------------
+      
+      if (type === 'unfollow') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnfollow'],
+          value: false,
+        });
+        
+      } else if (type === 'approval') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogApproval'],
+          value: false,
+        });
+        
+      } else if (type === 'unapproval') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnapproval'],
+          value: false,
+        });
+        
+      } else if (type === 'block') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogBlock'],
+          value: false,
+        });
+        
+      } else if (type === 'unblock') {
+        
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnblock'],
+          value: false,
+        });
+        
+      }
       
       
     }

@@ -113,7 +113,7 @@ export default injectIntl(class extends React.Component {
               width: 26px;
               height: 26px;
             `}
-            src={`/static/img/common/blob-emoji/${value}.png`}
+            src={`/img/common/blob-emoji/${value}.png`}
           />
         </IconButton>
       );
@@ -191,7 +191,7 @@ export default injectIntl(class extends React.Component {
                 height: 26px;
                 padding: 0 6px 0 0;
               `}
-              src={`/static/img/common/blob-emoji/${icon}.png`}
+              src={`/img/common/blob-emoji/${icon}.png`}
             />
             
             <div

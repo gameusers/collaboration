@@ -130,6 +130,7 @@ export default async (req, res) => {
     const commonInitialPropsObj = await initialProps({ req, res, localeObj });
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     

@@ -142,7 +142,7 @@ export default class extends React.Component {
             key={index}
           >
             <a href={valueObj.url} target="_blank">
-              <img src="/static/img/common/social/twitter@2x.png" width="20" height="20" />
+              <img src="/img/common/social/twitter@2x.png" width="20" height="20" />
             </a>
           </div>
         );
@@ -155,7 +155,7 @@ export default class extends React.Component {
             key={index}
           >
             <a href={valueObj.url} target="_blank">
-              <img src="/static/img/common/social/facebook@2x.png" width="20" height="20" />
+              <img src="/img/common/social/facebook@2x.png" width="20" height="20" />
             </a>
           </div>
         );
@@ -168,7 +168,7 @@ export default class extends React.Component {
             key={index}
           >
             <a href={valueObj.url} target="_blank">
-              <img src="/static/img/common/social/youtube@2x.png" width="20" height="20" />
+              <img src="/img/common/social/youtube@2x.png" width="20" height="20" />
             </a>
           </div>
         );
@@ -181,7 +181,7 @@ export default class extends React.Component {
             key={index}
           >
             <a href={valueObj.url} target="_blank">
-              <img src="/static/img/common/social/steam@2x.png" width="20" height="20" />
+              <img src="/img/common/social/steam@2x.png" width="20" height="20" />
             </a>
           </div>
         );

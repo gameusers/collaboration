@@ -40,6 +40,11 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
@@ -164,38 +169,47 @@ export default injectIntl(class extends React.Component {
     
     const {
       
+      dataObj,
       handleEdit,
       handleReadMembers,
+      handleOpenDialog,
+      handleMembers,
       
     } = storeUcMember;
     
     
-    const type = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'type'], 'member');
-    const page = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', 'page'], 1);
-    const count = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', 'count'], 1);
-    const limit = parseInt((stores.data.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
-    const arr = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
+    const authorUsers_id = lodashGet(stores, ['data', 'loginUsersObj', '_id'], '');
     
-    let approvalCount = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'approvalCount'], 0);
+    const type = lodashGet(dataObj, [...pathArr, 'type'], 'member');
+    const page = lodashGet(dataObj, [...pathArr, 'membersObj', 'page'], 1);
+    const count = lodashGet(dataObj, [...pathArr, 'membersObj', 'count'], 1);
+    const limit = parseInt((stores.data.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
+    const arr = lodashGet(dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
+    
+    let approvalCount = lodashGet(dataObj, [...pathArr, 'approvalCount'], 0);
     
     if (approvalCount > 99) {
       approvalCount = '99+';
     }
     
-    let blockCount = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'blockCount'], 0);
+    let blockCount = lodashGet(dataObj, [...pathArr, 'blockCount'], 0);
     
     if (blockCount > 99) {
       blockCount = '99+';
     }
     
     
-    // const membersObj = lodashGet(storeUcMember, ['dataObj', ...pathArr, 'membersObj'], {});
     
-    // console.log(`
-    //   ----- membersObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(membersObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
+    // --------------------------------------------------
+    //   ダイアログ
+    // --------------------------------------------------
+    
+    const showDialogUnfollow = lodashGet(dataObj, [...pathArr, 'showDialogUnfollow'], false);
+    const showDialogApproval = lodashGet(dataObj, [...pathArr, 'showDialogApproval'], false);
+    const showDialogUnapproval = lodashGet(dataObj, [...pathArr, 'showDialogUnapproval'], false);
+    const showDialogBlock = lodashGet(dataObj, [...pathArr, 'showDialogBlock'], false);
+    const showDialogUnblock = lodashGet(dataObj, [...pathArr, 'showDialogUnblock'], false);
     
     
     
@@ -215,7 +229,26 @@ export default injectIntl(class extends React.Component {
     
     const componentCardPlayersArr = [];
     
-    for (const [index, value] of arr.entries()) {
+    for (const [index, cardPlayers_id] of arr.entries()) {
+      
+      
+      // --------------------------------------------------
+      //   managedUsers_id
+      // --------------------------------------------------
+      
+      const managedUsers_id = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'users_id'], '');
+      
+      // console.log(chalk`
+      //   authorUsers_id: {green ${authorUsers_id}}
+      //   managedUsers_id: {green ${managedUsers_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- cardPlayersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayersObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
       
       componentCardPlayersArr.push(
         <div
@@ -228,7 +261,7 @@ export default injectIntl(class extends React.Component {
           
           {/* Card Player */}
           <CardPlayer
-            cardPlayers_id={value}
+            cardPlayers_id={cardPlayers_id}
             showFollow={true}
             showEditButton={true}
             defaultExpanded={false}
@@ -236,7 +269,7 @@ export default injectIntl(class extends React.Component {
           
           
           {/* Buttons */}
-          {author &&
+          {(author && authorUsers_id !== managedUsers_id) &&
             <div
               css={css`
                 display: flex;
@@ -245,26 +278,128 @@ export default injectIntl(class extends React.Component {
               `}
             >
               
+              
+              {type === 'member' &&
+                <div
+                  css={css`
+                    margin: 0 16px 0 0;
+                  `}
+                >
+                  <Button
+                    css={cssButton}
+                    variant="contained"
+                    color="secondary"
+                    disabled={buttonDisabled}
+                    onClick={() => handleOpenDialog({
+                      pathArr,
+                      managedUsers_id,
+                      type: 'unfollow',
+                    })}
+                  >
+                    退会
+                  </Button>
+                </div>
+              }
+              
+              
               {type === 'approval' &&
+                <React.Fragment>
+                  
+                  <Button
+                    css={cssButton}
+                    variant="contained"
+                    color="secondary"
+                    disabled={buttonDisabled}
+                    // onClick={() => handleMembers({
+                    //   pathArr,
+                    //   pathname,
+                    //   userCommunities_id,
+                    //   managedUsers_id,
+                    //   type: 'approval',
+                    // })}
+                    // onClick={() => handleEdit({
+                    //   pathArr: [...this.pathArr, 'showDialogApproval'],
+                    //   value: true,
+                    // })}
+                    onClick={() => handleOpenDialog({
+                      pathArr,
+                      managedUsers_id,
+                      type: 'approval',
+                    })}
+                  >
+                    参加承認
+                  </Button>
+                  
+                  
+                  <div
+                    css={css`
+                      margin: 0 16px 0 0;
+                    `}
+                  >
+                    <Button
+                      css={cssButton}
+                      variant="contained"
+                      color="primary"
+                      disabled={buttonDisabled}
+                      // onClick={() => handleEdit({
+                      //   pathArr: [...this.pathArr, 'showDialogUnapproval'],
+                      //   value: true,
+                      // })}
+                      onClick={() => handleOpenDialog({
+                        pathArr,
+                        managedUsers_id,
+                        type: 'unapproval',
+                      })}
+                    >
+                      参加拒否
+                    </Button>
+                  </div>
+                  
+                </React.Fragment>
+              }
+              
+              
+              {type !== 'block' &&
                 <Button
                   css={cssButton}
                   variant="contained"
                   color="secondary"
                   disabled={buttonDisabled}
+                  // onClick={() => handleEdit({
+                  //   pathArr: [...this.pathArr, 'showDialogBlock'],
+                  //   value: true,
+                  // })}
+                  onClick={() => handleOpenDialog({
+                    pathArr,
+                    managedUsers_id,
+                    type: 'block',
+                  })}
                 >
-                  参加承認
+                  ブロック
                 </Button>
               }
               
               
-              <Button
-                css={cssButton}
-                variant="contained"
-                color="primary"
-                disabled={buttonDisabled}
-              >
-                ブロック
-              </Button>
+              {type === 'block' &&
+                <Button
+                  css={cssButton}
+                  variant="contained"
+                  color="primary"
+                  disabled={buttonDisabled}
+                  // onClick={() => handleEdit({
+                  //   pathArr: [...this.pathArr, 'showDialogUnblock'],
+                  //   value: true,
+                  // })}
+                  onClick={() => handleOpenDialog({
+                    pathArr,
+                    managedUsers_id,
+                    type: 'unblock',
+                  })}
+                >
+                  ブロック解除
+                </Button>
+              }
+              
               
             </div>
           }
@@ -337,10 +472,17 @@ export default injectIntl(class extends React.Component {
                   page: 1,
                 })}
               >
-                メンバー
+                <span
+                  css={css`
+                    font-weight: ${type === 'member' ? 'bold' : 'normal'};
+                  `}
+                >
+                  メンバー
+                </span>
               </Button>
               
               <Button
+                
                 onClick={() => handleReadMembers({
                   pathArr,
                   pathname,
@@ -349,7 +491,13 @@ export default injectIntl(class extends React.Component {
                   page: 1,
                 })}
               >
-                承認申請 ({approvalCount})
+                <span
+                  css={css`
+                    font-weight: ${type === 'approval' ? 'bold' : 'normal'};
+                  `}
+                >
+                  承認申請 ({approvalCount})
+                </span>
               </Button>
               
               <Button
@@ -361,7 +509,13 @@ export default injectIntl(class extends React.Component {
                   page: 1,
                 })}
               >
-                ブロック ({blockCount})
+                <span
+                  css={css`
+                    font-weight: ${type === 'block' ? 'bold' : 'normal'};
+                  `}
+                >
+                  ブロック ({blockCount})
+                </span>
               </Button>
               
             </ButtonGroup>
@@ -446,6 +600,276 @@ export default injectIntl(class extends React.Component {
           
           
         </Paper>
+        
+        
+        
+        
+        {/* ダイアログ - 退会させる */}
+        <Dialog
+          open={showDialogUnfollow}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogUnfollow'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title1"
+          aria-describedby="alert-dialog-description1"
+        >
+          
+          <DialogTitle id="alert-dialog-title1">コミュニティの退会</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description1">
+              コミュニティから退会させますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleMembers({
+                  pathArr,
+                  userCommunities_id,
+                  type: 'unfollow',
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDialogUnfollow'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
+        
+        
+        
+        
+        {/* ダイアログ - 参加承認 */}
+        <Dialog
+          open={showDialogApproval}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogApproval'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title2"
+          aria-describedby="alert-dialog-description2"
+        >
+          
+          <DialogTitle id="alert-dialog-title2">参加承認</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description2">
+              参加を承認しますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleMembers({
+                  pathArr,
+                  userCommunities_id,
+                  type: 'approval',
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDialogApproval'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
+        
+        
+        
+        
+        {/* ダイアログ - 参加拒否 */}
+        <Dialog
+          open={showDialogUnapproval}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogUnapproval'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title3"
+          aria-describedby="alert-dialog-description3"
+        >
+          
+          <DialogTitle id="alert-dialog-title3">参加拒否</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description3">
+              参加を拒否しますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleMembers({
+                  pathArr,
+                  userCommunities_id,
+                  type: 'unapproval',
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDialogUnapproval'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
+        
+        
+        
+        
+        {/* ダイアログ - ブロック */}
+        <Dialog
+          open={showDialogBlock}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogBlock'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title4"
+          aria-describedby="alert-dialog-description4"
+        >
+          
+          <DialogTitle id="alert-dialog-title4">ブロック</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description4">
+              ブロックしますか？<br />ブロックしたユーザーはコミュニティに参加できなくなります
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleMembers({
+                  pathArr,
+                  userCommunities_id,
+                  type: 'block',
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDialogBlock'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
+        
+        
+        
+        
+        {/* ダイアログ - ブロック解除 */}
+        <Dialog
+          open={showDialogUnblock}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogUnblock'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title5"
+          aria-describedby="alert-dialog-description5"
+        >
+          
+          <DialogTitle id="alert-dialog-title5">ブロック解除</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description5">
+              ブロックを解除しますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleMembers({
+                  pathArr,
+                  userCommunities_id,
+                  type: 'unblock',
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDialogUnblock'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
         
         
       </React.Fragment>

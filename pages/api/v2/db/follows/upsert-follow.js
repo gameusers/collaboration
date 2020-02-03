@@ -261,9 +261,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     let followedArr = lodashGet(resultObj, ['followedArr'], []);
-    let approvalArr = lodashGet(resultObj, ['approvalArr'], []);
-    let blockArr = lodashGet(resultObj, ['blockArr'], []);
     let followedCount = lodashGet(resultObj, ['followedCount'], 1);
+    let approvalArr = lodashGet(resultObj, ['approvalArr'], []);
+    let approvalCount = lodashGet(resultObj, ['followedCount'], 0);
+    let blockArr = lodashGet(resultObj, ['blockArr'], []);
+    
     const approval = lodashGet(resultObj, ['approval'], false);
     
     // returnObj.pageTransition = false;
@@ -297,6 +299,9 @@ export default async (req, res) => {
         returnObj.memberApproval = true;
         
       }
+      
+      approvalCount = approvalArr.length;
+      // returnObj.approvalCount = approvalCount;
       
       
     // ---------------------------------------------
@@ -346,9 +351,10 @@ export default async (req, res) => {
       $set: {
         
         followedArr,
-        approvalArr,
-        blockArr,
         followedCount,
+        approvalArr,
+        approvalCount,
+        blockArr,
         updatedDate: moment().toISOString(),
         
       }

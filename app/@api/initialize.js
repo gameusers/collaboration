@@ -20,7 +20,7 @@ const util = require('util');
 
 const express = require('express');
 const multer  = require('multer');
-const upload = multer({ dest: 'static/' });
+const upload = multer({ dest: 'public/' });
 const shortid = require('shortid');
 const moment = require('moment');
 
@@ -3959,14 +3959,6 @@ emotion: https://emotion.sh/docs/introduction`,
         approvalCount: 0,
         blockArr: [],
         blockCount: 0,
-        // followedArr: ['jun-deE4J', 'P7UJMuUnx'],
-        // approvalArr: [],
-        // blockArr: [],
-        // followedCount: 2
-        // followArr: [],
-        // followCount: 0,
-        // followedArr: ['P7UJMuUnx'],
-        // followedCount: 1,
       },
     ];
     

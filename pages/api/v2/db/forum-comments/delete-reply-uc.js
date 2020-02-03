@@ -306,7 +306,7 @@ export default async (req, res) => {
     //   画像を削除する
     // ---------------------------------------------
     
-    const dirPath = `static/img/forum/${imagesAndVideos_id}`;
+    const dirPath = `img/forum/${imagesAndVideos_id}`;
     
     if (imagesAndVideos_id && images !== 0) {
       

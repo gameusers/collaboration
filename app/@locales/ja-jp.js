@@ -156,9 +156,6 @@ const ja_JP = {
   //   Error / Validation / DB user-communities
   // ---------------------------------------------
   
-  // /app/@database/user-communities/validations/user-community-id-server.js
-  // 'sxyL1EamN': '入力したIDは利用できません',
-  
   
   // ---------------------------------------------
   //   Error / Validation / DB forum-threads

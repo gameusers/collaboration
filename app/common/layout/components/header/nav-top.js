@@ -359,7 +359,7 @@ export default class extends React.Component {
     //   loginUsersObj
     // --------------------------------------------------
     
-    const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
+    const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/img/common/thumbnail/none.svg');
     const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
     const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
     
@@ -383,7 +383,7 @@ export default class extends React.Component {
             css={css`
               width: 138px;
               height: 43px;
-              background-image: url('/static/img/common/header/logo.png');
+              background-image: url('/img/common/header/logo.png');
               cursor: pointer;
               margin: 0 0 0 6px;
               
@@ -391,7 +391,7 @@ export default class extends React.Component {
                 width: 30px;
                 min-width: 30px;
                 height: 43px;
-                background-image: url('/static/img/common/header/logo-mobile.png');
+                background-image: url('/img/common/header/logo-mobile.png');
                 margin: 0 0 0 10px;
               }
             `}

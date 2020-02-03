@@ -583,7 +583,7 @@ const format = (argumentsObj) => {
     // --------------------------------------------------
     
     copiedObj.imagesArr = formatImagesAndVideosArr({ arr: copiedObj.imageVideoArr });
-    // copiedObj.imageArr = srcset(`/static/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
+    // copiedObj.imageArr = srcset(`/img/card/games/${valueObj._id}/`, copiedObj.imageVideoArr);
     
     
     // --------------------------------------------------

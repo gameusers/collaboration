@@ -140,7 +140,7 @@ export default class extends React.Component {
     // //   loginUsersObj
     // // --------------------------------------------------
     
-    // const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/static/img/common/thumbnail/none.svg');
+    // const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/img/common/thumbnail/none.svg');
     // const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
     // const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
     

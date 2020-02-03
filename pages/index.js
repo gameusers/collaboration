@@ -439,9 +439,9 @@ export default class extends React.Component {
               
                 <StyledCard>
                   
-                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/0r8294vpatkc9nl1.jpg')}>
+                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/img/sample/0r8294vpatkc9nl1.jpg')}>
                     <CardMedia
-                      image="/static/img/sample/0r8294vpatkc9nl1.jpg"
+                      image="/img/sample/0r8294vpatkc9nl1.jpg"
                       title="Grand Theft Auto V"
                       style={{ height: 0, paddingTop: '56.25%' }}
                     />
@@ -492,7 +492,7 @@ export default class extends React.Component {
                   
                   <CardMediaBox>
                     <CardMedia
-                      image="/static/img/sample/thumbnail-1.jpg"
+                      image="/img/sample/thumbnail-1.jpg"
                       title="Contemplative Reptile"
                       style={{ width: 128, height: 128, margin: '0 auto 0 auto' }}
                     />
@@ -534,9 +534,9 @@ export default class extends React.Component {
                 
                 <StyledCard>
                   
-                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/static/img/sample/g0dzjmsmuu32drqb.jpg')}>
+                  <CardMediaBox onClick={() => stores.layout.handleModalImageOpen('/img/sample/g0dzjmsmuu32drqb.jpg')}>
                     <CardMedia
-                      image="/static/img/sample/g0dzjmsmuu32drqb.jpg"
+                      image="/img/sample/g0dzjmsmuu32drqb.jpg"
                       title="Metal Gear Solid V: The Phantom Pain"
                       style={{ height: 0, paddingTop: '56.25%' }}
                     />
@@ -590,7 +590,7 @@ export default class extends React.Component {
                       title="ゼルダの伝説 ブレス オブ ザ ワイルド 3rd トレーラー"
                       style={{ height: 0, paddingTop: '56.25%' }}
                     />
-                    <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
+                    <CardMediaMoviePlayButton src="/img/common/video-play-button.png" width="100%" />
                   </CardMediaBox>
                   
                   
@@ -795,7 +795,7 @@ export default class extends React.Component {
                       title="マリオテニス エース"
                       style={{ height: 0, paddingTop: '56.25%' }}
                     />
-                    <CardMediaMoviePlayButton src="/static/img/common/video-play-button.png" width="100%" />
+                    <CardMediaMoviePlayButton src="/img/common/video-play-button.png" width="100%" />
                   </CardMediaBox>
                   
                   

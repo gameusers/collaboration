@@ -404,7 +404,7 @@ export default class extends React.Component {
               
               <Sidebar>
                 <img
-                  src="/static/img/common/advertisement/300x250.jpg"
+                  src="/img/common/advertisement/300x250.jpg"
                   width="300"
                   height="250"
                 />

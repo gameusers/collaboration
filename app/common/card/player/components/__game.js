@@ -226,9 +226,9 @@ export default class extends React.Component {
     let thumbnailSrc = '';
     
     if (thumbnail) {
-      thumbnailSrc = `/static/img/card/games/${cardGames_id}/thumbnail/image.jpg`;
+      thumbnailSrc = `/img/card/games/${cardGames_id}/thumbnail/image.jpg`;
     } else if (gameThumbnail) {
-      thumbnailSrc = `/static/img/games/${games_id}/thumbnail/image.jpg`;
+      thumbnailSrc = `/img/games/${games_id}/thumbnail/image.jpg`;
     }
     
     

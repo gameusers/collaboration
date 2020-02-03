@@ -336,7 +336,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       //   ディレクトリ作成　【チェック時は要コメントアウト】
       // ---------------------------------------------
       
-      const dirPath = `static/img/${type}/${_id}/${_id2}`;
+      const dirPath = `img/${type}/${_id}/${_id2}`;
       
       mkdirp.sync(dirPath, (err) => {
         if (err) {
@@ -539,7 +539,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   if (countNewImages === 0) {
   // if (newArr.length === 0 && oldArr.length > 0) {
     
-    const dirPath = `static/img/${type}/${_id}`;
+    const dirPath = `img/${type}/${_id}`;
     
     rimraf(dirPath, (err) => {
       if (err) {
@@ -564,7 +564,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
       if (_idsArr.includes(valueObj._id) === false) {
         
-        const dirPath = `static/img/${type}/${_id}/${valueObj._id}`;
+        const dirPath = `img/${type}/${_id}/${valueObj._id}`;
         
         rimraf(dirPath, (err) => {
           if (err) {

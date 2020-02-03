@@ -278,7 +278,7 @@ export default injectIntl(class extends React.Component {
           //     />
               
           //     <PreviewVideoPlayButtonImg
-          //       src="/static/img/common/video-play-button.png"
+          //       src="/img/common/video-play-button.png"
           //     />
               
           //     <PreviewRemoveFab

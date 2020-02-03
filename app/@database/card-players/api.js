@@ -21,7 +21,7 @@ const util = require('util');
 const express = require('express');
 const multer  = require('multer');
 const upload = multer({
-  dest: 'static/img',
+  dest: 'public/img',
   limits: { fieldSize: 25 * 1024 * 1024 } // アップロードできるファイルサイズ、25MBまで
 });
 const moment = require('moment');
@@ -713,20 +713,20 @@ router.post('/update', upload.none(), async (req, res, next) => {
     //   // oldObj: oldImagesAndVideosObj,
     //   newArr,
     //   oldArr: oldImagesAndVideosObj.thumbnailArr,
-    //   directoryPath: `static/img/card/players/test/thumbnail/`
+    //   directoryPath: `img/card/players/test/thumbnail/`
     // });
     
     
     // const imageArr = await imageSave({
     //   newArr: newImagesAndVideosObj.thumbnailArr,
     //   oldArr: oldImagesAndVideosObj.thumbnailArr,
-    //   directoryPath: `static/img/card/players/${saveObj._id}/`
+    //   directoryPath: `img/card/players/${saveObj._id}/`
     // });
     
     const thumbnailArr = await imageSave({
       newArr: newImagesAndVideosObj.thumbnailArr,
       oldArr: oldImagesAndVideosObj.thumbnailArr,
-      directoryPath: `static/img/card/players/test/thumbnail/`,
+      directoryPath: `img/card/players/test/thumbnail/`,
       minSize: 128,
       square: true
     });
@@ -734,7 +734,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     // const imageArr = await imageSave({
     //   newArr: newImagesAndVideosObj.thumbnailArr,
     //   oldArr: oldImagesAndVideosObj.thumbnailArr,
-    //   directoryPath: `static/img/card/players/${saveObj._id}/`,
+    //   directoryPath: `img/card/players/${saveObj._id}/`,
     //   minSize: 128,
     //   square: true
     // });
@@ -747,7 +747,7 @@ router.post('/update', upload.none(), async (req, res, next) => {
     const mainArr = await imageSave({
       newArr: newImagesAndVideosObj.mainArr,
       oldArr: oldImagesAndVideosObj.mainArr,
-      directoryPath: `static/img/card/players/test/main/`,
+      directoryPath: `img/card/players/test/main/`,
     });
     
     saveObj.imagesAndVideosObj.mainArr = mainArr;

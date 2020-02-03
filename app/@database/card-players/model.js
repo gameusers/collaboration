@@ -1993,7 +1993,7 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     // --------------------------------------------------
     
     // clonedObj.imageVideoArr = formatImagesAndVideosArr({ arr: clonedObj.imageVideoArr });
-    // clonedObj.imageArr = srcset(`/static/img/card/players/${valueObj._id}/`, clonedObj.imageVideoArr);
+    // clonedObj.imageArr = srcset(`/img/card/players/${valueObj._id}/`, clonedObj.imageVideoArr);
     
     
     // --------------------------------------------------

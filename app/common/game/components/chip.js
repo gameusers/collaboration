@@ -105,7 +105,7 @@ export default class extends React.Component {
     // const thumbnailArr = lodashGet(imagesAndVideosObj, ['thumbnailArr'], []);
     const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
     
-    const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/static/img/common/thumbnail/none.svg');
+    const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
     const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
     
     

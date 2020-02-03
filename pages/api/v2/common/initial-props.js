@@ -86,8 +86,13 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
+    // console.log(`
+    //   ----- commonInitialPropsObj -----\n
+    //   ${util.inspect(commonInitialPropsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     

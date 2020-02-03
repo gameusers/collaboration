@@ -155,7 +155,7 @@ export default class extends React.Component {
     } else {
       
       const thumbnailSrc = lodashGet(thumbnailArr.slice(), [0, 'srcSetArr', 0, 'src'], '');
-      const imgSrc = thumbnailSrc ? thumbnailSrc : '/static/img/common/thumbnail/none-game.jpg';
+      const imgSrc = thumbnailSrc ? thumbnailSrc : '/img/common/thumbnail/none-game.jpg';
       
       
       code = 
@@ -165,7 +165,7 @@ export default class extends React.Component {
             flex-flow: row nowrap;
             justify-content: center;
             align-items: flex-start;
-            background: no-repeat center center url('/static/img/common/header/header-back.jpg');
+            background: no-repeat center center url('/img/common/header/header-back.jpg');
             background-size: cover;
             background-color: #25283D;
             padding: 15px;

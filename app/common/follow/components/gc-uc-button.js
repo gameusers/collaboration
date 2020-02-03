@@ -243,11 +243,6 @@ export default class extends React.Component {
           variant="contained"
           color="primary"
           size="small"
-          // onClick={() => handleFollow({
-          //   pathArr: this.pathArr,
-          //   type: 'unfollowUc',
-          //   userCommunities_id
-          // })}
           onClick={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnfollow'],
             value: true,
@@ -272,11 +267,6 @@ export default class extends React.Component {
           variant="contained"
           color="primary"
           size="small"
-          // onClick={() => handleFollow({
-          //   pathArr: this.pathArr,
-          //   type: 'unfollowApprovalUc',
-          //   userCommunities_id
-          // })}
           onClick={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnfollowApproval'],
             value: true,

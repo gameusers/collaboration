@@ -72,7 +72,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     if (!src) {
-      src = '/static/img/common/thumbnail/none.svg';
+      src = '/img/common/thumbnail/none.svg';
     }
     
     

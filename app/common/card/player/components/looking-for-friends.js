@@ -103,7 +103,7 @@ export default class extends React.Component {
           
           <div>
             <img
-              src={`/static/img/common/blob-emoji/${icon}.png`}
+              src={`/img/common/blob-emoji/${icon}.png`}
               width="26"
               height="26"
             />

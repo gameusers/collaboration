@@ -19,8 +19,8 @@ import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
-// import lodashSet from 'lodash/set';
-// import lodashThrottle from 'lodash/throttle';
+import lodashSet from 'lodash/set';
+import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -87,8 +87,194 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
     super(props);
+    
+    
+    // ---------------------------------------------
+    //   State
+    // ---------------------------------------------
+    
+    this.state = {
+      lowerNavMain: false,
+    };
+    
+    
+    // ---------------------------------------------
+    //   bind
+    // ---------------------------------------------
+    
+    this.handleScroll = this.handleScroll.bind(this);
+    
+    
   }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   componentDidMount
+  // --------------------------------------------------
+  
+  componentDidMount() {
+    
+    
+    // --------------------------------------------------
+    //   スクロールされる度に呼び出される関数を設定する / ヘッダーのアニメーション用
+    // --------------------------------------------------
+    
+    this.scrollYOffset = 0;
+    this.navTopHeight = 53;
+    // this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
+    
+    window.addEventListener('scroll', this.handleScroll);
+    
+    
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   componentWillUnmount
+  // --------------------------------------------------
+  
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   handleScroll
+  // --------------------------------------------------
+  
+  handleScroll = lodashThrottle(() => {
+    
+    
+    const scrollY = window.scrollY;
+    const headerHeroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
+    
+    let scrollUp = false;
+    let showNavTop = true;
+    let lowerNavMain = false;
+    
+    
+    // ---------------------------------------------
+    //   scrollY === 0
+    // ---------------------------------------------
+    
+    if (scrollY !== 0) {
+      
+      
+      // ---------------------------------------------
+      //   Scroll Up / Scroll Down
+      // ---------------------------------------------
+      
+      if (scrollY > this.scrollYOffset) {
+        // console.log('scrollDown');
+        scrollUp = false;
+      } else {
+        // console.log('scrollUp');
+        scrollUp = true;
+      }
+      
+      
+      // ---------------------------------------------
+      //   Show Navigation Top
+      // ---------------------------------------------
+      
+      if (headerHeroImageHeight < scrollY) {
+        
+        if (scrollUp) {
+          showNavTop = true;
+        } else {
+          showNavTop = false;
+        }
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   Lower Navigation Main
+      // ---------------------------------------------
+      
+      if (this.navTopHeight + headerHeroImageHeight < scrollY) {
+        
+        if (scrollUp && showNavTop) {
+          lowerNavMain = true;
+        }
+        
+      }
+      
+      
+    }
+    
+    
+    this.scrollYOffset = scrollY;
+    
+    
+    // ---------------------------------------------
+    //   scrollToで移動する場合、ナビゲーションを上の位置に表示する
+    // ---------------------------------------------
+    
+    const scrollToBegin = lodashGet(this.props, ['stores', 'layout', 'scrollToBegin'], false);
+    
+    if (scrollToBegin) {
+      
+      console.log('scrollToBegin');
+      
+      const scrollToEnd = lodashGet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
+      
+      if (scrollToEnd) {
+        
+        console.log('scrollToEnd');
+        
+        lodashSet(this.props, ['stores', 'layout', 'scrollToBegin'], false);
+        lodashSet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
+        
+        // return;
+        
+      }
+      
+      lowerNavMain = false;
+      
+    }
+    
+    // console.log(chalk`
+    //   lowerNavMain: {green ${lowerNavMain}}
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
+    
+    // console.log(chalk`
+    //   scrollY: {green ${scrollY}}
+    //   this.navTopHeight: {green ${this.navTopHeight}}
+    //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
+    //   scrollUp: {green ${scrollUp}}
+    //   showNavTop: {green ${showNavTop}}
+    //   lowerNavMain: {green ${lowerNavMain}}
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   setState
+    // ---------------------------------------------
+    
+    if (this.state.lowerNavMain !== lowerNavMain) {
+      
+      this.setState({
+        lowerNavMain,
+      });
+      
+    }
+    
+    
+  }, 100);
   
   
   
@@ -111,15 +297,6 @@ export default class extends React.Component {
     
     const drawerIconShow = lodashGet(stores, ['layout', 'drawerIconShow'], false);
     const handleDrawerOpen = lodashGet(stores, ['layout', 'handleDrawerOpen'], () => {});
-    
-    
-    // --------------------------------------------------
-    //   react-spring
-    // --------------------------------------------------
-    
-    const lowerNavMain = lodashGet(stores, ['layout', 'lowerNavMain'], false);
-    
-    
     
     
     // --------------------------------------------------
@@ -183,15 +360,13 @@ export default class extends React.Component {
     }
     
     
-    
-    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
       <Container
-        lowerNavMain={lowerNavMain}
+        lowerNavMain={this.state.lowerNavMain}
       >
         
         <div

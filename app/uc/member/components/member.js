@@ -310,17 +310,6 @@ export default injectIntl(class extends React.Component {
                     variant="contained"
                     color="secondary"
                     disabled={buttonDisabled}
-                    // onClick={() => handleMembers({
-                    //   pathArr,
-                    //   pathname,
-                    //   userCommunities_id,
-                    //   managedUsers_id,
-                    //   type: 'approval',
-                    // })}
-                    // onClick={() => handleEdit({
-                    //   pathArr: [...this.pathArr, 'showDialogApproval'],
-                    //   value: true,
-                    // })}
                     onClick={() => handleOpenDialog({
                       pathArr,
                       managedUsers_id,
@@ -341,10 +330,6 @@ export default injectIntl(class extends React.Component {
                       variant="contained"
                       color="primary"
                       disabled={buttonDisabled}
-                      // onClick={() => handleEdit({
-                      //   pathArr: [...this.pathArr, 'showDialogUnapproval'],
-                      //   value: true,
-                      // })}
                       onClick={() => handleOpenDialog({
                         pathArr,
                         managedUsers_id,
@@ -365,10 +350,6 @@ export default injectIntl(class extends React.Component {
                   variant="contained"
                   color="secondary"
                   disabled={buttonDisabled}
-                  // onClick={() => handleEdit({
-                  //   pathArr: [...this.pathArr, 'showDialogBlock'],
-                  //   value: true,
-                  // })}
                   onClick={() => handleOpenDialog({
                     pathArr,
                     managedUsers_id,
@@ -386,10 +367,6 @@ export default injectIntl(class extends React.Component {
                   variant="contained"
                   color="primary"
                   disabled={buttonDisabled}
-                  // onClick={() => handleEdit({
-                  //   pathArr: [...this.pathArr, 'showDialogUnblock'],
-                  //   value: true,
-                  // })}
                   onClick={() => handleOpenDialog({
                     pathArr,
                     managedUsers_id,
@@ -632,6 +609,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 onClick={() => handleMembers({
                   pathArr,
+                  pathname,
                   userCommunities_id,
                   type: 'unfollow',
                 })}
@@ -686,6 +664,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 onClick={() => handleMembers({
                   pathArr,
+                  pathname,
                   userCommunities_id,
                   type: 'approval',
                 })}
@@ -740,6 +719,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 onClick={() => handleMembers({
                   pathArr,
+                  pathname,
                   userCommunities_id,
                   type: 'unapproval',
                 })}
@@ -794,6 +774,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 onClick={() => handleMembers({
                   pathArr,
+                  pathname,
                   userCommunities_id,
                   type: 'block',
                 })}
@@ -848,6 +829,7 @@ export default injectIntl(class extends React.Component {
               <Button
                 onClick={() => handleMembers({
                   pathArr,
+                  pathname,
                   userCommunities_id,
                   type: 'unblock',
                 })}

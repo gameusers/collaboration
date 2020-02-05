@@ -69,6 +69,33 @@ class Store {
   
   
   // ---------------------------------------------
+  //   Header - Navigation / Top & Main
+  // ---------------------------------------------
+  
+  /**
+   * Navigation Top を表示する true / 表示しない false
+   * @type {boolean}
+   */
+  @observable showNavTop = true;
+  
+  
+  /**
+   * Navigation Main の位置を下げる true / 上げる false
+   * @type {boolean}
+   */
+  @observable lowerNavMain = false;
+  
+  
+  /**
+   * サイドバーの位置を下げる true / 上げる false
+   * @type {boolean}
+   */
+  @observable lowerSidebar = false;
+  
+  
+  
+  
+  // ---------------------------------------------
   //   Header - Navigation / Main
   // ---------------------------------------------
   
@@ -647,42 +674,28 @@ class Store {
   
   // ---------------------------------------------
   //   Header - Navigation / Top & Main
-  //   scrollToで移動した場合は、スクロールを上にした時と同じ動作にする
   // ---------------------------------------------
   
   /**
-   * scrollToを開始 - 開始するとナビゲーションを
+   * scrollTo を開始
    * @type {boolean}
    */
-  headerNavForceScrollUpBegin = false;
+  // scrollToBegin = false;
   
   
   /**
-   * scrollToを終了
+   * scrollTo を終了
    * @type {boolean}
    */
-  headerNavForceScrollUpEnd = false;
+  scrollToEnd = false;
   
-  
-  /**
-   * scrollToを開始 / サイドバー用
-   * @type {boolean}
-   */
-  headerScrollToBeginForSidebar = false;
-  
-  
-  /**
-   * scrollToを終了 / サイドバー用
-   * @type {boolean}
-   */
-  headerScrollToEndForSidebar = false;
   
   
   
   /**
    * 特定の場所へスクロールする
    * 移動先は <Element name="..."></Element> で囲む / name に入力した値を to に指定すると移動できる
-   * headerNavForceScrollUpBegin & headerNavForceScrollUpEnd
+   * scrollToBegin & scrollToEnd
    * これはページトップのナビゲーションの位置を操作するための変数
    */
   @action.bound
@@ -692,8 +705,14 @@ class Store {
       return;
     }
     
-    this.headerNavForceScrollUpBegin = true;
-    this.headerScrollToBeginForSidebar = true;
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/stores/layout.js - handleScrollTo
+    // `);
+    
+    
+    // this.scrollToBegin = true;
+    // this.headerScrollToBeginForSidebar = true;
     
     scroller.scrollTo(to, {
       duration,
@@ -704,193 +723,16 @@ class Store {
     
     Events.scrollEvent.register('end', (to, element) => {
       // console.log('Events.scrollEvent.register(end)');
-      this.headerNavForceScrollUpEnd = true;
-      this.headerScrollToEndForSidebar = true;
+      
+      // lodashSet(storeLayout, ['showNavTop'], false);
+      // lodashSet(storeLayout, ['lowerNavMain'], false);
+      // lodashSet(storeLayout, ['lowerSidebar'], false);
+      
+      this.scrollToEnd = true;
+      // this.headerScrollToEndForSidebar = true;
     });
     
   };
-  
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Follow
-  // ---------------------------------------------
-  
-  /**
-   * フォロー / フォロー解除
-   * @param {Array} pathArr - パス
-   * @param {string} type - フォロー follow / 
-   * @param {string} gameCommunities_id - フォローするゲームコミュニティの _id
-   * @param {string} userCommunities_id - フォローするユーザーコミュニティの _id
-   * @param {string} users_id - フォローする相手の _id
-   */
-  // @action.bound
-  // async handleFollow({ pathArr, type, gameCommunities_id, userCommunities_id, users_id }) {
-    
-    
-  //   try {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Button Disable
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleButtonDisable({ pathArr });
-      
-      
-  //     // ---------------------------------------------
-  //     //   FormData
-  //     // ---------------------------------------------
-      
-  //     const formDataObj = {
-        
-  //       gameCommunities_id,
-  //       userCommunities_id,
-  //       users_id,
-        
-  //     };
-      
-      
-  //     // ---------------------------------------------
-  //     //   Fetch
-  //     // ---------------------------------------------
-      
-  //     const resultObj = await fetchWrapper({
-  //       urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow`,
-  //       methodType: 'POST',
-  //       formData: JSON.stringify(formDataObj)
-  //     });
-      
-      
-  //     console.log(`
-  //       ----- resultObj -----\n
-  //       ${util.inspect(resultObj, { colors: true, depth: null })}\n
-  //       --------------------\n
-  //     `);
-      
-      
-  //     // ---------------------------------------------
-  //     //   Error
-  //     // ---------------------------------------------
-      
-  //     if ('errorsArr' in resultObj) {
-  //       throw new CustomError({ errorsArr: resultObj.errorsArr });
-  //     }
-      
-      
-      
-  //     // ---------------------------------------------
-  //     //   メンバーかどうか、メンバー数を変更
-  //     // ---------------------------------------------
-      
-  //     if (lodashHas(resultObj, ['data', 'member'])) {
-  //       // lodashSet(clonedObj, ['cardPlayersObj', 'imagesAndVideosThumbnailObj'], formattedThumbnailObj);
-  //     }
-      
-      
-  //     // ---------------------------------------------
-  //     //   Snackbar: Success
-  //     // ---------------------------------------------
-      
-  //     let messageID = 'RTsMTGw-1';
-      
-  //     switch (type) {
-        
-  //       case 'followUc':
-  //         messageID = 'SY6WWDyxQ';
-  //         break;
-          
-  //       case 'unfollowUc':
-  //         messageID = 'xWAfTONZ6';
-  //         break;
-          
-  //       case 'followApprovalUc':
-  //         messageID = 'PaC4bsJe2';
-  //         break;
-          
-  //       case 'unfollowApprovalUc':
-  //         messageID = 'HOo6u_sXD';
-  //         break;
-          
-  //     }
-      
-  //     storeLayout.handleSnackbarOpen({
-  //       variant: 'success',
-  //       messageID,
-  //     });
-      
-      
-  //     // ---------------------------------------------
-  //     //   リロードする
-  //     // ---------------------------------------------
-      
-  //     // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
-      
-  //     // if (pageTransition) {
-  //     //   // window.location.href = `${process.env.URL_BASE}uc/${userCommunityID}/settings`;
-  //     // }
-      
-      
-  //   } catch (errorObj) {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Snackbar: Error
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleSnackbarOpen({
-  //       variant: 'error',
-  //       errorObj,
-  //     });
-      
-      
-  //   } finally {
-      
-      
-  //     // ---------------------------------------------
-  //     //   Button Enable
-  //     // ---------------------------------------------
-      
-  //     storeLayout.handleButtonEnable({ pathArr });
-      
-      
-  //   }
-    
-  // };
-  
-  
-  
-  
-  // /**
-  // * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
-  // * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
-  // * @type {Object}
-  // */
-  // @observable followDialogOpenObj = {};
-  
-  
-  // /**
-  // * フォロー用ダイアログを開く
-  // * @param {string} users_id - ID
-  // */
-  // @action.bound
-  // handleFollowDialogOpen(users_id) {
-  //   this.followDialogOpenObj[users_id] = true;
-  // };
-  
-  
-  // /**
-  // * フォロー用ダイアログを閉じる
-  // * @param {string} users_id - ID
-  // */
-  // @action.bound
-  // handleFollowDialogClose(users_id) {
-  //   this.followDialogOpenObj[users_id] = false;
-  // };
-  
   
   
 }

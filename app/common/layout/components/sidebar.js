@@ -18,8 +18,8 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { useSpring, animated } from 'react-spring';
 import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
-import lodashThrottle from 'lodash/throttle';
+// import lodashSet from 'lodash/set';
+// import lodashThrottle from 'lodash/throttle';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -31,10 +31,28 @@ import { css, jsx } from '@emotion/core';
 //   react-spring
 // --------------------------------------------------
 
-const Container = ({ children, initialPosition }) => {
+const Container = ({ children, showNavTop, lowerSidebar }) => {
+  
+  
+  // --------------------------------------------------
+  //   移動させる距離を指定
+  // --------------------------------------------------
+  
+  let ypx = 52;
+  
+  // Navigation Top が表示されている場合は、大きく移動させる
+  if (showNavTop) {
+    ypx = 105;
+  }
+  
+  
+  
+  // console.log(chalk`
+  //   ypx: {green ${ypx}}
+  // `);
   
   const props = useSpring({
-    transform: initialPosition ? 'translateY(0px)' : 'translateY(52px)',
+    transform: lowerSidebar ? `translateY(${ypx}px)` : 'translateY(0px)',
     config: { duration: 250 },
   });
   
@@ -43,7 +61,7 @@ const Container = ({ children, initialPosition }) => {
         width: 300px;
         
         position: sticky;
-        top: 52px;
+        top: 0;
         
         @media screen and (max-width: 947px) {
           width: 100%;
@@ -74,189 +92,8 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
-    
     super(props);
-    
-    
-    // ---------------------------------------------
-    //   State
-    // ---------------------------------------------
-    
-    this.state = {
-      initialPosition: true,
-    };
-    
-    
-    // ---------------------------------------------
-    //   bind
-    // ---------------------------------------------
-    
-    this.handleScroll = this.handleScroll.bind(this);
-    
-    
   }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   componentDidMount
-  // --------------------------------------------------
-  
-  componentDidMount() {
-    
-    this.scrollYOffset = 0;
-    this.navTopHeight = 53;
-    this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
-    window.addEventListener('scroll', this.handleScroll);
-    
-  }
-  
-  
-  // --------------------------------------------------
-  //   componentWillUnmount
-  // --------------------------------------------------
-  
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   handleScroll
-  // --------------------------------------------------
-  
-  handleScroll = lodashThrottle(() => {
-    
-    
-    const scrollY = window.scrollY;
-    
-    let scrollUp = false;
-    let showNavTop = true;
-    let initialPosition = true;
-    
-    
-    // ---------------------------------------------
-    //   scrollY === 0
-    // ---------------------------------------------
-    
-    if (scrollY !== 0) {
-      
-      
-      // ---------------------------------------------
-      //   Scroll Up / Scroll Down
-      // ---------------------------------------------
-      
-      if (scrollY > this.scrollYOffset) {
-        scrollUp = false;
-      } else {
-        scrollUp = true;
-      }
-      
-      
-      // ---------------------------------------------
-      //   Show Navigation Top
-      // ---------------------------------------------
-      
-      if (this.heroImageHeight < scrollY) {
-        
-        if (scrollUp) {
-          showNavTop = true;
-        } else {
-          showNavTop = false;
-        }
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   Lower Navigation Main
-      // ---------------------------------------------
-      
-      if (this.navTopHeight + this.heroImageHeight < scrollY) {
-        
-        if (scrollUp && showNavTop) {
-          initialPosition = false;
-        }
-        
-      }
-      
-      
-    }
-    
-    
-    this.scrollYOffset = scrollY;
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   scrollToで移動する場合、初期位置にする
-    // ---------------------------------------------
-    
-    // console.log('Sidebar Scroll');
-    
-    const headerScrollToBeginForSidebar = lodashGet(this.props, ['stores', 'layout', 'headerScrollToBeginForSidebar'], false);
-    
-    if (headerScrollToBeginForSidebar) {
-      
-      // console.log('Sidebar Begin');
-      
-      const headerScrollToEndForSidebar = lodashGet(this.props, ['stores', 'layout', 'headerScrollToEndForSidebar'], false);
-      
-      if (headerScrollToEndForSidebar) {
-        
-        // console.log('Sidebar End');
-        
-        lodashSet(this.props, ['stores', 'layout', 'headerScrollToBeginForSidebar'], false);
-        lodashSet(this.props, ['stores', 'layout', 'headerScrollToEndForSidebar'], false);
-        
-      }
-      
-      initialPosition = true;
-      
-    }
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   サイドバーがない場合は初期位置にする
-    // ---------------------------------------------
-    
-    if (window.innerWidth <= 947) {
-      initialPosition = true;
-    }
-    
-    
-    // ---------------------------------------------
-    //   console.log
-    // ---------------------------------------------
-    
-    // console.log(chalk`
-    //   scrollY: {green ${scrollY}}
-    //   scrollUp: {green ${scrollUp}}
-    //   showNavTop: {green ${showNavTop}}
-    //   initialPosition: {green ${initialPosition}}
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   setState
-    // ---------------------------------------------
-    
-    if (this.state.initialPosition !== initialPosition) {
-      
-      this.setState({
-        initialPosition,
-      });
-      
-    }
-    
-    
-  }, 100);
   
   
   
@@ -272,9 +109,35 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    // const { stores } = this.props;
+    const { stores } = this.props;
     
-    // const headerNavForceScrollUpBegin2 = stores.layout.headerNavForceScrollUpBegin2;
+    
+    // --------------------------------------------------
+    //   react-spring
+    // --------------------------------------------------
+    
+    const showNavTop = lodashGet(stores, ['layout', 'showNavTop'], true);
+    // const lowerNavMain = lodashGet(stores, ['layout', 'lowerNavMain'], false);
+    const lowerSidebar = lodashGet(stores, ['layout', 'lowerSidebar'], false);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/components/sidebar.js
+    // `);
+    
+    // console.log(chalk`
+    //   showNavTop: {green ${showNavTop}}
+    //   lowerSidebar: {green ${lowerSidebar}}
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -282,7 +145,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Container initialPosition={this.state.initialPosition}>
+      <Container showNavTop={showNavTop} lowerSidebar={lowerSidebar}>
         
         
         {/*<img

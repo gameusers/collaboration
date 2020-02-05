@@ -79,7 +79,7 @@ const stylesObj = {
 //   react-spring
 // --------------------------------------------------
 
-const Container = ({ children, showNavTop }) => {
+const Container = ({ children, showNavTop, immediate }) => {
   
   const props = useSpring({
     transform: showNavTop ? 'translateY(0px)' : 'translateY(-53px)',
@@ -118,6 +118,8 @@ const Container = ({ children, showNavTop }) => {
 export default class extends React.Component {
   
   
+  // _isMounted = false;
+  
   // --------------------------------------------------
   //   constructor
   // --------------------------------------------------
@@ -125,6 +127,16 @@ export default class extends React.Component {
   constructor(props) {
     
     super(props);
+    
+    
+    // ---------------------------------------------
+    //   State
+    // ---------------------------------------------
+    
+    this.state = {
+      showNavTop: true,
+      immediate: true,
+    };
     
     
     // ---------------------------------------------
@@ -192,28 +204,15 @@ export default class extends React.Component {
   handleScroll = lodashThrottle(() => {
     
     
-    // ---------------------------------------------
-    //   Property
-    // ---------------------------------------------
-    
     const scrollY = window.scrollY;
-    let scrollUp = false;
-    
     const headerHeroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
     
-    const showNavTopOld = lodashGet(this.props, ['stores', 'layout', 'showNavTop'], true);
-    const lowerNavMainOld = lodashGet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
-    const lowerSidebarOld = lodashGet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
-    
-    let showNavTopNew = true;
-    let lowerNavMainNew = false;
-    let lowerSidebarNew = false;
-    
-    
+    let scrollUp = false;
+    let showNavTop = true;
     
     
     // ---------------------------------------------
-    //   scrollY === 0 / スクロールしていない状態
+    //   scrollY === 0
     // ---------------------------------------------
     
     if (scrollY !== 0) {
@@ -237,49 +236,55 @@ export default class extends React.Component {
       if (headerHeroImageHeight < scrollY) {
         
         if (scrollUp) {
-          showNavTopNew = true;
+          showNavTop = true;
         } else {
-          showNavTopNew = false;
+          showNavTop = false;
         }
         
       }
       
       
+      
+      
+      
+      
       // ---------------------------------------------
-      //   上向きのスクロールで Navigation Top が表示中の場合、Navigation Main の位置を下げる
+      //   scrollToで移動する場合、ナビゲーションを非表示にする
       // ---------------------------------------------
       
-      if (this.navTopHeight + headerHeroImageHeight < scrollY) {
-        
-        if (scrollUp && showNavTopNew) {
-          lowerNavMainNew = true;
-        }
-        
-        // サイドバーの位置を下げる
-        lowerSidebarNew = true;
-        
+      // console.log('Nav Top Scroll');
+      
+      const scrollToBegin = lodashGet(this.props, ['stores', 'layout', 'scrollToBegin'], false);
+      
+      console.log(chalk`
+        scrollY: {green ${scrollY}}
+        headerHeroImageHeight: {green ${headerHeroImageHeight}}
+        headerHeroImageHeight > scrollY: {green ${headerHeroImageHeight > scrollY}}
+        scrollUp: {green ${scrollUp}}
+        showNavTop: {green ${showNavTop}}
+        scrollToBegin: {green ${scrollToBegin}}
+      `);
+      
+      // if (headerHeroImageHeight < scrollY && scrollToBegin) {
+      //   console.log('Nav Top Stop');
+      //   showNavTop = false;
+      // }
+      
+      if (scrollToBegin) {
+        console.log('Hide NavTop');
+        showNavTop = false;
       }
       
       
     }
     
-    
-    // ---------------------------------------------
-    //   過去のスクロール量を記録
-    // ---------------------------------------------
     
     this.scrollYOffset = scrollY;
     
     
     
     
-    // ---------------------------------------------
-    //   デバイスの横幅が狭い場合（スマホなど）はサイドバーの位置を下げない
-    // ---------------------------------------------
     
-    if (window.innerWidth <= 947) {
-      lowerSidebarNew = false;
-    }
     
     
     
@@ -288,101 +293,25 @@ export default class extends React.Component {
     //   console.log
     // ---------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/layout/components/header/nav-top.js - handleScroll
-    // `);
-    
     // console.log(chalk`
     //   scrollY: {green ${scrollY}}
     //   this.navTopHeight: {green ${this.navTopHeight}}
     //   headerHeroImageHeight: {green ${headerHeroImageHeight}}
     //   scrollUp: {green ${scrollUp}}
-    //   showNavTopNew: {green ${showNavTopNew}}
-    //   lowerNavMainNew: {green ${lowerNavMainNew}}
-    //   lowerSidebarNew: {green ${lowerSidebarNew}}
+    //   showNavTop: {green ${showNavTop}}
     // `);
-    
-    
-    
-    
-    // ---------------------------------------------
-    //   scrollTo が終わって次のスクロールの処理
-    // ---------------------------------------------
-    
-    const scrollToEnd = lodashGet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
-    
-    // console.log(chalk`
-    //   scrollToEnd: {green ${scrollToEnd}}
-    // `);
-    
-    if (scrollToEnd) {
-      
-      // console.log(chalk`
-      //   Stop - lodashThrottle
-      // `);
-      
-      // ---------------------------------------------
-      //   コンテンツ量が少ない場合は Navigation Top を表示する
-      // ---------------------------------------------
-      
-      if (showNavTopNew && !lowerNavMainNew && !lowerSidebarNew) {
-        
-        lodashSet(this.props, ['stores', 'layout', 'showNavTop'], true);
-        
-        
-      // ---------------------------------------------
-      //   コンテンツ量が多い場合は Navigation Top を非表示にする
-      // ---------------------------------------------
-        
-      } else {
-        
-        lodashSet(this.props, ['stores', 'layout', 'showNavTop'], false);
-        
-      }
-      
-      
-      // ---------------------------------------------
-      //   Navigation Top & Sidebar の位置を下げる
-      // ---------------------------------------------
-      
-      lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], false);
-      lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], false);
-      
-      
-      // ---------------------------------------------
-      //   scrollTo 終了
-      // ---------------------------------------------
-      
-      lodashSet(this.props, ['stores', 'layout', 'scrollToEnd'], false);
-      
-      
-      // ---------------------------------------------
-      //   処理停止 / ストアは更新しない
-      // ---------------------------------------------
-      
-      return;
-      
-      
-    }
-    
-    
     
     
     // ---------------------------------------------
     //   setState
     // ---------------------------------------------
     
-    if (showNavTopOld !== showNavTopNew) {
-      lodashSet(this.props, ['stores', 'layout', 'showNavTop'], showNavTopNew);
-    }
-    
-    if (lowerNavMainOld !== lowerNavMainNew) {
-      lodashSet(this.props, ['stores', 'layout', 'lowerNavMain'], lowerNavMainNew);
-    }
-    
-    if (lowerSidebarOld !== lowerSidebarNew) {
-      lodashSet(this.props, ['stores', 'layout', 'lowerSidebar'], lowerSidebarNew);
+    if (this.state.showNavTop !== showNavTop) {
+      
+      this.setState({
+        showNavTop,
+      });
+      
     }
     
     
@@ -406,13 +335,6 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   react-spring
-    // --------------------------------------------------
-    
-    const showNavTop = lodashGet(stores, ['layout', 'showNavTop'], true);
-    
-    
-    // --------------------------------------------------
     //   loginUsersObj
     // --------------------------------------------------
     
@@ -421,7 +343,7 @@ export default class extends React.Component {
     const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
     
     
-    //  
+    
     
     // --------------------------------------------------
     //   Return
@@ -429,7 +351,8 @@ export default class extends React.Component {
     
     return (
       <Container
-        showNavTop={showNavTop}
+        showNavTop={this.state.showNavTop}
+        immediate={this.state.immediate}
       >
         
         

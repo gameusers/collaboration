@@ -46,13 +46,6 @@ const { validationUsers_idServer } = require('../../../../../app/@database/users
 const { validationManageMembersType } = require('../../../../../app/@database/follows/validations/manage-members-type');
 
 
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../../../../../app/@locales/locale');
-
-
 
 
 // --------------------------------------------------
@@ -67,15 +60,6 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   let statusCode = 400;
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
   
   
   // --------------------------------------------------
@@ -203,7 +187,7 @@ export default async (req, res) => {
     let followedArr = lodashGet(resultFollowsObj, ['followedArr'], []);
     let followedCount = lodashGet(resultFollowsObj, ['followedCount'], 1);
     let approvalArr = lodashGet(resultFollowsObj, ['approvalArr'], []);
-    let approvalCount = lodashGet(resultFollowsObj, ['followedCount'], 0);
+    let approvalCount = lodashGet(resultFollowsObj, ['approvalCount'], 0);
     let blockArr = lodashGet(resultFollowsObj, ['blockArr'], []);
     let blockCount = lodashGet(resultFollowsObj, ['blockCount'], 0);
     
@@ -293,16 +277,16 @@ export default async (req, res) => {
     
     
     
-    // // --------------------------------------------------
-    // //   Update
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
     
-    // await ModelFollows.upsert({
+    await ModelFollows.upsert({
       
-    //   conditionObj,
-    //   saveObj,
+      conditionObj,
+      saveObj,
       
-    // });
+    });
     
     
     
@@ -311,18 +295,18 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/follows/upsert-manage-members.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/follows/upsert-manage-members.js
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      managedUsers_id: {green ${managedUsers_id}}
-      type: {green ${type}}
-      authorUsers_id: {green ${authorUsers_id}}
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   managedUsers_id: {green ${managedUsers_id}}
+    //   type: {green ${type}}
+    //   authorUsers_id: {green ${authorUsers_id}}
+    // `);
     
     // console.log(`
     //   ----- resultUserCommunitiesObj -----\n
@@ -330,17 +314,17 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- resultFollowsObj -----\n
-      ${util.inspect(resultFollowsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultFollowsObj -----\n
+    //   ${util.inspect(resultFollowsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

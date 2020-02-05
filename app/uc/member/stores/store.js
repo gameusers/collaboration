@@ -120,8 +120,9 @@ class Store {
     pathname,
     userCommunities_id,
     newType,
-    page,
+    page = 1,
     newLimit,
+    forceReload = false,
     
   }) {
     
@@ -210,13 +211,26 @@ class Store {
       }
       
       
+      
+      
+      // --------------------------------------------------
+      //   強制再読み込み
+      // --------------------------------------------------
+      
+      if (forceReload) {
+        reload = true;
+      }
+      
+      
+      
+      
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/uc/member/stores/store.js
+      //   /app/uc/member/stores/store.js / handleReadMembers
       // `);
       
       // console.log(chalk`
@@ -443,6 +457,33 @@ class Store {
       });
       
       
+      // --------------------------------------------------
+      //   followedCount / ヘッダーのメンバー数更新
+      // --------------------------------------------------
+      
+      if (lodashHas(resultObj, ['data', 'followedCount'])) {
+        lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
+      }
+      
+      
+      // --------------------------------------------------
+      //   approvalCount
+      // --------------------------------------------------
+      
+      if (lodashHas(resultObj, ['data', 'approvalCount'])) {
+        lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
+      }
+      
+      
+      // --------------------------------------------------
+      //   blockCount
+      // --------------------------------------------------
+      
+      if (lodashHas(resultObj, ['data', 'blockCount'])) {
+        lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
+      }
+      
+      
     } catch (errorObj) {
       
       
@@ -498,7 +539,7 @@ class Store {
    * ダイアログを開く
    * @param {Array} pathArr - パス
    * @param {string} managedUsers_id - DB users _id / ユーザーのID
-   * @param {string} type - 処理のタイプ / unfollow / approval
+   * @param {string} type - 処理のタイプ / 'unfollow', 'approval', 'unapproval', 'block', 'unblock'
    */
   @action.bound
   async handleOpenDialog({
@@ -587,6 +628,7 @@ class Store {
   async handleMembers({
     
     pathArr,
+    pathname,
     userCommunities_id,
     type,
     
@@ -601,30 +643,6 @@ class Store {
       // ---------------------------------------------
       
       const managedUsers_id = lodashGet(this.dataObj, [...pathArr, 'managedUsers_id'], '');
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      console.log(`
-        ----------------------------------------\n
-        /app/uc/member/stores/store.js / handleMembers
-      `);
-      
-      console.log(chalk`
-        userCommunities_id: {green ${userCommunities_id}}
-        managedUsers_id: {green ${managedUsers_id}}
-        type: {green ${type}}
-      `);
-      
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
       
       
       
@@ -669,11 +687,11 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -689,85 +707,42 @@ class Store {
       
       
       
-      // // console.log(`
-      // //   ----- storeData.cardPlayersObj 1 -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // ---------------------------------------------
+      //   メンバー読み込み
+      // ---------------------------------------------
       
-      // // ---------------------------------------------
-      // //   updateCardPlayersObj
-      // // ---------------------------------------------
+      const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
       
-      // const newCardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-      // storeData.updateCardPlayersObj(newCardPlayersObj);
-      
-      
-      // // console.log(`
-      // //   ----- storeData.cardPlayersObj 2 -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(storeData.cardPlayersObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      this.handleReadMembers({
+        pathArr,
+        pathname,
+        userCommunities_id,
+        page,
+        forceReload: true,
+      });
       
       
       
-      // // ---------------------------------------------
-      // //   membersObj
-      // //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
-      // // ---------------------------------------------
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
       
-      // // console.log(`
-      // //   ----- clonedMembersObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(clonedMembersObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/uc/member/stores/store.js / handleMembers
+      // `);
       
-      // // console.log(chalk`
-      // //   reload: {green ${reload}}
-      // // `);
+      // console.log(chalk`
+      //   userCommunities_id: {green ${userCommunities_id}}
+      //   managedUsers_id: {green ${managedUsers_id}}
+      //   type: {green ${type}}
+      // `);
       
-      // const newMembersObj = lodashGet(resultObj, ['data', 'membersObj'], {});
-      // const mergedMembersObj = reload ? newMembersObj : lodashMerge(clonedMembersObj, newMembersObj);
-      
-      // // console.log(`
-      // //   ----- newMembersObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(newMembersObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      // // console.log(`
-      // //   ----- mergedMembersObj -----\n
-      // //   ${util.inspect(JSON.parse(JSON.stringify(mergedMembersObj)), { colors: true, depth: null })}\n
-      // //   --------------------\n
-      // // `);
-      
-      
-      
-      // // ---------------------------------------------
-      // //   更新 - メンバー
-      // // ---------------------------------------------
-      
-      // this.handleEdit({
-      //   pathArr: [...pathArr, 'membersObj'],
-      //   value: mergedMembersObj
-      // });
-      
-      
-      // // ---------------------------------------------
-      // //   Set Temporary Data - memberPage
-      // // ---------------------------------------------
-      
-      // storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
-      
-      
-      // // ---------------------------------------------
-      // //   更新 - type
-      // // ---------------------------------------------
-      
-      // this.handleEdit({
-      //   pathArr: [...pathArr, 'type'],
-      //   value: type
-      // });
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
     } catch (errorObj) {
@@ -910,7 +885,7 @@ export default function initStoreUcMember({ propsObj }) {
     
     
     // --------------------------------------------------
-    //   membersObj
+    //   blockCount
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['blockCount'])) {

@@ -215,37 +215,29 @@ export default async (req, res) => {
     });
     
     const followedArr = lodashGet(followsObj, ['followedArr'], []);
-    const followedCount = lodashGet(followsObj, ['followedCount'], 1);
+    returnObj.followedCount = lodashGet(followsObj, ['followedCount'], 1);
     
     let users_idsArr = followedArr;
-    let count = followedCount;
+    let count = returnObj.followedCount;
     
     if (author) {
+      
+      returnObj.approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
+      returnObj.blockCount = lodashGet(followsObj, ['blockCount'], 0);
       
       if (type === 'approval') {
         
         users_idsArr = lodashGet(followsObj, ['approvalArr'], []);
-        count = lodashGet(followsObj, ['approvalCount'], 0);
+        count = returnObj.approvalCount;
         
       } else if (type === 'block') {
         
         users_idsArr = lodashGet(followsObj, ['blockArr'], []);
-        count = lodashGet(followsObj, ['approvalCount'], 0);
+        count = returnObj.blockCount;
         
       }
       
-      // const approvalArr = lodashGet(followsObj, ['approvalArr'], []);
-      // const approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
-      // const blockArr = lodashGet(followsObj, ['blockArr'], []);
-      // const blockCount = lodashGet(followsObj, ['blockCount'], 0);
-      
     }
-    
-    // console.log(`
-    //   ----- approvalArr -----\n
-    //   ${util.inspect(approvalArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     

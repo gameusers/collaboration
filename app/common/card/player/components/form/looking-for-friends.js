@@ -74,6 +74,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -206,15 +208,12 @@ export default injectIntl(class extends React.Component {
           
           <FormControl>
             <Select
+              id="friend"
               value={value}
               onChange={(eventObj) => handleCardPlayerEditFormData({
                 pathArr: [_id, 'lookingForFriendsObj', 'value'],
                 value: eventObj.target.value
               })}
-              inputProps={{
-                name: 'friend',
-                id: 'friend',
-              }}
             >
               <MenuItem value={true}>募集中</MenuItem>
               <MenuItem value={false}>募集していません</MenuItem>

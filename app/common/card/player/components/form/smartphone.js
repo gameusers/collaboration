@@ -70,6 +70,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -102,6 +104,8 @@ export default injectIntl(class extends React.Component {
     //   search: {green ${search}}
     //   age: {green ${age}}
     // `);
+    
+    
     
     
     // --------------------------------------------------

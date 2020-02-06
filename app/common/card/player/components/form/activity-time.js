@@ -147,7 +147,7 @@ export default injectIntl(class extends React.Component {
             
             <TextField
               css={cssTextField}
-              id="beginTime"
+              id={`beginTimeActivityTime${index}`}
               label="開始時間"
               type="time"
               value={beginTime}
@@ -165,7 +165,7 @@ export default injectIntl(class extends React.Component {
             
             <TextField
               css={cssTextField}
-              id="endTime"
+              id={`endTimeActivityTime${index}`}
               label="終了時間"
               type="time"
               value={endTime}

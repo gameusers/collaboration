@@ -45,7 +45,7 @@ const schema = mongoose.Schema({
   followCount: { type: Number, default: 0, required: true },
   followedArr: [String],
   followedCount: { type: Number, default: 0, required: true },
-  role: { type: String, default: 'User', required: true },
+  role: { type: String, enum: ['user', 'administrator'], required: true },
 });
 
 

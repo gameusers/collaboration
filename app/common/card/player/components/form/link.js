@@ -91,6 +91,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -167,15 +169,12 @@ export default injectIntl(class extends React.Component {
                     width: 200px;
                   }
                 `}
+                _id="linkType"
                 value={type}
                 onChange={(eventObj) => handleCardPlayerEditFormData({
                   pathArr: [_id, 'linkArr', index, 'type'],
                   value: eventObj.target.value
                 })}
-                inputProps={{
-                  name: 'linkType',
-                  id: 'linkType',
-                }}
               >
                 <MenuItem value={'Twitter'}>Twitter</MenuItem>
                 <MenuItem value={'Facebook'}>Facebook</MenuItem>
@@ -242,7 +241,7 @@ export default injectIntl(class extends React.Component {
                 width: 100%;
               }
             `}
-            id="linkURL"
+            id={`linkURL${index}`}
             label="URL"
             value={url}
             onChange={(eventObj) => handleCardPlayerEditFormData({

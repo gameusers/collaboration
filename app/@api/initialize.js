@@ -184,7 +184,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         followCount: 0,
         followedArr: ['P7UJMuUnx'],
         followedCount: 1,
-        role: 'User'
+        role: 'user'
       },
       
       
@@ -216,7 +216,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         followCount: 1,
         followedArr: [],
         followedCount: 0,
-        role: 'User'
+        role: 'user'
       },
       
       
@@ -248,7 +248,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         followCount: 0,
         followedArr: [],
         followedCount: 0,
-        role: 'User'
+        role: 'user'
       },
     ];
     
@@ -2131,7 +2131,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         },
         pcObj: {
           model: '自作PC',
-          comment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブ���どを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
+          comment: `BTOで買ったPCが壊れそうになったので、ケースや光学ドライブなを流用しながらパーツを新しくしました。HDからSSDに移行したときはその速さに驚きましたね！容量があまりないので大量にゲームをインストールできないのですが、高速なのでなんとかSSDでやりくりしていきたいです。
     
     グラボを積んでいないのですが、Ryzen 3 2200Gの機能で昔のゲームや2Dゲームなら普通に動きます。比較的最近のゲームですが、ダーケストダンジョンもいけました。`,
           specsObj: {

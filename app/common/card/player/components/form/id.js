@@ -49,6 +49,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -60,7 +62,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { _id, idArr, func } = this.props;
+    const { _id, ids_idArr, func } = this.props;
     
     
     // --------------------------------------------------
@@ -69,7 +71,7 @@ export default class extends React.Component {
     
     const componentsSelectedArr = [];
     
-    for (const [index, valueObj] of idArr.entries()) {
+    for (const [index, valueObj] of ids_idArr.entries()) {
       
       const games_id = lodashGet(valueObj, ['games_id'], '');
       const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
@@ -96,8 +98,13 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`\n---------- idArr / id ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(idArr)));
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/player/components/form/id.js
+    // `);
+    
+    // console.log(`\n---------- ids_idArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(ids_idArr)));
     // console.log(`\n-----------------------------------\n`);
     
     // console.log(chalk`
@@ -155,7 +162,7 @@ export default class extends React.Component {
         >
           <IDForm
             _id={_id}
-            idArr={idArr}
+            idArr={ids_idArr}
             func={func}
           />
         </div>

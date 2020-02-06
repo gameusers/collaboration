@@ -177,7 +177,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         followCount: 0,
         followedArr: ['P7UJMuUnx'],
         followedCount: 1,
-        role: 'User'
+        role: 'user'
       },
       
       
@@ -196,7 +196,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         followCount: 1,
         followedArr: [],
         followedCount: 0,
-        role: 'User'
+        role: 'user'
       },
       
       
@@ -215,7 +215,7 @@ router.post('/insert', upload.none(), async (req, res, next) => {
         followCount: 0,
         followedArr: [],
         followedCount: 0,
-        role: 'User'
+        role: 'user'
       },
     ];
     

@@ -152,19 +152,6 @@ export default class extends React.Component {
     
     this.scrollYOffset = 0;
     this.navTopHeight = 53;
-    // this.heroImageHeight = lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0);
-    
-    // console.log(`
-    //   ----- this.temporaryDataObj -----\n
-    //   ${util.inspect(lodashGet(this.props, ['stores', 'layout'], 0), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   componentDidMount
-    //   this.heroImageHeight1: {green ${this.heroImageHeight}}
-    //   this.heroImageHeight2: {green ${lodashGet(this.props, ['stores', 'layout', 'headerHeroImageHeight'], 0)}}
-    // `);
     
     window.addEventListener('scroll', this.handleScroll);
     
@@ -421,7 +408,7 @@ export default class extends React.Component {
     const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
     
     
-    //  
+    
     
     // --------------------------------------------------
     //   Return

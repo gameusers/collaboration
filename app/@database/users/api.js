@@ -480,7 +480,7 @@ router.post('/create-account', upload.none(), async (req, res, next) => {
       followCount: 0,
       followedArr: [],
       followedCount: 0,
-      role: 'User'
+      role: 'user'
     }];
     
     

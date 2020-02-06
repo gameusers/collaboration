@@ -69,7 +69,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Header - Navigation / Top & Main
+  //   Header - Navigation / Top & Main / Sidebar
   // ---------------------------------------------
   
   /**
@@ -181,44 +181,6 @@ class Store {
    * ログインメニューの表示・非表示を切り替える真偽値
    * @type {boolean}
    */
-  // @observable headerLoginMenuOpen = false;
-  
-  
-  // /**
-  // * ログインメニューを開く
-  // * @param {Object} eventObj - イベント
-  // */
-  // @action.bound
-  // handleHeaderLoginMenuOpen() {
-  //   this.headerLoginMenuOpen = true;
-  // };
-  
-  
-  // /**
-  // * ログインメニューを閉じる
-  // */
-  // @action.bound
-  // handleHeaderLoginMenuClose() {
-  //   // this.headerLoginMenuAnchorEl = null;
-  //   this.headerLoginMenuOpen = false;
-  // };
-  
-  
-  // ---------------------------------------------
-  //   Header - ログインメニュー
-  // ---------------------------------------------
-  
-  /**
-   * メニューの位置を設定するために使用されるDOM要素
-   * @type {string}
-   */
-  // @observable headerLoginMenuAnchorEl = null;
-  
-  
-  /**
-   * ログインメニューの表示・非表示を切り替える真偽値
-   * @type {boolean}
-   */
   @observable headerLoginMenuOpen = false;
   
   
@@ -284,17 +246,17 @@ class Store {
   //   Header - Navigation Sub
   // ----------------------------------------
   
-  @observable headerNavSubDialogOpenObj = {};
+  // @observable headerNavSubDialogOpenObj = {};
   
-  @action.bound
-  handleHeaderNavSubDialogOpen(id) {
-    this.headerNavSubDialogOpenObj[id] = true;
-  };
+  // @action.bound
+  // handleHeaderNavSubDialogOpen(id) {
+  //   this.headerNavSubDialogOpenObj[id] = true;
+  // };
   
-  @action.bound
-  handleHeaderNavSubDialogClose(id) {
-    this.headerNavSubDialogOpenObj[id] = false;
-  };
+  // @action.bound
+  // handleHeaderNavSubDialogClose(id) {
+  //   this.headerNavSubDialogOpenObj[id] = false;
+  // };
   
   
   
@@ -677,13 +639,6 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * scrollTo を開始
-   * @type {boolean}
-   */
-  // scrollToBegin = false;
-  
-  
-  /**
    * scrollTo を終了
    * @type {boolean}
    */
@@ -695,8 +650,7 @@ class Store {
   /**
    * 特定の場所へスクロールする
    * 移動先は <Element name="..."></Element> で囲む / name に入力した値を to に指定すると移動できる
-   * scrollToBegin & scrollToEnd
-   * これはページトップのナビゲーションの位置を操作するための変数
+   * scrollToEnd これはページトップのナビゲーションの位置を操作するための変数
    */
   @action.bound
   handleScrollTo({ to, duration = 0, delay = 0, smooth = 'easeInOutQuart', offset = -50 }) {
@@ -710,10 +664,6 @@ class Store {
     //   /app/common/layout/stores/layout.js - handleScrollTo
     // `);
     
-    
-    // this.scrollToBegin = true;
-    // this.headerScrollToBeginForSidebar = true;
-    
     scroller.scrollTo(to, {
       duration,
       delay,
@@ -723,13 +673,7 @@ class Store {
     
     Events.scrollEvent.register('end', (to, element) => {
       // console.log('Events.scrollEvent.register(end)');
-      
-      // lodashSet(storeLayout, ['showNavTop'], false);
-      // lodashSet(storeLayout, ['lowerNavMain'], false);
-      // lodashSet(storeLayout, ['lowerSidebar'], false);
-      
       this.scrollToEnd = true;
-      // this.headerScrollToEndForSidebar = true;
     });
     
   };

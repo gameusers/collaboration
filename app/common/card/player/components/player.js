@@ -81,6 +81,10 @@ export default class extends React.Component {
   constructor(props) {
     
     
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -189,7 +193,6 @@ export default class extends React.Component {
     const name = lodashGet(cardPlayersObj, ['nameObj', 'value'], '');
     const status = lodashGet(cardPlayersObj, ['statusObj', 'value'], '');
     const comment = lodashGet(cardPlayersObj, ['commentObj', 'value'], '');
-    // const thumbnailSrc = lodashGet(cardPlayersObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '');
     const exp = lodashGet(cardPlayersObj, ['usersObj', 'exp'], 0);
     const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
     const userID = lodashGet(cardPlayersObj, ['usersObj', 'userID'], '');
@@ -270,7 +273,7 @@ export default class extends React.Component {
     //   ID
     // ---------------------------------------------
     
-    const idArr = lodashGet(cardPlayersObj, ['ids_idArr'], []);
+    const ids_idArr = lodashGet(cardPlayersObj, ['ids_idArr'], []);
     
     
     // ---------------------------------------------
@@ -315,6 +318,8 @@ export default class extends React.Component {
     // console.log(chalk`
     //   formOpen: {green ${formOpen}}
     // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -411,7 +416,7 @@ export default class extends React.Component {
           {formOpen ? (
             
             <FormPlayer
-              _id={cardPlayers_id}
+              cardPlayers_id={cardPlayers_id}
             />
             
           ) : (
@@ -505,7 +510,7 @@ export default class extends React.Component {
                 
                 {/* ID */}
                 <Id
-                  arr={idArr}
+                  arr={ids_idArr}
                 />
                 
                 
@@ -548,7 +553,7 @@ export default class extends React.Component {
                 {/* 編集ボタン */}
                 {showEditButton &&
                   <EditButton
-                    pathArr={this.pathArr}
+                    // pathArr={this.pathArr}
                     cardPlayers_id={cardPlayers_id}
                     users_id={users_id}
                   />

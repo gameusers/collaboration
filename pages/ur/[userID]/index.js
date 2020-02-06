@@ -123,6 +123,8 @@ export default class extends React.Component {
     createCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
@@ -146,10 +148,12 @@ export default class extends React.Component {
     
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
-    // const login = lodashGet(resultObj, ['data', 'login'], false);
     
     const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
     const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
+    const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
+    
+    
     
     
     // --------------------------------------------------
@@ -187,7 +191,7 @@ export default class extends React.Component {
     
     // console.log(chalk`
     //   userID: {green ${userID}}
-    //   pathname: {green ${pathname}}
+    //   accessLevel: {green ${accessLevel}}
     // `);
     
     // console.log(`
@@ -199,6 +203,8 @@ export default class extends React.Component {
     // console.log(`
     //   ----------------------------------------
     // `);
+    
+    
     
     
     // --------------------------------------------------

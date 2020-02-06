@@ -70,6 +70,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -99,6 +101,8 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   _id: {green ${_id}}
     // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -132,7 +136,7 @@ export default injectIntl(class extends React.Component {
               }
             }
           `}
-          id="smartphoneModel"
+          id="tabletModel"
           label="モデル・機種名"
           value={tabletObj.model}
           onChange={(eventObj) => handleCardPlayerEditFormData({

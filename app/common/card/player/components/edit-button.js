@@ -44,7 +44,22 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.cardPlayers_id, 'editButton'];
+    
+    
   }
   
   
@@ -61,7 +76,7 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.props.pathArr });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -80,11 +95,11 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeCardPlayer, cardPlayers_id, users_id, pathArr } = this.props;
+    const { stores, storeCardPlayer, cardPlayers_id, users_id } = this.props;
     
-    const { loginUsersObj } = stores.data;
+    const { login, loginUsersObj } = stores.data;
     
-    const { handleFormOpen } = storeCardPlayer;
+    const { handleShowForm } = storeCardPlayer;
     
     
     
@@ -93,7 +108,7 @@ export default class extends React.Component {
     //   ログインしていない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (Object.keys(loginUsersObj).length === 0) {
+    if (!login) {
       return null;
     }
     
@@ -113,25 +128,7 @@ export default class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Component - Button
-    // --------------------------------------------------
-    
-    let componentButton =
-      <Button
-        variant="outlined"
-        color="primary"
-        onClick={() => handleFormOpen({ _id: cardPlayers_id })}
-        disabled={buttonDisabled}
-      >
-        編集する
-      </Button>
-    ;
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -141,16 +138,13 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- loginUsersObj -----\n
-    //   ${util.inspect(loginUsersObj, { colors: true, depth: null })}\n
+    //   ----- this.pathArr -----\n
+    //   ${util.inspect(this.pathArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(chalk`
-    //   users_id: {green ${users_id}}
-    //   loginUsersObj._id: {green ${loginUsersObj._id}}
-    //   followedCount: {green ${followedCount}}
-    //   followed: {green ${followed}}
+    //   cardPlayers_id._id: {green ${cardPlayers_id._id}}
     // `);
     
     
@@ -166,7 +160,14 @@ export default class extends React.Component {
           margin: 28px 0 0 0;
         `}
       >
-        {componentButton}
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleShowForm({ pathArr: this.pathArr, cardPlayers_id })}
+          disabled={buttonDisabled}
+        >
+          編集する
+        </Button>
       </div>
     );
     

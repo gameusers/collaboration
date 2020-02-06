@@ -253,139 +253,139 @@ let errorArgumentsObj = {
 //   プレイヤーカードのデータを1件取得 / endpointID: 34KBpPcqT
 // --------------------------------------------------
 
-router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, next) => {
+// router.post('/find-one-by-id-for-edit-form', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  errorArgumentsObj.functionID = '34KBpPcqT';
-  
-  let returnObj = {};
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
-  try {
-    
-    
-    // --------------------------------------------------
-    //   CSRF
-    // --------------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
-      throw new Error();
-    }
-    
-    const loginUsers_id = req.user._id;
-    
-    
-    // --------------------------------------------------
-    //   POST 取得 & Validation
-    // --------------------------------------------------
-    
-    const { _id } = req.body;
-    const validationObj = validation_id({ required: true, value: _id });
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
-    
-    const cardPlayersObj = await ModelCardPlayers.findOneBy_idForEditForm({
-      _id,
-      language: localeObj.language,
-      country: localeObj.country,
-      loginUsers_id
-    });
-    
-    returnObj = cardPlayersObj;
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- validationObj -----\n
-    //   ${util.inspect(validationObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Error Object
-    // ---------------------------------------------
-    
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
   
-});
+//   errorArgumentsObj.functionID = '34KBpPcqT';
+  
+//   let returnObj = {};
+  
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   CSRF
+//     // --------------------------------------------------
+    
+//     verifyCsrfToken(req, res);
+    
+    
+//     // --------------------------------------------------
+//     //   Login Check
+//     // --------------------------------------------------
+    
+//     if (!req.isAuthenticated()) {
+//       statusCode = 401;
+//       errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+//       throw new Error();
+//     }
+    
+//     const loginUsers_id = req.user._id;
+    
+    
+//     // --------------------------------------------------
+//     //   POST 取得 & Validation
+//     // --------------------------------------------------
+    
+//     const { _id } = req.body;
+//     const validationObj = validation_id({ required: true, value: _id });
+    
+//     if (validationObj.errorCodeArr.length > 0) {
+//       errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+//       throw new Error();
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得 / Card Players
+//     //   アクセスしたページ所有者のプレイヤーカード情報
+//     // --------------------------------------------------
+    
+//     const cardPlayersObj = await ModelCardPlayers.findOneBy_idForEditForm({
+//       _id,
+//       language: localeObj.language,
+//       country: localeObj.country,
+//       loginUsers_id
+//     });
+    
+//     returnObj = cardPlayersObj;
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   _id: {green ${_id}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- validationObj -----\n
+//     //   ${util.inspect(validationObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- localeObj -----\n
+//     //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- cardPlayersObj -----\n
+//     //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // ---------------------------------------------
+//     //   Return Json Object / Success
+//     // ---------------------------------------------
+    
+//     return res.status(200).json(returnObj);
+    
+    
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Error Object
+//     // ---------------------------------------------
+    
+//     errorArgumentsObj.errorObj = errorObj;
+//     const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
+  
+// });
 
 
 

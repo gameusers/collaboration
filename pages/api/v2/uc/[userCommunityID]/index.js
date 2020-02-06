@@ -118,16 +118,6 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['forumReplyLimit'], forumReplyLimit);
     
     
-    // console.log(chalk`
-    //   api / forumThreadListPage: {green ${forumThreadListPage}} / {green ${await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error}}
-    //   api / forumThreadListLimit: {green ${forumThreadListLimit}} / {green ${await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error}}
-    //   api / forumThreadPage: {green ${forumThreadPage}} / {green ${await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error}}
-    //   api / forumThreadLimit: {green ${forumThreadLimit}} / {green ${await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error}}
-    //   api / forumCommentLimit: {green ${forumCommentLimit}} / {green ${await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error}}
-    //   api / forumReplyLimit: {green ${forumReplyLimit}} / {green ${await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error}}
-    // `);
-    
-    
     
     
     // --------------------------------------------------
@@ -137,6 +127,7 @@ export default async (req, res) => {
     const commonInitialPropsObj = await initialProps({ req, res, localeObj });
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     

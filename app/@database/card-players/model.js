@@ -357,16 +357,6 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
       
     }
     
-    // if (users_idsArr) {
-      
-    //   matchConditionArr = [
-    //     {
-    //       $match : { users_id: { $in: users_idsArr } },
-    //     },
-    //   ];
-      
-    // }
-    
     
     // console.log(`
     //   ----- matchConditionArr -----\n
@@ -604,9 +594,11 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
+      
       localeObj,
       loginUsers_id,
       ids_idArr,
+      
     });
     
     
@@ -865,13 +857,15 @@ const findOneBy_id = async ({
     let ids_idArr = [];
     
     for (let valueObj of resultCardPlayersArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.idArr);
+      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
+      
       localeObj,
       loginUsers_id,
-      arr: ids_idArr,
+      ids_idArr,
+      
     });
     
     
@@ -938,21 +932,13 @@ const findOneBy_id = async ({
  * @param {Object} argumentsObj - 引数
  * @return {Object} 取得データ
  */
-const findOneBy_idForEditForm = async (argumentsObj) => {
+const findOneBy_idForEditForm = async ({
   
+  _id,
+  localeObj,
+  loginUsers_id,
   
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    _id,
-    language,
-    country,
-    loginUsers_id
-    
-  } = argumentsObj;
+}) => {
   
   
   // --------------------------------------------------
@@ -984,6 +970,7 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
       },
       
       
+      // ハードウェア
       {
         $lookup:
           {
@@ -999,15 +986,15 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
                     [
                       { $and:
                         [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
                         ]
                       },
                       { $and:
                         [
-                          { $eq: ['$language', language] },
-                          { $eq: ['$country', country] },
+                          { $eq: ['$language', localeObj.language] },
+                          { $eq: ['$country', localeObj.country] },
                           { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
                         ]
                       }
@@ -1064,14 +1051,15 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     let ids_idArr = [];
     
     for (let valueObj of resultCardPlayersArr.values()) {
-      ids_idArr = ids_idArr.concat(valueObj.idArr);
+      ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
     }
     
     const resultIDsObj = await ModelIDs.findForCardPlayer({
-      language,
-      country,
+      
+      localeObj,
       loginUsers_id,
-      arr: ids_idArr,
+      ids_idArr,
+      
     });
     
     
@@ -1090,8 +1078,13 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/card-players/model.js - findOneBy_idForEditForm
+    // `);
     
     // console.log(`
     //   ----- resultCardPlayersArr -----\n
@@ -1108,12 +1101,6 @@ const findOneBy_idForEditForm = async (argumentsObj) => {
     // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj['zaoOWw89g'].idArr -----\n
-    //   ${util.inspect(returnObj['zaoOWw89g'].idArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -1780,185 +1767,6 @@ const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
 
 
 /**
- * DBから取得したカード情報をフォーマットする
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} cardPlayersArr - カード情報の入った配列
- * @param {Object} idsObj - ID情報の入ったオブジェクト
- * @return {Object} フォーマット後のデータ
- */
-const formatVer2 = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  const returnArr = [];
-  
-  
-  // --------------------------------------------------
-  //   Loop
-  // --------------------------------------------------
-  
-  for (let valueObj of cardPlayersArr) {
-    
-    
-    // --------------------------------------------------
-    //   Deep Copy
-    // --------------------------------------------------
-    
-    const clonedObj = lodashCloneDeep(valueObj);
-    
-    
-    // --------------------------------------------------
-    //   画像をフォーマットする
-    // --------------------------------------------------
-    
-    const formattedObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosObj });
-    
-    if (formattedObj) {
-      
-      clonedObj.imagesAndVideosObj = formattedObj;
-      
-    } else {
-      
-      delete clonedObj.imagesAndVideosObj;
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   画像をフォーマットする - サムネイル
-    // --------------------------------------------------
-    
-    const formattedThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.imagesAndVideosThumbnailObj });
-    
-    if (formattedThumbnailObj) {
-      
-      clonedObj.imagesAndVideosThumbnailObj = formattedThumbnailObj;
-      
-    } else {
-      
-      delete clonedObj.imagesAndVideosThumbnailObj;
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   hardwareActive
-    // --------------------------------------------------
-    
-    clonedObj.hardwareActiveArr = [];
-    
-    for (let value of valueObj.hardwareActiveObj.valueArr) {
-      
-      const obj = valueObj.hardwaresArr.find((value2) => {
-        return value2.hardwareID === value;
-      });
-      
-      if (obj && 'name' in obj) {
-        clonedObj.hardwareActiveArr.push({
-          name: obj.name
-        });
-      }
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   hardwareInactive
-    // --------------------------------------------------
-    
-    clonedObj.hardwareInactiveArr = [];
-    
-    for (let value of valueObj.hardwareInactiveObj.valueArr) {
-      
-      const obj = valueObj.hardwaresArr.find((value2) => {
-        return value2.hardwareID === value;
-      });
-      
-      if (obj && 'name' in obj) {
-        clonedObj.hardwareInactiveArr.push({
-          name: obj.name
-        });
-      }
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Follow の処理
-    // --------------------------------------------------
-    
-    clonedObj.usersObj.follow = false;
-    clonedObj.usersObj.followed = false;
-    
-    if (loginUsers_id) {
-      
-      if (clonedObj.users_id !== loginUsers_id) {
-        
-        if (clonedObj.usersObj.followArr.includes(loginUsers_id)) {
-          clonedObj.usersObj.follow = true;
-        }
-        
-        if (clonedObj.usersObj.followedArr.includes(loginUsers_id)) {
-          clonedObj.usersObj.followed = true;
-        }
-        
-      }
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   ID
-    // --------------------------------------------------
-    
-    clonedObj.ids_idArr = [];
-    
-    for (let value of valueObj.ids_idArr) {
-      
-      if (value in idsObj) {
-        clonedObj.ids_idArr.push(idsObj[value]);
-      }
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   不要な項目を削除する
-    // --------------------------------------------------
-    
-    // delete clonedObj._id;
-    delete clonedObj.usersObj.followArr;
-    delete clonedObj.usersObj.followedArr;
-    delete clonedObj.hardwareActiveObj;
-    delete clonedObj.hardwareInactiveObj;
-    delete clonedObj.hardwaresArr;
-    delete clonedObj.imagesAndVideos_id;
-    delete clonedObj.imagesAndVideosThumbnail_id;
-    
-    
-    returnArr.push(clonedObj);
-    
-    
-  }
-  
-  
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
-  
-  return returnArr;
-  
-  
-};
-
-
-
-
-/**
  * DBから取得したカード情報をフォーマットする　編集フォーム用
  * @param {Array} cardPlayersArr - カード情報の入った配列
  * @param {Object} idsObj - ID情報の入ったオブジェクト
@@ -1989,14 +1797,6 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     
     
     // --------------------------------------------------
-    //   画像の処理
-    // --------------------------------------------------
-    
-    // clonedObj.imageVideoArr = formatImagesAndVideosArr({ arr: clonedObj.imageVideoArr });
-    // clonedObj.imageArr = srcset(`/img/card/players/${valueObj._id}/`, clonedObj.imageVideoArr);
-    
-    
-    // --------------------------------------------------
     //   hardwareActive
     // --------------------------------------------------
     
@@ -2044,12 +1844,12 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   ID
     // --------------------------------------------------
     
-    clonedObj.idArr = [];
+    clonedObj.ids_idArr = [];
     
-    for (let value of valueObj.idArr) {
+    for (let value of valueObj.ids_idArr) {
       
       if (value in idsObj) {
-        clonedObj.idArr.push(idsObj[value]);
+        clonedObj.ids_idArr.push(idsObj[value]);
       }
       
     }
@@ -2059,10 +1859,6 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    // delete clonedObj._id;
-    // delete clonedObj.imageVideoArr;
-    // delete clonedObj.hardwareActiveObj;
-    // delete clonedObj.hardwareInactiveObj;
     delete clonedObj.hardwaresArr;
     
     

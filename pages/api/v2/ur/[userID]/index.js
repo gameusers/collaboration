@@ -51,7 +51,7 @@ const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 // --------------------------------------------------
-//   endpointID: P3ut9x3Fj
+//   endpointID: CuUwo1avA
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -97,17 +97,6 @@ export default async (req, res) => {
     
     lodashSet(requestParametersObj, ['userID'], userID);
     
-    // console.log(chalk`
-    //   /pages/api/v2/ur/[userID].js
-    //   userID: {green ${userID}}
-    // `);
-    
-    // console.log(`
-    //   ----- req.query -----\n
-    //   ${util.inspect(req.query, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     
     
     
@@ -118,6 +107,7 @@ export default async (req, res) => {
     const commonInitialPropsObj = await initialProps({ req, res, localeObj });
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     
@@ -141,10 +131,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const users_id = lodashGet(usersObj, ['_id'], '');
+    // returnObj.users_id = users_id;
     
     if (!users_id) {
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'IVX1dL1pJ', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
     }
     
     
@@ -163,9 +154,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+      
       localeObj,
       users_id,
-      loginUsers_id
+      loginUsers_id,
+      
     });
     
     returnObj.cardPlayersObj = cardPlayersObj;
@@ -181,6 +174,32 @@ export default async (req, res) => {
       returnObj.cardsArr.push({
         cardPlayers_id: cardPlayersKeysArr[0]
       });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   権限
+    //   0: ブロックしているユーザー
+    //   1: 非ログインユーザー
+    //   2: ログインユーザー（以下ログイン済みユーザー）
+    //   3: 自分のことをフォローしているユーザー
+    //   4: 自分がフォローしているユーザー
+    //   5: 相互フォロー状態のユーザー
+    //   50: 自分自身
+    //   100: サイト管理者
+    // --------------------------------------------------
+    
+    returnObj.accessLevel = 1;
+    
+    
+    // ---------------------------------------------
+    //   - 自分自身
+    // ---------------------------------------------
+    
+    if (users_id === loginUsers_id) {
+      returnObj.accessLevel = 50;
     }
     
     
@@ -239,7 +258,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'P3ut9x3Fj',
+      endpointID: 'CuUwo1avA',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

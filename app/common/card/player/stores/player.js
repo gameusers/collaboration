@@ -507,24 +507,24 @@ class Store {
   
   
   /**
-   * 編集フォームを閉じる
+   * 編集フォームを非表示にする
    * @param {string} _id - ID
    */
   @action.bound
-  handleFormClose({ _id }) {
+  handleHideForm({ _id }) {
     this.formOpenObj[_id] = false;
   };
   
   
+  
+  
   /**
-   * 編集フォームを開く
+   * 編集フォームを表示する
    * @param {string} _id - ID
    */
   @action.bound
-  async handleFormOpen({ _id }) {
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    // `);
+  async handleShowForm({ pathArr, cardPlayers_id }) {
+    
     
     try {
       
@@ -534,14 +534,11 @@ class Store {
       //   編集フォームをすぐに表示する
       // ---------------------------------------------
       
-      if (_id in this.cardPlayerEditFormDataObj) {
+      if (cardPlayers_id in this.cardPlayerEditFormDataObj) {
         
-        this.formOpenObj[_id] = true;
-        // console.log(chalk`
-        //   2 this.formOpenObj[_id]: {green ${this.formOpenObj[_id]}}
-        // `);
-      
-      
+        this.formOpenObj[cardPlayers_id] = true;
+        
+        
       // ---------------------------------------------
       //   編集フォームに表示するデータがまだ読み込まれていない場合
       //   Fetch でデータを取得してから編集フォームを表示する
@@ -549,23 +546,25 @@ class Store {
       
       } else {
         
-        // console.log('fetchWrapper');
-         
-        
-        // ---------------------------------------------
-        //   FormData
-        // ---------------------------------------------
-        
-        const formData = new FormData();
-        
-        formData.append('_id', _id);
-        
         
         // ---------------------------------------------
         //   Button Disable
         // ---------------------------------------------
         
-        storeLayout.handleButtonDisable({ _id: `${_id}-editButton` });
+        storeLayout.handleButtonDisable({ pathArr });
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
+        
+        const formDataObj = {
+          
+          cardPlayers_id,
+          
+        };
         
         
         // ---------------------------------------------
@@ -573,10 +572,12 @@ class Store {
         // ---------------------------------------------
         
         const resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v1/card-players/find-one-by-id-for-edit-form`,
+          urlApi: `${process.env.URL_API}/v2/db/card-players/read-edit-form`,
           methodType: 'POST',
-          formData: formData
+          formData: JSON.stringify(formDataObj),
         });
+        
+        
         
         
         // ---------------------------------------------
@@ -588,11 +589,16 @@ class Store {
         }
         
         
+        
+        
         // ---------------------------------------------
         //   Data 更新
         // ---------------------------------------------
         
+        // フォームを元に戻すためのデータ
         this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data);
+        
+        // フォームのデータ
         this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data);
         
         
@@ -600,26 +606,33 @@ class Store {
         //   編集フォーム表示
         // ---------------------------------------------
         
-        this.formOpenObj[_id] = true;
-        // console.log(chalk`
-        //   1 this.formOpenObj[_id]: {green ${this.formOpenObj[_id]}}
-        // `);
+        this.formOpenObj[cardPlayers_id] = true;
         
-        // console.log(`
-        //   ----- resultObj -----\n
-        //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
+        
+        
+        
+        // --------------------------------------------------
+        //   console.log
+        // --------------------------------------------------
+        
+        console.log(`
+          ----------------------------------------\n
+          /app/common/card/player/stores/player.js - handleShowForm
+        `);
+        
+        console.log(chalk`
+          cardPlayers_id: {green ${cardPlayers_id}}
+        `);
+        
+        console.log(`
+          ----- resultObj -----\n
+          ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+          --------------------\n
+        `);
         
         // console.log(`
         //   ----- this.cardPlayerEditFormDataObj -----\n
         //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        // console.log(`
-        //   ----- resultObj.data -----\n
-        //   ${util.inspect(resultObj.data, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
          
@@ -636,7 +649,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: `${_id}-editButton` });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
     }
@@ -1530,7 +1543,7 @@ class Store {
       //   編集フォームを閉じる
       // ---------------------------------------------
       
-      this.handleFormClose({ _id });
+      this.handleHideForm({ _id });
       
       
       // ---------------------------------------------

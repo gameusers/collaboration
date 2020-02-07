@@ -28,6 +28,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { withStyles } from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -86,6 +87,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -102,6 +105,8 @@ export default injectIntl(class extends React.Component {
     const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -115,6 +120,8 @@ export default injectIntl(class extends React.Component {
     // console.log(chalk`
     //   _id: {green ${_id}}
     // `);
+    
+    
     
     
     // --------------------------------------------------

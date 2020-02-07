@@ -70,7 +70,7 @@ const validationCardPlayersAddressAlternativeText = ({ throwError = false, requi
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sxLOlaD2_', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PWwhQEfYl', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -83,7 +83,7 @@ const validationCardPlayersAddressAlternativeText = ({ throwError = false, requi
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'JM9ILDjg3', messageID: 'xdAU7SgoO' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '4SYOfMu_6', messageID: 'xdAU7SgoO' }] });
     }
     
     

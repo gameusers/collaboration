@@ -76,6 +76,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -99,12 +101,20 @@ export default injectIntl(class extends React.Component {
     const validationObj = validationCardPlayersStatus({ value: statusObj.value });
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          border-top: 1px dashed #848484;
+          margin: 24px 0 0 0;
+          padding: 24px 0 0 0;
+        `}
+      >
         
         
         <TextField
@@ -152,7 +162,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </React.Fragment>
+      </div>
     );
     
   }

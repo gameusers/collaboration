@@ -65,6 +65,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -76,7 +78,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeGameForm, pathArr, _id, gameCommunities_id, name, imagesAndVideosObj } = this.props;
+    const { stores, storeGameForm, pathArr, _id, gameCommunities_id, name, imagesAndVideosThumbnailObj } = this.props;
     
     const {
       
@@ -102,8 +104,7 @@ export default class extends React.Component {
     
     let componentAvatar = '';
     
-    // const thumbnailArr = lodashGet(imagesAndVideosObj, ['thumbnailArr'], []);
-    const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosObj });
+    const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosThumbnailObj });
     
     const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
     const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
@@ -145,6 +146,8 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -153,13 +156,15 @@ export default class extends React.Component {
     //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
-    // console.log(`\n---------- imagesAndVideosObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosObj)));
+    // console.log(`\n---------- imagesAndVideosThumbnailObj ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)));
     // console.log(`\n-----------------------------------\n`);
     
-    // console.log(`\n---------- imagesAndVideosObj.thumbnailArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosObj.thumbnailArr)));
+    // console.log(`\n---------- imagesAndVideosThumbnailObj.thumbnailArr ----------\n`);
+    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj.thumbnailArr)));
     // console.log(`\n-----------------------------------\n`);
+    
+    
     
     
     // --------------------------------------------------

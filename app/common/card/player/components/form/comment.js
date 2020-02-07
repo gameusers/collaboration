@@ -28,6 +28,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { withStyles } from '@material-ui/core/styles';
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
@@ -74,6 +75,8 @@ export default injectIntl(class extends React.Component {
   constructor(props) {
     super(props);
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -152,11 +155,7 @@ export default injectIntl(class extends React.Component {
         />
         
         
-        <div
-          css={css`
-            margin: 0 0 10px 0;
-          `}
-        >
+        <div>
           <FormControlLabel
             classes={{
               label: classes.label

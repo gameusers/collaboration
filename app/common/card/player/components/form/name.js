@@ -27,6 +27,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { withStyles } from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -76,6 +77,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -99,6 +102,8 @@ export default injectIntl(class extends React.Component {
     const validationObj = validationCardPlayersName({ value: nameObj.value });
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -114,12 +119,20 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          border-top: 1px dashed #848484;
+          margin: 24px 0 0 0;
+          padding: 24px 0 0 0;
+        `}
+      >
         
         
         <TextField
@@ -167,7 +180,7 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
-      </React.Fragment>
+      </div>
     );
     
   }

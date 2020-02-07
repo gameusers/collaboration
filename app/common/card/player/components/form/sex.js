@@ -27,6 +27,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import { withStyles } from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -79,6 +80,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -109,6 +112,8 @@ export default injectIntl(class extends React.Component {
     const validationAlternativeTextObj = validationCardPlayersSexAlternativeText({ value: sexObj.alternativeText });
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -125,6 +130,8 @@ export default injectIntl(class extends React.Component {
     //   search: {green ${search}}
     //   age: {green ${age}}
     // `);
+    
+    
     
     
     // --------------------------------------------------

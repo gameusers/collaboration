@@ -80,6 +80,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -94,6 +96,8 @@ export default injectIntl(class extends React.Component {
     const { classes, storeCardPlayer, _id, value, comment, search } = this.props;
     
     const { handleCardPlayerEditFormData } = storeCardPlayer;
+    
+    
     
     
     // --------------------------------------------------
@@ -113,6 +117,8 @@ export default injectIntl(class extends React.Component {
     //   comment: {green ${comment}}
     //   search: {green ${search}}
     // `);
+    
+    
     
     
     // --------------------------------------------------

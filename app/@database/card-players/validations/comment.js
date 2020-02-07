@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -70,7 +70,7 @@ const validationCardPlayersComment = ({ throwError = false, required = false, va
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '0HMcr04y1', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'X4iRQK6J9', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -83,7 +83,7 @@ const validationCardPlayersComment = ({ throwError = false, required = false, va
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'NaqKT6zLr', messageID: 'pLES2ZGM2' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'X4iRQK6J9', messageID: 'pLES2ZGM2' }] });
     }
     
     

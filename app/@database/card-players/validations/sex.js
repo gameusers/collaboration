@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -62,7 +62,7 @@ const validationCardPlayersSex = ({ throwError = false, required = false, value 
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lorwxYIBL', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Jrd1IjPsA', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -75,7 +75,7 @@ const validationCardPlayersSex = ({ throwError = false, required = false, value 
     // ---------------------------------------------
     
     if (!validator.isIn(value, ['empty', 'male', 'female'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SdtP4efup', messageID: 'PH8jcw-VF' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PbaKwvYK7', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -162,7 +162,7 @@ const validationCardPlayersSexAlternativeText = ({ throwError = false, required 
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '7Ao0r2Qz7', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qBefeahsk', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -175,7 +175,7 @@ const validationCardPlayersSexAlternativeText = ({ throwError = false, required 
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '26NSEsAyo', messageID: 'xdAU7SgoO' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Jw_MZydQB', messageID: 'xdAU7SgoO' }] });
     }
     
     

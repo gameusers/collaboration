@@ -88,6 +88,8 @@ export default injectIntl(class extends React.Component {
     const { handleCardPlayerEditFormData } = storeCardPlayer;
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------

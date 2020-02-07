@@ -923,13 +923,13 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
                         }
                       }
                     ],
-                    as: 'imagesAndVideosObj'
+                    as: 'imagesAndVideosThumbnailObj'
                   }
               },
               
               {
                 $unwind: {
-                  path: '$imagesAndVideosObj',
+                  path: '$imagesAndVideosThumbnailObj',
                   preserveNullAndEmptyArrays: true,
                 }
               },
@@ -939,7 +939,7 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
                 {
                   gameCommunities_id: 1,
                   name: 1,
-                  imagesAndVideosObj: 1,
+                  imagesAndVideosThumbnailObj: 1,
                 }
               },
             ],

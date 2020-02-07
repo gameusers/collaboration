@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-import chalk from 'chalk';
-import util from 'util';
+const chalk = require('chalk');
+const util = require('util');
 
 
 // ---------------------------------------------
@@ -22,45 +22,36 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
+const ModelIDs = require('../../../../../app/@database/ids/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../../app/@modules/error/custom');
+const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
+const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
+const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-// const { validationInteger } = require('../../../../../../app/@validations/integer');
-// const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../../app/@database/forum-threads/validations/limit');
-// const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../../app/@database/forum-comments/validations/limit');
+const { validationIP } = require('../../../../../app/@validations/ip');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../../app/@locales/locale');
-
-
-// ---------------------------------------------
-//   API
-// ---------------------------------------------
-
-const { initialProps } = require('../../../../../../app/@api/v2/common');
+const { locale } = require('../../../../../app/@locales/locale');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: 5GMP5E__4
+//   endpointID: XtfH9qOjQ
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -86,7 +77,7 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {};
+  let returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -104,11 +95,12 @@ export default async (req, res) => {
     
     const {
       
-      userCommunityID
+      cardPlayers_id
       
     } = bodyObj;
     
-    lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    
+    lodashSet(requestParametersObj, ['cardPlayers_id'], cardPlayers_id);
     
     
     
@@ -126,55 +118,32 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'xWkmN-gAs', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '2NVUozGka', messageID: 'xLLNIpo6a' }] });
     }
     
     
     
     
     // --------------------------------------------------
-    //   Common Initial Props
+    //   Validation
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    await validationIP({ throwError: true, value: req.ip });
     
     
     
     
     // --------------------------------------------------
-    //   DB find / User Community
+    //   DB find / IDs
+    //   ログインしているユーザーの登録IDデータ
     // --------------------------------------------------
     
-    const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunityID });
-    
-    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    const userCommunitiesUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
-    
-    
-    // --------------------------------------------------
-    //   コミュニティが存在しない場合はエラー
-    // --------------------------------------------------
-    
-    if (!userCommunities_id) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fppwXm8iV', messageID: 'Error' }] });
-    }
-    
-    returnObj.userCommunityObj = userCommunityObj;
-    
-    
-    // --------------------------------------------------
-    //   コミュニティのオーナーでない場合はエラー
-    // --------------------------------------------------
-    
-    if (userCommunitiesUsers_id !== loginUsers_id) {
-      statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '5rP5wjjRU', messageID: 'Error' }] });
-    }
+    returnObj = await ModelIDs.findBy_Users_idForForm({
+      
+      localeObj,
+      loginUsers_id,
+      
+    });
     
     
     
@@ -183,19 +152,24 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunitiesUsers_id: {green ${userCommunitiesUsers_id}}
-    //   userCommunityID: {green ${userCommunityID}}
-    //   userCommunities_id：{green ${userCommunities_id}}
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/ids/read-edit-form.js
     // `);
     
     // console.log(`
-    //   ----- userCommunityArr -----\n
-    //   ${util.inspect(userCommunityArr, { colors: true, depth: null })}\n
+    //   ----- localeObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     // ---------------------------------------------
@@ -214,7 +188,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: '5GMP5E__4',
+      endpointID: 'XtfH9qOjQ',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

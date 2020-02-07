@@ -24,16 +24,6 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const { validationIDsPlatform } = require('../../../@database/ids/validations/platform');
-const { validationIDsLabel } = require('../../../@database/ids/validations/label');
-const { validationIDsID } = require('../../../@database/ids/validations/id');
-const { validationIDsPublicSetting } = require('../../../@database/ids/validations/public-setting');
-
-
-// ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
@@ -54,6 +44,16 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+import { validationIDsPlatform } from '../../../@database/ids/validations/platform';
+import { validationIDsLabel } from '../../../@database/ids/validations/label';
+import { validationIDsID } from '../../../@database/ids/validations/id';
+import { validationIDsPublicSetting } from '../../../@database/ids/validations/public-setting';
 
 
 // ---------------------------------------------
@@ -136,8 +136,25 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props._id, 'idFormEditObj'];
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -146,13 +163,17 @@ export default injectIntl(class extends React.Component {
   
   componentDidMount() {
     
+    
     // --------------------------------------------------
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormEditSubmit` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -166,17 +187,17 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeIDForm, intl, _id, func, idArr } = this.props;
+    const { classes, stores, storeIDForm, intl, _id, ids_idArr } = this.props;
     
-    const { buttonDisabledObj } = stores.layout;
+    // const { buttonDisabledObj } = stores.layout;
     
     const {
       
       dataObj,
       handleEdit,
       handleSetEditForm,
-      handleGame,
-      handleGameDelete,
+      // handleGame,
+      // handleGameDelete,
       handleDeleteDialogOpen,
       handleDeleteDialogClose,
       handleEditSubmit,
@@ -185,11 +206,13 @@ export default injectIntl(class extends React.Component {
     } = storeIDForm;
     
     
+    
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormEditSubmit`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -203,9 +226,13 @@ export default injectIntl(class extends React.Component {
     
     for (const [index, valueObj] of dataArr.entries()) {
       
-      const games_id = lodashGet(valueObj, ['games_id'], '');
-      const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
-      const gamesName = lodashGet(valueObj, ['gamesName'], '');
+      const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
+      const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
+      const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+      
+      // const games_id = lodashGet(valueObj, ['games_id'], '');
+      // const gamesName = lodashGet(valueObj, ['gamesName'], '');
+      // const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesImagesAndVideosThumbnailObj'], {});
       
       componentsIDArr.push(
         <div
@@ -218,8 +245,8 @@ export default injectIntl(class extends React.Component {
             label={valueObj.label}
             id={valueObj.id}
             games_id={games_id}
-            gamesThumbnailArr={gamesThumbnailArr}
             gamesName={gamesName}
+            gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
           />
         </div>
       );
@@ -241,7 +268,7 @@ export default injectIntl(class extends React.Component {
     //   ゲーム選択フォーム
     // --------------------------------------------------
     
-    const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
+    // const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
     
     // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
     const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
@@ -298,8 +325,8 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(`
-    //   ----- idArr -----\n
-    //   ${util.inspect(idArr, { colors: true, depth: null })}\n
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -398,10 +425,11 @@ export default injectIntl(class extends React.Component {
         {/* ゲーム選択 */}
         {gameSelectForm &&
           <GameForm
-            _id={_id}
-            gamesArr={gamesArr}
-            func={handleGame}
-            funcDelete={handleGameDelete}
+            pathArr={this.pathArr}
+            // _id={_id}
+            // gamesArr={gamesArr}
+            // func={handleGame}
+            // funcDelete={handleGameDelete}
           />
         }
         
@@ -528,8 +556,7 @@ export default injectIntl(class extends React.Component {
             color="primary"
             onClick={() => handleEditSubmit({
               _id,
-              func,
-              idArr
+              ids_idArr
             })}
             disabled={buttonDisabled}
           >
@@ -573,8 +600,7 @@ export default injectIntl(class extends React.Component {
             <Button
               onClick={() => handleDeleteSubmit({
                 _id,
-                func,
-                idArr
+                ids_idArr
               })}
               color="primary"
               autoFocus

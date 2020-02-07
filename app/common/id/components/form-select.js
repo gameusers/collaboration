@@ -79,8 +79,25 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props._id, 'idFormSelectObj'];
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -94,10 +111,12 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormSelect` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -111,9 +130,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, _id, func } = this.props;
-    
-    const { buttonDisabledObj } = stores.layout;
+    const { stores, storeIDForm, type, _id } = this.props;
     
     const {
       
@@ -125,11 +142,13 @@ export default class extends React.Component {
     } = storeIDForm;
     
     
+    
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormSelect`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -155,9 +174,13 @@ export default class extends React.Component {
         
         selectedIDsArr.push(tempObj);
         
-        const games_id = lodashGet(tempObj, ['games_id'], '');
-        const gamesThumbnailArr = lodashGet(tempObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
-        const gamesName = lodashGet(tempObj, ['gamesName'], '');
+        const games_id = lodashGet(tempObj, ['gamesObj', '_id'], '');
+        const gamesName = lodashGet(tempObj, ['gamesObj', 'name'], '');
+        const gamesImagesAndVideosThumbnailObj = lodashGet(tempObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+        
+        // const games_id = lodashGet(tempObj, ['games_id'], '');
+        // const gamesName = lodashGet(tempObj, ['gamesName'], '');
+        // const gamesImagesAndVideosThumbnailObj = lodashGet(tempObj, ['gamesImagesAndVideosThumbnailObj'], {});
         
         componentsSelectedArr.push(
           <div
@@ -170,8 +193,8 @@ export default class extends React.Component {
               label={tempObj.label}
               id={tempObj.id}
               games_id={games_id}
-              gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
+              gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
             />
           </div>
         );
@@ -179,6 +202,8 @@ export default class extends React.Component {
       }
       
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -197,9 +222,13 @@ export default class extends React.Component {
       
       if (tempObj) {
         
-        const games_id = lodashGet(tempObj, ['games_id'], '');
-        const gamesThumbnailArr = lodashGet(tempObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
-        const gamesName = lodashGet(tempObj, ['gamesName'], '');
+        const games_id = lodashGet(tempObj, ['gamesObj', '_id'], '');
+        const gamesName = lodashGet(tempObj, ['gamesObj', 'name'], '');
+        const gamesImagesAndVideosThumbnailObj = lodashGet(tempObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+        
+        // const games_id = lodashGet(tempObj, ['games_id'], '');
+        // const gamesName = lodashGet(tempObj, ['gamesName'], '');
+        // const gamesImagesAndVideosThumbnailObj = lodashGet(tempObj, ['gamesImagesAndVideosThumbnailObj'], {});
         
         componentsUnselectedArr.push(
           <div
@@ -212,8 +241,8 @@ export default class extends React.Component {
               label={tempObj.label}
               id={tempObj.id}
               games_id={games_id}
-              gamesThumbnailArr={gamesThumbnailArr}
               gamesName={gamesName}
+              gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
             />
           </div>
         );
@@ -291,9 +320,10 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleSelectButton({
+            type,
             _id,
-            idArr: selectedIDsArr,
-            func
+            ids_idArr: selectedIDsArr,
+            // func
           })}
           disabled={buttonDisabled}
         >

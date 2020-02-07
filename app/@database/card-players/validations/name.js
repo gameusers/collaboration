@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -67,7 +67,7 @@ const validationCardPlayersName = ({ throwError = false, value }) => {
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '2YEX3nEIx', messageID: 'xdAU7SgoO' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'd-Av3H3zC', messageID: 'xdAU7SgoO' }] });
     }
     
     

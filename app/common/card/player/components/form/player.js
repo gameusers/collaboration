@@ -73,12 +73,14 @@ import ImageAndVideoForm from '../../../../image-and-video/components/form';
 // --------------------------------------------------
 
 const cssBox = css`
-  margin: 36px 0 0 0;
+  border-top: 1px dashed #848484;
+  margin: 24px 0 0 0;
+  padding: 24px 0 0 0;
 `;
 
-const cssImageBox = css`
-  margin: 24px 0 0 0;
-`;
+// const cssImageBox = css`
+//   margin: 24px 0 0 0;
+// `;
 
 // const cssImageTitle = css`
 //   font-weight: bold;
@@ -119,7 +121,7 @@ export default class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props.cardPlayers_id, 'form'];
+    this.pathArr = [props.cardPlayers_id, 'formObj'];
     
     
   }
@@ -230,30 +232,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- cardPlayerEditFormDataObj[cardPlayers_id] -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayerEditFormDataObj[cardPlayers_id])), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayerEditFormDataObj[cardPlayers_id] -----\n
-    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id], { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayerEditFormDataObj[cardPlayers_id].imagesAndVideosObj -----\n
-    //   ${util.inspect(cardPlayerEditFormDataObj[cardPlayers_id].imagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- linkArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(linkArr)), { colors: true, depth: null })}\n
     //   --------------------\n
@@ -294,7 +272,7 @@ export default class extends React.Component {
               margin: 0 0 24px 0;
             `}
           >
-            プレイヤーカードというのは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になりますので、いろいろ入力してみてください。
+            プレイヤーカードとは、Game Users 内で基本的なプロフィールとして扱われるデータです。あなたがどんなゲームプレイヤーなのか知ってもらう情報になります。
           </p>
           
           
@@ -312,52 +290,76 @@ export default class extends React.Component {
           />
           
           
-          {/* サムネイル */}
-          <div css={cssImageBox}>
-            
-            <ImageAndVideoForm
-              pathArr={[...this.pathArr, 'thumbnailObj']}
-              type="ucThumbnail"
-              showVideoButton={false}
-              showImageCaption={false}
-              limit={1}
-            />
-            
-            {/*<ImageAndVideoFormImage
-              _id={`${cardPlayers_id}-thumbnail`}
-              heading="サムネイル"
-              description="ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 128 x 128 以上）をアップロードしてください。"
-              func={handleImagesAndVideosObjThumbnailArr}
-              imagesAndVideosArr={imagesAndVideosObj.thumbnailArr}
-              caption={false}
-              limit={1}
-            />*/}
-            
-          </div>
           
           
-          {/* メイン画像 */}
-          <div css={cssImageBox}>
+          {/* Image Main */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              メイン画像
+            </h3>
+            
+            <p
+            >
+              プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
+            </p>
             
             <ImageAndVideoForm
               pathArr={this.pathArr}
-              type="ucTop"
+              type="cardPlayerMain"
               showVideoButton={false}
               showImageCaption={false}
               limit={1}
             />
             
-            {/*<ImageAndVideoFormImage
-              _id={`${cardPlayers_id}-main`}
-              heading="メイン画像"
-              description="プレイヤーカードに表示される大きな画像です。横長の画像（推奨サイズ 1280 x 720 以上）をアップロードしてください。"
-              func={handleImagesAndVideosObjMainArr}
-              imagesAndVideosArr={imagesAndVideosObj.mainArr}
-              caption={true}
+          </div>
+          
+          
+          {/* Image Thumbnail */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              サムネイル画像
+            </h3>
+            
+            <p
+            >
+              ハンドルネームの左側に表示される小さな画像です。正方形の画像（推奨サイズ 256 x 256 ピクセル以上）をアップロードしてください。
+            </p>
+            
+            <ImageAndVideoForm
+              pathArr={[...this.pathArr, 'thumbnailObj']}
+              type="cardPlayerThumbnail"
+              showVideoButton={false}
+              showImageCaption={false}
               limit={1}
-            />*/}
+            />
             
           </div>
+          
+          
           
           
           {/* コメント */}
@@ -473,9 +475,10 @@ export default class extends React.Component {
           {/* ID */}
           <div css={cssBox}>
             <ID
+              type="cardPlayerForm"
               _id={cardPlayers_id}
               ids_idArr={ids_idArr}
-              func={handleCardPlayerEditID}
+              // func={handleCardPlayerEditID}
             />
           </div>
           

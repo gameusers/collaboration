@@ -62,7 +62,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { _id, ids_idArr, func } = this.props;
+    const { type, _id, ids_idArr } = this.props;
+    
+    
     
     
     // --------------------------------------------------
@@ -74,8 +76,8 @@ export default class extends React.Component {
     for (const [index, valueObj] of ids_idArr.entries()) {
       
       const games_id = lodashGet(valueObj, ['games_id'], '');
-      const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
       const gamesName = lodashGet(valueObj, ['gamesName'], '');
+      const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesImagesAndVideosThumbnailObj'], {});
       
       componentsSelectedArr.push(
         <IDChip
@@ -84,8 +86,8 @@ export default class extends React.Component {
           label={valueObj.label}
           id={valueObj.id}
           games_id={games_id}
-          gamesThumbnailArr={gamesThumbnailArr}
           gamesName={gamesName}
+          gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
         />
       );
       
@@ -103,15 +105,14 @@ export default class extends React.Component {
     //   /app/common/card/player/components/form/id.js
     // `);
     
-    // console.log(`\n---------- ids_idArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(ids_idArr)));
-    // console.log(`\n-----------------------------------\n`);
-    
     // console.log(chalk`
-    //   value: {green ${value}}
-    //   alternativeText: {green ${alternativeText}}
-    //   search: {green ${search}}
-    //   age: {green ${age}}
+    //   _id: {green ${_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     
@@ -138,6 +139,8 @@ export default class extends React.Component {
         <p>ゲームや連絡先のIDを表示します。「IDを編集する」ボタンを押して、表示したいIDを選択してください。</p>
         
         
+        
+        
         {/* 選択済みID */}
         <div
           css={css`
@@ -154,16 +157,18 @@ export default class extends React.Component {
         </div>
         
         
-        {/* ID選択・編集フォーム */}
+        
+        
+        {/* ID 選択・編集フォーム */}
         <div
           css={css`
             margin: 24px 0 0 0;
           `}
         >
           <IDForm
+            type={type}
             _id={_id}
-            idArr={ids_idArr}
-            func={func}
+            ids_idArr={ids_idArr}
           />
         </div>
         

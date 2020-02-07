@@ -32,7 +32,6 @@ const ModelIDs = require('../ids/model');
 //   Modules
 // ---------------------------------------------
 
-// import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
@@ -461,9 +460,6 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
                   accessDate: 1,
                   exp: 1,
                   userID: 1,
-                  // followArr: 1,
-                  // followedArr: 1,
-                  // followedCount: 1,
                 }
               }
             ],
@@ -970,6 +966,74 @@ const findOneBy_idForEditForm = async ({
       },
       
       
+      // 画像と動画を取得
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // 画像と動画を取得 - サムネイル用
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                }
+              },
+              { $project:
+                {
+                  // _id: 0,
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosThumbnailObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosThumbnailObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
       // ハードウェア
       {
         $lookup:
@@ -1015,30 +1079,6 @@ const findOneBy_idForEditForm = async ({
       },
       
       
-      // {
-      //   $project: {
-      //     __v: 0,
-      //     createdDate: 0,
-      //     language: 0,
-      //     ageObj: { search: 0 },
-      //     sexObj: { search: 0 },
-      //     addressObj: { search: 0 },
-      //     gamingExperienceObj: { search: 0 },
-      //     hobbiesObj: { search: 0 },
-      //     specialSkillsObj: { search: 0 },
-      //     smartphoneObj: { search: 0 },
-      //     tabletObj: { search: 0 },
-      //     pcObj: { search: 0 },
-      //     hardwareActiveObj: { search: 0 },
-      //     hardwareInactiveObj: { search: 0 },
-      //     activityTimeObj: { search: 0 },
-      //     'activityTimeObj.valueArr': { _id: 0 },
-      //     lookingForFriendsObj: { search: 0 },
-      //     voiceChatObj: { search: 0 },
-      //     idArr: { _id: 0, search: 0 },
-      //     linkArr: { _id: 0, search: 0 },
-      //   }
-      // },
     ]).exec();
     
     

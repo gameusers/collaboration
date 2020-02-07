@@ -26,6 +26,7 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
+import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
@@ -80,8 +81,25 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props._id, 'idForm'];
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -95,10 +113,12 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idForm` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -112,9 +132,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, _id, idArr, func } = this.props;
-    
-    const { buttonDisabledObj } = stores.layout;
+    const { stores, storeIDForm, type, _id, ids_idArr, func } = this.props;
     
     const {
       
@@ -138,7 +156,7 @@ export default class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idForm`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -152,26 +170,34 @@ export default class extends React.Component {
     let componentContent = '';
     
     if (contentsType === 'select') {
+      
       componentContent =
         <FormSelect
+          type={type}
           _id={_id}
-          func={func}
+          // func={func}
         />
       ;
+      
     } else if (contentsType === 'edit') {
+      
       componentContent =
         <FormEdit
+          type={type}
           _id={_id}
-          func={func}
-          idArr={idArr}
+          // func={func}
+          ids_idArr={ids_idArr}
         />
       ;
+      
     } else {
+      
       componentContent =
         <FormRegister
           _id={`${_id}-register`}
         />
       ;
+      
     }
     
     
@@ -181,13 +207,20 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/components/form.js
+    // `);
+    
     // console.log(chalk`
     //   _id: {green ${_id}}
     // `);
     
-    // console.log(`\n---------- idArr / form ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(idArr)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -205,13 +238,16 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleDialogOpen({
+            pathArr: this.pathArr,
             _id,
-            idArr
+            ids_idArr
           })}
           disabled={buttonDisabled}
         >
           IDを編集する
         </Button>
+        
+        
         
         
         {/* ダイアログ - ID選択＆登録フォーム */}
@@ -258,44 +294,51 @@ export default class extends React.Component {
             `}
           >
             
-            <Button
-              css={cssButton}
-              variant="outlined"
+            <ButtonGroup
               color="primary"
-              onClick={() => handleEdit({
-                pathArr: [_id, 'contentsType'],
-                value: 'select'
-              })}
-              disabled={buttonDisabled}
+              aria-label="outlined primary button group"
             >
-              選択
-            </Button>
-            
-            <Button
-              css={cssButton}
-              variant="outlined"
-              color="primary"
-              onClick={() => handleEdit({
-                pathArr: [_id, 'contentsType'],
-                value: 'edit'
-              })}
-              disabled={buttonDisabled}
-            >
-              編集
-            </Button>
-            
-            <Button
-              css={cssButton}
-              variant="outlined"
-              color="primary"
-              onClick={() => handleEdit({
-                pathArr: [_id, 'contentsType'],
-                value: 'register'
-              })}
-              disabled={buttonDisabled}
-            >
-              登録
-            </Button>
+              
+              <Button
+                // css={cssButton}
+                // variant="outlined"
+                // color="primary"
+                onClick={() => handleEdit({
+                  pathArr: [_id, 'contentsType'],
+                  value: 'select'
+                })}
+                disabled={buttonDisabled}
+              >
+                選択
+              </Button>
+              
+              <Button
+                // css={cssButton}
+                // variant="outlined"
+                // color="primary"
+                onClick={() => handleEdit({
+                  pathArr: [_id, 'contentsType'],
+                  value: 'edit'
+                })}
+                disabled={buttonDisabled}
+              >
+                編集
+              </Button>
+              
+              <Button
+                // css={cssButton}
+                // variant="outlined"
+                // color="primary"
+                onClick={() => handleEdit({
+                  pathArr: [_id, 'contentsType'],
+                  value: 'register'
+                })}
+                disabled={buttonDisabled}
+              >
+                登録
+              </Button>
+              
+            </ButtonGroup>
             
           </div>
           

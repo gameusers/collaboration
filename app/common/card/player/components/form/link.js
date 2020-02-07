@@ -115,11 +115,15 @@ export default injectIntl(class extends React.Component {
     } = storeCardPlayer;
     
     
+    
+    
     // --------------------------------------------------
     //   Validations
     // --------------------------------------------------
     
     const validationObj = validationCardPlayersLinkArr({ valueArr: arr });
+    
+    
     
     
     // --------------------------------------------------

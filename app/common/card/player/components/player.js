@@ -53,7 +53,7 @@ import Smartphone from './smartphone';
 import Tablet from './tablet';
 import Pc from './pc';
 import Hardware from './hardware';
-import Id from './id';
+import ID from './id';
 import ActivityTime from './activity-time';
 import LookingForFriend from './looking-for-friends';
 import VoiceChat from './voice-chat';
@@ -315,10 +315,6 @@ export default class extends React.Component {
     
     const formOpen = lodashGet(storeCardPlayer, ['formOpenObj', cardPlayers_id], false);
     
-    // console.log(chalk`
-    //   formOpen: {green ${formOpen}}
-    // `);
-    
     
     
     
@@ -332,21 +328,15 @@ export default class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   defaultExpanded: {green ${defaultExpanded}}
+    //   formOpen: {green ${formOpen}}
     //   panelExpanded: {green ${panelExpanded}}
     // `);
     
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   users_id: {green ${users_id}}
-    //   stores.data.loginUsersObj._id: {green ${stores.data.loginUsersObj._id}}
-    //   users_id: {green ${users_id}}
-    //   editFormOpen: {green ${editFormOpen}}
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
-    
-    // console.log(`\n---------- cardPlayersObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(cardPlayersObj)));
-    // console.log(`\n-----------------------------------\n`);
     
     
     
@@ -509,7 +499,7 @@ export default class extends React.Component {
                 
                 
                 {/* ID */}
-                <Id
+                <ID
                   arr={ids_idArr}
                 />
                 

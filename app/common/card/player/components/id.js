@@ -56,6 +56,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -90,8 +92,8 @@ export default class extends React.Component {
     for (const [index, valueObj] of arr.entries()) {
       
       const games_id = lodashGet(valueObj, ['games_id'], '');
-      const gamesThumbnailArr = lodashGet(valueObj, ['gamesImagesAndVideosObj', 'thumbnailArr'], []);
       const gamesName = lodashGet(valueObj, ['gamesName'], '');
+      const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesImagesAndVideosThumbnailObj'], {});
       
       componentsArr.push(
         <IDChip
@@ -100,8 +102,8 @@ export default class extends React.Component {
           label={valueObj.label}
           id={valueObj.id}
           games_id={games_id}
-          gamesThumbnailArr={gamesThumbnailArr}
           gamesName={gamesName}
+          gamesImagesAndVideosThumbnailObj={gamesImagesAndVideosThumbnailObj}
         />
       );
       
@@ -114,12 +116,15 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/player/components/id.js
     // `);
     
     // console.log(`
-    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     

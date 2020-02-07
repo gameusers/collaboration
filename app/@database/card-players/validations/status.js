@@ -3,7 +3,7 @@
 // --------------------------------------------------
 
 // ---------------------------------------------
-//   Console 出力用
+//   Console
 // ---------------------------------------------
 
 const chalk = require('chalk');
@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -67,7 +67,7 @@ const validationCardPlayersStatus = ({ throwError = false, value }) => {
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sioCZZxDF', messageID: 'xdAU7SgoO' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ZAsO84x3A', messageID: 'xdAU7SgoO' }] });
     }
     
     

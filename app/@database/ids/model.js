@@ -27,6 +27,13 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 const Schema = require('./schema');
 
 
+// ---------------------------------------------
+//   Modules
+// ---------------------------------------------
+
+const { formatImagesAndVideosObj } = require('../images-and-videos/format');
+
+
 
 
 // --------------------------------------------------
@@ -315,8 +322,10 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
     // --------------------------------------------------
     
     const resultIDsArr = await findBy_idsArr({
+      
       localeObj,
       ids_idArr,
+      
     });
     
     
@@ -325,8 +334,11 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
     // --------------------------------------------------
     
     const returnObj = formatToObject({
+      
+      localeObj,
       arr: resultIDsArr,
       loginUsers_id
+      
     });
     
     
@@ -380,25 +392,18 @@ const findForCardPlayer = async ({ localeObj, loginUsers_id, ids_idArr }) => {
 
 
 /**
- * users_id を利用して、まとめてデータを取得し
- * 利用しやすくフォーマットされたオブジェクトを返す
- * @param {Object} argumentsObj - 引数
+ * users_id を利用して、まとめてデータを取得し、利用しやすくフォーマットされたオブジェクトを返す 
+ * フォーム用
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findBy_Users_idForForm = async (argumentsObj) => {
+const findBy_Users_idForForm = async ({
   
+  localeObj,
+  loginUsers_id,
   
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const {
-    
-    language,
-    country,
-    loginUsers_id
-    
-  } = argumentsObj;
+}) => {
   
   
   // --------------------------------------------------
@@ -409,47 +414,93 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     
     
     // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    
+    // --------------------------------------------------
     //   ID データを取得
     // --------------------------------------------------
     
     let resultIDsArr = await Schema.aggregate([
+      
       
       {
         $match : { users_id: loginUsers_id }
       },
       
       
+      // 関連するゲーム
       // {
       //   $lookup:
       //     {
-      //       from: 'users',
-      //       let: { idsUsers_id: '$users_id' },
+      //       from: 'games',
+      //       let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
       //       pipeline: [
+              
       //         { $match:
       //           { $expr:
-      //             { $eq: ['$_id', '$$idsUsers_id'] },
+      //             { $and:
+      //               [
+      //                 { $eq: ['$language', language] },
+      //                 { $eq: ['$country', country] },
+      //                 { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
+      //               ]
+      //             },
       //           }
       //         },
+              
+              
+      //         // 画像と動画を取得
+      //         {
+      //           $lookup:
+      //             {
+      //               from: 'images-and-videos',
+      //               let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+      //               pipeline: [
+      //                 { $match:
+      //                   { $expr:
+      //                     { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+      //                   }
+      //                 },
+      //                 { $project:
+      //                   {
+      //                     createdDate: 0,
+      //                     updatedDate: 0,
+      //                     users_id: 0,
+      //                     __v: 0,
+      //                   }
+      //                 }
+      //               ],
+      //               as: 'imagesAndVideosObj'
+      //             }
+      //         },
+              
+      //         {
+      //           $unwind: {
+      //             path: '$imagesAndVideosObj',
+      //             preserveNullAndEmptyArrays: true,
+      //           }
+      //         },
+              
+              
       //         { $project:
       //           {
-      //             _id: 0,
-      //             accessDate: 1,
-      //             exp: 1,
-      //             userID: 1,
-      //             followArr: 1,
-      //             followedArr: 1,
-      //             followedCount: 1,
+      //             gameCommunities_id: 1,
+      //             name: 1,
+      //             imagesAndVideosObj: 1,
       //           }
-      //         }
+      //         },
       //       ],
-      //       as: 'usersObj'
+      //       as: 'gamesArr'
       //     }
       // },
-      // {
-      //   $unwind: '$usersObj'
-      // },
       
       
+      // ゲーム
       {
         $lookup:
           {
@@ -467,19 +518,54 @@ const findBy_Users_idForForm = async (argumentsObj) => {
                   },
                 }
               },
+              
+              
+              // 画像と動画を取得 - サムネイル用
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
               { $project:
                 {
                   _id: 1,
                   gameCommunities_id: 1,
-                  imagesAndVideosObj: 1,
-                  // thumbnail: 1,
                   name: 1,
+                  imagesAndVideosThumbnailObj: 1,
                 }
               }
             ],
             as: 'gamesObj'
           }
       },
+      
       {
         $unwind:
           {
@@ -487,6 +573,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
             preserveNullAndEmptyArrays: true
           }
       },
+      
       
     ]).exec();
     
@@ -497,28 +584,56 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     //   フォーマット
     // --------------------------------------------------
     
-    let formattedArr = [];
+    // const returnObj = {
+      
+    //   formattedArr: [],
+    //   gamesArr: [],
+      
+    // };
+    
+    // const formattedArr = [];
+    // const gamesArr = [];
+    const returnArr = [];
     
     for (let valueObj of resultIDsArr) {
       
       let tempObj = {
+        
         _id: valueObj._id,
         platform: valueObj.platform,
         label: valueObj.label,
         id: valueObj.id,
         publicSetting: valueObj.publicSetting,
         search: valueObj.search
+        
       };
       
       if ('gamesObj' in valueObj) {
-        tempObj.games_id = valueObj.gamesObj._id;
-        tempObj.gamesGameCommunities_id = valueObj.gamesObj.gameCommunities_id;
-        tempObj.gamesImagesAndVideosObj = valueObj.gamesObj.imagesAndVideosObj;
-        // tempObj.gamesThumbnail = valueObj.gamesObj.thumbnail;
-        tempObj.gamesName = valueObj.gamesObj.name;
+        
+        tempObj.gamesObj = valueObj.gamesObj;
+        
+        const imagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        
+        if (imagesAndVideosThumbnailObj) {
+          tempObj.gamesObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
+        }
+        
+        
+        // tempObj.games_id = valueObj.gamesObj._id;
+        // tempObj.gamesGameCommunities_id = valueObj.gamesObj.gameCommunities_id;
+        // tempObj.gamesName = valueObj.gamesObj.name;
+        
+        // const gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        
+        // if (gamesImagesAndVideosThumbnailObj) {
+        //   tempObj.gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        // }
+        
+        // returnObj.gamesArr.push(valueObj.gamesObj);
+        
       }
       
-      formattedArr.push(tempObj);
+      returnArr.push(tempObj);
       
     }
     
@@ -531,32 +646,31 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     
     
     // --------------------------------------------------
-    //   Console 出力
+    //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   language: {green ${language}}
-    //   country: {green ${country}}
-    //   loginUsers_id: {green ${loginUsers_id}}
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/ids/model.js - findBy_Users_idForForm
+    `);
     
-    // console.log(`
-    //   ----- resultIDsArr -----\n
-    //   ${util.inspect(resultIDsArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // // console.log(chalk`
+    // //   language: {green ${language}}
+    // //   country: {green ${country}}
+    // //   loginUsers_id: {green ${loginUsers_id}}
+    // // `);
     
-    // console.log(`
-    //   ----- formattedArr -----\n
-    //   ${util.inspect(formattedArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultIDsArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultIDsArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnArr -----\n
+      ${util.inspect(returnArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -565,7 +679,7 @@ const findBy_Users_idForForm = async (argumentsObj) => {
     //   Return
     // --------------------------------------------------
     
-    return formattedArr;
+    return returnArr;
     
     
   } catch (err) {
@@ -581,10 +695,11 @@ const findBy_Users_idForForm = async (argumentsObj) => {
 
 /**
  * DBから取得した情報をオブジェクトにフォーマットする
+ * @param {Object} localeObj - ロケール
  * @param {Object} argumentsObj - 引数
  * @return {Object} フォーマット後のデータ
  */
-const formatToObject = ({ arr, loginUsers_id }) => {
+const formatToObject = ({ localeObj, arr, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -592,6 +707,8 @@ const formatToObject = ({ arr, loginUsers_id }) => {
   // --------------------------------------------------
   
   let formattedObj = {};
+  
+  
   
   
   for (let valueObj of arr) {
@@ -616,21 +733,16 @@ const formatToObject = ({ arr, loginUsers_id }) => {
     const followArr = lodashGet(clonedObj, ['usersObj', 'followArr'], []);
     const followedArr = lodashGet(clonedObj, ['usersObj', 'followedArr'], []);
     
-    // copiedObj.usersObj.follow = false;
-    // copiedObj.usersObj.followed = false;
-    
     if (loginUsers_id) {
       
       if (clonedObj.users_id !== loginUsers_id) {
         
         if (followArr.includes(loginUsers_id)) {
           lodashSet(clonedObj, ['usersObj', 'follow'], true);
-          // clonedObj.usersObj.follow = true;
         }
         
         if (followedArr.includes(loginUsers_id)) {
           lodashSet(clonedObj, ['usersObj', 'followed'], true);
-          // clonedObj.usersObj.followed = true;
         }
         
       }
@@ -659,16 +771,25 @@ const formatToObject = ({ arr, loginUsers_id }) => {
     ) {
       
       let tempObj = {
+        
         _id: valueObj._id,
         platform: valueObj.platform,
         label: valueObj.label,
         id: valueObj.id
+        
       };
       
       if ('gamesObj' in valueObj) {
+        
         tempObj.games_id = valueObj.gamesObj._id;
-        tempObj.gamesImagesAndVideosObj = valueObj.gamesObj.imagesAndVideosObj;
         tempObj.gamesName = valueObj.gamesObj.name;
+        
+        const gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        
+        if (gamesImagesAndVideosThumbnailObj) {
+          tempObj.gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        }
+        
       }
       
       formattedObj[valueObj._id] = tempObj;
@@ -678,13 +799,6 @@ const formatToObject = ({ arr, loginUsers_id }) => {
     
   }
   
-  
-  
-  // console.log(`
-  //   ----- formattedObj -----\n
-  //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
   
   
   
@@ -699,6 +813,30 @@ const formatToObject = ({ arr, loginUsers_id }) => {
   //     returnArr.push(formattedObj[value]);
   //   }
   // }
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/@database/ids/model.js - formatToObject
+  // `);
+  
+  // console.log(`
+  //   ----- arr -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
+  // console.log(`
+  //   ----- formattedObj -----\n
+  //   ${util.inspect(JSON.parse(JSON.stringify(formattedObj)), { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   
@@ -752,6 +890,7 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
       },
       
       
+      // ユーザー
       {
         $lookup:
           {
@@ -784,6 +923,7 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
       },
       
       
+      // ゲーム
       {
         $lookup:
           {
@@ -801,12 +941,46 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
                   },
                 }
               },
+              
+              
+              // 画像と動画を取得 - サムネイル用
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
               { $project:
                 {
                   _id: 1,
-                  imagesAndVideosObj: 1,
-                  // thumbnail: 1,
                   name: 1,
+                  imagesAndVideosThumbnailObj: 1,
                 }
               }
             ],
@@ -842,6 +1016,8 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
   }
   
 };
+
+
 
 
 

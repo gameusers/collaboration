@@ -95,118 +95,118 @@ let errorArgumentsObj = {
 //   IDデータをユーザーIDから取得 / endpointID: XwchAk4yT
 // --------------------------------------------------
 
-router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) => {
+// router.post('/find-by-users-id-for-form', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  errorArgumentsObj.functionID = 'XwchAk4yT';
-  
-  let returnObj = {};
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
-  try {
-    
-    
-    // --------------------------------------------------
-    //   CSRF
-    // --------------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
-      throw new Error();
-    }
-    
-    const loginUsers_id = req.user._id;
-    errorArgumentsObj.loginUsers_id = loginUsers_id;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / IDs
-    //   ログインしているユーザーの登録IDデータ
-    // --------------------------------------------------
-    
-    const resultIDsObj = await ModelIDs.findBy_Users_idForForm({
-      language: localeObj.language,
-      country: localeObj.country,
-      loginUsers_id
-    });
-    
-    returnObj = resultIDsObj;
-    
-    
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Error Object
-    // ---------------------------------------------
-    
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
   
-});
+//   errorArgumentsObj.functionID = 'XwchAk4yT';
+  
+//   let returnObj = {};
+  
+  
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   CSRF
+//     // --------------------------------------------------
+    
+//     verifyCsrfToken(req, res);
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   Login Check
+//     // --------------------------------------------------
+    
+//     if (!req.isAuthenticated()) {
+//       statusCode = 401;
+//       errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+//       throw new Error();
+//     }
+    
+//     const loginUsers_id = req.user._id;
+//     errorArgumentsObj.loginUsers_id = loginUsers_id;
+    
+    
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得 / IDs
+//     //   ログインしているユーザーの登録IDデータ
+//     // --------------------------------------------------
+    
+//     const resultIDsObj = await ModelIDs.findBy_Users_idForForm({
+//       language: localeObj.language,
+//       country: localeObj.country,
+//       loginUsers_id
+//     });
+    
+//     returnObj = resultIDsObj;
+    
+    
+//     // --------------------------------------------------
+//     //   Console 出力
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   loginUsers_id: {green ${loginUsers_id}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- localeObj -----\n
+//     //   ${util.inspect(localeObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // ---------------------------------------------
+//     //   Return Json Object / Success
+//     // ---------------------------------------------
+    
+//     return res.status(200).json(returnObj);
+    
+    
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Error Object
+//     // ---------------------------------------------
+    
+//     errorArgumentsObj.errorObj = errorObj;
+//     const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
+  
+// });
 
 
 

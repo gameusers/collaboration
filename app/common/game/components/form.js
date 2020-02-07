@@ -68,6 +68,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -141,7 +143,7 @@ export default injectIntl(class extends React.Component {
             _id={valueObj._id}
             gameCommunities_id={valueObj.gameCommunities_id}
             name={valueObj.name}
-            imagesAndVideosObj={valueObj.imagesAndVideosObj}
+            imagesAndVideosThumbnailObj={valueObj.imagesAndVideosThumbnailObj}
           />
         );
         

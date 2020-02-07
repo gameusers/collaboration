@@ -46,6 +46,7 @@ const { validationCardPlayersLinkArr } = require('../../../../@database/card-pla
 
 import initStoreLayout from '../../../../common/layout/stores/layout';
 import initStoreData from '../../../../@stores/data';
+import initStoreImageAndVideoForm from '../../../../common/image-and-video/stores/form';
 
 
 
@@ -57,6 +58,7 @@ import initStoreData from '../../../../@stores/data';
 let storeCardPlayer = null;
 let storeLayout = initStoreLayout({});
 let storeData = initStoreData({});
+let storeImageAndVideoForm = initStoreImageAndVideoForm({});
 
 
 
@@ -520,6 +522,7 @@ class Store {
   
   /**
    * 編集フォームを表示する
+   * @param {Array} pathArr - パス
    * @param {string} _id - ID
    */
   @action.bound
@@ -591,8 +594,30 @@ class Store {
         
         
         
+        // --------------------------------------------------
+        //   更新
+        // --------------------------------------------------
+        
         // ---------------------------------------------
-        //   Data 更新
+        //   - Images And Videos
+        // ---------------------------------------------
+        
+        const imagesAndVideosObj = lodashGet(resultObj, ['data', cardPlayers_id, 'imagesAndVideosObj'], {});
+        
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr: [cardPlayers_id, 'formObj'], imagesAndVideosObj: imagesAndVideosObj });
+        }
+        
+        
+        const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['data', cardPlayers_id, 'imagesAndVideosThumbnailObj'], {});
+        
+        if (Object.keys(imagesAndVideosObj).length !== 0) {
+          storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr: [cardPlayers_id, 'formObj', 'thumbnailObj'], imagesAndVideosObj: imagesAndVideosThumbnailObj });
+        }
+        
+        
+        // ---------------------------------------------
+        //   - Data
         // ---------------------------------------------
         
         // フォームを元に戻すためのデータ
@@ -600,6 +625,8 @@ class Store {
         
         // フォームのデータ
         this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data);
+        
+        
         
         
         // ---------------------------------------------
@@ -615,24 +642,30 @@ class Store {
         //   console.log
         // --------------------------------------------------
         
-        console.log(`
-          ----------------------------------------\n
-          /app/common/card/player/stores/player.js - handleShowForm
-        `);
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/common/card/player/stores/player.js - handleShowForm
+        // `);
         
-        console.log(chalk`
-          cardPlayers_id: {green ${cardPlayers_id}}
-        `);
-        
-        console.log(`
-          ----- resultObj -----\n
-          ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        // console.log(chalk`
+        //   cardPlayers_id: {green ${cardPlayers_id}}
+        // `);
         
         // console.log(`
-        //   ----- this.cardPlayerEditFormDataObj -----\n
-        //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
+        //   ----- resultObj -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- pathArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // console.log(`
+        //   ----- imagesAndVideosObj -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
          
@@ -1326,9 +1359,43 @@ class Store {
    * @param {Array} idArr - IDデータの入った配列
    */
   @action.bound
-  handleCardPlayerEditID({ _id, idArr }) {
-    const cloneArr = lodashCloneDeep(idArr);
-    this.cardPlayerEditFormDataObj[_id].idArr = cloneArr;
+  handleCardPlayerEditID({ _id, ids_idArr }) {
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/player/stores/player.js - handleCardPlayerEditID
+    // `);
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    // // console.log(`
+    // //   ----- ids_idArr -----\n
+    // //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+    // //   --------------------\n
+    // // `);
+    
+    // console.log(`
+    //   ----- this.cardPlayerEditFormDataObj -----\n
+    //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // const clonedArr = lodashCloneDeep(ids_idArr);
+    // this.cardPlayerEditFormDataObj[_id].ids_idArr = clonedArr;
+    
   };
   
   

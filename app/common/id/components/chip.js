@@ -80,6 +80,8 @@ export default class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -91,7 +93,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { platform, label, id, games_id, gamesThumbnailArr = [], gamesName } = this.props;
+    const { platform, label, id, games_id, gamesName, gamesImagesAndVideosThumbnailObj = {} } = this.props;
+    
+    
     
     
     // --------------------------------------------------
@@ -101,6 +105,8 @@ export default class extends React.Component {
     if (!platform && !id) {
       return null;
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -339,9 +345,10 @@ export default class extends React.Component {
     
     let componentSubAvatar = '';
     
-    if (games_id && gamesName && gamesThumbnailArr.length > 0) {
+    if (games_id && gamesName && Object.keys(gamesImagesAndVideosThumbnailObj).length !== 0) {
       
-      const src = lodashGet(gamesThumbnailArr, [0, 'srcSetArr', 0, 'src'], '');
+      const src = lodashGet(gamesImagesAndVideosThumbnailObj, ['arr', 0, 'src'], '');
+      const srcSet = lodashGet(gamesImagesAndVideosThumbnailObj, ['arr', 0, 'srcSet'], '');
       
       componentSubAvatar =
         <div
@@ -349,7 +356,12 @@ export default class extends React.Component {
             margin-left: auto;
           `}
         >
-          <Avatar css={cssAvatar} alt={gamesName} src={src} />
+          <Avatar
+            css={cssAvatar}
+            alt={gamesName}
+            src={src}
+            srcSet={srcSet}
+          />
         </div>
       ;
     }
@@ -361,12 +373,19 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/components/chip.js
+    // `);
+    
     // console.log(chalk`
     //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
     // console.log(`
-    //   hardwareArr: \n${util.inspect(hardwareArr, { colors: true, depth: null })}
+    //   ----- gamesImagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesImagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     

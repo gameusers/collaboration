@@ -69,7 +69,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
     // ---------------------------------------------
     
     if (!Array.isArray(valueArr)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '3NAm-ySR8', messageID: 'qnWsuPcrJ' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'UoiTVF_8o', messageID: 'qnWsuPcrJ' }] });
     }
     
     
@@ -80,7 +80,7 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
     if (valueArr.length === 0) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '-_L7KAmti', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'BJq93I2jz', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;

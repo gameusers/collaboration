@@ -123,6 +123,8 @@ export default injectIntl(class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -140,6 +142,8 @@ export default injectIntl(class extends React.Component {
     //   comment: {green ${comment}}
     //   search: {green ${search}}
     // `);
+    
+    
     
     
     // --------------------------------------------------

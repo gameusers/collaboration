@@ -18,6 +18,7 @@ import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
+import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -32,7 +33,9 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from '../../../common/layout/stores/layout';
+import initStoreLayout from '../..//layout/stores/layout';
+import initStoreCardPlayer from '../../card/player/stores/player';
+import initStoreGameForm from '../../game/stores/form';
 
 
 
@@ -42,7 +45,9 @@ import initStoreLayout from '../../../common/layout/stores/layout';
 // --------------------------------------------------
 
 let storeIDForm = null;
-let storeLayout = initStoreLayout({});
+const storeLayout = initStoreLayout({});
+const storeCardPlayer = initStoreCardPlayer({});
+const storeGameForm = initStoreGameForm({});
 
 
 
@@ -84,11 +89,12 @@ class Store {
   
   /**
    * ダイアログを開く
+   * @param {Array} pathArr - パス
    * @param {string} _id
-   * @param {Array} idArr - 選択されているIDが入っている配列
+   * @param {Array} ids_idArr - 選択されているIDが入っている配列
    */
   @action.bound
-  async handleDialogOpen({ _id, idArr }) {
+  async handleDialogOpen({ pathArr, _id, ids_idArr }) {
     
     
     try {
@@ -116,14 +122,16 @@ class Store {
         //   Button Disable
         // ---------------------------------------------
         
-        storeLayout.handleButtonDisable({ _id: `${_id}-idForm` });
-         
+        storeLayout.handleButtonDisable({ pathArr });
+        
+        
+        
         
         // ---------------------------------------------
         //   FormData
         // ---------------------------------------------
         
-        const formData = new FormData();
+        const formDataObj = {};
         
         
         // ---------------------------------------------
@@ -131,10 +139,13 @@ class Store {
         // ---------------------------------------------
         
         const resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v1/ids/find-by-users-id-for-form`,
+          urlApi: `${process.env.URL_API}/v2/db/ids/read-edit-form`,
           methodType: 'POST',
-          formData: formData
+          formData: JSON.stringify(formDataObj),
         });
+        
+        
+        
         
         
         // ---------------------------------------------
@@ -146,16 +157,51 @@ class Store {
         }
         
         
+        
+        
         // ---------------------------------------------
         //   Data 更新
         // ---------------------------------------------
         
-        const dataArr = resultObj.data;
+        const dataArr = lodashGet(resultObj, ['data'], []);
+        // const dataArr = lodashGet(resultObj, ['data', 'formattedArr'], []);
+        // const gamesArr = lodashGet(resultObj, ['data', 'gamesArr'], []);
+        
+        // storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
+        
+        console.log(`
+          ----------------------------------------\n
+          /app/common/id/stores/form.js - handleDialogOpen
+        `);
+        
+        // console.log(`
+        //   ----- pathArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        console.log(`
+          ----- dataArr -----\n
+          ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
+          --------------------\n
+        `);
+        
+        // console.log(`
+        //   ----- gamesArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
+        // const dataArr = resultObj.data;
         const selectedArr = [];
         const unselectedArr = [];
         
-        // 選択ID
-        for (let valueObj of idArr.values()) {
+        
+        // ----------------------------------------
+        //   - 選択ID
+        // ----------------------------------------
+        
+        for (let valueObj of ids_idArr.values()) {
           
           // 存在するIDかチェックする（すでに削除されている可能性があるため）
           const index = dataArr.findIndex((value2Obj) => {
@@ -168,11 +214,15 @@ class Store {
           
         }
         
-        // 未選択ID
+        
+        // ----------------------------------------
+        //   - 未選択ID
+        // ----------------------------------------
+        
         for (let valueObj of dataArr.values()) {
           
           // 選択IDに含まれていない場合、配列に追加
-          const index = idArr.findIndex((value2Obj) => {
+          const index = ids_idArr.findIndex((value2Obj) => {
             return value2Obj._id === valueObj._id;
           });
           
@@ -184,10 +234,12 @@ class Store {
         
         lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
         lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
-        lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
+        lodashSet(this.dataObj, [_id, 'dataArr'], dataArr);
         
         // 要削除
         this.idFormDataObj[_id] = resultObj.data;
+        
+        
         
         
         // ---------------------------------------------
@@ -209,7 +261,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: `${_id}-idForm` });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
     }
@@ -273,18 +325,48 @@ class Store {
   
   /**
    * 選択を確定するボタンを押したときに実行される
-   * @param {string} _id
-   * @param {Array} idArr - 選択されたIDの配列
-   * @param {function} func - ボタンを押したときに実行する関数
+   * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
+   * @param {string} _id - cardPlayers_id / 
+   * @param {Array} ids_idArr - 選択されたIDの配列
    */
   @action.bound
-  handleSelectButton({ _id, idArr, func }) {
+  handleSelectButton({ type, _id, ids_idArr }) {
     
-    // 渡された関数を実行する
-    func({ _id, idArr });
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/stores/form.js - handleSelectButton
+    // `);
     
-    // ダイアログを閉じる
+    // console.log(chalk`
+    //   type: {green ${type}}
+    //   _id: {green ${_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- ids_idArr -----\n
+    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // ---------------------------------------------
+    //   プレイヤーカードのフォーム
+    // ---------------------------------------------
+    
+    if (type === 'cardPlayerForm') {
+      
+      const clonedArr = lodashCloneDeep(ids_idArr);
+      lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   ダイアログを閉じる
+    // ---------------------------------------------
+    
     lodashSet(this.dataObj, [_id, 'dialog'], false);
+    
     
   };
   
@@ -408,7 +490,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleEditSubmit({ _id, func, idArr }) {
+  async handleEditSubmit({ _id, func, ids_idArr }) {
     
     
     try {
@@ -503,7 +585,7 @@ class Store {
       
       const updatedArr = [];
       
-      for (let valueObj of idArr.values()) {
+      for (let valueObj of ids_idArr.values()) {
         // console.log(index, valueObj);
         
         // console.log(`
@@ -529,7 +611,7 @@ class Store {
         
       }
       
-      func({ _id, idArr: updatedArr });
+      func({ _id, ids_idArr: updatedArr });
       
       // console.log(`
       //   ----- updatedArr -----\n
@@ -601,7 +683,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleDeleteSubmit({ _id, func, idArr }) {
+  async handleDeleteSubmit({ _id, func, ids_idArr }) {
     
     
     try {
@@ -668,7 +750,7 @@ class Store {
       
       const updatedArr = [];
       
-      for (let valueObj of idArr.values()) {
+      for (let valueObj of ids_idArr.values()) {
         
         const newObj = resultObj.data.find((valueObj2) => {
           return valueObj2._id === valueObj._id;
@@ -680,7 +762,7 @@ class Store {
         
       }
       
-      func({ _id, idArr: updatedArr });
+      func({ _id, ids_idArr: updatedArr });
       
       
       // ---------------------------------------------

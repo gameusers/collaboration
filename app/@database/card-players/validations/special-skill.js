@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -64,7 +64,7 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
     // ---------------------------------------------
     
     if (!Array.isArray(valueArr)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CKcwLzBNV', messageID: 'qnWsuPcrJ' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'diVUO03kL', messageID: 'qnWsuPcrJ' }] });
     }
     
     
@@ -75,7 +75,7 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
     if (valueArr.length === 0) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'RaRh5kZ90', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CU9rsHUQw', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -102,7 +102,7 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
         // ---------------------------------------------
         
         if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'B3ufjdjBk', messageID: 'xdAU7SgoO' }] });
+          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FvgdMkXDR', messageID: 'xdAU7SgoO' }] });
         } else {
           resultObj.valueArr.push(value);
         }

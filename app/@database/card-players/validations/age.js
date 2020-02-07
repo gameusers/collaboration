@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -62,7 +62,7 @@ const validationCardPlayersAge = ({ throwError = false, required = false, value 
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '8si9jEi9g', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'bPkl3k89I', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -75,7 +75,7 @@ const validationCardPlayersAge = ({ throwError = false, required = false, value 
     // ---------------------------------------------
     
     if (!validator.isISO8601(data)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ma3S_LNoY', messageID: 'bT9TGtVck' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zKeJRNfa_', messageID: 'bT9TGtVck' }] });
     }
     
     
@@ -162,7 +162,7 @@ const validationCardPlayersAgeAlternativeText = ({ throwError = false, required 
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y9Gj-_F8T', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'YoQ79Xp8b', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -175,7 +175,7 @@ const validationCardPlayersAgeAlternativeText = ({ throwError = false, required 
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zqAbLvEGe', messageID: 'xdAU7SgoO' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'skFicE7zg', messageID: 'xdAU7SgoO' }] });
     }
     
     

@@ -433,73 +433,6 @@ const findBy_Users_idForForm = async ({
       },
       
       
-      // 関連するゲーム
-      // {
-      //   $lookup:
-      //     {
-      //       from: 'games',
-      //       let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
-      //       pipeline: [
-              
-      //         { $match:
-      //           { $expr:
-      //             { $and:
-      //               [
-      //                 { $eq: ['$language', language] },
-      //                 { $eq: ['$country', country] },
-      //                 { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
-      //               ]
-      //             },
-      //           }
-      //         },
-              
-              
-      //         // 画像と動画を取得
-      //         {
-      //           $lookup:
-      //             {
-      //               from: 'images-and-videos',
-      //               let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-      //               pipeline: [
-      //                 { $match:
-      //                   { $expr:
-      //                     { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
-      //                   }
-      //                 },
-      //                 { $project:
-      //                   {
-      //                     createdDate: 0,
-      //                     updatedDate: 0,
-      //                     users_id: 0,
-      //                     __v: 0,
-      //                   }
-      //                 }
-      //               ],
-      //               as: 'imagesAndVideosObj'
-      //             }
-      //         },
-              
-      //         {
-      //           $unwind: {
-      //             path: '$imagesAndVideosObj',
-      //             preserveNullAndEmptyArrays: true,
-      //           }
-      //         },
-              
-              
-      //         { $project:
-      //           {
-      //             gameCommunities_id: 1,
-      //             name: 1,
-      //             imagesAndVideosObj: 1,
-      //           }
-      //         },
-      //       ],
-      //       as: 'gamesArr'
-      //     }
-      // },
-      
-      
       // ゲーム
       {
         $lookup:
@@ -584,15 +517,6 @@ const findBy_Users_idForForm = async ({
     //   フォーマット
     // --------------------------------------------------
     
-    // const returnObj = {
-      
-    //   formattedArr: [],
-    //   gamesArr: [],
-      
-    // };
-    
-    // const formattedArr = [];
-    // const gamesArr = [];
     const returnArr = [];
     
     for (let valueObj of resultIDsArr) {
@@ -618,29 +542,11 @@ const findBy_Users_idForForm = async ({
           tempObj.gamesObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
         }
         
-        
-        // tempObj.games_id = valueObj.gamesObj._id;
-        // tempObj.gamesGameCommunities_id = valueObj.gamesObj.gameCommunities_id;
-        // tempObj.gamesName = valueObj.gamesObj.name;
-        
-        // const gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
-        
-        // if (gamesImagesAndVideosThumbnailObj) {
-        //   tempObj.gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
-        // }
-        
-        // returnObj.gamesArr.push(valueObj.gamesObj);
-        
       }
       
       returnArr.push(tempObj);
       
     }
-    
-    // const returnObj = formatToObject({
-    //   arr: resultIDsArr,
-    //   loginUsers_id
-    // });
     
     
     
@@ -649,10 +555,10 @@ const findBy_Users_idForForm = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/ids/model.js - findBy_Users_idForForm
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/ids/model.js - findBy_Users_idForForm
+    // `);
     
     // // console.log(chalk`
     // //   language: {green ${language}}
@@ -660,17 +566,17 @@ const findBy_Users_idForForm = async ({
     // //   loginUsers_id: {green ${loginUsers_id}}
     // // `);
     
-    console.log(`
-      ----- resultIDsArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultIDsArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultIDsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- returnArr -----\n
-      ${util.inspect(returnArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnArr -----\n
+    //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -781,13 +687,12 @@ const formatToObject = ({ localeObj, arr, loginUsers_id }) => {
       
       if ('gamesObj' in valueObj) {
         
-        tempObj.games_id = valueObj.gamesObj._id;
-        tempObj.gamesName = valueObj.gamesObj.name;
+        tempObj.gamesObj = valueObj.gamesObj;
         
-        const gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        const imagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
         
-        if (gamesImagesAndVideosThumbnailObj) {
-          tempObj.gamesImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ localeObj, obj: valueObj.gamesObj.imagesAndVideosThumbnailObj });
+        if (imagesAndVideosThumbnailObj) {
+          tempObj.gamesObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
         }
         
       }

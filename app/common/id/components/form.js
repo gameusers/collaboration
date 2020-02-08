@@ -54,20 +54,6 @@ import FormRegister from './form-register';
 
 
 // --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-const cssButton = css`
-  && {
-    margin: 0 16px 0 0;
-  }
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -300,9 +286,6 @@ export default class extends React.Component {
             >
               
               <Button
-                // css={cssButton}
-                // variant="outlined"
-                // color="primary"
                 onClick={() => handleEdit({
                   pathArr: [_id, 'contentsType'],
                   value: 'select'
@@ -313,9 +296,6 @@ export default class extends React.Component {
               </Button>
               
               <Button
-                // css={cssButton}
-                // variant="outlined"
-                // color="primary"
                 onClick={() => handleEdit({
                   pathArr: [_id, 'contentsType'],
                   value: 'edit'
@@ -326,9 +306,6 @@ export default class extends React.Component {
               </Button>
               
               <Button
-                // css={cssButton}
-                // variant="outlined"
-                // color="primary"
                 onClick={() => handleEdit({
                   pathArr: [_id, 'contentsType'],
                   value: 'register'

@@ -91,9 +91,9 @@ export default class extends React.Component {
     
     for (const [index, valueObj] of arr.entries()) {
       
-      const games_id = lodashGet(valueObj, ['games_id'], '');
-      const gamesName = lodashGet(valueObj, ['gamesName'], '');
-      const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesImagesAndVideosThumbnailObj'], {});
+      const games_id = lodashGet(valueObj, ['gamesObj', '_id'], '');
+      const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
+      const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
       
       componentsArr.push(
         <IDChip

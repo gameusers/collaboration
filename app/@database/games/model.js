@@ -31,8 +31,12 @@ const Schema = require('./schema');
 //   Modules
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+// const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
 
+const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
 
@@ -611,9 +615,6 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     
-    // return await .find(
-    //   { language, country, searchKeywordsArr: { $regex: pattern, $options: 'i' } },
-    // ).select('gameCommunities_id imagesAndVideosObj name').limit(10).exec();
     
     
     
@@ -650,13 +651,13 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
                 }
               }
             ],
-            as: 'imagesAndVideosObj'
+            as: 'imagesAndVideosThumbnailObj'
           }
       },
       
       {
         $unwind: {
-          path: '$imagesAndVideosObj',
+          path: '$imagesAndVideosThumbnailObj',
           preserveNullAndEmptyArrays: true,
         }
       },
@@ -666,10 +667,7 @@ const findBySearchKeywordsArrForSuggestion = async ({ localeObj, keyword }) => {
         {
           gameCommunities_id: 1,
           name: 1,
-          imagesAndVideosObj: 1,
-          // imagesAndVideos_id: 0,
-          // imagesAndVideos_id: 0,
-          // __v: 0,
+          imagesAndVideosThumbnailObj: 1,
         }
       },
       

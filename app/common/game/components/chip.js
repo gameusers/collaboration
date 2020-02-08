@@ -78,7 +78,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeGameForm, pathArr, _id, gameCommunities_id, name, imagesAndVideosThumbnailObj } = this.props;
+    const { stores, storeGameForm, pathArr, _id, gameCommunities_id, name, imagesAndVideosThumbnailObj = {} } = this.props;
     
     const {
       
@@ -104,13 +104,17 @@ export default class extends React.Component {
     
     let componentAvatar = '';
     
-    const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosThumbnailObj });
-    
-    const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
-    const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
+    const thumbnailSrc = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
+    const thumbnailSrcSet = lodashGet(imagesAndVideosThumbnailObj, ['arr', 0, 'srcSet'], '');
     
     
-    if (thumbnailSrc) {
+    // const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: imagesAndVideosThumbnailObj });
+    
+    // const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
+    // const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
+    
+    
+    if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
       
       componentAvatar =
         <Avatar
@@ -152,17 +156,22 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   cardPlayers_id: {green ${cardPlayers_id}}
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/game/components/chip.js
     // `);
     
-    // console.log(`\n---------- imagesAndVideosThumbnailObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   name: {green ${name}}
+    // `);
     
-    // console.log(`\n---------- imagesAndVideosThumbnailObj.thumbnailArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj.thumbnailArr)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

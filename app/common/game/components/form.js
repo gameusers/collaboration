@@ -38,7 +38,7 @@ import Avatar from '@material-ui/core/Avatar';
 //   Modules
 // ---------------------------------------------
 
-import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
+// import { formatImagesAndVideosObj } from '../../../@database/images-and-videos/format';
 
 
 // ---------------------------------------------
@@ -81,20 +81,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeGameForm, pathArr } = this.props;
+    const { stores, storeGameForm, pathArr, gamesArr } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
-      handleGetGamesArr,
+      // handleGetGamesArr,
       handleAdd,
       handleKeyword,
       handleSuggestionOnKeyDown,
       
     } = storeGameForm;
     
-    // const { handleGetImagesAndVideosObj } = storeImageAndVideoForm;
     
     
     
@@ -105,14 +104,32 @@ export default injectIntl(class extends React.Component {
     let componentSelected = '';
     let componentSelectedArr = [];
     
-    const gamesArr = handleGetGamesArr({ pathArr });
-    // const gamesArr = lodashGet(dataObj, [...pathArr, 'gamesArr'], []);
+    // const gamesArr = handleGetGamesArr({ pathArr });
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/game/components/form.js
+    // `);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- gamesArr -----\n
-    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
     
     
     if (gamesArr.length > 0) {
@@ -209,6 +226,7 @@ export default injectIntl(class extends React.Component {
       // キーボードの↓↑でハードウェアを選択するための番号、初期値は影響のない9999にしておく
       const selectedIndex = lodashGet(dataObj, [...pathArr, 'selectedIndex'], 9999);
       
+      
       for (const [index, valueObj] of suggestionArr.entries()) {
         
         
@@ -227,17 +245,9 @@ export default injectIntl(class extends React.Component {
         //   Thumbnail
         // --------------------------------------------------
         
-        const formattedObj = formatImagesAndVideosObj({ localeObj: stores.data.localeObj, obj: valueObj.imagesAndVideosObj });
+        const thumbnailSrc = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'src'], '/img/common/thumbnail/none.svg');
+        const thumbnailSrcSet = lodashGet(valueObj, ['imagesAndVideosThumbnailObj', 'arr', 0, 'srcSet'], '');
         
-        // console.log(`
-        //   ----- formattedObj -----\n
-        //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
-        //   --------------------\n
-        // `);
-        
-        
-        const thumbnailSrc = lodashGet(formattedObj, ['arr', 0, 'src'], '/img/common/thumbnail/none.svg');
-        const thumbnailSrcSet = lodashGet(formattedObj, ['arr', 0, 'srcSet'], '');
         
         // console.log(chalk`
         //   thumbnailSrc: {green ${thumbnailSrc}}
@@ -248,12 +258,6 @@ export default injectIntl(class extends React.Component {
         //   selectedIndex: {green ${selectedIndex}}
         //   index: {green ${index}}
         //   index2: {green ${index2}}
-        // `);
-        
-        // console.log(`
-        //   ----- selectedGamesArr -----\n
-        //   ${util.inspect(selectedGamesArr, { colors: true, depth: null })}\n
-        //   --------------------\n
         // `);
         
         // console.log(`
@@ -379,7 +383,7 @@ export default injectIntl(class extends React.Component {
                 }
               }
             `}
-            id="hardwareActive"
+            id="gameFormName"
             label="ゲーム名"
             value={keyword}
             onChange={(eventObj) => handleKeyword({ pathArr, value: eventObj.target.value })}

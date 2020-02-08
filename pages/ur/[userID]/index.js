@@ -189,15 +189,15 @@ export default class extends React.Component {
     //   /pages/ur/[userID]/index.js
     // `);
     
-    // console.log(chalk`
-    //   userID: {green ${userID}}
-    //   accessLevel: {green ${accessLevel}}
-    // `);
-    
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   userID: {green ${userID}}
+    //   accessLevel: {green ${accessLevel}}
     // `);
     
     // console.log(`

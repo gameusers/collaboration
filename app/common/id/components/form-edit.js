@@ -126,7 +126,7 @@ const cssTextField = css`
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeIDForm')
+@inject('stores', 'storeIDForm', 'storeGameForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -149,7 +149,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idFormEditObj'];
+    this.pathArr = [props._id, 'idFormObj'];
     
     
   }
@@ -187,9 +187,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeIDForm, intl, _id, ids_idArr } = this.props;
-    
-    // const { buttonDisabledObj } = stores.layout;
+    const { classes, stores, storeIDForm, storeGameForm, intl, type, _id, ids_idArr } = this.props;
     
     const {
       
@@ -204,6 +202,13 @@ export default injectIntl(class extends React.Component {
       handleDeleteSubmit
       
     } = storeIDForm;
+    
+    
+    const {
+      
+      handleGetGamesArr
+      
+    } = storeGameForm;
     
     
     
@@ -230,15 +235,11 @@ export default injectIntl(class extends React.Component {
       const gamesName = lodashGet(valueObj, ['gamesObj', 'name'], '');
       const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
       
-      // const games_id = lodashGet(valueObj, ['games_id'], '');
-      // const gamesName = lodashGet(valueObj, ['gamesName'], '');
-      // const gamesImagesAndVideosThumbnailObj = lodashGet(valueObj, ['gamesImagesAndVideosThumbnailObj'], {});
-      
       componentsIDArr.push(
         <div
           css={cssIDBox}
           key={index}
-          onClick={() => handleSetEditForm({ _id, ids_id: valueObj._id })}
+          onClick={() => handleSetEditForm({ pathArr: this.pathArr, _id, ids_id: valueObj._id })}
         >
           <IDChip
             platform={valueObj.platform}
@@ -268,10 +269,12 @@ export default injectIntl(class extends React.Component {
     //   ゲーム選択フォーム
     // --------------------------------------------------
     
-    // const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
-    
     // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
     const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
+    
+    const gamesArr = handleGetGamesArr({ pathArr: this.pathArr });
+    
+    
     
     
     // --------------------------------------------------
@@ -318,23 +321,14 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- stores.data.loginUsersObj -----\n
-    //   ${util.inspect(stores.data.loginUsersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
     // console.log(chalk`
-    //   formIDValue: {green ${formIDValue}}
-    //   formIDError: {green ${formIDError}}
-    //   formIDMessageID: {green ${formIDMessageID}}
-    //   formIDNumberOfCharacters: {green ${formIDNumberOfCharacters}}
+    //   gameSelectForm: {green ${gameSelectForm}}
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     
@@ -392,6 +386,7 @@ export default injectIntl(class extends React.Component {
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
             
             <Select
+              id="platform"
               value={validationPlatformObj.value}
               onChange={(eventObj) => handleEdit({
                 pathArr: [_id, 'platform'],
@@ -426,6 +421,7 @@ export default injectIntl(class extends React.Component {
         {gameSelectForm &&
           <GameForm
             pathArr={this.pathArr}
+            gamesArr={gamesArr}
             // _id={_id}
             // gamesArr={gamesArr}
             // func={handleGame}
@@ -461,7 +457,7 @@ export default injectIntl(class extends React.Component {
         <div>
           <TextField
             css={cssTextField}
-            id="label"
+            id="id"
             label="ID"
             value={validationIDObj.value}
             onChange={(eventObj) => handleEdit({
@@ -489,15 +485,16 @@ export default injectIntl(class extends React.Component {
             <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
             
             <Select
+              id="publicSetting"
               value={validationPublicSettingObj.value}
               onChange={(eventObj) => handleEdit({
                 pathArr: [_id, 'publicSetting'],
                 value: eventObj.target.value
               })}
-              inputProps={{
-                name: 'publicSetting',
-                id: 'publicSetting',
-              }}
+              // inputProps={{
+              //   name: 'publicSetting',
+              //   id: 'publicSetting',
+              // }}
             >
               <MenuItem value={1}>誰にでも公開</MenuItem>
               <MenuItem value={2}>自分をフォローしているユーザーに公開</MenuItem>
@@ -542,7 +539,7 @@ export default injectIntl(class extends React.Component {
         {/* 「編集する」ボタン */}
         <div
           css={css`
-            margin: 24px 0 0 0;
+            margin: 24px 0 12px 0;
           `}
         >
           
@@ -555,6 +552,8 @@ export default injectIntl(class extends React.Component {
             variant="outlined"
             color="primary"
             onClick={() => handleEditSubmit({
+              pathArr: this.pathArr,
+              type,
               _id,
               ids_idArr
             })}

@@ -1,18 +1,18 @@
-// --------------------------------------------------
+// -------------------------------------------------------
 //   Import
-// --------------------------------------------------
+// -------------------------------------------------------
 
-// ---------------------------------------------
+// --------------------------------------------------
 //   Console
-// ---------------------------------------------
+// --------------------------------------------------
 
 import chalk from 'chalk';
 import util from 'util';
 
 
-// ---------------------------------------------
+// --------------------------------------------------
 //   Node Packages
-// ---------------------------------------------
+// --------------------------------------------------
 
 import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
@@ -21,17 +21,17 @@ import lodashHas from 'lodash/has';
 import lodashCloneDeep from 'lodash/cloneDeep';
 
 
-// ---------------------------------------------
+// --------------------------------------------------
 //   Modules
-// ---------------------------------------------
+// --------------------------------------------------
 
 import { fetchWrapper } from '../../../@modules/fetch';
 import { CustomError } from '../../../@modules/error/custom';
 
 
-// --------------------------------------------------
+// -------------------------------------------------------
 //   Stores
-// --------------------------------------------------
+// -------------------------------------------------------
 
 import initStoreLayout from '../..//layout/stores/layout';
 import initStoreCardPlayer from '../../card/player/stores/player';
@@ -40,9 +40,9 @@ import initStoreGameForm from '../../game/stores/form';
 
 
 
-// --------------------------------------------------
+// -------------------------------------------------------
 //   Store
-// --------------------------------------------------
+// -------------------------------------------------------
 
 let storeIDForm = null;
 const storeLayout = initStoreLayout({});
@@ -52,16 +52,16 @@ const storeGameForm = initStoreGameForm({});
 
 
 
-// --------------------------------------------------
+// -------------------------------------------------------
 //   Class
-// --------------------------------------------------
+// -------------------------------------------------------
 
 class Store {
   
   
-  // ---------------------------------------------
+  // --------------------------------------------------
   //   Data
-  // ---------------------------------------------
+  // --------------------------------------------------
   
   /**
    * フォームのデータを入れるオブジェクト
@@ -83,9 +83,11 @@ class Store {
   
   
   
-  // ---------------------------------------------
+  
+  
+  // --------------------------------------------------
   //   Dialog
-  // ---------------------------------------------
+  // --------------------------------------------------
   
   /**
    * ダイアログを開く
@@ -100,43 +102,43 @@ class Store {
     try {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   編集フォームに表示するデータがすでに読み込まれている場合
       //   編集フォームをすぐに表示する
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       if (lodashHas(this.dataObj, [_id, 'dataArr'])) {
         
         lodashSet(this.dataObj, [_id, 'dialog'], true);
         
         
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   編集フォームに表示するデータがまだ読み込まれていない場合
       //   Fetch でデータを取得してから編集フォームを表示する
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       } else {
         
         
-        // ---------------------------------------------
+        // --------------------------------------------------
         //   Button Disable
-        // ---------------------------------------------
+        // --------------------------------------------------
         
         storeLayout.handleButtonDisable({ pathArr });
         
         
         
         
-        // ---------------------------------------------
+        // --------------------------------------------------
         //   FormData
-        // ---------------------------------------------
+        // --------------------------------------------------
         
         const formDataObj = {};
         
         
-        // ---------------------------------------------
+        // --------------------------------------------------
         //   Fetch
-        // ---------------------------------------------
+        // --------------------------------------------------
         
         const resultObj = await fetchWrapper({
           urlApi: `${process.env.URL_API}/v2/db/ids/read-edit-form`,
@@ -148,9 +150,9 @@ class Store {
         
         
         
-        // ---------------------------------------------
+        // --------------------------------------------------
         //   Error
-        // ---------------------------------------------
+        // --------------------------------------------------
         
         if ('errorsArr' in resultObj) {
           throw new CustomError({ errorsArr: resultObj.errorsArr });
@@ -159,9 +161,9 @@ class Store {
         
         
         
-        // ---------------------------------------------
+        // --------------------------------------------------
         //   Data 更新
-        // ---------------------------------------------
+        // --------------------------------------------------
         
         const dataArr = lodashGet(resultObj, ['data'], []);
         // const dataArr = lodashGet(resultObj, ['data', 'formattedArr'], []);
@@ -169,10 +171,11 @@ class Store {
         
         // storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
         
-        console.log(`
-          ----------------------------------------\n
-          /app/common/id/stores/form.js - handleDialogOpen
-        `);
+        
+        // console.log(`
+        //   ----------------------------------------\n
+        //   /app/common/id/stores/form.js - handleDialogOpen
+        // `);
         
         // console.log(`
         //   ----- pathArr -----\n
@@ -180,17 +183,18 @@ class Store {
         //   --------------------\n
         // `);
         
-        console.log(`
-          ----- dataArr -----\n
-          ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
-          --------------------\n
-        `);
+        // console.log(`
+        //   ----- dataArr -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
         
         // console.log(`
         //   ----- gamesArr -----\n
         //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
+        
         
         // const dataArr = resultObj.data;
         const selectedArr = [];
@@ -242,9 +246,9 @@ class Store {
         
         
         
-        // ---------------------------------------------
+        // --------------------------------------------------
         //   編集フォーム表示
-        // ---------------------------------------------
+        // --------------------------------------------------
         
         lodashSet(this.dataObj, [_id, 'dialog'], true);
          
@@ -257,9 +261,9 @@ class Store {
     } finally {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Enable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleButtonEnable({ pathArr });
       
@@ -272,15 +276,19 @@ class Store {
   
   
   
-  // ---------------------------------------------
+  
+  
+  // --------------------------------------------------
   //   選択
-  // ---------------------------------------------
+  // --------------------------------------------------
   
   /**
    * フォームのデータを入れるオブジェクト
    * @type {Object}
    */
   @observable idFormDataObj = {};
+  
+  
   
   
   /**
@@ -323,6 +331,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * 選択を確定するボタンを押したときに実行される
    * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
@@ -349,9 +359,9 @@ class Store {
     // `);
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   プレイヤーカードのフォーム
-    // ---------------------------------------------
+    // --------------------------------------------------
     
     if (type === 'cardPlayerForm') {
       
@@ -361,9 +371,9 @@ class Store {
     }
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   ダイアログを閉じる
-    // ---------------------------------------------
+    // --------------------------------------------------
     
     lodashSet(this.dataObj, [_id, 'dialog'], false);
     
@@ -373,9 +383,11 @@ class Store {
   
   
   
-  // ---------------------------------------------
+  
+  
+  // --------------------------------------------------
   //   編集・登録
-  // ---------------------------------------------
+  // --------------------------------------------------
   
   /**
    * 編集時に編集するIDを選択する（各フォームの値を設定する）
@@ -384,25 +396,45 @@ class Store {
    * @param {string} ids_id - DB IDs _id
    */
   @action.bound
-  handleSetEditForm({ _id, ids_id }) {
+  handleSetEditForm({ pathArr, _id, ids_id }) {
+    
+    
+    // --------------------------------------------------
+    //   データを取得する
+    // --------------------------------------------------
     
     const dataArr = lodashGet(this.dataObj, [_id, 'dataArr'], []);
     
-    // データを取得する
     const resultObj = dataArr.find((valueObj) => {
       return valueObj._id === ids_id;
     });
     
-    // ゲームを追加する
+    
+    // --------------------------------------------------
+    //   編集フォームのゲームを変更する
+    // --------------------------------------------------
+    
+    const games_id = lodashGet(resultObj, ['gamesObj', '_id'], '');
+    const gameCommunities_id = lodashGet(resultObj, ['gamesObj', 'gameCommunities_id'], '');
+    const name = lodashGet(resultObj, ['gamesObj', 'name'], '');
+    const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
+    
     this.handleGame({
+      
+      pathArr,
       _id,
-      games_id: resultObj.games_id,
-      gameCommunities_id: resultObj.gamesGameCommunities_id,
-      imagesAndVideosObj: resultObj.gamesImagesAndVideosObj,
-      name: resultObj.gamesName
+      games_id,
+      gameCommunities_id,
+      name,
+      imagesAndVideosThumbnailObj,
+      
     });
     
-    // データを追加する
+    
+    // --------------------------------------------------
+    //   編集フォームのデータを追加する
+    // --------------------------------------------------
+    
     lodashSet(this.dataObj, [_id, '_id'], resultObj._id);
     lodashSet(this.dataObj, [_id, 'platform'], resultObj.platform);
     lodashSet(this.dataObj, [_id, 'label'], resultObj.label);
@@ -410,9 +442,43 @@ class Store {
     lodashSet(this.dataObj, [_id, 'publicSetting'], resultObj.publicSetting);
     lodashSet(this.dataObj, [_id, 'search'], resultObj.search);
     
-    // console.log(`\n---------- resultObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(resultObj)));
-    // console.log(`\n-----------------------------------\n`);
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/stores/form.js - handleSetEditForm
+    // `);
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   ids_id: {green ${ids_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- this.dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----------------------------------------
+    // `);
+    
     
   };
   
@@ -420,17 +486,75 @@ class Store {
   
   
   /**
-   * ゲームを変更する
-   * @param {string} _id
+   * ゲームを追加・変更する
+   * @param {Array} pathArr - パス
    * @param {string} games_id - DB games games_id
    * @param {string} gameCommunities_id - DB games gameCommunities_id
-   * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
    * @param {string} name - ゲーム名
+   * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
    */
   @action.bound
-  handleGame({ _id, games_id, gameCommunities_id, imagesAndVideosObj, name }) {
-    lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameCommunities_id, imagesAndVideosObj, name }]);
+  handleGame({ pathArr, games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }) {
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/stores/form.js - handleGame
+    // `);
+    
+    // console.log(chalk`
+    //   games_id: {green ${games_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   name: {green ${name}}
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // console.log(`
+    //   ----- storeGameForm.dataObj / 前 -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   データ更新
+    // --------------------------------------------------
+    
+    let gamesArr = [];
+    
+    if (games_id && gameCommunities_id && name) {
+      gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
+    }
+    
+    storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
+    
+    // lodashSet(storeGameForm, ['dataObj', ...pathArr, 'gamesArr'], gamesArr);
+    
+    // storeGameForm.dataObj, [...pathArr, 'gamesArr'], gamesArr
+    
+    
+    // console.log(`
+    //   ----- storeGameForm.dataObj / 後 -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
+    // lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
   };
+  
+  
   
   
   /**
@@ -453,9 +577,9 @@ class Store {
   handleDeleteDialogOpen({ _id }) {
     
     
-    // ---------------------------------------------
+    // --------------------------------------------------
     //   削除するIDが選ばれていない場合、エラーを通知
-    // ---------------------------------------------
+    // --------------------------------------------------
     
     const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
     
@@ -490,22 +614,24 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleEditSubmit({ _id, func, ids_idArr }) {
+  async handleEditSubmit({ pathArr, type, _id, ids_idArr }) {
     
     
     try {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Disable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: `${_id}-idFormEditSubmit` });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
-      // ---------------------------------------------
+      
+      
+      // --------------------------------------------------
       //   編集するIDが選ばれていない場合、エラー
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       
@@ -514,94 +640,113 @@ class Store {
       }
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   フォームのデータを取得
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      // const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
-      const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
-      const formGameCommunities_id = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameCommunities_id'], '');
-      const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
-      const formID = lodashGet(this.dataObj, [_id, 'id'], '');
-      const formPublicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
-      const formSearch = lodashGet(this.dataObj, [_id, 'search'], true);
+      const platform = lodashGet(this.dataObj, [_id, 'platform'], '');
+      const label = lodashGet(this.dataObj, [_id, 'label'], '');
+      const id = lodashGet(this.dataObj, [_id, 'id'], '');
+      const publicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
+      const search = lodashGet(this.dataObj, [_id, 'search'], true);
+      
+      const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
+      
+      let gameCommunities_id = '';
+      
+      if (gamesArr.length > 0) {
+        gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
+      }
+      
+      // console.log(`
+      //   ----- gamesArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   フォームに必要な情報が入力されていない場合、エラー
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      if (!formPlatform || !formID || !formPublicSetting) {
+      if (!platform || !id || !publicSetting) {
         throw new CustomError({ errorsArr: [{ code: '5Geof8YQ', messageID: 'uwHIKBy7c' }] });
       }
       
       
-      // ---------------------------------------------
+      
+      
+      // --------------------------------------------------
       //   FormData
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      const formData = new FormData();
+      const formDataObj = {
+        
+        _id: form_id,
+        platform,
+        label,
+        gameCommunities_id,
+        id,
+        publicSetting,
+        search,
+        
+      };
       
-      formData.append('_id', form_id);
-      formData.append('platform', formPlatform);
-      formData.append('gameCommunities_id', formGameCommunities_id);
-      formData.append('label',  formLabel);
-      formData.append('id', formID);
-      formData.append('publicSetting', formPublicSetting);
-      formData.append('search', formSearch);
       
-      
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Fetch
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/ids/upsert`,
+        urlApi: `${process.env.URL_API}/v2/db/ids/upsert`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj),
       });
       
       
-      // ---------------------------------------------
+      
+      
+      // --------------------------------------------------
       //   Error
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
-      // ---------------------------------------------
+      
+      
+      // --------------------------------------------------
       //   Data 更新
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
       
       
-      // ---------------------------------------------
-      //   渡された関数を実行する
+      // --------------------------------------------------
       //   ID登録フォームをロードした元のフォームのIDを更新する
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      const updatedArr = [];
+      const updatedIds_idArr = [];
       
       for (let valueObj of ids_idArr.values()) {
-        // console.log(index, valueObj);
+        
+        // 現在選択されているIDを抽出する
+        const newObj = resultObj.data.find((valueObj2) => {
+          return valueObj2._id === valueObj._id;
+        });
+        
+        // 新しくなった選択IDの配列を作成
+        if (newObj) {
+          updatedIds_idArr.push(newObj);
+        }
         
         // console.log(`
         //   ----- valueObj -----\n
         //   ${util.inspect(valueObj, { colors: true, depth: null })}\n
         //   --------------------\n
         // `);
-        
-        
-        const newObj = resultObj.data.find((valueObj2) => {
-          return valueObj2._id === valueObj._id;
-        });
-        
-        if (newObj) {
-          updatedArr.push(newObj);
-        }
         
         // console.log(`
         //   ----- newObj -----\n
@@ -611,24 +756,24 @@ class Store {
         
       }
       
-      func({ _id, ids_idArr: updatedArr });
       
-      // console.log(`
-      //   ----- updatedArr -----\n
-      //   ${util.inspect(updatedArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // --------------------------------------------------
+      //   プレイヤーカードのフォーム更新
+      // --------------------------------------------------
       
-      // console.log(`
-      //   ----- selectedArr -----\n
-      //   ${util.inspect(selectedArr, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      if (type === 'cardPlayerForm') {
+        
+        const clonedArr = lodashCloneDeep(updatedIds_idArr);
+        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+        
+      }
       
       
-      // ---------------------------------------------
+      
+      
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
@@ -636,13 +781,49 @@ class Store {
       });
       
       
-      // ---------------------------------------------
+      
+      
+      // --------------------------------------------------
       //   console.log
-      // ---------------------------------------------
+      // --------------------------------------------------
+      
+      // console.log(chalk`
+      //   _id: {green ${_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- ids_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- updatedIds_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIds_idArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(formDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // console.log(`
       //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -650,9 +831,9 @@ class Store {
     } catch (errorObj) {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Error
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -663,11 +844,11 @@ class Store {
     } finally {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Enable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: `${_id}-idFormEditSubmit` });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
     }
@@ -689,16 +870,16 @@ class Store {
     try {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Disable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleButtonDisable({ _id: `${_id}-idFormDeleteSubmit` });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   編集するIDが選ばれていない場合、エラー
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
       
@@ -707,18 +888,18 @@ class Store {
       }
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   FormData
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const formData = new FormData();
       
       formData.append('_id', form_id);
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Fetch
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v1/ids/delete`,
@@ -727,26 +908,26 @@ class Store {
       });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Error
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Data 更新
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   渡された関数を実行する
       //   ID登録フォームをロードした元のフォームのIDを更新する
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const updatedArr = [];
       
@@ -765,23 +946,23 @@ class Store {
       func({ _id, ids_idArr: updatedArr });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   フォームを空にする
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       this.handleClearForm({ _id });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   削除ダイアログを閉じる
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       this.handleDeleteDialogClose({ _id });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
@@ -789,9 +970,9 @@ class Store {
       });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   console.log
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       // console.log(`
       //   ----- resultObj -----\n
@@ -803,9 +984,9 @@ class Store {
     } catch (errorObj) {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Error
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -816,9 +997,9 @@ class Store {
     } finally {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Enable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleButtonEnable({ _id: `${_id}-idFormDeleteSubmit` });
       
@@ -842,18 +1023,18 @@ class Store {
     try {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Disable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleButtonDisable({ _id: `${_id}-idFormRegisterSubmit` });
       
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   フォームのデータを取得
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
       const formGameCommunities_id = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameCommunities_id'], '');
@@ -863,9 +1044,9 @@ class Store {
       const formSearch = lodashGet(this.dataObj, [_id, 'search'], true);
       
       
-       // ---------------------------------------------
+       // --------------------------------------------------
       //   フォームに必要な情報が入力されていない場合、エラー
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       if (!formPlatform || !formID || !formPublicSetting) {
         throw new CustomError({ errorsArr: [{ code: 'OHCO0_uv', messageID: 'uwHIKBy7c' }] });
@@ -874,9 +1055,9 @@ class Store {
       
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   FormData
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const formData = new FormData();
       
@@ -888,9 +1069,9 @@ class Store {
       formData.append('search', formSearch);
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Fetch
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v1/ids/upsert`,
@@ -899,27 +1080,27 @@ class Store {
       });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Error
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Data 更新
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const temp_id = _id.replace('-register', '');
       
       lodashSet(this.dataObj, [temp_id, 'dataArr'], resultObj.data);
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   未選択IDに追加 / _idのみでいい
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       const dataArr = lodashGet(this.dataObj, [temp_id, 'dataArr'], []);
       const unselectedArr = lodashGet(this.dataObj, [temp_id, 'unselectedArr'], []);
@@ -937,16 +1118,16 @@ class Store {
       // console.log(`\n-----------------------------------\n`);
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   フォームを空にする
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       this.handleClearForm({ _id });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Success
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
@@ -954,9 +1135,9 @@ class Store {
       });
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   console.log
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       // console.log(`
       //   ----- resultObj -----\n
@@ -968,9 +1149,9 @@ class Store {
     } catch (errorObj) {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Snackbar: Error
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleSnackbarOpen({
         variant: 'error',
@@ -981,9 +1162,9 @@ class Store {
     } finally {
       
       
-      // ---------------------------------------------
+      // --------------------------------------------------
       //   Button Enable
-      // ---------------------------------------------
+      // --------------------------------------------------
       
       storeLayout.handleButtonEnable({ _id: `${_id}-idFormRegisterSubmit` });
       
@@ -1018,9 +1199,9 @@ class Store {
 
 
 
-// --------------------------------------------------
+// -------------------------------------------------------
 //   Initialize Store
-// --------------------------------------------------
+// -------------------------------------------------------
 
 export default function initStoreIDForm({}) {
   

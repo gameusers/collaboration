@@ -42,6 +42,13 @@ const { validationGamesSuggestionKeyword } = require('../../../../../app/@databa
 
 
 // ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { formatImagesAndVideosArr } = require('../../../../../app/@database/images-and-videos/format');
+
+
+// ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
@@ -77,7 +84,7 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  let returnObj = {};
+  let returnArr = [];
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -106,19 +113,6 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   console.log
-    // ---------------------------------------------
-    
-    // console.log(chalk`
-    //   /pages/api/v2/db/games/read-suggestion.js
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   keyword: {green ${keyword}}
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
     
@@ -141,14 +135,37 @@ export default async (req, res) => {
     //   サジェスト用のデータを取得
     // --------------------------------------------------
     
-    returnObj = await ModelGames.findBySearchKeywordsArrForSuggestion({
+    const resultArr = await ModelGames.findBySearchKeywordsArrForSuggestion({
       
       localeObj,
-      // language: localeObj.language,
-      // country: localeObj.country,
       keyword,
       
     });
+    
+    
+    // --------------------------------------------------
+    //   画像をフォーマット
+    // --------------------------------------------------
+    
+    returnArr = formatImagesAndVideosArr({ arr: resultArr });
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/games/read-suggestion.js
+    // `);
+    
+    // console.log(`
+    //   ----- returnArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -157,7 +174,7 @@ export default async (req, res) => {
     //   Success
     // ---------------------------------------------
     
-    return res.status(200).json(returnObj);
+    return res.status(200).json(returnArr);
     
     
   } catch (errorObj) {

@@ -92,6 +92,26 @@ class Store {
    */
   @action.bound
   handleSetGamesArr({ pathArr, gamesArr }) {
+    
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/game/stores/form.js - handleSetGamesArr
+    // `);
+    
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
   };
   
@@ -101,16 +121,6 @@ class Store {
   // ---------------------------------------------
   //   ゲーム追加・削除する / gamesArr
   // ---------------------------------------------
-  
-  /**
-   * gamesArr を取得する　チップのデータ
-   * @param {Array} pathArr - パス
-   */
-  // @action.bound
-  // handleGetGamesArr({ pathArr }) {
-  //   return lodashGet(this.dataObj, [...pathArr, 'gamesArr'], []);
-  // };
-  
   
   /**
    * ゲームを追加する
@@ -293,6 +303,8 @@ class Store {
     }
     
     
+    
+    
     // ---------------------------------------------
     //   Fetch でサジェストデータを取得
     // ---------------------------------------------
@@ -322,6 +334,8 @@ class Store {
       });
       
       
+      
+      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -331,13 +345,14 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
       //  Data 更新
       // ---------------------------------------------
       
       // サジェストのキーボードでの選択状態をクリア
       lodashSet(this.dataObj, [...pathArr, 'selected'], null);
-      // delete this.dataObj[_id].selected;
       
       // サジェストのデータを更新
       lodashSet(this.dataObj, [...pathArr, 'suggestionArr'], resultObj.data);
@@ -396,13 +411,13 @@ export default function initStoreGameForm({ propsObj }) {
     //   --------------------\n
     // `);
     
+    
     // --------------------------------------------------
     //   gamesArr
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['gamesArr'])) {
       storeGameForm.handleSetGamesArr({ pathArr, gamesArr: propsObj.gamesArr });
-      // lodashSet(storeGameForm, ['dataObj', ...pathArr], propsObj.gamesArr);
     }
     
     

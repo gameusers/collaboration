@@ -92,7 +92,7 @@ export default class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idFormSelectObj'];
+    // this.pathArr = [props._id, 'idFormSelectObj'];
     
     
   }
@@ -111,7 +111,7 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    // this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -130,7 +130,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, type, _id } = this.props;
+    const { stores, storeIDForm, pathArr, type, _id } = this.props;
     
     const {
       
@@ -157,11 +157,11 @@ export default class extends React.Component {
     //   Component - 選択ID
     // --------------------------------------------------
     
-    const dataArr = lodashGet(dataObj, [_id, 'dataArr'], []);
+    const dataArr = lodashGet(dataObj, [...pathArr, 'dataArr'], []);
     const selectedIDsArr = [];
     
     const componentsSelectedArr = [];
-    const selectedArr = lodashGet(dataObj, [_id, 'selectedArr'], []);
+    const selectedArr = lodashGet(dataObj, [...pathArr, 'selectedArr'], []);
     
     
     for (const [index, value] of selectedArr.entries()) {
@@ -182,7 +182,10 @@ export default class extends React.Component {
           <div
             css={cssIDBox}
             key={index}
-            onClick={() => handleMoveSelected({ _id, index })}
+            onClick={() => handleMoveSelected({
+              pathArr,
+              index,
+            })}
           >
             <IDChip
               platform={tempObj.platform}
@@ -207,7 +210,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const componentsUnselectedArr = [];
-    const unselectedArr = lodashGet(dataObj, [_id, 'unselectedArr'], []);
+    const unselectedArr = lodashGet(dataObj, [...pathArr, 'unselectedArr'], []);
     
     
     for (const [index, value] of unselectedArr.entries()) {
@@ -226,7 +229,10 @@ export default class extends React.Component {
           <div
             css={cssIDBox}
             key={index}
-            onClick={() => handleMoveUnselected({ _id, index })}
+            onClick={() => handleMoveUnselected({
+              pathArr,
+              index,
+            })}
           >
             <IDChip
               platform={tempObj.platform}
@@ -312,6 +318,7 @@ export default class extends React.Component {
           variant="outlined"
           color="primary"
           onClick={() => handleSelectButton({
+            pathArr,
             type,
             _id,
             ids_idArr: selectedIDsArr,

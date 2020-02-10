@@ -68,7 +68,7 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - 選択済み
+    //   Component - 選択済みID
     // --------------------------------------------------
     
     const componentsSelectedArr = [];

@@ -149,7 +149,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idFormObj'];
+    // this.pathArr = [props._id, 'idFormObj'];
     
     
   }
@@ -168,7 +168,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    // this.props.stores.layout.handleButtonEnable({ pathArr });
     
     
   }
@@ -187,22 +187,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeIDForm, storeGameForm, intl, type, _id, ids_idArr } = this.props;
+    const { classes, stores, storeIDForm, storeGameForm, intl, pathArr, type, _id, ids_idArr, additionalGameLimit } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
-      handleSetEditForm,
-      // handleGame,
-      // handleGameDelete,
+      handleChangeEditID,
       handleDeleteDialogOpen,
       handleDeleteDialogClose,
       handleEditSubmit,
       handleDeleteSubmit
       
     } = storeIDForm;
-    
     
     const {
       
@@ -217,7 +214,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -227,7 +224,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const componentsIDArr = [];
-    const dataArr = lodashGet(dataObj, [_id, 'dataArr'], []);
+    const dataArr = lodashGet(dataObj, [...pathArr, 'dataArr'], []);
     
     for (const [index, valueObj] of dataArr.entries()) {
       
@@ -239,7 +236,7 @@ export default injectIntl(class extends React.Component {
         <div
           css={cssIDBox}
           key={index}
-          onClick={() => handleSetEditForm({ pathArr: this.pathArr, _id, ids_id: valueObj._id })}
+          onClick={() => handleChangeEditID({ pathArr, _id, ids_id: valueObj._id })}
         >
           <IDChip
             platform={valueObj.platform}
@@ -261,7 +258,7 @@ export default injectIntl(class extends React.Component {
     //   プラットフォーム
     // --------------------------------------------------
     
-    const platform = lodashGet(dataObj, [_id, 'platform'], '');
+    const platform = lodashGet(dataObj, [...pathArr, 'platform'], '');
     const validationPlatformObj = validationIDsPlatform({ value: platform });
     
     
@@ -272,7 +269,7 @@ export default injectIntl(class extends React.Component {
     // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
     const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
     
-    const gamesArr = handleGetGamesArr({ pathArr: this.pathArr });
+    const gamesArr = handleGetGamesArr({ pathArr });
     
     
     
@@ -281,7 +278,7 @@ export default injectIntl(class extends React.Component {
     //   ラベル
     // --------------------------------------------------
     
-    const label = lodashGet(dataObj, [_id, 'label'], '');
+    const label = lodashGet(dataObj, [...pathArr, 'label'], '');
     const validationLabelObj = validationIDsLabel({ value: label });
     
     
@@ -289,7 +286,7 @@ export default injectIntl(class extends React.Component {
     //   ID
     // --------------------------------------------------
     
-    const id = lodashGet(dataObj, [_id, 'id'], '');
+    const id = lodashGet(dataObj, [...pathArr, 'id'], '');
     const validationIDObj = validationIDsID({ value: id });
     
     
@@ -297,7 +294,7 @@ export default injectIntl(class extends React.Component {
     //   公開設定
     // --------------------------------------------------
     
-    const publicSetting = lodashGet(dataObj, [_id, 'publicSetting'], '');
+    const publicSetting = lodashGet(dataObj, [...pathArr, 'publicSetting'], '');
     const validationPublicSettingObj = validationIDsPublicSetting({ value: publicSetting });
     
     
@@ -305,14 +302,14 @@ export default injectIntl(class extends React.Component {
     //   検索可能
     // --------------------------------------------------
     
-    const search = lodashGet(dataObj, [_id, 'search'], true);
+    const search = lodashGet(dataObj, [...pathArr, 'search'], true);
     
     
     // --------------------------------------------------
     //   IDを削除するか尋ねるダイアログを表示するための変数
     // --------------------------------------------------
     
-    const deleteDialogOpen = lodashGet(dataObj, [_id, 'deleteDialogOpen'], false);
+    const deleteDialogOpen = lodashGet(dataObj, [...pathArr, 'deleteDialogOpen'], false);
     
     
     
@@ -389,7 +386,7 @@ export default injectIntl(class extends React.Component {
               id="platform"
               value={validationPlatformObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: [_id, 'platform'],
+                pathArr: [...pathArr, 'platform'],
                 value: eventObj.target.value
               })}
             >
@@ -420,12 +417,9 @@ export default injectIntl(class extends React.Component {
         {/* ゲーム選択 */}
         {gameSelectForm &&
           <GameForm
-            pathArr={this.pathArr}
+            pathArr={pathArr}
             gamesArr={gamesArr}
-            // _id={_id}
-            // gamesArr={gamesArr}
-            // func={handleGame}
-            // funcDelete={handleGameDelete}
+            additionalGameLimit={additionalGameLimit}
           />
         }
         
@@ -440,7 +434,7 @@ export default injectIntl(class extends React.Component {
             label="ラベル"
             value={validationLabelObj.value}
             onChange={(eventObj) => handleEdit({
-              pathArr: [_id, 'label'],
+              pathArr: [...pathArr, 'label'],
               value: eventObj.target.value
             })}
             error={validationLabelObj.error}
@@ -453,6 +447,8 @@ export default injectIntl(class extends React.Component {
         </div>
         
         
+        
+        
         {/* ID */}
         <div>
           <TextField
@@ -461,7 +457,7 @@ export default injectIntl(class extends React.Component {
             label="ID"
             value={validationIDObj.value}
             onChange={(eventObj) => handleEdit({
-              pathArr: [_id, 'id'],
+              pathArr: [...pathArr, 'id'],
               value: eventObj.target.value
             })}
             error={validationIDObj.error}
@@ -472,6 +468,8 @@ export default injectIntl(class extends React.Component {
             }}
           />
         </div>
+        
+        
         
         
         {/* 公開設定 */}
@@ -488,13 +486,9 @@ export default injectIntl(class extends React.Component {
               id="publicSetting"
               value={validationPublicSettingObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: [_id, 'publicSetting'],
+                pathArr: [...pathArr, 'publicSetting'],
                 value: eventObj.target.value
               })}
-              // inputProps={{
-              //   name: 'publicSetting',
-              //   id: 'publicSetting',
-              // }}
             >
               <MenuItem value={1}>誰にでも公開</MenuItem>
               <MenuItem value={2}>自分をフォローしているユーザーに公開</MenuItem>
@@ -508,6 +502,8 @@ export default injectIntl(class extends React.Component {
           </FormControl>
           
         </div>
+        
+        
         
         
         {/* 検索可能 */}
@@ -524,7 +520,7 @@ export default injectIntl(class extends React.Component {
               <Checkbox
                 checked={search}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: [_id, 'search'],
+                  pathArr: [...pathArr, 'search'],
                   value: eventObj.target.checked
                 })}
               />
@@ -552,7 +548,7 @@ export default injectIntl(class extends React.Component {
             variant="outlined"
             color="primary"
             onClick={() => handleEditSubmit({
-              pathArr: this.pathArr,
+              pathArr,
               type,
               _id,
               ids_idArr
@@ -567,7 +563,7 @@ export default injectIntl(class extends React.Component {
             variant="outlined"
             color="secondary"
             onClick={() => handleDeleteDialogOpen({
-              _id,
+              pathArr,
             })}
             disabled={buttonDisabled}
           >
@@ -582,7 +578,7 @@ export default injectIntl(class extends React.Component {
         {/* IDを削除するか尋ねるダイアログ */}
         <Dialog
           open={deleteDialogOpen}
-          onClose={() => handleDeleteDialogClose({ _id })}
+          onClose={() => handleDeleteDialogClose({ pathArr })}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -598,6 +594,8 @@ export default injectIntl(class extends React.Component {
           <DialogActions>
             <Button
               onClick={() => handleDeleteSubmit({
+                pathArr,
+                type,
                 _id,
                 ids_idArr
               })}
@@ -608,7 +606,7 @@ export default injectIntl(class extends React.Component {
             </Button>
             
             <Button
-              onClick={() => handleDeleteDialogClose({ _id })}
+              onClick={() => handleDeleteDialogClose({ pathArr })}
               color="primary"
             >
               いいえ

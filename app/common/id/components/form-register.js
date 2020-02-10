@@ -24,16 +24,6 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Validations
-// ---------------------------------------------
-
-const { validationIDsPlatform } = require('../../../@database/ids/validations/platform');
-const { validationIDsLabel } = require('../../../@database/ids/validations/label');
-const { validationIDsID } = require('../../../@database/ids/validations/id');
-const { validationIDsPublicSetting } = require('../../../@database/ids/validations/public-setting');
-
-
-// ---------------------------------------------
 //   Material UI
 // ---------------------------------------------
 
@@ -48,6 +38,16 @@ import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+import { validationIDsPlatform } from '../../../@database/ids/validations/platform';
+import { validationIDsLabel } from '../../../@database/ids/validations/label';
+import { validationIDsID } from '../../../@database/ids/validations/id';
+import { validationIDsPublicSetting } from '../../../@database/ids/validations/public-setting';
 
 
 // ---------------------------------------------
@@ -83,20 +83,6 @@ const cssHeading = css`
   margin: 24px 0 0 0;
 `;
 
-// const cssBox = css`
-//   display: flex;
-//   flex-flow: row wrap;
-//   margin: 4px 0 8px 0;
-  
-//   @media screen and (max-width: 480px) {
-//     flex-flow: column wrap;
-//   }
-// `;
-
-// const cssIDBox = css`
-//   cursor: pointer;
-// `;
-
 const cssPlatformBox = css`
   margin: 12px 0 0 0;
 `;
@@ -115,54 +101,11 @@ const cssTextField = css`
 
 
 // --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-// const Container = styled.div`
-//   padding: 8px 14px 16px 14px;
-// `;
-
-// const Description = styled.p`
-//   margin: 12px 0 0 0;
-// `;
-
-// const Heading = styled.div`
-//   font-weight: bold;
-//   margin: 24px 0 0 0;
-// `;
-
-// const PlatformBox = styled.div`
-//   margin: 12px 0 0 0;
-// `;
-
-// const StyledTextFieldWide = styled(TextField)`
-//   && {
-//     width: 400px;
-    
-//     @media screen and (max-width: 480px) {
-//       width: 100%;
-//     }
-//   }
-// `;
-
-// const SendButtonBox = styled.div`
-//   margin: 24px 0 0 0;
-// `;
-
-// const SearchBox = styled.div`
-//   margin: 24px 0 0 0;
-// `;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeIDForm')
+@inject('stores', 'storeIDForm', 'storeGameForm')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -172,8 +115,25 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props._id, 'idFormObj', 'registerObj'];
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -187,10 +147,12 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-idFormRegisterSubmit` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -204,26 +166,32 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeIDForm, intl, _id } = this.props;
-    
-    const { buttonDisabledObj } = stores.layout;
+    const { classes, stores, storeIDForm, storeGameForm, intl, _id, additionalGameLimit } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
-      handleGame,
-      handleGameDelete,
-      handleRegisterSubmit
+      // handleGame,
+      // handleGameDelete,
+      handleRegisterSubmit,
       
     } = storeIDForm;
+    
+    const {
+      
+      handleGetGamesArr
+      
+    } = storeGameForm;
+    
+    
     
     
     // --------------------------------------------------
     //   Button - Disable
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(buttonDisabledObj, [`${_id}-idFormRegisterSubmit`], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -232,7 +200,7 @@ export default injectIntl(class extends React.Component {
     //   プラットフォーム
     // --------------------------------------------------
     
-    const platform = lodashGet(dataObj, [_id, 'platform'], '');
+    const platform = lodashGet(dataObj, [...this.pathArr, 'platform'], '');
     const validationPlatformObj = validationIDsPlatform({ value: platform });
     
     
@@ -240,17 +208,19 @@ export default injectIntl(class extends React.Component {
     //   ゲーム選択フォーム
     // --------------------------------------------------
     
-    const gamesArr = lodashGet(dataObj, [_id, 'gamesArr'], []);
-    
     // ゲーム選択フォームを表示するかどうか　配列内のプラットフォームの場合、表示しない
     const gameSelectForm = ['PlayStation', 'Xbox', 'Nintendo', 'Steam', 'Origin', 'Discord', 'Skype', 'ICQ', 'Line'].indexOf(validationPlatformObj.value) === -1;
+    
+    const gamesArr = handleGetGamesArr({ pathArr: this.pathArr });
+    
+    
     
     
     // --------------------------------------------------
     //   ラベル
     // --------------------------------------------------
     
-    const label = lodashGet(dataObj, [_id, 'label'], '');
+    const label = lodashGet(dataObj, [...this.pathArr, 'label'], '');
     const validationLabelObj = validationIDsLabel({ value: label });
     
     
@@ -258,7 +228,7 @@ export default injectIntl(class extends React.Component {
     //   ID
     // --------------------------------------------------
     
-    const id = lodashGet(dataObj, [_id, 'id'], '');
+    const id = lodashGet(dataObj, [...this.pathArr, 'id'], '');
     const validationIDObj = validationIDsID({ value: id });
     
     
@@ -266,7 +236,7 @@ export default injectIntl(class extends React.Component {
     //   公開設定
     // --------------------------------------------------
     
-    const publicSetting = lodashGet(dataObj, [_id, 'publicSetting'], '');
+    const publicSetting = lodashGet(dataObj, [...this.pathArr, 'publicSetting'], '');
     const validationPublicSettingObj = validationIDsPublicSetting({ value: publicSetting });
     
     
@@ -274,7 +244,7 @@ export default injectIntl(class extends React.Component {
     //   検索可能
     // --------------------------------------------------
     
-    const search = lodashGet(dataObj, [_id, 'search'], true);
+    const search = lodashGet(dataObj, [...this.pathArr, 'search'], true);
     
     
     
@@ -283,40 +253,26 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/id/components/form-register.js
+    // `);
+    
+    // console.log(`
+    //   ----- this.pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
+    //   _id: {green ${_id}}
     //   platform: {green ${platform}}
-    // `);
-    
-    // console.log(`\n---------- validationPlatformObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(validationPlatformObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(chalk`
-    //   label: {green ${label}}
-    // `);
-    
-    // console.log(`\n---------- validationLabelObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(validationLabelObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(chalk`
-    //   id: {green ${id}}
-    // `);
-    
-    // console.log(`\n---------- validationIDObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(validationIDObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(chalk`
-    //   publicSetting: {green ${publicSetting}}
-    // `);
-    
-    // console.log(`\n---------- validationPublicSettingObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(validationPublicSettingObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    // console.log(chalk`
-    //   search: {green ${search}}
     // `);
     
     
@@ -362,9 +318,10 @@ export default injectIntl(class extends React.Component {
             <InputLabel htmlFor="platform">プラットフォーム</InputLabel>
             
             <Select
+              id="platform"
               value={validationPlatformObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: [_id, 'platform'],
+                pathArr: [...this.pathArr, 'platform'],
                 value: eventObj.target.value
               })}
             >
@@ -395,10 +352,9 @@ export default injectIntl(class extends React.Component {
         {/* ゲーム選択 */}
         {gameSelectForm &&
           <GameForm
-            _id={_id}
+            pathArr={this.pathArr}
             gamesArr={gamesArr}
-            func={handleGame}
-            funcDelete={handleGameDelete}
+            additionalGameLimit={additionalGameLimit}
           />
         }
         
@@ -413,7 +369,7 @@ export default injectIntl(class extends React.Component {
             label="ラベル"
             value={validationLabelObj.value}
             onChange={(eventObj) => handleEdit({
-              pathArr: [_id, 'label'],
+              pathArr: [...this.pathArr, 'label'],
               value: eventObj.target.value
             })}
             error={validationLabelObj.error}
@@ -430,11 +386,11 @@ export default injectIntl(class extends React.Component {
         <div>
           <TextField
             css={cssTextField}
-            id="label"
+            id="id"
             label="ID"
             value={validationIDObj.value}
             onChange={(eventObj) => handleEdit({
-              pathArr: [_id, 'id'],
+              pathArr: [...this.pathArr, 'id'],
               value: eventObj.target.value
             })}
             error={validationIDObj.error}
@@ -458,15 +414,12 @@ export default injectIntl(class extends React.Component {
             <InputLabel htmlFor="publicSetting">IDの公開設定</InputLabel>
             
             <Select
+              id="publicSetting"
               value={validationPublicSettingObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: [_id, 'publicSetting'],
+                pathArr: [...this.pathArr, 'publicSetting'],
                 value: eventObj.target.value
               })}
-              inputProps={{
-                name: 'publicSetting',
-                id: 'publicSetting',
-              }}
             >
               <MenuItem value={1}>誰にでも公開</MenuItem>
               <MenuItem value={2}>自分をフォローしているユーザーに公開</MenuItem>
@@ -496,7 +449,7 @@ export default injectIntl(class extends React.Component {
               <Checkbox
                 checked={search}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: [_id, 'search'],
+                  pathArr: [...this.pathArr, 'search'],
                   value: eventObj.target.checked
                 })}
               />
@@ -518,6 +471,7 @@ export default injectIntl(class extends React.Component {
             variant="outlined"
             color="primary"
             onClick={() => handleRegisterSubmit({
+              pathArr: this.pathArr,
               _id,
             })}
             disabled={buttonDisabled}

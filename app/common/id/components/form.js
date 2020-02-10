@@ -118,7 +118,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeIDForm, type, _id, ids_idArr, func } = this.props;
+    const { stores, storeIDForm, type, _id, ids_idArr } = this.props;
     
     const {
       
@@ -135,7 +135,7 @@ export default class extends React.Component {
     //   Dialog
     // --------------------------------------------------
     
-    const dialogOpen = lodashGet(dataObj, [_id, 'dialog'], false);
+    const dialogOpen = lodashGet(dataObj, [...this.pathArr, 'dialog'], false);
     
     
     // --------------------------------------------------
@@ -151,7 +151,7 @@ export default class extends React.Component {
     //   コンテンツを切り替える
     // --------------------------------------------------
     
-    const contentsType = lodashGet(dataObj, [_id, 'contentsType'], 'select');
+    const contentsType = lodashGet(dataObj, [...this.pathArr, 'contentsType'], 'select');
     
     let componentContent = '';
     
@@ -159,9 +159,9 @@ export default class extends React.Component {
       
       componentContent =
         <FormSelect
+          pathArr={this.pathArr}
           type={type}
           _id={_id}
-          // func={func}
         />
       ;
       
@@ -169,10 +169,11 @@ export default class extends React.Component {
       
       componentContent =
         <FormEdit
+          pathArr={this.pathArr}
           type={type}
           _id={_id}
-          // func={func}
           ids_idArr={ids_idArr}
+          additionalGameLimit={1}
         />
       ;
       
@@ -180,7 +181,10 @@ export default class extends React.Component {
       
       componentContent =
         <FormRegister
-          _id={`${_id}-register`}
+          pathArr={this.pathArr}
+          // _id={`${_id}-register`}
+          _id={_id}
+          additionalGameLimit={1}
         />
       ;
       
@@ -240,7 +244,7 @@ export default class extends React.Component {
         <Dialog
           open={dialogOpen}
           onClose={() => handleEdit({
-            pathArr: [_id, 'dialog'],
+            pathArr: [...this.pathArr, 'dialog'],
             value: false
           })}
           fullScreen
@@ -255,7 +259,7 @@ export default class extends React.Component {
               <IconButton
                 color="inherit"
                 onClick={() => handleEdit({
-                  pathArr: [_id, 'dialog'],
+                  pathArr: [...this.pathArr, 'dialog'],
                   value: false
                 })}
                 aria-label="Close"
@@ -287,7 +291,7 @@ export default class extends React.Component {
               
               <Button
                 onClick={() => handleEdit({
-                  pathArr: [_id, 'contentsType'],
+                  pathArr: [...this.pathArr, 'contentsType'],
                   value: 'select'
                 })}
                 disabled={buttonDisabled}
@@ -297,7 +301,7 @@ export default class extends React.Component {
               
               <Button
                 onClick={() => handleEdit({
-                  pathArr: [_id, 'contentsType'],
+                  pathArr: [...this.pathArr, 'contentsType'],
                   value: 'edit'
                 })}
                 disabled={buttonDisabled}
@@ -307,7 +311,7 @@ export default class extends React.Component {
               
               <Button
                 onClick={() => handleEdit({
-                  pathArr: [_id, 'contentsType'],
+                  pathArr: [...this.pathArr, 'contentsType'],
                   value: 'register'
                 })}
                 disabled={buttonDisabled}

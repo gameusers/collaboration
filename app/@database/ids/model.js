@@ -257,6 +257,49 @@ const insertMany = async ({ saveArr }) => {
 
 
 /**
+ * データを削除する / 1件だけ
+ * @param {Object} conditionObj - 検索条件
+ * @return {Object} 取得データ
+ */
+const deleteOne = async ({ conditionObj }) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Error
+    // --------------------------------------------------
+    
+    if (!conditionObj || !Object.keys(conditionObj).length) {
+      throw new Error();
+    }
+    
+    
+    // --------------------------------------------------
+    //   FindOne
+    // --------------------------------------------------
+    
+    return await Schema.deleteOne(conditionObj).exec();
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
+
+
+
+/**
  * 削除する
  * @param {Object} conditionObj - 検索条件
  * @param {boolean} reset - trueでデータをすべて削除する
@@ -293,6 +336,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
     throw err;
     
   }
+  
   
 };
 
@@ -560,12 +604,6 @@ const findBy_Users_idForForm = async ({
     //   /app/@database/ids/model.js - findBy_Users_idForForm
     // `);
     
-    // // console.log(chalk`
-    // //   language: {green ${language}}
-    // //   country: {green ${country}}
-    // //   loginUsers_id: {green ${loginUsers_id}}
-    // // `);
-    
     // console.log(`
     //   ----- resultIDsArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(resultIDsArr)), { colors: true, depth: null })}\n
@@ -576,6 +614,12 @@ const findBy_Users_idForForm = async ({
     //   ----- returnArr -----\n
     //   ${util.inspect(returnArr, { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    //   loginUsers_id: {green ${loginUsers_id}}
     // `);
     
     
@@ -884,6 +928,7 @@ const findBy_idsArr = async ({ localeObj, ids_idArr }) => {
               { $project:
                 {
                   _id: 1,
+                  gameCommunities_id: 1,
                   name: 1,
                   imagesAndVideosThumbnailObj: 1,
                 }
@@ -938,6 +983,7 @@ module.exports = {
   count,
   upsert,
   insertMany,
+  deleteOne,
   deleteMany,
   
   findForCardPlayer,

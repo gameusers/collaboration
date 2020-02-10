@@ -81,13 +81,14 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeGameForm, pathArr, gamesArr } = this.props;
+    const { stores, storeGameForm, pathArr, additionalGameLimit } = this.props;
     
     const {
       
       dataObj,
+      // gamesArr,
       handleEdit,
-      // handleGetGamesArr,
+      handleGetGamesArr,
       handleAdd,
       handleKeyword,
       handleSuggestionOnKeyDown,
@@ -104,8 +105,9 @@ export default injectIntl(class extends React.Component {
     let componentSelected = '';
     let componentSelectedArr = [];
     
-    // const gamesArr = handleGetGamesArr({ pathArr });
+    const gamesArr = handleGetGamesArr({ pathArr });
     
+    // const gamesArr = lodashGet(dataObj, [...pathArr, 'gamesArr'], []);
     
     
     // --------------------------------------------------
@@ -128,6 +130,7 @@ export default injectIntl(class extends React.Component {
     //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
     
     
     
@@ -282,6 +285,7 @@ export default injectIntl(class extends React.Component {
             onMouseDown={() => handleAdd({
               pathArr,
               obj: valueObj,
+              additionalGameLimit,
             })}
           >
             <Avatar
@@ -387,7 +391,7 @@ export default injectIntl(class extends React.Component {
             label="ゲーム名"
             value={keyword}
             onChange={(eventObj) => handleKeyword({ pathArr, value: eventObj.target.value })}
-            onKeyDown={(eventObj) => handleSuggestionOnKeyDown({ eventObj, pathArr })}
+            onKeyDown={(eventObj) => handleSuggestionOnKeyDown({ eventObj, pathArr, additionalGameLimit })}
             helperText="ゲーム名の一部を入力して、検索結果から選んでください"
             margin="normal"
             autoComplete="off"

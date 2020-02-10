@@ -135,7 +135,7 @@ export default async (req, res) => {
     
     // --------------------------------------------------
     //   DB find / IDs
-    //   ログインしているユーザーの登録IDデータ
+    //   ログインしているユーザーの登録IDデータをすべて取得
     // --------------------------------------------------
     
     returnObj = await ModelIDs.findBy_Users_idForForm({

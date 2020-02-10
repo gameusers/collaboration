@@ -86,11 +86,12 @@ class Store {
   
   
   // --------------------------------------------------
-  //   Dialog
+  //   ID入力・編集フォームを開く
   // --------------------------------------------------
   
   /**
-   * ダイアログを開く
+   * フォーム（ダイアログ）を開く
+   * Fetchでユーザーが登録しているIDをすべて取得する
    * @param {Array} pathArr - パス
    * @param {string} _id
    * @param {Array} ids_idArr - 選択されているIDが入っている配列
@@ -107,9 +108,9 @@ class Store {
       //   編集フォームをすぐに表示する
       // --------------------------------------------------
       
-      if (lodashHas(this.dataObj, [_id, 'dataArr'])) {
+      if (lodashHas(this.dataObj, [...pathArr, 'dataArr'])) {
         
-        lodashSet(this.dataObj, [_id, 'dialog'], true);
+        lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
         
         
       // --------------------------------------------------
@@ -166,11 +167,68 @@ class Store {
         // --------------------------------------------------
         
         const dataArr = lodashGet(resultObj, ['data'], []);
-        // const dataArr = lodashGet(resultObj, ['data', 'formattedArr'], []);
-        // const gamesArr = lodashGet(resultObj, ['data', 'gamesArr'], []);
         
-        // storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
+        const selectedArr = [];
+        const unselectedArr = [];
         
+        
+        // ----------------------------------------
+        //   - 選択IDの配列を作成する
+        // ----------------------------------------
+        
+        for (let valueObj of ids_idArr.values()) {
+          
+          // 存在するIDかチェックする（すでに削除されている可能性があるため）
+          const index = dataArr.findIndex((value2Obj) => {
+            return value2Obj._id === valueObj._id;
+          });
+          
+          if (index !== -1) {
+            selectedArr.push(valueObj._id);
+          }
+          
+        }
+        
+        
+        // ----------------------------------------
+        //   - 未選択IDの配列を作成する
+        // ----------------------------------------
+        
+        for (let valueObj of dataArr.values()) {
+          
+          // 選択IDに含まれていない場合、配列に追加
+          const index = ids_idArr.findIndex((value2Obj) => {
+            return value2Obj._id === valueObj._id;
+          });
+          
+          if (index === -1) {
+            unselectedArr.push(valueObj._id);
+          }
+          
+        }
+        
+        lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
+        lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
+        lodashSet(this.dataObj, [...pathArr, 'dataArr'], dataArr);
+        
+        // 要削除
+        // this.idFormDataObj[_id] = resultObj.data;
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   編集フォーム表示
+        // --------------------------------------------------
+        
+        lodashSet(this.dataObj, [...pathArr, 'dialog'], true);
+        
+        
+        
+        
+        // --------------------------------------------------
+        //   console.log
+        // --------------------------------------------------
         
         // console.log(`
         //   ----------------------------------------\n
@@ -195,63 +253,6 @@ class Store {
         //   --------------------\n
         // `);
         
-        
-        // const dataArr = resultObj.data;
-        const selectedArr = [];
-        const unselectedArr = [];
-        
-        
-        // ----------------------------------------
-        //   - 選択ID
-        // ----------------------------------------
-        
-        for (let valueObj of ids_idArr.values()) {
-          
-          // 存在するIDかチェックする（すでに削除されている可能性があるため）
-          const index = dataArr.findIndex((value2Obj) => {
-            return value2Obj._id === valueObj._id;
-          });
-          
-          if (index !== -1) {
-            selectedArr.push(valueObj._id);
-          }
-          
-        }
-        
-        
-        // ----------------------------------------
-        //   - 未選択ID
-        // ----------------------------------------
-        
-        for (let valueObj of dataArr.values()) {
-          
-          // 選択IDに含まれていない場合、配列に追加
-          const index = ids_idArr.findIndex((value2Obj) => {
-            return value2Obj._id === valueObj._id;
-          });
-          
-          if (index === -1) {
-            unselectedArr.push(valueObj._id);
-          }
-          
-        }
-        
-        lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
-        lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
-        lodashSet(this.dataObj, [_id, 'dataArr'], dataArr);
-        
-        // 要削除
-        this.idFormDataObj[_id] = resultObj.data;
-        
-        
-        
-        
-        // --------------------------------------------------
-        //   編集フォーム表示
-        // --------------------------------------------------
-        
-        lodashSet(this.dataObj, [_id, 'dialog'], true);
-         
          
       }
       
@@ -283,50 +284,41 @@ class Store {
   // --------------------------------------------------
   
   /**
-   * フォームのデータを入れるオブジェクト
-   * @type {Object}
-   */
-  @observable idFormDataObj = {};
-  
-  
-  
-  
-  /**
    * 選択IDから未選択IDに移動する
-   * @param {string} _id
+   * @param {Array} pathArr - パス
    * @param {number} index - 移動するIDの配列index
    */
   @action.bound
-  handleMoveSelected({ _id, index }) {
+  handleMoveSelected({ pathArr, index }) {
     
-    const selectedArr = lodashGet(this.dataObj, [_id, 'selectedArr'], []);
-    const unselectedArr = lodashGet(this.dataObj, [_id, 'unselectedArr'], []);
+    const selectedArr = lodashGet(this.dataObj, [...pathArr, 'selectedArr'], []);
+    const unselectedArr = lodashGet(this.dataObj, [...pathArr, 'unselectedArr'], []);
     
     unselectedArr.push(selectedArr[index]);
     selectedArr.splice(index, 1);
     
-    lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
-    lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
+    lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
+    lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
     
   };
   
   
   /**
    * 未選択IDから選択IDに移動する
-   * @param {string} _id
+   * @param {Array} pathArr - パス
    * @param {number} index - 移動するIDの配列index
    */
   @action.bound
-  handleMoveUnselected({ _id, index }) {
+  handleMoveUnselected({ pathArr, index }) {
     
-    const selectedArr = lodashGet(this.dataObj, [_id, 'selectedArr'], []);
-    const unselectedArr = lodashGet(this.dataObj, [_id, 'unselectedArr'], []);
+    const selectedArr = lodashGet(this.dataObj, [...pathArr, 'selectedArr'], []);
+    const unselectedArr = lodashGet(this.dataObj, [...pathArr, 'unselectedArr'], []);
     
     selectedArr.push(unselectedArr[index]);
     unselectedArr.splice(index, 1);
     
-    lodashSet(this.dataObj, [_id, 'selectedArr'], selectedArr);
-    lodashSet(this.dataObj, [_id, 'unselectedArr'], unselectedArr);
+    lodashSet(this.dataObj, [...pathArr, 'selectedArr'], selectedArr);
+    lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
     
   };
   
@@ -335,12 +327,13 @@ class Store {
   
   /**
    * 選択を確定するボタンを押したときに実行される
+   * @param {Array} pathArr - パス
    * @param {string} type - IDフォームの呼び出し元の種類 / cardPlayerForm / 
    * @param {string} _id - cardPlayers_id / 
    * @param {Array} ids_idArr - 選択されたIDの配列
    */
   @action.bound
-  handleSelectButton({ type, _id, ids_idArr }) {
+  handleSelectButton({ pathArr, type, _id, ids_idArr }) {
     
     // console.log(`
     //   ----------------------------------------\n
@@ -375,7 +368,7 @@ class Store {
     //   ダイアログを閉じる
     // --------------------------------------------------
     
-    lodashSet(this.dataObj, [_id, 'dialog'], false);
+    lodashSet(this.dataObj, [...pathArr, 'dialog'], false);
     
     
   };
@@ -396,22 +389,48 @@ class Store {
    * @param {string} ids_id - DB IDs _id
    */
   @action.bound
-  handleSetEditForm({ pathArr, _id, ids_id }) {
+  handleChangeEditID({ pathArr, _id, ids_id }) {
     
     
     // --------------------------------------------------
     //   データを取得する
     // --------------------------------------------------
     
-    const dataArr = lodashGet(this.dataObj, [_id, 'dataArr'], []);
+    const dataArr = lodashGet(this.dataObj, [...pathArr, 'dataArr'], []);
     
     const resultObj = dataArr.find((valueObj) => {
       return valueObj._id === ids_id;
     });
     
     
+    
+    
+    // this.handleGame({
+      
+    //   pathArr,
+    //   _id,
+    //   games_id,
+    //   gameCommunities_id,
+    //   name,
+    //   imagesAndVideosThumbnailObj,
+      
+    // });
+    
+    
     // --------------------------------------------------
-    //   編集フォームのゲームを変更する
+    //   フォームのデータを変更する
+    // --------------------------------------------------
+    
+    lodashSet(this.dataObj, [...pathArr, '_id'], resultObj._id);
+    lodashSet(this.dataObj, [...pathArr, 'platform'], resultObj.platform);
+    lodashSet(this.dataObj, [...pathArr, 'label'], resultObj.label);
+    lodashSet(this.dataObj, [...pathArr, 'id'], resultObj.id);
+    lodashSet(this.dataObj, [...pathArr, 'publicSetting'], resultObj.publicSetting);
+    lodashSet(this.dataObj, [...pathArr, 'search'], resultObj.search);
+    
+    
+    // --------------------------------------------------
+    //   ゲームフォームのゲームを変更する
     // --------------------------------------------------
     
     const games_id = lodashGet(resultObj, ['gamesObj', '_id'], '');
@@ -419,28 +438,15 @@ class Store {
     const name = lodashGet(resultObj, ['gamesObj', 'name'], '');
     const imagesAndVideosThumbnailObj = lodashGet(resultObj, ['gamesObj', 'imagesAndVideosThumbnailObj'], {});
     
-    this.handleGame({
-      
-      pathArr,
-      _id,
-      games_id,
-      gameCommunities_id,
-      name,
-      imagesAndVideosThumbnailObj,
-      
-    });
+    let gamesArr = [];
+    
+    if (games_id && gameCommunities_id && name) {
+      gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
+    }
+    
+    storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
     
     
-    // --------------------------------------------------
-    //   編集フォームのデータを追加する
-    // --------------------------------------------------
-    
-    lodashSet(this.dataObj, [_id, '_id'], resultObj._id);
-    lodashSet(this.dataObj, [_id, 'platform'], resultObj.platform);
-    lodashSet(this.dataObj, [_id, 'label'], resultObj.label);
-    lodashSet(this.dataObj, [_id, 'id'], resultObj.id);
-    lodashSet(this.dataObj, [_id, 'publicSetting'], resultObj.publicSetting);
-    lodashSet(this.dataObj, [_id, 'search'], resultObj.search);
     
     
     // --------------------------------------------------
@@ -449,18 +455,24 @@ class Store {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/common/id/stores/form.js - handleSetEditForm
-    // `);
-    
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   ids_id: {green ${ids_id}}
+    //   /app/common/id/stores/form.js - handleChangeEditID
     // `);
     
     // console.log(`
     //   ----- pathArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
     //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   _id: {green ${_id}}
+    //   ids_id: {green ${ids_id}}
     // `);
     
     // console.log(`
@@ -493,66 +505,66 @@ class Store {
    * @param {string} name - ゲーム名
    * @param {Object} imagesAndVideosObj - 画像情報の入ったオブジェクト
    */
-  @action.bound
-  handleGame({ pathArr, games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }) {
+  // @action.bound
+  // handleGame({ pathArr, games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }) {
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/id/stores/form.js - handleGame
-    // `);
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/common/id/stores/form.js - handleGame
+  //   // `);
     
-    // console.log(chalk`
-    //   games_id: {green ${games_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   name: {green ${name}}
-    // `);
+  //   // console.log(chalk`
+  //   //   games_id: {green ${games_id}}
+  //   //   gameCommunities_id: {green ${gameCommunities_id}}
+  //   //   name: {green ${name}}
+  //   // `);
     
-    // console.log(`
-    //   ----- imagesAndVideosThumbnailObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // console.log(`
-    //   ----- storeGameForm.dataObj / 前 -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // console.log(`
+  //   //   ----- imagesAndVideosThumbnailObj -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
     
     
-    // --------------------------------------------------
-    //   データ更新
-    // --------------------------------------------------
-    
-    let gamesArr = [];
-    
-    if (games_id && gameCommunities_id && name) {
-      gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
-    }
-    
-    storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
-    
-    // lodashSet(storeGameForm, ['dataObj', ...pathArr, 'gamesArr'], gamesArr);
-    
-    // storeGameForm.dataObj, [...pathArr, 'gamesArr'], gamesArr
+  //   // console.log(`
+  //   //   ----- storeGameForm.dataObj / 前 -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
     
     
-    // console.log(`
-    //   ----- storeGameForm.dataObj / 後 -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // --------------------------------------------------
+  //   //   データ更新
+  //   // --------------------------------------------------
+    
+  //   let gamesArr = [];
+    
+  //   if (games_id && gameCommunities_id && name) {
+  //     gamesArr = [{ _id: games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }];
+  //   }
+    
+  //   storeGameForm.handleSetGamesArr({ pathArr, gamesArr });
+    
+  //   // lodashSet(storeGameForm, ['dataObj', ...pathArr, 'gamesArr'], gamesArr);
+    
+  //   // storeGameForm.dataObj, [...pathArr, 'gamesArr'], gamesArr
     
     
-    // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
-    // lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
-  };
+  //   // console.log(`
+  //   //   ----- storeGameForm.dataObj / 後 -----\n
+  //   //   ${util.inspect(JSON.parse(JSON.stringify(storeGameForm.dataObj)), { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+    
+    
+  //   // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
+  //   // lodashSet(this.dataObj, [_id, 'gamesArr'], [{ games_id, gameCommunities_id, name, imagesAndVideosThumbnailObj }]);
+  // };
   
   
   
@@ -561,10 +573,10 @@ class Store {
    * ゲームを削除する
    * @param {string} _id
    */
-  @action.bound
-  handleGameDelete({ _id }) {
-    lodashSet(this.dataObj, [_id, 'gamesArr'], []);
-  };
+  // @action.bound
+  // handleGameDelete({ _id }) {
+  //   lodashSet(this.dataObj, [_id, 'gamesArr'], []);
+  // };
   
   
   
@@ -574,25 +586,32 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  handleDeleteDialogOpen({ _id }) {
+  handleDeleteDialogOpen({ pathArr }) {
     
     
     // --------------------------------------------------
     //   削除するIDが選ばれていない場合、エラーを通知
     // --------------------------------------------------
     
-    const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+    const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
+    
+    // console.log(chalk`
+    //   form_id: {green ${form_id}}
+    // `);
     
     if (!form_id) {
+      
       storeLayout.handleSnackbarOpen({
         variant: 'error',
         messageID: 'Z9LG9XL5W',
       });
+      
       return;
+      
     }
       
     
-    lodashSet(this.dataObj, [_id, 'deleteDialogOpen'], true);
+    lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], true);
     
   };
   
@@ -602,8 +621,8 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  handleDeleteDialogClose({ _id }) {
-    lodashSet(this.dataObj, [_id, 'deleteDialogOpen'], false);
+  handleDeleteDialogClose({ pathArr }) {
+    lodashSet(this.dataObj, [...pathArr, 'deleteDialogOpen'], false);
   };
   
   
@@ -633,22 +652,24 @@ class Store {
       //   編集するIDが選ばれていない場合、エラー
       // --------------------------------------------------
       
-      const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+      const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
       
       if (!form_id) {
         throw new CustomError({ errorsArr: [{ code: 'cOQptDp5', messageID: 'sHOvvQXWL' }] });
       }
       
       
+      
+      
       // --------------------------------------------------
       //   フォームのデータを取得
       // --------------------------------------------------
       
-      const platform = lodashGet(this.dataObj, [_id, 'platform'], '');
-      const label = lodashGet(this.dataObj, [_id, 'label'], '');
-      const id = lodashGet(this.dataObj, [_id, 'id'], '');
-      const publicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
-      const search = lodashGet(this.dataObj, [_id, 'search'], true);
+      const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
+      const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
+      const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
+      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], '');
+      const search = lodashGet(this.dataObj, [...pathArr, 'search'], true);
       
       const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
       
@@ -718,10 +739,10 @@ class Store {
       
       
       // --------------------------------------------------
-      //   Data 更新
+      //   データ更新
       // --------------------------------------------------
       
-      lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
+      lodashSet(this.dataObj, [...pathArr, 'dataArr'], resultObj.data);
       
       
       // --------------------------------------------------
@@ -864,7 +885,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleDeleteSubmit({ _id, func, ids_idArr }) {
+  async handleDeleteSubmit({ pathArr, type, _id, ids_idArr }) {
     
     
     try {
@@ -874,7 +895,9 @@ class Store {
       //   Button Disable
       // --------------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: `${_id}-idFormDeleteSubmit` });
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
       
       
       // --------------------------------------------------
@@ -888,13 +911,17 @@ class Store {
       }
       
       
+      
+      
       // --------------------------------------------------
       //   FormData
       // --------------------------------------------------
       
-      const formData = new FormData();
-      
-      formData.append('_id', form_id);
+      const formDataObj = {
+        
+        _id: form_id,
+        
+      };
       
       
       // --------------------------------------------------
@@ -902,10 +929,12 @@ class Store {
       // --------------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/ids/delete`,
+        urlApi: `${process.env.URL_API}/v2/db/ids/delete`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj),
       });
+      
+      
       
       
       // --------------------------------------------------
@@ -917,8 +946,10 @@ class Store {
       }
       
       
+      
+      
       // --------------------------------------------------
-      //   Data 更新
+      //   データ更新
       // --------------------------------------------------
       
       lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
@@ -929,7 +960,7 @@ class Store {
       //   ID登録フォームをロードした元のフォームのIDを更新する
       // --------------------------------------------------
       
-      const updatedArr = [];
+      const updatedIds_idArr = [];
       
       for (let valueObj of ids_idArr.values()) {
         
@@ -938,12 +969,24 @@ class Store {
         });
         
         if (newObj) {
-          updatedArr.push(newObj);
+          updatedIds_idArr.push(newObj);
         }
         
       }
       
-      func({ _id, ids_idArr: updatedArr });
+      
+      // --------------------------------------------------
+      //   プレイヤーカードのフォーム更新
+      // --------------------------------------------------
+      
+      if (type === 'cardPlayerForm') {
+        
+        const clonedArr = lodashCloneDeep(updatedIds_idArr);
+        lodashSet(storeCardPlayer, ['cardPlayerEditFormDataObj', _id, 'ids_idArr'], clonedArr);
+        
+      }
+      
+      
       
       
       // --------------------------------------------------
@@ -951,6 +994,13 @@ class Store {
       // --------------------------------------------------
       
       this.handleClearForm({ _id });
+      
+      
+      // --------------------------------------------------
+      //   ゲームフォームを空にする
+      // --------------------------------------------------
+      
+      storeGameForm.handleReset({ pathArr });
       
       
       // --------------------------------------------------
@@ -975,8 +1025,29 @@ class Store {
       // --------------------------------------------------
       
       // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   ----------------------------------------\n
+      //   /app/common/id/stores/form.js - handleDeleteSubmit
+      // `);
+      
+      // console.log(chalk`
+      //   _id: {green ${_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- ids_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- updatedIds_idArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(updatedIds_idArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1001,7 +1072,7 @@ class Store {
       //   Button Enable
       // --------------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: `${_id}-idFormDeleteSubmit` });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
     }
@@ -1017,7 +1088,7 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  async handleRegisterSubmit({ _id }) {
+  async handleRegisterSubmit({ pathArr, _id }) {
     
     
     try {
@@ -1027,7 +1098,7 @@ class Store {
       //   Button Disable
       // --------------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: `${_id}-idFormRegisterSubmit` });
+      storeLayout.handleButtonDisable({ pathArr });
       
       
       
@@ -1036,20 +1107,44 @@ class Store {
       //   フォームのデータを取得
       // --------------------------------------------------
       
-      const formPlatform = lodashGet(this.dataObj, [_id, 'platform'], '');
-      const formGameCommunities_id = lodashGet(this.dataObj, [_id, 'gamesArr', 0, 'gameCommunities_id'], '');
-      const formLabel = lodashGet(this.dataObj, [_id, 'label'], '');
-      const formID = lodashGet(this.dataObj, [_id, 'id'], '');
-      const formPublicSetting = lodashGet(this.dataObj, [_id, 'publicSetting'], '');
-      const formSearch = lodashGet(this.dataObj, [_id, 'search'], true);
+      // const _id = lodashGet(this.dataObj, [_id, '_id'], '');
+      const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
+      const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
+      const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
+      const publicSetting = lodashGet(this.dataObj, [...pathArr, 'publicSetting'], '');
+      const search = lodashGet(this.dataObj, [...pathArr, 'search'], true);
+      
+      const gamesArr = storeGameForm.handleGetGamesArr({ pathArr });
+      
+      let gameCommunities_id = '';
+      
+      if (gamesArr.length > 0) {
+        gameCommunities_id = lodashGet(gamesArr, [0, 'gameCommunities_id'], '');
+      }
       
       
-       // --------------------------------------------------
+      console.log(`
+        ----------------------------------------\n
+        /app/common/id/stores/form.js - handleRegisterSubmit
+      `);
+      
+      console.log(chalk`
+        _id: {green ${_id}}
+        platform: {green ${platform}}
+        label: {green ${label}}
+        id: {green ${id}}
+        publicSetting: {green ${publicSetting}}
+        search: {green ${search}}
+        gameCommunities_id: {green ${gameCommunities_id}}
+      `);
+      
+      
+      // --------------------------------------------------
       //   フォームに必要な情報が入力されていない場合、エラー
       // --------------------------------------------------
       
-      if (!formPlatform || !formID || !formPublicSetting) {
-        throw new CustomError({ errorsArr: [{ code: 'OHCO0_uv', messageID: 'uwHIKBy7c' }] });
+      if (!platform || !id || !publicSetting) {
+        throw new CustomError({ errorsArr: [{ code: 'gk89EvTvH', messageID: 'uwHIKBy7c' }] });
       }
       
       
@@ -1059,80 +1154,109 @@ class Store {
       //   FormData
       // --------------------------------------------------
       
-      const formData = new FormData();
-      
-      formData.append('platform', formPlatform);
-      formData.append('gameCommunities_id', formGameCommunities_id);
-      formData.append('label',  formLabel);
-      formData.append('id', formID);
-      formData.append('publicSetting', formPublicSetting);
-      formData.append('search', formSearch);
-      
-      
-      // --------------------------------------------------
-      //   Fetch
-      // --------------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/ids/upsert`,
-        methodType: 'POST',
-        formData: formData
-      });
+      // const formDataObj = {
+        
+      //   platform,
+      //   label,
+      //   gameCommunities_id,
+      //   id,
+      //   publicSetting,
+      //   search,
+        
+      // };
       
       
-      // --------------------------------------------------
-      //   Error
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   Fetch
+      // // --------------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
-      
-      
-      // --------------------------------------------------
-      //   Data 更新
-      // --------------------------------------------------
-      
-      const temp_id = _id.replace('-register', '');
-      
-      lodashSet(this.dataObj, [temp_id, 'dataArr'], resultObj.data);
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${process.env.URL_API}/v2/db/ids/upsert`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj),
+      // });
       
       
-      // --------------------------------------------------
-      //   未選択IDに追加 / _idのみでいい
-      // --------------------------------------------------
-      
-      const dataArr = lodashGet(this.dataObj, [temp_id, 'dataArr'], []);
-      const unselectedArr = lodashGet(this.dataObj, [temp_id, 'unselectedArr'], []);
-      unselectedArr.push(dataArr[dataArr.length - 1]._id);
-      
-      lodashSet(this.dataObj, [temp_id, 'unselectedArr'], unselectedArr);
       
       
-      // console.log(`\n---------- resultObj.data ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(resultObj.data)));
-      // console.log(`\n-----------------------------------\n`);
+      // // --------------------------------------------------
+      // //   Error
+      // // --------------------------------------------------
       
-      // console.log(`\n---------- unselectedArr ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(unselectedArr)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      
-      // --------------------------------------------------
-      //   フォームを空にする
-      // --------------------------------------------------
-      
-      this.handleClearForm({ _id });
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
       
       
-      // --------------------------------------------------
-      //   Snackbar: Success
-      // --------------------------------------------------
       
-      storeLayout.handleSnackbarOpen({
-        variant: 'success',
-        messageID: 'As9-T8q9N',
-      });
+      
+      // // --------------------------------------------------
+      // //   Data 更新
+      // // --------------------------------------------------
+      
+      // const temp_id = _id.replace('-register', '');
+      
+      // lodashSet(this.dataObj, [temp_id, 'dataArr'], resultObj.data);
+      
+      
+      // // --------------------------------------------------
+      // //   未選択IDに追加 / _id のみでいい
+      // // --------------------------------------------------
+      
+      // const dataArr = lodashGet(this.dataObj, [temp_id, 'dataArr'], []);
+      // const unselectedArr = lodashGet(this.dataObj, [temp_id, 'unselectedArr'], []);
+      // unselectedArr.push(dataArr[dataArr.length - 1]._id);
+      
+      // lodashSet(this.dataObj, [temp_id, 'unselectedArr'], unselectedArr);
+      
+      
+      // // console.log(`\n---------- resultObj.data ----------\n`);
+      // // console.dir(JSON.parse(JSON.stringify(resultObj.data)));
+      // // console.log(`\n-----------------------------------\n`);
+      
+      // // console.log(`\n---------- unselectedArr ----------\n`);
+      // // console.dir(JSON.parse(JSON.stringify(unselectedArr)));
+      // // console.log(`\n-----------------------------------\n`);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- unselectedArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(unselectedArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      
+      // // --------------------------------------------------
+      // //   フォームを空にする
+      // // --------------------------------------------------
+      
+      // this.handleClearForm({ _id });
+      
+      
+      // // --------------------------------------------------
+      // //   ゲームフォームを空にする
+      // // --------------------------------------------------
+      
+      // storeGameForm.handleReset({ pathArr });
+      
+      
+      
+      
+      // // --------------------------------------------------
+      // //   Snackbar: Success
+      // // --------------------------------------------------
+      
+      // storeLayout.handleSnackbarOpen({
+      //   variant: 'success',
+      //   messageID: 'As9-T8q9N',
+      // });
       
       
       // --------------------------------------------------
@@ -1166,7 +1290,7 @@ class Store {
       //   Button Enable
       // --------------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: `${_id}-idFormRegisterSubmit` });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
     }

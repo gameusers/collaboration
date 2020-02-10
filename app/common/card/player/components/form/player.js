@@ -62,7 +62,6 @@ import VoiceChat from './voice-chat';
 import FormLink from './link';
 
 import ImageAndVideoForm from '../../../../image-and-video/components/form';
-// import ImageAndVideoFormImage from '../../../../image-and-video/components/form-image';
 
 
 
@@ -77,15 +76,6 @@ const cssBox = css`
   margin: 24px 0 0 0;
   padding: 24px 0 0 0;
 `;
-
-// const cssImageBox = css`
-//   margin: 24px 0 0 0;
-// `;
-
-// const cssImageTitle = css`
-//   font-weight: bold;
-//   margin: 0 0 2px 0;
-// `;
 
 const cssCloseButtonBox = css`
   margin: 0 0 0 16px;
@@ -169,9 +159,6 @@ export default class extends React.Component {
       handleCardPlayerEditFormUndoDataDialogClose,
       handleCardPlayerEditFormUndoData,
       handleHideForm,
-      handleCardPlayerEditID,
-      // handleImagesAndVideosObjThumbnailArr,
-      // handleImagesAndVideosObjMainArr,
       handleEditFormSubmit
       
     } = storeCardPlayer;
@@ -185,7 +172,6 @@ export default class extends React.Component {
       
       nameObj,
       statusObj,
-      // imagesAndVideosObj,
       commentObj,
       ageObj,
       sexObj,
@@ -478,7 +464,6 @@ export default class extends React.Component {
               type="cardPlayerForm"
               _id={cardPlayers_id}
               ids_idArr={ids_idArr}
-              // func={handleCardPlayerEditID}
             />
           </div>
           

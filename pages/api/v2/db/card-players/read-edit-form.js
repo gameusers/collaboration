@@ -161,12 +161,6 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- returnObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
     //   --------------------\n

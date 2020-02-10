@@ -44,9 +44,10 @@ const { validationCardPlayersLinkArr } = require('../../../../@database/card-pla
 //   Stores
 // --------------------------------------------------
 
-import initStoreLayout from '../../../../common/layout/stores/layout';
+import initStoreLayout from '../../../layout/stores/layout';
 import initStoreData from '../../../../@stores/data';
-import initStoreImageAndVideoForm from '../../../../common/image-and-video/stores/form';
+import initStoreImageAndVideoForm from '../../../image-and-video/stores/form';
+import initStoreGameForm from '../../../game/stores/form';
 
 
 
@@ -56,9 +57,10 @@ import initStoreImageAndVideoForm from '../../../../common/image-and-video/store
 // --------------------------------------------------
 
 let storeCardPlayer = null;
-let storeLayout = initStoreLayout({});
-let storeData = initStoreData({});
-let storeImageAndVideoForm = initStoreImageAndVideoForm({});
+const storeLayout = initStoreLayout({});
+const storeData = initStoreData({});
+const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+const storeGameForm = initStoreGameForm({});
 
 
 
@@ -91,6 +93,8 @@ class Store {
   @observable cardPlayerDialog = false;
   
   
+  
+  
   /**
    * プレイヤーカード用ダイアログを閉じる
    */
@@ -98,6 +102,8 @@ class Store {
   handleCardPlayerDialogClose() {
     this.cardPlayerDialog = false;
   };
+  
+  
   
   
   /**
@@ -614,6 +620,17 @@ class Store {
         if (Object.keys(imagesAndVideosObj).length !== 0) {
           storeImageAndVideoForm.handleSetImagesAndVideosObj({ pathArr: [cardPlayers_id, 'formObj', 'thumbnailObj'], imagesAndVideosObj: imagesAndVideosThumbnailObj });
         }
+        
+        
+        
+        
+        // ---------------------------------------------
+        //   - Images And Videos
+        // ---------------------------------------------
+        
+        // storeGameForm.handleSetGamesArrr({ pathArr, gamesArr });
+        
+        
         
         
         // ---------------------------------------------

@@ -87,11 +87,23 @@ class Store {
   // ---------------------------------------------
   
   /**
+   * 
+   * @type {Array}
+   */
+  @observable gamesArr = [];
+  
+  
+  /**
    * gamesArr を取得する
    * @param {Array} pathArr - パス
    */
   @action.bound
   handleGetGamesArr({ pathArr }) {
+    
+    // const gamesArr = lodashGet(this.dataObj, [...pathArr, 'gamesArr'], []);
+    // const clonedGamesArr = lodashCloneDeep(gamesArr);
+    // return clonedGamesArr;
+    
     return lodashGet(this.dataObj, [...pathArr, 'gamesArr'], []);
   };
   
@@ -123,20 +135,7 @@ class Store {
     // `);
     
     
-    // ---------------------------------------------
-    //   TextField をリセットする
-    // ---------------------------------------------
-    
-    lodashSet(this.dataObj, [...pathArr, 'keyword'], '');
-    
-    
-    // ---------------------------------------------
-    //   gamesArr を置き換える
-    // ---------------------------------------------
-    
     lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
-    
-    
   };
   
   
@@ -180,32 +179,32 @@ class Store {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/game/stores/form.js - handleAdd
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/common/game/stores/form.js - handleAdd
+    `);
     
-    // console.log(chalk`
-    //   additionalGameLimit: {green ${additionalGameLimit} / ${typeof additionalGameLimit} }
-    // `);
+    console.log(chalk`
+      additionalGameLimit: {green ${additionalGameLimit} / ${typeof additionalGameLimit} }
+    `);
     
-    // console.log(`
-    //   ----- pathArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- pathArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- obj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- obj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(obj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- gamesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- gamesArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(gamesArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -239,12 +238,89 @@ class Store {
       // ---------------------------------------------
       
       } else {
-        
+        console.log('aaaaaa');
         gamesArr.push(obj);
         lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
         
+        this.gamesArr.push(obj);
+        
       }
       
+      
+      // ゲームを追加できる数が1つだけの場合は、配列自体を置き換える
+      // if (additionalGameLimit === 1 && gamesArr.length > 0) {
+        
+      //   // const clonedObj = lodashCloneDeep(obj);
+        
+      //   // lodashSet(gamesArr, [0, '_id'], clonedObj._id);
+      //   // lodashSet(gamesArr, [0, 'gameCommunities_id'], clonedObj.gameCommunities_id);
+      //   // lodashSet(gamesArr, [0, 'name'], clonedObj.name);
+      //   // lodashSet(gamesArr, [0, 'imagesAndVideosThumbnailObj'], clonedObj.imagesAndVideosThumbnailObj);
+        
+      //   // gamesArr[0]._id = obj._id;
+      //   //   gamesArr[0].gameCommunities_id = obj.gameCommunities_id;
+      //   //   gamesArr[0].name = obj.name;
+      //   //   gamesArr[0].imagesAndVideosThumbnailObj = obj.imagesAndVideosThumbnailObj;
+        
+      //   // if (gamesArr.length === 1) {
+          
+      //   //   gamesArr[0]._id = obj._id;
+      //   //   gamesArr[0].gameCommunities_id = obj.gameCommunities_id;
+      //   //   gamesArr[0].name = obj.name;
+      //   //   gamesArr[0].imagesAndVideosThumbnailObj = obj.imagesAndVideosThumbnailObj;
+          
+      //   // } else {
+          
+      //   //   gamesArr = [obj];
+      //   //   lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
+          
+      //   // }
+        
+        
+        
+        
+      //   // gamesArr = [obj];
+        
+      //   // const clonedGamesArr = lodashCloneDeep(gamesArr);
+        
+      //   // console.log(`
+      //   //   ----- clonedGamesArr -----\n
+      //   //   ${util.inspect(JSON.parse(JSON.stringify(clonedGamesArr)), { colors: true, depth: null })}\n
+      //   //   --------------------\n
+      //   // `);
+        
+      //   // gamesArr.push(obj);
+      //   // this.dataObj['zaoOWw89g']['idFormObj'] = [];
+      //   // this.dataObj['zaoOWw89g']['idFormObj'] = gamesArr;
+      //   // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], clonedGamesArr);
+        
+      // // ゲームを登録できる最大数を超えている場合はエラー
+      // } else if (gamesArr.length >= additionalGameLimit) {
+        
+        
+      //   // --------------------------------------------------
+      //   //   Snackbar: Error
+      //   // --------------------------------------------------
+        
+      //   storeLayout.handleSnackbarOpen({
+      //     variant: 'error',
+      //     messageID: '_M772JzNl',
+      //   });
+        
+        
+      // // 配列に追加する
+      // } else {
+        
+      //   gamesArr.push(obj);
+        
+      // }
+      
+      // gamesArr.push(obj);
+      
+      
+      
+      // データ更新
+      // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
       
     }
     
@@ -266,14 +342,15 @@ class Store {
     //   データ取得
     // ---------------------------------------------
     
-    const gamesArr = this.handleGetGamesArr({ pathArr });
+    // const gamesArr = this.gamesArr;
+    // const gamesArr = this.handleGetGamesArr({ pathArr });
     
     
     // ---------------------------------------------
     //   配列内に存在しているかチェック
     // ---------------------------------------------
     
-    const index = gamesArr.findIndex((valueObj) => {
+    const index = this.gamesArr.findIndex((valueObj) => {
       return valueObj._id === _id;
     });
     
@@ -289,8 +366,8 @@ class Store {
     
     if (_id && index !== -1) {
       
-      gamesArr.splice(index, 1);
-      lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
+      this.gamesArr.splice(index, 1);
+      // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], this.gamesArr);
       
       // console.log(`
       //   ----- gamesArr -----\n
@@ -325,8 +402,9 @@ class Store {
     //   ゲームをリセットする
     // ---------------------------------------------
     
-    gamesArr = [];
-    lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
+    this.gamesArr = [];
+    // gamesArr = [];
+    // lodashSet(this.dataObj, [...pathArr, 'gamesArr'], gamesArr);
     
     
     // ---------------------------------------------
@@ -507,11 +585,9 @@ class Store {
       lodashSet(this.dataObj, [...pathArr, 'suggestionArr'], resultObj.data);
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      // console.log(`\n---------- resultObj.data ----------\n`);
+      // console.dir(JSON.parse(JSON.stringify(resultObj.data)));
+      // console.log(`\n-----------------------------------\n`);
         
       
     } catch (error) {

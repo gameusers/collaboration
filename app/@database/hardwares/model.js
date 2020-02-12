@@ -11,6 +11,13 @@ const util = require('util');
 
 
 // ---------------------------------------------
+//   Node Packages
+// ---------------------------------------------
+
+const lodashGet = require('lodash/get');
+
+
+// ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
@@ -286,12 +293,11 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 /**
  * 取得する / サジェスト用のデータ
- * @param {string} language - 言語
- * @param {string} country - 国
+ * @param {Object} localeObj - ロケール
  * @param {string} keyword - 検索キーワード
  * @return {Array} 取得データ
  */
-const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword }) => {
+const findForSuggestion = async ({ localeObj, keyword }) => {
   
   
   // --------------------------------------------------
@@ -299,6 +305,14 @@ const findBySearchKeywordsArrForSuggestion = async ({ language, country, keyword
   // --------------------------------------------------
   
   try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
     
     
     // --------------------------------------------------
@@ -336,6 +350,6 @@ module.exports = {
   insertMany,
   deleteMany,
   
-  findBySearchKeywordsArrForSuggestion,
+  findForSuggestion,
   
 };

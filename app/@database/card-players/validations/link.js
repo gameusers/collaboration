@@ -74,6 +74,23 @@ const validationCardPlayersLinkArr = ({ throwError = false, required = false, va
     
     
     // ---------------------------------------------
+    //   保存できる最大数を超えているかチェック
+    // ---------------------------------------------
+    
+    const limit = parseInt(process.env.CARD_PLAYER_LINK_LIMIT, 10);
+    
+    // console.log(chalk`
+    //   valueArr.length: {green ${valueArr.length}}
+    //   limit: {green ${limit}}
+    //   valueArr.length > limit: {green ${valueArr.length > limit}}
+    // `);
+    
+    if (valueArr.length > limit) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'TjlRB7EP6', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
     //   空の場合、処理停止
     // ---------------------------------------------
     

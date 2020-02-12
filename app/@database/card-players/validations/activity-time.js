@@ -71,6 +71,23 @@ const validationCardPlayersActivityTimeObjValueArr = ({ throwError = false, requ
     
     
     // ---------------------------------------------
+    //   保存できる最大数を超えているかチェック
+    // ---------------------------------------------
+    
+    const limit = parseInt(process.env.CARD_PLAYER_ACTIVITY_TIME_LIMIT, 10);
+    
+    // console.log(chalk`
+    //   valueArr.length: {green ${valueArr.length}}
+    //   limit: {green ${limit}}
+    //   valueArr.length > limit: {green ${valueArr.length > limit}}
+    // `);
+    
+    if (valueArr.length > limit) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'rqjdqvF11', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
     //   空の場合、処理停止
     // ---------------------------------------------
     

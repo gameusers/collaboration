@@ -1051,7 +1051,7 @@ class Store {
       
       const name = lodashGet(this.dataObj, [...pathArr, 'name'], '');
       const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
-      const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
+      const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
       
       
       const forumObj = lodashGet(this.dataObj, [communities_id], {});

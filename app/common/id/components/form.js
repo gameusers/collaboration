@@ -80,7 +80,7 @@ export default class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idForm'];
+    this.pathArr = [props._id, 'idFormObj'];
     
     
   }
@@ -296,7 +296,13 @@ export default class extends React.Component {
                 })}
                 disabled={buttonDisabled}
               >
-                選択
+                <span
+                  css={css`
+                    font-weight: ${contentsType === 'select' ? 'bold' : 'normal' };
+                  `}
+                >
+                  選択
+                </span>
               </Button>
               
               <Button
@@ -306,7 +312,13 @@ export default class extends React.Component {
                 })}
                 disabled={buttonDisabled}
               >
-                編集
+                <span
+                  css={css`
+                    font-weight: ${contentsType === 'edit' ? 'bold' : 'normal' };
+                  `}
+                >
+                  編集
+                </span>
               </Button>
               
               <Button
@@ -316,7 +328,13 @@ export default class extends React.Component {
                 })}
                 disabled={buttonDisabled}
               >
-                登録
+                <span
+                  css={css`
+                    font-weight: ${contentsType === 'register' ? 'bold' : 'normal' };
+                  `}
+                >
+                  登録
+                </span>
               </Button>
               
             </ButtonGroup>

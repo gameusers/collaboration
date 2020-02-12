@@ -373,8 +373,8 @@ class Store {
    * Snackbarを開く
    * @param {string} variant - 色
    * @param {string} messageID - メッセージID
-   * @param {string} vertical - 縦方向
-   * @param {string} horizontal - 横方向
+   * @param {string} vertical - 縦方向  'top' | 'bottom'
+   * @param {string} horizontal - 横方向  'left' | 'center' | 'right'
    * @param {string} autoHideDuration - 表示時間
    * @param {Object} errorObj - Error Object
    */
@@ -388,17 +388,10 @@ class Store {
       key: `snackbar-${new Date().getTime()}`,
     };
     
-    if (vertical) {
-      object.vertical = vertical;
-    }
     
-    if (horizontal) {
-      object.horizontal = horizontal;
-    }
-    
-    if (autoHideDuration) {
-      object.autoHideDuration = autoHideDuration;
-    }
+    object.vertical = vertical || 'bottom';
+    object.horizontal = horizontal || 'left';
+    object.autoHideDuration = autoHideDuration || 5000;
     
     
     this.snackbarQueueArr.push(object);
@@ -418,14 +411,18 @@ class Store {
   processQueue = () => {
     
     if (this.snackbarQueueArr.length > 0) {
-      const tempArr = this.snackbarQueueArr.shift();
-      this.snackbarVariant = tempArr.variant;
-      this.snackbarMessage = tempArr.message;
-      this.snackbarMessageID = tempArr.messageID;
-      this.snackbarErrorObj = tempArr.errorObj;
-      this.snackbarKey = tempArr.key;
       
+      const tempObj = this.snackbarQueueArr.shift();
+      
+      this.snackbarVariant = tempObj.variant;
+      this.snackbarMessage = tempObj.message;
+      this.snackbarMessageID = tempObj.messageID;
+      this.snackbarVertical = tempObj.vertical;
+      this.snackbarHorizontal = tempObj.horizontal;
+      this.snackbarErrorObj = tempObj.errorObj;
+      this.snackbarKey = tempObj.key;
       this.snackbarOpen = true;
+      
     }
     
   };

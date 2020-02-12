@@ -28,13 +28,13 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * 特技
+ * ハードウェアを検索する際のキーワード
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
- * @param {Array} valueArr - 配列
+ * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationCardPlayersSpecialSkill = ({ throwError = false, required = false, valueArr }) => {
+const validationHardwaresSuggestionKeyword = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -42,16 +42,20 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 20;
+  const maxLength = 50;
   
   
   // ---------------------------------------------
   //   Result Object
   // ---------------------------------------------
   
+  const data = String(value);
+  const numberOfCharacters = data ? data.length : 0;
+  
   let resultObj = {
-    valueArr: [],
-    messageID: 'Error',
+    value: data,
+    numberOfCharacters,
+    messageID: 'cFbXmuFVh',
     error: false,
   };
   
@@ -60,33 +64,13 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
     
     
     // ---------------------------------------------
-    //   配列チェック
-    // ---------------------------------------------
-    
-    if (!Array.isArray(valueArr)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'diVUO03kL', messageID: 'qnWsuPcrJ' }] });
-    }
-    
-    
-    // ---------------------------------------------
-    //   保存できる最大数を超えているかチェック
-    // ---------------------------------------------
-    
-    const limit = parseInt(process.env.CARD_PLAYER_SPECIAL_SKILL_LIMIT, 10);
-    
-    if (valueArr.length > limit) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HRNgyWTiT', messageID: 'qnWsuPcrJ' }] });
-    }
-    
-    
-    // ---------------------------------------------
     //   空の場合、処理停止
     // ---------------------------------------------
     
-    if (valueArr.length === 0) {
+    if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'CU9rsHUQw', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'vNZu8yejc', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -95,32 +79,11 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
     
     
     // ---------------------------------------------
-    //   Loop
+    //   文字数チェック
     // ---------------------------------------------
     
-    for (let value of valueArr.values()) {
-      
-      
-      // ---------------------------------------------
-      //   空でない
-      // ---------------------------------------------
-      
-      if (!validator.isEmpty(value)) {
-        
-        
-        // ---------------------------------------------
-        //   文字数チェック
-        // ---------------------------------------------
-        
-        if (!validator.isLength(value, { min: minLength, max: maxLength })) {
-          throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FvgdMkXDR', messageID: 'xdAU7SgoO' }] });
-        } else {
-          resultObj.valueArr.push(value);
-        }
-        
-        
-      }
-      
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '4GrvGYhYB', messageID: 'yhgyXHqZu' }] });
     }
     
     
@@ -169,5 +132,5 @@ const validationCardPlayersSpecialSkill = ({ throwError = false, required = fals
 // --------------------------------------------------
 
 module.exports = {
-  validationCardPlayersSpecialSkill,
+  validationHardwaresSuggestionKeyword
 };

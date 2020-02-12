@@ -69,6 +69,23 @@ const validationCardPlayersHobby = ({ throwError = false, required = false, valu
     
     
     // ---------------------------------------------
+    //   保存できる最大数を超えているかチェック
+    // ---------------------------------------------
+    
+    const limit = parseInt(process.env.CARD_PLAYER_HOBBY_LIMIT, 10);
+    
+    // console.log(chalk`
+    //   valueArr.length: {green ${valueArr.length}}
+    //   process.env.CARD_PLAYER_HOBBY_LIMIT: {green ${process.env.CARD_PLAYER_HOBBY_LIMIT}}
+    //   valueArr.length > process.env.CARD_PLAYER_HOBBY_LIMIT: {green ${valueArr.length > process.env.CARD_PLAYER_HOBBY_LIMIT}}
+    // `);
+    
+    if (valueArr.length > limit) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'csTwgSHas', messageID: 'qnWsuPcrJ' }] });
+    }
+    
+    
+    // ---------------------------------------------
     //   空の場合、処理停止
     // ---------------------------------------------
     

@@ -60,7 +60,6 @@ const validationCardPlayersHardwareActiveArrServer = async ({ required = false, 
   let resultObj = {
     valueArr: [],
     messageID: 'Error',
-    error: false,
   };
   
   
@@ -91,15 +90,19 @@ const validationCardPlayersHardwareActiveArrServer = async ({ required = false, 
     }
     
     
+    
+    
     // ---------------------------------------------
     //   Loop
     // ---------------------------------------------
     
-    for (let dataObj of valueArr.values()) {
+    for (let hardwareID of valueArr.values()) {
       
       
-      const hardwareID = dataObj.hardwareID;
-      
+      // const hardwareID = dataObj.hardwareID;
+      // console.log(chalk`
+      //   hardwareID: {green ${hardwareID}}
+      // `);
       
       // ---------------------------------------------
       //   文字数チェック
@@ -123,6 +126,8 @@ const validationCardPlayersHardwareActiveArrServer = async ({ required = false, 
       
       
     }
+    
+    // console.log('validationCardPlayersHardwareActiveArrServer');
     
     
     // ---------------------------------------------
@@ -214,7 +219,6 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
   let resultObj = {
     valueArr: [],
     messageID: 'Error',
-    error: false,
   };
   
   
@@ -249,10 +253,7 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
     //   Loop
     // ---------------------------------------------
     
-    for (let dataObj of valueArr.values()) {
-      
-      
-      const hardwareID = dataObj.hardwareID;
+    for (let hardwareID of valueArr.values()) {
       
       
       // ---------------------------------------------
@@ -277,6 +278,8 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
       
       
     }
+    
+    
     
     
     // ---------------------------------------------
@@ -338,6 +341,7 @@ const validationCardPlayersHardwareInactiveArrServer = async ({ required = false
   
   
 };
+
 
 
 

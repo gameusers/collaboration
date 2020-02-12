@@ -532,7 +532,10 @@ export default class extends React.Component {
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => handleEditFormSubmit({ _id: cardPlayers_id })}
+              onClick={() => handleEditFormSubmit({
+                pathArr: this.pathArr,
+                _id: cardPlayers_id,
+              })}
               disabled={buttonDisabled}
             >
               保存する

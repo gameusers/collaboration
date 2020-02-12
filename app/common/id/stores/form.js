@@ -211,9 +211,6 @@ class Store {
         lodashSet(this.dataObj, [...pathArr, 'unselectedArr'], unselectedArr);
         lodashSet(this.dataObj, [...pathArr, 'dataArr'], dataArr);
         
-        // 要削除
-        // this.idFormDataObj[_id] = resultObj.data;
-        
         
         
         
@@ -385,6 +382,7 @@ class Store {
   /**
    * 編集時に編集するIDを選択する（各フォームの値を設定する）
    * 編集フォームの ID (Chip) をクリックしたときに発動
+   * @param {Array} pathArr - パス
    * @param {string} _id - ID
    * @param {string} ids_id - DB IDs _id
    */
@@ -401,20 +399,6 @@ class Store {
     const resultObj = dataArr.find((valueObj) => {
       return valueObj._id === ids_id;
     });
-    
-    
-    
-    
-    // this.handleGame({
-      
-    //   pathArr,
-    //   _id,
-    //   games_id,
-    //   gameCommunities_id,
-    //   name,
-    //   imagesAndVideosThumbnailObj,
-      
-    // });
     
     
     // --------------------------------------------------
@@ -616,9 +600,11 @@ class Store {
   };
   
   
+  
+  
   /**
    * 削除ダイアログを閉じる
-   * @param {string} _id
+   * @param {Array} pathArr - パス
    */
   @action.bound
   handleDeleteDialogClose({ pathArr }) {
@@ -630,7 +616,10 @@ class Store {
   
   /**
    * 編集フォームを送信する
+   * @param {Array} pathArr - パス
+   * @param {string} type
    * @param {string} _id
+   * @param {Array} ids_idArr - 選択されているID情報の入った配列
    */
   @action.bound
   async handleEditSubmit({ pathArr, type, _id, ids_idArr }) {
@@ -799,6 +788,7 @@ class Store {
       storeLayout.handleSnackbarOpen({
         variant: 'success',
         messageID: 'EnStWOly-',
+        horizontal: 'right',
       });
       
       
@@ -882,7 +872,10 @@ class Store {
   
   /**
    * 削除フォームを送信する
+   * @param {Array} pathArr - パス
+   * @param {string} type
    * @param {string} _id
+   * @param {Array} ids_idArr - 選択されているID情報の入った配列
    */
   @action.bound
   async handleDeleteSubmit({ pathArr, type, _id, ids_idArr }) {
@@ -904,7 +897,7 @@ class Store {
       //   編集するIDが選ばれていない場合、エラー
       // --------------------------------------------------
       
-      const form_id = lodashGet(this.dataObj, [_id, '_id'], '');
+      const form_id = lodashGet(this.dataObj, [...pathArr, '_id'], '');
       
       if (!form_id) {
         throw new CustomError({ errorsArr: [{ code: '-PQYNFlb', messageID: 'Z9LG9XL5W' }] });
@@ -952,7 +945,7 @@ class Store {
       //   データ更新
       // --------------------------------------------------
       
-      lodashSet(this.dataObj, [_id, 'dataArr'], resultObj.data);
+      lodashSet(this.dataObj, [...pathArr, 'dataArr'], resultObj.data);
       
       
       // --------------------------------------------------
@@ -993,7 +986,7 @@ class Store {
       //   フォームを空にする
       // --------------------------------------------------
       
-      this.handleClearForm({ _id });
+      this.handleClearForm({ pathArr });
       
       
       // --------------------------------------------------
@@ -1007,7 +1000,9 @@ class Store {
       //   削除ダイアログを閉じる
       // --------------------------------------------------
       
-      this.handleDeleteDialogClose({ _id });
+      this.handleDeleteDialogClose({ pathArr });
+      
+      
       
       
       // --------------------------------------------------
@@ -1017,7 +1012,10 @@ class Store {
       storeLayout.handleSnackbarOpen({
         variant: 'success',
         messageID: 'j6lSS-Zf5',
+        horizontal: 'right',
       });
+      
+      
       
       
       // --------------------------------------------------
@@ -1085,6 +1083,7 @@ class Store {
   
   /**
    * 登録フォームを送信する
+   * @param {Array} pathArr - パス
    * @param {string} _id
    */
   @action.bound
@@ -1107,7 +1106,6 @@ class Store {
       //   フォームのデータを取得
       // --------------------------------------------------
       
-      // const _id = lodashGet(this.dataObj, [_id, '_id'], '');
       const platform = lodashGet(this.dataObj, [...pathArr, 'platform'], '');
       const label = lodashGet(this.dataObj, [...pathArr, 'label'], '');
       const id = lodashGet(this.dataObj, [...pathArr, 'id'], '');
@@ -1123,20 +1121,6 @@ class Store {
       }
       
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/id/stores/form.js - handleRegisterSubmit
-      `);
-      
-      console.log(chalk`
-        _id: {green ${_id}}
-        platform: {green ${platform}}
-        label: {green ${label}}
-        id: {green ${id}}
-        publicSetting: {green ${publicSetting}}
-        search: {green ${search}}
-        gameCommunities_id: {green ${gameCommunities_id}}
-      `);
       
       
       // --------------------------------------------------
@@ -1154,73 +1138,93 @@ class Store {
       //   FormData
       // --------------------------------------------------
       
-      // const formDataObj = {
+      const formDataObj = {
         
-      //   platform,
-      //   label,
-      //   gameCommunities_id,
-      //   id,
-      //   publicSetting,
-      //   search,
+        platform,
+        label,
+        gameCommunities_id,
+        id,
+        publicSetting,
+        search,
         
-      // };
+      };
       
       
-      // // --------------------------------------------------
-      // //   Fetch
-      // // --------------------------------------------------
+      // --------------------------------------------------
+      //   Fetch
+      // --------------------------------------------------
       
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${process.env.URL_API}/v2/db/ids/upsert`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj),
-      // });
-      
-      
-      
-      
-      // // --------------------------------------------------
-      // //   Error
-      // // --------------------------------------------------
-      
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/ids/upsert`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+      });
       
       
       
       
-      // // --------------------------------------------------
-      // //   Data 更新
-      // // --------------------------------------------------
+      // --------------------------------------------------
+      //   Error
+      // --------------------------------------------------
       
-      // const temp_id = _id.replace('-register', '');
-      
-      // lodashSet(this.dataObj, [temp_id, 'dataArr'], resultObj.data);
-      
-      
-      // // --------------------------------------------------
-      // //   未選択IDに追加 / _id のみでいい
-      // // --------------------------------------------------
-      
-      // const dataArr = lodashGet(this.dataObj, [temp_id, 'dataArr'], []);
-      // const unselectedArr = lodashGet(this.dataObj, [temp_id, 'unselectedArr'], []);
-      // unselectedArr.push(dataArr[dataArr.length - 1]._id);
-      
-      // lodashSet(this.dataObj, [temp_id, 'unselectedArr'], unselectedArr);
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
-      // // console.log(`\n---------- resultObj.data ----------\n`);
-      // // console.dir(JSON.parse(JSON.stringify(resultObj.data)));
-      // // console.log(`\n-----------------------------------\n`);
       
-      // // console.log(`\n---------- unselectedArr ----------\n`);
-      // // console.dir(JSON.parse(JSON.stringify(unselectedArr)));
-      // // console.log(`\n-----------------------------------\n`);
+      
+      // --------------------------------------------------
+      //   Data 更新
+      // --------------------------------------------------
+      
+      const newPathArr = [_id, 'idFormObj'];
+      
+      lodashSet(this.dataObj, [...newPathArr, 'dataArr'], resultObj.data);
+      
+      
+      // --------------------------------------------------
+      //   未選択IDに追加 / _id のみでいい
+      // --------------------------------------------------
+      
+      const dataArr = lodashGet(this.dataObj, [...newPathArr, 'dataArr'], []);
+      const unselectedArr = lodashGet(this.dataObj, [...newPathArr, 'unselectedArr'], []);
+      unselectedArr.push(dataArr[dataArr.length - 1]._id);
+      
+      lodashSet(this.dataObj, [...newPathArr, 'unselectedArr'], unselectedArr);
+      
+      
       
       // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   ----------------------------------------\n
+      //   /app/common/id/stores/form.js - handleRegisterSubmit
+      // `);
+      
+      // console.log(chalk`
+      //   _id: {green ${_id}}
+      //   platform: {green ${platform}}
+      //   label: {green ${label}}
+      //   id: {green ${id}}
+      //   publicSetting: {green ${publicSetting}}
+      //   search: {green ${search}}
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      // `);
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- newPathArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newPathArr)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- dataArr -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(dataArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
@@ -1230,33 +1234,48 @@ class Store {
       //   --------------------\n
       // `);
       
+      // console.log(`
+      //   ----- this.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      
-      
-      // // --------------------------------------------------
-      // //   フォームを空にする
-      // // --------------------------------------------------
-      
-      // this.handleClearForm({ _id });
-      
-      
-      // // --------------------------------------------------
-      // //   ゲームフォームを空にする
-      // // --------------------------------------------------
-      
-      // storeGameForm.handleReset({ pathArr });
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
       
-      // // --------------------------------------------------
-      // //   Snackbar: Success
-      // // --------------------------------------------------
       
-      // storeLayout.handleSnackbarOpen({
-      //   variant: 'success',
-      //   messageID: 'As9-T8q9N',
-      // });
+      
+      // --------------------------------------------------
+      //   フォームを空にする
+      // --------------------------------------------------
+      
+      this.handleClearForm({ pathArr });
+      
+      
+      // --------------------------------------------------
+      //   ゲームフォームを空にする
+      // --------------------------------------------------
+      
+      storeGameForm.handleReset({ pathArr });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   Snackbar: Success
+      // --------------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'As9-T8q9N',
+        horizontal: 'right',
+      });
       
       
       // --------------------------------------------------
@@ -1306,14 +1325,14 @@ class Store {
    * @param {string} _id
    */
   @action.bound
-  handleClearForm({ _id }) {
+  handleClearForm({ pathArr }) {
     
-    lodashSet(this.dataObj, [_id, '_id'], '');
-    lodashSet(this.dataObj, [_id, 'platform'], '');
-    lodashSet(this.dataObj, [_id, 'label'], '');
-    lodashSet(this.dataObj, [_id, 'id'], '');
-    lodashSet(this.dataObj, [_id, 'publicSetting'], '');
-    lodashSet(this.dataObj, [_id, 'search'], true);
+    lodashSet(this.dataObj, [...pathArr, '_id'], '');
+    lodashSet(this.dataObj, [...pathArr, 'platform'], '');
+    lodashSet(this.dataObj, [...pathArr, 'label'], '');
+    lodashSet(this.dataObj, [...pathArr, 'id'], '');
+    lodashSet(this.dataObj, [...pathArr, 'publicSetting'], '');
+    lodashSet(this.dataObj, [...pathArr, 'search'], true);
     
   };
   

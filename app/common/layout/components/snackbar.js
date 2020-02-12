@@ -147,6 +147,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -159,6 +161,8 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const { stores, intl } = this.props;
+    
+    
     
     
     // --------------------------------------------------
@@ -241,6 +245,8 @@ export default injectIntl(class extends React.Component {
         backgroundColor: '#1976d2',
       }
     };
+    
+    
     
     
     // --------------------------------------------------

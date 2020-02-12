@@ -625,15 +625,6 @@ class Store {
         
         
         // ---------------------------------------------
-        //   - Images And Videos
-        // ---------------------------------------------
-        
-        // storeGameForm.handleSetGamesArrr({ pathArr, gamesArr });
-        
-        
-        
-        
-        // ---------------------------------------------
         //   - Data
         // ---------------------------------------------
         
@@ -722,31 +713,31 @@ class Store {
    * @param {string} _id - DB card-players _id / DB card-games _id
    * @param {string} value - 値
    */
-  @action.bound
-  handleImagesAndVideosObjThumbnailArr({ _id, value }) {
+  // @action.bound
+  // handleImagesAndVideosObjThumbnailArr({ _id, value }) {
     
-    let temp_id = _id;
-    temp_id = temp_id.replace('-thumbnail', '');
+  //   let temp_id = _id;
+  //   temp_id = temp_id.replace('-thumbnail', '');
     
-    lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'thumbnailArr'], value);
+  //   lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'thumbnailArr'], value);
     
-  };
+  // };
   
   
-  /**
-   * メイン画像を変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  @action.bound
-  handleImagesAndVideosObjMainArr({ _id, value }) {
+  // /**
+  // * メイン画像を変更する
+  // * @param {string} _id - DB card-players _id / DB card-games _id
+  // * @param {string} value - 値
+  // */
+  // @action.bound
+  // handleImagesAndVideosObjMainArr({ _id, value }) {
     
-    let temp_id = _id;
-    temp_id = temp_id.replace('-main', '');
+  //   let temp_id = _id;
+  //   temp_id = temp_id.replace('-main', '');
     
-    lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'mainArr'], value);
+  //   lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'mainArr'], value);
     
-  };
+  // };
   
   
   
@@ -1023,6 +1014,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * 所有ハードウェアの TextField の入力文字を入れるオブジェクト
    * @type {Object}
@@ -1056,6 +1049,8 @@ class Store {
     }
     
     
+    
+    
     // ---------------------------------------------
     //   Fetch でサジェストデータを取得
     // ---------------------------------------------
@@ -1067,9 +1062,11 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
-      
-      formData.append('keyword', value);
+      const formDataObj = {
+        
+        keyword: value,
+        
+      };
       
       
       // ---------------------------------------------
@@ -1077,10 +1074,12 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
+        urlApi: `${process.env.URL_API}/v2/db/hardwares/read-suggestion`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj),
       });
+      
+      
       
       
       // ---------------------------------------------
@@ -1092,8 +1091,10 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
-      //  Data 更新
+      //   データ更新
       // ---------------------------------------------
       
       delete this.cardPlayerFormHardwareActiveSuggestionSelectedObj[_id];
@@ -1105,6 +1106,8 @@ class Store {
     } finally {}
     
   };
+  
+  
   
   
   /**
@@ -1242,6 +1245,8 @@ class Store {
   };
   
   
+  
+  
   /**
    * 昔、所有していたハードウェアの TextField の入力文字を入れるオブジェクト
    * @type {Object}
@@ -1275,6 +1280,8 @@ class Store {
     }
     
     
+    
+    
     // ---------------------------------------------
     //   Fetch でサジェストデータを取得
     // ---------------------------------------------
@@ -1286,9 +1293,11 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
-      
-      formData.append('keyword', value);
+      const formDataObj = {
+        
+        keyword: value,
+        
+      };
       
       
       // ---------------------------------------------
@@ -1296,10 +1305,12 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/hardwares/find-by-search-keywords-arr-for-suggestion`,
+        urlApi: `${process.env.URL_API}/v2/db/hardwares/read-suggestion`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj),
       });
+      
+      
       
       
       // ---------------------------------------------
@@ -1311,8 +1322,10 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
-      //  Data 更新
+      //   データ更新
       // ---------------------------------------------
       
       delete this.cardPlayerFormHardwareInactiveSuggestionSelectedObj[_id];
@@ -1324,6 +1337,8 @@ class Store {
     } finally {}
     
   };
+  
+  
   
   
   /**
@@ -1375,45 +1390,45 @@ class Store {
    * @param {string} _id - DB card-players _id / DB card-games _id
    * @param {Array} idArr - IDデータの入った配列
    */
-  @action.bound
-  handleCardPlayerEditID({ _id, ids_idArr }) {
+  // @action.bound
+  // handleCardPlayerEditID({ _id, ids_idArr }) {
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   console.log
+  //   // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/card/player/stores/player.js - handleCardPlayerEditID
-    // `);
+  //   // console.log(`
+  //   //   ----------------------------------------\n
+  //   //   /app/common/card/player/stores/player.js - handleCardPlayerEditID
+  //   // `);
     
-    // console.log(chalk`
-    //   _id: {green ${_id}}
-    // `);
+  //   // console.log(chalk`
+  //   //   _id: {green ${_id}}
+  //   // `);
     
-    // console.log(`
-    //   ----- ids_idArr -----\n
-    //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    // // console.log(`
-    // //   ----- ids_idArr -----\n
-    // //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
-    // //   --------------------\n
-    // // `);
+  //   // console.log(`
+  //   //   ----- ids_idArr -----\n
+  //   //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
+  //   // // console.log(`
+  //   // //   ----- ids_idArr -----\n
+  //   // //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
+  //   // //   --------------------\n
+  //   // // `);
     
-    // console.log(`
-    //   ----- this.cardPlayerEditFormDataObj -----\n
-    //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+  //   // console.log(`
+  //   //   ----- this.cardPlayerEditFormDataObj -----\n
+  //   //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
+  //   //   --------------------\n
+  //   // `);
     
     
-    // const clonedArr = lodashCloneDeep(ids_idArr);
-    // this.cardPlayerEditFormDataObj[_id].ids_idArr = clonedArr;
+  //   // const clonedArr = lodashCloneDeep(ids_idArr);
+  //   // this.cardPlayerEditFormDataObj[_id].ids_idArr = clonedArr;
     
-  };
+  // };
   
   
   
@@ -1515,6 +1530,8 @@ class Store {
   
   
   
+  
+  
   // ---------------------------------------------
   //   Submit
   // ---------------------------------------------
@@ -1522,10 +1539,11 @@ class Store {
   /**
    * 保存ボタンを押すと呼び出される
    * フォームを送信する
+   * @param {Array} pathArr - パス
    * @param {string} _id - DB card-players _id / DB card-games _id
    */
   @action.bound
-  async handleEditFormSubmit({ _id }) {
+  async handleEditFormSubmit({ pathArr, _id }) {
     
     
     try {
@@ -1542,7 +1560,9 @@ class Store {
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: `${_id}-form` });
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
       
       
       // ---------------------------------------------
@@ -1568,27 +1588,69 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
+      const formDataObj = this.cardPlayerEditFormDataObj[_id];
       
-      formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
-      // console.log(`\n---------- this.cardPlayerEditFormDataObj[_id] ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(this.cardPlayerEditFormDataObj[_id])));
-      // console.log(`\n-----------------------------------\n`);
-      // return;
+      
+      // メイン画像
+      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
+      
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
+      
+      // サムネイル画像
+      const imagesAndVideosThumbnailObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr: [...pathArr, 'thumbnailObj'] });
+      
+      if (Object.keys(imagesAndVideosThumbnailObj).length !== 0) {
+        formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
+      }
+      
+      // console.log(`
+      //   ----- storeImageAndVideoForm.dataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
       
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/card-players/update`,
+        urlApi: `${process.env.URL_API}/v2/db/card-players/upsert`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj),
       });
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      // const formData = new FormData();
+      
+      // formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
+      // // console.log(`\n---------- this.cardPlayerEditFormDataObj[_id] ----------\n`);
+      // // console.dir(JSON.parse(JSON.stringify(this.cardPlayerEditFormDataObj[_id])));
+      // // console.log(`\n-----------------------------------\n`);
+      // // return;
+      
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
+      
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${process.env.URL_API}/v1/card-players/update`,
+      //   methodType: 'POST',
+      //   formData: formData
+      // });
       
       
       
@@ -1606,45 +1668,52 @@ class Store {
       //   Error
       // ---------------------------------------------
       
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
-      }
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
       
       
-      // ---------------------------------------------
-      //   Data 更新
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   Data 更新
+      // // ---------------------------------------------
       
-      // フォーム情報更新
-      this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data.cardPlayersForEditFormObj);
-      this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data.cardPlayersForEditFormObj);
+      // // フォーム情報更新
+      // this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data.cardPlayersForEditFormObj);
+      // this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data.cardPlayersForEditFormObj);
       
-      // Store Data カード情報更新
-      storeData.updateCardPlayersObj(resultObj.data.cardPlayersObj);
+      // // Store Data カード情報更新
+      // storeData.updateCardPlayersObj(resultObj.data.cardPlayersObj);
       
       
-      // ---------------------------------------------
-      //   編集フォームを閉じる
-      // ---------------------------------------------
+      // // ---------------------------------------------
+      // //   編集フォームを閉じる
+      // // ---------------------------------------------
       
-      this.handleHideForm({ _id });
+      // this.handleHideForm({ _id });
+      
       
       
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('success', '保存しました');
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'As9-T8q9N',
+      });
       
       
-    } catch (error) {
+    } catch (errorObj) {
       
       
       // ---------------------------------------------
       //   Snackbar: Error
       // ---------------------------------------------
       
-      storeLayout.handleSnackbarOpen('error', `フォームの入力内容を見直してください`);
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
       
       
     } finally {
@@ -1654,7 +1723,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: `${_id}-form`});
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -1671,6 +1740,8 @@ class Store {
   
   
 }
+
+
 
 
 

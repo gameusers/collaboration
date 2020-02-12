@@ -260,20 +260,6 @@ const validationCardPlayersPCSpec = ({ throwError = false, required = false, val
     
     
     // ---------------------------------------------
-    //   配列チェック
-    // ---------------------------------------------
-    
-    // for (let data of Object.values(valueObj)) {
-      
-    //   // 文字数チェック
-    //   if (!validator.isEmpty(data) && !validator.isLength(data, { min: minLength, max: maxLength })) {
-    //     messageCodeArr.unshift('Uh3rnK7Dk');
-    //     resultObj.errorCodeArr.push('fwq9KZOmc');
-    //   }
-      
-    // }
-    
-    // ---------------------------------------------
     //   Loop
     // ---------------------------------------------
     

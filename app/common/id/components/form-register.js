@@ -128,7 +128,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props._id, 'idFormObj', 'registerObj'];
+    this.pathArr = [props._id, 'idFormRegisterOObj'];
     
     
   }
@@ -193,7 +193,15 @@ export default injectIntl(class extends React.Component {
     
     const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
+    // console.log(`
+    //   ----- this.pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(chalk`
+    //   buttonDisabled: {green ${buttonDisabled}}
+    // `);
     
     
     // --------------------------------------------------

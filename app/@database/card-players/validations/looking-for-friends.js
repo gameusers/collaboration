@@ -125,7 +125,7 @@ const validationCardPlayersLookingForFriendsComment = ({ throwError = false, req
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
@@ -216,7 +216,7 @@ const validationCardPlayersLookingForFriendsIcon = ({ throwError = false, value 
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

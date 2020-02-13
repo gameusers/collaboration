@@ -50,7 +50,7 @@ const validationUsersLoginPassword = ({ throwError = false, required = false, va
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   const strengthScore = zxcvbn(data).score;
   
@@ -172,7 +172,7 @@ const validationUsersLoginPasswordConfirmation = ({ throwError = false, required
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

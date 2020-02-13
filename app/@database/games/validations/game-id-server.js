@@ -44,7 +44,7 @@ const validationGamesGameCommunities_idServer = async ({ value, language, countr
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   
   let resultObj = {
     value: data,

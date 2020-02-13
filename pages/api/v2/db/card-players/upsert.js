@@ -149,31 +149,36 @@ export default async (req, res) => {
       
     } = bodyObj;
     
+    // console.log(`
+    //   ----- ageObj -----\n
+    //   ${util.inspect(ageObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    lodashSet(requestParametersObj, ['_id'], _id);
-    lodashSet(requestParametersObj, ['nameObj'], nameObj);
-    lodashSet(requestParametersObj, ['statusObj'], statusObj);
-    lodashSet(requestParametersObj, ['commentObj'], commentObj);
-    lodashSet(requestParametersObj, ['ageObj'], ageObj);
-    lodashSet(requestParametersObj, ['sexObj'], sexObj);
-    lodashSet(requestParametersObj, ['addressObj'], addressObj);
-    lodashSet(requestParametersObj, ['gamingExperienceObj'], gamingExperienceObj);
-    lodashSet(requestParametersObj, ['hobbiesObj'], hobbiesObj);
-    lodashSet(requestParametersObj, ['specialSkillsObj'], specialSkillsObj);
-    lodashSet(requestParametersObj, ['smartphoneObj'], smartphoneObj);
-    lodashSet(requestParametersObj, ['tabletObj'], tabletObj);
-    lodashSet(requestParametersObj, ['pcObj'], pcObj);
-    lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
-    lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
-    lodashSet(requestParametersObj, ['ids_idArr'], []);
-    lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
-    lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
-    lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
-    lodashSet(requestParametersObj, ['linkArr'], linkArr);
-    lodashSet(requestParametersObj, ['imagesAndVideos_id'], imagesAndVideos_id);
-    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    lodashSet(requestParametersObj, ['imagesAndVideosThumbnail_id'], imagesAndVideosThumbnail_id);
-    lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
+    // lodashSet(requestParametersObj, ['_id'], _id);
+    // lodashSet(requestParametersObj, ['nameObj'], nameObj);
+    // lodashSet(requestParametersObj, ['statusObj'], statusObj);
+    // lodashSet(requestParametersObj, ['commentObj'], commentObj);
+    // lodashSet(requestParametersObj, ['ageObj'], ageObj);
+    // lodashSet(requestParametersObj, ['sexObj'], sexObj);
+    // lodashSet(requestParametersObj, ['addressObj'], addressObj);
+    // lodashSet(requestParametersObj, ['gamingExperienceObj'], gamingExperienceObj);
+    // lodashSet(requestParametersObj, ['hobbiesObj'], hobbiesObj);
+    // lodashSet(requestParametersObj, ['specialSkillsObj'], specialSkillsObj);
+    // lodashSet(requestParametersObj, ['smartphoneObj'], smartphoneObj);
+    // lodashSet(requestParametersObj, ['tabletObj'], tabletObj);
+    // lodashSet(requestParametersObj, ['pcObj'], pcObj);
+    // lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
+    // lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
+    // lodashSet(requestParametersObj, ['ids_idArr'], []);
+    // lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
+    // lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
+    // lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
+    // lodashSet(requestParametersObj, ['linkArr'], linkArr);
+    // lodashSet(requestParametersObj, ['imagesAndVideos_id'], imagesAndVideos_id);
+    // lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
+    // lodashSet(requestParametersObj, ['imagesAndVideosThumbnail_id'], imagesAndVideosThumbnail_id);
+    // lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
     
     
     
@@ -442,155 +447,165 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   現在の画像データを取得する
-    // --------------------------------------------------
-    
-    const oldImagesAndVideosObj = await ModelImagesAndVideos.findOne({
-      
-      conditionObj: {
-        _id: imagesAndVideos_id,
-        users_id: loginUsers_id,
-      }
-      
-    });
-    
-    const oldImagesAndVideosThumbnailObj = await ModelImagesAndVideos.findOne({
-      
-      conditionObj: {
-        _id: imagesAndVideosThumbnail_id,
-        users_id: loginUsers_id,
-      }
-      
-    });
-    
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- oldImagesAndVideosObj -----\n
-      ${util.inspect(oldImagesAndVideosObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- imagesAndVideosThumbnailObj -----\n
-      ${util.inspect(imagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- oldImagesAndVideosThumbnailObj -----\n
-      ${util.inspect(oldImagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   画像を保存する
-    // --------------------------------------------------
-    
-    // let imagesAndVideosConditionObj = {};
-    // let imagesAndVideosSaveObj = {};
-    // let imagesAndVideos_id = '';
-    // let images = 0;
-    // let videos = 0;
-    
-    // if (imagesAndVideosObj) {
-      
-    //   const formatAndSaveObj = await formatAndSave({
-    //     newObj: imagesAndVideosObj,
-    //     oldObj: oldImagesAndVideosObj,
-    //     loginUsers_id,
-    //     ISO8601,
-    //   });
-      
-    //   imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
-    //   images = lodashGet(formatAndSaveObj, ['images'], 0);
-    //   videos = lodashGet(formatAndSaveObj, ['videos'], 0);
-      
-      
-    //   // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
-    //   const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
-      
-    //   if (arr.length === 0) {
-    //     imagesAndVideos_id = '';
-    //   } else {
-    //     imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
-    //   }
-      
-      
-    //   imagesAndVideosConditionObj = {
-    //     _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
-    //   };
-      
-      
-    //   // console.log(`
-    //   //   ----- imagesAndVideosSaveObj -----\n
-    //   //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-    //   //   --------------------\n
-    //   // `);
-      
-    // }
-    
-    
-    
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/card-players/upsert.js
-    // `);
-    
-    // console.log(`
-    //   ----- bodyObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(bodyObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validatedHardwareActiveObj -----\n
-    //   ${util.inspect(validatedHardwareActiveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validatedHardwareInactiveObj -----\n
-    //   ${util.inspect(validatedHardwareInactiveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validatedIDs_idArrObj -----\n
-    //   ${util.inspect(validatedIDs_idArrObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   Object.keys(nameObj).length: {green ${Object.keys(nameObj).length}}
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Save Object
+    //   Datetime
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
-    let saveObj = {
+    
+    
+    
+    // --------------------------------------------------
+    //   メイン画像を保存する
+    // --------------------------------------------------
+    
+    let imagesAndVideosConditionObj = {};
+    let imagesAndVideosSaveObj = {};
+    let newImagesAndVideos_id = imagesAndVideos_id;
+    
+    if (imagesAndVideosObj) {
       
+      
+      // --------------------------------------------------
+      //   現在の画像データを取得する
+      // --------------------------------------------------
+      
+      const oldImagesAndVideosObj = await ModelImagesAndVideos.findOne({
+        
+        conditionObj: {
+          _id: imagesAndVideos_id,
+          users_id: loginUsers_id,
+        }
+        
+      });
+      
+      
+      // --------------------------------------------------
+      //   保存する
+      // --------------------------------------------------
+      
+      const formatAndSaveObj = await formatAndSave({
+        
+        newObj: imagesAndVideosObj,
+        oldObj: oldImagesAndVideosObj,
+        loginUsers_id,
+        ISO8601,
+        
+      });
+      
+      imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画がすべて削除されている場合は、newImagesAndVideos_id を空にする
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        newImagesAndVideos_id = '';
+      } else {
+        newImagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+      }
+      
+      
+      // --------------------------------------------------
+      //   imagesAndVideosConditionObj
+      // --------------------------------------------------
+      
+      imagesAndVideosConditionObj = {
+        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
+      };
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   サムネイル画像を保存する
+    // --------------------------------------------------
+    
+    let imagesAndVideosThumbnailConditionObj = {};
+    let imagesAndVideosThumbnailSaveObj = {};
+    let newImagesAndVideosThumbnail_id = imagesAndVideosThumbnail_id;
+    
+    if (imagesAndVideosThumbnailObj) {
+      
+      
+      // --------------------------------------------------
+      //   現在の画像データを取得する
+      // --------------------------------------------------
+      
+      const oldImagesAndVideosThumbnailObj = await ModelImagesAndVideos.findOne({
+        
+        conditionObj: {
+          _id: imagesAndVideosThumbnail_id,
+          users_id: loginUsers_id,
+        }
+        
+      });
+      
+      
+      // --------------------------------------------------
+      //   保存する
+      // --------------------------------------------------
+      
+      const formatAndSaveObj = await formatAndSave({
+        
+        newObj: imagesAndVideosThumbnailObj,
+        oldObj: oldImagesAndVideosThumbnailObj,
+        loginUsers_id,
+        ISO8601,
+        
+      });
+      
+      imagesAndVideosThumbnailSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画がすべて削除されている場合は、newImagesAndVideosThumbnail_id を空にする
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        newImagesAndVideosThumbnail_id = '';
+      } else {
+        newImagesAndVideosThumbnail_id = lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], '');
+      }
+      
+      
+      // --------------------------------------------------
+      //   imagesAndVideosConditionObj
+      // --------------------------------------------------
+      
+      imagesAndVideosThumbnailConditionObj = {
+        _id: lodashGet(imagesAndVideosThumbnailSaveObj, ['_id'], ''),
+      };
+      
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Card Players Save Object
+    // --------------------------------------------------
+    
+    let cardPlayersSaveObj = {
+      
+      _id: shortid.generate(),
       createdDate: ISO8601,
       updatedDate: ISO8601,
       users_id: loginUsers_id,
       language: 'ja',
       nameObj,
       statusObj,
-      // imagesAndVideos_id: '-uskdLoSC',
-      // imagesAndVideosThumbnail_id: '9h6n2gyyK',
+      imagesAndVideos_id: newImagesAndVideos_id,
+      imagesAndVideosThumbnail_id: newImagesAndVideosThumbnail_id,
       commentObj,
       ageObj,
       sexObj,
@@ -620,66 +635,102 @@ export default async (req, res) => {
     
     
     
+    // --------------------------------------------------
+    //   データベースに保存
+    // --------------------------------------------------
+    
+    let cardPlayersConditionObj = {};
     
     
+    // ---------------------------------------------
+    //   - Update
+    // ---------------------------------------------
     
-    
-    // // --------------------------------------------------
-    // //   データベースに保存
-    // // --------------------------------------------------
-    
-    // let conditionObj = {};
-    
-    
-    // // ---------------------------------------------
-    // //   - Update
-    // // ---------------------------------------------
-    
-    // if (_id) {
-      
-    //   conditionObj = {
-    //     _id
-    //   };
-      
-    //   delete saveObj.createdDate;
-    //   delete saveObj.users_id;
-      
-    //   saveObj = {
-    //     $set: saveObj
-    //   };
+    if (_id) {
       
       
-    // // ---------------------------------------------
-    // //   - Insert
-    // // ---------------------------------------------
+      // --------------------------------------------------
+      //   Card Players Condition Object
+      // --------------------------------------------------
       
-    // } else {
+      cardPlayersConditionObj = {
+        
+        _id,
+        users_id: loginUsers_id,
+        
+      };
       
-    //   conditionObj = {
-    //     _id: shortid.generate()
-    //   };
       
-    // }
-    
-    // await ModelIDs.upsert({
-    //   conditionObj,
-    //   saveObj,
-    // });
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / IDs
-    // //   ログインしているユーザーの登録IDデータ
-    // // --------------------------------------------------
-    
-    // returnObj = await ModelIDs.findBy_Users_idForForm({
+      // --------------------------------------------------
+      //   Card Players Save Object
+      // --------------------------------------------------
       
-    //   localeObj,
-    //   loginUsers_id,
+      delete cardPlayersSaveObj._id;
+      delete cardPlayersSaveObj.createdDate;
+      delete cardPlayersSaveObj.users_id;
       
-    // });
+      cardPlayersSaveObj = {
+        $set: cardPlayersSaveObj
+      };
+      
+      
+      // --------------------------------------------------
+      //   現在、プレイヤーカードを新規追加する機能はないので、更新だけ行う
+      // --------------------------------------------------
+      
+      await ModelCardPlayers.transactionForUpsert({
+        
+        cardPlayersConditionObj,
+        cardPlayersSaveObj,
+        imagesAndVideosConditionObj,
+        imagesAndVideosSaveObj,
+        imagesAndVideosThumbnailConditionObj,
+        imagesAndVideosThumbnailSaveObj,
+        
+      });
+      
+      
+    // ---------------------------------------------
+    //   - Insert
+    // ---------------------------------------------
+      
+    } else {
+      
+      cardPlayersConditionObj = {
+        _id: shortid.generate()
+      };
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Card Players
+    //   アクセスしたページ所有者のプレイヤーカード情報
+    // --------------------------------------------------
+    
+    returnObj.cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+      
+      localeObj,
+      users_id: loginUsers_id,
+      loginUsers_id,
+      
+    });
+    
+    
+    // --------------------------------------------------
+    //   データ取得 / Card Players
+    //   プレイヤーカード情報 / 編集フォーム用
+    // --------------------------------------------------
+    
+    returnObj.cardPlayersForEditFormObj = await ModelCardPlayers.findOneBy_idForEditForm({
+      
+      _id,
+      localeObj,
+      loginUsers_id,
+      
+    });
     
     
     
@@ -688,31 +739,41 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/card-players/upsert.js
+    `);
+    
     // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/ids/upsert.js
+    //   ----- bodyObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(bodyObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
+    
+    // console.log(`
+    //   ----- validatedHardwareActiveObj -----\n
+    //   ${util.inspect(validatedHardwareActiveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- validatedHardwareInactiveObj -----\n
+    //   ${util.inspect(validatedHardwareInactiveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- validatedIDs_idArrObj -----\n
+    //   ${util.inspect(validatedIDs_idArrObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
     
     // console.log(chalk`
-    //   _id: {green ${_id}}
-    //   platform: {green ${platform}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   label: {green ${label}}
-    //   id: {green ${id}}
-    //   publicSetting: {green ${publicSetting}}
-    //   search: {green ${search}}
-    // `);
-    
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- saveObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(saveObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   Object.keys(nameObj).length: {green ${Object.keys(nameObj).length}}
     // `);
     
     // console.log(`
@@ -757,4 +818,15 @@ export default async (req, res) => {
   }
   
   
+};
+
+
+
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '25mb',
+    },
+  },
 };

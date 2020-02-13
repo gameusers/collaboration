@@ -89,7 +89,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     type = lodashGet(oldObj, ['type'], '');
     
   }
-  
+  // console.log('eee');
   
   
   
@@ -222,7 +222,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     }
     
     
-    
+    // console.log('fff');
     
     // ---------------------------------------------
     //   新規の動画
@@ -250,7 +250,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
     }
     
-    
+    // console.log('ggg');
     
     
     // ---------------------------------------------
@@ -330,19 +330,26 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       }
       
       
+      // console.log('hhh');
+      
       
       
       // ---------------------------------------------
       //   ディレクトリ作成　【チェック時は要コメントアウト】
       // ---------------------------------------------
       
-      const dirPath = `img/${type}/${_id}/${_id2}`;
+      const dirPath = `public/img/${type}/${_id}/${_id2}`;
       
-      mkdirp.sync(dirPath, (err) => {
-        if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
-        }
-      });
+      mkdirp.sync(dirPath);
+      
+      // mkdirp.sync(dirPath, (err) => {
+      //   console.log(chalk`
+      //     err: {green ${err}}
+      //   `);
+      //   if (err) {
+      //     throw new CustomError({ level: 'error', errorsArr: [{ code: 'AewCZCF5v', messageID: 'Error' }] });
+      //   }
+      // });
       
       // console.log(chalk`
       //   _id2: {green ${_id2}}
@@ -362,7 +369,23 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
       const srcSetArr = [];
       
-      let longSideArr = [320, 480, 640, 800];
+      // let longSideArr = [320, 480, 640, 800];
+      
+      // if (width < 480) {
+        
+      //   longSideArr = [320];
+        
+      // } else if (width < 640) {
+        
+      //   longSideArr = [320, 480];
+        
+      // } else if (width < 800) {
+        
+      //   longSideArr = [320, 480, 640];
+        
+      // }
+      
+      let longSideArr = [800];
       
       if (width < 480) {
         
@@ -370,11 +393,11 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
       } else if (width < 640) {
         
-        longSideArr = [320, 480];
+        longSideArr = [480];
         
       } else if (width < 800) {
         
-        longSideArr = [320, 480, 640];
+        longSideArr = [640];
         
       }
       
@@ -442,6 +465,9 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
           height: calculatedObj.height,
         });
         
+        // console.log(chalk`
+        //   srcSetSrc: {green ${srcSetSrc}}
+        // `);
         
       }
       
@@ -470,7 +496,6 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     
     
   }
-  
   
   
   
@@ -539,7 +564,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   if (countNewImages === 0) {
   // if (newArr.length === 0 && oldArr.length > 0) {
     
-    const dirPath = `img/${type}/${_id}`;
+    const dirPath = `public/img/${type}/${_id}`;
     
     rimraf(dirPath, (err) => {
       if (err) {
@@ -564,7 +589,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       
       if (_idsArr.includes(valueObj._id) === false) {
         
-        const dirPath = `img/${type}/${_id}/${valueObj._id}`;
+        const dirPath = `public/img/${type}/${_id}/${valueObj._id}`;
         
         rimraf(dirPath, (err) => {
           if (err) {
@@ -596,6 +621,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   // ---------------------------------------------
   
   const returnObj = {
+    
     imagesAndVideosObj: {
       _id,
       createdDate,
@@ -608,6 +634,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
     },
     images,
     videos,
+    
   };
   
   // const returnObj = {

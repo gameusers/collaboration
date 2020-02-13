@@ -49,7 +49,7 @@ const validationCardPlayersComment = ({ throwError = false, required = false, va
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

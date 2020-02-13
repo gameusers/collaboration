@@ -1575,13 +1575,13 @@ class Store {
         validationCardPlayersName({ value: this.cardPlayerEditFormDataObj[_id].nameObj.value }).error ||
         
         // ステータス
-        validationCardPlayersStatus({ value: this.cardPlayerEditFormDataObj[_id].statusObj.value }).error ||
+        validationCardPlayersStatus({ value: this.cardPlayerEditFormDataObj[_id].statusObj.value }).error
         
         // 活動時間
-        validationCardPlayersActivityTimeObjValueArr({ valueArr: this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr }).error ||
+        // validationCardPlayersActivityTimeObjValueArr({ valueArr: this.cardPlayerEditFormDataObj[_id].activityTimeObj.valueArr }).error ||
         
         // リンク
-        validationCardPlayersLinkArr({ valueArr: this.cardPlayerEditFormDataObj[_id].linkArr }).error
+        // validationCardPlayersLinkArr({ valueArr: this.cardPlayerEditFormDataObj[_id].linkArr }).error
         
       ) {
         throw new Error();
@@ -1629,34 +1629,6 @@ class Store {
       });
       
       
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      // const formData = new FormData();
-      
-      // formData.append('obj', JSON.stringify(this.cardPlayerEditFormDataObj[_id]));
-      // // console.log(`\n---------- this.cardPlayerEditFormDataObj[_id] ----------\n`);
-      // // console.dir(JSON.parse(JSON.stringify(this.cardPlayerEditFormDataObj[_id])));
-      // // console.log(`\n-----------------------------------\n`);
-      // // return;
-      
-      // // ---------------------------------------------
-      // //   Fetch
-      // // ---------------------------------------------
-      
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${process.env.URL_API}/v1/card-players/update`,
-      //   methodType: 'POST',
-      //   formData: formData
-      // });
-      
-      
-      
-      
-      
-      
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
@@ -1668,28 +1640,30 @@ class Store {
       //   Error
       // ---------------------------------------------
       
-      // if ('errorsArr' in resultObj) {
-      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
-      // }
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
       
       
-      // // ---------------------------------------------
-      // //   Data 更新
-      // // ---------------------------------------------
-      
-      // // フォーム情報更新
-      // this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data.cardPlayersForEditFormObj);
-      // this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data.cardPlayersForEditFormObj);
-      
-      // // Store Data カード情報更新
-      // storeData.updateCardPlayersObj(resultObj.data.cardPlayersObj);
       
       
-      // // ---------------------------------------------
-      // //   編集フォームを閉じる
-      // // ---------------------------------------------
+      // ---------------------------------------------
+      //   Data 更新
+      // ---------------------------------------------
       
-      // this.handleHideForm({ _id });
+      // フォーム情報更新
+      this.cardPlayerEditFormSourceDataObj = Object.assign({}, this.cardPlayerEditFormSourceDataObj, resultObj.data.cardPlayersForEditFormObj);
+      this.cardPlayerEditFormDataObj = Object.assign({}, this.cardPlayerEditFormDataObj, resultObj.data.cardPlayersForEditFormObj);
+      
+      // Store Data カード情報更新
+      storeData.updateCardPlayersObj(resultObj.data.cardPlayersObj);
+      
+      
+      // ---------------------------------------------
+      //   編集フォームを閉じる
+      // ---------------------------------------------
+      
+      this.handleHideForm({ _id });
       
       
       

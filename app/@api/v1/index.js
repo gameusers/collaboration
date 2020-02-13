@@ -10,7 +10,7 @@ const initialProps = require('./initial-props');
 const admin = require('../../admin/index/api/admin');
 
 const users = require('../../@database/users/api');
-const cardPlayers = require('../../@database/card-players/api');
+// const cardPlayers = require('../../@database/card-players/api');
 // const cardGames = require('../../@database/card-games/api');
 // const games = require('../../@database/games/api');
 // const hardwares = require('../../@database/hardwares/api');
@@ -35,7 +35,7 @@ router.use('/initial-props', initialProps);
 router.use('/admin', admin);
 
 router.use('/users', users);
-router.use('/card-players', cardPlayers);
+// router.use('/card-players', cardPlayers);
 // router.use('/card-games', cardGames);
 // router.use('/games', games);
 // router.use('/hardwares', hardwares);

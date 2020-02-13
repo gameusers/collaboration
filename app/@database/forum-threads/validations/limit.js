@@ -41,7 +41,7 @@ const validationForumThreadsListLimit = ({ throwError = false, required = false,
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
@@ -118,7 +118,7 @@ const validationForumThreadsLimit = ({ throwError = false, required = false, val
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

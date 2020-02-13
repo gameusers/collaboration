@@ -115,8 +115,8 @@ export default injectIntl(class extends React.Component {
     
     let formattedDate = '';
     
-    if (validationValueObj.value) {
-      formattedDate = moment(validationValueObj.value).format('YYYY-MM-DD');
+    if (gamingExperienceObj.value) {
+      formattedDate = moment(gamingExperienceObj.value).format('YYYY-MM-DD');
     }
     
     

@@ -41,7 +41,7 @@ const validationCardPlayersAge = ({ throwError = false, required = false, value 
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
@@ -141,7 +141,7 @@ const validationCardPlayersAgeAlternativeText = ({ throwError = false, required 
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

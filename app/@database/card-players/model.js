@@ -25,6 +25,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 
 const Schema = require('./schema');
 const SchemaUsers = require('../users/schema');
+const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const ModelIDs = require('../ids/model');
 
 
@@ -1919,6 +1920,229 @@ const formatForEditForm = ({ cardPlayersArr, idsObj }) => {
 
 
 
+/**
+ * Transaction 挿入 / 更新する
+ * プレイヤーカードと画像＆動画を同時に更新する
+ * 
+ * @param {Object} cardPlayersConditionObj - DB card-players 検索条件
+ * @param {Object} cardPlayersSaveObj - DB card-players 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} imagesAndVideosThumbnailConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosThumbnailSaveObj - DB images-and-videos 保存データ
+ * @return {Object} 
+ */
+const transactionForUpsert = async ({
+  
+  cardPlayersConditionObj,
+  cardPlayersSaveObj,
+  imagesAndVideosConditionObj = {},
+  imagesAndVideosSaveObj = {},
+  imagesAndVideosThumbnailConditionObj,
+  imagesAndVideosThumbnailSaveObj,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await Schema.startSession();
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Card Player
+    // --------------------------------------------------
+    
+    await Schema.updateOne(cardPlayersConditionObj, cardPlayersSaveObj, { session, upsert: true });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Images And Videos - メイン画像
+    // --------------------------------------------------
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
+        
+        
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
+        
+      } else {
+        
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+        
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Images And Videos - サムネイル画像
+    // --------------------------------------------------
+    
+    if (Object.keys(imagesAndVideosThumbnailConditionObj).length !== 0 && Object.keys(imagesAndVideosThumbnailSaveObj).length !== 0) {
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosThumbnailSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosThumbnailConditionObj, { session });
+        
+        
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
+        
+      } else {
+        
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosThumbnailConditionObj, imagesAndVideosThumbnailSaveObj, { session, upsert: true });
+        
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----- cardPlayersConditionObj -----\n
+      ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- cardPlayersSaveObj -----\n
+      ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosConditionObj -----\n
+      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosSaveObj -----\n
+      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosThumbnailConditionObj -----\n
+      ${util.inspect(imagesAndVideosThumbnailConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosThumbnailSaveObj -----\n
+      ${util.inspect(imagesAndVideosThumbnailSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
 
 
 // --------------------------------------------------
@@ -1938,5 +2162,6 @@ module.exports = {
   findOneBy_id,
   findOneBy_idForEditForm,
   findForMember,
+  transactionForUpsert,
   
 };

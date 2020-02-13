@@ -49,7 +49,7 @@ const validationCardPlayersTabletModel = ({ throwError = false, required = false
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {
@@ -149,7 +149,7 @@ const validationCardPlayersTabletComment = ({ throwError = false, required = fal
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

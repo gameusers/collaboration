@@ -49,7 +49,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
   //   Result Object
   // ---------------------------------------------
   
-  const data = String(value);
+  const data = value ? String(value) : '';
   const numberOfCharacters = data ? data.length : 0;
   
   let resultObj = {

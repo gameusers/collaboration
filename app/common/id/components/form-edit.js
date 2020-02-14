@@ -418,7 +418,7 @@ export default injectIntl(class extends React.Component {
         {gameSelectForm &&
           <GameForm
             pathArr={pathArr}
-            gamesArr={gamesArr}
+            // gamesArr={gamesArr}
             additionalGameLimit={additionalGameLimit}
           />
         }

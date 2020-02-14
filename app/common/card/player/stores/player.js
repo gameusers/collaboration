@@ -19,7 +19,7 @@ import keycode from 'keycode';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
-import lodashCloneDeep from 'lodash/cloneDeep';
+// import lodashCloneDeep from 'lodash/cloneDeep';
 
 
 // ---------------------------------------------
@@ -36,8 +36,8 @@ import { CustomError } from '../../../../@modules/error/custom';
 
 const { validationCardPlayersName } = require('../../../../@database/card-players/validations/name');
 const { validationCardPlayersStatus } = require('../../../../@database/card-players/validations/status');
-const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@database/card-players/validations/activity-time');
-const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
+// const { validationCardPlayersActivityTimeObjValueArr } = require('../../../../@database/card-players/validations/activity-time');
+// const { validationCardPlayersLinkArr } = require('../../../../@database/card-players/validations/link');
 
 
 // --------------------------------------------------
@@ -47,7 +47,7 @@ const { validationCardPlayersLinkArr } = require('../../../../@database/card-pla
 import initStoreLayout from '../../../layout/stores/layout';
 import initStoreData from '../../../../@stores/data';
 import initStoreImageAndVideoForm from '../../../image-and-video/stores/form';
-import initStoreGameForm from '../../../game/stores/form';
+// import initStoreGameForm from '../../../game/stores/form';
 
 
 
@@ -60,7 +60,7 @@ let storeCardPlayer = null;
 const storeLayout = initStoreLayout({});
 const storeData = initStoreData({});
 const storeImageAndVideoForm = initStoreImageAndVideoForm({});
-const storeGameForm = initStoreGameForm({});
+// const storeGameForm = initStoreGameForm({});
 
 
 
@@ -201,7 +201,7 @@ class Store {
           
           
           // ---------------------------------------------
-          //  Data 更新 - cardPlayersObj
+          //   Data 更新 - cardPlayersObj
           // ---------------------------------------------
           
           storeData.updateCardPlayersObj(resultObj.data);
@@ -693,51 +693,22 @@ class Store {
       storeLayout.handleButtonEnable({ pathArr });
       
       
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: 'cardPlayer',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
+      
+      
     }
     
   };
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Form
-  // ---------------------------------------------
-  
-  // ---------------------------------------------
-  //   画像とビデオ
-  // ---------------------------------------------
-  
-  /**
-   * サムネイル画像を変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {string} value - 値
-   */
-  // @action.bound
-  // handleImagesAndVideosObjThumbnailArr({ _id, value }) {
-    
-  //   let temp_id = _id;
-  //   temp_id = temp_id.replace('-thumbnail', '');
-    
-  //   lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'thumbnailArr'], value);
-    
-  // };
-  
-  
-  // /**
-  // * メイン画像を変更する
-  // * @param {string} _id - DB card-players _id / DB card-games _id
-  // * @param {string} value - 値
-  // */
-  // @action.bound
-  // handleImagesAndVideosObjMainArr({ _id, value }) {
-    
-  //   let temp_id = _id;
-  //   temp_id = temp_id.replace('-main', '');
-    
-  //   lodashSet(this.cardPlayerEditFormDataObj, [temp_id, 'imagesAndVideosObj', 'mainArr'], value);
-    
-  // };
   
   
   
@@ -1382,58 +1353,6 @@ class Store {
   
   
   // ---------------------------------------------
-  //   ID
-  // ---------------------------------------------
-  
-  /**
-   * IDを変更する
-   * @param {string} _id - DB card-players _id / DB card-games _id
-   * @param {Array} idArr - IDデータの入った配列
-   */
-  // @action.bound
-  // handleCardPlayerEditID({ _id, ids_idArr }) {
-    
-    
-  //   // --------------------------------------------------
-  //   //   console.log
-  //   // --------------------------------------------------
-    
-  //   // console.log(`
-  //   //   ----------------------------------------\n
-  //   //   /app/common/card/player/stores/player.js - handleCardPlayerEditID
-  //   // `);
-    
-  //   // console.log(chalk`
-  //   //   _id: {green ${_id}}
-  //   // `);
-    
-  //   // console.log(`
-  //   //   ----- ids_idArr -----\n
-  //   //   ${util.inspect(ids_idArr, { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-  //   // // console.log(`
-  //   // //   ----- ids_idArr -----\n
-  //   // //   ${util.inspect(JSON.parse(JSON.stringify(ids_idArr)), { colors: true, depth: null })}\n
-  //   // //   --------------------\n
-  //   // // `);
-    
-  //   // console.log(`
-  //   //   ----- this.cardPlayerEditFormDataObj -----\n
-  //   //   ${util.inspect(this.cardPlayerEditFormDataObj, { colors: true, depth: null })}\n
-  //   //   --------------------\n
-  //   // `);
-    
-    
-  //   // const clonedArr = lodashCloneDeep(ids_idArr);
-  //   // this.cardPlayerEditFormDataObj[_id].ids_idArr = clonedArr;
-    
-  // };
-  
-  
-  
-  
-  // ---------------------------------------------
   //   活動時間
   // ---------------------------------------------
   
@@ -1530,8 +1449,6 @@ class Store {
   
   
   
-  
-  
   // ---------------------------------------------
   //   Submit
   // ---------------------------------------------
@@ -1611,11 +1528,7 @@ class Store {
         formDataObj.imagesAndVideosThumbnailObj = imagesAndVideosThumbnailObj;
       }
       
-      // console.log(`
-      //   ----- storeImageAndVideoForm.dataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(storeImageAndVideoForm.dataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      
       
       
       // ---------------------------------------------
@@ -1667,6 +1580,7 @@ class Store {
       
       
       
+      
       // ---------------------------------------------
       //   Snackbar: Success
       // ---------------------------------------------
@@ -1705,6 +1619,19 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleLoadingHide({});
+      
+      
+      // ---------------------------------------------
+      //   Scroll
+      // ---------------------------------------------
+      
+      storeLayout.handleScrollTo({
+        to: 'cardPlayer',
+        duration: 0,
+        delay: 0,
+        smooth: 'easeInOutQuart',
+        offset: -50,
+      });
       
       
     }

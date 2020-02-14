@@ -45,6 +45,8 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 
 import initStoreRoot from '../../../app/@stores/root';
 import initStoreUrSettings from '../../../app/ur/settings/stores/store';
+import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
+import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 
 
 // ---------------------------------------------
@@ -75,6 +77,8 @@ const getOrCreateStore = ({ propsObj }) => {
   initStoreRoot({ propsObj });
   
   const storeUrSettings = initStoreUrSettings({ propsObj });
+  const storeImageAndVideo = initStoreImageAndVideo({});
+  const storeImageAndVideoForm = initStoreImageAndVideoForm({ propsObj });
   
   
   // --------------------------------------------------
@@ -84,6 +88,8 @@ const getOrCreateStore = ({ propsObj }) => {
   return {
     
     storeUrSettings,
+    storeImageAndVideo,
+    storeImageAndVideoForm,
     
   };
   
@@ -151,11 +157,24 @@ export default class extends React.Component {
     
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
-    // const login = lodashGet(resultObj, ['data', 'login'], false);
     
-    const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
+    const loginUsers_id = lodashGet(resultObj, ['data', 'loginUsersObj', '_id'], '');
+    const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
+    const imagesAndVideosObj = lodashGet(resultObj, ['data', 'pagesObj', 'imagesAndVideosObj'], {});
+    
+    
+    // --------------------------------------------------
+    //   Title
+    // --------------------------------------------------
     
     const title = `ユーザー設定`;
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const pathArr = [loginUsers_id, 'urSettings'];
     
     
     // --------------------------------------------------
@@ -175,62 +194,32 @@ export default class extends React.Component {
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userID, pagesArr };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userID, pagesObj, imagesAndVideosObj };
     
     const storesObj = getOrCreateStore({ propsObj });
     
     
-    // --------------------------------------------------
-    //   Fetch
-    // --------------------------------------------------
-    
-    // const resultObj = await fetchWrapper({
-    //   urlApi: encodeURI(`${process.env.URL_API}/v1/initial-props/ur/settings`),
-    //   methodType: 'GET',
-    //   reqHeadersCookie,
-    //   reqAcceptLanguage,
-    // });
-    
-    // let statusCode = resultObj.statusCode;
-    // const initialPropsObj = resultObj.data;
-    
-    
-    // // --------------------------------------------------
-    // //   Check Access Right
-    // // --------------------------------------------------
-    
-    // const myPlayerID = lodashGet(initialPropsObj, ['loginUsersObj', 'userID'], '');
-    
-    // if (userID !== myPlayerID) {
-    //   statusCode = 403;
-    // }
-    
-    // console.log(`
-    //   ----- initialPropsObj.usersObj -----\n
-    //   ${util.inspect(initialPropsObj.usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   userID: {green ${userID}}
-    //   myPlayerID: {green ${myPlayerID}}
-    // `);
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
+    console.log(`
+      ----------------------------------------\n
+      /pages/ur/[userID]/settings.js
+    `);
+    
     // console.log(chalk`
     //   userID: {green ${userID}}
     //   pathname: {green ${pathname}}
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -241,6 +230,7 @@ export default class extends React.Component {
       
       statusCode,
       reqAcceptLanguage,
+      pathArr,
       title,
       userID,
       storesObj,
@@ -431,7 +421,7 @@ export default class extends React.Component {
               
               
               {/* プレイヤーページ設定 */}
-              <FormPage userID={this.props.userID} />
+              <FormPage userID={this.props.userID} pathArr={this.props.pathArr} />
               
               
               {/* アカウント編集 */}

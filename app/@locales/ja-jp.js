@@ -147,10 +147,10 @@ const ja_JP = {
   '5H8rr53kE': '入力したメールアドレスは利用できません',
   
   // /app/@database/users/validations/player-id.js
-  '3VjugB9w9': 'プレイヤーページのURLになります',
+  '3VjugB9w9': 'ユーザーページのURLになります',
   
   // /app/@database/users/validations/player-id-server.1.js
-  'Xt11v41pR': '入力したプレイヤーIDは利用できません',
+  'Xt11v41pR': '入力したURLは利用できません',
   
   
   // ---------------------------------------------

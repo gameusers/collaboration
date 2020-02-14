@@ -111,6 +111,8 @@ export default injectIntl(class extends React.Component {
   }
   
   
+  
+  
   // --------------------------------------------------
   //   render
   // --------------------------------------------------
@@ -136,9 +138,28 @@ export default injectIntl(class extends React.Component {
     const arr = lodashGet(formattedObj, ['arr'], []);
     
     
+    // 画像を追加してもプレビューが更新されないときがある。これを読み込むと正常に更新される。ただいい方法ではない。
+    const imageType = lodashGet(dataObj, [...pathArr, 'imagesAndVideosObj', 'type'], '');
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/image-and-video/components/form-preview.js
+    // `);
+    
     // console.log(`
     //   ----- pathArr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -160,6 +181,7 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
+    // const test = lodashGet(imagesAndVideosObj, ['type'], '');
     
     
     
@@ -248,6 +270,7 @@ export default injectIntl(class extends React.Component {
                   }
                 `}
                 src={src}
+                alt={imageType}
                 onClick={() => handleLightboxOpen({ pathArr, currentNo })}
               />
               

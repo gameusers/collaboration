@@ -183,6 +183,11 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
+    // `);
+    
     // console.log(chalk`
     //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -192,8 +197,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- userCommunityArr -----\n
-    //   ${util.inspect(userCommunityArr, { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

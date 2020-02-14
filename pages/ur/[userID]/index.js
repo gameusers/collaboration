@@ -18,6 +18,7 @@ import React from 'react';
 import Error from 'next/error';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
+import { Element } from 'react-scroll';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -150,7 +151,7 @@ export default class extends React.Component {
     let propsObj = lodashGet(resultObj, ['data'], {});
     
     const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-    const pagesArr = lodashGet(resultObj, ['data', 'pagesArr'], []);
+    const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
     
     
@@ -166,14 +167,27 @@ export default class extends React.Component {
         href: `/ur/[userID]?userID=${userID}`,
         as: `/ur/${userID}`,
       },
-      {
-        name: '設定',
-        href: `/ur/[userID]/settings?userID=${userID}`,
-        as: `/ur/${userID}/settings`,
-      }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, cardPlayersObj, pagesArr };
+    if (accessLevel >= 50) {
+      
+      headerNavMainArr.push(
+        {
+          name: '設定',
+          href: `/ur/[userID]/settings?userID=${userID}`,
+          as: `/ur/${userID}/settings`,
+        }
+      );
+      
+    }
+    
+    // console.log(`
+    //   ----- headerNavMainArr -----\n
+    //   ${util.inspect(headerNavMainArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, cardPlayersObj, pagesObj };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -197,7 +211,8 @@ export default class extends React.Component {
     
     // console.log(chalk`
     //   userID: {green ${userID}}
-    //   accessLevel: {green ${accessLevel}}
+    //   accessLevel: {green ${accessLevel} / ${typeof accessLevel}}
+    //   accessLevel => 50: {green ${accessLevel >= 50}}
     // `);
     
     // console.log(`
@@ -307,7 +322,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const stores = this.stores;
+    // const stores = this.stores;
     
     const cardsArr = lodashGet(this.props, ['propsObj', 'cardsArr'], []);
     
@@ -331,7 +346,9 @@ export default class extends React.Component {
       if ('cardPlayers_id' in valueObj) {
         
         const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
-        userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
+        userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
+        // userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
+        // console.log(userName);
         
         componentCardsArr.push(
           <CardPlayer
@@ -353,7 +370,9 @@ export default class extends React.Component {
     //   Header Title
     // --------------------------------------------------
     
-    const topPagesObj = this.storesObj.storeUrUser.pagesArr.find((valueObj) => {
+    const pagesArr = lodashGet(this.props, ['propsObj', 'pagesObj', 'arr'], []);
+    
+    const topPagesObj = pagesArr.find((valueObj) => {
       return valueObj.type === 'top';
     });
     
@@ -441,7 +460,11 @@ export default class extends React.Component {
               
               
               {/* プレイヤーカード */}
-              {componentCardsArr}
+              <Element
+                name="cardPlayer"
+              >
+                {componentCardsArr}
+              </Element>
               
               
             </div>

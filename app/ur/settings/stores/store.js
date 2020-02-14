@@ -568,6 +568,7 @@ class Store {
   
   /**
    * ユーザーページ設定フォームを送信する
+   * @param {Array} pathArr - パス
    */
   @action.bound
   async handleSubmitPages({ pathArr }) {
@@ -577,25 +578,49 @@ class Store {
       
       
       // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
       
       storeLayout.handleButtonDisable({ pathArr });
       
       
+      
+      
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
       
-      const userID = lodashGet(this.dataObj, ['userID'], '');
-      const pagesArr = lodashGet(this.dataObj, ['pagesArr'], []);
+      const userID = lodashGet(this.dataObj, [...pathArr, 'userID'], '');
+      const pagesArr = lodashGet(this.dataObj, [...pathArr, 'pagesObj', 'arr'], []);
+      
+      
       
       
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      const formDataObj = { userID, pagesArr };
+      const formDataObj = {
+        
+        userID,
+        pagesArr
+        
+      };
+      
+      
+      // メイン画像
+      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
+      
+      if (Object.keys(imagesAndVideosObj).length !== 0) {
+        formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      }
       
       
       // ---------------------------------------------
@@ -613,6 +638,8 @@ class Store {
       // console.log(`\n-----------------------------------\n`);
       
       
+      
+      
       // ---------------------------------------------
       //   Error
       // ---------------------------------------------
@@ -620,6 +647,8 @@ class Store {
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
+      
+      
       
       
       // ---------------------------------------------
@@ -636,11 +665,11 @@ class Store {
       //   Page Transition / URLを変更した場合にリロードする
       // ---------------------------------------------
       
-      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
-      if (pageTransition) {
-        window.location.href = `${process.env.URL_BASE}ur/${userID}`;
-      }
+      // if (pageTransition) {
+      //   window.location.href = `${process.env.URL_BASE}ur/${userID}/settings`;
+      // }
       
       
     } catch (errorObj) {
@@ -708,20 +737,27 @@ export default function initStoreUrSettings({ propsObj }) {
     
     
     // --------------------------------------------------
+    //   pathArr
+    // --------------------------------------------------
+    
+    const pathArr = lodashGet(propsObj, ['pathArr'], []);
+    
+    
+    // --------------------------------------------------
     //   userID
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['userID'])) {
-      lodashSet(storeUrSettings, ['dataObj', 'userID'], propsObj.userID);
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'userID'], propsObj.userID);
     }
     
     
     // --------------------------------------------------
-    //   pagesArr
+    //   pagesObj
     // --------------------------------------------------
     
-    if (lodashHas(propsObj, ['pagesArr'])) {
-      lodashSet(storeUrSettings, ['dataObj', 'pagesArr'], propsObj.pagesArr);
+    if (lodashHas(propsObj, ['pagesObj'])) {
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'pagesObj'], propsObj.pagesObj);
     }
     
     

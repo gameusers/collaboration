@@ -82,10 +82,11 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.pathArr = props.pathArr;
-    // this.pathArr = [props.userCommunities_id, 'ucSettingsFormCommunity'];
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -103,6 +104,8 @@ export default injectIntl(class extends React.Component {
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -187,6 +190,13 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const anonymity = lodashGet(dataObj, [...this.pathArr, 'anonymity'], true);
+    
+    
+    // --------------------------------------------------
+    //   additionalGameLimit
+    // --------------------------------------------------
+    
+    const additionalGameLimit = parseInt(process.env.COMMUNITY_ADDITIONAL_GAME_LIMIT, 10);
     
     
     
@@ -544,6 +554,7 @@ export default injectIntl(class extends React.Component {
             
             <GameForm
               pathArr={this.pathArr}
+              additionalGameLimit={additionalGameLimit}
             />
             
           </div>

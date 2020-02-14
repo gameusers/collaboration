@@ -10,42 +10,47 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
   accessDate: { type: Date, required: true },
   userID: { type: String, required: true, unique: true },
-  pagesArr: [
-    {
-      _id: { type: String, required: true },
-      type: { type: String, required: true },
-      name: { type: String },
-      language: { type: String, enum: ['en', 'ja'], required: true },
-    },
-  ],
+  pagesObj: {
+    imagesAndVideos_id: { type: String },
+    arr: [
+      {
+        _id: { type: String, required: true },
+        type: { type: String, required: true },
+        name: { type: String },
+        language: { type: String, enum: ['en', 'ja'], required: true },
+      },
+    ],
+  },
   loginID: { type: String, required: true },
   loginPassword: { type: String, required: true },
   emailObj: {
     value: { type: String },
     confirmation: { type: Boolean, default: false, required: true },
   },
-  country: { type: String, required: true },
+  countriesArr: [String],
   termsOfServiceConfirmedDate: { type: Date, required: true },
   exp: { type: Number, default: 0, required: true },
-  titleArr: [
-    {
-      _id: { type: String, required: true },
-      createdDate: { type: Date, required: true },
-      updatedDate: { type: Date, required: true },
-      titleID: { type: String, required: true },
-      count: { type: Number, default: 0, required: true },
-    },
-  ],
-  followArr: [String],
-  followCount: { type: Number, default: 0, required: true },
-  followedArr: [String],
-  followedCount: { type: Number, default: 0, required: true },
+  // titleArr: [
+  //   {
+  //     _id: { type: String, required: true },
+  //     createdDate: { type: Date, required: true },
+  //     updatedDate: { type: Date, required: true },
+  //     titleID: { type: String, required: true },
+  //     count: { type: Number, default: 0, required: true },
+  //   },
+  // ],
+  // followArr: [String],
+  // followCount: { type: Number, default: 0, required: true },
+  // followedArr: [String],
+  // followedCount: { type: Number, default: 0, required: true },
   role: { type: String, enum: ['user', 'administrator'], required: true },
+  
 });
 
 

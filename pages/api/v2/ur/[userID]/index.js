@@ -140,10 +140,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   pagesArr
+    //   pagesObj
     // --------------------------------------------------
     
-    returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
+    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], []);
     
     
     

@@ -91,10 +91,16 @@ export default injectIntl(class extends React.Component {
     const {
       
       dataObj,
+      // handleGetImagesAndVideosObj,
       handleShowFormImage,
       handleShowFormVideo,
       
     } = storeImageAndVideoForm;
+    
+    // const { dataObj, handleGetImagesAndVideosObj, handleRemovePreview } = storeImageAndVideoForm;
+    
+    
+    // const imagesAndVideosObj = handleGetImagesAndVideosObj({ pathArr });
     
     
     const showFormImage = lodashGet(dataObj, [...pathArr, 'showFormImage'], false);
@@ -108,9 +114,19 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   /app/common/image-and-video/components/form.js\n
+    //   ----------------------------------------\n
+    //   /app/common/image-and-video/components/form.js
+    // `);
+    
+    // console.log(`
     //   ----- pathArr -----\n
     //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -128,6 +144,7 @@ export default injectIntl(class extends React.Component {
         {/* Preview */}
         <FormPreview
           pathArr={pathArr}
+          // imagesAndVideosObj={imagesAndVideosObj}
         />
         
         

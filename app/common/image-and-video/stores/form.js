@@ -294,17 +294,29 @@ class Store {
     const caption = lodashGet(this.dataObj, [...pathArr, 'imageCaption'], '');
     
     
-    // console.log(`\n---------- pathArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(pathArr)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(`
+    //   ----- this.dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(this.dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    // console.log(`\n---------- imagesAndVideosObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(imagesAndVideosObj)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(`
+    //   ----- pathArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(pathArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    // console.log(`\n---------- arr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(arr)));
-    // console.log(`\n-----------------------------------\n`);
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

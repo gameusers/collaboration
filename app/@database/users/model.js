@@ -300,17 +300,226 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+/**
+ * ユーザーページ用のデータを取得する
+ * @param {Object} localeObj - ロケール
+ * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} userID - DB users userID / ユーザーID
+ * @return {Array}取得データ
+ */
+const findOneForUser = async ({
+  
+  localeObj,
+  loginUsers_id,
+  userID,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const language = lodashGet(localeObj, ['language'], '');
+    const country = lodashGet(localeObj, ['country'], '');
+    
+    // console.log(chalk`
+    //   userID: {green ${userID}}
+    // `);
+    // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [
+      {
+        $match : { userID }
+      },
+    ];
+    
+    // if (userCommunities_id) {
+      
+    //   matchConditionArr = [
+    //     {
+    //       $match : { _id: userCommunities_id, users_id: loginUsers_id }
+    //     },
+    //   ];
+      
+    // }
+    
+    
+    // --------------------------------------------------
+    //   Aggregation
+    // --------------------------------------------------
+    
+    const resultArr = await Schema.aggregate([
+      
+      
+      ...matchConditionArr,
+      
+      
+      // 画像と動画を取得 - トップ画像
+      {
+        $lookup:
+          {
+            from: 'images-and-videos',
+            let: { usersPagesObjImagesAndVideos_id: '$pagesObj.imagesAndVideos_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$_id', '$$usersPagesObjImagesAndVideos_id'] },
+                }
+              },
+              { $project:
+                {
+                  createdDate: 0,
+                  updatedDate: 0,
+                  users_id: 0,
+                  __v: 0,
+                }
+              }
+            ],
+            as: 'imagesAndVideosObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$imagesAndVideosObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // Follows
+      {
+        $lookup:
+          {
+            from: 'follows',
+            let: { users_id: '$_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$users_id', '$$users_id'] },
+                }
+              },
+              // { $project:
+              //   {
+              //     _id: 0,
+              //     approval: 1,
+              //   }
+              // }
+            ],
+            as: 'followsObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$followsObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          exp: 1,
+          pagesObj: 1,
+          followsObj: 1,
+        }
+      },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   
+    // --------------------------------------------------
+    
+    const returnObj = lodashGet(resultArr, [0], {});
+    
+    
+    // --------------------------------------------------
+    //   画像の処理 - 関連するゲーム
+    // --------------------------------------------------
+    
+    // if (returnObj.gamesArr) {
+    //   returnObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+    // }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findOneForUser
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userCommunityID: {green ${userCommunityID}}
+    // `);
+    
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedUcArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedUcArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedGamesArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(formattedGamesArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (err) {
+    
+    throw err;
+    
+  }
+  
+  
+};
+
 
 
 
 /**
- * 検索してデータを取得する / User 用（サムネイル・ハンドルネーム・ステータス）
+ * ◆見直しが必要　検索してデータを取得する / ログインしているユーザーのデータ用（サムネイル・ハンドルネーム・ステータス）
  * @param {Object} localeObj - ロケール
  * @param {Object} conditionObj - 検索条件
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findOneForUser = async ({ localeObj, conditionObj, loginUsers_id }) => {
+const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -1093,6 +1302,7 @@ module.exports = {
   deleteMany,
   
   findOneForUser,
+  findOneForLoginUsersObj,
   findFormatted,
   updateForFollow,
   transactionForCreateAccount,

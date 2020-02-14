@@ -57,6 +57,7 @@ import { validationUsersPagesName } from '../../../../app/@database/users/valida
 // ---------------------------------------------
 
 import Panel from '../../../../app/common/layout/components/panel';
+import ImageAndVideoForm from '../../../../app/common/image-and-video/components/form';
 
 
 
@@ -83,10 +84,13 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [props.userID, 'urSettingsFormPage'];
+    this.pathArr = props.pathArr;
+    // this.pathArr = [props.userID, 'urSettingsFormPage'];
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -101,10 +105,11 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    // this.props.stores.layout.handleButtonEnable({ _id: 'urSettingsFormPage' });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -118,7 +123,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeUrSettings, intl } = this.props;
+    const { stores, storeUrSettings, intl, pathArr } = this.props;
     
     const {
       
@@ -135,8 +140,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
-    // const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'urSettingsFormPage'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -145,7 +149,7 @@ export default injectIntl(class extends React.Component {
     //   Validation User ID
     // --------------------------------------------------
     
-    const userID = lodashGet(dataObj, ['userID'], '');
+    const userID = lodashGet(dataObj, [...pathArr, 'userID'], '');
     const validationUsersUserIDObj = validationUsersUserID({ value: userID });
     
     
@@ -155,7 +159,7 @@ export default injectIntl(class extends React.Component {
     //   Component - Pages Array
     // --------------------------------------------------
     
-    const pagesArr = lodashGet(dataObj, ['pagesArr'], []);
+    const pagesArr = lodashGet(dataObj, [...pathArr, 'pagesObj', 'arr'], []);
     
     // console.log(`
     //   ----- storeUrSettings -----\n
@@ -245,7 +249,7 @@ export default injectIntl(class extends React.Component {
               label="タイトル"
               value={validationUsersPagesNameObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: ['pagesArr', 0, 'name'],
+                pathArr: [...pathArr, 'pagesObj', 'arr', 0, 'name'],
                 value: eventObj.target.value
               })}
               error={validationUsersPagesNameObj.error}
@@ -332,7 +336,6 @@ export default injectIntl(class extends React.Component {
       <Panel
         heading="ユーザーページ設定"
         pathArr={this.pathArr}
-        // defaultExpanded={false}
       >
         
         <p>
@@ -342,13 +345,51 @@ export default injectIntl(class extends React.Component {
         
         
         
+        {/* フォーム */}
         <form>
+          
+          
+          {/* Image Top */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              トップ画像
+            </h3>
+            
+            <p>
+              ユーザーページのトップに表示される大きな画像です。横長の画像（推奨サイズ 1920 x ---）をアップロードしてください。
+            </p>
+            
+            <ImageAndVideoForm
+              pathArr={pathArr}
+              type="urTop"
+              showVideoButton={false}
+              showImageCaption={false}
+              limit={1}
+            />
+            
+          </div>
+          
+          
           
           
           {/* URL */}
           <div
             css={css`
+              border-top: 1px dashed #848484;
               margin: 36px 0 0 0;
+              padding: 24px 0 0 0;
             `}
           >
             
@@ -388,7 +429,7 @@ export default injectIntl(class extends React.Component {
                 label="URL"
                 value={validationUsersUserIDObj.value}
                 onChange={(eventObj) => handleEdit({
-                  pathArr: ['userID'],
+                  pathArr: [...pathArr, 'userID'],
                   value: eventObj.target.value
                 })}
                 error={validationUsersUserIDObj.error}
@@ -409,7 +450,9 @@ export default injectIntl(class extends React.Component {
           {/* Title */}
           <div
             css={css`
-              margin: 48px 0 0 0;
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
             `}
           >
             
@@ -445,7 +488,9 @@ export default injectIntl(class extends React.Component {
             css={css`
               display: flex;
               flex-flow: row wrap;
-              margin: 48px 0 0 0;
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
             `}
           >
             

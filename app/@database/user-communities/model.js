@@ -1071,21 +1071,21 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
     
     
     // --------------------------------------------------
-    //   Format
+    //   
     // --------------------------------------------------
     
     const returnObj = lodashGet(resultArr, [0], {});
     
-    // const ucObj = lodashGet(resultArr, [0], {});
     
-    // const formattedUcArr = formatImagesAndVideosArr({ localeObj, arr: resultArr });
-    // const formattedUcObj = lodashGet(formattedUcArr, [0], {});
+    // --------------------------------------------------
+    //   画像の処理 - 関連するゲーム
+    // --------------------------------------------------
     
-    // const gamesArr = lodashGet(ucObj, ['gamesArr'], []);
-    // const formattedGamesArr = formatImagesAndVideosArr({ localeObj, arr: gamesArr });
+    if (returnObj.gamesArr) {
+      returnObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
+    }
     
-    // const returnObj = formattedUcObj;
-    // returnObj.gamesArr = formattedGamesArr;
+    
     
     
     // --------------------------------------------------

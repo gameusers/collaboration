@@ -99,6 +99,7 @@ export default async (req, res) => {
     
     const { 
       
+      imagesAndVideosObj,
       userID,
       pagesArr,
       
@@ -110,25 +111,40 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
+    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
+    
+    
     
     
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   /pages/api/v2/db/users/upsert-pages.js
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userID: {green ${userID}}
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/users/upsert-pages.js
+    `);
     
-    // console.log(`
-    //   ----- pagesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(pagesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      userID: {green ${userID}}
+    `);
+    
+    console.log(`
+      ----- imagesAndVideosObj -----\n
+      ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- pagesArr -----\n
+      ${util.inspect(pagesArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
     
     
     // ---------------------------------------------
@@ -171,34 +187,46 @@ export default async (req, res) => {
       await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
       
       newPagesArr.push({
+        
         _id: shortid.generate(),
         type: valueObj.type,
         name: valueObj.name,
         language: valueObj.language,
+        
       });
       
     }
     
     
+    
+    
     // --------------------------------------------------
-    //   Find One - Page Transition
+    //   Find One - userID が変更された場合はページを再読み込みする
     // --------------------------------------------------
     
-    let conditionObj = {
-      _id: loginUsers_id
-    };
+    // let conditionObj = {
+    //   _id: loginUsers_id
+    // };
     
-    let docObj = await ModelUsers.findOne({ conditionObj });
+    const docObj = await ModelUsers.findOne({
+      
+      conditionObj: {
+        _id: loginUsers_id
+      }
+      
+    });
     
     if (docObj.userID !== userID) {
       returnObj.pageTransition = true;
     }
     
-    console.log(`
-      ----- docObj -----\n
-      ${util.inspect(docObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docObj -----\n
+    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -207,7 +235,7 @@ export default async (req, res) => {
     
     const ISO8601 = moment().toISOString();
     
-    conditionObj = {
+    const conditionObj = {
       _id: loginUsers_id
     };
     
@@ -215,11 +243,14 @@ export default async (req, res) => {
       $set: {
         updatedDate: ISO8601,
         userID,
-        pagesArr: newPagesArr,
+        pagesObj: {
+          imagesAndVideos_id: '',
+          arr: newPagesArr,
+        }
       }
     };
     
-    await ModelUsers.upsert({ conditionObj, saveObj });
+    // await ModelUsers.upsert({ conditionObj, saveObj });
     
     
     
@@ -237,11 +268,17 @@ export default async (req, res) => {
     //   User Agent: {green ${req.headers['user-agent']}}
     // `);
     
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- conditionObj -----\n
+      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- saveObj -----\n
+      ${util.inspect(saveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

@@ -2054,7 +2054,7 @@ const transactionForUpsert = async ({
     // --------------------------------------------------
     
     await session.commitTransaction();
-    console.log('--------コミット-----------');
+    // console.log('--------コミット-----------');
     
     session.endSession();
     
@@ -2065,41 +2065,41 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- cardPlayersConditionObj -----\n
-      ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- cardPlayersConditionObj -----\n
+    //   ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- cardPlayersSaveObj -----\n
-      ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- cardPlayersSaveObj -----\n
+    //   ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosThumbnailConditionObj -----\n
-      ${util.inspect(imagesAndVideosThumbnailConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosThumbnailConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosThumbnailSaveObj -----\n
-      ${util.inspect(imagesAndVideosThumbnailSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosThumbnailSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -2131,7 +2131,7 @@ const transactionForUpsert = async ({
     // --------------------------------------------------
     
     await session.abortTransaction();
-    console.log('--------ロールバック-----------');
+    // console.log('--------ロールバック-----------');
     
     session.endSession();
     

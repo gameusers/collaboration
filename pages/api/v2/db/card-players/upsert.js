@@ -155,30 +155,30 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // lodashSet(requestParametersObj, ['_id'], _id);
-    // lodashSet(requestParametersObj, ['nameObj'], nameObj);
-    // lodashSet(requestParametersObj, ['statusObj'], statusObj);
-    // lodashSet(requestParametersObj, ['commentObj'], commentObj);
-    // lodashSet(requestParametersObj, ['ageObj'], ageObj);
-    // lodashSet(requestParametersObj, ['sexObj'], sexObj);
-    // lodashSet(requestParametersObj, ['addressObj'], addressObj);
-    // lodashSet(requestParametersObj, ['gamingExperienceObj'], gamingExperienceObj);
-    // lodashSet(requestParametersObj, ['hobbiesObj'], hobbiesObj);
-    // lodashSet(requestParametersObj, ['specialSkillsObj'], specialSkillsObj);
-    // lodashSet(requestParametersObj, ['smartphoneObj'], smartphoneObj);
-    // lodashSet(requestParametersObj, ['tabletObj'], tabletObj);
-    // lodashSet(requestParametersObj, ['pcObj'], pcObj);
-    // lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
-    // lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
-    // lodashSet(requestParametersObj, ['ids_idArr'], []);
-    // lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
-    // lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
-    // lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
-    // lodashSet(requestParametersObj, ['linkArr'], linkArr);
-    // lodashSet(requestParametersObj, ['imagesAndVideos_id'], imagesAndVideos_id);
-    // lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
-    // lodashSet(requestParametersObj, ['imagesAndVideosThumbnail_id'], imagesAndVideosThumbnail_id);
-    // lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
+    lodashSet(requestParametersObj, ['_id'], _id);
+    lodashSet(requestParametersObj, ['nameObj'], nameObj);
+    lodashSet(requestParametersObj, ['statusObj'], statusObj);
+    lodashSet(requestParametersObj, ['commentObj'], commentObj);
+    lodashSet(requestParametersObj, ['ageObj'], ageObj);
+    lodashSet(requestParametersObj, ['sexObj'], sexObj);
+    lodashSet(requestParametersObj, ['addressObj'], addressObj);
+    lodashSet(requestParametersObj, ['gamingExperienceObj'], gamingExperienceObj);
+    lodashSet(requestParametersObj, ['hobbiesObj'], hobbiesObj);
+    lodashSet(requestParametersObj, ['specialSkillsObj'], specialSkillsObj);
+    lodashSet(requestParametersObj, ['smartphoneObj'], smartphoneObj);
+    lodashSet(requestParametersObj, ['tabletObj'], tabletObj);
+    lodashSet(requestParametersObj, ['pcObj'], pcObj);
+    lodashSet(requestParametersObj, ['hardwareActiveObj'], hardwareActiveObj);
+    lodashSet(requestParametersObj, ['hardwareInactiveObj'], hardwareInactiveObj);
+    lodashSet(requestParametersObj, ['ids_idArr'], []);
+    lodashSet(requestParametersObj, ['activityTimeObj'], activityTimeObj);
+    lodashSet(requestParametersObj, ['lookingForFriendsObj'], lookingForFriendsObj);
+    lodashSet(requestParametersObj, ['voiceChatObj'], voiceChatObj);
+    lodashSet(requestParametersObj, ['linkArr'], linkArr);
+    lodashSet(requestParametersObj, ['imagesAndVideos_id'], imagesAndVideos_id);
+    lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
+    lodashSet(requestParametersObj, ['imagesAndVideosThumbnail_id'], imagesAndVideosThumbnail_id);
+    lodashSet(requestParametersObj, ['imagesAndVideosThumbnailObj'], {});
     
     
     

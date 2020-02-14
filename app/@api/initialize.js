@@ -154,36 +154,47 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user1',
-        pagesArr: [
-          {
-            _id: '51WW1NG1r',
-            type: 'top',
-            name: 'マリオのプロフィール',
-            language: 'ja',
-          },
-        ],
+        pagesObj: {
+          imagesAndVideos_id: '',
+          arr: [
+            {
+              _id: '51WW1NG1r',
+              type: 'top',
+              name: 'マリオのプロフィール',
+              language: 'ja',
+            },
+          ],
+        },
+        // pagesArr: [
+        //   {
+        //     _id: '51WW1NG1r',
+        //     type: 'top',
+        //     name: 'マリオのプロフィール',
+        //     language: 'ja',
+        //   },
+        // ],
         loginID: '8OM0dhDak',
         loginPassword: '$2b$10$NsuOPWswqCkJ2STKfbKg/OMXfxdWabz1oy36HKOwRojHJ4S8FPsPS',
         emailObj: {
           value: '38cda58a026a9703cc8f5e8a104d8c88ab32965e4e6aba5e18ca93366c71e7db',// aaa@gameusers.org
           confirmation: true,
         },
-        country: 'JP',
+        countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 999,
-        titleArr: [// これなに？
-          {
-            _id: 'pFJEn_2MO',
-            createdDate: ISO8601,
-            updatedDate: ISO8601,
-            titleID: 'MuK2dKVpn',
-            count: 0,
-          }
-        ],
-        followArr: [],
-        followCount: 0,
-        followedArr: ['P7UJMuUnx'],
-        followedCount: 1,
+        // titleArr: [// これなに？
+        //   {
+        //     _id: 'pFJEn_2MO',
+        //     createdDate: ISO8601,
+        //     updatedDate: ISO8601,
+        //     titleID: 'MuK2dKVpn',
+        //     count: 0,
+        //   }
+        // ],
+        // followArr: [],
+        // followCount: 0,
+        // followedArr: ['P7UJMuUnx'],
+        // followedCount: 1,
         role: 'user'
       },
       
@@ -194,28 +205,24 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user2',
-        pagesArr: [
-          {
-            _id: 'bZiZ-kQjo',
-            type: 'top',
-            name: '',
-            language: 'ja',
-          },
-        ],
+        pagesObj: {
+          imagesAndVideos_id: '',
+          arr: [],
+        },
         loginID: 'enPLLYBBEg3y',
         loginPassword: '$2b$10$.O/ZmfEO2QOV6IRxxmQO1eSRMx8yhL83ISq9z/gyOpTCtbYL3j4B.',
         emailObj: {
           value: '0509b58e75540f35054f9b7acdbf0771ae7151614f805a61fe2556f6fe947e78',// bbb@gameusers.org
           confirmation: false,
         },
-        country: 'JP',
+        countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
-        titleArr: [],
-        followArr: ['jun-deE4J'],
-        followCount: 1,
-        followedArr: [],
-        followedCount: 0,
+        // titleArr: [],
+        // followArr: ['jun-deE4J'],
+        // followCount: 1,
+        // followedArr: [],
+        // followedCount: 0,
         role: 'user'
       },
       
@@ -226,28 +233,24 @@ router.post('/db', upload.none(), async (req, res, next) => {
         updatedDate: ISO8601,
         accessDate: ISO8601,
         userID: 'user3',
-        pagesArr: [
-          {
-            _id: '5UDVe_gui',
-            type: 'top',
-            name: '',
-            language: 'ja',
-          },
-        ],
+        pagesObj: {
+          imagesAndVideos_id: '',
+          arr: [],
+        },
         loginID: 'nzPR7R9GO',
         loginPassword: '$2b$10$.qPAsMTPieChFehxF7TC2OXYWZdek0FKuJPABVxtBPo1UzrpOwZ6.',
         emailObj: {
           value: '',
           confirmation: false,
         },
-        country: 'JP',
+        countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
-        titleArr: [],
-        followArr: [],
-        followCount: 0,
-        followedArr: [],
-        followedCount: 0,
+        // titleArr: [],
+        // followArr: [],
+        // followCount: 0,
+        // followedArr: [],
+        // followedCount: 0,
         role: 'user'
       },
     ];

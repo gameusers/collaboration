@@ -351,21 +351,38 @@ passport.deserializeUser(async (id, done) => {
   //   ログインユーザー情報
   // --------------------------------------------------
   
-  const usersObj = await ModelUsers.findOneForUser({
+  const usersObj = await ModelUsers.findOneForLoginUsersObj({
+    
     localeObj: {},
     conditionObj: { _id: id },
-    loginUsers_id: id
+    loginUsers_id: id,
+    
   });
   
-  let loginUsersObj = usersObj[id];
+  const loginUsersObj = usersObj[id];
   loginUsersObj._id = id;
   
-  // console.log(`\n---------- loginUsersObj ----------\n`);
-  // console.dir(JSON.parse(JSON.stringify(loginUsersObj)));
-  // console.log(`\n-----------------------------------\n`);
-  
-  
   done(null, loginUsersObj);
+  
+  
+  
+  // const usersObj = await ModelUsers.findOne({
+    
+  //   conditionObj: {
+  //     _id: id,
+  //     // loginUsers_id: id,
+  //   },
+    
+  // });
+  
+  // // console.log(`
+  // //   ----- usersObj -----\n
+  // //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+  // //   --------------------\n
+  // // `);
+  
+  
+  // done(null, usersObj);
   
   
 });

@@ -143,10 +143,18 @@ export default async (req, res) => {
     //   users_id を取得するために利用
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOne({
-      conditionObj: {
-        userID,
-      }
+    // const usersObj = await ModelUsers.findOne({
+    //   conditionObj: {
+    //     userID,
+    //   }
+    // });
+    
+    const usersObj = await ModelUsers.findOneForUser({
+      
+      localeObj,
+      loginUsers_id,
+      userID,
+      
     });
     
     const users_id = lodashGet(usersObj, ['_id'], '');
@@ -163,7 +171,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   違うユーザーの設定ページにアクセスした場合はエラー
+    //   他のユーザーの設定ページにアクセスした場合はエラー
     // --------------------------------------------------
     
     if (users_id !== loginUsers_id) {
@@ -188,50 +196,12 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   userID
+    //   pagesObj
     // --------------------------------------------------
     
-    // returnObj.userID = lodashGet(usersObj, ['userID'], '');
+    returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], {});
     
     
-    // --------------------------------------------------
-    //   pagesArr
-    // --------------------------------------------------
-    
-    returnObj.pagesArr = lodashGet(usersObj, ['pagesArr'], []);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Card Players
-    //   アクセスしたページ所有者のプレイヤーカード情報
-    // --------------------------------------------------
-    
-    // const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
-    //   localeObj,
-    //   users_id,
-    //   loginUsers_id
-    // });
-    
-    // returnObj.cardPlayersObj = cardPlayersObj;
-    
-    
-    // // --------------------------------------------------
-    // //   カードを一覧で表示するための配列を作成する
-    // // --------------------------------------------------
-    
-    // const cardPlayersKeysArr = Object.keys(cardPlayersObj);
-    
-    // if (cardPlayersKeysArr.length > 0) {
-    //   returnObj.cardsArr.push({
-    //     cardPlayers_id: cardPlayersKeysArr[0]
-    //   });
-    // }
     
     
     // --------------------------------------------------

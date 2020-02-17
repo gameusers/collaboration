@@ -61,9 +61,10 @@ const { validationType } = require('../../@database/images-and-videos/validation
  * @param {string} ISO8601 - 日時
  * @param {number} minSize - 画像の最小サイズ指定
  * @param {boolean} square - 正方形にする場合 true
+ * @param {boolean} heroImage - ヒーローイメージをアップロードする場合 true
  * @return {Object} 画像＆動画情報の入ったオブジェクト
  */
-const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minSize, square }) => {
+const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minSize, square, heroImage = false }) => {
   
   
   // ---------------------------------------------
@@ -82,7 +83,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
   const oldArr = lodashGet(oldObj, ['arr'], []);
   
   
-  if (Object.keys(oldObj).length !== 0) {
+  if (oldObj && Object.keys(oldObj).length !== 0) {
     
     _id = lodashGet(oldObj, ['_id'], '');
     createdDate = lodashGet(oldObj, ['createdDate'], ISO8601);
@@ -368,6 +369,48 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
       // ---------------------------------------------
       
       const srcSetArr = [];
+      let longSideArr = [800];
+      
+      
+      if (heroImage) {
+        
+        longSideArr = [320, 480, 640, 800, 1920];
+        
+        if (width < 480) {
+          
+          longSideArr = [320];
+          
+        } else if (width < 640) {
+          
+          longSideArr = [320, 480];
+          
+        } else if (width < 800) {
+          
+          longSideArr = [320, 480, 640];
+          
+        } else if (width < 960) {
+          
+          longSideArr = [320, 480, 640, 800];
+          
+        }
+        
+      } else {
+        
+        if (width < 480) {
+          
+          longSideArr = [320];
+          
+        } else if (width < 640) {
+          
+          longSideArr = [480];
+          
+        } else if (width < 800) {
+          
+          longSideArr = [640];
+          
+        }
+        
+      }
       
       // let longSideArr = [320, 480, 640, 800];
       
@@ -385,21 +428,7 @@ const formatAndSave = async ({ newObj, oldObj = {}, loginUsers_id, ISO8601, minS
         
       // }
       
-      let longSideArr = [800];
       
-      if (width < 480) {
-        
-        longSideArr = [320];
-        
-      } else if (width < 640) {
-        
-        longSideArr = [480];
-        
-      } else if (width < 800) {
-        
-        longSideArr = [640];
-        
-      }
       
       
       for (let longSide of longSideArr.values()) {

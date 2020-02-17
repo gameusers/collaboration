@@ -15,6 +15,7 @@ const util = require('util');
 // ---------------------------------------------
 
 const lodashGet = require('lodash/get');
+const lodashSet = require('lodash/set');
 
 
 // ---------------------------------------------
@@ -24,13 +25,20 @@ const lodashGet = require('lodash/get');
 const Schema = require('./schema');
 const SchemaEmailConfirmations = require('../email-confirmations/schema');
 const SchemaCardPlayers = require('../card-players/schema');
+const SchemaImagesAndVideos = require('../images-and-videos/schema');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr } = require('../../@format/image');
+// const { formatImagesAndVideosArr } = require('../../@format/image');
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
 
@@ -330,9 +338,13 @@ const findOneForUser = async ({
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     
-    // console.log(chalk`
-    //   userID: {green ${userID}}
-    // `);
+    console.log(chalk`
+      userID: {green ${userID}}
+      language: {green ${language}}
+      country: {green ${country}}
+    `);
+    
+    
     // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
@@ -364,7 +376,45 @@ const findOneForUser = async ({
       ...matchConditionArr,
       
       
-      // 画像と動画を取得 - トップ画像
+      // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+      {
+        $lookup:
+          {
+            from: 'card-players',
+            let: { users_id: '$_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $and:
+                    [
+                      { $eq: ['$language', language] },
+                      { $eq: ['$users_id', '$$users_id'] },
+                    ]
+                  },
+                }
+              },
+              
+              
+              { $project:
+                {
+                  name: '$nameObj.value',
+                  status: '$statusObj.value',
+                }
+              }
+            ],
+            as: 'cardPlayersObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$cardPlayersObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      // 画像と動画を取得 - pagesObj トップ画像
       {
         $lookup:
           {
@@ -385,13 +435,13 @@ const findOneForUser = async ({
                 }
               }
             ],
-            as: 'imagesAndVideosObj'
+            as: 'pagesImagesAndVideosObj'
           }
       },
       
       {
         $unwind: {
-          path: '$imagesAndVideosObj',
+          path: '$pagesImagesAndVideosObj',
           preserveNullAndEmptyArrays: true,
         }
       },
@@ -409,12 +459,6 @@ const findOneForUser = async ({
                   { $eq: ['$users_id', '$$users_id'] },
                 }
               },
-              // { $project:
-              //   {
-              //     _id: 0,
-              //     approval: 1,
-              //   }
-              // }
             ],
             as: 'followsObj'
           }
@@ -430,8 +474,12 @@ const findOneForUser = async ({
       
       { $project:
         {
+          // _id: 1,
           exp: 1,
+          cardPlayersObj: 1,
           pagesObj: 1,
+          // pagesArr: '$pagesObj.arr',
+          pagesImagesAndVideosObj: 1,
           followsObj: 1,
         }
       },
@@ -447,15 +495,85 @@ const findOneForUser = async ({
     // --------------------------------------------------
     
     const returnObj = lodashGet(resultArr, [0], {});
+    const headerObj = {};
     
     
     // --------------------------------------------------
-    //   画像の処理 - 関連するゲーム
+    //   画像の処理
     // --------------------------------------------------
     
-    // if (returnObj.gamesArr) {
-    //   returnObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
-    // }
+    if (returnObj.pagesImagesAndVideosObj) {
+      
+      lodashSet(returnObj, ['pagesObj', 'imagesAndVideosObj'], returnObj.pagesImagesAndVideosObj);
+      delete returnObj.pagesObj.imagesAndVideos_id;
+      
+      const pagesImagesAndVideosObj = formatImagesAndVideosObj({ obj: returnObj.pagesImagesAndVideosObj });
+      lodashSet(headerObj, ['imagesAndVideosObj'], pagesImagesAndVideosObj);
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   follow
+    // --------------------------------------------------
+    
+    headerObj.exp = lodashGet(returnObj, ['exp'], 0);
+    headerObj.followCount = lodashGet(returnObj, ['followsObj', 'followCount'], 0);
+    headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
+    
+    headerObj.author = false;
+    headerObj.follow = false;
+    headerObj.followApproval = false;
+    headerObj.followBlocked = false;
+    
+    if (loginUsers_id) {
+      
+      const _id = lodashGet(returnObj, ['_id'], '');
+      const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
+      const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
+      const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
+      
+      if (_id === loginUsers_id) {
+        headerObj.author = true;
+      }
+      
+      if (followedArr.includes(loginUsers_id)) {
+        headerObj.follow = true;
+      }
+      
+      if (approvalArr.includes(loginUsers_id)) {
+        headerObj.followApproval = true;
+      }
+      
+      if (blockArr.includes(loginUsers_id)) {
+        headerObj.followBlocked = true;
+      }
+      
+    }
+    
+    
+    // --------------------------------------------------
+    //   headerObj
+    // --------------------------------------------------
+    
+    headerObj.users_id = returnObj._id;
+    headerObj.type = 'ur';
+    // headerObj.createdDate = returnObj.createdDate;
+    headerObj.name = lodashGet(returnObj, ['cardPlayersObj', 'name'], '');
+    headerObj.status = lodashGet(returnObj, ['cardPlayersObj', 'status'], '');
+    headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
+    // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
+    
+    returnObj.headerObj = headerObj;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   delete
+    // --------------------------------------------------
+    
+    delete returnObj.pagesImagesAndVideosObj;
     
     
     
@@ -464,10 +582,10 @@ const findOneForUser = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/users/model.js - findOneForUser
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/users/model.js - findOneForUser
+    `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -480,17 +598,11 @@ const findOneForUser = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- formattedUcArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedUcArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- formattedGamesArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(formattedGamesArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // --------------------------------------------------
@@ -1288,6 +1400,186 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
 
 
 
+
+
+/**
+ * Transaction 挿入 / 更新する
+ * ユーザーと画像＆動画を同時に更新する
+ * 
+ * @param {Object} usersConditionObj - DB users 検索条件
+ * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @return {Object} 
+ */
+const transactionForUpsert = async ({
+  
+  usersConditionObj,
+  usersSaveObj,
+  imagesAndVideosConditionObj = {},
+  imagesAndVideosSaveObj = {},
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await Schema.startSession();
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Users
+    // --------------------------------------------------
+    
+    await Schema.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Images And Videos - メイン画像
+    // --------------------------------------------------
+    
+    if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画を削除する
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
+        
+        
+      // --------------------------------------------------
+      //   画像＆動画を保存
+      // --------------------------------------------------
+        
+      } else {
+        
+        await SchemaImagesAndVideos.updateOne(imagesAndVideosConditionObj, imagesAndVideosSaveObj, { session, upsert: true });
+        
+      }
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -1307,5 +1599,6 @@ module.exports = {
   updateForFollow,
   transactionForCreateAccount,
   transactionForEditAccount,
+  transactionForUpsert,
   
 };

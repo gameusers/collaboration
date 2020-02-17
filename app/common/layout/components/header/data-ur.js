@@ -36,7 +36,7 @@ import IconButton from '@material-ui/core/IconButton';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import Avatar from '@material-ui/core/Avatar';
+import IconHealing from '@material-ui/icons/Healing';
 import IconKeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
 import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 
@@ -45,7 +45,7 @@ import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 //   Components
 // ---------------------------------------------
 
-import FollowButton from '../../../follow/components/uc-button';
+import FollowButton from '../../../follow/components/ur-button';
 
 
 
@@ -55,44 +55,10 @@ import FollowButton from '../../../follow/components/uc-button';
 //   https://emotion.sh/docs/composition
 // --------------------------------------------------
 
-const cssTitleBox = css`
-  display: flex;
-  flex-flow: row nowrap;
-  margin: 0 0 2px 0;
-  padding: 0 6px 4px 10px;
-  border-bottom: #d51a53 solid 1px;
-`;
-
 const cssInfo = css`
-  padding: 6px 20px 0;
+  padding: 6px 6px 0 20px;
   font-size: 12px;
   line-height: 1.4em;
-`;
-
-
-// --------------------------------------------------
-//   Opened
-// --------------------------------------------------
-
-const cssTitle = css`
-  flex-grow: 2;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.4em;
-  margin: 6px 0 0 0;
-`;
-
-
-// --------------------------------------------------
-//   Closed
-// --------------------------------------------------
-
-const cssTitleClosed = css`
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.4em;
-  margin: 0;
-  padding: 4px 4px 4px 10px;
 `;
 
 
@@ -141,50 +107,65 @@ export default class extends React.Component {
     const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
     
     const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
-    const createdDate = moment(lodashGet(stores, ['data', 'headerObj', 'createdDate'], '')).format('YYYY/MM/DD');
+    const status = lodashGet(stores, ['data', 'headerObj', 'status'], '');
     
-    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followedCount'], 1);
+    const exp = lodashGet(stores, ['data', 'headerObj', 'exp'], 0);
+    const level = Math.floor(exp / 10);
+    const followCount = lodashGet(stores, ['data', 'headerObj', 'followCount'], 0);
+    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followedCount'], 0);
     
     
     
     
     // --------------------------------------------------
-    //   関連するゲーム
+    //   Component - Name
     // --------------------------------------------------
     
-    const gamesArr = lodashGet(stores, ['data', 'headerObj', 'gamesArr'], []);
+    let componentName = '';
     
-    
-    const codeGames = [];
-    
-    for (const [index, valueObj] of gamesArr.entries()) {
-      
-      const src = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'src'], '/img/common/thumbnail/none-game.jpg');
-      const srcSet = lodashGet(valueObj, ['imagesAndVideosObj', 'arr', 0, 'srcSet'], '');
-      
-      codeGames.push(
-        <Avatar
+    componentName =
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+        `}
+      >
+        
+        <div
+          css={css`
+            font-size: 14px;
+            margin: 0 2px 0 0;
+          `}
+        >
+          {name}
+        </div>
+        
+        <IconHealing
           css={css`
             && {
-              width: 24px;
-              height: 24px;
-              margin: 0 4px;
+              font-size: 18px;
+              margin: 0 2px 0 0;
             }
           `}
-          key={index}
-          alt={valueObj.name}
-          src={src}
-          srcSet={srcSet}
         />
-      );
-      
-    }
+        
+        <div
+          css={css`
+            font-size: 14px;
+            margin: 0 2px 0 0;
+          `}
+        >
+          {status}
+        </div>
+        
+      </div>
+    ;
     
     
     
     
     // --------------------------------------------------
-    //   Component
+    //   Component - Data
     // --------------------------------------------------
     
     let componentData = '';
@@ -212,9 +193,29 @@ export default class extends React.Component {
           `}
         >
           
-          <div css={cssTitleBox}>
+          
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row nowrap;
+              margin: 0 0 2px 0;
+              padding: 0 6px 4px 10px;
+              border-bottom: #d51a53 solid 1px;
+            `}
+          >
             
-            <div css={cssTitle}>{name}</div>
+            <div
+              css={css`
+                flex-grow: 2;
+                font-size: 14px;
+                font-weight: normal;
+                line-height: 1.4em;
+                margin: 6px 0 0 0;
+              `}
+            >
+              {componentName}
+            </div>
+            
             
             <IconButton
               css={css`
@@ -237,18 +238,16 @@ export default class extends React.Component {
           </div>
           
           
-          <p css={cssInfo}>開設日 | {createdDate}</p>
-          <p css={cssInfo}>メンバー | {followedCount}人</p>
-          
+          <p css={cssInfo}>Lv. {level}</p>
           
           <div
             css={css`
               display: flex;
               flex-flow: row wrap;
-              margin: 8px 8px 2px;
             `}
           >
-            {codeGames}
+            <p css={cssInfo}>フォロー {followCount}人</p>
+            <p css={cssInfo}>フォロワー {followedCount}人</p>
           </div>
           
           
@@ -287,7 +286,19 @@ export default class extends React.Component {
           `}
         >
           
-          <div css={cssTitleClosed}>{name}</div>
+          
+          <div
+            css={css`
+              font-size: 14px;
+              font-weight: normal;
+              line-height: 1.4em;
+              margin: 0;
+              padding: 4px 4px 4px 10px;
+            `}
+          >
+            {componentName}
+          </div>
+          
           
           <IconButton
             css={css`
@@ -306,6 +317,7 @@ export default class extends React.Component {
           >
             <IconKeyboardArrowDown />
           </IconButton>
+          
           
         </div>
       ;

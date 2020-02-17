@@ -47,6 +47,7 @@ import initStoreRoot from '../../../app/@stores/root';
 import initStoreUrSettings from '../../../app/ur/settings/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
+import initStoreFollow from '../../../app/common/follow/stores/store';
 
 
 // ---------------------------------------------
@@ -79,6 +80,7 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeUrSettings = initStoreUrSettings({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({ propsObj });
+  const storeFollow = initStoreFollow({});
   
   
   // --------------------------------------------------
@@ -90,6 +92,7 @@ const getOrCreateStore = ({ propsObj }) => {
     storeUrSettings,
     storeImageAndVideo,
     storeImageAndVideoForm,
+    storeFollow,
     
   };
   
@@ -159,7 +162,7 @@ export default class extends React.Component {
     let propsObj = lodashGet(resultObj, ['data'], {});
     
     const loginUsers_id = lodashGet(resultObj, ['data', 'loginUsersObj', '_id'], '');
-    const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
+    const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], {});
     const imagesAndVideosObj = lodashGet(resultObj, ['data', 'pagesObj', 'imagesAndVideosObj'], {});
     
     
@@ -421,7 +424,7 @@ export default class extends React.Component {
               
               
               {/* プレイヤーページ設定 */}
-              <FormPage userID={this.props.userID} pathArr={this.props.pathArr} />
+              <FormPage pathArr={this.props.pathArr} />
               
               
               {/* アカウント編集 */}

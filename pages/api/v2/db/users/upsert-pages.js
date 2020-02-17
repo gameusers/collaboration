@@ -25,6 +25,7 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
+const ModelImagesAndVideos = require('../../../../../app/@database/images-and-videos/model');
 
 
 // ---------------------------------------------
@@ -34,6 +35,7 @@ const ModelUsers = require('../../../../../app/@database/users/model');
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
+const { formatAndSave } = require('../../../../../app/@modules/image/save');
 
 
 // ---------------------------------------------
@@ -204,11 +206,7 @@ export default async (req, res) => {
     //   Find One - userID が変更された場合はページを再読み込みする
     // --------------------------------------------------
     
-    // let conditionObj = {
-    //   _id: loginUsers_id
-    // };
-    
-    const docObj = await ModelUsers.findOne({
+    const docUsersObj = await ModelUsers.findOne({
       
       conditionObj: {
         _id: loginUsers_id
@@ -216,15 +214,93 @@ export default async (req, res) => {
       
     });
     
-    if (docObj.userID !== userID) {
+    if (docUsersObj.userID !== userID) {
       returnObj.pageTransition = true;
     }
     
     // console.log(`
-    //   ----- docObj -----\n
-    //   ${util.inspect(docObj, { colors: true, depth: null })}\n
+    //   ----- docUsersObj -----\n
+    //   ${util.inspect(docUsersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   メイン画像を保存する
+    // --------------------------------------------------
+    
+    let imagesAndVideosConditionObj = {};
+    let imagesAndVideosSaveObj = {};
+    let imagesAndVideos_id = lodashGet(docUsersObj, ['pagesObj', 'imagesAndVideos_id'], '');
+    
+    if (imagesAndVideosObj) {
+      
+      
+      // --------------------------------------------------
+      //   現在の画像データを取得する
+      // --------------------------------------------------
+      
+      const oldImagesAndVideosObj = await ModelImagesAndVideos.findOne({
+        
+        conditionObj: {
+          _id: imagesAndVideos_id,
+          users_id: loginUsers_id,
+        }
+        
+      });
+      
+      
+      // --------------------------------------------------
+      //   保存する
+      // --------------------------------------------------
+      
+      const formatAndSaveObj = await formatAndSave({
+        
+        newObj: imagesAndVideosObj,
+        oldObj: oldImagesAndVideosObj,
+        loginUsers_id,
+        ISO8601,
+        heroImage: true,
+        
+      });
+      
+      imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   画像＆動画がすべて削除されている場合は、newImagesAndVideos_id を空にする
+      // --------------------------------------------------
+      
+      const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
+      
+      if (arr.length === 0) {
+        imagesAndVideos_id = '';
+      } else {
+        imagesAndVideos_id = lodashGet(imagesAndVideosSaveObj, ['_id'], '');
+      }
+      
+      
+      // --------------------------------------------------
+      //   imagesAndVideosConditionObj
+      // --------------------------------------------------
+      
+      imagesAndVideosConditionObj = {
+        _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
+      };
+      
+      
+    }
     
     
     
@@ -233,24 +309,29 @@ export default async (req, res) => {
     //   Update
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
-    
-    const conditionObj = {
+    const usersConditionObj = {
       _id: loginUsers_id
     };
     
-    const saveObj = {
+    const usersSaveObj = {
       $set: {
         updatedDate: ISO8601,
         userID,
         pagesObj: {
-          imagesAndVideos_id: '',
+          imagesAndVideos_id,
           arr: newPagesArr,
         }
       }
     };
     
-    // await ModelUsers.upsert({ conditionObj, saveObj });
+    await ModelUsers.transactionForUpsert({
+      
+      usersConditionObj,
+      usersSaveObj,
+      imagesAndVideosConditionObj,
+      imagesAndVideosSaveObj,
+      
+    });
     
     
     
@@ -268,17 +349,29 @@ export default async (req, res) => {
     //   User Agent: {green ${req.headers['user-agent']}}
     // `);
     
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

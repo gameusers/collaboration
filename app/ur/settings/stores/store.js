@@ -665,11 +665,11 @@ class Store {
       //   Page Transition / URLを変更した場合にリロードする
       // ---------------------------------------------
       
-      // const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
       
-      // if (pageTransition) {
-      //   window.location.href = `${process.env.URL_BASE}ur/${userID}/settings`;
-      // }
+      if (pageTransition) {
+        window.location.href = `${process.env.URL_BASE}ur/${userID}/settings`;
+      }
       
       
     } catch (errorObj) {

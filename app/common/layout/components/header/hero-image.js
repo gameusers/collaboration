@@ -28,6 +28,7 @@ import { css, jsx } from '@emotion/core';
 
 import DataGc from './data-gc';
 import DataUc from './data-uc';
+import DataUr from './data-ur';
 
 
 
@@ -70,12 +71,33 @@ export default class extends React.Component {
     //   Data
     // --------------------------------------------------
     
-    // const login = lodashGet(stores, ['data', 'login'], false);
-    
     const type = lodashGet(stores, ['data', 'headerObj', 'type'], 'gc');
     const imagesAndVideosObj = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj'], {});
     
     const thumbnailArr = lodashGet(stores, ['data', 'headerObj', 'imagesAndVideosObj', 'thumbnailArr'], []);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Data
+    // --------------------------------------------------
+    
+    let componentData = '';
+    
+    if (type === 'gc') {
+      
+      componentData = <DataGc heroImage={true} />;
+      
+    } else if (type === 'uc') {
+      
+      componentData = <DataUc />;
+      
+    } else {
+      
+      componentData = <DataUr />
+      
+    }
     
     
     
@@ -136,11 +158,7 @@ export default class extends React.Component {
             width={width}
           />
           
-          {type === 'gc' ? (
-            <DataGc heroImage={true} />
-          ) : (
-            <DataUc />
-          )}
+          {componentData}
           
         </div>
       ;

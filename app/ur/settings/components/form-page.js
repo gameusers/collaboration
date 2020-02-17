@@ -373,7 +373,7 @@ export default injectIntl(class extends React.Component {
             
             <ImageAndVideoForm
               pathArr={pathArr}
-              type="urTop"
+              type="user"
               showVideoButton={false}
               showImageCaption={false}
               limit={1}

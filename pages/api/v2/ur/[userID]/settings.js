@@ -16,6 +16,7 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
@@ -78,9 +79,7 @@ export default async (req, res) => {
   //   Property
   // --------------------------------------------------
   
-  const returnObj = {
-    cardsArr: [],
-  };
+  const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
@@ -103,17 +102,6 @@ export default async (req, res) => {
     } = bodyObj;
     
     lodashSet(requestParametersObj, ['userID'], userID);
-    
-    // console.log(chalk`
-    //   /pages/api/v2/ur/[userID]/settings.js
-    //   userID: {green ${userID}}
-    // `);
-    
-    // console.log(`
-    //   ----- req.body -----\n
-    //   ${util.inspect(req.body, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -142,12 +130,6 @@ export default async (req, res) => {
     //   アクセスしたページ所有者のユーザー情報
     //   users_id を取得するために利用
     // --------------------------------------------------
-    
-    // const usersObj = await ModelUsers.findOne({
-    //   conditionObj: {
-    //     userID,
-    //   }
-    // });
     
     const usersObj = await ModelUsers.findOneForUser({
       
@@ -195,6 +177,19 @@ export default async (req, res) => {
     
     
     
+    // ---------------------------------------------
+    //   headerObj
+    // ---------------------------------------------
+    
+    if (lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
+      returnObj.headerObj = usersObj.headerObj;
+    }
+    
+    // delete usersObj.headerObj;
+    
+    
+    
+    
     // --------------------------------------------------
     //   pagesObj
     // --------------------------------------------------
@@ -204,9 +199,19 @@ export default async (req, res) => {
     
     
     
+    
+    
+    
+    
+    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/ur/[userID]/settings.js
+    // `);
     
     // console.log(chalk`
     //   {green ur/player/api/player / initial-props}
@@ -223,12 +228,6 @@ export default async (req, res) => {
     // console.log(`
     //   ----- usersObj -----\n
     //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- cardPlayersObj -----\n
-    //   ${util.inspect(cardPlayersObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

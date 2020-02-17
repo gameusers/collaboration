@@ -16,6 +16,7 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
+const lodashHas = require('lodash/has');
 
 
 // ---------------------------------------------
@@ -119,10 +120,18 @@ export default async (req, res) => {
     //   users_id を取得するために利用
     // --------------------------------------------------
     
-    const usersObj = await ModelUsers.findOne({
-      conditionObj: {
-        userID,
-      }
+    // const usersObj = await ModelUsers.findOne({
+    //   conditionObj: {
+    //     userID,
+    //   }
+    // });
+    
+    const usersObj = await ModelUsers.findOneForUser({
+      
+      localeObj,
+      loginUsers_id,
+      userID,
+      
     });
     
     
@@ -131,11 +140,19 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const users_id = lodashGet(usersObj, ['_id'], '');
-    // returnObj.users_id = users_id;
     
     if (!users_id) {
       statusCode = 404;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
+    }
+    
+    
+    // ---------------------------------------------
+    //   headerObj
+    // ---------------------------------------------
+    
+    if (lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
+      returnObj.headerObj = usersObj.headerObj;
     }
     
     

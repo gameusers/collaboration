@@ -44,6 +44,7 @@ import initStoreIDForm from '../../../app/common/id/stores/form';
 import initStoreGameForm from '../../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
+import initStoreFollow from '../../../app/common/follow/stores/store';
 
 
 // ---------------------------------------------
@@ -78,6 +79,7 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeGameForm = initStoreGameForm({});
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  const storeFollow = initStoreFollow({});
   
   
   // --------------------------------------------------
@@ -92,6 +94,7 @@ const getOrCreateStore = ({ propsObj }) => {
     storeGameForm,
     storeImageAndVideo,
     storeImageAndVideoForm,
+    storeFollow,
     
   };
   

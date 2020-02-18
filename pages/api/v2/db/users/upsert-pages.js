@@ -120,35 +120,6 @@ export default async (req, res) => {
     
     
     
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/users/upsert-pages.js
-    `);
-    
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      userID: {green ${userID}}
-    `);
-    
-    console.log(`
-      ----- imagesAndVideosObj -----\n
-      ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    console.log(`
-      ----- pagesArr -----\n
-      ${util.inspect(pagesArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
-    
-    
-    
-    
     // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
@@ -246,7 +217,7 @@ export default async (req, res) => {
     
     if (imagesAndVideosObj) {
       
-      
+      // console.log('aaa');
       // --------------------------------------------------
       //   現在の画像データを取得する
       // --------------------------------------------------
@@ -300,6 +271,13 @@ export default async (req, res) => {
       };
       
       
+      // --------------------------------------------------
+      //   ページを再読み込みする
+      // --------------------------------------------------
+      
+      returnObj.pageTransition = true;
+      
+      
     }
     
     
@@ -340,13 +318,26 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/users/upsert-pages.js
+    // `);
+    
     // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   forumThreads_id: {green ${forumThreads_id}}
-    //   name: {green ${name} / ${typeof name}}
-    //   comment: {green ${comment} / ${typeof comment}}
-    //   IP: {green ${req.ip}}
-    //   User Agent: {green ${req.headers['user-agent']}}
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   userID: {green ${userID}}
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- pagesArr -----\n
+    //   ${util.inspect(pagesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`

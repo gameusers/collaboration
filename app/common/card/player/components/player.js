@@ -58,9 +58,24 @@ import ActivityTime from './activity-time';
 import LookingForFriend from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import Link from './link';
-import FollowButton from './follow-button';
+// import FollowButton from './follow-button';
 import EditButton from './edit-button';
 import FormPlayer from './form/player';
+import FollowButton from '../../../follow/components/ur-button';
+
+
+
+
+// --------------------------------------------------
+//   Emotion
+//   https://emotion.sh/docs/composition
+// --------------------------------------------------
+
+const cssFollowButton = css`
+  border-top: 1px dashed #A4A4A4;
+  margin: 24px 0 0 0;
+  padding: 24px 0 0 0;
+`;
 
 
 
@@ -319,13 +334,28 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Follow
+    // --------------------------------------------------
+    
+    const followsObj = lodashGet(cardPlayersObj, ['followsObj'], {});
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/card/player/components/player.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/common/card/player/components/player.js
+    `);
+    
+    console.log(`
+      ----- cardPlayersObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(cardPlayersObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(chalk`
     //   formOpen: {green ${formOpen}}
@@ -530,14 +560,24 @@ export default class extends React.Component {
                 
                 
                 {/* フォローボタン */}
-                {showFollow &&
+                {/*{showFollow &&
                   <FollowButton
                     pathArr={this.pathArr}
                     users_id={users_id}
                     followedCount={followedCount}
                     followed={followed}
                   />
-                }
+                }*/}
+                
+                
+                {/* Follow Button */}
+                <FollowButton
+                  cssEmotion={cssFollowButton}
+                  size="medium"
+                  users_id={users_id}
+                  followsObj={followsObj}
+                />
+                
                 
                 
                 {/* 編集ボタン */}

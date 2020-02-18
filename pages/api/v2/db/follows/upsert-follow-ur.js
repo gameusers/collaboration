@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
@@ -25,7 +24,7 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelFollows = require('../../../../../app/@database/follows/model');
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
+// const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 
 
 // ---------------------------------------------
@@ -42,23 +41,13 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-// const { validationBoolean } = require('../../../../../app/@validations/boolean');
-const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../../../../../app/@locales/locale');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: s1HXpHkXW
+//   endpointID: q4zqhmELq
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -69,15 +58,6 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   let statusCode = 400;
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
   
   
   // --------------------------------------------------
@@ -102,8 +82,6 @@ export default async (req, res) => {
     
     const { 
       
-      gameCommunities_id,
-      userCommunities_id,
       users_id,
       
     } = bodyObj;
@@ -114,8 +92,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
-    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['users_id'], users_id);
     
     
@@ -134,18 +110,7 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FE6LK-sP4', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   必要なデータチェック
-    // --------------------------------------------------
-    
-    if (!gameCommunities_id && !userCommunities_id && !users_id) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'lK_FPWyJk', messageID: '1YJnibkmh' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PqgFA9jl8', messageID: 'xLLNIpo6a' }] });
     }
     
     
@@ -156,73 +121,16 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
+    await validationUsers_idServer({ throwError: true, value: users_id });
     
     
-    // ---------------------------------------------
-    //   - ゲームコミュニティ
-    // ---------------------------------------------
-    
-    if (gameCommunities_id) {
-      await validationGameCommunities_idServer({ throwError: true, value: gameCommunities_id });
-    }
     
     
-    // ---------------------------------------------
-    //   - ユーザーコミュニティ
-    // ---------------------------------------------
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
     
-    let communityType = 'open' ;
-    
-    if (userCommunities_id) {
-      
-      await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
-      
-      
-      // --------------------------------------------------
-      //   自分のコミュニティを抜けようとした場合はエラー
-      // --------------------------------------------------
-      
-      const resultUserCommunitiesObj = await ModelUserCommunities.findOne({ conditionObj: {
-        _id: userCommunities_id
-      }});
-      
-      if (resultUserCommunitiesObj.users_id === loginUsers_id) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'y8knFdqtD', messageID: 'qnWsuPcrJ' }] });
-      }
-      
-      
-      // --------------------------------------------------
-      //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
-      // --------------------------------------------------
-      
-      communityType = lodashGet(resultUserCommunitiesObj, ['communityType'], 'open');
-      
-      // if (communityType === 'closed') {
-      //   returnObj.pageTransition = true;
-      // }
-      
-      // console.log(chalk`
-      //   resultUserCommunitiesObj.users_id: {green ${resultUserCommunitiesObj.users_id}}
-      //   loginUsers_id: {green ${loginUsers_id}}
-      //   communityType: {green ${communityType}}
-      // `);
-      
-      // console.log(`
-      //   ----- resultUserCommunitiesObj -----\n
-      //   ${util.inspect(resultUserCommunitiesObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-    }
-    
-    
-    // ---------------------------------------------
-    //   - ユーザー
-    // ---------------------------------------------
-    
-    if (users_id) {
-      await validationUsers_idServer({ throwError: true, value: users_id });
-    }
+    const ISO8601 = moment().toISOString();
     
     
     
@@ -231,30 +139,33 @@ export default async (req, res) => {
     //   データ取得
     // --------------------------------------------------
     
-    const conditionObj = {};
+    const followsConditionObj = {
+      users_id,
+    };
     
-    if (gameCommunities_id) {
-      
-      conditionObj.gameCommunities_id = gameCommunities_id;
-      
-    } else if (userCommunities_id) {
-      
-      conditionObj.userCommunities_id = userCommunities_id;
-      
-    } else {
-      
-      conditionObj.users_id = users_id;
-      
-    }
-    
-    const resultObj = await ModelFollows.findOne({ conditionObj });
+    const resultObj = await ModelFollows.findOne({ conditionObj: followsConditionObj });
     
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    const followsSelfConditionObj = {
+      users_id: loginUsers_id
+    };
+    
+    const resultSelfObj = await ModelFollows.findOne({ conditionObj: followsSelfConditionObj });
+    
+    
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- resultSelfObj -----\n
+    //   ${util.inspect(resultSelfObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -265,9 +176,12 @@ export default async (req, res) => {
     let followedCount = lodashGet(resultObj, ['followedCount'], 1);
     let approvalArr = lodashGet(resultObj, ['approvalArr'], []);
     let approvalCount = lodashGet(resultObj, ['approvalCount'], 0);
-    let blockArr = lodashGet(resultObj, ['blockArr'], []);
+    const blockArr = lodashGet(resultObj, ['blockArr'], []);
     
     const approval = lodashGet(resultObj, ['approval'], false);
+    
+    let followSelfArr = lodashGet(resultSelfObj, ['followArr'], []);
+    let followSelfCount = lodashGet(resultSelfObj, ['followCount'], 1);
     
     
     
@@ -281,23 +195,35 @@ export default async (req, res) => {
     }
     
     
+    
+    
     // ---------------------------------------------
     //   - 承認制
     // ---------------------------------------------
     
     if (approval) {
       
-      // 承認申請がすでに行われている場合は、配列から削除する
+      
+      // ---------------------------------------------
+      //   フォロー申請取り消し
+      //   承認申請がすでに行われている場合は、配列から削除する
+      // ---------------------------------------------
+      // 
       if (approvalArr.includes(loginUsers_id)) {
         
         approvalArr = approvalArr.filter(value => value !== loginUsers_id);
-        returnObj.memberApproval = false;
+        returnObj.followApproval = false;
         
-      // 承認申請がまだ行われていない場合は、配列に追加する
+        
+      // ---------------------------------------------
+      //   フォロー申請
+      //   承認申請がまだ行われていない場合は、配列に追加する
+      // ---------------------------------------------
+      
       } else {
         
         approvalArr.push(loginUsers_id);
-        returnObj.memberApproval = true;
+        returnObj.followApproval = true;
         
       }
       
@@ -310,31 +236,45 @@ export default async (req, res) => {
       
     } else {
       
-      // すでにメンバーである場合は、配列から削除する
+      
+      // ---------------------------------------------
+      //   フォロー解除
+      //   すでにメンバーである場合は、配列から削除する
+      // ---------------------------------------------
+      
       if (followedArr.includes(loginUsers_id)) {
         
+        // 相手
         followedArr = followedArr.filter(value => value !== loginUsers_id);
-        returnObj.member = false;
+        returnObj.follow = false;
         
-      // まだメンバーでない場合は、配列に追加する
+        // 自分
+        followSelfArr = followSelfArr.filter(value => value !== users_id);
+        
+        
+      // ---------------------------------------------
+      //   フォロー
+      //   まだメンバーでない場合は、配列に追加する
+      // ---------------------------------------------
+      
       } else {
         
+        // 相手
         followedArr.push(loginUsers_id);
-        returnObj.member = true;
+        returnObj.follow = true;
+        
+        // 自分
+        followSelfArr.push(users_id);
         
       }
       
+      
+      // 相手
       followedCount = followedArr.length;
       returnObj.followedCount = followedCount;
       
-      
-      // --------------------------------------------------
-      //   コミュニティの公開タイプがクローズドの場合、ページを再読み込みする
-      // --------------------------------------------------
-      
-      if (communityType === 'closed') {
-        returnObj.pageTransition = true;
-      }
+      // 自分
+      followSelfCount = followSelfArr.length;
       
       
     }
@@ -346,7 +286,7 @@ export default async (req, res) => {
     //   Save Object
     // --------------------------------------------------
     
-    const saveObj = {
+    const followsSaveObj = {
       
       $set: {
         
@@ -355,7 +295,19 @@ export default async (req, res) => {
         approvalArr,
         approvalCount,
         blockArr,
-        updatedDate: moment().toISOString(),
+        updatedDate: ISO8601,
+        
+      }
+      
+    };
+    
+    const followsSelfSaveObj = {
+      
+      $set: {
+        
+        followArr: followSelfArr,
+        followCount: followSelfCount,
+        updatedDate: ISO8601,
         
       }
       
@@ -368,10 +320,12 @@ export default async (req, res) => {
     //   Update
     // --------------------------------------------------
     
-    await ModelFollows.upsert({
+    await ModelFollows.transactionForUpsert({
       
-      conditionObj,
-      saveObj,
+      followsConditionObj,
+      followsSaveObj,
+      followsSelfConditionObj,
+      followsSelfSaveObj,
       
     });
     
@@ -382,33 +336,43 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/follows/upsert-follow-ur.js
+    `);
+    
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      users_id: {green ${users_id}}
+    `);
+    
     // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/follows/upsert-follow.js
+    //   ----- followsConditionObj -----\n
+    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   users_id: {green ${users_id}}
+    // console.log(`
+    //   ----- followsSaveObj -----\n
+    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- followsSelfConditionObj -----\n
+    //   ${util.inspect(followsSelfConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- followsSelfSaveObj -----\n
+    //   ${util.inspect(followsSelfSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- saveObj -----\n
-    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -431,7 +395,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 's1HXpHkXW',
+      endpointID: 'q4zqhmELq',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

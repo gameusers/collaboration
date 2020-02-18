@@ -110,9 +110,11 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const returnObj = await ModelCardPlayers.findForCardPlayer({
+      
       cardPlayers_id,
       localeObj,
       loginUsers_id,
+      
     });
     
     // const returnObj = await ModelCardPlayers.findOneBy_id({

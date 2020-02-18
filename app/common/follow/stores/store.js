@@ -251,32 +251,187 @@ class Store {
   
   
   /**
-   * フォロー用ダイアログを表示するかどうかを決めるオブジェクト
-   * フォローを解除する際に利用。ダイアログで解除していいか尋ねる
-   * @type {Object}
+   * フォロー / フォロー解除 - ユーザー
+   * @param {Array} pathArr - パス
+   * @param {string} type - フォロー follow / 
+   * @param {string} users_id - フォローする相手の _id
    */
-  // @observable followDialogOpenObj = {};
-  
-  
-  // /**
-  // * フォロー用ダイアログを開く
-  // * @param {string} users_id - ID
-  // */
-  // @action.bound
-  // handleFollowDialogOpen(users_id) {
-  //   this.followDialogOpenObj[users_id] = true;
-  // };
-  
-  
-  // /**
-  // * フォロー用ダイアログを閉じる
-  // * @param {string} users_id - ID
-  // */
-  // @action.bound
-  // handleFollowDialogClose(users_id) {
-  //   this.followDialogOpenObj[users_id] = false;
-  // };
-  
+  @action.bound
+  async handleFollowUr({ pathArr, type, users_id }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/follow/stores/store.js
+      // `);
+      
+      // console.log(chalk`
+      //   type: {green ${type}}
+      //   users_id: {green ${users_id} / ${typeof users_id}}
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        users_id,
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-follow-ur`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj)
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   フォロー状態、フォロー数を変更
+      // ---------------------------------------------
+      
+      if (lodashHas(resultObj, ['data', 'follow'])) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'follow'], resultObj.data.follow);
+      }
+      
+      if (lodashHas(resultObj, ['data', 'followApproval'])) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'followApproval'], resultObj.data.followApproval);
+      }
+      
+      if (lodashHas(resultObj, ['data', 'followedCount'])) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], resultObj.data.followedCount);
+      }
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      let messageID = 'RTsMTGw-1';
+      
+      switch (type) {
+        
+        case 'follow':
+          messageID = 'RTsMTGw-1';
+          break;
+          
+        case 'unfollow':
+          messageID = '1z127R0YE';
+          break;
+          
+        case 'followApproval':
+          messageID = 'T7i5qYulJ';
+          break;
+          
+        case 'unfollowApproval':
+          messageID = 'a-BV7oEkP';
+          break;
+          
+      }
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID,
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   リロードする
+      // ---------------------------------------------
+      
+      const pageTransition = lodashGet(resultObj, ['data', 'pageTransition'], false);
+      
+      if (pageTransition) {
+        window.location.reload();
+      }
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   ダイアログを非表示にする
+      //   /app/common/follow/components/gc-uc-button.js
+      // ---------------------------------------------
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'showDialogUnfollow'],
+        value: false,
+      });
+      
+      this.handleEdit({
+        pathArr: [...pathArr, 'showDialogUnfollowApproval'],
+        value: false,
+      });
+      
+      
+    }
+    
+  };
   
   
 }

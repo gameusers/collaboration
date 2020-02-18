@@ -615,19 +615,42 @@ class Store {
       };
       
       
-      // メイン画像
-      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
+      // ----------------------------------------
+      //   - メイン画像
+      //   新たにアップロードされた画像がある場合、オブジェクトに追加する
+      // ----------------------------------------
       
-      if (Object.keys(imagesAndVideosObj).length !== 0) {
+      const imagesAndVideosObj = storeImageAndVideoForm.handleGetImagesAndVideosObj({ pathArr });
+      const imagesAndVideosArr = lodashGet(imagesAndVideosObj, ['arr'], []);
+      
+      const index = imagesAndVideosArr.findIndex((valueObj) => {
+        return valueObj._id === '';
+      });
+      
+      if (index !== -1) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
+      // if (Object.keys(imagesAndVideosObj).length !== 0) {
+      // if (lodashHas(imagesAndVideosObj, ['arr', ])) {
+      //   formDataObj.imagesAndVideosObj = imagesAndVideosObj;
+      // }
+      
+      // console.log(chalk`
+      //   index: {green ${index}}
+      // `);
+      
+      // console.log(`
+      //   ----- imagesAndVideosObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = await fetchWrapper({
+      const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v2/db/users/upsert-pages`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)

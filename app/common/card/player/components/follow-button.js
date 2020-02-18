@@ -16,6 +16,7 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
+import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core';
@@ -46,7 +47,7 @@ import IconFollowers from '@material-ui/icons/PermIdentity';
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeCardPlayer')
+@inject('stores', 'storeCardPlayer', 'storeFollow')
 @observer
 export default class extends React.Component {
   
@@ -56,7 +57,22 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = [props.cardPlayers_id, 'followButton'];
+    
+    
   }
   
   
@@ -73,7 +89,7 @@ export default class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: `${this.props._id}-follow` });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -92,9 +108,9 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeCardPlayer, pathArr, users_id, followedCount, followed } = this.props;
+    const { stores, storeCardPlayer, storeFollow, pathArr, users_id, followedCount, followed } = this.props;
     
-    const { loginUsersObj } = stores.data;
+    const { login, loginUsersObj } = stores.data;
     
     const {
       
@@ -105,6 +121,14 @@ export default class extends React.Component {
       
     } = storeCardPlayer;
     
+    const { 
+      
+      dataObj,
+      handleEdit,
+      handleFollowUr,
+      
+    } = storeFollow;
+    
     
     
     
@@ -112,7 +136,7 @@ export default class extends React.Component {
     //   ログインしていない場合、空のコンポーネントを返す
     // --------------------------------------------------
     
-    if (Object.keys(loginUsersObj).length === 0) {
+    if (!login) {
       return null;
     }
     
@@ -138,15 +162,28 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
+    //   フォロー解除 / フォロー申請を取り下げるか尋ねるダイアログを表示するための変数
+    // --------------------------------------------------
+    
+    const showDialogUnfollow = lodashGet(dataObj, [...this.pathArr, 'showDialogUnfollow'], false);
+    const showDialogUnfollowApproval = lodashGet(dataObj, [...this.pathArr, 'showDialogUnfollowApproval'], false);
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Component - Button
     // --------------------------------------------------
     
     let componentButton =
         <Button
-          variant="outlined"
+          onClick={() => handleFollowUr({
+            pathArr: this.pathArr,
+            type: 'follow',
+            users_id
+          })}
           color="primary"
-          onClick={() => handleFollowSubmit('follow', users_id)}
-          disabled={buttonDisabled}
+          autoFocus
         >
           フォローする
         </Button>
@@ -155,9 +192,13 @@ export default class extends React.Component {
     if (followed) {
       componentButton = 
         <Button
-          variant="outlined"
+          variant="contained"
           color="primary"
-          onClick={() => handleFollowDialogOpen(users_id)}
+          size="small"
+          onClick={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogUnfollow'],
+            value: true,
+          })}
           disabled={buttonDisabled}
         >
           フォロー中
@@ -170,11 +211,11 @@ export default class extends React.Component {
     //   Dialog Open
     // --------------------------------------------------
     
-    let followDialogOpen = false;
+    // let followDialogOpen = false;
     
-    if (users_id in followDialogOpenObj) {
-      followDialogOpen = followDialogOpenObj[users_id];
-    }
+    // if (users_id in followDialogOpenObj) {
+    //   followDialogOpen = followDialogOpenObj[users_id];
+    // }
     
     
     
@@ -248,8 +289,12 @@ export default class extends React.Component {
         
         {/* Dialog */}
         <Dialog
-          open={followDialogOpen}
-          onClose={() => handleFollowDialogClose(users_id)}
+          open={showDialogUnfollow}
+          // onClose={() => handleFollowDialogClose(users_id)}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialogUnfollow'],
+            value: false,
+          })}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -258,7 +303,7 @@ export default class extends React.Component {
           
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              このユーザーのフォローを解除しますか？
+              フォローを解除しますか？
             </DialogContentText>
           </DialogContent>
           

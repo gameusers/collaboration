@@ -32,13 +32,8 @@ const SchemaImagesAndVideos = require('../images-and-videos/schema');
 //   Format
 // ---------------------------------------------
 
-// const { formatImagesAndVideosArr } = require('../../@format/image');
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
 const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatFollowsObj } = require('../follows/format');
 
 
 
@@ -338,12 +333,6 @@ const findOneForUser = async ({
     const language = lodashGet(localeObj, ['language'], '');
     const country = lodashGet(localeObj, ['country'], '');
     
-    console.log(chalk`
-      userID: {green ${userID}}
-      language: {green ${language}}
-      country: {green ${country}}
-    `);
-    
     
     // --------------------------------------------------
     //   Match Condition Array
@@ -474,11 +463,9 @@ const findOneForUser = async ({
       
       { $project:
         {
-          // _id: 1,
           exp: 1,
           cardPlayersObj: 1,
           pagesObj: 1,
-          // pagesArr: '$pagesObj.arr',
           pagesImagesAndVideosObj: 1,
           followsObj: 1,
         }
@@ -517,39 +504,47 @@ const findOneForUser = async ({
     //   follow
     // --------------------------------------------------
     
-    headerObj.exp = lodashGet(returnObj, ['exp'], 0);
-    headerObj.followCount = lodashGet(returnObj, ['followsObj', 'followCount'], 0);
-    headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
+    // headerObj.followCount = lodashGet(returnObj, ['followsObj', 'followCount'], 0);
+    // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
+    // headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
     
-    headerObj.author = false;
-    headerObj.follow = false;
-    headerObj.followApproval = false;
-    headerObj.followBlocked = false;
+    // headerObj.author = false;
+    // headerObj.follow = false;
+    // headerObj.followApproval = false;
+    // headerObj.followBlocked = false;
     
-    if (loginUsers_id) {
+    // if (loginUsers_id) {
       
-      const _id = lodashGet(returnObj, ['_id'], '');
-      const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
-      const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
-      const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
+    //   const _id = lodashGet(returnObj, ['_id'], '');
+    //   const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
+    //   const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
+    //   const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
       
-      if (_id === loginUsers_id) {
-        headerObj.author = true;
-      }
+    //   if (_id === loginUsers_id) {
+    //     headerObj.author = true;
+    //   }
       
-      if (followedArr.includes(loginUsers_id)) {
-        headerObj.follow = true;
-      }
+    //   if (followedArr.includes(loginUsers_id)) {
+    //     headerObj.follow = true;
+    //   }
       
-      if (approvalArr.includes(loginUsers_id)) {
-        headerObj.followApproval = true;
-      }
+    //   if (approvalArr.includes(loginUsers_id)) {
+    //     headerObj.followApproval = true;
+    //   }
       
-      if (blockArr.includes(loginUsers_id)) {
-        headerObj.followBlocked = true;
-      }
+    //   if (blockArr.includes(loginUsers_id)) {
+    //     headerObj.followBlocked = true;
+    //   }
       
-    }
+    // }
+    
+    
+    const followsObj = lodashGet(returnObj, ['followsObj'], {});
+    const authorUsers_id = lodashGet(returnObj, ['_id'], '');
+    
+    headerObj.followsObj = formatFollowsObj({ followsObj, authorUsers_id, loginUsers_id });
+    
+    
     
     
     // --------------------------------------------------
@@ -558,10 +553,11 @@ const findOneForUser = async ({
     
     headerObj.users_id = returnObj._id;
     headerObj.type = 'ur';
+    headerObj.exp = lodashGet(returnObj, ['exp'], 0);
     // headerObj.createdDate = returnObj.createdDate;
     headerObj.name = lodashGet(returnObj, ['cardPlayersObj', 'name'], '');
     headerObj.status = lodashGet(returnObj, ['cardPlayersObj', 'status'], '');
-    headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
+    // headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
     // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
     
     returnObj.headerObj = headerObj;
@@ -582,10 +578,16 @@ const findOneForUser = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/users/model.js - findOneForUser
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findOneForUser
+    // `);
+    
+    // console.log(chalk`
+    //   userID: {green ${userID}}
+    //   language: {green ${language}}
+    //   country: {green ${country}}
+    // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
@@ -598,11 +600,11 @@ const findOneForUser = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

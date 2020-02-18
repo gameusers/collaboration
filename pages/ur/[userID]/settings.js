@@ -208,21 +208,21 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/ur/[userID]/settings.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/ur/[userID]/settings.js
+    // `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
     //   pathname: {green ${pathname}}
     // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

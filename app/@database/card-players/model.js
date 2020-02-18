@@ -34,13 +34,7 @@ const ModelIDs = require('../ids/model');
 // ---------------------------------------------
 
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
-
-
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { formatImagesAndVideosArr } = require('../../@format/image');
+const { formatFollowsObj } = require('../follows/format');
 
 
 
@@ -530,14 +524,14 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
                   { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
                 }
               },
-              { $project:
-                {
-                  _id: 0,
-                  followArr: 1,
-                  followedArr: 1,
-                  followedCount: 1,
-                }
-              }
+              // { $project:
+              //   {
+              //     _id: 0,
+              //     followArr: 1,
+              //     followedArr: 1,
+              //     followedCount: 1,
+              //   }
+              // }
             ],
             as: 'followsObj'
           }
@@ -604,10 +598,12 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     // --------------------------------------------------
     
     returnObj = format({
+      
       localeObj,
       loginUsers_id,
       cardPlayersArr: resultArr,
-      idsObj: resultIDsObj
+      idsObj: resultIDsObj,
+      
     });
     
     
@@ -617,11 +613,16 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/card-players/model.js - findForCardPlayer
+    `);
+    
+    console.log(`
+      ----- resultArr -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- ids_idArr -----\n
@@ -1740,24 +1741,30 @@ const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
     //   Follow の処理
     // --------------------------------------------------
     
-    clonedObj.followsObj.follow = false;
-    clonedObj.followsObj.followed = false;
+    const followsObj = lodashGet(valueObj, ['followsObj'], {});
+    const authorUsers_id = valueObj.users_id;
     
-    if (loginUsers_id) {
+    clonedObj.followsObj = formatFollowsObj({ followsObj, authorUsers_id, loginUsers_id });
+    
+    
+    // clonedObj.followsObj.follow = false;
+    // clonedObj.followsObj.followed = false;
+    
+    // if (loginUsers_id) {
       
-      if (clonedObj.users_id !== loginUsers_id) {
+    //   if (clonedObj.users_id !== loginUsers_id) {
         
-        if (clonedObj.followsObj.followArr.includes(loginUsers_id)) {
-          clonedObj.followsObj.follow = true;
-        }
+    //     if (clonedObj.followsObj.followArr.includes(loginUsers_id)) {
+    //       clonedObj.followsObj.follow = true;
+    //     }
         
-        if (clonedObj.followsObj.followedArr.includes(loginUsers_id)) {
-          clonedObj.followsObj.followed = true;
-        }
+    //     if (clonedObj.followsObj.followedArr.includes(loginUsers_id)) {
+    //       clonedObj.followsObj.followed = true;
+    //     }
         
-      }
+    //   }
       
-    }
+    // }
     
     
     // --------------------------------------------------

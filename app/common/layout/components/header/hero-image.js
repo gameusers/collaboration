@@ -95,7 +95,7 @@ export default class extends React.Component {
       
     } else {
       
-      componentData = <DataUr />
+      componentData = <DataUr />;
       
     }
     

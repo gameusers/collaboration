@@ -15,9 +15,9 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import Link from 'next/link';
+// import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
-import moment from 'moment';
+// import moment from 'moment';
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -28,7 +28,7 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
-import Button from '@material-ui/core/Button';
+// import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 
 
@@ -59,6 +59,10 @@ const cssInfo = css`
   padding: 6px 6px 0 20px;
   font-size: 12px;
   line-height: 1.4em;
+`;
+
+const cssFollowButton = css`
+  margin: 12px 0 4px 12px;
 `;
 
 
@@ -111,8 +115,30 @@ export default class extends React.Component {
     
     const exp = lodashGet(stores, ['data', 'headerObj', 'exp'], 0);
     const level = Math.floor(exp / 10);
-    const followCount = lodashGet(stores, ['data', 'headerObj', 'followCount'], 0);
-    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followedCount'], 0);
+    const tnl = 10 - (exp % 10);
+    
+    const users_id = lodashGet(stores, ['data', 'headerObj', 'users_id'], '');
+    const followsObj = lodashGet(stores, ['data', 'headerObj', 'followsObj'], {});
+    const followCount = lodashGet(stores, ['data', 'headerObj', 'followsObj', 'followCount'], 0);
+    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followsObj', 'followedCount'], 0);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/components/header/data-ur.js
+    // `);
+    
+    // console.log(`
+    //   ----- lodashGet(stores, ['data', 'headerObj'], '') -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(stores, ['data', 'headerObj'], {}))), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -238,12 +264,25 @@ export default class extends React.Component {
           </div>
           
           
-          <p css={cssInfo}>Lv. {level}</p>
+          
           
           <div
             css={css`
               display: flex;
               flex-flow: row wrap;
+              margin: 0 0 2px 0;
+            `}
+          >
+            <p css={cssInfo}>Lv. {level}</p>
+            <p css={cssInfo}>次のレベルまで {tnl} Exp</p>
+          </div>
+          
+          
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+              margin: 0 0 2px 0;
             `}
           >
             <p css={cssInfo}>フォロー {followCount}人</p>
@@ -251,7 +290,12 @@ export default class extends React.Component {
           </div>
           
           
-          <FollowButton />
+          <FollowButton
+            cssEmotion={cssFollowButton}
+            buttonSize="small"
+            users_id={users_id}
+            followsObj={followsObj}
+          />
           
           
         </div>
@@ -330,6 +374,11 @@ export default class extends React.Component {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/ur/[userID]/settings.js
+    // `);
     
     // console.log(chalk`
     //   headerDataOpen: {green ${headerDataOpen}}

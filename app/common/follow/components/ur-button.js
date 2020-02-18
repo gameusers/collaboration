@@ -99,15 +99,25 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeFollow } = this.props;
+    const { stores, storeFollow, cssEmotion, buttonSize, users_id, followsObj } = this.props;
     
     const { 
       
       dataObj,
       handleEdit,
-      handleFollow,
+      handleFollowUr,
       
     } = storeFollow;
+    
+    
+    const login = stores.data.getLogin();
+    
+    // const users_id = lodashGet(followsObj, ['users_id'], '');
+    const approval = lodashGet(followsObj, ['approval'], false);
+    const author = lodashGet(followsObj, ['author'], false);
+    const follow = lodashGet(followsObj, ['follow'], false);
+    const followApproval = lodashGet(followsObj, ['followApproval'], false);
+    const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
     
     
     
@@ -132,18 +142,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Button
+    //   Component
     // --------------------------------------------------
     
-    const login = stores.data.getLogin();
-    const users_id = lodashGet(stores, ['data', 'headerObj', 'users_id'], '');
-    const approval = lodashGet(stores, ['data', 'headerObj', 'approval'], false);
-    const author = lodashGet(stores, ['data', 'headerObj', 'author'], false);
-    const follow = lodashGet(stores, ['data', 'headerObj', 'follow'], false);
-    const followApproval = lodashGet(stores, ['data', 'headerObj', 'followApproval'], false);
-    const followBlocked = lodashGet(stores, ['data', 'headerObj', 'followBlocked'], false);
-    
-    let code =  '';
+    let componentButton =  '';
     
     
     // ---------------------------------------------
@@ -152,12 +154,12 @@ export default class extends React.Component {
     
     if (!login) {
       
-      code = 
+      componentButton = 
         <Link href="/login">
           <Button
             variant="contained"
             color="secondary"
-            size="small"
+            size={buttonSize}
           >
             フォローする
           </Button>
@@ -180,14 +182,14 @@ export default class extends React.Component {
       
       if (approval) {
         
-        code = 
+        componentButton = 
           <Button
             variant="contained"
             color="secondary"
-            size="small"
-            onClick={() => handleFollow({
+            size={buttonSize}
+            onClick={() => handleFollowUr({
               pathArr: this.pathArr,
-              type: 'followApprovalUr',
+              type: 'followApproval',
               users_id
             })}
             disabled={buttonDisabled}
@@ -203,14 +205,14 @@ export default class extends React.Component {
         
       } else {
         
-        code = 
+        componentButton = 
           <Button
             variant="contained"
             color="secondary"
-            size="small"
-            onClick={() => handleFollow({
+            size={buttonSize}
+            onClick={() => handleFollowUr({
               pathArr: this.pathArr,
-              type: 'followUr',
+              type: 'follow',
               users_id
             })}
             disabled={buttonDisabled}
@@ -231,18 +233,18 @@ export default class extends React.Component {
     
     if (login && follow) {
       
-      code = 
+      componentButton = 
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={buttonSize}
           onClick={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnfollow'],
             value: true,
           })}
           disabled={buttonDisabled}
         >
-          フォローを解除する
+          フォロー中
         </Button>
       ;
       
@@ -255,11 +257,11 @@ export default class extends React.Component {
     
     if (followApproval) {
       
-      code = 
+      componentButton = 
         <Button
           variant="contained"
           color="primary"
-          size="small"
+          size={buttonSize}
           onClick={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnfollowApproval'],
             value: true,
@@ -288,19 +290,14 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   headerDataOpen: {green ${headerDataOpen}}
-    //   name: {green ${name}}
-    //   hardware: {green ${hardware}}
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/follow/components/ur-button.js
     // `);
     
-    // console.log(`\n---------- hardwareSortedArr ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(hardwareSortedArr)));
-    // console.log(`\n-----------------------------------\n`);
-    
     // console.log(`
-    //   ----- hardwareSortedArr -----\n
-    //   ${util.inspect(hardwareSortedArr, { colors: true, depth: null })}\n
+    //   ----- lodashGet(stores, ['data', 'headerObj'], {}) -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(stores, ['data', 'headerObj'], {}))), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -313,12 +310,13 @@ export default class extends React.Component {
     
     return (
       <div
-        css={css`
-          margin: 12px 12px 4px;
-        `}
+        css={cssEmotion}
+        // css={css`
+        //   // margin: 12px 12px 4px;
+        // `}
       >
         
-        {code}
+        {componentButton}
         
         
         {/* コミュニティを退会するか尋ねるダイアログ */}
@@ -347,9 +345,9 @@ export default class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleFollow({
+                onClick={() => handleFollowUr({
                   pathArr: this.pathArr,
-                  type: 'unfollowUr',
+                  type: 'unfollow',
                   users_id
                 })}
                 color="primary"
@@ -401,9 +399,9 @@ export default class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleFollow({
+                onClick={() => handleFollowUr({
                   pathArr: this.pathArr,
-                  type: 'unfollowApprovalUr',
+                  type: 'unfollowApproval',
                   users_id
                 })}
                 color="primary"

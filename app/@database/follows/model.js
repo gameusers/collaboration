@@ -32,9 +32,9 @@ const Schema = require('./schema');
 //   Modules
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../../@modules/image/format');
-const { CustomError } = require('../../@modules/error/custom');
-const { verifyAuthority } = require('../../@modules/authority');
+// const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+// const { CustomError } = require('../../@modules/error/custom');
+// const { verifyAuthority } = require('../../@modules/authority');
 
 
 
@@ -304,6 +304,153 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 
 
+
+/**
+ * Transaction 挿入 / 更新する
+ * フォローを同時に更新する
+ * 
+ * @param {Object} followsConditionObj - DB follows 検索条件
+ * @param {Object} followsSaveObj - DB follows 保存データ
+ * @param {Object} followsSelfConditionObj - DB follows 検索条件
+ * @param {Object} followsSelfSaveObj - DB follows 保存データ
+ * @return {Object} 
+ */
+const transactionForUpsert = async ({
+  
+  followsConditionObj,
+  followsSaveObj,
+  followsSelfConditionObj,
+  followsSelfSaveObj,
+  
+}) => {
+  
+  
+  // --------------------------------------------------
+  //   Property
+  // --------------------------------------------------
+  
+  let returnObj = {};
+  
+  
+  // --------------------------------------------------
+  //   Transaction / Session
+  // --------------------------------------------------
+  
+  const session = await Schema.startSession();
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Database
+  // --------------------------------------------------
+  
+  try {
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Start
+    // --------------------------------------------------
+    
+    await session.startTransaction();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Follows
+    // --------------------------------------------------
+    
+    await Schema.updateOne(followsConditionObj, followsSaveObj, { session, upsert: true });
+    await Schema.updateOne(followsSelfConditionObj, followsSelfSaveObj, { session, upsert: true });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Commit
+    // --------------------------------------------------
+    
+    await session.commitTransaction();
+    // console.log('--------コミット-----------');
+    
+    session.endSession();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----- followsConditionObj -----\n
+    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- followsSaveObj -----\n
+    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- followsSelfConditionObj -----\n
+    //   ${util.inspect(followsSelfConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- followsSelfSaveObj -----\n
+    //   ${util.inspect(followsSelfSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return
+    // --------------------------------------------------
+    
+    return returnObj;
+    
+    
+  } catch (errorObj) {
+    
+    // console.log(`
+    //   ----- errorObj -----\n
+    //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    // --------------------------------------------------
+    //   Transaction / Rollback
+    // --------------------------------------------------
+    
+    await session.abortTransaction();
+    // console.log('--------ロールバック-----------');
+    
+    session.endSession();
+    
+    
+    throw errorObj;
+    
+  }
+  
+};
+
+
+
+
 // --------------------------------------------------
 //   Export
 // --------------------------------------------------
@@ -316,5 +463,7 @@ module.exports = {
   upsert,
   insertMany,
   deleteMany,
+  
+  transactionForUpsert,
   
 };

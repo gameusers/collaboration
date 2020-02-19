@@ -33,6 +33,8 @@ import TextField from '@material-ui/core/TextField';
 // import FormControl from '@material-ui/core/FormControl';
 // import MenuItem from '@material-ui/core/MenuItem';
 // import Select from '@material-ui/core/Select';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -146,11 +148,20 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Validation User ID
+    //   User ID
     // --------------------------------------------------
     
     const userID = lodashGet(dataObj, [...pathArr, 'userID'], '');
     const validationUsersUserIDObj = validationUsersUserID({ value: userID });
+    
+    
+    // --------------------------------------------------
+    //   Approval
+    // --------------------------------------------------
+    
+    const approval = lodashGet(dataObj, [...pathArr, 'approval'], false);
+    
+    
     
     
     
@@ -478,6 +489,61 @@ export default injectIntl(class extends React.Component {
             {componentsArr}
             
           
+          </div>
+          
+          
+          
+          
+          {/* 参加条件 */}
+          <div
+            css={css`
+              border-top: 1px dashed #848484;
+              margin: 24px 0 0 0;
+              padding: 24px 0 0 0;
+            `}
+          >
+            
+            <h3
+              css={css`
+                font-weight: bold;
+                margin: 0 0 6px 0;
+              `}
+            >
+              フォロー承認制
+            </h3>
+            
+            <p
+              css={css`
+                margin: 0 0 12px 0;
+              `}
+            >
+              以下をチェックすると、あなたをフォローするのにあなたの承認が必要になります。チェックを外すと誰でもフォローができるようになります。
+            </p>
+            
+            <p
+              css={css`
+                margin: 0 0 12px 0;
+              `}
+            >
+              現時点ではフォロー関連の機能はほとんどありません。唯一存在しているのが、自分をフォローした相手だけに登録したID（ゲームハードのIDなど）を閲覧させる機能です。将来的には作成したコンテンツ（日記など）を、フォローしてくれている相手、または相互フォローしている相手だけに、閲覧させる機能を実装する予定です。
+            </p>
+            
+            
+            <div>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={approval}
+                    onChange={(eventObj) => handleEdit({
+                      pathArr: [...pathArr, 'approval'],
+                      value: eventObj.target.checked
+                    })}
+                  />
+                }
+                label="フォロー承認制にする"
+              />
+            </div>
+            
           </div>
           
           

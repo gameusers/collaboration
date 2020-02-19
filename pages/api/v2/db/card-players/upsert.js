@@ -739,10 +739,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/card-players/upsert.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/card-players/upsert.js
+    // `);
     
     // console.log(`
     //   ----- bodyObj -----\n

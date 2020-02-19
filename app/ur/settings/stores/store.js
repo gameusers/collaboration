@@ -599,6 +599,7 @@ class Store {
       
       const userID = lodashGet(this.dataObj, [...pathArr, 'userID'], '');
       const pagesArr = lodashGet(this.dataObj, [...pathArr, 'pagesObj', 'arr'], []);
+      const approval = lodashGet(this.dataObj, [...pathArr, 'approval'], false);
       
       
       
@@ -610,7 +611,8 @@ class Store {
       const formDataObj = {
         
         userID,
-        pagesArr
+        pagesArr,
+        approval,
         
       };
       
@@ -631,10 +633,10 @@ class Store {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
       }
       
-      // if (Object.keys(imagesAndVideosObj).length !== 0) {
-      // if (lodashHas(imagesAndVideosObj, ['arr', ])) {
-      //   formDataObj.imagesAndVideosObj = imagesAndVideosObj;
-      // }
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
       
       // console.log(chalk`
       //   index: {green ${index}}
@@ -646,12 +648,18 @@ class Store {
       //   --------------------\n
       // `);
       
+      // console.log(chalk`
+      //   userID: {green ${userID}}
+      //   approval: {green ${approval}}
+      // `);
+      
+      
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-pages`,
+        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-pages`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -783,6 +791,14 @@ export default function initStoreUrSettings({ propsObj }) {
       lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'pagesObj'], propsObj.pagesObj);
     }
     
+    
+    // --------------------------------------------------
+    //   approval
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['approval'])) {
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'approval'], propsObj.approval);
+    }
     
     
     

@@ -43,6 +43,7 @@ const { formatAndSave } = require('../../../../../app/@modules/image/save');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
+const { validationBoolean } = require('../../../../../app/@validations/boolean');
 const { validationUsersUserIDServer } = require('../../../../../app/@database/users/validations/user-id-server');
 const { validationUsersPagesType, validationUsersPagesName, validationUsersPagesLanguage } = require('../../../../../app/@database/users/validations/pages');
 
@@ -104,6 +105,7 @@ export default async (req, res) => {
       imagesAndVideosObj,
       userID,
       pagesArr,
+      approval,
       
     } = bodyObj;
     
@@ -116,6 +118,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['imagesAndVideosObj'], {});
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
+    lodashSet(requestParametersObj, ['approval'], approval);
     
     
     
@@ -145,6 +148,7 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: req.ip });
     await validationUsersUserIDServer({ throwError: true, value: userID, loginUsers_id });
+    await validationBoolean({ throwError: true, value: approval });
     
     
     // --------------------------------------------------
@@ -284,14 +288,17 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Update
+    //   Users
     // --------------------------------------------------
     
     const usersConditionObj = {
+      
       _id: loginUsers_id
+      
     };
     
     const usersSaveObj = {
+      
       $set: {
         updatedDate: ISO8601,
         userID,
@@ -300,12 +307,39 @@ export default async (req, res) => {
           arr: newPagesArr,
         }
       }
+      
     };
+    
+    
+    // --------------------------------------------------
+    //   メイン画像を保存する
+    // --------------------------------------------------
+    
+    const followsConditionObj = {
+      
+      users_id: loginUsers_id
+      
+    };
+    
+    const followsSaveObj = {
+      
+      $set: {
+        approval
+      }
+      
+    };
+    
+    
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
     
     await ModelUsers.transactionForUpsert({
       
       usersConditionObj,
       usersSaveObj,
+      followsConditionObj,
+      followsSaveObj,
       imagesAndVideosConditionObj,
       imagesAndVideosSaveObj,
       
@@ -320,7 +354,7 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-pages.js
+    //   /pages/api/v2/db/users/upsert-settings-pages
     // `);
     
     // console.log(chalk`
@@ -400,4 +434,15 @@ export default async (req, res) => {
   }
   
   
+};
+
+
+
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '25mb',
+    },
+  },
 };

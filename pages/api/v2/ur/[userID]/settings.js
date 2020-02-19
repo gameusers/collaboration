@@ -172,7 +172,7 @@ export default async (req, res) => {
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
     
     
     
@@ -181,11 +181,12 @@ export default async (req, res) => {
     //   headerObj
     // ---------------------------------------------
     
-    if (lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
-      returnObj.headerObj = usersObj.headerObj;
-    }
+    returnObj.headerObj = usersObj.headerObj;
     
-    // delete usersObj.headerObj;
+    // ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
+    if (!lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
+      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], gamesImagesAndVideosObj);
+    }
     
     
     
@@ -197,7 +198,11 @@ export default async (req, res) => {
     returnObj.pagesObj = lodashGet(usersObj, ['pagesObj'], {});
     
     
+    // --------------------------------------------------
+    //   approval
+    // --------------------------------------------------
     
+    returnObj.approval = lodashGet(usersObj, ['followsObj', 'approval'], false);
     
     
     
@@ -208,10 +213,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/settings.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/ur/[userID]/settings.js
+    `);
     
     // console.log(chalk`
     //   {green ur/player/api/player / initial-props}
@@ -225,17 +230,17 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- usersObj -----\n
+      ${util.inspect(usersObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

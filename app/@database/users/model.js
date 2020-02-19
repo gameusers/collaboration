@@ -24,6 +24,7 @@ const lodashSet = require('lodash/set');
 
 const Schema = require('./schema');
 const SchemaEmailConfirmations = require('../email-confirmations/schema');
+const SchemaFollows = require('../follows/schema');
 const SchemaCardPlayers = require('../card-players/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 
@@ -365,7 +366,7 @@ const findOneForUser = async ({
       ...matchConditionArr,
       
       
-      // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+      // プレイヤーカードを取得（名前＆ステータス）
       {
         $lookup:
           {
@@ -501,43 +502,8 @@ const findOneForUser = async ({
     
     
     // --------------------------------------------------
-    //   follow
+    //   follow フォーマット
     // --------------------------------------------------
-    
-    // headerObj.followCount = lodashGet(returnObj, ['followsObj', 'followCount'], 0);
-    // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
-    // headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
-    
-    // headerObj.author = false;
-    // headerObj.follow = false;
-    // headerObj.followApproval = false;
-    // headerObj.followBlocked = false;
-    
-    // if (loginUsers_id) {
-      
-    //   const _id = lodashGet(returnObj, ['_id'], '');
-    //   const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
-    //   const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
-    //   const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
-      
-    //   if (_id === loginUsers_id) {
-    //     headerObj.author = true;
-    //   }
-      
-    //   if (followedArr.includes(loginUsers_id)) {
-    //     headerObj.follow = true;
-    //   }
-      
-    //   if (approvalArr.includes(loginUsers_id)) {
-    //     headerObj.followApproval = true;
-    //   }
-      
-    //   if (blockArr.includes(loginUsers_id)) {
-    //     headerObj.followBlocked = true;
-    //   }
-      
-    // }
-    
     
     const followsObj = lodashGet(returnObj, ['followsObj'], {});
     const authorUsers_id = lodashGet(returnObj, ['_id'], '');
@@ -554,11 +520,8 @@ const findOneForUser = async ({
     headerObj.users_id = returnObj._id;
     headerObj.type = 'ur';
     headerObj.exp = lodashGet(returnObj, ['exp'], 0);
-    // headerObj.createdDate = returnObj.createdDate;
     headerObj.name = lodashGet(returnObj, ['cardPlayersObj', 'name'], '');
     headerObj.status = lodashGet(returnObj, ['cardPlayersObj', 'status'], '');
-    // headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
-    // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
     
     returnObj.headerObj = headerObj;
     
@@ -1406,10 +1369,12 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
 
 /**
  * Transaction 挿入 / 更新する
- * ユーザーと画像＆動画を同時に更新する
+ * users, follows, imagesAndVideos を同時に更新する
  * 
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} followsConditionObj - DB follows 検索条件
+ * @param {Object} followsSaveObj - DB follows 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @return {Object} 
@@ -1418,6 +1383,8 @@ const transactionForUpsert = async ({
   
   usersConditionObj,
   usersSaveObj,
+  followsConditionObj,
+  followsSaveObj,
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
   
@@ -1461,6 +1428,17 @@ const transactionForUpsert = async ({
     // --------------------------------------------------
     
     await Schema.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Follows
+    // --------------------------------------------------
+    
+    if (Object.keys(followsConditionObj).length !== 0 && Object.keys(followsSaveObj).length !== 0) {
+      await SchemaFollows.updateOne(followsConditionObj, followsSaveObj, { session, upsert: true });
+    }
     
     
     
@@ -1525,6 +1503,18 @@ const transactionForUpsert = async ({
     //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    console.log(`
+      ----- followsConditionObj -----\n
+      ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(`
+      ----- followsSaveObj -----\n
+      ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n

@@ -150,7 +150,7 @@ export default class extends React.Component {
       stores,
       storeCardPlayer,
       cardPlayers_id,
-      showFollow,
+      // showFollow,
       showEditButton,
       defaultExpanded = true,
       
@@ -211,8 +211,8 @@ export default class extends React.Component {
     const exp = lodashGet(cardPlayersObj, ['usersObj', 'exp'], 0);
     const accessDate = lodashGet(cardPlayersObj, ['usersObj', 'accessDate'], '');
     const userID = lodashGet(cardPlayersObj, ['usersObj', 'userID'], '');
-    const followedCount = lodashGet(cardPlayersObj, ['followsObj', 'followedCount'], 0);
-    const followed = lodashGet(cardPlayersObj, ['followsObj', 'followed'], false);
+    // const followedCount = lodashGet(cardPlayersObj, ['followsObj', 'followedCount'], 0);
+    // const followed = lodashGet(cardPlayersObj, ['followsObj', 'followed'], false);
     
     
     
@@ -346,16 +346,16 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/card/player/components/player.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/card/player/components/player.js
+    // `);
     
-    console.log(`
-      ----- cardPlayersObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(cardPlayersObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- cardPlayersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayersObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(chalk`
     //   formOpen: {green ${formOpen}}
@@ -576,6 +576,7 @@ export default class extends React.Component {
                   size="medium"
                   users_id={users_id}
                   followsObj={followsObj}
+                  showNumberOfPeople={true}
                 />
                 
                 

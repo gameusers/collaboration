@@ -24,7 +24,7 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelFollows = require('../../../../../app/@database/follows/model');
-// const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
+const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
 // ---------------------------------------------
@@ -191,7 +191,7 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     if (blockArr.includes(loginUsers_id)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hPXXX2YIK', messageID: 'qnWsuPcrJ' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'LOfGkiv9b', messageID: 'qnWsuPcrJ' }] });
     }
     
     
@@ -201,7 +201,7 @@ export default async (req, res) => {
     //   - 承認制
     // ---------------------------------------------
     
-    if (approval) {
+    if (approval && followedArr.includes(loginUsers_id) === false) {
       
       
       // ---------------------------------------------
@@ -333,18 +333,41 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   DB card-players cardPlayers_id を取得する
+    // --------------------------------------------------
+    
+    returnObj.cardPlayers_idsArr = [];
+    
+    const docCardPlayersArr = await ModelCardPlayers.find({
+      
+      conditionObj: {
+        users_id
+      }
+      
+    });
+    
+    for (let valueObj of docCardPlayersArr.values()) {
+      
+      returnObj.cardPlayers_idsArr.push(valueObj._id);
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/follows/upsert-follow-ur.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/follows/upsert-follow-ur.js
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      users_id: {green ${users_id}}
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   users_id: {green ${users_id}}
+    // `);
     
     // console.log(`
     //   ----- followsConditionObj -----\n
@@ -367,6 +390,18 @@ export default async (req, res) => {
     // console.log(`
     //   ----- followsSelfSaveObj -----\n
     //   ${util.inspect(followsSelfSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docCardPlayersArr -----\n
+    //   ${util.inspect(docCardPlayersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj.cardPlayers_idsArr -----\n
+    //   ${util.inspect(returnObj.cardPlayers_idsArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

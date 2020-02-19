@@ -254,7 +254,7 @@ class Store {
    * フォロー / フォロー解除 - ユーザー
    * @param {Array} pathArr - パス
    * @param {string} type - フォロー follow / 
-   * @param {string} users_id - フォローする相手の _id
+   * @param {string} users_id - フォローする相手の DB users _id
    */
   @action.bound
   async handleFollowUr({ pathArr, type, users_id }) {
@@ -278,6 +278,12 @@ class Store {
       // console.log(`
       //   ----------------------------------------\n
       //   /app/common/follow/stores/store.js
+      // `);
+      
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(pathArr, { pathArr: true, depth: null })}\n
+      //   --------------------\n
       // `);
       
       // console.log(chalk`
@@ -332,17 +338,59 @@ class Store {
       //   フォロー状態、フォロー数を変更
       // ---------------------------------------------
       
-      if (lodashHas(resultObj, ['data', 'follow'])) {
-        lodashSet(storeData, ['headerObj', 'followsObj', 'follow'], resultObj.data.follow);
+      const follow = lodashGet(resultObj, ['data', 'follow'], null);
+      const followApproval = lodashGet(resultObj, ['data', 'followApproval'], null);
+      const followedCount = lodashGet(resultObj, ['data', 'followedCount'], null);
+      
+      
+      // ----------------------------------------
+      //   - Header
+      // ----------------------------------------
+      
+      if (follow !== null) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'follow'], follow);
       }
       
-      if (lodashHas(resultObj, ['data', 'followApproval'])) {
-        lodashSet(storeData, ['headerObj', 'followsObj', 'followApproval'], resultObj.data.followApproval);
+      if (followApproval !== null) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'followApproval'], followApproval);
       }
       
-      if (lodashHas(resultObj, ['data', 'followedCount'])) {
-        lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], resultObj.data.followedCount);
+      if (followedCount !== null) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], followedCount);
       }
+      
+      
+      // ----------------------------------------
+      //   - Card Players
+      // ----------------------------------------
+      
+      const cardPlayers_idsArr = lodashGet(resultObj, ['data', 'cardPlayers_idsArr'], []);
+      
+      for (let cardPlayers_id of cardPlayers_idsArr.values()) {
+        
+        // console.log(chalk`
+        //   cardPlayers_id: {green ${cardPlayers_id}}
+        // `);
+        
+        if (follow !== null) {
+          lodashSet(storeData, ['cardPlayersObj', cardPlayers_id, 'followsObj', 'follow'], follow);
+        }
+        
+        if (followApproval !== null) {
+          lodashSet(storeData, ['cardPlayersObj', cardPlayers_id, 'followsObj', 'followApproval'], followApproval);
+        }
+        
+        if (followedCount !== null) {
+          lodashSet(storeData, ['cardPlayersObj', cardPlayers_id, 'followsObj', 'followedCount'], followedCount);
+        }
+        
+      }
+      
+      // console.log(`
+      //   ----- lodashGet(storeData, ['cardPlayersObj'], {}) -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(storeData, ['cardPlayersObj'], {}))), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------

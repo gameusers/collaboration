@@ -35,6 +35,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconPermIdentity from '@material-ui/icons/PermIdentity';
+
+
 
 
 // --------------------------------------------------
@@ -51,6 +58,11 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
     
     super(props);
     
@@ -99,7 +111,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeFollow, cssEmotion, buttonSize, users_id, followsObj } = this.props;
+    const { stores, storeFollow, cssEmotion, buttonSize, users_id, followsObj, showNumberOfPeople } = this.props;
     
     const { 
       
@@ -112,10 +124,10 @@ export default class extends React.Component {
     
     const login = stores.data.getLogin();
     
-    // const users_id = lodashGet(followsObj, ['users_id'], '');
     const approval = lodashGet(followsObj, ['approval'], false);
     const author = lodashGet(followsObj, ['author'], false);
     const follow = lodashGet(followsObj, ['follow'], false);
+    const followedCount = lodashGet(followsObj, ['followedCount'], 0);
     const followApproval = lodashGet(followsObj, ['followApproval'], false);
     const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
     
@@ -142,7 +154,39 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component
+    //   Component - Number of People
+    // --------------------------------------------------
+    
+    let componentNumberOfPeople =  '';
+    
+    if (showNumberOfPeople) {
+      
+      componentNumberOfPeople = 
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+            margin: 0 0 0 10px;
+          `}
+        >
+          <IconPermIdentity
+            css={css`
+              font-size: 24px;
+              padding: 0;
+            `}
+          />
+          {followedCount} 人
+        </div>
+      ;
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Component - Button
     // --------------------------------------------------
     
     let componentButton =  '';
@@ -190,11 +234,11 @@ export default class extends React.Component {
             onClick={() => handleFollowUr({
               pathArr: this.pathArr,
               type: 'followApproval',
-              users_id
+              users_id,
             })}
             disabled={buttonDisabled}
           >
-            フォローする
+            フォロー申請をする
           </Button>
         ;
         
@@ -213,7 +257,7 @@ export default class extends React.Component {
             onClick={() => handleFollowUr({
               pathArr: this.pathArr,
               type: 'follow',
-              users_id
+              users_id,
             })}
             disabled={buttonDisabled}
           >
@@ -290,16 +334,16 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/common/follow/components/ur-button.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/common/follow/components/ur-button.js
+    `);
     
-    // console.log(`
-    //   ----- lodashGet(stores, ['data', 'headerObj'], {}) -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(stores, ['data', 'headerObj'], {}))), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- followsObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -311,12 +355,24 @@ export default class extends React.Component {
     return (
       <div
         css={cssEmotion}
-        // css={css`
-        //   // margin: 12px 12px 4px;
-        // `}
       >
         
-        {componentButton}
+        
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+          `}
+        >
+        
+          {componentButton}
+          
+          {componentNumberOfPeople}
+          
+        </div>
+        
+        
         
         
         {/* コミュニティを退会するか尋ねるダイアログ */}
@@ -348,7 +404,7 @@ export default class extends React.Component {
                 onClick={() => handleFollowUr({
                   pathArr: this.pathArr,
                   type: 'unfollow',
-                  users_id
+                  users_id,
                 })}
                 color="primary"
                 autoFocus
@@ -402,7 +458,7 @@ export default class extends React.Component {
                 onClick={() => handleFollowUr({
                   pathArr: this.pathArr,
                   type: 'unfollowApproval',
-                  users_id
+                  users_id,
                 })}
                 color="primary"
                 autoFocus

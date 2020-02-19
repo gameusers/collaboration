@@ -14,11 +14,11 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const shortid = require('shortid');
+// const shortid = require('shortid');
 const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
-const lodashHas = require('lodash/has');
-const lodashCloneDeep = require('lodash/cloneDeep');
+// const lodashSet = require('lodash/set');
+// const lodashHas = require('lodash/has');
+// const lodashCloneDeep = require('lodash/cloneDeep');
 
 
 
@@ -57,7 +57,6 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
   
   if (loginUsers_id) {
     
-    // const _id = lodashGet(followsObj, ['_id'], '');
     const followedArr = lodashGet(followsObj, ['followedArr'], []);
     const approvalArr = lodashGet(followsObj, ['approvalArr'], []);
     const blockArr = lodashGet(followsObj, ['blockArr'], []);
@@ -100,9 +99,6 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
   
   
 };
-
-
-
 
 
 

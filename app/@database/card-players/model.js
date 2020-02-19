@@ -524,14 +524,6 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
                   { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
                 }
               },
-              // { $project:
-              //   {
-              //     _id: 0,
-              //     followArr: 1,
-              //     followedArr: 1,
-              //     followedCount: 1,
-              //   }
-              // }
             ],
             as: 'followsObj'
           }
@@ -613,16 +605,16 @@ const findForCardPlayer = async ({ localeObj, users_id, cardPlayers_id, loginUse
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/card-players/model.js - findForCardPlayer
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/card-players/model.js - findForCardPlayer
+    // `);
     
-    console.log(`
-      ----- resultArr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- ids_idArr -----\n

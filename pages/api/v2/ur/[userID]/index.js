@@ -109,9 +109,13 @@ export default async (req, res) => {
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
     returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    const gamesImagesAndVideosObj = lodashGet(commonInitialPropsObj, ['headerObj', 'imagesAndVideosObj'], {});
     
-    
+    // console.log(`
+    //   ----- gamesImagesAndVideosObj -----\n
+    //   ${util.inspect(gamesImagesAndVideosObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -119,12 +123,6 @@ export default async (req, res) => {
     //   アクセスしたページ所有者のユーザー情報
     //   users_id を取得するために利用
     // --------------------------------------------------
-    
-    // const usersObj = await ModelUsers.findOne({
-    //   conditionObj: {
-    //     userID,
-    //   }
-    // });
     
     const usersObj = await ModelUsers.findOneForUser({
       
@@ -151,9 +149,18 @@ export default async (req, res) => {
     //   headerObj
     // ---------------------------------------------
     
-    if (lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
-      returnObj.headerObj = usersObj.headerObj;
+    returnObj.headerObj = usersObj.headerObj;
+    
+    // ユーザーがトップ画像をアップロードしていない場合は、ランダム取得のゲーム画像を代わりに利用する
+    if (!lodashHas(usersObj, ['headerObj', 'imagesAndVideosObj'])) {
+      lodashSet(returnObj, ['headerObj', 'imagesAndVideosObj'], gamesImagesAndVideosObj);
     }
+    
+    // console.log(`
+    //   ----- usersObj.headerObj -----\n
+    //   ${util.inspect(usersObj.headerObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

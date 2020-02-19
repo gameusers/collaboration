@@ -115,8 +115,8 @@ export default class extends React.Component {
     const {
       
       handleFollowSubmit,
-      followDialogOpenObj,
-      handleFollowDialogOpen,
+      // followDialogOpenObj,
+      // handleFollowDialogOpen,
       handleFollowDialogClose
       
     } = storeCardPlayer;

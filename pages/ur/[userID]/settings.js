@@ -163,6 +163,7 @@ export default class extends React.Component {
     
     const loginUsers_id = lodashGet(resultObj, ['data', 'loginUsersObj', '_id'], '');
     const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], {});
+    const approval = lodashGet(resultObj, ['data', 'approval'], false);
     const imagesAndVideosObj = lodashGet(resultObj, ['data', 'pagesObj', 'imagesAndVideosObj'], {});
     
     
@@ -197,7 +198,7 @@ export default class extends React.Component {
       }
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userID, pagesObj, imagesAndVideosObj };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, pathArr, userID, pagesObj, approval, imagesAndVideosObj };
     
     const storesObj = getOrCreateStore({ propsObj });
     

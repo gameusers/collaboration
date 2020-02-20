@@ -106,7 +106,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/ur/***
+//   URL: http://dev-1.gameusers.org:8080/ur/***/followers
 // --------------------------------------------------
 
 @observer
@@ -136,7 +136,17 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userID = query.userID;
-    const pathname = `/ur/${userID}`;
+    const pathname = `/ur/${userID}/followers`;
+    
+    
+    // --------------------------------------------------
+    //   Get Cookie & Temporary Data for Fetch
+    // --------------------------------------------------
+    
+    const stores = initStoreRoot({});
+    
+    const page = stores.data.getTemporaryData({ pathname, key: 'followersPage' });
+    const limit = stores.data.getCookie({ key: 'followersLimit' });
     
     
     // --------------------------------------------------
@@ -144,7 +154,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/ur/${userID}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/ur/${userID}/followers?page=${page}&limit=${limit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -156,6 +166,22 @@ export default class extends React.Component {
     const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
     const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Title
+    // --------------------------------------------------
+    
+    const title = `フォロワー`;
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    // const pathArr = [loginUsers_id, 'urFollowers'];
     
     
     
@@ -188,12 +214,6 @@ export default class extends React.Component {
       );
       
     }
-    
-    // console.log(`
-    //   ----- headerNavMainArr -----\n
-    //   ${util.inspect(headerNavMainArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, cardPlayersObj, pagesObj };
     
@@ -238,6 +258,7 @@ export default class extends React.Component {
       
       statusCode,
       reqAcceptLanguage,
+      title,
       storesObj,
       propsObj,
       
@@ -278,9 +299,9 @@ export default class extends React.Component {
       // --------------------------------------------------
       
       if (
-        this.props.statusCode !== 200 ||
-        'cardPlayersObj' in props.propsObj === false ||
-        'cardsArr' in props.propsObj === false
+        this.props.statusCode !== 200
+        // 'cardPlayersObj' in props.propsObj === false ||
+        // 'cardsArr' in props.propsObj === false
       ) {
         throw new Error();
       }
@@ -332,7 +353,7 @@ export default class extends React.Component {
     
     // const stores = this.stores;
     
-    const cardsArr = lodashGet(this.props, ['propsObj', 'cardsArr'], []);
+    // const cardsArr = lodashGet(this.props, ['propsObj', 'cardsArr'], []);
     
     // console.log(`
     //   ----- cardsArr -----\n
@@ -345,47 +366,47 @@ export default class extends React.Component {
     //   Player Card
     // --------------------------------------------------
     
-    let userName = '';
+    // let userName = '';
     
-    const componentCardsArr = [];
+    // const componentCardsArr = [];
     
-    for (const [index, valueObj] of cardsArr.entries()) {
+    // for (const [index, valueObj] of cardsArr.entries()) {
       
-      if ('cardPlayers_id' in valueObj) {
+    //   if ('cardPlayers_id' in valueObj) {
         
-        const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
-        userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-        // userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-        // console.log(userName);
+    //     const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
+    //     userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
+    //     // userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
+    //     // console.log(userName);
         
-        componentCardsArr.push(
-          <CardPlayer
-            cardPlayers_id={valueObj.cardPlayers_id}
-            showFollow={true}
-            showEditButton={true}
-            key={index}
-          />
-        );
+    //     componentCardsArr.push(
+    //       <CardPlayer
+    //         cardPlayers_id={valueObj.cardPlayers_id}
+    //         showFollow={true}
+    //         showEditButton={true}
+    //         key={index}
+    //       />
+    //     );
         
-      }
+    //   }
       
-    }
+    // }
     
     
     
     
-    // --------------------------------------------------
-    //   Header Title
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Header Title
+    // // --------------------------------------------------
     
-    const pagesArr = lodashGet(this.props, ['propsObj', 'pagesObj', 'arr'], []);
+    // const pagesArr = lodashGet(this.props, ['propsObj', 'pagesObj', 'arr'], []);
     
-    const topPagesObj = pagesArr.find((valueObj) => {
-      return valueObj.type === 'top';
-    });
+    // const topPagesObj = pagesArr.find((valueObj) => {
+    //   return valueObj.type === 'top';
+    // });
     
-    const topPageName = lodashGet(topPagesObj, ['name'], '');
-    const title = topPageName ? topPageName : `${userName} - Game Users`;
+    // const topPageName = lodashGet(topPagesObj, ['name'], '');
+    // const title = topPageName ? topPageName : `${userName} - Game Users`;
     
     
     
@@ -402,7 +423,7 @@ export default class extends React.Component {
           
           {/* Head 内部のタグをここで追記する */}
           <Head>
-            <title>{title}</title>
+            <title>{this.props.title}</title>
           </Head>
           
           
@@ -471,7 +492,7 @@ export default class extends React.Component {
               <Element
                 name="cardPlayer"
               >
-                {componentCardsArr}
+                
               </Element>
               
               

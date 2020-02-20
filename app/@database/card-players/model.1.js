@@ -30,10 +30,9 @@ const ModelIDs = require('../ids/model');
 
 
 // ---------------------------------------------
-//   Format
+//   Modules
 // ---------------------------------------------
 
-const { formatCardPlayersArr } = require('./format');
 const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatFollowsObj } = require('../follows/format');
 
@@ -1677,10 +1676,8 @@ const findForFollowers = async ({
     
     // --------------------------------------------------
     //   Card Players のデータを取得
-    //   users をベースにしているのは accessDate でソートするため
     // --------------------------------------------------
     
-    // 
     const docUsersArr = await SchemaUsers.aggregate([
       
       
@@ -1784,33 +1781,33 @@ const findForFollowers = async ({
               //   card-players / users
               // --------------------------------------------------
               
-              // {
-              //   $lookup:
-              //     {
-              //       from: 'users',
-              //       let: { cardPlayersUsers_id: '$users_id' },
-              //       pipeline: [
-              //         { $match:
-              //           { $expr:
-              //             { $eq: ['$_id', '$$cardPlayersUsers_id'] },
-              //           }
-              //         },
-              //         { $project:
-              //           {
-              //             _id: 0,
-              //             accessDate: 1,
-              //             exp: 1,
-              //             userID: 1,
-              //           }
-              //         }
-              //       ],
-              //       as: 'usersObj'
-              //     }
-              // },
+              {
+                $lookup:
+                  {
+                    from: 'users',
+                    let: { cardPlayersUsers_id: '$users_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$cardPlayersUsers_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 0,
+                          accessDate: 1,
+                          exp: 1,
+                          userID: 1,
+                        }
+                      }
+                    ],
+                    as: 'usersObj'
+                  }
+              },
               
-              // {
-              //   $unwind: '$usersObj'
-              // },
+              {
+                $unwind: '$usersObj'
+              },
               
               
               // --------------------------------------------------
@@ -2038,6 +2035,7 @@ const findForFollowers = async ({
                   'activityTimeObj.valueArr': { _id: 0 },
                   lookingForFriendsObj: { search: 0 },
                   voiceChatObj: { search: 0 },
+                  idArr: { _id: 0, search: 0 },
                   linkArr: { _id: 0, search: 0 },
                 }
               },
@@ -2058,10 +2056,15 @@ const findForFollowers = async ({
       
       { $project:
         {
+          // _id: 0,
           accessDate: 1,
           exp: 1,
           userID: 1,
+          // followArr: 1,
+          // followedArr: 1,
+          // followedCount: 1,
           cardPlayerObj: 1,
+          // idsArr: 1,
         }
       },
       
@@ -2126,19 +2129,9 @@ const findForFollowers = async ({
     // });
     
     
-    // --------------------------------------------------
-    //   フォーマット
-    // --------------------------------------------------
-    
-    returnObj.cardPlayersArr = formatCardPlayersArr({
-      
-      localeObj,
-      loginUsers_id,
-      arr: docUsersArr,
-      // idsObj: resultIDsObj
-      
-    });
-    
+    // // --------------------------------------------------
+    // //   フォーマット
+    // // --------------------------------------------------
     
     // returnObj.cardPlayersObj = format({
       
@@ -2199,11 +2192,11 @@ const findForFollowers = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

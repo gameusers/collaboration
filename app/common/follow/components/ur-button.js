@@ -334,16 +334,16 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/follow/components/ur-button.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/follow/components/ur-button.js
+    // `);
     
-    console.log(`
-      ----- followsObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

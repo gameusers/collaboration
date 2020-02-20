@@ -24,6 +24,7 @@ module.exports = withCSS({
     
     ID_INSERT_LIMIT: process.env.ID_INSERT_LIMIT,
     UPLOAD_IMAGE_SIZE_UPPER_LIMIT: process.env.UPLOAD_IMAGE_SIZE_UPPER_LIMIT,
+    FOLLOWERS_LIMIT: process.env.FOLLOWERS_LIMIT,
     
     
     CARD_PLAYER_HOBBY_LIMIT: process.env.CARD_PLAYER_HOBBY_LIMIT,

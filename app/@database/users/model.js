@@ -1504,17 +1504,17 @@ const transactionForUpsert = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- followsConditionObj -----\n
-      ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsConditionObj -----\n
+    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- followsSaveObj -----\n
-      ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsSaveObj -----\n
+    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- imagesAndVideosConditionObj -----\n

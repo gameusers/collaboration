@@ -47,6 +47,7 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
   
   let author = false;
   let follow = false;
+  let followed = false;
   let followApproval = false;
   let followBlocked = false;
   
@@ -57,6 +58,7 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
   
   if (loginUsers_id) {
     
+    const followArr = lodashGet(followsObj, ['followArr'], []);
     const followedArr = lodashGet(followsObj, ['followedArr'], []);
     const approvalArr = lodashGet(followsObj, ['approvalArr'], []);
     const blockArr = lodashGet(followsObj, ['blockArr'], []);
@@ -66,6 +68,12 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
       author = true;
     }
     
+    // 相手がフォローしているユーザーの配列に自分のIDが含まれている場合は、フォローされているということ
+    if (followArr.includes(loginUsers_id)) {
+      followed = true;
+    }
+    
+    // 相手をフォローしているユーザーの配列に自分のIDが含まれている場合は、フォローしているということ
     if (followedArr.includes(loginUsers_id)) {
       follow = true;
     }
@@ -92,6 +100,7 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
     followedCount,
     author,
     follow,
+    followed,
     followApproval,
     followBlocked,
     

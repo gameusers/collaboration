@@ -187,9 +187,14 @@ export default class extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'プロフィール',
+        name: 'トップ',
         href: `/ur/[userID]?userID=${userID}`,
         as: `/ur/${userID}`,
+      },
+      {
+        name: 'フォロワー',
+        href: `/ur/[userID]/followers?userID=${userID}`,
+        as: `/ur/${userID}/followers`,
       },
       {
         name: '設定',
@@ -224,6 +229,8 @@ export default class extends React.Component {
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -296,25 +303,6 @@ export default class extends React.Component {
       } else {
         this.storesObj = getOrCreateStore({ propsObj: props.propsObj });
       }
-      
-      
-      
-      
-      // // --------------------------------------------------
-      // //   Update
-      // // --------------------------------------------------
-      
-      // const loginID = lodashGet(props, ['initialPropsObj', 'usersObj', 'loginID'], '');
-      // const emailSecret = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'secret'], '');
-      // const emailConfirmation = lodashGet(props, ['initialPropsObj', 'usersObj', 'emailObj', 'confirmation'], false);
-      // const userID = lodashGet(props, ['initialPropsObj', 'usersObj', 'userID'], '');
-      // const pagesArr = lodashGet(props, ['initialPropsObj', 'usersObj', 'pagesArr'], '');
-      
-      // this.stores.playerSettings.handleEdit({ pathArr: ['loginID'], value: loginID });
-      // this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'confirmation'], value: emailConfirmation });
-      // this.stores.playerSettings.handleEdit({ pathArr: ['emailObj', 'secret'], value: emailSecret });
-      // this.stores.playerSettings.handleEdit({ pathArr: ['userID'], value: userID });
-      // this.stores.playerSettings.handleEdit({ pathArr: ['pagesArr'], value: pagesArr });
       
       
     } catch (e) {

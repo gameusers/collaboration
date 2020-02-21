@@ -14,6 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashCloneDeep = require('lodash/cloneDeep');
@@ -27,6 +28,7 @@ const Schema = require('./schema');
 const SchemaUsers = require('../users/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const ModelIDs = require('../ids/model');
+const ModelFollows = require('../follows/model');
 
 
 // ---------------------------------------------
@@ -1626,7 +1628,11 @@ const findForMember = async ({
  * 取得する / フォロワー用
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} users_idsArr - DB users _id / 配列
+ * @param {string} authorUsers_id - DB users _id / 管理者のユーザーID
+ * @param {string} users_id - DB users _id
+ * @param {string} gameCommunities_id - DB game-communities _id
+ * @param {string} userCommunities_id - DB user-communities _id
+ * @param {string} type - 表示するフォロワーのタイプ / follow / followed / approval / block
  * @param {number} page - ページ
  * @param {number} limit - リミット
  * @return {Object} 取得データ
@@ -1635,9 +1641,13 @@ const findForFollowers = async ({
   
   localeObj,
   loginUsers_id,
-  users_idsArr,
-  page = 1,
-  limit = process.env.FOLLOWERS_LIMIT,
+  authorUsers_id,
+  users_id,
+  gameCommunities_id,
+  userCommunities_id,
+  type,
+  page,
+  limit,
   
 }) => {
   
@@ -1660,8 +1670,109 @@ const findForFollowers = async ({
     //   parseInt
     // --------------------------------------------------
     
-    const intPage = parseInt(page, 10);
-    const intLimit = parseInt(limit, 10);
+    let intPage = 1;
+    let intLimit = parseInt(process.env.FOLLOWERS_LIMIT, 10);
+    
+    if (page) {
+      intPage = parseInt(page, 10);
+    }
+    
+    if (limit) {
+      intLimit = parseInt(limit, 10);
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   follows のデータを取得
+    //   card-players のデータを取得するために必要
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - 検索条件
+    // ---------------------------------------------
+    
+    // let _id = users_id;
+    
+    let conditionObj = {
+      users_id
+    };
+    
+    if (gameCommunities_id) {
+      
+      conditionObj = {
+        gameCommunities_id
+      };
+      
+      // _id = gameCommunities_id;
+      
+    } else if (userCommunities_id) {
+      
+      conditionObj = {
+        userCommunities_id
+      };
+      
+      // _id = userCommunities_id;
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - DB find / Follows
+    // ---------------------------------------------
+    
+    const followsObj = await ModelFollows.findOne({ conditionObj });
+    
+    const followCount = lodashGet(followsObj, ['followCount'], 0);
+    const followedCount = lodashGet(followsObj, ['followedCount'], 0);
+    let approvalCount = 0;
+    let blockCount = 0;
+    
+    if (authorUsers_id === loginUsers_id) {
+      
+      approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
+      blockCount = lodashGet(followsObj, ['blockCount'], 0);
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - 検索用に users_id の配列を作成する
+    // ---------------------------------------------
+    
+    let users_idsArr = [];
+    
+    if (type === 'follow') {
+      
+      users_idsArr = lodashGet(followsObj, ['followArr'], []);
+      
+    } else if (type === 'followed') {
+      
+      users_idsArr = lodashGet(followsObj, ['followedArr'], []);
+      
+    } else if (type === 'approval') {
+      
+      users_idsArr = lodashGet(followsObj, ['approvalArr'], []);
+      
+    } else if (type === 'block') {
+      
+      users_idsArr = lodashGet(followsObj, ['blockArr'], []);
+      
+    }
+    
+    // users_idsArr = ['jun-deE4J', 'P7UJMuUnx'];
+    // users_idsArr = ['jun-deE4J'];
+    
+    
+    // intPage = 3;
+    // intLimit = 5;
+    
+    // const begin = (intPage - 1) * intLimit;
+    // const end = intLimit;
+    // let testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    // testArr = testArr.splice(begin, end);
+    
     
     
     // --------------------------------------------------
@@ -1680,7 +1791,6 @@ const findForFollowers = async ({
     //   users をベースにしているのは accessDate でソートするため
     // --------------------------------------------------
     
-    // 
     const docUsersArr = await SchemaUsers.aggregate([
       
       
@@ -1781,39 +1891,6 @@ const findForFollowers = async ({
               
               
               // --------------------------------------------------
-              //   card-players / users
-              // --------------------------------------------------
-              
-              // {
-              //   $lookup:
-              //     {
-              //       from: 'users',
-              //       let: { cardPlayersUsers_id: '$users_id' },
-              //       pipeline: [
-              //         { $match:
-              //           { $expr:
-              //             { $eq: ['$_id', '$$cardPlayersUsers_id'] },
-              //           }
-              //         },
-              //         { $project:
-              //           {
-              //             _id: 0,
-              //             accessDate: 1,
-              //             exp: 1,
-              //             userID: 1,
-              //           }
-              //         }
-              //       ],
-              //       as: 'usersObj'
-              //     }
-              // },
-              
-              // {
-              //   $unwind: '$usersObj'
-              // },
-              
-              
-              // --------------------------------------------------
               //   card-players / hardwares
               // --------------------------------------------------
               
@@ -1876,14 +1953,6 @@ const findForFollowers = async ({
                           { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
                         }
                       },
-                      // { $project:
-                      //   {
-                      //     _id: 0,
-                      //     followArr: 1,
-                      //     followedArr: 1,
-                      //     followedCount: 1,
-                      //   }
-                      // }
                     ],
                     as: 'followsObj'
                   }
@@ -2006,14 +2075,6 @@ const findForFollowers = async ({
                   }
               },
               
-              // {
-              //   $unwind: {
-              //     path: '$idsObj',
-              //     preserveNullAndEmptyArrays: true,
-              //   }
-              // },
-              
-              
               
               {
                 $project: {
@@ -2077,79 +2138,85 @@ const findForFollowers = async ({
     
     
     // --------------------------------------------------
-    //   フォーマットできるように整える
-    // --------------------------------------------------
-    
-    // const cardPlayersArr = [];
-    // const cardPlayersForOrderArr = [];
-    
-    // for (let valueObj of docCardPlayersArr.values()) {
-      
-    //   const usersObj = {
-        
-    //     exp: valueObj.exp,
-    //     followArr: valueObj.followArr,
-    //     followedArr: valueObj.followedArr,
-    //     followedCount: valueObj.followedCount,
-    //     accessDate: valueObj.accessDate,
-    //     userID: valueObj.userID,
-        
-    //   };
-      
-    //   const tempObj = lodashGet(valueObj, ['cardPlayerObj'], {});
-    //   const temp_id = lodashGet(valueObj, ['cardPlayerObj', '_id'], '');
-      
-    //   tempObj.usersObj = usersObj;
-      
-    //   cardPlayersArr.push(tempObj);
-    //   cardPlayersForOrderArr.push(temp_id);
-      
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   DB - ID データをまとめて取得
-    // // --------------------------------------------------
-    
-    // let ids_idArr = [];
-    
-    // for (let valueObj of cardPlayersArr.values()) {
-    //   ids_idArr = ids_idArr.concat(valueObj.ids_idArr);
-    // }
-    
-    // const resultIDsObj = await ModelIDs.findForCardPlayer({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   ids_idArr,
-      
-    // });
-    
-    
-    // --------------------------------------------------
     //   フォーマット
     // --------------------------------------------------
     
-    returnObj.cardPlayersArr = formatCardPlayersArr({
+    const resultObj = formatCardPlayersArr({
       
       localeObj,
       loginUsers_id,
       arr: docUsersArr,
-      // idsObj: resultIDsObj
       
     });
     
+    returnObj.cardPlayersObj = lodashGet(resultObj, ['obj'], {});
+    const cardPlayersArr = lodashGet(resultObj, ['arr'], []);
     
-    // returnObj.cardPlayersObj = format({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   cardPlayersArr,
-    //   idsObj: resultIDsObj
-      
-    // });
     
-    // returnObj.cardPlayersForOrderArr = cardPlayersForOrderArr;
+    
+    
+    // --------------------------------------------------
+    //   Datetime
+    // --------------------------------------------------
+    
+    const ISO8601 = moment().toISOString();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Return Object
+    // --------------------------------------------------
+    
+    lodashSet(returnObj, ['followMembersObj', 'followObj', 'count'], followCount);
+    lodashSet(returnObj, ['followMembersObj', 'followedObj', 'count'], followedCount);
+    
+    
+    // ---------------------------------------------
+    //   - 権限がある場合
+    // ---------------------------------------------
+    
+    if (authorUsers_id === loginUsers_id) {
+      
+      lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'count'], approvalCount);
+      lodashSet(returnObj, ['followMembersObj', 'blockObj', 'count'], blockCount);
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - データ更新
+    // ---------------------------------------------
+    
+    if (type === 'follow') {
+      
+      lodashSet(returnObj, ['followMembersObj', 'followObj', 'page'], intPage);
+      lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
+      lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      
+    } else if (type === 'followed') {
+      
+      lodashSet(returnObj, ['followMembersObj', 'followedObj', 'page'], intPage);
+      lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
+      lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      
+    } else if (type === 'approval') {
+      
+      lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'page'], intPage);
+      lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
+      lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      
+    } else if (type === 'block') {
+      
+      lodashSet(returnObj, ['followMembersObj', 'blockObj', 'page'], intPage);
+      lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
+      lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
+      
+    }
+    
+    
+    
+    
     
     
     
@@ -2158,15 +2225,15 @@ const findForFollowers = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/card-players/model.js - findForFollowers
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/card-players/model.js - findForFollowers
+    // `);
     
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   page: {green ${page}}
-    //   limit: {green ${limit}}
+    // console.log(`
+    //   ----- followsObj -----\n
+    //   ${util.inspect(followsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -2175,11 +2242,20 @@ const findForFollowers = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- docUsersArr -----\n
-      ${util.inspect(docUsersArr, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   page: {green ${page}}
+    //   limit: {green ${limit}}
+    //   intPage: {green ${intPage} / ${typeof intPage}}
+    //   intLimit: {green ${intLimit} / ${typeof intLimit}}
+    //   process.env.FOLLOWERS_LIMIT: {green ${process.env.FOLLOWERS_LIMIT} / ${typeof process.env.FOLLOWERS_LIMIT}}
+    // `);
+    
+    // console.log(`
+    //   ----- docUsersArr -----\n
+    //   ${util.inspect(docUsersArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- resultArr -----\n
@@ -2199,11 +2275,11 @@ const findForFollowers = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

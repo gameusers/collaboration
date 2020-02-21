@@ -216,9 +216,7 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     //   不要な項目を削除する
     // --------------------------------------------------
     
-    delete clonedObj._id;
-    // delete clonedObj.followsObj.followArr;
-    // delete clonedObj.followsObj.followedArr;
+    // delete clonedObj._id;
     delete clonedObj.ids_idArr;
     delete clonedObj.hardwareActiveObj;
     delete clonedObj.hardwareInactiveObj;
@@ -233,7 +231,7 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     // --------------------------------------------------
     
     returnObj[valueObj._id] = clonedObj;
-    returnArr.push(clonedObj);
+    returnArr.push(valueObj._id);
     
     
   }
@@ -244,7 +242,10 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
   // --------------------------------------------------
   
   // return returnObj;
-  return returnArr;
+  return {
+    obj: returnObj,
+    arr: returnArr,
+  };
   
   
 };

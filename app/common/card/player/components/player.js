@@ -288,7 +288,8 @@ export default class extends React.Component {
     //   ID
     // ---------------------------------------------
     
-    const ids_idArr = lodashGet(cardPlayersObj, ['ids_idArr'], []);
+    const idsArr = lodashGet(cardPlayersObj, ['idsArr'], []);
+    // const ids_idArr = lodashGet(cardPlayersObj, ['ids_idArr'], []);
     
     
     // ---------------------------------------------
@@ -530,7 +531,7 @@ export default class extends React.Component {
                 
                 {/* ID */}
                 <ID
-                  arr={ids_idArr}
+                  arr={idsArr}
                 />
                 
                 
@@ -559,15 +560,6 @@ export default class extends React.Component {
                 <Link linkArr={linkArr} />
                 
                 
-                {/* フォローボタン */}
-                {/*{showFollow &&
-                  <FollowButton
-                    pathArr={this.pathArr}
-                    users_id={users_id}
-                    followedCount={followedCount}
-                    followed={followed}
-                  />
-                }*/}
                 
                 
                 {/* Follow Button */}

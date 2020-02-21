@@ -45,6 +45,7 @@ import initStoreGameForm from '../../../app/common/game/stores/form';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
+import initStoreFollowMembers from '../../../app/common/follow-members/stores/store';
 
 
 // ---------------------------------------------
@@ -54,6 +55,7 @@ import initStoreFollow from '../../../app/common/follow/stores/store';
 import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
+import FollowMembers from '../../../app/common/follow-members/components/followers';
 import CardPlayer from '../../../app/common/card/player/components/player';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
 
@@ -80,6 +82,7 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
+  const storeFollowMembers = initStoreFollowMembers({ propsObj });
   
   
   // --------------------------------------------------
@@ -95,6 +98,7 @@ const getOrCreateStore = ({ propsObj }) => {
     storeImageAndVideo,
     storeImageAndVideoForm,
     storeFollow,
+    storeFollowMembers,
     
   };
   
@@ -163,8 +167,9 @@ export default class extends React.Component {
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
     
-    const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-    const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
+    const users_id = lodashGet(resultObj, ['data', 'users_id'], '');
+    // const followMembersObj = lodashGet(resultObj, ['data', 'followMembersObj'], {});
+    // const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
     
     
@@ -181,7 +186,7 @@ export default class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    // const pathArr = [loginUsers_id, 'urFollowers'];
+    const pathArr = [users_id, 'urFollowers'];
     
     
     
@@ -215,7 +220,7 @@ export default class extends React.Component {
       
     }
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, cardPlayersObj, pagesObj };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -258,6 +263,8 @@ export default class extends React.Component {
       
       statusCode,
       reqAcceptLanguage,
+      users_id,
+      accessLevel,
       title,
       storesObj,
       propsObj,
@@ -363,50 +370,11 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Player Card
+    //   path
     // --------------------------------------------------
     
-    // let userName = '';
-    
-    // const componentCardsArr = [];
-    
-    // for (const [index, valueObj] of cardsArr.entries()) {
-      
-    //   if ('cardPlayers_id' in valueObj) {
-        
-    //     const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
-    //     userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-    //     // userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-    //     // console.log(userName);
-        
-    //     componentCardsArr.push(
-    //       <CardPlayer
-    //         cardPlayers_id={valueObj.cardPlayers_id}
-    //         showFollow={true}
-    //         showEditButton={true}
-    //         key={index}
-    //       />
-    //     );
-        
-    //   }
-      
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Header Title
-    // // --------------------------------------------------
-    
-    // const pagesArr = lodashGet(this.props, ['propsObj', 'pagesObj', 'arr'], []);
-    
-    // const topPagesObj = pagesArr.find((valueObj) => {
-    //   return valueObj.type === 'top';
-    // });
-    
-    // const topPageName = lodashGet(topPagesObj, ['name'], '');
-    // const title = topPageName ? topPageName : `${userName} - Game Users`;
+    const pathArr = lodashGet(this.props, ['propsObj', 'pathArr'], []);
+    const pathname = lodashGet(this.props, ['propsObj', 'pathname'], '');
     
     
     
@@ -492,7 +460,12 @@ export default class extends React.Component {
               <Element
                 name="cardPlayer"
               >
-                
+                <FollowMembers
+                  users_id={this.props.users_id}
+                  pathArr={pathArr}
+                  pathname={pathname}
+                  accessLevel={this.props.accessLevel}
+                />
               </Element>
               
               

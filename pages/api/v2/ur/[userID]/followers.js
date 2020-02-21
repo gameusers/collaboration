@@ -14,6 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
+const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -24,7 +25,7 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelFollows = require('../../../../../app/@database/follows/model');
+// const ModelFollows = require('../../../../../app/@database/follows/model');
 const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
@@ -34,6 +35,13 @@ const ModelCardPlayers = require('../../../../../app/@database/card-players/mode
 
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
+
+
+// ---------------------------------------------
+//   Validations
+// ---------------------------------------------
+
+const { validationInteger } = require('../../../../../app/@validations/integer');
 
 
 // ---------------------------------------------
@@ -105,6 +113,16 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   Validations
+    // --------------------------------------------------
+    
+    await validationInteger({ throwError: true, value: page });
+    await validationInteger({ throwError: true, value: limit });
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Common Initial Props
     // --------------------------------------------------
     
@@ -143,6 +161,8 @@ export default async (req, res) => {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '1G6OYPg8p', messageID: 'Error' }] });
     }
     
+    returnObj.users_id = users_id;
+    
     
     // ---------------------------------------------
     //   headerObj
@@ -166,82 +186,41 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Follows
-    // --------------------------------------------------
-    
-    const followsObj = await ModelFollows.findOne({
-      
-      conditionObj: {
-        users_id
-      },
-      
-    });
-    
-    // const followedArr = ['jun-deE4J', 'P7UJMuUnx'];
-    const followedArr = ['jun-deE4J'];
-    
-    // const followedArr = lodashGet(followsObj, ['followedArr'], []);
-    // const followedCount = lodashGet(followsObj, ['followedCount'], 1);
-    
-    // if (author) {
-      
-    //   returnObj.approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
-    //   returnObj.blockCount = lodashGet(followsObj, ['blockCount'], 0);
-      
-    // }
-    
-    
-    // --------------------------------------------------
     //    DB find / Card Players
     // --------------------------------------------------
     
-    if (!page) {
-      page = 1;
-    }
-    
-    const conditionObj = {
+    const resultFollowersObj = await ModelCardPlayers.findForFollowers({
       
       localeObj,
       loginUsers_id,
-      users_idsArr: followedArr,
+      authorUsers_id: users_id,
+      users_id,
+      type: 'follow',
       page,
+      limit,
       
-    };
+    });
     
-    if (limit) {
-      conditionObj.limit = limit;
-    }
-    
-    const docFollowersObj = await ModelCardPlayers.findForFollowers(conditionObj);
-    
-    returnObj.cardPlayersObj = docFollowersObj.cardPlayersObj;
+    returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+    returnObj.followMembersObj = resultFollowersObj.followMembersObj;
     
     
     // --------------------------------------------------
-    //   console.log
+    //    followersObj
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/ur/[userID]/followers.js
-    // `);
+    // const followersObj = {
+    //   page,
+    //   count: followedCount,
+    //   approvalCount,
+    //   blockCount,
+    // };
     
-    // console.log(chalk`
-    //   userID: {green ${userID}}
-    //   users_id: {green ${users_id}}
-    // `);
+    // lodashSet(followersObj, [`page${page}Obj`, 'loadedDate'], moment().toISOString());
+    // lodashSet(followersObj, [`page${page}Obj`, 'arr'], cardPlayersArr);
     
-    // console.log(`
-    //   ----- followsObj -----\n
-    //   ${util.inspect(followsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    // returnObj.followersObj = followersObj;
     
-    // console.log(`
-    //   ----- docFollowersObj -----\n
-    //   ${util.inspect(docFollowersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -275,10 +254,27 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/ur/[userID]/followers.js
+    `);
+    
     // console.log(chalk`
-    //   {green ur/player/api/player / initial-props}
     //   userID: {green ${userID}}
-    //   users_id：{green ${users_id}}
+    //   page: {green ${page} / ${typeof page}}
+    //   limit: {green ${limit} / ${typeof limit}}
+    // `);
+    
+    // console.log(`
+    //   ----- followsObj -----\n
+    //   ${util.inspect(followsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docFollowersObj -----\n
+    //   ${util.inspect(docFollowersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -305,11 +301,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

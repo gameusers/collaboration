@@ -447,6 +447,7 @@ export default class extends React.Component {
             {/* Main */}
             <div
               css={css`
+                width: 100%;
                 max-width: 800px;
                 
                 @media screen and (max-width: 947px) {
@@ -456,11 +457,12 @@ export default class extends React.Component {
             >
               
               
-              {/* プレイヤーカード */}
+              {/* Followers */}
               <Element
-                name="cardPlayer"
+                name="followers"
               >
                 <FollowMembers
+                  pageType="ur"
                   users_id={this.props.users_id}
                   pathArr={pathArr}
                   pathname={pathname}

@@ -110,14 +110,18 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} pathname - ページの固有ID　例）/uc/community1
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
+   * @param {string} newType - 表示するタイプを変更する場合入力　フォロー、フォロワー、承認、ブロックのどれか
    * @param {number} page - スレッドのページ
    * @param {number} newLimit - 1ページに表示する件数を変更する場合、値を入力する
+   * @param {boolean} forceReload - 強制的に再読み込みする場合は true
    */
   @action.bound
-  async handleReadMembers({
+  async handleReadFollowers({
     
     pathArr,
     pathname,
+    users_id,
+    gameCommunities_id,
     userCommunities_id,
     newType,
     page = 1,
@@ -134,19 +138,16 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      // const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
-      // const count = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'count'], 1);
+      let type = lodashGet(this.dataObj, [...pathArr, 'type'], 'follow');
+      let limit = parseInt((storeData.getCookie({ key: 'followersLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
       
-      let type = lodashGet(this.dataObj, [...pathArr, 'type'], 'member');
+      const followMembersObj = lodashGet(this.dataObj, [...pathArr, 'followMembersObj'], {});
+      const clonedFollowMembersObj = lodashCloneDeep(followMembersObj);
       
-      let limit = parseInt((storeData.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
-      const arr = lodashGet(this.dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
-      
-      const membersObj = lodashGet(this.dataObj, [...pathArr, 'membersObj'], {});
-      const clonedMembersObj = lodashCloneDeep(membersObj);
-      
-      const loadedDate = lodashGet(membersObj, [`page${page}Obj`, 'loadedDate'], '');
-      
+      const arr = lodashGet(followMembersObj, [`${type}Obj`, `page${page}Obj`, 'arr'], []);
+      const loadedDate = lodashGet(followMembersObj, [`${type}Obj`, `page${page}Obj`, 'loadedDate'], '');
+      // const arr = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'arr'], []);
+      // const loadedDate = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'loadedDate'], '');
       let reload = false;
       
       
@@ -181,11 +182,11 @@ class Store {
         
         
         // ---------------------------------------------
-        //   Set Cookie - memberLimit
+        //   Set Cookie - followersLimit
         // ---------------------------------------------
         
         limit = newLimit;
-        Cookies.set('memberLimit', limit);
+        Cookies.set('followersLimit', limit);
         
         
         // ---------------------------------------------
@@ -202,7 +203,7 @@ class Store {
       } else if (loadedDate) {
         
         const datetimeNow = moment().utcOffset(0);
-        const datetimeReloadLimit = moment(loadedDate).add(process.env.COMMUNITY_MEMBER_RELOAD_MINUTES, 'm').utcOffset(0);
+        const datetimeReloadLimit = moment(loadedDate).add(process.env.FOLLOWERS_RELOAD_MINUTES, 'm').utcOffset(0);
         
         if (datetimeNow.isAfter(datetimeReloadLimit)) {
           reload = true;
@@ -230,21 +231,20 @@ class Store {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/uc/member/stores/store.js / handleReadMembers
+      //   /app/common/follow-members/stores/store.js - handleReadFollowers
       // `);
+      
       
       // console.log(chalk`
+      //   type: {green ${type}}
+      //   users_id: {green ${users_id}}
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
       //   page: {green ${page}}
-      //   newLimit: {green ${newLimit}}
       //   limit: {green ${limit}}
+      //   newLimit: {green ${newLimit}}
       //   loadedDate: {green ${loadedDate}}
       //   reload: {green ${reload}}
-      // `);
-      
-      // console.log(`
-      //   ----- membersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(membersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
       // `);
       
       // console.log(`
@@ -273,22 +273,23 @@ class Store {
         
         
         // ---------------------------------------------
-        //   更新 - メンバー
+        //   更新 - ページ
         // ---------------------------------------------
         
-        clonedMembersObj.page = page;
+        lodashSet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], page);
+        // clonedMembersObj.page = page;
         
-        this.handleEdit({
-          pathArr: [...pathArr, 'membersObj'],
-          value: clonedMembersObj
-        });
+        // this.handleEdit({
+        //   pathArr: [...pathArr, 'membersObj'],
+        //   value: clonedMembersObj
+        // });
         
         
         // ---------------------------------------------
-        //   Set Temporary Data - memberPage
+        //   Set Temporary Data - followersPage
         // ---------------------------------------------
         
-        storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
+        storeData.setTemporaryData({ pathname, key: 'followersPage', value: page });
         
         
         // ---------------------------------------------
@@ -337,6 +338,8 @@ class Store {
       
       const formDataObj = {
         
+        users_id,
+        gameCommunities_id,
         userCommunities_id,
         type,
         page,
@@ -350,17 +353,17 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/user-communities/read-members`,
+        urlApi: `${process.env.URL_API}/v2/db/follows/read-followers`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       
@@ -399,52 +402,53 @@ class Store {
       
       
       // ---------------------------------------------
-      //   membersObj
+      //   followMembersObj
       //   再読込する場合は新しいデータに置き換える、再読込しない場合は古いデータと新しいデータをマージする
       // ---------------------------------------------
       
       // console.log(`
-      //   ----- clonedMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(clonedMembersObj)), { colors: true, depth: null })}\n
+      //   ----- clonedFollowMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(clonedFollowMembersObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
-      // console.log(chalk`
-      //   reload: {green ${reload}}
-      // `);
+      // // console.log(chalk`
+      // //   reload: {green ${reload}}
+      // // `);
       
-      const newMembersObj = lodashGet(resultObj, ['data', 'membersObj'], {});
-      const mergedMembersObj = reload ? newMembersObj : lodashMerge(clonedMembersObj, newMembersObj);
+      const newFollowMembersObj = lodashGet(resultObj, ['data', 'followMembersObj'], {});
+      const mergedFollowMembersObj = reload ? newFollowMembersObj : lodashMerge(clonedFollowMembersObj, newFollowMembersObj);
       
       // console.log(`
-      //   ----- newMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(newMembersObj)), { colors: true, depth: null })}\n
+      //   ----- newFollowMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(newFollowMembersObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
       // console.log(`
-      //   ----- mergedMembersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(mergedMembersObj)), { colors: true, depth: null })}\n
+      //   ----- mergedFollowMembersObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(mergedFollowMembersObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
       
+      //lodashSet(storeFollowMembers, ['dataObj', ...pathArr, 'followMembersObj'], propsObj.followMembersObj);
       
       
       // ---------------------------------------------
-      //   更新 - メンバー
+      //   更新 - followMembersObj
       // ---------------------------------------------
       
       this.handleEdit({
-        pathArr: [...pathArr, 'membersObj'],
-        value: mergedMembersObj
+        pathArr: [...pathArr, 'followMembersObj'],
+        value: mergedFollowMembersObj
       });
       
       
       // ---------------------------------------------
-      //   Set Temporary Data - memberPage
+      //   Set Temporary Data - followersPage
       // ---------------------------------------------
       
-      storeData.setTemporaryData({ pathname, key: 'memberPage', value: page });
+      storeData.setTemporaryData({ pathname, key: 'followersPage', value: page });
       
       
       // ---------------------------------------------
@@ -457,31 +461,31 @@ class Store {
       });
       
       
-      // --------------------------------------------------
-      //   followedCount / ヘッダーのメンバー数更新
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   followedCount / ヘッダーのメンバー数更新
+      // // --------------------------------------------------
       
-      if (lodashHas(resultObj, ['data', 'followedCount'])) {
-        lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
-      }
-      
-      
-      // --------------------------------------------------
-      //   approvalCount
-      // --------------------------------------------------
-      
-      if (lodashHas(resultObj, ['data', 'approvalCount'])) {
-        lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
-      }
+      // if (lodashHas(resultObj, ['data', 'followedCount'])) {
+      //   lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
+      // }
       
       
-      // --------------------------------------------------
-      //   blockCount
-      // --------------------------------------------------
+      // // --------------------------------------------------
+      // //   approvalCount
+      // // --------------------------------------------------
       
-      if (lodashHas(resultObj, ['data', 'blockCount'])) {
-        lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
-      }
+      // if (lodashHas(resultObj, ['data', 'approvalCount'])) {
+      //   lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
+      // }
+      
+      
+      // // --------------------------------------------------
+      // //   blockCount
+      // // --------------------------------------------------
+      
+      // if (lodashHas(resultObj, ['data', 'blockCount'])) {
+      //   lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
+      // }
       
       
     } catch (errorObj) {
@@ -519,7 +523,7 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleScrollTo({
-        to: 'ucMember',
+        to: 'followers',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -713,7 +717,7 @@ class Store {
       
       const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
       
-      this.handleReadMembers({
+      this.handleReadFollowers({
         pathArr,
         pathname,
         userCommunities_id,

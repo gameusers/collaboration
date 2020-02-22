@@ -186,14 +186,14 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //    DB find / Card Players
+    //   DB find / Card Players
     // --------------------------------------------------
     
     const resultFollowersObj = await ModelCardPlayers.findForFollowers({
       
       localeObj,
       loginUsers_id,
-      authorUsers_id: users_id,
+      adminUsers_id: users_id,
       users_id,
       type: 'follow',
       page,

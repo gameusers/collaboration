@@ -28,12 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * メンバーページでメンバーを管理する際の type
+ * メンバーページでフォロワーを読み込む際の Type
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationManageMembersType = ({ throwError = false, value }) => {
+const validationFollowersType = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -58,8 +58,8 @@ const validationManageMembersType = ({ throwError = false, value }) => {
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(value, ['follow', 'unfollow', 'approval', 'unapproval', 'block', 'unblock'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ILRLPItIs', messageID: 'PH8jcw-VF' }] });
+    if (!validator.isIn(value, ['follow', 'followed', 'approval', 'block'])) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'z4i0plQ7K', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -108,5 +108,5 @@ const validationManageMembersType = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationManageMembersType
+  validationFollowersType
 };

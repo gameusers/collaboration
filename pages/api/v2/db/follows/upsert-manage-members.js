@@ -43,7 +43,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 const { validationIP } = require('../../../../../app/@validations/ip');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
-const { validationManageMembersType } = require('../../../../../app/@database/follows/validations/manage-members-type');
+const { validationManageFollowersType } = require('../../../../../app/@database/follows/validations/manage-members-type');
 
 
 
@@ -129,7 +129,7 @@ export default async (req, res) => {
     await validationIP({ throwError: true, value: req.ip });
     await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
     await validationUsers_idServer({ throwError: true, value: managedUsers_id });
-    await validationManageMembersType({ throwError: true, required: true, value: type });
+    await validationManageFollowersType({ throwError: true, required: true, value: type });
     
     
     

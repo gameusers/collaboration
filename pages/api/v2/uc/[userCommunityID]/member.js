@@ -42,7 +42,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationMemberLimit } = require('../../../../../app/@database/follows/validations/member-limit');
+const { validationFollowersLimit } = require('../../../../../app/@database/follows/validations/member-limit');
 
 
 // ---------------------------------------------
@@ -118,7 +118,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationInteger({ throwError: true, value: page });
-    await validationMemberLimit({ throwError: true, value: limit });
+    await validationFollowersLimit({ throwError: true, value: limit });
     
     
     

@@ -158,11 +158,13 @@ export default injectIntl(class extends React.Component {
       stores,
       storeFollowMembers,
       intl,
+      pageType,
       users_id,
+      gameCommunities_id,
       userCommunities_id,
       pathArr,
       pathname,
-      // author,
+      accessLevel,
       
     } = this.props;
     
@@ -171,7 +173,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleReadMembers,
+      handleReadFollowers,
       handleOpenDialog,
       handleMembers,
       
@@ -183,23 +185,6 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'count'], 0);
     const limit = parseInt((stores.data.getCookie({ key: 'followersLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
     const arr = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'arr'], []);
-    // const arr = lodashGet(dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
-    // const count = lodashGet(dataObj, [...pathArr, 'membersObj', 'count'], 1);
-    // const limit = parseInt((stores.data.getCookie({ key: 'memberLimit' }) || process.env.COMMUNITY_MEMBER_LIMIT), 10);
-    // const arr = lodashGet(dataObj, [...pathArr, 'membersObj', `page${page}Obj`, 'arr'], []);
-    
-    
-    // let followCount = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'followObj', 'count'], 0);
-    
-    // if (followCount > 99) {
-    //   followCount = '99+';
-    // }
-    
-    // let followedCount = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'followedObj', 'count'], 0);
-    
-    // if (followedCount > 99) {
-    //   followedCount = '99+';
-    // }
     
     let approvalCount = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'approvalObj', 'count'], 0);
     
@@ -207,36 +192,27 @@ export default injectIntl(class extends React.Component {
       approvalCount = '99+';
     }
     
-    // let blockCount = lodashGet(dataObj, [...pathArr, 'blockCount'], 0);
     
-    // if (blockCount > 99) {
-    //   blockCount = '99+';
+    
+    
+    // --------------------------------------------------
+    //   administrator / 管理者権限があるかチェックする
+    // --------------------------------------------------
+    
+    // let administrator = false;
+    
+    // const loginUsers_id = lodashGet(stores, ['data', 'loginUsersObj', '_id'], '');
+    
+    // if (stores.data.getLogin() && users_id === loginUsers_id) {
+    //   administrator = true;
     // }
     
     
-    
-    
     // --------------------------------------------------
-    //   author
+    //   loginUsers_id
     // --------------------------------------------------
-    
-    let author = false;
     
     const loginUsers_id = lodashGet(stores, ['data', 'loginUsersObj', '_id'], '');
-    
-    if (stores.data.getLogin() && users_id === loginUsers_id) {
-      author = true;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -264,6 +240,20 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Component - Control Buttons
+    // --------------------------------------------------
+    
+    // const componentControlButtons = [];
+    
+    // if (pageType === 'ur') {
+      
+      
+      
+    // }
+    
+    
+    
+    // --------------------------------------------------
     //   Component - CardPlayers
     // --------------------------------------------------
     
@@ -277,17 +267,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const managedUsers_id = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'users_id'], '');
-      
-      // console.log(chalk`
-      //   authorUsers_id: {green ${authorUsers_id}}
-      //   managedUsers_id: {green ${managedUsers_id}}
-      // `);
-      
-      // console.log(`
-      //   ----- cardPlayersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(cardPlayersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       componentCardPlayersArr.push(
@@ -309,7 +288,7 @@ export default injectIntl(class extends React.Component {
           
           
           {/* フォロワー管理ボタン（自分のカードには管理ボタンを表示しない） */}
-          {(author && loginUsers_id !== managedUsers_id) &&
+          {(accessLevel >= 50 && loginUsers_id !== managedUsers_id) &&
             <div
               css={css`
                 display: flex;
@@ -319,7 +298,7 @@ export default injectIntl(class extends React.Component {
             >
               
               
-              {type === 'member' &&
+              {type === 'follow' &&
                 <div
                   css={css`
                     margin: 0 16px 0 0;
@@ -434,17 +413,18 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/common/follow-members/components/followers.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/follow-members/components/followers.js
+    // `);
     
-    console.log(chalk`
-      type: {green ${type}}
-      page: {green ${page}}
-      count: {green ${count}}
-      limit: {green ${limit}}
-    `);
+    // console.log(chalk`
+    //   type: {green ${type}}
+    //   page: {green ${page}}
+    //   count: {green ${count}}
+    //   limit: {green ${limit}}
+      
+    // `);
     
     // const followObj = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'followObj'], {});
     
@@ -454,11 +434,11 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- arr -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -472,34 +452,33 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Control Buttons */}
-        {author &&
-          <Paper
-            css={css`
-              display: flex;
-              flex-flow: row wrap;
-              margin: 0 0 24px 0;
-              padding: 12px 12px;
-            `}
+        <Paper
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            margin: 0 0 24px 0;
+            padding: 12px 12px;
+          `}
+        >
+        
+          <ButtonGroup
+            size="small"
+            color="primary"
+            aria-label="outlined primary button group"
+            disabled={buttonDisabled}
           >
-          {/*<div
-            css={css`
-              margin: 0 0 24px 0;
-            `}
-          >*/}
-            <ButtonGroup
-              // variant="contained"
-              size="small"
-              color="primary"
-              aria-label="outlined primary button group"
-              disabled={buttonDisabled}
-            >
             
+            
+            {/* ユーザーページの場合のみフォローしているユーザーを表示する */}
+            {pageType === 'ur' &&
               <Button
-                onClick={() => handleReadMembers({
+                onClick={() => handleReadFollowers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
-                  newType: 'member',
+                  newType: 'follow',
                   page: 1,
                 })}
               >
@@ -508,35 +487,41 @@ export default injectIntl(class extends React.Component {
                     font-weight: ${type === 'follow' ? 'bold' : 'normal'};
                   `}
                 >
-                  フォロー{/*メンバー*/}
+                  フォロー
                 </span>
               </Button>
-              
-              
-              <Button
-                onClick={() => handleReadMembers({
-                  pathArr,
-                  pathname,
-                  userCommunities_id,
-                  newType: 'member',
-                  page: 1,
-                })}
+            }
+            
+            
+            <Button
+              onClick={() => handleReadFollowers({
+                pathArr,
+                pathname,
+                users_id,
+                gameCommunities_id,
+                userCommunities_id,
+                newType: 'followed',
+                page: 1,
+              })}
+            >
+              <span
+                css={css`
+                  font-weight: ${type === 'followed' ? 'bold' : 'normal'};
+                `}
               >
-                <span
-                  css={css`
-                    font-weight: ${type === 'follower' ? 'bold' : 'normal'};
-                  `}
-                >
-                  フォロワー
-                </span>
-              </Button>
-              
-              
+                {pageType === 'uc' ? 'メンバー' : 'フォロワー'}
+              </span>
+            </Button>
+            
+            
+            {/* 管理者用 */}
+            {accessLevel >= 50 &&
               <Button
-                
-                onClick={() => handleReadMembers({
+                onClick={() => handleReadFollowers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   newType: 'approval',
                   page: 1,
@@ -550,12 +535,17 @@ export default injectIntl(class extends React.Component {
                   承認 ({approvalCount})
                 </span>
               </Button>
-              
-              
+            }
+            
+            
+            {/* 管理者用 */}
+            {accessLevel >= 50 &&
               <Button
-                onClick={() => handleReadMembers({
+                onClick={() => handleReadFollowers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   newType: 'block',
                   page: 1,
@@ -569,12 +559,13 @@ export default injectIntl(class extends React.Component {
                   ブロック
                 </span>
               </Button>
-              
-            </ButtonGroup>
-          {/*</div>*/}
-          
-          </Paper>
-        }
+            }
+            
+            
+          </ButtonGroup>
+        
+        </Paper>
+        
         
         
         
@@ -605,9 +596,11 @@ export default injectIntl(class extends React.Component {
             
             <Pagination
               disabled={buttonDisabled}
-              onChange={(page) => handleReadMembers({
+              onChange={(page) => handleReadFollowers({
                 pathArr,
                 pathname,
+                users_id,
+                gameCommunities_id,
                 userCommunities_id,
                 page,
               })}
@@ -631,9 +624,11 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              onChange={(eventObj) => handleReadMembers({
+              onChange={(eventObj) => handleReadFollowers({
                 pathArr,
                 pathname,
+                users_id,
+                gameCommunities_id,
                 userCommunities_id,
                 page: 1,
                 newLimit: eventObj.target.value,
@@ -691,6 +686,8 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleMembers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   type: 'unfollow',
                 })}
@@ -746,6 +743,8 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleMembers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   type: 'approval',
                 })}
@@ -801,6 +800,8 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleMembers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   type: 'unapproval',
                 })}
@@ -856,6 +857,8 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleMembers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   type: 'block',
                 })}
@@ -911,6 +914,8 @@ export default injectIntl(class extends React.Component {
                 onClick={() => handleMembers({
                   pathArr,
                   pathname,
+                  users_id,
+                  gameCommunities_id,
                   userCommunities_id,
                   type: 'unblock',
                 })}

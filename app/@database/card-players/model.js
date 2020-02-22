@@ -1628,7 +1628,7 @@ const findForMember = async ({
  * 取得する / フォロワー用
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} authorUsers_id - DB users _id / 管理者のユーザーID
+ * @param {string} adminUsers_id - DB users _id / 管理者のユーザーID
  * @param {string} users_id - DB users _id
  * @param {string} gameCommunities_id - DB game-communities _id
  * @param {string} userCommunities_id - DB user-communities _id
@@ -1641,7 +1641,7 @@ const findForFollowers = async ({
   
   localeObj,
   loginUsers_id,
-  authorUsers_id,
+  adminUsers_id,
   users_id,
   gameCommunities_id,
   userCommunities_id,
@@ -1729,7 +1729,7 @@ const findForFollowers = async ({
     let approvalCount = 0;
     let blockCount = 0;
     
-    if (authorUsers_id === loginUsers_id) {
+    if (adminUsers_id === loginUsers_id) {
       
       approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
       blockCount = lodashGet(followsObj, ['blockCount'], 0);
@@ -2176,7 +2176,7 @@ const findForFollowers = async ({
     //   - 権限がある場合
     // ---------------------------------------------
     
-    if (authorUsers_id === loginUsers_id) {
+    if (adminUsers_id === loginUsers_id) {
       
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'count'], approvalCount);
       lodashSet(returnObj, ['followMembersObj', 'blockObj', 'count'], blockCount);
@@ -2415,9 +2415,9 @@ const format = ({ localeObj, loginUsers_id, cardPlayersArr, idsObj }) => {
     // --------------------------------------------------
     
     const followsObj = lodashGet(valueObj, ['followsObj'], {});
-    const authorUsers_id = valueObj.users_id;
+    const adminUsers_id = valueObj.users_id;
     
-    clonedObj.followsObj = formatFollowsObj({ followsObj, authorUsers_id, loginUsers_id });
+    clonedObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id, loginUsers_id });
     
     
     // clonedObj.followsObj.follow = false;

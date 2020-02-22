@@ -28,13 +28,13 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * メンバーページでメンバーを1ページに表示する件数
+ * メンバーページでフォロワーを1ページに表示する件数
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationMemberLimit = ({ throwError = false, required = false, value }) => {
+const validationFollowersLimit = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -124,5 +124,5 @@ const validationMemberLimit = ({ throwError = false, required = false, value }) 
 // --------------------------------------------------
 
 module.exports = {
-  validationMemberLimit,
+  validationFollowersLimit,
 };

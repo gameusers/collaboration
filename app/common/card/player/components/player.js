@@ -27,6 +27,7 @@ import { css, jsx } from '@emotion/core';
 //   Material UI
 // ---------------------------------------------
 
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -401,6 +402,13 @@ export default class extends React.Component {
             accessDate={accessDate}
             exp={exp}
           />
+          
+          {/*<Button
+            variant="contained"
+            color="secondary"
+          >
+            退会
+          </Button>*/}
           
           
           {/* 右上に設置されているパネル開閉用のボタン */}

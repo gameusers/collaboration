@@ -171,9 +171,9 @@ export default class extends React.Component {
         as: `/ur/${userID}`,
       },
       {
-        name: 'フォロワー',
-        href: `/ur/[userID]/followers?userID=${userID}`,
-        as: `/ur/${userID}/followers`,
+        name: 'フォロー',
+        href: `/ur/[userID]/follow?userID=${userID}`,
+        as: `/ur/${userID}/follow`,
       },
     ];
     

@@ -11,7 +11,7 @@ const util = require('util');
 
 
 // ---------------------------------------------
-//   Validation
+//   Node Packages
 // ---------------------------------------------
 
 const validator = require('validator');
@@ -28,12 +28,13 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * メンバーページでフォロワーを読み込む際の Type
+ * メンバーページでフォロワーを1ページに表示する件数
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationFollowersType = ({ throwError = false, value }) => {
+const validationFollowLimit = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -46,7 +47,7 @@ const validationFollowersType = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'PH8jcw-VF',
+    messageID: 'Error',
     error: false,
   };
   
@@ -55,11 +56,26 @@ const validationFollowersType = ({ throwError = false, value }) => {
     
     
     // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'F_v4oxbqv', messageID: 'cFbXmuFVh' }] });
+      }
+      
+      return resultObj;
+      
+    }
+    
+    
+    // ---------------------------------------------
     //   適切な値が選択されているかチェック
     // ---------------------------------------------
     
-    if (!validator.isIn(value, ['follow', 'followed', 'approval', 'block'])) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'z4i0plQ7K', messageID: 'PH8jcw-VF' }] });
+    if (!validator.isIn(data, ['1', '5', '10', '20', '50'])) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'sh259rt4c', messageID: 'PH8jcw-VF' }] });
     }
     
     
@@ -108,5 +124,5 @@ const validationFollowersType = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationFollowersType
+  validationFollowLimit,
 };

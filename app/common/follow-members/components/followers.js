@@ -174,8 +174,8 @@ export default injectIntl(class extends React.Component {
       dataObj,
       handleEdit,
       handleReadFollowers,
-      handleOpenDialog,
-      handleMembers,
+      handleShowDialog,
+      handleManageFollowers,
       
     } = storeFollowMembers;
     
@@ -183,7 +183,7 @@ export default injectIntl(class extends React.Component {
     const type = lodashGet(dataObj, [...pathArr, 'type'], 'follow');
     const page = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], 1);
     const count = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'followersLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
+    const limit = parseInt((stores.data.getCookie({ key: 'followLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
     const arr = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'arr'], []);
     
     let approvalCount = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'approvalObj', 'count'], 0);
@@ -193,19 +193,6 @@ export default injectIntl(class extends React.Component {
     }
     
     
-    
-    
-    // --------------------------------------------------
-    //   administrator / 管理者権限があるかチェックする
-    // --------------------------------------------------
-    
-    // let administrator = false;
-    
-    // const loginUsers_id = lodashGet(stores, ['data', 'loginUsersObj', '_id'], '');
-    
-    // if (stores.data.getLogin() && users_id === loginUsers_id) {
-    //   administrator = true;
-    // }
     
     
     // --------------------------------------------------
@@ -221,11 +208,61 @@ export default injectIntl(class extends React.Component {
     //   ダイアログ
     // --------------------------------------------------
     
-    const showDialogUnfollow = lodashGet(dataObj, [...pathArr, 'showDialogUnfollow'], false);
-    const showDialogApproval = lodashGet(dataObj, [...pathArr, 'showDialogApproval'], false);
-    const showDialogUnapproval = lodashGet(dataObj, [...pathArr, 'showDialogUnapproval'], false);
-    const showDialogBlock = lodashGet(dataObj, [...pathArr, 'showDialogBlock'], false);
-    const showDialogUnblock = lodashGet(dataObj, [...pathArr, 'showDialogUnblock'], false);
+    const dialogType = lodashGet(dataObj, [...pathArr, 'dialogObj', 'type'], 'unfollow');
+    const showDialog = lodashGet(dataObj, [...pathArr, 'showDialog'], false);
+    
+    
+    let dialogTitle = '';
+    let dialogDescription = '';
+    
+    
+    if (pageType === 'uc') {
+      
+      if (dialogType === 'unfollow') {
+        
+        dialogTitle = 'コミュニティ退会';
+        dialogDescription = 'コミュニティから退会させますか？';
+        
+      }
+      
+    } else {
+      
+      if (dialogType === 'unfollow') {
+        
+        dialogTitle = 'フォロー解除';
+        dialogDescription = 'フォローを解除しますか？';
+        
+      } else if (dialogType === 'approval') {
+        
+        dialogTitle = 'フォロー承認';
+        dialogDescription = 'フォローを承認しますか？';
+        
+      } else if (dialogType === 'unapproval') {
+        
+        dialogTitle = 'フォロー拒否';
+        dialogDescription = 'フォローを拒否しますか？';
+        
+      } else if (dialogType === 'block') {
+        
+        dialogTitle = 'ブロック';
+        dialogDescription = 'ブロックしますか？';
+        
+      } else if (dialogType === 'block') {
+        
+        dialogTitle = 'ブロック解除';
+        dialogDescription = 'ブロックを解除しますか？';
+        
+      }
+      
+    }
+    
+    
+    
+    // const showDialogUnfollow = lodashGet(dataObj, [...pathArr, 'showDialogUnfollow'], false);
+    // const showDialogApproval = lodashGet(dataObj, [...pathArr, 'showDialogApproval'], false);
+    // const showDialogUnapproval = lodashGet(dataObj, [...pathArr, 'showDialogUnapproval'], false);
+    // const showDialogBlock = lodashGet(dataObj, [...pathArr, 'showDialogBlock'], false);
+    // const showDialogUnblock = lodashGet(dataObj, [...pathArr, 'showDialogUnblock'], false);
     
     
     
@@ -240,20 +277,6 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Component - Control Buttons
-    // --------------------------------------------------
-    
-    // const componentControlButtons = [];
-    
-    // if (pageType === 'ur') {
-      
-      
-      
-    // }
-    
-    
-    
-    // --------------------------------------------------
     //   Component - CardPlayers
     // --------------------------------------------------
     
@@ -263,10 +286,10 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   managedUsers_id - 管理する相手の users_id
+      //   targetUsers_id - 管理する相手の users_id
       // --------------------------------------------------
       
-      const managedUsers_id = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'users_id'], '');
+      const targetUsers_id = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'users_id'], '');
       
       
       componentCardPlayersArr.push(
@@ -288,12 +311,14 @@ export default injectIntl(class extends React.Component {
           
           
           {/* フォロワー管理ボタン（自分のカードには管理ボタンを表示しない） */}
-          {(accessLevel >= 50 && loginUsers_id !== managedUsers_id) &&
-            <div
+          {(accessLevel >= 50 && loginUsers_id !== targetUsers_id) &&
+            <Paper
               css={css`
                 display: flex;
                 flex-flow: row wrap;
-                margin: 12px 0 16px 0;
+                border-top: 1px dashed #A4A4A4;
+                margin: 0 0 16px 0;
+                padding: 10px 12px;
               `}
             >
               
@@ -309,13 +334,21 @@ export default injectIntl(class extends React.Component {
                     variant="contained"
                     color="secondary"
                     disabled={buttonDisabled}
-                    onClick={() => handleOpenDialog({
+                    onClick={() => handleShowDialog({
+                      // pathArr,
+                      // managedUsers_id,
+                      // pageType,
+                      // type: 'unfollow',
                       pathArr,
-                      managedUsers_id,
+                      pathname,
+                      users_id,
+                      gameCommunities_id,
+                      userCommunities_id,
+                      targetUsers_id,
                       type: 'unfollow',
                     })}
                   >
-                    退会
+                    {pageType === 'ur' ? 'フォロー解除' : '退会'}
                   </Button>
                 </div>
               }
@@ -329,13 +362,17 @@ export default injectIntl(class extends React.Component {
                     variant="contained"
                     color="secondary"
                     disabled={buttonDisabled}
-                    onClick={() => handleOpenDialog({
+                    onClick={() => handleShowDialog({
                       pathArr,
-                      managedUsers_id,
+                      pathname,
+                      users_id,
+                      gameCommunities_id,
+                      userCommunities_id,
+                      targetUsers_id,
                       type: 'approval',
                     })}
                   >
-                    参加承認
+                    {pageType === 'ur' ? 'フォロー承認' : '参加承認'}
                   </Button>
                   
                   
@@ -349,13 +386,17 @@ export default injectIntl(class extends React.Component {
                       variant="contained"
                       color="primary"
                       disabled={buttonDisabled}
-                      onClick={() => handleOpenDialog({
+                      onClick={() => handleShowDialog({
                         pathArr,
-                        managedUsers_id,
+                        pathname,
+                        users_id,
+                        gameCommunities_id,
+                        userCommunities_id,
+                        targetUsers_id,
                         type: 'unapproval',
                       })}
                     >
-                      参加拒否
+                      {pageType === 'ur' ? 'フォロー拒否' : '参加拒否'}
                     </Button>
                   </div>
                   
@@ -369,9 +410,13 @@ export default injectIntl(class extends React.Component {
                   variant="contained"
                   color="secondary"
                   disabled={buttonDisabled}
-                  onClick={() => handleOpenDialog({
+                  onClick={() => handleShowDialog({
                     pathArr,
-                    managedUsers_id,
+                    pathname,
+                    users_id,
+                    gameCommunities_id,
+                    userCommunities_id,
+                    targetUsers_id,
                     type: 'block',
                   })}
                 >
@@ -386,9 +431,13 @@ export default injectIntl(class extends React.Component {
                   variant="contained"
                   color="primary"
                   disabled={buttonDisabled}
-                  onClick={() => handleOpenDialog({
+                  onClick={() => handleShowDialog({
                     pathArr,
-                    managedUsers_id,
+                    pathname,
+                    users_id,
+                    gameCommunities_id,
+                    userCommunities_id,
+                    targetUsers_id,
                     type: 'unblock',
                   })}
                 >
@@ -397,7 +446,7 @@ export default injectIntl(class extends React.Component {
               }
               
               
-            </div>
+            </Paper>
           }
           
           
@@ -456,7 +505,7 @@ export default injectIntl(class extends React.Component {
           css={css`
             display: flex;
             flex-flow: row wrap;
-            margin: 0 0 24px 0;
+            margin: 0 0 16px 0;
             padding: 12px 12px;
           `}
         >
@@ -569,7 +618,6 @@ export default injectIntl(class extends React.Component {
         
         
         
-        
         {/* Member's Card Players */}
         {componentCardPlayersArr}
         
@@ -657,8 +705,64 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* ダイアログ - 退会させる */}
+        {/* ダイアログ */}
         <Dialog
+          open={showDialog}
+          onClose={() => handleEdit({
+            pathArr: [...this.pathArr, 'showDialog'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title1"
+          aria-describedby="alert-dialog-description1"
+        >
+          
+          <DialogTitle id="alert-dialog-title1">{dialogTitle}</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description1">
+              {dialogDescription}
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleManageFollowers({
+                  pathArr,
+                  pathname,
+                  users_id,
+                  gameCommunities_id,
+                  userCommunities_id,
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...this.pathArr, 'showDialog'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
+        
+        
+        
+        
+        {/* ダイアログ - 退会させる */}
+        {/*<Dialog
           open={showDialogUnfollow}
           onClose={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnfollow'],
@@ -683,7 +787,7 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleMembers({
+                onClick={() => handleManageFollowers({
                   pathArr,
                   pathname,
                   users_id,
@@ -709,13 +813,13 @@ export default injectIntl(class extends React.Component {
             </Button>
           </DialogActions>
           
-        </Dialog>
+        </Dialog>*/}
         
         
         
         
         {/* ダイアログ - 参加承認 */}
-        <Dialog
+        {/*<Dialog
           open={showDialogApproval}
           onClose={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogApproval'],
@@ -740,7 +844,7 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleMembers({
+                onClick={() => handleManageFollowers({
                   pathArr,
                   pathname,
                   users_id,
@@ -766,13 +870,13 @@ export default injectIntl(class extends React.Component {
             </Button>
           </DialogActions>
           
-        </Dialog>
+        </Dialog>*/}
         
         
         
         
         {/* ダイアログ - 参加拒否 */}
-        <Dialog
+        {/*<Dialog
           open={showDialogUnapproval}
           onClose={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnapproval'],
@@ -797,7 +901,7 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleMembers({
+                onClick={() => handleManageFollowers({
                   pathArr,
                   pathname,
                   users_id,
@@ -823,13 +927,13 @@ export default injectIntl(class extends React.Component {
             </Button>
           </DialogActions>
           
-        </Dialog>
+        </Dialog>*/}
         
         
         
         
         {/* ダイアログ - ブロック */}
-        <Dialog
+        {/*<Dialog
           open={showDialogBlock}
           onClose={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogBlock'],
@@ -854,7 +958,7 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleMembers({
+                onClick={() => handleManageFollowers({
                   pathArr,
                   pathname,
                   users_id,
@@ -880,13 +984,13 @@ export default injectIntl(class extends React.Component {
             </Button>
           </DialogActions>
           
-        </Dialog>
+        </Dialog>*/}
         
         
         
         
         {/* ダイアログ - ブロック解除 */}
-        <Dialog
+        {/*<Dialog
           open={showDialogUnblock}
           onClose={() => handleEdit({
             pathArr: [...this.pathArr, 'showDialogUnblock'],
@@ -911,7 +1015,7 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleMembers({
+                onClick={() => handleManageFollowers({
                   pathArr,
                   pathname,
                   users_id,
@@ -937,7 +1041,7 @@ export default injectIntl(class extends React.Component {
             </Button>
           </DialogActions>
           
-        </Dialog>
+        </Dialog>*/}
         
         
       </React.Fragment>

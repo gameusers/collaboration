@@ -140,7 +140,7 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userID = query.userID;
-    const pathname = `/ur/${userID}/followers`;
+    const pathname = `/ur/${userID}/follow`;
     
     
     // --------------------------------------------------
@@ -149,8 +149,8 @@ export default class extends React.Component {
     
     const stores = initStoreRoot({});
     
-    const page = stores.data.getTemporaryData({ pathname, key: 'followersPage' });
-    const limit = stores.data.getCookie({ key: 'followersLimit' });
+    const page = stores.data.getTemporaryData({ pathname, key: 'followPage' });
+    const limit = stores.data.getCookie({ key: 'followLimit' });
     
     
     // --------------------------------------------------
@@ -158,7 +158,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/ur/${userID}/followers?page=${page}&limit=${limit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/ur/${userID}/follow?page=${page}&limit=${limit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -179,14 +179,14 @@ export default class extends React.Component {
     //   Title
     // --------------------------------------------------
     
-    const title = `フォロワー`;
+    const title = `フォロー`;
     
     
     // --------------------------------------------------
     //   Path Array
     // --------------------------------------------------
     
-    const pathArr = [users_id, 'urFollowers'];
+    const pathArr = [users_id, 'urFollow'];
     
     
     
@@ -202,9 +202,9 @@ export default class extends React.Component {
         as: `/ur/${userID}`,
       },
       {
-        name: 'フォロワー',
-        href: `/ur/[userID]/followers?userID=${userID}`,
-        as: `/ur/${userID}/followers`,
+        name: 'フォロー',
+        href: `/ur/[userID]/follow?userID=${userID}`,
+        as: `/ur/${userID}/follow`,
       },
     ];
     

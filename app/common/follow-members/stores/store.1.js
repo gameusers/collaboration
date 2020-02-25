@@ -549,13 +549,8 @@ class Store {
   async handleShowDialog({
     
     pathArr,
-    pathname,
-    users_id,
-    gameCommunities_id,
-    userCommunities_id,
-    targetUsers_id,
+    managedUsers_id,
     type,
-    pageType,
     
   }) {
     
@@ -564,82 +559,55 @@ class Store {
       
       
       // ---------------------------------------------
-      //   dialogObj
+      //   managedUsers_id
       // ---------------------------------------------
       
-      const dialogObj = {
-        
-        // pathname,
-        // users_id,
-        // gameCommunities_id,
-        // userCommunities_id,
-        targetUsers_id,
-        type,
-        
-      };
-      
       this.handleEdit({
-        pathArr: [...pathArr, 'dialogObj'],
-        value: dialogObj,
+        pathArr: [...pathArr, 'managedUsers_id'],
+        value: managedUsers_id,
       });
       
       
       // ---------------------------------------------
-      //   Show Dialog
+      //   Dialog Open
       // ---------------------------------------------
       
-      this.handleEdit({
-        pathArr: [...pathArr, 'showDialog'],
-        value: true,
-      });
-      
-      
-      
-      // handleManageFollowers({
-      //   pathArr,
-      //   pathname,
-      //   users_id,
-      //   gameCommunities_id,
-      //   userCommunities_id,
-      //   type: 'unfollow',
-      // })
-      
-      // if (type === 'unfollow') {
+      if (type === 'unfollow') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnfollow'],
-      //     value: true,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnfollow'],
+          value: true,
+        });
         
-      // } else if (type === 'approval') {
+      } else if (type === 'approval') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogApproval'],
-      //     value: true,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogApproval'],
+          value: true,
+        });
         
-      // } else if (type === 'unapproval') {
+      } else if (type === 'unapproval') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnapproval'],
-      //     value: true,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnapproval'],
+          value: true,
+        });
         
-      // } else if (type === 'block') {
+      } else if (type === 'block') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogBlock'],
-      //     value: true,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogBlock'],
+          value: true,
+        });
         
-      // } else if (type === 'unblock') {
+      } else if (type === 'unblock') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnblock'],
-      //     value: true,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnblock'],
+          value: true,
+        });
         
-      // }
+      }
       
       
     } catch (errorObj) {
@@ -655,20 +623,18 @@ class Store {
   
   
   /**
-   * フォロワーやコミュニティメンバーの管理 - フォロー解除（コミュニティから退会させる）/ 申請拒否 / ブロック / ブロック解除
+   * メンバーの処理（管理者用）　退会させる / 
    * @param {Array} pathArr - パス
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} type - 処理のタイプ / unfollow / approval
    */
   @action.bound
-  async handleManageFollowers({
+  async handleMembers({
     
     pathArr,
     pathname,
-    users_id,
-    gameCommunities_id,
     userCommunities_id,
-    // type,
+    type,
     
   }) {
     
@@ -680,34 +646,8 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      const targetUsers_id = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'targetUsers_id'], '');
-      const type = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'type'], '');
+      const managedUsers_id = lodashGet(this.dataObj, [...pathArr, 'managedUsers_id'], '');
       
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow-members/stores/store.js - handleManageFollowers
-      // `);
-      
-      // console.log(chalk`
-      //   pathname: {green ${pathname} / ${typeof pathname}}
-      //   users_id: {green ${users_id} / ${typeof users_id}}
-      //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
-      //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
-      //   type: {green ${type} / ${typeof type}}
-      // `);
-      
-      
-      // console.log(`
-      //   ----- manageFollowersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(manageFollowersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       
@@ -733,10 +673,8 @@ class Store {
       
       const formDataObj = {
         
-        users_id,
-        gameCommunities_id,
         userCommunities_id,
-        targetUsers_id,
+        managedUsers_id,
         type,
         
       };
@@ -747,7 +685,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-followers`,
+        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-members`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj),
       });
@@ -777,15 +715,15 @@ class Store {
       //   メンバー読み込み
       // ---------------------------------------------
       
-      // const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
+      const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
       
-      // this.handleReadFollowers({
-      //   pathArr,
-      //   pathname,
-      //   userCommunities_id,
-      //   page,
-      //   forceReload: true,
-      // });
+      this.handleReadFollowers({
+        pathArr,
+        pathname,
+        userCommunities_id,
+        page,
+        forceReload: true,
+      });
       
       
       
@@ -795,7 +733,7 @@ class Store {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/uc/member/stores/store.js / handleManageFollowers
+      //   /app/uc/member/stores/store.js / handleMembers
       // `);
       
       // console.log(chalk`
@@ -847,47 +785,42 @@ class Store {
       //   Dialog Close
       // ---------------------------------------------
       
-      this.handleEdit({
-        pathArr: [...pathArr, 'showDialog'],
-        value: false,
-      });
-      
-      // if (type === 'unfollow') {
+      if (type === 'unfollow') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnfollow'],
-      //     value: false,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnfollow'],
+          value: false,
+        });
         
-      // } else if (type === 'approval') {
+      } else if (type === 'approval') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogApproval'],
-      //     value: false,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogApproval'],
+          value: false,
+        });
         
-      // } else if (type === 'unapproval') {
+      } else if (type === 'unapproval') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnapproval'],
-      //     value: false,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnapproval'],
+          value: false,
+        });
         
-      // } else if (type === 'block') {
+      } else if (type === 'block') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogBlock'],
-      //     value: false,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogBlock'],
+          value: false,
+        });
         
-      // } else if (type === 'unblock') {
+      } else if (type === 'unblock') {
         
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnblock'],
-      //     value: false,
-      //   });
+        this.handleEdit({
+          pathArr: [...pathArr, 'showDialogUnblock'],
+          value: false,
+        });
         
-      // }
+      }
       
       
     }

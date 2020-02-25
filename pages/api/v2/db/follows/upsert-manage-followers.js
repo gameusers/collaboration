@@ -43,7 +43,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 const { validationIP } = require('../../../../../app/@validations/ip');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
-const { validationManageFollowersType } = require('../../../../../app/@database/follows/validations/manage-members-type');
+const { validationManageFollowersType } = require('../../../../../app/@database/follows/validations/manage-followers-type');
 
 
 
@@ -84,8 +84,10 @@ export default async (req, res) => {
     
     const { 
       
+      users_id,
+      gameCommunities_id,
       userCommunities_id,
-      managedUsers_id,
+      targetUsers_id,
       type,
       
     } = bodyObj;
@@ -96,8 +98,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
+    lodashSet(requestParametersObj, ['users_id'], users_id);
+    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['managedUsers_id'], managedUsers_id);
+    lodashSet(requestParametersObj, ['targetUsers_id'], targetUsers_id);
     lodashSet(requestParametersObj, ['type'], type);
     
     
@@ -123,45 +127,117 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Validations
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
-    await validationUserCommunities_idServer({ throwError: true, value: userCommunities_id });
-    await validationUsers_idServer({ throwError: true, value: managedUsers_id });
+    await validationUsers_idServer({ throwError: true, value: targetUsers_id });
     await validationManageFollowersType({ throwError: true, required: true, value: type });
     
     
     
     
     // --------------------------------------------------
-    //   データ取得 - user-communities
+    //   conditionObj
     // --------------------------------------------------
     
-    let conditionObj = {
-      _id: userCommunities_id
-    };
-    
-    const resultUserCommunitiesObj = await ModelUserCommunities.findOne({ conditionObj });
-    const authorUsers_id = lodashGet(resultUserCommunitiesObj, ['users_id'], '');
+    let conditionObj = {};
     
     
     // --------------------------------------------------
-    //   管理権限がない場合はエラー
+    //   Game Community
     // --------------------------------------------------
     
-    if (loginUsers_id !== authorUsers_id) {
-      statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'prS38d43e', messageID: 'DSRlEoL29' }] });
-    }
-    
-    
+    if (gameCommunities_id) {
+      
+      
+      
     // --------------------------------------------------
-    //   オーナーが自分自身を操作しようとした場合はエラー
+    //   User Community
     // --------------------------------------------------
-    
-    if (managedUsers_id === authorUsers_id) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HA6uOYVxo', messageID: 'qnWsuPcrJ' }] });
+      
+    } else if (userCommunities_id) {
+      
+      await validationUserCommunities_idServer({ value: userCommunities_id });
+      
+      
+      // --------------------------------------------------
+      //   データ取得 - user-communities
+      // --------------------------------------------------
+      
+      const docUserCommunitiesObj = await ModelUserCommunities.findOne({
+        conditionObj: {
+          _id: userCommunities_id
+        }
+      });
+      const adminUsers_id = lodashGet(docUserCommunitiesObj, ['users_id'], '');
+      
+      
+      // --------------------------------------------------
+      //   管理権限がない場合はエラー
+      // --------------------------------------------------
+      
+      if (adminUsers_id !== loginUsers_id) {
+        statusCode = 403;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'prS38d43e', messageID: 'DSRlEoL29' }] });
+      }
+      
+      
+      // --------------------------------------------------
+      //   管理者が管理者自身を操作しようとした場合はエラー
+      // --------------------------------------------------
+      
+      if (targetUsers_id === adminUsers_id) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HA6uOYVxo', messageID: 'qnWsuPcrJ' }] });
+      }
+      
+      
+      // --------------------------------------------------
+      //   conditionObj
+      // --------------------------------------------------
+      
+      conditionObj = {
+        userCommunities_id
+      };
+      
+      
+    // --------------------------------------------------
+    //   User
+    // --------------------------------------------------
+      
+    } else {
+      
+      await validationUsers_idServer({ value: users_id });
+      
+      
+      // --------------------------------------------------
+      //   管理権限がない場合はエラー
+      // --------------------------------------------------
+      
+      if (users_id !== loginUsers_id) {
+        statusCode = 401;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AvTRjcmIi', messageID: 'DSRlEoL29' }] });
+      }
+      
+      
+      // --------------------------------------------------
+      //   管理者が管理者自身を操作しようとした場合はエラー
+      // --------------------------------------------------
+      
+      if (targetUsers_id === loginUsers_id) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'kX4M0aRXx', messageID: 'qnWsuPcrJ' }] });
+      }
+      
+      
+      // --------------------------------------------------
+      //   conditionObj
+      // --------------------------------------------------
+      
+      conditionObj = {
+        users_id
+      };
+      
+      
     }
     
     
@@ -171,11 +247,7 @@ export default async (req, res) => {
     //   データ取得 - follows
     // --------------------------------------------------
     
-    conditionObj = {
-      userCommunities_id
-    };
-    
-    const resultFollowsObj = await ModelFollows.findOne({ conditionObj });
+    const docFollowsObj = await ModelFollows.findOne({ conditionObj });
     
     
     
@@ -184,12 +256,12 @@ export default async (req, res) => {
     //   メンバーの追加、削除
     // --------------------------------------------------
     
-    let followedArr = lodashGet(resultFollowsObj, ['followedArr'], []);
-    let followedCount = lodashGet(resultFollowsObj, ['followedCount'], 1);
-    let approvalArr = lodashGet(resultFollowsObj, ['approvalArr'], []);
-    let approvalCount = lodashGet(resultFollowsObj, ['approvalCount'], 0);
-    let blockArr = lodashGet(resultFollowsObj, ['blockArr'], []);
-    let blockCount = lodashGet(resultFollowsObj, ['blockCount'], 0);
+    let followedArr = lodashGet(docFollowsObj, ['followedArr'], []);
+    let followedCount = lodashGet(docFollowsObj, ['followedCount'], 1);
+    let approvalArr = lodashGet(docFollowsObj, ['approvalArr'], []);
+    let approvalCount = lodashGet(docFollowsObj, ['approvalCount'], 0);
+    let blockArr = lodashGet(docFollowsObj, ['blockArr'], []);
+    let blockCount = lodashGet(docFollowsObj, ['blockCount'], 0);
     
     
     
@@ -200,7 +272,7 @@ export default async (req, res) => {
     
     if (type === 'unfollow') {
       
-      followedArr = followedArr.filter(value => value !== managedUsers_id);
+      followedArr = followedArr.filter(value => value !== targetUsers_id);
       followedCount = followedArr.length;
       
       
@@ -210,9 +282,9 @@ export default async (req, res) => {
       
     } else if (type === 'approval') {
       
-      followedArr.push(managedUsers_id);
+      followedArr.push(targetUsers_id);
       followedCount = followedArr.length;
-      approvalArr = approvalArr.filter(value => value !== managedUsers_id);
+      approvalArr = approvalArr.filter(value => value !== targetUsers_id);
       approvalCount = approvalArr.length;
       
       
@@ -222,7 +294,7 @@ export default async (req, res) => {
       
     } else if (type === 'unapproval') {
       
-      approvalArr = approvalArr.filter(value => value !== managedUsers_id);
+      approvalArr = approvalArr.filter(value => value !== targetUsers_id);
       approvalCount = approvalArr.length;
     
     
@@ -232,11 +304,11 @@ export default async (req, res) => {
       
     } else if (type === 'block') {
       
-      followedArr = followedArr.filter(value => value !== managedUsers_id);
+      followedArr = followedArr.filter(value => value !== targetUsers_id);
       followedCount = followedArr.length;
-      approvalArr = approvalArr.filter(value => value !== managedUsers_id);
+      approvalArr = approvalArr.filter(value => value !== targetUsers_id);
       approvalCount = approvalArr.length;
-      blockArr.push(managedUsers_id);
+      blockArr.push(targetUsers_id);
       blockCount = blockArr.length;
     
     
@@ -246,7 +318,7 @@ export default async (req, res) => {
       
     } else if (type === 'unblock') {
       
-      blockArr = blockArr.filter(value => value !== managedUsers_id);
+      blockArr = blockArr.filter(value => value !== targetUsers_id);
       blockCount = blockArr.length;
       
     }
@@ -277,16 +349,16 @@ export default async (req, res) => {
     
     
     
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   Update
+    // // --------------------------------------------------
     
-    await ModelFollows.upsert({
+    // await ModelFollows.upsert({
       
-      conditionObj,
-      saveObj,
+    //   conditionObj,
+    //   saveObj,
       
-    });
+    // });
     
     
     
@@ -295,36 +367,30 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/db/follows/upsert-manage-members.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/follows/upsert-manage-followers.js
+    `);
     
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   managedUsers_id: {green ${managedUsers_id}}
-    //   type: {green ${type}}
-    //   authorUsers_id: {green ${authorUsers_id}}
-    // `);
+    console.log(chalk`
+      users_id: {green ${users_id} / ${typeof users_id}}
+      gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+      userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
+      targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
+      type: {green ${type} / ${typeof type}}
+    `);
     
-    // console.log(`
-    //   ----- resultUserCommunitiesObj -----\n
-    //   ${util.inspect(resultUserCommunitiesObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docFollowsObj -----\n
+      ${util.inspect(docFollowsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- resultFollowsObj -----\n
-    //   ${util.inspect(resultFollowsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- saveObj -----\n
-    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- saveObj -----\n
+      ${util.inspect(saveObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

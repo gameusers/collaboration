@@ -102,8 +102,8 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userID = req.query.userID;
-    let page = req.query.page;
-    const limit = req.query.limit;
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit, 10);
     
     lodashSet(requestParametersObj, ['userID'], userID);
     lodashSet(requestParametersObj, ['page'], page);
@@ -254,10 +254,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/ur/[userID]/followers.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/ur/[userID]/followers.js
+    // `);
     
     // console.log(chalk`
     //   userID: {green ${userID}}
@@ -301,11 +301,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

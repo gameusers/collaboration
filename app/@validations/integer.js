@@ -50,9 +50,12 @@ const validationInteger = ({ throwError = false, required = false, value }) => {
     messageID: 'Error',
     error: false,
   };
+  
   // console.log(chalk`
   //   value: {green ${value} / ${typeof value}}
   //   data: {green ${data} / ${typeof data}}
+  //   validator.isEmpty(data): {green ${validator.isEmpty(data)}}
+  //   Number.isInteger(value): {green ${Number.isInteger(value)}}
   // `);
   
   try {
@@ -63,7 +66,7 @@ const validationInteger = ({ throwError = false, required = false, value }) => {
     // ---------------------------------------------
     
     if (validator.isEmpty(data)) {
-      
+      // console.log('empty');
       if (required) {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HmFa7vdKa', messageID: 'cFbXmuFVh' }] });
       }

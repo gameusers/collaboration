@@ -45,8 +45,8 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationFollowersLimit } = require('../../../../../app/@database/follows/validations/followers-limit');
-const { validationFollowersType } = require('../../../../../app/@database/follows/validations/followers-type');
+const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
+const { validationFollowType } = require('../../../../../app/@database/follows/validations/follow-type');
 
 
 // ---------------------------------------------
@@ -127,21 +127,21 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/follows/read-followers.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/follows/read-followers.js
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
       
-      users_id: {green ${users_id}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      type: {green ${type} / ${typeof type}}
-      page: {green ${page} / ${typeof page}}
-      limit: {green ${limit} / ${typeof limit}}
-    `);
+    //   users_id: {green ${users_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   type: {green ${type} / ${typeof type}}
+    //   page: {green ${page} / ${typeof page}}
+    //   limit: {green ${limit} / ${typeof limit}}
+    // `);
     
     
     
@@ -186,8 +186,8 @@ export default async (req, res) => {
     
     
     await validationInteger({ throwError: true, required: true, value: page });
-    await validationFollowersType({ throwError: true, required: true, value: type });
-    await validationFollowersLimit({ throwError: true, required: true, value: limit });
+    await validationFollowType({ throwError: true, required: true, value: type });
+    await validationFollowLimit({ throwError: true, required: true, value: limit });
     
     
     

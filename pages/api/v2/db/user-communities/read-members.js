@@ -43,8 +43,8 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationFollowersLimit } = require('../../../../../app/@database/follows/validations/member-limit');
-const { validationFollowersType } = require('../../../../../app/@database/follows/validations/member-type');
+const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
+const { validationFollowType } = require('../../../../../app/@database/follows/validations/follow-type');
 
 
 // ---------------------------------------------
@@ -149,8 +149,8 @@ export default async (req, res) => {
     
     await validationUserCommunities_idServer({ value: userCommunities_id });
     await validationInteger({ throwError: true, required: true, value: page });
-    await validationFollowersType({ throwError: true, required: true, value: type });
-    await validationFollowersLimit({ throwError: true, required: true, value: limit });
+    await validationFollowType({ throwError: true, required: true, value: type });
+    await validationFollowLimit({ throwError: true, required: true, value: limit });
     
     
     

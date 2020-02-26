@@ -1632,7 +1632,7 @@ const findForMember = async ({
  * @param {string} users_id - DB users _id
  * @param {string} gameCommunities_id - DB game-communities _id
  * @param {string} userCommunities_id - DB user-communities _id
- * @param {string} type - 表示するフォロワーのタイプ / follow / followed / approval / block
+ * @param {string} controlType - 表示するフォロワーのタイプ [follow / followed / approval / block]
  * @param {number} page - ページ
  * @param {number} limit - リミット
  * @return {Object} 取得データ
@@ -1645,7 +1645,7 @@ const findForFollowers = async ({
   users_id,
   gameCommunities_id,
   userCommunities_id,
-  type,
+  controlType,
   page,
   limit,
   
@@ -1693,8 +1693,6 @@ const findForFollowers = async ({
     //   - 検索条件
     // ---------------------------------------------
     
-    // let _id = users_id;
-    
     let conditionObj = {
       users_id
     };
@@ -1705,15 +1703,11 @@ const findForFollowers = async ({
         gameCommunities_id
       };
       
-      // _id = gameCommunities_id;
-      
     } else if (userCommunities_id) {
       
       conditionObj = {
         userCommunities_id
       };
-      
-      // _id = userCommunities_id;
       
     }
     
@@ -1743,19 +1737,19 @@ const findForFollowers = async ({
     
     let users_idsArr = [];
     
-    if (type === 'follow') {
+    if (controlType === 'follow') {
       
       users_idsArr = lodashGet(followsObj, ['followArr'], []);
       
-    } else if (type === 'followed') {
+    } else if (controlType === 'followed') {
       
       users_idsArr = lodashGet(followsObj, ['followedArr'], []);
       
-    } else if (type === 'approval') {
+    } else if (controlType === 'approval') {
       
       users_idsArr = lodashGet(followsObj, ['approvalArr'], []);
       
-    } else if (type === 'block') {
+    } else if (controlType === 'block') {
       
       users_idsArr = lodashGet(followsObj, ['blockArr'], []);
       
@@ -2188,25 +2182,25 @@ const findForFollowers = async ({
     //   - データ更新
     // ---------------------------------------------
     
-    if (type === 'follow') {
+    if (controlType === 'follow') {
       
       lodashSet(returnObj, ['followMembersObj', 'followObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'followObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
       
-    } else if (type === 'followed') {
+    } else if (controlType === 'followed') {
       
       lodashSet(returnObj, ['followMembersObj', 'followedObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'followedObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
       
-    } else if (type === 'approval') {
+    } else if (controlType === 'approval') {
       
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);
       lodashSet(returnObj, ['followMembersObj', 'approvalObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
       
-    } else if (type === 'block') {
+    } else if (controlType === 'block') {
       
       lodashSet(returnObj, ['followMembersObj', 'blockObj', 'page'], intPage);
       lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'loadedDate'], ISO8601);

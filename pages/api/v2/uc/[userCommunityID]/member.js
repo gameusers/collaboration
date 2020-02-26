@@ -103,8 +103,8 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userCommunityID = req.query.userCommunityID;
-    let page = req.query.page;
-    const limit = req.query.limit;
+    const page = parseInt(req.query.page, 10);
+    const limit = parseInt(req.query.limit, 10);
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
     lodashSet(requestParametersObj, ['page'], page);
@@ -147,11 +147,13 @@ export default async (req, res) => {
       userCommunityID,
       
     });
+    
     // console.log(`
     //   ----- userCommunityObj -----\n
     //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
+    
     
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
@@ -168,11 +170,8 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    const author = lodashGet(userCommunityObj, ['headerObj', 'author'], false);
-    // console.log(chalk`
-    //   userCommunityObj.headerObj.author: {green ${userCommunityObj.headerObj.author}}
-    //   author: {green ${author}}
-    // `);
+    const adminUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
+    
     
     // ---------------------------------------------
     //   - headerObj
@@ -208,69 +207,49 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Follows
-    // --------------------------------------------------
-    
-    const followsObj = await ModelFollows.findOne({
-      
-      conditionObj: {
-        userCommunities_id
-      },
-      
-    });
-    
-    const followedArr = lodashGet(followsObj, ['followedArr'], []);
-    const followedCount = lodashGet(followsObj, ['followedCount'], 1);
-    
-    if (author) {
-      
-      returnObj.approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
-      returnObj.blockCount = lodashGet(followsObj, ['blockCount'], 0);
-      
-    }
-    
-    
-    // --------------------------------------------------
     //    DB find / Card Players
     // --------------------------------------------------
     
-    if (!page) {
-      page = 1;
-    }
-    
-    const conditionObj = {
+    const resultFollowersObj = await ModelCardPlayers.findForFollowers({
       
       localeObj,
       loginUsers_id,
-      users_idsArr: followedArr,
+      adminUsers_id,
+      userCommunities_id,
+      controlType: 'followed',
       page,
+      limit,
       
-    };
+    });
     
-    if (limit) {
-      conditionObj.limit = limit;
+    returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+    returnObj.followMembersObj = resultFollowersObj.followMembersObj;
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   権限
+    //   0: ブロックしているユーザー
+    //   1: 非ログインユーザー
+    //   2: ログインユーザー（以下ログイン済みユーザー）
+    //   3: 自分のことをフォローしているユーザー
+    //   4: 自分がフォローしているユーザー
+    //   5: 相互フォロー状態のユーザー
+    //   50: 自分自身（コミュニティの管理者）
+    //   100: サイト管理者
+    // --------------------------------------------------
+    
+    returnObj.accessLevel = 1;
+    
+    
+    // ---------------------------------------------
+    //   - コミュニティの管理者
+    // ---------------------------------------------
+    
+    if (adminUsers_id === loginUsers_id) {
+      returnObj.accessLevel = 50;
     }
-    
-    const resultMemberObj = await ModelCardPlayers.findForMember(conditionObj);
-    
-    returnObj.cardPlayersObj = resultMemberObj.cardPlayersObj;
-    
-    
-    
-    
-    // --------------------------------------------------
-    //    membersObj
-    // --------------------------------------------------
-    
-    const membersObj = {
-      page,
-      count: followedCount,
-    };
-    
-    lodashSet(membersObj, [`page${page}Obj`, 'loadedDate'], moment().toISOString());
-    lodashSet(membersObj, [`page${page}Obj`, 'arr'], resultMemberObj.cardPlayersForOrderArr);
-    
-    returnObj.membersObj = membersObj;
     
     
     

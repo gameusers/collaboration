@@ -102,28 +102,29 @@ class Store {
   
   
   // ---------------------------------------------
-  //   メンバー
+  //   フォロワー / メンバー
   // ---------------------------------------------
   
   /**
-   * メンバーを読み込む
+   * フォロワー / メンバーを読み込む
    * @param {Array} pathArr - パス
    * @param {string} pathname - ページの固有ID　例）/uc/community1
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} newType - 表示するタイプを変更する場合入力　フォロー、フォロワー、承認、ブロックのどれか
+   * @param {string} newControlType - 表示するタイプを変更する場合入力　フォロー、フォロワー、承認、ブロックのどれか
    * @param {number} page - スレッドのページ
    * @param {number} newLimit - 1ページに表示する件数を変更する場合、値を入力する
    * @param {boolean} forceReload - 強制的に再読み込みする場合は true
    */
   @action.bound
-  async handleReadFollowers({
+  async handleReadFollowMembers({
     
     pathArr,
     pathname,
     users_id,
     gameCommunities_id,
     userCommunities_id,
-    newType,
+    newControlType,
+    pageType,
     page = 1,
     newLimit,
     forceReload = false,
@@ -138,33 +139,37 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      let type = lodashGet(this.dataObj, [...pathArr, 'type'], 'follow');
+      let controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'followed');
+      
+      if (pageType === 'ur') {
+        controlType = lodashGet(this.dataObj, [...pathArr, 'controlType'], 'follow');
+      }
+      
       let limit = parseInt((storeData.getCookie({ key: 'followLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
       
       const followMembersObj = lodashGet(this.dataObj, [...pathArr, 'followMembersObj'], {});
       const clonedFollowMembersObj = lodashCloneDeep(followMembersObj);
       
-      const arr = lodashGet(followMembersObj, [`${type}Obj`, `page${page}Obj`, 'arr'], []);
-      const loadedDate = lodashGet(followMembersObj, [`${type}Obj`, `page${page}Obj`, 'loadedDate'], '');
-      // const arr = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'arr'], []);
-      // const loadedDate = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'loadedDate'], '');
+      const arr = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'arr'], []);
+      const loadedDate = lodashGet(followMembersObj, [`${controlType}Obj`, `page${page}Obj`, 'loadedDate'], '');
+      
       let reload = false;
       
       
       
       
       // ---------------------------------------------
-      //   type を変更する場合
+      //   controlType を変更する場合
       // ---------------------------------------------
       
-      if (newType) {
+      if (newControlType) {
         
         
         // ---------------------------------------------
-        //   Set type
+        //   Set controlType
         // ---------------------------------------------
         
-        type = newType;
+        controlType = newControlType;
         
         
         // ---------------------------------------------
@@ -231,12 +236,12 @@ class Store {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/follow-members/stores/store.js - handleReadFollowers
+      //   /app/common/follow-members/stores/store.js - handleReadFollowMembers
       // `);
       
       
       // console.log(chalk`
-      //   type: {green ${type}}
+      //   controlType: {green ${controlType}}
       //   users_id: {green ${users_id}}
       //   gameCommunities_id: {green ${gameCommunities_id}}
       //   userCommunities_id: {green ${userCommunities_id}}
@@ -276,7 +281,7 @@ class Store {
         //   更新 - ページ
         // ---------------------------------------------
         
-        lodashSet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], page);
+        lodashSet(this.dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'page'], page);
         // clonedMembersObj.page = page;
         
         // this.handleEdit({
@@ -293,12 +298,12 @@ class Store {
         
         
         // ---------------------------------------------
-        //   更新 - type
+        //   更新 - controlType
         // ---------------------------------------------
         
         this.handleEdit({
-          pathArr: [...pathArr, 'type'],
-          value: type
+          pathArr: [...pathArr, 'controlType'],
+          value: controlType
         });
         
         
@@ -341,7 +346,7 @@ class Store {
         users_id,
         gameCommunities_id,
         userCommunities_id,
-        type,
+        controlType,
         page,
         limit,
         
@@ -359,11 +364,11 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -452,40 +457,13 @@ class Store {
       
       
       // ---------------------------------------------
-      //   更新 - type
+      //   更新 - controlType
       // ---------------------------------------------
       
       this.handleEdit({
-        pathArr: [...pathArr, 'type'],
-        value: type
+        pathArr: [...pathArr, 'controlType'],
+        value: controlType
       });
-      
-      
-      // // --------------------------------------------------
-      // //   followedCount / ヘッダーのメンバー数更新
-      // // --------------------------------------------------
-      
-      // if (lodashHas(resultObj, ['data', 'followedCount'])) {
-      //   lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
-      // }
-      
-      
-      // // --------------------------------------------------
-      // //   approvalCount
-      // // --------------------------------------------------
-      
-      // if (lodashHas(resultObj, ['data', 'approvalCount'])) {
-      //   lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
-      // }
-      
-      
-      // // --------------------------------------------------
-      // //   blockCount
-      // // --------------------------------------------------
-      
-      // if (lodashHas(resultObj, ['data', 'blockCount'])) {
-      //   lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
-      // }
       
       
     } catch (errorObj) {
@@ -523,7 +501,7 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleScrollTo({
-        to: 'followers',
+        to: 'followMembers',
         duration: 0,
         delay: 0,
         smooth: 'easeInOutQuart',
@@ -549,10 +527,10 @@ class Store {
   async handleShowDialog({
     
     pathArr,
-    pathname,
-    users_id,
-    gameCommunities_id,
-    userCommunities_id,
+    // pathname,
+    // users_id,
+    // gameCommunities_id,
+    // userCommunities_id,
     targetUsers_id,
     type,
     pageType,
@@ -569,10 +547,6 @@ class Store {
       
       const dialogObj = {
         
-        // pathname,
-        // users_id,
-        // gameCommunities_id,
-        // userCommunities_id,
         targetUsers_id,
         type,
         
@@ -594,54 +568,6 @@ class Store {
       });
       
       
-      
-      // handleManageFollowers({
-      //   pathArr,
-      //   pathname,
-      //   users_id,
-      //   gameCommunities_id,
-      //   userCommunities_id,
-      //   type: 'unfollow',
-      // })
-      
-      // if (type === 'unfollow') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnfollow'],
-      //     value: true,
-      //   });
-        
-      // } else if (type === 'approval') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogApproval'],
-      //     value: true,
-      //   });
-        
-      // } else if (type === 'unapproval') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnapproval'],
-      //     value: true,
-      //   });
-        
-      // } else if (type === 'block') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogBlock'],
-      //     value: true,
-      //   });
-        
-      // } else if (type === 'unblock') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnblock'],
-      //     value: true,
-      //   });
-        
-      // }
-      
-      
     } catch (errorObj) {
       
       
@@ -655,10 +581,13 @@ class Store {
   
   
   /**
-   * フォロワーやコミュニティメンバーの管理 - フォロー解除（コミュニティから退会させる）/ 申請拒否 / ブロック / ブロック解除
+   * フォロワーやコミュニティメンバーの管理 - フォロー解除（コミュニティから退会）/ 承認 / 拒否 / ブロック / ブロック解除
    * @param {Array} pathArr - パス
+   * @param {string} pathname - ページの固有ID　例）/uc/community1
+   * @param {string} users_id - DB users _id / ユーザーのID
+   * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} type - 処理のタイプ / unfollow / approval
+   * @param {string} pageType - ページタイプ [ur / gc / uc]
    */
   @action.bound
   async handleManageFollowers({
@@ -668,7 +597,7 @@ class Store {
     users_id,
     gameCommunities_id,
     userCommunities_id,
-    // type,
+    pageType,
     
   }) {
     
@@ -683,31 +612,6 @@ class Store {
       const targetUsers_id = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'targetUsers_id'], '');
       const type = lodashGet(this.dataObj, [...pathArr, 'dialogObj', 'type'], '');
       
-      
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/common/follow-members/stores/store.js - handleManageFollowers
-      // `);
-      
-      // console.log(chalk`
-      //   pathname: {green ${pathname} / ${typeof pathname}}
-      //   users_id: {green ${users_id} / ${typeof users_id}}
-      //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
-      //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
-      //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
-      //   type: {green ${type} / ${typeof type}}
-      // `);
-      
-      
-      // console.log(`
-      //   ----- manageFollowersObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(manageFollowersObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       
       
@@ -728,29 +632,38 @@ class Store {
       
       
       // ---------------------------------------------
-      //   FormData
+      //   User
       // ---------------------------------------------
       
-      const formDataObj = {
+      let resultObj = {};
+      
+      if (pageType === 'ur') {
         
-        users_id,
-        gameCommunities_id,
-        userCommunities_id,
-        targetUsers_id,
-        type,
         
-      };
-      
-      
-      // ---------------------------------------------
-      //   Fetch
-      // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-followers`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj),
-      });
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
+        
+        const formDataObj = {
+          
+          targetUsers_id,
+          type,
+          
+        };
+        
+        
+        // ---------------------------------------------
+        //   Fetch
+        // ---------------------------------------------
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-followers-ur`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
+        
+        
+      }
       
       
       // console.log(`
@@ -758,8 +671,6 @@ class Store {
       //   ${util.inspect(JSON.parse(JSON.stringify(resultObj)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
       
       
       // ---------------------------------------------
@@ -777,15 +688,20 @@ class Store {
       //   メンバー読み込み
       // ---------------------------------------------
       
-      // const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
+      const page = lodashGet(this.dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], 1);
       
-      // this.handleReadFollowers({
-      //   pathArr,
-      //   pathname,
-      //   userCommunities_id,
-      //   page,
-      //   forceReload: true,
-      // });
+      this.handleReadFollowMembers({
+        
+        pathArr,
+        pathname,
+        users_id,
+        gameCommunities_id,
+        userCommunities_id,
+        page,
+        forceReload: true,
+        
+      });
+      
       
       
       
@@ -795,14 +711,19 @@ class Store {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/uc/member/stores/store.js / handleManageFollowers
+      //   /app/common/follow-members/stores/store.js - handleManageFollowers
       // `);
       
       // console.log(chalk`
-      //   userCommunities_id: {green ${userCommunities_id}}
-      //   managedUsers_id: {green ${managedUsers_id}}
-      //   type: {green ${type}}
+      //   pathname: {green ${pathname} / ${typeof pathname}}
+      //   users_id: {green ${users_id} / ${typeof users_id}}
+      //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
+      //   pageType: {green ${pageType} / ${typeof pageType}}
+      //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
+      //   type: {green ${type} / ${typeof type}}
       // `);
+      
       
       // console.log(`
       //   ----- pathArr -----\n
@@ -851,43 +772,6 @@ class Store {
         pathArr: [...pathArr, 'showDialog'],
         value: false,
       });
-      
-      // if (type === 'unfollow') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnfollow'],
-      //     value: false,
-      //   });
-        
-      // } else if (type === 'approval') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogApproval'],
-      //     value: false,
-      //   });
-        
-      // } else if (type === 'unapproval') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnapproval'],
-      //     value: false,
-      //   });
-        
-      // } else if (type === 'block') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogBlock'],
-      //     value: false,
-      //   });
-        
-      // } else if (type === 'unblock') {
-        
-      //   this.handleEdit({
-      //     pathArr: [...pathArr, 'showDialogUnblock'],
-      //     value: false,
-      //   });
-        
-      // }
       
       
     }
@@ -945,23 +829,6 @@ export default function initStoreFollowMembers({ propsObj }) {
       lodashSet(storeFollowMembers, ['dataObj', ...pathArr, 'followMembersObj'], propsObj.followMembersObj);
     }
     
-    
-    // --------------------------------------------------
-    //   approvalCount
-    // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['approvalCount'])) {
-    //   lodashSet(storeFollowMembers, ['dataObj', ...pathArr, 'approvalCount'], propsObj.approvalCount);
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   blockCount
-    // // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['blockCount'])) {
-    //   lodashSet(storeFollowMembers, ['dataObj', ...pathArr, 'blockCount'], propsObj.blockCount);
-    // }
     
     
     

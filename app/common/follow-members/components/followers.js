@@ -173,18 +173,23 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleReadFollowers,
+      handleReadFollowMembers,
       handleShowDialog,
       handleManageFollowers,
       
     } = storeFollowMembers;
     
     
-    const type = lodashGet(dataObj, [...pathArr, 'type'], 'follow');
-    const page = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'page'], 1);
-    const count = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, 'count'], 0);
+    let controlType = lodashGet(dataObj, [...pathArr, 'controlType'], 'followed');
+    
+    if (pageType === 'ur') {
+      controlType = lodashGet(dataObj, [...pathArr, 'controlType'], 'follow');
+    }
+    
+    const page = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'page'], 1);
+    const count = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'count'], 0);
     const limit = parseInt((stores.data.getCookie({ key: 'followLimit' }) || process.env.FOLLOWERS_LIMIT), 10);
-    const arr = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${type}Obj`, `page${page}Obj`, 'arr'], []);
+    const arr = lodashGet(dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, `page${page}Obj`, 'arr'], []);
     
     let approvalCount = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'approvalObj', 'count'], 0);
     
@@ -192,14 +197,16 @@ export default injectIntl(class extends React.Component {
       approvalCount = '99+';
     }
     
-    
-    
-    
-    // --------------------------------------------------
-    //   loginUsers_id
-    // --------------------------------------------------
-    
     const loginUsers_id = lodashGet(stores, ['data', 'loginUsersObj', '_id'], '');
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Button - Disabled
+    // --------------------------------------------------
+    
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -247,7 +254,7 @@ export default injectIntl(class extends React.Component {
         dialogTitle = 'ブロック';
         dialogDescription = 'ブロックしますか？';
         
-      } else if (dialogType === 'block') {
+      } else if (dialogType === 'unblock') {
         
         dialogTitle = 'ブロック解除';
         dialogDescription = 'ブロックを解除しますか？';
@@ -255,23 +262,6 @@ export default injectIntl(class extends React.Component {
       }
       
     }
-    
-    
-    
-    // const showDialogUnfollow = lodashGet(dataObj, [...pathArr, 'showDialogUnfollow'], false);
-    // const showDialogApproval = lodashGet(dataObj, [...pathArr, 'showDialogApproval'], false);
-    // const showDialogUnapproval = lodashGet(dataObj, [...pathArr, 'showDialogUnapproval'], false);
-    // const showDialogBlock = lodashGet(dataObj, [...pathArr, 'showDialogBlock'], false);
-    // const showDialogUnblock = lodashGet(dataObj, [...pathArr, 'showDialogUnblock'], false);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Button - Disabled
-    // --------------------------------------------------
-    
-    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -323,7 +313,7 @@ export default injectIntl(class extends React.Component {
             >
               
               
-              {type === 'follow' &&
+              {controlType === 'follow' &&
                 <div
                   css={css`
                     margin: 0 16px 0 0;
@@ -335,10 +325,6 @@ export default injectIntl(class extends React.Component {
                     color="secondary"
                     disabled={buttonDisabled}
                     onClick={() => handleShowDialog({
-                      // pathArr,
-                      // managedUsers_id,
-                      // pageType,
-                      // type: 'unfollow',
                       pathArr,
                       pathname,
                       users_id,
@@ -354,7 +340,7 @@ export default injectIntl(class extends React.Component {
               }
               
               
-              {type === 'approval' &&
+              {controlType === 'approval' &&
                 <React.Fragment>
                   
                   <Button
@@ -404,7 +390,7 @@ export default injectIntl(class extends React.Component {
               }
               
               
-              {type !== 'block' &&
+              {controlType !== 'block' &&
                 <Button
                   css={cssButton}
                   variant="contained"
@@ -425,7 +411,7 @@ export default injectIntl(class extends React.Component {
               }
               
               
-              {type === 'block' &&
+              {controlType === 'block' &&
                 <Button
                   css={cssButton}
                   variant="contained"
@@ -468,24 +454,27 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   type: {green ${type}}
-    //   page: {green ${page}}
-    //   count: {green ${count}}
-    //   limit: {green ${limit}}
+    //   pathname: {green ${pathname} / ${typeof pathname}}
+    //   users_id: {green ${users_id} / ${typeof users_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
+    //   pageType: {green ${pageType} / ${typeof pageType}}
       
-    // `);
-    
-    // const followObj = lodashGet(dataObj, [...pathArr, 'followMembersObj', 'followObj'], {});
-    
-    // console.log(`
-    //   ----- followObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(followObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   controlType: {green ${controlType} / ${typeof controlType}}
+    //   page: {green ${page} / ${typeof page}}
+    //   count: {green ${count} / ${typeof count}}
+    //   limit: {green ${limit} / ${typeof limit}}
     // `);
     
     // console.log(`
     //   ----- arr -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- lodashGet(dataObj, [...pathArr, 'followMembersObj'], {}) -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(dataObj, [...pathArr, 'followMembersObj'], {}))), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -521,19 +510,20 @@ export default injectIntl(class extends React.Component {
             {/* ユーザーページの場合のみフォローしているユーザーを表示する */}
             {pageType === 'ur' &&
               <Button
-                onClick={() => handleReadFollowers({
+                onClick={() => handleReadFollowMembers({
                   pathArr,
                   pathname,
                   users_id,
                   gameCommunities_id,
                   userCommunities_id,
-                  newType: 'follow',
+                  newControlType: 'follow',
+                  pageType,
                   page: 1,
                 })}
               >
                 <span
                   css={css`
-                    font-weight: ${type === 'follow' ? 'bold' : 'normal'};
+                    font-weight: ${controlType === 'follow' ? 'bold' : 'normal'};
                   `}
                 >
                   フォロー
@@ -543,19 +533,20 @@ export default injectIntl(class extends React.Component {
             
             
             <Button
-              onClick={() => handleReadFollowers({
+              onClick={() => handleReadFollowMembers({
                 pathArr,
                 pathname,
                 users_id,
                 gameCommunities_id,
                 userCommunities_id,
-                newType: 'followed',
+                newControlType: 'followed',
+                pageType,
                 page: 1,
               })}
             >
               <span
                 css={css`
-                  font-weight: ${type === 'followed' ? 'bold' : 'normal'};
+                  font-weight: ${controlType === 'followed' ? 'bold' : 'normal'};
                 `}
               >
                 {pageType === 'uc' ? 'メンバー' : 'フォロワー'}
@@ -566,19 +557,20 @@ export default injectIntl(class extends React.Component {
             {/* 管理者用 */}
             {accessLevel >= 50 &&
               <Button
-                onClick={() => handleReadFollowers({
+                onClick={() => handleReadFollowMembers({
                   pathArr,
                   pathname,
                   users_id,
                   gameCommunities_id,
                   userCommunities_id,
-                  newType: 'approval',
+                  newControlType: 'approval',
+                  pageType,
                   page: 1,
                 })}
               >
                 <span
                   css={css`
-                    font-weight: ${type === 'approval' ? 'bold' : 'normal'};
+                    font-weight: ${controlType === 'approval' ? 'bold' : 'normal'};
                   `}
                 >
                   承認 ({approvalCount})
@@ -590,19 +582,20 @@ export default injectIntl(class extends React.Component {
             {/* 管理者用 */}
             {accessLevel >= 50 &&
               <Button
-                onClick={() => handleReadFollowers({
+                onClick={() => handleReadFollowMembers({
                   pathArr,
                   pathname,
                   users_id,
                   gameCommunities_id,
                   userCommunities_id,
-                  newType: 'block',
+                  newControlType: 'block',
+                  pageType,
                   page: 1,
                 })}
               >
                 <span
                   css={css`
-                    font-weight: ${type === 'block' ? 'bold' : 'normal'};
+                    font-weight: ${controlType === 'block' ? 'bold' : 'normal'};
                   `}
                 >
                   ブロック
@@ -644,12 +637,13 @@ export default injectIntl(class extends React.Component {
             
             <Pagination
               disabled={buttonDisabled}
-              onChange={(page) => handleReadFollowers({
+              onChange={(page) => handleReadFollowMembers({
                 pathArr,
                 pathname,
                 users_id,
                 gameCommunities_id,
                 userCommunities_id,
+                pageType,
                 page,
               })}
               pageSize={limit}
@@ -672,12 +666,13 @@ export default injectIntl(class extends React.Component {
             
             <Select
               value={limit}
-              onChange={(eventObj) => handleReadFollowers({
+              onChange={(eventObj) => handleReadFollowMembers({
                 pathArr,
                 pathname,
                 users_id,
                 gameCommunities_id,
                 userCommunities_id,
+                pageType,
                 page: 1,
                 newLimit: eventObj.target.value,
               })}
@@ -737,6 +732,7 @@ export default injectIntl(class extends React.Component {
                   users_id,
                   gameCommunities_id,
                   userCommunities_id,
+                  pageType,
                 })}
                 color="primary"
                 autoFocus
@@ -757,291 +753,6 @@ export default injectIntl(class extends React.Component {
           </DialogActions>
           
         </Dialog>
-        
-        
-        
-        
-        {/* ダイアログ - 退会させる */}
-        {/*<Dialog
-          open={showDialogUnfollow}
-          onClose={() => handleEdit({
-            pathArr: [...this.pathArr, 'showDialogUnfollow'],
-            value: false,
-          })}
-          aria-labelledby="alert-dialog-title1"
-          aria-describedby="alert-dialog-description1"
-        >
-          
-          <DialogTitle id="alert-dialog-title1">コミュニティの退会</DialogTitle>
-          
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description1">
-              コミュニティから退会させますか？
-            </DialogContentText>
-          </DialogContent>
-          
-          <DialogActions>
-            <div
-              css={css`
-                margin: 0 auto 0 0;
-              `}
-            >
-              <Button
-                onClick={() => handleManageFollowers({
-                  pathArr,
-                  pathname,
-                  users_id,
-                  gameCommunities_id,
-                  userCommunities_id,
-                  type: 'unfollow',
-                })}
-                color="primary"
-                autoFocus
-              >
-                はい
-              </Button>
-            </div>
-            
-            <Button
-              onClick={() => handleEdit({
-                pathArr: [...this.pathArr, 'showDialogUnfollow'],
-                value: false,
-              })}
-              color="primary"
-            >
-              いいえ
-            </Button>
-          </DialogActions>
-          
-        </Dialog>*/}
-        
-        
-        
-        
-        {/* ダイアログ - 参加承認 */}
-        {/*<Dialog
-          open={showDialogApproval}
-          onClose={() => handleEdit({
-            pathArr: [...this.pathArr, 'showDialogApproval'],
-            value: false,
-          })}
-          aria-labelledby="alert-dialog-title2"
-          aria-describedby="alert-dialog-description2"
-        >
-          
-          <DialogTitle id="alert-dialog-title2">参加承認</DialogTitle>
-          
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description2">
-              参加を承認しますか？
-            </DialogContentText>
-          </DialogContent>
-          
-          <DialogActions>
-            <div
-              css={css`
-                margin: 0 auto 0 0;
-              `}
-            >
-              <Button
-                onClick={() => handleManageFollowers({
-                  pathArr,
-                  pathname,
-                  users_id,
-                  gameCommunities_id,
-                  userCommunities_id,
-                  type: 'approval',
-                })}
-                color="primary"
-                autoFocus
-              >
-                はい
-              </Button>
-            </div>
-            
-            <Button
-              onClick={() => handleEdit({
-                pathArr: [...this.pathArr, 'showDialogApproval'],
-                value: false,
-              })}
-              color="primary"
-            >
-              いいえ
-            </Button>
-          </DialogActions>
-          
-        </Dialog>*/}
-        
-        
-        
-        
-        {/* ダイアログ - 参加拒否 */}
-        {/*<Dialog
-          open={showDialogUnapproval}
-          onClose={() => handleEdit({
-            pathArr: [...this.pathArr, 'showDialogUnapproval'],
-            value: false,
-          })}
-          aria-labelledby="alert-dialog-title3"
-          aria-describedby="alert-dialog-description3"
-        >
-          
-          <DialogTitle id="alert-dialog-title3">参加拒否</DialogTitle>
-          
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description3">
-              参加を拒否しますか？
-            </DialogContentText>
-          </DialogContent>
-          
-          <DialogActions>
-            <div
-              css={css`
-                margin: 0 auto 0 0;
-              `}
-            >
-              <Button
-                onClick={() => handleManageFollowers({
-                  pathArr,
-                  pathname,
-                  users_id,
-                  gameCommunities_id,
-                  userCommunities_id,
-                  type: 'unapproval',
-                })}
-                color="primary"
-                autoFocus
-              >
-                はい
-              </Button>
-            </div>
-            
-            <Button
-              onClick={() => handleEdit({
-                pathArr: [...this.pathArr, 'showDialogUnapproval'],
-                value: false,
-              })}
-              color="primary"
-            >
-              いいえ
-            </Button>
-          </DialogActions>
-          
-        </Dialog>*/}
-        
-        
-        
-        
-        {/* ダイアログ - ブロック */}
-        {/*<Dialog
-          open={showDialogBlock}
-          onClose={() => handleEdit({
-            pathArr: [...this.pathArr, 'showDialogBlock'],
-            value: false,
-          })}
-          aria-labelledby="alert-dialog-title4"
-          aria-describedby="alert-dialog-description4"
-        >
-          
-          <DialogTitle id="alert-dialog-title4">ブロック</DialogTitle>
-          
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description4">
-              ブロックしますか？<br />ブロックしたユーザーはコミュニティに参加できなくなります
-            </DialogContentText>
-          </DialogContent>
-          
-          <DialogActions>
-            <div
-              css={css`
-                margin: 0 auto 0 0;
-              `}
-            >
-              <Button
-                onClick={() => handleManageFollowers({
-                  pathArr,
-                  pathname,
-                  users_id,
-                  gameCommunities_id,
-                  userCommunities_id,
-                  type: 'block',
-                })}
-                color="primary"
-                autoFocus
-              >
-                はい
-              </Button>
-            </div>
-            
-            <Button
-              onClick={() => handleEdit({
-                pathArr: [...this.pathArr, 'showDialogBlock'],
-                value: false,
-              })}
-              color="primary"
-            >
-              いいえ
-            </Button>
-          </DialogActions>
-          
-        </Dialog>*/}
-        
-        
-        
-        
-        {/* ダイアログ - ブロック解除 */}
-        {/*<Dialog
-          open={showDialogUnblock}
-          onClose={() => handleEdit({
-            pathArr: [...this.pathArr, 'showDialogUnblock'],
-            value: false,
-          })}
-          aria-labelledby="alert-dialog-title5"
-          aria-describedby="alert-dialog-description5"
-        >
-          
-          <DialogTitle id="alert-dialog-title5">ブロック解除</DialogTitle>
-          
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description5">
-              ブロックを解除しますか？
-            </DialogContentText>
-          </DialogContent>
-          
-          <DialogActions>
-            <div
-              css={css`
-                margin: 0 auto 0 0;
-              `}
-            >
-              <Button
-                onClick={() => handleManageFollowers({
-                  pathArr,
-                  pathname,
-                  users_id,
-                  gameCommunities_id,
-                  userCommunities_id,
-                  type: 'unblock',
-                })}
-                color="primary"
-                autoFocus
-              >
-                はい
-              </Button>
-            </div>
-            
-            <Button
-              onClick={() => handleEdit({
-                pathArr: [...this.pathArr, 'showDialogUnblock'],
-                value: false,
-              })}
-              color="primary"
-            >
-              いいえ
-            </Button>
-          </DialogActions>
-          
-        </Dialog>*/}
         
         
       </React.Fragment>

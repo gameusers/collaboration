@@ -43,8 +43,8 @@ import initStoreRoot from '../../../app/@stores/root';
 import initStoreUcMember from '../../../app/uc/member/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-// import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
+import initStoreFollowMembers from '../../../app/common/follow-members/stores/store';
 
 
 // ---------------------------------------------
@@ -55,8 +55,9 @@ import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
+import FollowMembers from '../../../app/common/follow-members/components/followers';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
-import Member from '../../../app/uc/member/components/member';
+// import Member from '../../../app/uc/member/components/member';
 
 
 
@@ -77,8 +78,8 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeUcMember = initStoreUcMember({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
   const storeImageAndVideo = initStoreImageAndVideo({});
-  // const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
+  const storeFollowMembers = initStoreFollowMembers({ propsObj });
   
   
   // --------------------------------------------------
@@ -90,8 +91,8 @@ const getOrCreateStore = ({ propsObj }) => {
     storeUcMember,
     storeCardPlayer,
     storeImageAndVideo,
-    // storeImageAndVideoForm,
     storeFollow,
+    storeFollowMembers,
     
   };
   
@@ -162,10 +163,7 @@ export default class extends React.Component {
     
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
-    const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
-    
-    // const followedCount = lodashGet(resultObj, ['data', 'followedCount'], 1);
-    // const cardPlayersForOrderArr = lodashGet(resultObj, ['data', 'cardPlayersForOrderArr'], []);
+    const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
     
     
     
@@ -203,7 +201,7 @@ export default class extends React.Component {
       }
     ];
     
-    if (author) {
+    if (accessLevel >= 50) {
       headerNavMainArr.push(
         {
           name: '設定',
@@ -255,7 +253,7 @@ export default class extends React.Component {
       reqAcceptLanguage,
       userCommunityID,
       userCommunities_id,
-      author,
+      accessLevel,
       title,
       storesObj,
       propsObj,
@@ -428,15 +426,16 @@ export default class extends React.Component {
             >
               
               
-              {/* Member's Card Players */}
+              {/* Follow Members */}
               <Element
-                name="ucMember"
+                name="followMembers"
               >
-                <Member
+                <FollowMembers
+                  pageType="uc"
                   userCommunities_id={this.props.userCommunities_id}
                   pathArr={pathArr}
                   pathname={pathname}
-                  author={this.props.author}
+                  accessLevel={this.props.accessLevel}
                 />
               </Element>
               

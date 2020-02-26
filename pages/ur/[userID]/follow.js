@@ -110,7 +110,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/ur/***/followers
+//   URL: http://dev-1.gameusers.org:8080/ur/***/follow
 // --------------------------------------------------
 
 @observer
@@ -168,8 +168,6 @@ export default class extends React.Component {
     let propsObj = lodashGet(resultObj, ['data'], {});
     
     const users_id = lodashGet(resultObj, ['data', 'users_id'], '');
-    // const followMembersObj = lodashGet(resultObj, ['data', 'followMembersObj'], {});
-    // const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
     
     
@@ -457,9 +455,9 @@ export default class extends React.Component {
             >
               
               
-              {/* Followers */}
+              {/* Follow Members */}
               <Element
-                name="followers"
+                name="followMembers"
               >
                 <FollowMembers
                   pageType="ur"

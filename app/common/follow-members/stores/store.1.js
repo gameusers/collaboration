@@ -116,7 +116,7 @@ class Store {
    * @param {boolean} forceReload - 強制的に再読み込みする場合は true
    */
   @action.bound
-  async handleReadFollowers({
+  async handleReadFollowMembers({
     
     pathArr,
     pathname,
@@ -231,7 +231,7 @@ class Store {
       
       // console.log(`
       //   ----------------------------------------\n
-      //   /app/common/follow-members/stores/store.js - handleReadFollowers
+      //   /app/common/follow-members/stores/store.js - handleReadFollowMembers
       // `);
       
       
@@ -717,7 +717,7 @@ class Store {
       
       const page = lodashGet(this.dataObj, [...pathArr, 'membersObj', 'page'], 1);
       
-      this.handleReadFollowers({
+      this.handleReadFollowMembers({
         pathArr,
         pathname,
         userCommunities_id,

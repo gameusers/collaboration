@@ -106,7 +106,7 @@ export default async (req, res) => {
       users_id,
       gameCommunities_id,
       userCommunities_id,
-      type,
+      controlType,
       page,
       limit,
       
@@ -116,7 +116,7 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['users_id'], users_id);
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
-    lodashSet(requestParametersObj, ['type'], type);
+    lodashSet(requestParametersObj, ['controlType'], controlType);
     lodashSet(requestParametersObj, ['page'], page);
     lodashSet(requestParametersObj, ['limit'], limit);
     
@@ -138,7 +138,7 @@ export default async (req, res) => {
     //   users_id: {green ${users_id}}
     //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunities_id: {green ${userCommunities_id}}
-    //   type: {green ${type} / ${typeof type}}
+    //   controlType: {green ${controlType} / ${typeof controlType}}
     //   page: {green ${page} / ${typeof page}}
     //   limit: {green ${limit} / ${typeof limit}}
     // `);
@@ -176,7 +176,7 @@ export default async (req, res) => {
       //   権限がないのに approval や block を表示しようとした場合はエラー
       // --------------------------------------------------
       
-      if ((type === 'approval' || type === 'block') && users_id !== loginUsers_id) {
+      if ((controlType === 'approval' || controlType === 'block') && users_id !== loginUsers_id) {
         statusCode = 401;
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AvTRjcmIi', messageID: 'DSRlEoL29' }] });
       }
@@ -186,7 +186,7 @@ export default async (req, res) => {
     
     
     await validationInteger({ throwError: true, required: true, value: page });
-    await validationFollowType({ throwError: true, required: true, value: type });
+    await validationFollowType({ throwError: true, required: true, value: controlType });
     await validationFollowLimit({ throwError: true, required: true, value: limit });
     
     
@@ -219,6 +219,7 @@ export default async (req, res) => {
         
       });
       
+      const adminUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
       
       // console.log(`
       //   ----- userCommunityObj -----\n
@@ -231,13 +232,33 @@ export default async (req, res) => {
       //   - コンテンツを表示するかどうか
       // ---------------------------------------------
       
-      // const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
-      // const member = lodashGet(userCommunityObj, ['member'], false);
+      const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
+      const member = lodashGet(userCommunityObj, ['member'], false);
       
-      // if (communityType === 'closed' && !member) {
-      //   statusCode = 403;
-      //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'MN_BH-td8', messageID: 'Error' }] });
-      // }
+      if (communityType === 'closed' && !member) {
+        statusCode = 403;
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'MN_BH-td8', messageID: 'Error' }] });
+      }
+      
+      
+      // --------------------------------------------------
+      //    DB find / Card Players
+      // --------------------------------------------------
+      
+      const resultFollowersObj = await ModelCardPlayers.findForFollowers({
+        
+        localeObj,
+        loginUsers_id,
+        adminUsers_id,
+        userCommunities_id,
+        controlType,
+        page,
+        limit,
+        
+      });
+      
+      returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+      returnObj.followMembersObj = resultFollowersObj.followMembersObj;
       
       
     } else {
@@ -253,7 +274,7 @@ export default async (req, res) => {
         loginUsers_id,
         adminUsers_id: users_id,
         users_id,
-        type,
+        controlType,
         page,
         limit,
         
@@ -263,103 +284,13 @@ export default async (req, res) => {
       returnObj.followMembersObj = resultFollowersObj.followMembersObj;
       
       
-      console.log(`
-        ----- resultFollowersObj -----\n
-        ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultFollowersObj -----\n
+      //   ${util.inspect(resultFollowersObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
     }
-    
-    
-    
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   DB find / Follows
-    // // --------------------------------------------------
-    
-    // const author = lodashGet(userCommunityObj, ['headerObj', 'author'], false);
-    
-    // const followsObj = await ModelFollows.findOne({
-      
-    //   conditionObj: {
-    //     userCommunities_id
-    //   },
-      
-    // });
-    
-    // const followedArr = lodashGet(followsObj, ['followedArr'], []);
-    // returnObj.followedCount = lodashGet(followsObj, ['followedCount'], 1);
-    
-    // let users_idsArr = followedArr;
-    // let count = returnObj.followedCount;
-    
-    // if (author) {
-      
-    //   returnObj.approvalCount = lodashGet(followsObj, ['approvalCount'], 0);
-    //   returnObj.blockCount = lodashGet(followsObj, ['blockCount'], 0);
-      
-    //   if (type === 'approval') {
-        
-    //     users_idsArr = lodashGet(followsObj, ['approvalArr'], []);
-    //     count = returnObj.approvalCount;
-        
-    //   } else if (type === 'block') {
-        
-    //     users_idsArr = lodashGet(followsObj, ['blockArr'], []);
-    //     count = returnObj.blockCount;
-        
-    //   }
-      
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //    DB find / Card Players
-    // // --------------------------------------------------
-    
-    // if (!page) {
-    //   page = 1;
-    // }
-    
-    // const conditionObj = {
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   users_idsArr,
-    //   page,
-      
-    // };
-    
-    // if (limit) {
-    //   conditionObj.limit = limit;
-    // }
-    
-    // const resultMemberObj = await ModelCardPlayers.findForMember(conditionObj);
-    
-    // returnObj.cardPlayersObj = resultMemberObj.cardPlayersObj;
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   membersObj
-    // // --------------------------------------------------
-    
-    // const membersObj = {
-    //   page,
-    //   count,
-    // };
-    
-    // lodashSet(membersObj, [`page${page}Obj`, 'loadedDate'], moment().toISOString());
-    // lodashSet(membersObj, [`page${page}Obj`, 'arr'], resultMemberObj.cardPlayersForOrderArr);
-    
-    // returnObj.membersObj = membersObj;
     
     
     

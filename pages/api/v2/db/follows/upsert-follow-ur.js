@@ -139,18 +139,18 @@ export default async (req, res) => {
     //   データ取得
     // --------------------------------------------------
     
-    const followsConditionObj = {
+    const followsCondition1Obj = {
       users_id,
     };
     
-    const resultObj = await ModelFollows.findOne({ conditionObj: followsConditionObj });
+    const resultObj = await ModelFollows.findOne({ conditionObj: followsCondition1Obj });
     
     
-    const followsSelfConditionObj = {
+    const followsCondition2Obj = {
       users_id: loginUsers_id
     };
     
-    const resultSelfObj = await ModelFollows.findOne({ conditionObj: followsSelfConditionObj });
+    const resultSelfObj = await ModelFollows.findOne({ conditionObj: followsCondition2Obj });
     
     
     // console.log(`
@@ -286,7 +286,7 @@ export default async (req, res) => {
     //   Save Object
     // --------------------------------------------------
     
-    const followsSaveObj = {
+    const followsSave1Obj = {
       
       $set: {
         
@@ -301,7 +301,7 @@ export default async (req, res) => {
       
     };
     
-    const followsSelfSaveObj = {
+    const followsSave2Obj = {
       
       $set: {
         
@@ -322,10 +322,10 @@ export default async (req, res) => {
     
     await ModelFollows.transactionForUpsert({
       
-      followsConditionObj,
-      followsSaveObj,
-      followsSelfConditionObj,
-      followsSelfSaveObj,
+      followsCondition1Obj,
+      followsSave1Obj,
+      followsCondition2Obj,
+      followsSave2Obj,
       
     });
     
@@ -370,26 +370,26 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- followsConditionObj -----\n
-    //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
+    //   ----- followsCondition1Obj -----\n
+    //   ${util.inspect(followsCondition1Obj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- followsSaveObj -----\n
-    //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+    //   ----- followsSave1Obj -----\n
+    //   ${util.inspect(followsSave1Obj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- followsSelfConditionObj -----\n
-    //   ${util.inspect(followsSelfConditionObj, { colors: true, depth: null })}\n
+    //   ----- followsCondition2Obj -----\n
+    //   ${util.inspect(followsCondition2Obj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     // console.log(`
-    //   ----- followsSelfSaveObj -----\n
-    //   ${util.inspect(followsSelfSaveObj, { colors: true, depth: null })}\n
+    //   ----- followsSave2Obj -----\n
+    //   ${util.inspect(followsSave2Obj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

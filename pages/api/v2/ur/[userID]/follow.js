@@ -25,7 +25,6 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
-// const ModelFollows = require('../../../../../app/@database/follows/model');
 const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
@@ -42,6 +41,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
+const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
 
 
 // ---------------------------------------------
@@ -102,7 +102,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userID = req.query.userID;
-    const page = parseInt(req.query.page);
+    const page = parseInt(req.query.page, 10);
     const limit = parseInt(req.query.limit, 10);
     
     lodashSet(requestParametersObj, ['userID'], userID);
@@ -117,7 +117,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationInteger({ throwError: true, value: page });
-    await validationInteger({ throwError: true, value: limit });
+    await validationFollowLimit({ throwError: true, value: limit });
     
     
     
@@ -195,7 +195,7 @@ export default async (req, res) => {
       loginUsers_id,
       adminUsers_id: users_id,
       users_id,
-      type: 'follow',
+      controlType: 'follow',
       page,
       limit,
       
@@ -203,23 +203,6 @@ export default async (req, res) => {
     
     returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
     returnObj.followMembersObj = resultFollowersObj.followMembersObj;
-    
-    
-    // --------------------------------------------------
-    //    followersObj
-    // --------------------------------------------------
-    
-    // const followersObj = {
-    //   page,
-    //   count: followedCount,
-    //   approvalCount,
-    //   blockCount,
-    // };
-    
-    // lodashSet(followersObj, [`page${page}Obj`, 'loadedDate'], moment().toISOString());
-    // lodashSet(followersObj, [`page${page}Obj`, 'arr'], cardPlayersArr);
-    
-    // returnObj.followersObj = followersObj;
     
     
     
@@ -232,7 +215,7 @@ export default async (req, res) => {
     //   3: 自分のことをフォローしているユーザー
     //   4: 自分がフォローしているユーザー
     //   5: 相互フォロー状態のユーザー
-    //   50: 自分自身
+    //   50: 自分自身（コミュニティの管理者）
     //   100: サイト管理者
     // --------------------------------------------------
     

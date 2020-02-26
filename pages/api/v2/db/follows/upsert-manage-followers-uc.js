@@ -49,7 +49,7 @@ const { validationManageFollowersType } = require('../../../../../app/@database/
 
 
 // --------------------------------------------------
-//   endpointID: F_U9YxzJx
+//   endpointID: YHBSX4zKR
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -84,8 +84,6 @@ export default async (req, res) => {
     
     const { 
       
-      users_id,
-      gameCommunities_id,
       userCommunities_id,
       targetUsers_id,
       type,
@@ -98,8 +96,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['users_id'], users_id);
-    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
     lodashSet(requestParametersObj, ['targetUsers_id'], targetUsers_id);
     lodashSet(requestParametersObj, ['type'], type);
@@ -120,7 +116,7 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Jp-64G5MT', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zyF4tIxev', messageID: 'xLLNIpo6a' }] });
     }
     
     
@@ -133,111 +129,39 @@ export default async (req, res) => {
     await validationIP({ throwError: true, value: req.ip });
     await validationUsers_idServer({ throwError: true, value: targetUsers_id });
     await validationManageFollowersType({ throwError: true, required: true, value: type });
+    await validationUserCommunities_idServer({ value: userCommunities_id });
     
     
     
     
     // --------------------------------------------------
-    //   conditionObj
+    //   データ取得 - user-communities
     // --------------------------------------------------
     
-    let conditionObj = {};
-    
-    
-    // --------------------------------------------------
-    //   Game Community
-    // --------------------------------------------------
-    
-    if (gameCommunities_id) {
-      
-      
-      
-    // --------------------------------------------------
-    //   User Community
-    // --------------------------------------------------
-      
-    } else if (userCommunities_id) {
-      
-      await validationUserCommunities_idServer({ value: userCommunities_id });
-      
-      
-      // --------------------------------------------------
-      //   データ取得 - user-communities
-      // --------------------------------------------------
-      
-      const docUserCommunitiesObj = await ModelUserCommunities.findOne({
-        conditionObj: {
-          _id: userCommunities_id
-        }
-      });
-      const adminUsers_id = lodashGet(docUserCommunitiesObj, ['users_id'], '');
-      
-      
-      // --------------------------------------------------
-      //   管理権限がない場合はエラー
-      // --------------------------------------------------
-      
-      if (adminUsers_id !== loginUsers_id) {
-        statusCode = 403;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'prS38d43e', messageID: 'DSRlEoL29' }] });
+    const docUserCommunitiesObj = await ModelUserCommunities.findOne({
+      conditionObj: {
+        _id: userCommunities_id
       }
-      
-      
-      // --------------------------------------------------
-      //   管理者が管理者自身を操作しようとした場合はエラー
-      // --------------------------------------------------
-      
-      if (targetUsers_id === adminUsers_id) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HA6uOYVxo', messageID: 'qnWsuPcrJ' }] });
-      }
-      
-      
-      // --------------------------------------------------
-      //   conditionObj
-      // --------------------------------------------------
-      
-      conditionObj = {
-        userCommunities_id
-      };
-      
-      
+    });
+    const adminUsers_id = lodashGet(docUserCommunitiesObj, ['users_id'], '');
+    
+    
     // --------------------------------------------------
-    //   User
+    //   管理権限がない場合はエラー
     // --------------------------------------------------
-      
-    } else {
-      
-      await validationUsers_idServer({ value: users_id });
-      
-      
-      // --------------------------------------------------
-      //   管理権限がない場合はエラー
-      // --------------------------------------------------
-      
-      if (users_id !== loginUsers_id) {
-        statusCode = 401;
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AvTRjcmIi', messageID: 'DSRlEoL29' }] });
-      }
-      
-      
-      // --------------------------------------------------
-      //   管理者が管理者自身を操作しようとした場合はエラー
-      // --------------------------------------------------
-      
-      if (targetUsers_id === loginUsers_id) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'kX4M0aRXx', messageID: 'qnWsuPcrJ' }] });
-      }
-      
-      
-      // --------------------------------------------------
-      //   conditionObj
-      // --------------------------------------------------
-      
-      conditionObj = {
-        users_id
-      };
-      
-      
+    
+    if (adminUsers_id !== loginUsers_id) {
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'prS38d43e', messageID: 'DSRlEoL29' }] });
+    }
+    
+    
+    // --------------------------------------------------
+    //   管理者が管理者自身を操作しようとした場合はエラー
+    // --------------------------------------------------
+    
+    if (targetUsers_id === adminUsers_id) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HA6uOYVxo', messageID: 'qnWsuPcrJ' }] });
     }
     
     
@@ -246,6 +170,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     //   データ取得 - follows
     // --------------------------------------------------
+    
+    const conditionObj = {
+      userCommunities_id
+    };
     
     const docFollowsObj = await ModelFollows.findOne({ conditionObj });
     
@@ -369,12 +297,10 @@ export default async (req, res) => {
     
     console.log(`
       ----------------------------------------\n
-      /pages/api/v2/db/follows/upsert-manage-followers.js
+      /pages/api/v2/db/follows/upsert-manage-followers-uc.js
     `);
     
     console.log(chalk`
-      users_id: {green ${users_id} / ${typeof users_id}}
-      gameCommunities_id: {green ${gameCommunities_id} / ${typeof gameCommunities_id}}
       userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
       targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
       type: {green ${type} / ${typeof type}}
@@ -411,7 +337,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'F_U9YxzJx',
+      endpointID: 'YHBSX4zKR',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

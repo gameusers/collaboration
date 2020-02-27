@@ -185,7 +185,7 @@ export default class extends React.Component {
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
     const accessRightRead = lodashGet(resultObj, ['data', 'accessRightRead'], false);
-    const author = lodashGet(resultObj, ['data', 'headerObj', 'author'], false);
+    const admin = lodashGet(resultObj, ['data', 'headerObj', 'followsObj', 'admin'], false);
     
     
     // --------------------------------------------------
@@ -217,7 +217,7 @@ export default class extends React.Component {
       );
     }
     
-    if (author) {
+    if (admin) {
       headerNavMainArr.push(
         {
           name: '設定',

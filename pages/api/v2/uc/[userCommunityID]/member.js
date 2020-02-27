@@ -148,11 +148,11 @@ export default async (req, res) => {
       
     });
     
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- userCommunityObj -----\n
+      ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     // ---------------------------------------------
@@ -166,7 +166,7 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - userCommunities_id & author
+    //   - userCommunities_id & adminUsers_id
     // ---------------------------------------------
     
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');

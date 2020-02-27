@@ -153,8 +153,9 @@ export default class extends React.Component {
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
     
-    const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
-    const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
+    // const cardPlayersObj = lodashGet(resultObj, ['data', 'cardPlayersObj'], {});
+    // const cardPlayersArr = lodashGet(resultObj, ['data', 'cardPlayersArr'], []);
+    // const pagesObj = lodashGet(resultObj, ['data', 'pagesObj'], []);
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
     
     
@@ -189,13 +190,7 @@ export default class extends React.Component {
       
     }
     
-    // console.log(`
-    //   ----- headerNavMainArr -----\n
-    //   ${util.inspect(headerNavMainArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, cardPlayersObj, pagesObj };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -280,7 +275,7 @@ export default class extends React.Component {
       if (
         this.props.statusCode !== 200 ||
         'cardPlayersObj' in props.propsObj === false ||
-        'cardsArr' in props.propsObj === false
+        'cardPlayersArr' in props.propsObj === false
       ) {
         throw new Error();
       }
@@ -332,11 +327,11 @@ export default class extends React.Component {
     
     // const stores = this.stores;
     
-    const cardsArr = lodashGet(this.props, ['propsObj', 'cardsArr'], []);
+    const cardPlayersArr = lodashGet(this.props, ['propsObj', 'cardPlayersArr'], []);
     
     // console.log(`
-    //   ----- cardsArr -----\n
-    //   ${util.inspect(cardsArr, { colors: true, depth: null })}\n
+    //   ----- cardPlayersArr -----\n
+    //   ${util.inspect(cardPlayersArr, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -349,25 +344,18 @@ export default class extends React.Component {
     
     const componentCardsArr = [];
     
-    for (const [index, valueObj] of cardsArr.entries()) {
+    for (const [index, cardPlayers_id] of cardPlayersArr.entries()) {
       
-      if ('cardPlayers_id' in valueObj) {
-        
-        const cardPlayers_id = lodashGet(valueObj, ['cardPlayers_id'], '');
-        userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-        // userName = lodashGet(stores, ['data', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
-        // console.log(userName);
-        
-        componentCardsArr.push(
-          <CardPlayer
-            cardPlayers_id={valueObj.cardPlayers_id}
-            showFollow={true}
-            showEditButton={true}
-            key={index}
-          />
-        );
-        
-      }
+      userName = lodashGet(this.props, ['propsObj', 'cardPlayersObj', cardPlayers_id, 'nameObj', 'value'], '');
+      
+      componentCardsArr.push(
+        <CardPlayer
+          cardPlayers_id={cardPlayers_id}
+          showFollow={true}
+          showEditButton={true}
+          key={index}
+        />
+      );
       
     }
     

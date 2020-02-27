@@ -506,9 +506,9 @@ const findOneForUser = async ({
     // --------------------------------------------------
     
     const followsObj = lodashGet(returnObj, ['followsObj'], {});
-    const authorUsers_id = lodashGet(returnObj, ['_id'], '');
+    const adminUsers_id = lodashGet(returnObj, ['_id'], '');
     
-    headerObj.followsObj = formatFollowsObj({ followsObj, authorUsers_id, loginUsers_id });
+    headerObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id, loginUsers_id });
     
     
     

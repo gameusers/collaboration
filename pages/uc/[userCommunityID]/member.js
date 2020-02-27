@@ -143,8 +143,11 @@ export default class extends React.Component {
     
     const stores = initStoreRoot({});
     
-    const memberPage = stores.data.getTemporaryData({ pathname, key: 'memberPage' });
-    const memberLimit = stores.data.getCookie({ key: 'memberLimit' });
+    const page = stores.data.getTemporaryData({ pathname, key: 'followPage' });
+    const limit = stores.data.getCookie({ key: 'followLimit' });
+    
+    // const memberPage = stores.data.getTemporaryData({ pathname, key: 'memberPage' });
+    // const memberLimit = stores.data.getCookie({ key: 'memberLimit' });
     
     
     // --------------------------------------------------
@@ -152,7 +155,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member?page=${memberPage}&limit=${memberLimit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/member?page=${page}&limit=${limit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,

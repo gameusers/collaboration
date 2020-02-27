@@ -53,7 +53,7 @@ const formatIDsArr = ({ localeObj, loginUsers_id, followsObj, arr }) => {
   // const approval = lodashGet(followsObj, ['approval'], false);
   // const followCount = lodashGet(followsObj, ['followCount'], 0);
   // const followedCount = lodashGet(followsObj, ['followedCount'], 0);
-  const author = lodashGet(followsObj, ['author'], false);
+  const admin = lodashGet(followsObj, ['admin'], false);
   const follow = lodashGet(followsObj, ['follow'], false);
   const followed = lodashGet(followsObj, ['followed'], false);
   // const followApproval = lodashGet(followsObj, ['followApproval'], false);
@@ -80,7 +80,7 @@ const formatIDsArr = ({ localeObj, loginUsers_id, followsObj, arr }) => {
     
     if (
       
-      author ||
+      admin ||
       valueObj.publicSetting === 1 ||
       valueObj.publicSetting === 2 && followed ||
       valueObj.publicSetting === 3 && follow ||

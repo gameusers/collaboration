@@ -106,7 +106,7 @@ export default class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeFollow } = this.props;
+    const { stores, storeFollow, userCommunities_id, followsObj } = this.props;
     
     const { 
       
@@ -117,6 +117,20 @@ export default class extends React.Component {
     } = storeFollow;
     
     
+    const login = stores.data.getLogin();
+    
+    const approval = lodashGet(followsObj, ['approval'], false);
+    const admin = lodashGet(followsObj, ['admin'], false);
+    const follow = lodashGet(followsObj, ['follow'], false);
+    const followApproval = lodashGet(followsObj, ['followApproval'], false);
+    const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
+    
+    
+    // console.log(`
+    //   ----- followsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(followsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -139,18 +153,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Button
+    //   Component - Button
     // --------------------------------------------------
     
-    const login = stores.data.getLogin();
-    const userCommunities_id = lodashGet(stores, ['data', 'headerObj', 'userCommunities_id'], '');
-    const approval = lodashGet(stores, ['data', 'headerObj', 'approval'], false);
-    const author = lodashGet(stores, ['data', 'headerObj', 'author'], false);
-    const member = lodashGet(stores, ['data', 'headerObj', 'member'], false);
-    const memberApproval = lodashGet(stores, ['data', 'headerObj', 'memberApproval'], false);
-    const memberBlocked = lodashGet(stores, ['data', 'headerObj', 'memberBlocked'], false);
-    
-    let code =  '';
+    let component =  '';
     
     
     // ---------------------------------------------
@@ -159,7 +165,7 @@ export default class extends React.Component {
     
     if (!login) {
       
-      code = 
+      component = 
         <Link href="/login">
           <Button
             variant="contained"
@@ -178,7 +184,7 @@ export default class extends React.Component {
     //   - ログインしていてメンバーでない場合
     // ---------------------------------------------
     
-    if (login && !member) {
+    if (login && !follow) {
       
       
       // ---------------------------------------------
@@ -187,7 +193,7 @@ export default class extends React.Component {
       
       if (approval) {
         
-        code = 
+        component = 
           <Button
             variant="contained"
             color="secondary"
@@ -210,7 +216,7 @@ export default class extends React.Component {
         
       } else {
         
-        code = 
+        component = 
           <Button
             variant="contained"
             color="secondary"
@@ -236,9 +242,9 @@ export default class extends React.Component {
     //   - ログインしていてメンバーである場合
     // ---------------------------------------------
     
-    if (login && member) {
+    if (login && follow) {
       
-      code = 
+      component = 
         <Button
           variant="contained"
           color="primary"
@@ -260,9 +266,9 @@ export default class extends React.Component {
     //   - 参加申請済みの場合
     // ---------------------------------------------
     
-    if (memberApproval) {
+    if (followApproval) {
       
-      code = 
+      component = 
         <Button
           variant="contained"
           color="primary"
@@ -284,7 +290,7 @@ export default class extends React.Component {
     //   - 作者またはブロックされている場合
     // ---------------------------------------------
     
-    if (author || memberBlocked) {
+    if (admin || followBlocked) {
       return null;
     }
     
@@ -325,7 +331,7 @@ export default class extends React.Component {
         `}
       >
         
-        {code}
+        {component}
         
         
         {/* コミュニティを退会するか尋ねるダイアログ */}

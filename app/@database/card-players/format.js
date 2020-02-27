@@ -71,6 +71,7 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     
     const cardPlayerObj = lodashGet(valueObj, ['cardPlayerObj'], {});
     
+    const cardPlayers_id = lodashGet(valueObj, ['cardPlayerObj', '_id'], '');
     const users_id = lodashGet(valueObj, ['cardPlayerObj', 'users_id'], '');
     const imagesAndVideosObj = lodashGet(valueObj, ['cardPlayerObj', 'imagesAndVideosObj'], {});
     const imagesAndVideosThumbnailObj = lodashGet(valueObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj'], {});
@@ -168,7 +169,7 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     //   Format - Follows
     // --------------------------------------------------
     
-    clonedObj.followsObj = formatFollowsObj({ followsObj, authorUsers_id: users_id, loginUsers_id });
+    clonedObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id: users_id, loginUsers_id });
     
     
     // --------------------------------------------------
@@ -230,8 +231,10 @@ const formatCardPlayersArr = ({ localeObj, loginUsers_id, arr }) => {
     //   Return
     // --------------------------------------------------
     
-    returnObj[valueObj._id] = clonedObj;
-    returnArr.push(valueObj._id);
+    // returnObj[valueObj._id] = clonedObj;
+    // returnArr.push(valueObj._id);
+    returnObj[cardPlayers_id] = clonedObj;
+    returnArr.push(cardPlayers_id);
     
     
   }

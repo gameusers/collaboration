@@ -143,7 +143,11 @@ export default class extends React.Component {
     const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
     const createdDate = moment(lodashGet(stores, ['data', 'headerObj', 'createdDate'], '')).format('YYYY/MM/DD');
     
-    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followedCount'], 1);
+    const userCommunities_id = lodashGet(stores, ['data', 'headerObj', 'userCommunities_id'], '');
+    const followsObj = lodashGet(stores, ['data', 'headerObj', 'followsObj'], {});
+    // const followCount = lodashGet(stores, ['data', 'headerObj', 'followsObj', 'followCount'], 0);
+    const followedCount = lodashGet(stores, ['data', 'headerObj', 'followsObj', 'followedCount'], 0);
+    // const followedCount = lodashGet(stores, ['data', 'headerObj', 'followedCount'], 1);
     
     
     
@@ -252,7 +256,10 @@ export default class extends React.Component {
           </div>
           
           
-          <FollowButton />
+          <FollowButton
+            userCommunities_id={userCommunities_id}
+            followsObj={followsObj}
+          />
           
           
         </div>

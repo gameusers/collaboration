@@ -282,12 +282,6 @@ class Store {
         // ---------------------------------------------
         
         lodashSet(this.dataObj, [...pathArr, 'followMembersObj', `${controlType}Obj`, 'page'], page);
-        // clonedMembersObj.page = page;
-        
-        // this.handleEdit({
-        //   pathArr: [...pathArr, 'membersObj'],
-        //   value: clonedMembersObj
-        // });
         
         
         // ---------------------------------------------
@@ -466,6 +460,47 @@ class Store {
       });
       
       
+      
+      
+      // --------------------------------------------------
+      //   followedCount / ヘッダーのフォロワー（メンバー）数更新
+      // --------------------------------------------------
+      
+      const followCount = lodashGet(resultObj, ['data', 'followMembersObj', 'followObj', 'count'], 0);
+      lodashSet(storeData, ['headerObj', 'followsObj', 'followCount'], followCount);
+      
+      const followedCount = lodashGet(resultObj, ['data', 'followMembersObj', 'followedObj', 'count'], 0);
+      lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], followedCount);
+      
+      // console.log(`
+      //   ----- storeData.headerObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // if (followedCount) {
+      //   lodashSet(storeData, ['headerObj', 'followedCount'], followedCount);
+      // }
+      
+      
+      // // --------------------------------------------------
+      // //   approvalCount
+      // // --------------------------------------------------
+      
+      // if (lodashHas(resultObj, ['data', 'approvalCount'])) {
+      //   lodashSet(this.dataObj, [...pathArr, 'approvalCount'], resultObj.data.approvalCount);
+      // }
+      
+      
+      // // --------------------------------------------------
+      // //   blockCount
+      // // --------------------------------------------------
+      
+      // if (lodashHas(resultObj, ['data', 'blockCount'])) {
+      //   lodashSet(this.dataObj, [...pathArr, 'blockCount'], resultObj.data.blockCount);
+      // }
+      
+      
     } catch (errorObj) {
       
       
@@ -637,7 +672,35 @@ class Store {
       
       let resultObj = {};
       
-      if (pageType === 'ur') {
+      
+      if (pageType === 'uc') {
+        
+        
+        // ---------------------------------------------
+        //   FormData
+        // ---------------------------------------------
+        
+        const formDataObj = {
+          
+          userCommunities_id,
+          targetUsers_id,
+          type,
+          
+        };
+        
+        
+        // ---------------------------------------------
+        //   Fetch
+        // ---------------------------------------------
+        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/follows/upsert-manage-followers-uc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
+        
+      
+      } else if (pageType === 'ur') {
         
         
         // ---------------------------------------------

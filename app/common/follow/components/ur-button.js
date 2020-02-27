@@ -125,7 +125,7 @@ export default class extends React.Component {
     const login = stores.data.getLogin();
     
     const approval = lodashGet(followsObj, ['approval'], false);
-    const author = lodashGet(followsObj, ['author'], false);
+    const admin = lodashGet(followsObj, ['admin'], false);
     const follow = lodashGet(followsObj, ['follow'], false);
     const followedCount = lodashGet(followsObj, ['followedCount'], 0);
     const followApproval = lodashGet(followsObj, ['followApproval'], false);
@@ -323,7 +323,7 @@ export default class extends React.Component {
     //   - 作者またはブロックされている場合
     // ---------------------------------------------
     
-    if (author || followBlocked) {
+    if (admin || followBlocked) {
       return null;
     }
     

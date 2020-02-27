@@ -101,6 +101,7 @@ export default async (req, res) => {
     } = bodyObj;
     
     
+    lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['cardPlayers_id'], cardPlayers_id);
     
     
@@ -158,6 +159,11 @@ export default async (req, res) => {
     // console.log(`
     //   ----------------------------------------\n
     //   /pages/api/v2/db/card-players/read-edit-form.js
+    // `);
+    
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   cardPlayers_id: {green ${cardPlayers_id}}
     // `);
     
     // console.log(`

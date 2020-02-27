@@ -139,10 +139,13 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const docUserCommunitiesObj = await ModelUserCommunities.findOne({
+      
       conditionObj: {
         _id: userCommunities_id
       }
+      
     });
+    
     const adminUsers_id = lodashGet(docUserCommunitiesObj, ['users_id'], '');
     
     
@@ -210,8 +213,9 @@ export default async (req, res) => {
       
     } else if (type === 'approval') {
       
-      followedArr.push(targetUsers_id);
-      followedCount = followedArr.length;
+      followedCount = followedArr.push(targetUsers_id);
+      // followedCount = followedArr.length;
+      
       approvalArr = approvalArr.filter(value => value !== targetUsers_id);
       approvalCount = approvalArr.length;
       
@@ -234,10 +238,12 @@ export default async (req, res) => {
       
       followedArr = followedArr.filter(value => value !== targetUsers_id);
       followedCount = followedArr.length;
+      
       approvalArr = approvalArr.filter(value => value !== targetUsers_id);
       approvalCount = approvalArr.length;
-      blockArr.push(targetUsers_id);
-      blockCount = blockArr.length;
+      
+      blockCount = blockArr.push(targetUsers_id);
+      // blockCount = blockArr.length;
     
     
     // --------------------------------------------------
@@ -277,16 +283,16 @@ export default async (req, res) => {
     
     
     
-    // // --------------------------------------------------
-    // //   Update
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   Update
+    // --------------------------------------------------
     
-    // await ModelFollows.upsert({
+    await ModelFollows.upsert({
       
-    //   conditionObj,
-    //   saveObj,
+      conditionObj,
+      saveObj,
       
-    // });
+    });
     
     
     
@@ -295,28 +301,34 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/follows/upsert-manage-followers-uc.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/follows/upsert-manage-followers-uc.js
+    // `);
     
-    console.log(chalk`
-      userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
-      targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
-      type: {green ${type} / ${typeof type}}
-    `);
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id} / ${typeof userCommunities_id}}
+    //   targetUsers_id: {green ${targetUsers_id} / ${typeof targetUsers_id}}
+    //   type: {green ${type} / ${typeof type}}
+    // `);
     
-    console.log(`
-      ----- docFollowsObj -----\n
-      ${util.inspect(docFollowsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docFollowsObj -----\n
+    //   ${util.inspect(docFollowsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

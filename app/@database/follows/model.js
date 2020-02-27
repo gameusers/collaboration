@@ -383,34 +383,34 @@ const transactionForUpsert = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/follows/model.js - transactionForUpsert
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/follows/model.js - transactionForUpsert
+    // `);
     
-    console.log(`
-      ----- followsCondition1Obj -----\n
-      ${util.inspect(followsCondition1Obj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsCondition1Obj -----\n
+    //   ${util.inspect(followsCondition1Obj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- followsSave1Obj -----\n
-      ${util.inspect(followsSave1Obj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsSave1Obj -----\n
+    //   ${util.inspect(followsSave1Obj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- followsCondition2Obj -----\n
-      ${util.inspect(followsCondition2Obj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsCondition2Obj -----\n
+    //   ${util.inspect(followsCondition2Obj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- followsSave2Obj -----\n
-      ${util.inspect(followsSave2Obj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- followsSave2Obj -----\n
+    //   ${util.inspect(followsSave2Obj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

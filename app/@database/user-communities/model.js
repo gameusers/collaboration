@@ -35,6 +35,7 @@ const SchemaFollows = require('../follows/schema');
 // ---------------------------------------------
 
 const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatFollowsObj } = require('../follows/format');
 
 
 
@@ -532,6 +533,8 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     const headerObj = {};
     
     
+    
+    
     // --------------------------------------------------
     //   画像の処理
     // --------------------------------------------------
@@ -548,6 +551,8 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     if (returnObj.gamesArr) {
       headerObj.gamesArr = formatImagesAndVideosArr({ arr: returnObj.gamesArr });
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -574,41 +579,53 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     }
     
     
+    
+    
     // --------------------------------------------------
     //   member
     // --------------------------------------------------
     
-    headerObj.author = false;
-    headerObj.member = false;
-    headerObj.memberApproval = false;
-    headerObj.memberBlocked = false;
+    // headerObj.author = false;
+    // headerObj.member = false;
+    // headerObj.memberApproval = false;
+    // headerObj.memberBlocked = false;
     
-    if (loginUsers_id) {
+    // if (loginUsers_id) {
       
-      const users_id = lodashGet(returnObj, ['users_id'], '');
-      const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
-      const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
-      const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
+    //   const users_id = lodashGet(returnObj, ['users_id'], '');
+    //   const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
+    //   const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
+    //   const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
       
-      if (users_id === loginUsers_id) {
-        headerObj.author = true;
-      }
+    //   if (users_id === loginUsers_id) {
+    //     headerObj.author = true;
+    //   }
       
-      if (followedArr.includes(loginUsers_id)) {
-        headerObj.member = true;
-      }
+    //   if (followedArr.includes(loginUsers_id)) {
+    //     headerObj.member = true;
+    //   }
       
-      if (approvalArr.includes(loginUsers_id)) {
-        headerObj.memberApproval = true;
-      }
+    //   if (approvalArr.includes(loginUsers_id)) {
+    //     headerObj.memberApproval = true;
+    //   }
       
-      if (blockArr.includes(loginUsers_id)) {
-        headerObj.memberBlocked = true;
-      }
+    //   if (blockArr.includes(loginUsers_id)) {
+    //     headerObj.memberBlocked = true;
+    //   }
       
-    }
+    // }
     
     
+    
+    
+    // --------------------------------------------------
+    //   follow フォーマット
+    // --------------------------------------------------
+    
+    const followsObj = lodashGet(returnObj, ['followsObj'], {});
+    const adminUsers_id = lodashGet(returnObj, ['users_id'], '');
+    
+    headerObj.followsObj = formatFollowsObj({ followsObj, adminUsers_id, loginUsers_id });
     
     
     // --------------------------------------------------

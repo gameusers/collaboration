@@ -230,6 +230,16 @@ export default injectIntl(class extends React.Component {
         dialogTitle = 'コミュニティ退会';
         dialogDescription = 'コミュニティから退会させますか？';
         
+      } else if (dialogType === 'approval') {
+        
+        dialogTitle = 'コミュニティへの参加承認';
+        dialogDescription = 'コミュニティへの参加を承認しますか？';
+        
+      } else if (dialogType === 'unapproval') {
+        
+        dialogTitle = 'コミュニティへの参加拒否';
+        dialogDescription = 'コミュニティへの参加を拒否しますか？';
+        
       }
       
     } else {
@@ -249,17 +259,20 @@ export default injectIntl(class extends React.Component {
         dialogTitle = 'フォロー拒否';
         dialogDescription = 'フォローを拒否しますか？';
         
-      } else if (dialogType === 'block') {
-        
-        dialogTitle = 'ブロック';
-        dialogDescription = 'ブロックしますか？';
-        
-      } else if (dialogType === 'unblock') {
-        
-        dialogTitle = 'ブロック解除';
-        dialogDescription = 'ブロックを解除しますか？';
-        
       }
+      
+    }
+    
+    
+    if (dialogType === 'block') {
+      
+      dialogTitle = 'ブロック';
+      dialogDescription = 'ブロックしますか？';
+      
+    } else if (dialogType === 'unblock') {
+      
+      dialogTitle = 'ブロック解除';
+      dialogDescription = 'ブロックを解除しますか？';
       
     }
     

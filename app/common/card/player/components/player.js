@@ -59,7 +59,6 @@ import ActivityTime from './activity-time';
 import LookingForFriend from './looking-for-friends';
 import VoiceChat from './voice-chat';
 import Link from './link';
-// import FollowButton from './follow-button';
 import EditButton from './edit-button';
 import FormPlayer from './form/player';
 import FollowButton from '../../../follow/components/ur-button';
@@ -402,13 +401,6 @@ export default class extends React.Component {
             accessDate={accessDate}
             exp={exp}
           />
-          
-          {/*<Button
-            variant="contained"
-            color="secondary"
-          >
-            退会
-          </Button>*/}
           
           
           {/* 右上に設置されているパネル開閉用のボタン */}

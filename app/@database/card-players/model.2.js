@@ -342,12 +342,11 @@ const findForCardPlayers = async ({ localeObj, loginUsers_id, users_id, cardPlay
 
 
 /**
- * aggregate でデータを取得し、フォーマットして返す
+ * 取得する
  * @param {Object} localeObj - ロケール
+ * @param {string} users_id - DB users _id
+ * @param {string} cardPlayers_id - DB card-players _id
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {Array} matchConditionArr - 検索条件
- * @param {number} page - ページ
- * @param {number} limit - 1ページに表示する件数
  * @return {Object} 取得データ
  */
 const aggregateAndFormat = async ({
@@ -763,7 +762,7 @@ const aggregateAndFormat = async ({
     });
     
     returnObj.cardPlayersObj = lodashGet(formattedObj, ['obj'], {});
-    returnObj.cardPlayersArr = lodashGet(formattedObj, ['arr'], []);
+    const cardPlayersArr = lodashGet(formattedObj, ['arr'], []);
     
     
     
@@ -772,28 +771,28 @@ const aggregateAndFormat = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /app/@database/card-players/model.js - aggregateAndFormat
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/card-players/model.js - aggregateAndFormat
+    `);
     
-    // console.log(`
-    //   ----- matchConditionArr -----\n
-    //   ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- matchConditionArr -----\n
+      ${util.inspect(matchConditionArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- docUsersArr -----\n
-    //   ${util.inspect(docUsersArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docUsersArr -----\n
+      ${util.inspect(docUsersArr, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(`
-    //   ----- formattedObj -----\n
-    //   ${util.inspect(formattedObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- formattedObj -----\n
+      ${util.inspect(formattedObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -2263,6 +2262,17 @@ const findForFollowers = async ({
       
     }
     
+    // users_idsArr = ['jun-deE4J', 'P7UJMuUnx'];
+    // users_idsArr = ['jun-deE4J'];
+    
+    
+    // intPage = 3;
+    // intLimit = 5;
+    
+    // const begin = (intPage - 1) * intLimit;
+    // const end = intLimit;
+    // let testArr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    // testArr = testArr.splice(begin, end);
     
     
     
@@ -2278,28 +2288,370 @@ const findForFollowers = async ({
     
     
     // --------------------------------------------------
-    //   Return
+    //   Card Players のデータを取得
+    //   users をベースにしているのは accessDate でソートするため
     // --------------------------------------------------
     
-    const formattedObj = await aggregateAndFormat({
+    const docUsersArr = await SchemaUsers.aggregate([
+      
+      
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
+      ...matchConditionArr,
+      
+      
+      // --------------------------------------------------
+      //   card-players
+      // --------------------------------------------------
+      
+      {
+        $lookup:
+          {
+            from: 'card-players',
+            let: { users_id: '$_id' },
+            pipeline: [
+              { $match:
+                { $expr:
+                  { $eq: ['$users_id', '$$users_id'] },
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   card-players / images-and-videos / メイン画像
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { cardPlayersImagesAndVideos_id: '$imagesAndVideos_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$cardPlayersImagesAndVideos_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   card-players / images-and-videos / サムネイル用
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
+              // --------------------------------------------------
+              //   card-players / hardwares
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'hardwares',
+                    let: {
+                      cardPlayersHardwareActiveArr: '$hardwareActiveObj.valueArr',
+                      cardPlayersHardwareInactiveArr: '$hardwareInactiveObj.valueArr'
+                    },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $or:
+                            [
+                              { $and:
+                                [
+                                  { $eq: ['$language', localeObj.language] },
+                                  { $eq: ['$country', localeObj.country] },
+                                  { $in: ['$hardwareID', '$$cardPlayersHardwareActiveArr'] }
+                                ]
+                              },
+                              { $and:
+                                [
+                                  { $eq: ['$language', localeObj.language] },
+                                  { $eq: ['$country', localeObj.country] },
+                                  { $in: ['$hardwareID', '$$cardPlayersHardwareInactiveArr'] }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      },
+                      { $project:
+                        {
+                          _id: 0,
+                          hardwareID: 1,
+                          name: 1,
+                        }
+                      }
+                    ],
+                    as: 'hardwaresArr'
+                  }
+              },
+              
+              
+              // --------------------------------------------------
+              //   card-players / follows
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'follows',
+                    let: { cardPlayersUsers_id: '$users_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$users_id', '$$cardPlayersUsers_id'] },
+                        }
+                      },
+                    ],
+                    as: 'followsObj'
+                  }
+              },
+              
+              {
+                $unwind: '$followsObj'
+              },
+              
+              
+              // --------------------------------------------------
+              //   card-players / ids
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'ids',
+                    let: { cardPlayersIds_idArr: '$ids_idArr' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $in: ['$_id', '$$cardPlayersIds_idArr'] }
+                        }
+                      },
+                      
+                      
+                      // --------------------------------------------------
+                      //   card-players / ids / games
+                      // --------------------------------------------------
+                      
+                      {
+                        $lookup:
+                          {
+                            from: 'games',
+                            let: { idsGameCommunities_id: '$gameCommunities_id' },
+                            pipeline: [
+                              { $match:
+                                { $expr:
+                                  { $and:
+                                    [
+                                      { $eq: ['$language', localeObj.language] },
+                                      { $eq: ['$country', localeObj.country] },
+                                      { $eq: ['$gameCommunities_id', '$$idsGameCommunities_id'] }
+                                    ]
+                                  },
+                                }
+                              },
+                              
+                              
+                              // --------------------------------------------------
+                              //   card-players / ids / games / images-and-videos / サムネイル用
+                              // --------------------------------------------------
+                              
+                              {
+                                $lookup:
+                                  {
+                                    from: 'images-and-videos',
+                                    let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                                    pipeline: [
+                                      { $match:
+                                        { $expr:
+                                          { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
+                                        }
+                                      },
+                                      { $project:
+                                        {
+                                          createdDate: 0,
+                                          updatedDate: 0,
+                                          users_id: 0,
+                                          __v: 0,
+                                        }
+                                      }
+                                    ],
+                                    as: 'imagesAndVideosThumbnailObj'
+                                  }
+                              },
+                              
+                              {
+                                $unwind: {
+                                  path: '$imagesAndVideosThumbnailObj',
+                                  preserveNullAndEmptyArrays: true,
+                                }
+                              },
+                              
+                              
+                              { $project:
+                                {
+                                  _id: 1,
+                                  gameCommunities_id: 1,
+                                  name: 1,
+                                  imagesAndVideosThumbnailObj: 1,
+                                }
+                              }
+                            ],
+                            as: 'gamesObj'
+                          }
+                      },
+                      
+                      {
+                        $unwind:
+                          {
+                            path: '$gamesObj',
+                            preserveNullAndEmptyArrays: true
+                          }
+                      },
+                      
+                      
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          search: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'idsArr'
+                  }
+              },
+              
+              
+              {
+                $project: {
+                  __v: 0,
+                  createdDate: 0,
+                  language: 0,
+                  nameObj: { search: 0 },
+                  statusObj: { search: 0 },
+                  commentObj: { search: 0 },
+                  ageObj: { search: 0 },
+                  sexObj: { search: 0 },
+                  addressObj: { search: 0 },
+                  gamingExperienceObj: { search: 0 },
+                  hobbiesObj: { search: 0 },
+                  specialSkillsObj: { search: 0 },
+                  smartphoneObj: { search: 0 },
+                  tabletObj: { search: 0 },
+                  pcObj: { search: 0 },
+                  hardwareActiveObj: { search: 0 },
+                  hardwareInactiveObj: { search: 0 },
+                  activityTimeObj: { search: 0 },
+                  'activityTimeObj.valueArr': { _id: 0 },
+                  lookingForFriendsObj: { search: 0 },
+                  voiceChatObj: { search: 0 },
+                  linkArr: { _id: 0, search: 0 },
+                }
+              },
+              
+              
+            ],
+            as: 'cardPlayerObj'
+          }
+      },
+      
+      {
+        $unwind: {
+          path: '$cardPlayerObj',
+          preserveNullAndEmptyArrays: true,
+        }
+      },
+      
+      
+      { $project:
+        {
+          accessDate: 1,
+          exp: 1,
+          userID: 1,
+          cardPlayerObj: 1,
+        }
+      },
+      
+      
+      { '$sort': { 'accessDate': -1 } },
+      { $skip: (intPage - 1) * intLimit },
+      { $limit: intLimit },
+      
+      
+    ]).exec();
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   フォーマット
+    // --------------------------------------------------
+    
+    const resultObj = formatCardPlayersArr({
       
       localeObj,
       loginUsers_id,
-      matchConditionArr,
-      page: intPage,
-      limit: intLimit,
+      arr: docUsersArr,
       
     });
     
-    
-    
-    
-    // --------------------------------------------------
-    //   cardPlayersObj & cardPlayersArr
-    // --------------------------------------------------
-    
-    returnObj.cardPlayersObj = lodashGet(formattedObj, ['cardPlayersObj'], {});
-    const cardPlayersArr = lodashGet(formattedObj, ['cardPlayersArr'], []);
+    returnObj.cardPlayersObj = lodashGet(resultObj, ['obj'], {});
+    const cardPlayersArr = lodashGet(resultObj, ['arr'], []);
     
     
     
@@ -2362,6 +2714,10 @@ const findForFollowers = async ({
       lodashSet(returnObj, ['followMembersObj', 'blockObj', `page${intPage}Obj`, 'arr'], cardPlayersArr);
       
     }
+    
+    
+    
+    
     
     
     

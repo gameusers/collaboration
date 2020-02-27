@@ -34,7 +34,7 @@ const lodashGet = require('lodash/get');
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Array} フォーマットされたオブジェクト
  */
-const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
+const formatFollowsObj = ({ followsObj, adminUsers_id, loginUsers_id }) => {
   
   
   // --------------------------------------------------
@@ -45,7 +45,7 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
   const followCount = lodashGet(followsObj, ['followCount'], 0);
   const followedCount = lodashGet(followsObj, ['followedCount'], 0);
   
-  let author = false;
+  let admin = false;
   let follow = false;
   let followed = false;
   let followApproval = false;
@@ -64,8 +64,8 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
     const blockArr = lodashGet(followsObj, ['blockArr'], []);
     
     
-    if (authorUsers_id === loginUsers_id) {
-      author = true;
+    if (adminUsers_id === loginUsers_id) {
+      admin = true;
     }
     
     // 相手がフォローしているユーザーの配列に自分のIDが含まれている場合は、フォローされているということ
@@ -98,7 +98,7 @@ const formatFollowsObj = ({ followsObj, authorUsers_id, loginUsers_id }) => {
     approval,
     followCount,
     followedCount,
-    author,
+    admin,
     follow,
     followed,
     followApproval,

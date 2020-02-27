@@ -172,12 +172,13 @@ export default async (req, res) => {
     
     
     
+    
     // --------------------------------------------------
     //   データ取得 / Card Players
     //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+    const resultCardPlayersObj = await ModelCardPlayers.findForCardPlayers({
       
       localeObj,
       users_id,
@@ -185,20 +186,37 @@ export default async (req, res) => {
       
     });
     
-    returnObj.cardPlayersObj = cardPlayersObj;
+    returnObj.cardPlayersObj = resultCardPlayersObj.cardPlayersObj;
+    returnObj.cardPlayersArr = resultCardPlayersObj.cardPlayersArr;
     
     
     // --------------------------------------------------
-    //   カードを一覧で表示するための配列を作成する
+    //   データ取得 / Card Players
+    //   アクセスしたページ所有者のプレイヤーカード情報
     // --------------------------------------------------
     
-    const cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    // const cardPlayersObj = await ModelCardPlayers.findForCardPlayer({
+      
+    //   localeObj,
+    //   users_id,
+    //   loginUsers_id,
+      
+    // });
     
-    if (cardPlayersKeysArr.length > 0) {
-      returnObj.cardsArr.push({
-        cardPlayers_id: cardPlayersKeysArr[0]
-      });
-    }
+    // returnObj.cardPlayersObj = cardPlayersObj;
+    
+    
+    // // --------------------------------------------------
+    // //   カードを一覧で表示するための配列を作成する
+    // // --------------------------------------------------
+    
+    // const cardPlayersKeysArr = Object.keys(cardPlayersObj);
+    
+    // if (cardPlayersKeysArr.length > 0) {
+    //   returnObj.cardsArr.push({
+    //     cardPlayers_id: cardPlayersKeysArr[0]
+    //   });
+    // }
     
     
     

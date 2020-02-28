@@ -79,6 +79,11 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -87,7 +92,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.pathArr = props.pathArr;
-    // this.pathArr = [props.userID, 'urSettingsFormPage'];
     
     
   }
@@ -160,8 +164,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     const approval = lodashGet(dataObj, [...pathArr, 'approval'], false);
-    
-    
     
     
     
@@ -346,8 +348,10 @@ export default injectIntl(class extends React.Component {
     return (
       <Panel
         heading="ユーザーページ設定"
-        pathArr={this.pathArr}
+        pathArr={pathArr}
+        defaultExpanded={false}
       >
+        
         
         <p>
           ユーザーページの設定を行います。ユーザーページというのは、各ユーザーごとに用意される固有のページになります。URLやページのタイトルを変更することが可能です。
@@ -572,9 +576,8 @@ export default injectIntl(class extends React.Component {
           </div>
           
           
-          
-          
         </form>
+        
         
       </Panel>
     );

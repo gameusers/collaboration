@@ -760,135 +760,135 @@ router.post('/logout', upload.none(), function(req, res, next) {
 //   ログイン情報編集 / endpointID: svr_ZaIOk
 // --------------------------------------------------
 
-router.post('/edit-account', upload.none(), async (req, res, next) => {
+// router.post('/edit-account', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
   
-  const returnObj = {};
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const { loginID, loginPassword } = req.body;
-    
-    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hGQuDAeuO', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   Hash Password
-    // --------------------------------------------------
-    
-    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
-    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
-    
-    
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
-    
-    const ISO8601 = moment().toISOString();
-    
-    const conditionObj = {
-      _id: loginUsers_id
-    };
-    
-    const saveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        loginID,
-        loginPassword: hashedPassword,
-      }
-    };
-    
-    await ModelUsers.upsert({ conditionObj, saveObj });
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
-    //   hashedPassword: {green ${hashedPassword}}
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'svr_ZaIOk',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
+//   const returnObj = {};
+//   const requestParametersObj = {};
+//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
-});
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   POST Data
+//     // --------------------------------------------------
+    
+//     const { loginID, loginPassword } = req.body;
+    
+//     lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
+//     lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
+    
+    
+//     // ---------------------------------------------
+//     //   Verify CSRF
+//     // ---------------------------------------------
+    
+//     verifyCsrfToken(req, res);
+    
+    
+//     // --------------------------------------------------
+//     //   Login Check
+//     // --------------------------------------------------
+    
+//     if (!req.isAuthenticated()) {
+//       statusCode = 401;
+//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hGQuDAeuO', messageID: 'xLLNIpo6a' }] });
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   Hash Password
+//     // --------------------------------------------------
+    
+//     const hashedPassword = bcrypt.hashSync(loginPassword, 10);
+    
+    
+//     // --------------------------------------------------
+//     //   Validation
+//     // --------------------------------------------------
+    
+//     await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
+//     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
+    
+    
+//     // --------------------------------------------------
+//     //   Update
+//     // --------------------------------------------------
+    
+//     const ISO8601 = moment().toISOString();
+    
+//     const conditionObj = {
+//       _id: loginUsers_id
+//     };
+    
+//     const saveObj = {
+//       $set: {
+//         updatedDate: ISO8601,
+//         loginID,
+//         loginPassword: hashedPassword,
+//       }
+//     };
+    
+//     await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    
+//     // --------------------------------------------------
+//     //   console.log
+//     // --------------------------------------------------
+    
+//     // console.log(chalk`
+//     //   loginID: {green ${loginID}}
+//     //   loginPassword: {green ${loginPassword}}
+//     //   hashedPassword: {green ${hashedPassword}}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- returnObj -----\n
+//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
+    
+    
+//     // ---------------------------------------------
+//     //   Return Json Object / Success
+//     // ---------------------------------------------
+    
+//     return res.status(200).json(returnObj);
+    
+    
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Log
+//     // ---------------------------------------------
+    
+//     const resultErrorObj = returnErrorsArr({
+//       errorObj,
+//       endpointID: 'svr_ZaIOk',
+//       users_id: loginUsers_id,
+//       ip: req.ip,
+//       requestParametersObj,
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
+  
+  
+// });
 
 
 

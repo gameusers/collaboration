@@ -57,8 +57,25 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = props.pathArr;
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -72,10 +89,12 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: this.props._id });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -92,6 +111,8 @@ export default injectIntl(class extends React.Component {
     const { stores, _id, heading, pathArr, defaultExpanded = true } = this.props;
     
     
+    
+    
     // --------------------------------------------------
     //   Panel
     // --------------------------------------------------
@@ -100,17 +121,22 @@ export default injectIntl(class extends React.Component {
     const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
+    
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', _id], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
+    
     
     // console.log(chalk`
     //   /app/common/layout/components/panel.js
     //   defaultExpanded: {green ${defaultExpanded}}
     //   panelExpanded: {green ${panelExpanded}}
     // `);
+    
+    
     
     
     // --------------------------------------------------
@@ -133,6 +159,7 @@ export default injectIntl(class extends React.Component {
           `}
         >
           
+          
           <h2
             css={css`
               font-weight: bold;
@@ -141,6 +168,7 @@ export default injectIntl(class extends React.Component {
           >
             {heading}
           </h2>
+          
           
           {/* Expansion Button */}
           <div
@@ -168,6 +196,7 @@ export default injectIntl(class extends React.Component {
               )}
             </IconButton>
           </div>
+          
           
         </ExpansionPanelSummary>
         

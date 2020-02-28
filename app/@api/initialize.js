@@ -165,14 +165,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
             },
           ],
         },
-        // pagesArr: [
-        //   {
-        //     _id: '51WW1NG1r',
-        //     type: 'top',
-        //     name: 'マリオのプロフィール',
-        //     language: 'ja',
-        //   },
-        // ],
         loginID: '8OM0dhDak',
         loginPassword: '$2b$10$NsuOPWswqCkJ2STKfbKg/OMXfxdWabz1oy36HKOwRojHJ4S8FPsPS',
         emailObj: {
@@ -182,19 +174,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 999,
-        // titleArr: [// これなに？
+        // achievementsArr: [// 実績用
         //   {
         //     _id: 'pFJEn_2MO',
         //     createdDate: ISO8601,
         //     updatedDate: ISO8601,
-        //     titleID: 'MuK2dKVpn',
+        //     achievementID: 'MuK2dKVpn',
         //     count: 0,
         //   }
         // ],
-        // followArr: [],
-        // followCount: 0,
-        // followedArr: ['P7UJMuUnx'],
-        // followedCount: 1,
         role: 'user'
       },
       
@@ -218,11 +206,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
-        // titleArr: [],
-        // followArr: ['jun-deE4J'],
-        // followCount: 1,
-        // followedArr: [],
-        // followedCount: 0,
         role: 'user'
       },
       
@@ -246,11 +229,6 @@ router.post('/db', upload.none(), async (req, res, next) => {
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
-        // titleArr: [],
-        // followArr: [],
-        // followCount: 0,
-        // followedArr: [],
-        // followedCount: 0,
         role: 'user'
       },
     ];

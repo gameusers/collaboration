@@ -582,43 +582,6 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     
     
     // --------------------------------------------------
-    //   member
-    // --------------------------------------------------
-    
-    // headerObj.author = false;
-    // headerObj.member = false;
-    // headerObj.memberApproval = false;
-    // headerObj.memberBlocked = false;
-    
-    // if (loginUsers_id) {
-      
-    //   const users_id = lodashGet(returnObj, ['users_id'], '');
-    //   const followedArr = lodashGet(returnObj, ['followsObj', 'followedArr'], []);
-    //   const approvalArr = lodashGet(returnObj, ['followsObj', 'approvalArr'], []);
-    //   const blockArr = lodashGet(returnObj, ['followsObj', 'blockArr'], []);
-      
-    //   if (users_id === loginUsers_id) {
-    //     headerObj.author = true;
-    //   }
-      
-    //   if (followedArr.includes(loginUsers_id)) {
-    //     headerObj.member = true;
-    //   }
-      
-    //   if (approvalArr.includes(loginUsers_id)) {
-    //     headerObj.memberApproval = true;
-    //   }
-      
-    //   if (blockArr.includes(loginUsers_id)) {
-    //     headerObj.memberBlocked = true;
-    //   }
-      
-    // }
-    
-    
-    
-    
-    // --------------------------------------------------
     //   follow フォーマット
     // --------------------------------------------------
     
@@ -642,18 +605,6 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     returnObj.headerObj = headerObj;
     
     
-    // --------------------------------------------------
-    //   followedCount
-    // --------------------------------------------------
-    
-    // returnObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
-    
-    
-    // console.log(`
-    //   ----- filteredArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // --------------------------------------------------
@@ -667,13 +618,6 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     delete returnObj.followsObj;
     
     
-    // const formattedArr = format({
-      
-    //   localeObj,
-    //   loginUsers_id,
-    //   arr: resultArr,
-      
-    // });
     
     
     // --------------------------------------------------

@@ -16,9 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -28,21 +30,22 @@ import lodashGet from 'lodash/get';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import InputAdornment from '@material-ui/core/InputAdornment';
+// import InputLabel from '@material-ui/core/InputLabel';
+// import FormControl from '@material-ui/core/FormControl';
+// import MenuItem from '@material-ui/core/MenuItem';
+// import Select from '@material-ui/core/Select';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
-import IconID from '@material-ui/icons/Person';
-import IconPassword from '@material-ui/icons/Lock';
-import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconPerson from '@material-ui/icons/Person';
+import IconLock from '@material-ui/icons/Lock';
+import IconLockTwoToneOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
 
@@ -55,71 +58,11 @@ import { validationUsersLoginID } from '../../../../app/@database/users/validati
 import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../../app/@database/users/validations/login-password';
 
 
+// ---------------------------------------------
+//   Components
+// ---------------------------------------------
 
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-const StyledExpansionPanel = styled(ExpansionPanel)`
-  && {
-    margin: 16px 0 0 0 !important;
-  }
-`;
-
-const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
-  && {
-    cursor: default !important;
-    padding-right: 16px;
-  }
-`;
-
-const Heading = styled.h2`
-  font-weight: bold;
-  font-size: 18px;
-`;
-
-const ExpandMoreBox = styled.div`
-  margin: 0 0 0 auto;
-  padding: 0 !important;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  && {
-    margin: 0;
-    padding: 4px;
-  }
-`;
-
-const Description = styled.p`
-  margin: 0 0 16px 0;
-`;
-
-const LoginIDBox = styled.div`
-  
-`;
-
-const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
-  && {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`;
-
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-const SubmitButtonBox = styled.div`
-  margin: 20px 0 0 0;
-`;
+import Panel from '../../../../app/common/layout/components/panel';
 
 
 
@@ -128,7 +71,7 @@ const SubmitButtonBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeUrSettings')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -138,8 +81,25 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = props.pathArr;
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -153,10 +113,12 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'submitAccount' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -170,36 +132,24 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl } = this.props;
+    const { stores, storeUrSettings, intl, pathArr } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
-      handlePasswordShow,
-      handlePasswordMouseDown,
-      handlePasswordConfirmationShow,
-      handlePasswordConfirmationMouseDown,
       handleSubmitAccount,
       
-    } = stores.playerSettings;
+    } = storeUrSettings;
     
     
-    
-    
-    // --------------------------------------------------
-    //   Panel
-    // --------------------------------------------------
-    
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'submitAccount'], true);
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'submitAccount'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
@@ -208,7 +158,7 @@ export default injectIntl(class extends React.Component {
     //   Login ID
     // --------------------------------------------------
     
-    const loginID = lodashGet(dataObj, ['loginID'], '');
+    const loginID = lodashGet(dataObj, [...pathArr, 'loginID'], '');
     const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
     
     
@@ -216,8 +166,8 @@ export default injectIntl(class extends React.Component {
     //   Login Password
     // --------------------------------------------------
     
-    const loginPasswordShow = lodashGet(dataObj, ['loginPasswordShow'], false);
-    const loginPassword = lodashGet(dataObj, ['loginPassword'], '');
+    const loginPasswordShow = lodashGet(dataObj, [...pathArr, 'loginPasswordShow'], false);
+    const loginPassword = lodashGet(dataObj, [...pathArr, 'loginPassword'], '');
     const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
     
     
@@ -225,15 +175,9 @@ export default injectIntl(class extends React.Component {
     //   Login Password Confirmation
     // --------------------------------------------------
     
-    const loginPasswordConfirmationShow = lodashGet(dataObj, ['loginPasswordConfirmationShow'], false);
-    const loginPasswordConfirmation = lodashGet(dataObj, ['loginPasswordConfirmation'], '');
+    const loginPasswordConfirmationShow = lodashGet(dataObj, [...pathArr, 'loginPasswordConfirmationShow'], false);
+    const loginPasswordConfirmation = lodashGet(dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
     const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: loginPasswordConfirmation, loginPassword });
-    
-//     console.log(`\n---------- validationUsersLoginPasswordConfirmationObj ----------\n`);
-// console.dir(validationUsersLoginPasswordConfirmationObj);
-// console.log(`\n-----------------------------------\n`);
-    
-    
     
     
     // --------------------------------------------------
@@ -251,12 +195,6 @@ export default injectIntl(class extends React.Component {
       passwordStrength = ' -';
     }
     
-    const PasswordStrength = styled.div`
-      font-size: 12px;
-      margin: 4px 0 0 0;
-      color: ${passwordColor};
-    `;
-    
     
     
     
@@ -264,21 +202,13 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----- validationUsersLoginIDObj -----\n
-    //   ${util.inspect(validationUsersLoginIDObj, { colors: true, depth: null })}\n
-    //   --------------------\n
+    // console.log(chalk`
+    //   topPageName: {green ${topPageName}}
     // `);
     
     // console.log(`
-    //   ----- validationUsersLoginPasswordObj -----\n
-    //   ${util.inspect(validationUsersLoginPasswordObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- validationUsersLoginPasswordConfirmationObj -----\n
-    //   ${util.inspect(validationUsersLoginPasswordConfirmationObj, { colors: true, depth: null })}\n
+    //   ----- topObj -----\n
+    //   ${util.inspect(topObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -290,185 +220,234 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          margin: 16px 0 0 0;
+        `}
+      >
         
         
-        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        <Panel
+          heading="ログインID ＆ パスワード"
+          pathArr={pathArr}
+          defaultExpanded={true}
+        >
           
           
-          {/* Heading */}
-          <StyledExpansionPanelSummary>
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            ログインする際のIDとパスワードを変更することができます。
+          </p>
           
-            <Heading>ログイン情報編集</Heading>
+          <p>
+            IDとパスワードに利用できる文字は、半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
+          </p>
+          
+          
+          
+          
+          {/* フォーム */}
+          <form>
             
-            {/* Expansion Button */}
-            <ExpandMoreBox>
-              <StyledIconButton
-                onClick={() => handlePanelExpand({ _id: 'submitAccount' })}
-                aria-expanded={panelExpanded}
-                aria-label="Show more"
-                disabled={buttonDisabled}
+            
+            {/*  */}
+            <div
+              css={css`
+                border-top: 1px dashed #848484;
+                margin: 36px 0 0 0;
+                padding: 24px 0 0 0;
+              `}
+            >
+              
+              
+              {/* ID */}
+              <div>
+                <TextField
+                  css={css`
+                    width: 400px;
+                    
+                    @media screen and (max-width: 480px) {
+                      width: 100%;
+                    }
+                  `}
+                  id="loginID"
+                  label="ログインID"
+                  value={validationUsersLoginIDObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [...pathArr, 'loginID'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersLoginIDObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
+                  disabled={buttonDisabled}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 32,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconPerson />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              
+              
+              
+              
+              {/* Password */}
+              <div>
+                <TextField
+                  css={css`
+                    width: 400px;
+                    
+                    @media screen and (max-width: 480px) {
+                      width: 100%;
+                    }
+                  `}
+                  id="loginPassword"
+                  label="ログインパスワード"
+                  type={loginPasswordShow ? 'text' : 'password'}
+                  value={validationUsersLoginPasswordObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [...pathArr, 'loginPassword'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersLoginPasswordObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
+                  disabled={buttonDisabled}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 32,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconLock />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={(eventObj) => handleEdit({
+                            pathArr: [...pathArr, 'loginPasswordShow'],
+                            value: !loginPasswordShow
+                          })}
+                          onMouseDown={(eventObj) => {eventObj.preventDefault()}}
+                        >
+                          {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </div>
+              
+              
+              <div
+                css={css`
+                  font-size: 12px;
+                  margin: 4px 0 0 0;
+                  color: ${passwordColor};
+                `}
               >
-                {panelExpanded ? (
-                  <IconExpandLess />
-                ) : (
-                  <IconExpandMore />
-                )}
-              </StyledIconButton>
-            </ExpandMoreBox>
-            
-          </StyledExpansionPanelSummary>
-          
-          
-          
-          
-          {/* Contents */}
-          <StyledExpansionPanelDetails>
-            
-            <Description>
-              IDとパスワードに利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
-            </Description>
-            
-            
-            
-            
-            {/* Login ID */}
-            <LoginIDBox>
-              <StyledTextFieldWide
-                id="loginID"
-                label="ID"
-                value={validationUsersLoginIDObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['loginID'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersLoginIDObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 32,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconID />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </LoginIDBox>
-            
-            
-            
-            
-            {/* Login Password */}
-            <LoginIDBox>
-              <StyledTextFieldWide
-                id="loginPassword"
-                label="パスワード"
-                type={loginPasswordShow ? 'text' : 'password'}
-                value={validationUsersLoginPasswordObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['loginPassword'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersLoginPasswordObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 32,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconPassword />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={handlePasswordShow}
-                        onMouseDown={handlePasswordMouseDown}
-                      >
-                        {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </LoginIDBox>
-            
-            <PasswordStrength>
-              パスワード強度：{passwordStrength}
-            </PasswordStrength>
-            
-            
-            
-            
-            {/* Login Password Confirmation */}
-            <LoginIDBox>
-              <StyledTextFieldWide
-                id="loginPasswordConfirmation"
-                label="パスワード確認"
-                type={loginPasswordConfirmationShow ? 'text' : 'password'}
-                value={validationUsersLoginPasswordConfirmationObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['loginPasswordConfirmation'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersLoginPasswordConfirmationObj.error}
-                helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 32,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconPasswordOutlined />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={handlePasswordConfirmationShow}
-                        onMouseDown={handlePasswordConfirmationMouseDown}
-                      >
-                        {loginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </LoginIDBox>
+                パスワード強度：{passwordStrength}
+              </div>
+              
+              
+              
+              
+              {/* Password Confirmation */}
+              <div>
+                <TextField
+                  css={css`
+                    width: 400px;
+                    
+                    @media screen and (max-width: 480px) {
+                      width: 100%;
+                    }
+                  `}
+                  id="loginPasswordConfirmation"
+                  label="ログインパスワード確認"
+                  type={loginPasswordConfirmationShow ? 'text' : 'password'}
+                  value={validationUsersLoginPasswordConfirmationObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [...pathArr, 'loginPasswordConfirmation'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersLoginPasswordConfirmationObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
+                  disabled={buttonDisabled}
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 32,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconLockTwoToneOutlined />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={(eventObj) => handleEdit({
+                            pathArr: [...pathArr, 'loginPasswordConfirmationShow'],
+                            value: !loginPasswordConfirmationShow
+                          })}
+                          onMouseDown={(eventObj) => {eventObj.preventDefault()}}
+                        >
+                          {loginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </div>
+              
+              
+            </div>
             
             
             
             
             {/* Submit Button */}
-            <SubmitButtonBox>
+            <div
+              css={css`
+                display: flex;
+                flex-flow: row wrap;
+                border-top: 1px dashed #848484;
+                margin: 24px 0 0 0;
+                padding: 24px 0 0 0;
+              `}
+            >
+              
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleSubmitAccount()}
+                onClick={() => handleSubmitAccount({ pathArr: this.pathArr })}
                 disabled={buttonDisabled}
               >
-                編集する
+                送信する
               </Button>
-            </SubmitButtonBox>
+              
+            </div>
             
             
-          </StyledExpansionPanelDetails>
+          </form>
           
-        </StyledExpansionPanel>
+          
+        </Panel>
         
         
-      </React.Fragment>
+      </div>
     );
     
   }

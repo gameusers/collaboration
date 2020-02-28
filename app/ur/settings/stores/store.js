@@ -29,16 +29,12 @@ import { CustomError } from '../../../@modules/error/custom';
 
 
 // ---------------------------------------------
-//   Validation
+//   Validations
 // ---------------------------------------------
 
 import { validationUsersLoginID } from '../../../@database/users/validations/login-id';
 import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../@database/users/validations/login-password';
 import { validationUsersEmail } from '../../../@database/users/validations/email';
-
-// const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-// const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
-// const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
 // --------------------------------------------------
@@ -70,15 +66,6 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Constructor
-  // ---------------------------------------------
-  
-  constructor() {}
-  
-  
-  
-  
-  // ---------------------------------------------
   //   Data
   // ---------------------------------------------
   
@@ -107,79 +94,45 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * パスワード入力フォームの目のマークを押したときに呼び出される
-   * 押すと隠されているログインパスワードを表示する
+   * ログインID ＆パスワード編集フォームを送信する
+   * @param {Array} pathArr - パス
    */
   @action.bound
-  handlePasswordShow() {
-    this.dataObj['loginPasswordShow'] = !this.dataObj['loginPasswordShow'];
-  };
-  
-  
-  /**
-   * パスワード入力フォーム onMouseDown で呼び出される
-   * Material UI のページに解説されているとおりに入れている
-   * 参考：https://material-ui.com/demos/text-fields/#input-adornments
-   * @param {Object} eventObj - イベント
-   */
-  @action.bound
-  handlePasswordMouseDown(eventObj) {
-    eventObj.preventDefault();
-  };
-  
-  
-  /**
-   * パスワード確認入力フォームの目のマークを押したときに呼び出される
-   * 押すと隠されているログインパスワードを表示する
-   */
-  @action.bound
-  handlePasswordConfirmationShow() {
-    this.dataObj['loginPasswordConfirmationShow'] = !this.dataObj['loginPasswordConfirmationShow'];
-  };
-  
-  
-  /**
-   * パスワード確認入力フォーム onMouseDown で呼び出される
-   * Material UI のページに解説されているとおりに入れている
-   * 参考：https://material-ui.com/demos/text-fields/#input-adornments
-   * @param {Object} eventObj - イベント
-   */
-  @action.bound
-  handlePasswordConfirmationMouseDown(eventObj) {
-    eventObj.preventDefault();
-  };
-  
-  
-  
-  
-  /**
-   * ログイン情報編集フォームを送信する
-   */
-  @action.bound
-  async handleSubmitAccount() {
+  async handleSubmitAccount({ pathArr }) {
     
     
     try {
       
       
       // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
       
-      storeLayout.handleButtonDisable({ _id: 'submitAccount' });
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
       
       
       // ---------------------------------------------
       //   Property
       // ---------------------------------------------
       
-      const loginID = lodashGet(this.dataObj, ['loginID'], '');
-      const loginPassword = lodashGet(this.dataObj, ['loginPassword'], '');
-      const loginPasswordConfirmation = lodashGet(this.dataObj, ['loginPasswordConfirmation'], '');
+      const loginID = lodashGet(this.dataObj, [...pathArr, 'loginID'], '');
+      const loginPassword = lodashGet(this.dataObj, [...pathArr, 'loginPassword'], '');
+      const loginPasswordConfirmation = lodashGet(this.dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
+      
+      
       
       
       // ---------------------------------------------
-      //   Validation
+      //   Validations
       // ---------------------------------------------
       
       const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: loginID });
@@ -192,47 +145,58 @@ class Store {
       // ---------------------------------------------
       
       if (
+        
         validationUsersLoginIDObj.error ||
         validationUsersLoginPasswordObj.error ||
         validationUsersLoginPasswordConfirmationObj.error
+        
       ) {
+        
         throw new CustomError({ errorsArr: [{ code: 'G22F0axr0', messageID: 'uwHIKBy7c' }] });
+        
       }
       
       
-      
-      // console.log(chalk`
-      //   loginID: {green ${loginID}}
-      //   loginPassword: {green ${loginPassword}}
-      // `);
-      
-      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      let formData = new FormData();
+      const formDataObj = {
+        
+        loginID,
+        loginPassword,
+        
+      };
       
-      formData.append('loginID', loginID);
-      formData.append('loginPassword', loginPassword);
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/ur/settings/stores/store.js - handleSubmitAccount
+      // `);
+      
+      // console.log(chalk`
+      //   loginID: {green ${loginID}}
+      //   loginPassword: {green ${loginPassword}}
+      //   loginPasswordConfirmation: {green ${loginPasswordConfirmation}}
+      // `);
+      
+      
       
       
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/edit-account`,
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-account`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj)
       });
       
       
@@ -256,8 +220,8 @@ class Store {
       //   Form Reset
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, 'loginPassword', '');
-      lodashSet(this.dataObj, 'loginPasswordConfirmation', '');
+      // lodashSet(this.dataObj, [...pathArr, 'loginPassword'], '');
+      // lodashSet(this.dataObj, [...pathArr, 'loginPasswordConfirmation'], '');
       
       
       // ---------------------------------------------
@@ -290,7 +254,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ _id: 'submitAccount' });
+      storeLayout.handleButtonEnable({ pathArr });
       
       
       // ---------------------------------------------
@@ -774,12 +738,14 @@ export default function initStoreUrSettings({ propsObj }) {
     const pathArr = lodashGet(propsObj, ['pathArr'], []);
     
     
+    
+    
     // --------------------------------------------------
     //   userID
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['userID'])) {
-      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'userID'], propsObj.userID);
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formPageObj', 'userID'], propsObj.userID);
     }
     
     
@@ -788,7 +754,7 @@ export default function initStoreUrSettings({ propsObj }) {
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['pagesObj'])) {
-      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'pagesObj'], propsObj.pagesObj);
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formPageObj', 'pagesObj'], propsObj.pagesObj);
     }
     
     
@@ -797,8 +763,43 @@ export default function initStoreUrSettings({ propsObj }) {
     // --------------------------------------------------
     
     if (lodashHas(propsObj, ['approval'])) {
-      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'approval'], propsObj.approval);
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formPageObj', 'approval'], propsObj.approval);
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   loginID
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['loginID'])) {
+      // console.log(chalk`
+      //   propsObj.loginID: {green ${propsObj.loginID}}
+      // `);
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formAccountObj', 'loginID'], propsObj.loginID);
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   email
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['email'])) {
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formEmailObj', 'email'], propsObj.email);
+    }
+    
+    
+    // --------------------------------------------------
+    //   emailConfirmation
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['emailConfirmation'])) {
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formEmailObj', 'emailConfirmation'], propsObj.emailConfirmation);
+    }
+    
     
     
     

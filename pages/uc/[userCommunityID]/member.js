@@ -57,7 +57,6 @@ import Drawer from '../../../app/common/layout/components/drawer';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
 import FollowMembers from '../../../app/common/follow-members/components/followers';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
-// import Member from '../../../app/uc/member/components/member';
 
 
 
@@ -146,8 +145,7 @@ export default class extends React.Component {
     const page = stores.data.getTemporaryData({ pathname, key: 'followPage' });
     const limit = stores.data.getCookie({ key: 'followLimit' });
     
-    // const memberPage = stores.data.getTemporaryData({ pathname, key: 'memberPage' });
-    // const memberLimit = stores.data.getCookie({ key: 'memberLimit' });
+    
     
     
     // --------------------------------------------------

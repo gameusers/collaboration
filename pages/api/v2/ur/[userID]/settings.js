@@ -32,6 +32,7 @@ const ModelUsers = require('../../../../../app/@database/users/model');
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
+const { decrypt }  = require('../../../../../app/@modules/crypto');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
 
@@ -208,6 +209,37 @@ export default async (req, res) => {
     
     
     
+    // --------------------------------------------------
+    //   データ取得 / Users
+    //   設定情報を取得するため
+    // --------------------------------------------------
+    
+    const usersSettingsObj = await ModelUsers.findOne({
+      
+      conditionObj: {
+        _id: users_id
+      }
+      
+    });
+    
+    returnObj.loginID = lodashGet(usersSettingsObj, ['loginID'], '');
+    
+    
+    const emailValue = lodashGet(usersSettingsObj, ['emailObj', 'value'], '');
+    returnObj.email = emailValue ? decrypt(emailValue) : '';
+    
+    // returnObj.emailValue = lodashGet(usersSettingsObj, ['emailObj', 'value'], '');
+    returnObj.emailConfirmation = lodashGet(usersSettingsObj, ['emailObj', 'confirmation'], false);
+    
+    
+    // console.log(`
+    //   ----- usersSettingsObj -----\n
+    //   ${util.inspect(usersSettingsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
+    
     
     // --------------------------------------------------
     //   console.log
@@ -230,11 +262,11 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- usersObj -----\n
-      ${util.inspect(usersObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersObj -----\n
+    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     console.log(`
       ----- returnObj -----\n

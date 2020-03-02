@@ -756,142 +756,6 @@ router.post('/logout', upload.none(), function(req, res, next) {
 
 
 
-// --------------------------------------------------
-//   ログイン情報編集 / endpointID: svr_ZaIOk
-// --------------------------------------------------
-
-// router.post('/edit-account', upload.none(), async (req, res, next) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Property
-//   // --------------------------------------------------
-  
-//   const returnObj = {};
-//   const requestParametersObj = {};
-//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
-  
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   POST Data
-//     // --------------------------------------------------
-    
-//     const { loginID, loginPassword } = req.body;
-    
-//     lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
-//     lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
-    
-    
-//     // ---------------------------------------------
-//     //   Verify CSRF
-//     // ---------------------------------------------
-    
-//     verifyCsrfToken(req, res);
-    
-    
-//     // --------------------------------------------------
-//     //   Login Check
-//     // --------------------------------------------------
-    
-//     if (!req.isAuthenticated()) {
-//       statusCode = 401;
-//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'hGQuDAeuO', messageID: 'xLLNIpo6a' }] });
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   Hash Password
-//     // --------------------------------------------------
-    
-//     const hashedPassword = bcrypt.hashSync(loginPassword, 10);
-    
-    
-//     // --------------------------------------------------
-//     //   Validation
-//     // --------------------------------------------------
-    
-//     await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
-//     await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
-    
-    
-//     // --------------------------------------------------
-//     //   Update
-//     // --------------------------------------------------
-    
-//     const ISO8601 = moment().toISOString();
-    
-//     const conditionObj = {
-//       _id: loginUsers_id
-//     };
-    
-//     const saveObj = {
-//       $set: {
-//         updatedDate: ISO8601,
-//         loginID,
-//         loginPassword: hashedPassword,
-//       }
-//     };
-    
-//     await ModelUsers.upsert({ conditionObj, saveObj });
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   loginID: {green ${loginID}}
-//     //   loginPassword: {green ${loginPassword}}
-//     //   hashedPassword: {green ${hashedPassword}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- returnObj -----\n
-//     //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // ---------------------------------------------
-//     //   Return Json Object / Success
-//     // ---------------------------------------------
-    
-//     return res.status(200).json(returnObj);
-    
-    
-//   } catch (errorObj) {
-    
-    
-//     // ---------------------------------------------
-//     //   Log
-//     // ---------------------------------------------
-    
-//     const resultErrorObj = returnErrorsArr({
-//       errorObj,
-//       endpointID: 'svr_ZaIOk',
-//       users_id: loginUsers_id,
-//       ip: req.ip,
-//       requestParametersObj,
-//     });
-    
-    
-//     // --------------------------------------------------
-//     //   Return JSON Object / Error
-//     // --------------------------------------------------
-    
-//     return res.status(statusCode).json(resultErrorObj);
-    
-    
-//   }
-  
-  
-// });
-
-
-
 
 // --------------------------------------------------
 //   E-Mail登録 / endpointID: 14n6FEth2
@@ -1138,43 +1002,39 @@ router.post('/email', upload.none(), async (req, res, next) => {
 
 
 
-// --------------------------------------------------
-//   プレイヤーページ設定 / endpointID: OeLTc2B7G
-// --------------------------------------------------
+// // --------------------------------------------------
+// //   Follow / endpointID: uXe64jfMh
+// // --------------------------------------------------
 
-// router.post('/pages', upload.none(), async (req, res, next) => {
+// router.post('/follow', upload.none(), async (req, res, next) => {
+  
+  
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
+  
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
 //   // --------------------------------------------------
 //   //   Property
 //   // --------------------------------------------------
   
-//   const returnObj = {
-//     pageTransition: false
-//   };
+//   errorArgumentsObj.functionID = 'uXe64jfMh';
   
-//   const requestParametersObj = {};
-//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+//   let returnObj = {};
+  
+  
   
   
 //   try {
     
     
 //     // --------------------------------------------------
-//     //   POST Data
+//     //   CSRF
 //     // --------------------------------------------------
-    
-//     const { userID, pagesArr } = req.body;
-    
-//     lodashSet(requestParametersObj, ['userID'], userID);
-//     lodashSet(requestParametersObj, ['pagesArr'], pagesArr);
-    
-//     const parsedPagesArr = JSON.parse(pagesArr);
-    
-    
-//     // ---------------------------------------------
-//     //   Verify CSRF
-//     // ---------------------------------------------
     
 //     verifyCsrfToken(req, res);
     
@@ -1185,74 +1045,37 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
 //     if (!req.isAuthenticated()) {
 //       statusCode = 401;
-//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GTWHMVVkX', messageID: 'xLLNIpo6a' }] });
+//       errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
+//       throw new Error();
 //     }
+    
+//     const loginUsers_id = req.user._id;
+    
+    
+//     // --------------------------------------------------
+//     //   POST 取得 & Property
+//     // --------------------------------------------------
+    
+//     const { users_id } = req.body;
     
     
 //     // --------------------------------------------------
 //     //   Validation
 //     // --------------------------------------------------
     
-//     const newPagesArr = [];
+//     const validationObj = validation_id({ required: true, value: users_id });
     
-//     await validationUsersPlayerIDServer({ value: userID, loginUsers_id });
-    
-//     for (let valueObj of parsedPagesArr.values()) {
-      
-//       await validationUsersPagesType({ throwError: true, value: valueObj.type });
-//       await validationUsersPagesName({ throwError: true, value: valueObj.name });
-//       await validationUsersPagesLanguage({ throwError: true, value: valueObj.language });
-      
-//       newPagesArr.push({
-//         _id: shortid.generate(),
-//         type: valueObj.type,
-//         name: valueObj.name,
-//         language: valueObj.language,
-//       });
-      
+//     if (validationObj.errorCodeArr.length > 0) {
+//       errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
+//       throw new Error();
 //     }
     
     
 //     // --------------------------------------------------
-//     //   Find One - Page Transition
+//     //   Model / Users / Follow
 //     // --------------------------------------------------
     
-//     let conditionObj = {
-//       _id: loginUsers_id
-//     };
-    
-//     let docObj = await ModelUsers.findOne({ conditionObj });
-    
-//     if (docObj.userID !== userID) {
-//       returnObj.pageTransition = true;
-//     }
-    
-//     // console.log(`
-//     //   ----- docObj -----\n
-//     //   ${util.inspect(docObj, { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   Update
-//     // --------------------------------------------------
-    
-//     const ISO8601 = moment().toISOString();
-    
-//     conditionObj = {
-//       _id: loginUsers_id
-//     };
-    
-//     const saveObj = {
-//       $set: {
-//         updatedDate: ISO8601,
-//         userID,
-//         pagesArr: newPagesArr,
-//       }
-//     };
-    
-//     await ModelUsers.upsert({ conditionObj, saveObj });
+//     returnObj = await ModelUsers.updateForFollow(loginUsers_id, users_id);
     
     
 //     // --------------------------------------------------
@@ -1260,12 +1083,19 @@ router.post('/email', upload.none(), async (req, res, next) => {
 //     // --------------------------------------------------
     
 //     // console.log(chalk`
-//     //   userID: {green ${userID}}
+//     //   users_id: {green ${users_id}}
 //     // `);
     
-//     // console.log(`\n---------- parsedPagesArr ----------\n`);
-//     // console.dir(parsedPagesArr);
-//     // console.log(`\n-----------------------------------\n`);
+//     // console.log(`
+//     //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
+//     //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
+//     // `);
+    
+//     // console.log(`
+//     //   ----- validation_idObj -----\n
+//     //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
+//     //   --------------------\n
+//     // `);
     
 //     // console.log(`
 //     //   ----- returnObj -----\n
@@ -1285,16 +1115,11 @@ router.post('/email', upload.none(), async (req, res, next) => {
     
     
 //     // ---------------------------------------------
-//     //   Log
+//     //   Error Object
 //     // ---------------------------------------------
     
-//     const resultErrorObj = returnErrorsArr({
-//       errorObj,
-//       endpointID: 'OeLTc2B7G',
-//       users_id: loginUsers_id,
-//       ip: req.ip,
-//       requestParametersObj,
-//     });
+//     errorArgumentsObj.errorObj = errorObj;
+//     const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
     
     
 //     // --------------------------------------------------
@@ -1308,141 +1133,6 @@ router.post('/email', upload.none(), async (req, res, next) => {
   
   
 // });
-
-
-
-
-// --------------------------------------------------
-//   Follow / endpointID: uXe64jfMh
-// --------------------------------------------------
-
-router.post('/follow', upload.none(), async (req, res, next) => {
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  errorArgumentsObj.functionID = 'uXe64jfMh';
-  
-  let returnObj = {};
-  
-  
-  
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   CSRF
-    // --------------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      errorArgumentsObj.errorCodeArr = ['xLLNIpo6a'];
-      throw new Error();
-    }
-    
-    const loginUsers_id = req.user._id;
-    
-    
-    // --------------------------------------------------
-    //   POST 取得 & Property
-    // --------------------------------------------------
-    
-    const { users_id } = req.body;
-    
-    
-    // --------------------------------------------------
-    //   Validation
-    // --------------------------------------------------
-    
-    const validationObj = validation_id({ required: true, value: users_id });
-    
-    if (validationObj.errorCodeArr.length > 0) {
-      errorArgumentsObj.errorCodeArr = validationObj.errorCodeArr;
-      throw new Error();
-    }
-    
-    
-    // --------------------------------------------------
-    //   Model / Users / Follow
-    // --------------------------------------------------
-    
-    returnObj = await ModelUsers.updateForFollow(loginUsers_id, users_id);
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   users_id: {green ${users_id}}
-    // `);
-    
-    // console.log(`
-    //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-    //   req.query: \n${util.inspect(req.query, { colors: true, depth: null })}
-    // `);
-    
-    // console.log(`
-    //   ----- validation_idObj -----\n
-    //   ${util.inspect(validation_idObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // ---------------------------------------------
-    //   Return Json Object / Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Error Object
-    // ---------------------------------------------
-    
-    errorArgumentsObj.errorObj = errorObj;
-    const resultErrorObj = errorCodeIntoErrorObj({ localeObj, ...errorArgumentsObj });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
-  
-  
-});
 
 
 

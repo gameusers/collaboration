@@ -102,20 +102,25 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
   //   データベースに存在しているかチェック
   // ---------------------------------------------
   
-  // 編集の場合
+  // ---------------------------------------------
+  //   編集の場合
+  // ---------------------------------------------
+  
   if (loginUsers_id) {
     
-    // 現在登録しているメールアドレスをもう一度登録しようとした場合、エラー
+    // 現在登録している、確認済みのメールアドレスをもう一度登録しようとした場合、エラー
     const count1 = await Model.count({
       conditionObj: {
         _id: loginUsers_id,
         'emailObj.value': encryptedEmail,
+        'emailObj.confirmation': true,
       }
     });
     
     if (count1 === 1) {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'PIfteQDcZ', messageID: 'FQgx7kEJN' }] });
     }
+    
     
     // 他のユーザーが利用しているメールアドレスを登録しようとした場合、エラー
     const count2 = await Model.count({
@@ -129,7 +134,11 @@ const validationUsersEmailServer = async ({ required = false, value, loginUsers_
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Tq6BYP4Fz', messageID: '5H8rr53kE' }] });
     }
     
-  // 新規の場合
+    
+  // ---------------------------------------------
+  //   新規の場合
+  // ---------------------------------------------
+  
   } else {
     
     const count = await Model.count({

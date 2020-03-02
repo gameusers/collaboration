@@ -15,7 +15,7 @@ const users = require('../../@database/users/api');
 // const games = require('../../@database/games/api');
 // const hardwares = require('../../@database/hardwares/api');
 // const ids = require('../../@database/ids/api');
-const emailConfirmations = require('../../@database/email-confirmations/api');
+// const emailConfirmations = require('../../@database/email-confirmations/api');
 // const forumThreads = require('../../@database/forum-threads/api');
 // const forumComments = require('../../@database/forum-comments/api');
 
@@ -40,7 +40,7 @@ router.use('/users', users);
 // router.use('/games', games);
 // router.use('/hardwares', hardwares);
 // router.use('/ids', ids);
-router.use('/email-confirmations', emailConfirmations);
+// router.use('/email-confirmations', emailConfirmations);
 // router.use('/forum-threads', forumThreads);
 // router.use('/forum-comments', forumComments);
 

@@ -45,7 +45,22 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = props.pathArr;
+    
+    
   }
   
   
@@ -62,7 +77,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'emailConfirmation' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -78,14 +93,25 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
+    //   Props
+    // --------------------------------------------------
+    
+    const { pathArr } = this.props;
+    
+    
+    // --------------------------------------------------
     //   Return
     // --------------------------------------------------
     
     return (
-      <Panel _id="panelEmailConfirmation" heading="E-Mailアドレス確認">
+      <Panel
+        heading="メールアドレス登録完了"
+        pathArr={pathArr}
+        defaultExpanded={true}
+      >
         
         <p>
-          E-Mailアドレスの確認ができました。
+          メールアドレスの登録を完了しました。
         </p>
         
       </Panel>

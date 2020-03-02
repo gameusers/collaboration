@@ -16,9 +16,11 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
+
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
@@ -26,22 +28,20 @@ import lodashGet from 'lodash/get';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+// import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 
 // ---------------------------------------------
 //   Material UI / Icons
 // ---------------------------------------------
 
-import IconExpandLess from '@material-ui/icons/ExpandLess';
-import IconExpandMore from '@material-ui/icons/ExpandMore';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
@@ -52,122 +52,11 @@ import IconMailOutline from '@material-ui/icons/MailOutline';
 import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
 
 
-
-
-// --------------------------------------------------
-//   styled-components でスタイルシートを書いてください
-//   参考: https://github.com/styled-components/styled-components
-// --------------------------------------------------
-
-
 // ---------------------------------------------
-//   Panel
+//   Components
 // ---------------------------------------------
 
-const StyledExpansionPanel = styled(ExpansionPanel)`
-  && {
-    margin: 16px 0 0 0 !important;
-  }
-`;
-
-const StyledExpansionPanelSummary = styled(ExpansionPanelSummary)`
-  && {
-    cursor: default !important;
-    padding-right: 16px;
-  }
-`;
-
-const Heading = styled.h2`
-  font-weight: bold;
-  font-size: 18px;
-`;
-
-const ExpandMoreBox = styled.div`
-  margin: 0 0 0 auto;
-  padding: 0 !important;
-`;
-
-const StyledIconButton = styled(IconButton)`
-  && {
-    margin: 0;
-    padding: 4px;
-  }
-`;
-
-const StyledExpansionPanelDetails = styled(ExpansionPanelDetails)`
-  && {
-    display: flex;
-    flex-flow: column wrap;
-  }
-`;
-
-
-// ---------------------------------------------
-//   Description
-// ---------------------------------------------
-
-const Description = styled.p`
-  margin: 0 0 16px 0;
-`;
-
-
-// ---------------------------------------------
-//   Text Field
-// ---------------------------------------------
-
-const StyledTextFieldWide = styled(TextField)`
-  && {
-    width: 400px;
-    margin: 32px 0 0 0;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-
-// ---------------------------------------------
-//   Registered Email
-// ---------------------------------------------
-
-const RegisteredEmailBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 16px 0 8px 0;
-`;
-
-const RegisteredEmail = styled.div`
-  font-weight: bold;
-  margin: 0 8px 0 0;
-`;
-
-const ConfirmationTrue = styled.span`
-  color: green;
-`;
-
-const ConfirmationFalse = styled.span`
-  color: red;
-`;
-
-const RegisteredEmailButtonBox = styled.div`
-  margin: 0;
-`;
-
-
-// ---------------------------------------------
-//   Submit Button
-// ---------------------------------------------
-
-const SubmitButtonBox = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  margin: 20px 0 0 0;
-`;
-
-const ButtonBox = styled.div`
-  margin: 0 16px 0 0;
-`;
+import Panel from '../../../../app/common/layout/components/panel';
 
 
 
@@ -176,7 +65,7 @@ const ButtonBox = styled.div`
 //   Class
 // --------------------------------------------------
 
-@inject('stores')
+@inject('stores', 'storeUrSettings')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -186,8 +75,25 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = props.pathArr;
+    
+    
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -201,10 +107,12 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'submitEmail' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
+  
+  
   
   
   // --------------------------------------------------
@@ -218,45 +126,52 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, intl } = this.props;
+    const { stores, storeUrSettings, intl, pathArr } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
       handleSubmitEmail,
-      handleSubmitConfirmation,
+      handleSubmitDeleteEmail,
       
-    } = stores.playerSettings;
+    } = storeUrSettings;
     
     
-    
-    
-    // --------------------------------------------------
-    //   Panel
-    // --------------------------------------------------
-    
-    const panelExpanded = lodashGet(stores, ['layout', 'panelExpandedObj', 'submitEmail'], true);
-    const handlePanelExpand = lodashGet(stores, ['layout', 'handlePanelExpand'], '');
     
     
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'submitEmail'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr });
     
     
     
     
     // --------------------------------------------------
-    //   E-Mail
+    //   ダイアログを表示するための変数
     // --------------------------------------------------
     
-    const email = lodashGet(dataObj, ['emailObj', 'value'], '');
-    const emailConfirmation = lodashGet(dataObj, ['emailObj', 'confirmation'], false);
-    const emailSecret = lodashGet(dataObj, ['emailObj', 'secret'], '');
+    const showDialog = lodashGet(dataObj, [...pathArr, 'showDialog'], false);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   E-Mail Address
+    // --------------------------------------------------
+    
+    const email = lodashGet(dataObj, [...pathArr, 'email'], '');
     const validationUsersEmailObj = validationUsersEmail({ value: email });
+    
+    
+    // --------------------------------------------------
+    //   E-Mail Confirmation
+    // --------------------------------------------------
+    
+    const emailSource = lodashGet(dataObj, [...pathArr, 'emailSource'], '');
+    const emailConfirmation = lodashGet(dataObj, [...pathArr, 'emailConfirmation'], false);
     
     
     
@@ -267,23 +182,19 @@ export default injectIntl(class extends React.Component {
     
     let componentConfirmation = '';
     
-    if (emailSecret) {
+    if (email) {
       
-      if (emailConfirmation) {
-        componentConfirmation = <ConfirmationTrue>(確認済み)</ConfirmationTrue>;
+      if (emailConfirmation && emailSource === email) {
+        
+        componentConfirmation = <span css={css` color: green`}>このメールアドレスは確認済みです</span>;
+        
       } else {
-        componentConfirmation = <ConfirmationFalse>(未確認)</ConfirmationFalse>;
+        
+        componentConfirmation = <span css={css` color: red`}>このメールアドレスは確認が必要です</span>;
+        
       }
       
     }
-    
-    
-    
-    // --------------------------------------------------
-    //   Remove E-Mail Checkbox
-    // --------------------------------------------------
-    
-    const removeEmail = lodashGet(dataObj, ['removeEmail'], false);
     
     
     
@@ -293,17 +204,14 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(chalk`
-    //   email: {green ${email}}
-    //   emailSecret: {green ${emailSecret}}
-    //   emailConfirmation: {green ${emailConfirmation}}
+    //   topPageName: {green ${topPageName}}
     // `);
     
     // console.log(`
-    //   ----- validationUsersEmailObj -----\n
-    //   ${util.inspect(validationUsersEmailObj, { colors: true, depth: null })}\n
+    //   ----- topObj -----\n
+    //   ${util.inspect(topObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
     
     
     
@@ -313,153 +221,209 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <React.Fragment>
+      <div
+        css={css`
+          margin: 16px 0 0 0;
+        `}
+      >
         
         
-        <StyledExpansionPanel defaultExpanded={true} expanded={panelExpanded}>
+        <Panel
+          heading="メールアドレス登録"
+          pathArr={pathArr}
+          defaultExpanded={true}
+        >
           
           
-          {/* Heading */}
-          <StyledExpansionPanelSummary>
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            メールアドレスを登録しておくとパスワードを忘れたときに、メールを利用してパスワードを登録しなおせるようになります。
+          </p>
           
-            <Heading>E-Mail登録</Heading>
-            
-            {/* Expansion Button */}
-            <ExpandMoreBox>
-              <StyledIconButton
-                onClick={() => handlePanelExpand({ _id: 'submitEmail' })}
-                aria-expanded={panelExpanded}
-                aria-label="Show more"
-                disabled={buttonDisabled}
-              >
-                {panelExpanded ? (
-                  <IconExpandLess />
-                ) : (
-                  <IconExpandMore />
-                )}
-              </StyledIconButton>
-            </ExpandMoreBox>
-            
-          </StyledExpansionPanelSummary>
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            メールアドレスを入力して「確認メールを送信」ボタンを押すと、入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、再度ボタンを押してください。もう一度、確認メールが送信されます。
+          </p>
+          
+          <p>
+            メールは confirmation@gameusers.org こちらのアドレスから届きます。ドメイン指定をされている方は @gameusers.org を受信できるように設定してください。
+          </p>
           
           
           
           
-          {/* Contents */}
-          <StyledExpansionPanelDetails>
-            
-            <Description>
-              E-Mailアドレスを登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
-            </Description>
-            
-            <Description>
-              E-Mailアドレスを入力して「送信する」ボタンを押すと、入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、「確認メールを再送信する」ボタンを押してください。もう一度、確認メールが送信されます。
-            </Description>
-            
-            <Description>
-              メールは mail@gameusers.org こちらのアドレスから届きます。ドメイン指定をされている方は @gameusers.org を受信できるように設定してください。
-            </Description>
+          {/* フォーム */}
+          <form>
             
             
-            
-            
-            {/* Registered Email */}
-            <RegisteredEmailBox>
-              <RegisteredEmail>登録済みのメールアドレス:</RegisteredEmail><div>{emailSecret} {componentConfirmation}</div>
-            </RegisteredEmailBox>
-            
-            {/* E-Mail Confirmation Send Button */}
-            {(emailSecret && !emailConfirmation) &&
-              <RegisteredEmailButtonBox>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleSubmitConfirmation()}
+            {/*  */}
+            <div
+              css={css`
+                border-top: 1px dashed #848484;
+                margin: 36px 0 0 0;
+                padding: 24px 0 0 0;
+              `}
+            >
+              
+              
+              {/* E-Mail Address */}
+              <div>
+                <TextField
+                  css={css`
+                    width: 400px;
+                    
+                    @media screen and (max-width: 480px) {
+                      width: 100%;
+                    }
+                  `}
+                  id="email"
+                  label="メールアドレス"
+                  value={validationUsersEmailObj.value}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: [...pathArr, 'email'],
+                    value: eventObj.target.value
+                  })}
+                  error={validationUsersEmailObj.error}
+                  helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
                   disabled={buttonDisabled}
-                  size="small"
-                >
-                  確認メールを再送信する
-                </Button>
-              </RegisteredEmailButtonBox>
-            }
-            
-            
-            
-            
-            {/* E-Mail */}
-            <div>
-              <StyledTextFieldWide
-                id="E-Mail"
-                label="E-Mail"
-                value={validationUsersEmailObj.value}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['emailObj', 'value'],
-                  value: eventObj.target.value
-                })}
-                error={validationUsersEmailObj.error}
-                helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
-                disabled={buttonDisabled}
-                margin="normal"
-                inputProps={{
-                  maxLength: 100,
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconMailOutline />
-                    </InputAdornment>
-                  ),
-                }}
-              />
+                  margin="normal"
+                  inputProps={{
+                    maxLength: 32,
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconMailOutline />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+              
+              
+              <div
+                css={css`
+                  margin: 0 0 0 0;
+                `}
+              >
+                {componentConfirmation}
+              </div>
+              
+              
             </div>
             
             
             
             
-            {/* Remove E-Mail Checkbox */}
-            {emailSecret &&
-              <div>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={removeEmail}
-                      onChange={(eventObj) => handleEdit({
-                        pathArr: ['removeEmail'],
-                        value: eventObj.target.checked
-                      })}
-                    />
-                  }
-                  label="登録したメールアドレスを削除する"
-                />
-              </div>
-            }
-            
-            
-            
-            
             {/* Submit Button */}
-            <SubmitButtonBox>
+            <div
+              css={css`
+                display: flex;
+                flex-flow: row wrap;
+                border-top: 1px dashed #848484;
+                margin: 24px 0 0 0;
+                padding: 24px 0 0 0;
+              `}
+            >
               
-              <ButtonBox>
+              
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleSubmitEmail({ pathArr })}
+                disabled={buttonDisabled}
+              >
+                確認メールを送信
+              </Button>
+              
+              
+              <div
+                css={css`
+                  margin: 0 0 0 16px;
+                `}
+              >
                 <Button
                   variant="contained"
-                  color="primary"
-                  onClick={() => handleSubmitEmail()}
+                  color="secondary"
+                  onClick={() => handleEdit({
+                    pathArr: [...pathArr, 'showDialog'],
+                    value: true,
+                  })}
                   disabled={buttonDisabled}
                 >
-                  送信する
+                  削除する
                 </Button>
-              </ButtonBox>
+              </div>
               
-            </SubmitButtonBox>
+              
+            </div>
             
             
-          </StyledExpansionPanelDetails>
+          </form>
           
-        </StyledExpansionPanel>
+          
+        </Panel>
         
         
-      </React.Fragment>
+        
+        
+        {/* 削除するか尋ねるダイアログ */}
+        <Dialog
+          open={showDialog}
+          onClose={() => handleEdit({
+            pathArr: [...pathArr, 'showDialog'],
+            value: false,
+          })}
+          aria-labelledby="alert-dialog-title1"
+          aria-describedby="alert-dialog-description1"
+        >
+          
+          <DialogTitle id="alert-dialog-title1">メールアドレス削除</DialogTitle>
+          
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description1">
+              メールアドレスを削除しますか？
+            </DialogContentText>
+          </DialogContent>
+          
+          <DialogActions>
+            <div
+              css={css`
+                margin: 0 auto 0 0;
+              `}
+            >
+              <Button
+                onClick={() => handleSubmitDeleteEmail({
+                  pathArr,
+                })}
+                color="primary"
+                autoFocus
+              >
+                はい
+              </Button>
+            </div>
+            
+            <Button
+              onClick={() => handleEdit({
+                pathArr: [...pathArr, 'showDialog'],
+                value: false,
+              })}
+              color="primary"
+            >
+              いいえ
+            </Button>
+          </DialogActions>
+          
+        </Dialog>
+        
+        
+      </div>
     );
     
   }

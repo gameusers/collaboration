@@ -25,13 +25,6 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// import { locale } from '../../app/@locales/locale';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -44,9 +37,9 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreUrSettings from '../../../app/ur/settings/stores/store';
-import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
+// import initStoreUrSettings from '../../../app/ur/settings/stores/store';
+// import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
+// import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
 
 
@@ -57,9 +50,9 @@ import initStoreFollow from '../../../app/common/follow/stores/store';
 import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
-import FormPage from '../../../app/ur/settings/components/form-page';
-import FormAccount from '../../../app/ur/settings/components/form-account';
-import FormEmail from '../../../app/ur/settings/components/form-email';
+import Success from '../../../app/confirm/email/components/success';
+// import FormAccount from '../../../app/ur/settings/components/form-account';
+// import FormEmail from '../../../app/ur/settings/components/form-email';
 
 
 
@@ -77,9 +70,9 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUrSettings = initStoreUrSettings({ propsObj });
-  const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({ propsObj });
+  // const storeUrSettings = initStoreUrSettings({ propsObj });
+  // const storeImageAndVideo = initStoreImageAndVideo({});
+  // const storeImageAndVideoForm = initStoreImageAndVideoForm({ propsObj });
   const storeFollow = initStoreFollow({});
   
   
@@ -89,9 +82,9 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeUrSettings,
-    storeImageAndVideo,
-    storeImageAndVideoForm,
+    // storeUrSettings,
+    // storeImageAndVideo,
+    // storeImageAndVideoForm,
     storeFollow,
     
   };
@@ -104,7 +97,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: http://dev-1.gameusers.org:8080/ur/***/settings
+//   URL: http://dev-1.gameusers.org:8080/confirm/email/***
 // --------------------------------------------------
 
 @observer
@@ -131,19 +124,8 @@ export default class extends React.Component {
     
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
-    const userID = query.userID;
-    const pathname = `/ur/${userID}/settings`;
-    
-    
-    // ---------------------------------------------
-    //   FormData
-    // ---------------------------------------------
-    
-    const formDataObj = {
-      
-      userID,
-      
-    };
+    const emailConfirmationID = query.emailConfirmationID;
+    const pathname = `/confirm/email/${emailConfirmationID}`;
     
     
     // --------------------------------------------------
@@ -151,18 +133,14 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/ur/${userID}/settings`),
-      methodType: 'POST',
+      urlApi: encodeURI(`${process.env.URL_API}/v2/confirm/email/${emailConfirmationID}`),
+      methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
-      formData: JSON.stringify(formDataObj),
     });
     
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
-    
-    const loginUsers_id = lodashGet(resultObj, ['data', 'loginUsersObj', '_id'], '');
-    const imagesAndVideosObj = lodashGet(resultObj, ['data', 'pagesObj', 'imagesAndVideosObj'], {});
     
     
     
@@ -171,14 +149,14 @@ export default class extends React.Component {
     //   Title
     // --------------------------------------------------
     
-    const title = `ユーザー設定`;
+    const title = `メールアドレス確認 - Game Users`;
     
     
     // --------------------------------------------------
     //   Path Array
     // --------------------------------------------------
     
-    const pathArr = [loginUsers_id, 'urSettings'];
+    const pathArr = [emailConfirmationID, 'confirm', 'email'];
     
     
     
@@ -189,23 +167,13 @@ export default class extends React.Component {
     
     const headerNavMainArr = [
       {
-        name: 'トップ',
-        href: `/ur/[userID]?userID=${userID}`,
-        as: `/ur/${userID}`,
-      },
-      {
-        name: 'フォロー',
-        href: `/ur/[userID]/follow?userID=${userID}`,
-        as: `/ur/${userID}/follow`,
-      },
-      {
-        name: '設定',
-        href: `/ur/[userID]/settings?userID=${userID}`,
-        as: `/ur/${userID}/settings`,
-      }
+        name: 'メールアドレス確認',
+        href: `/confirm/email/${emailConfirmationID}?emailConfirmationID=${emailConfirmationID}`,
+        as: `/confirm/email/${emailConfirmationID}`,
+      },  
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr, userID, imagesAndVideosObj };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -218,12 +186,11 @@ export default class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/ur/[userID]/settings.js
+    //   /pages/confirm/email.js
     // `);
     
     // console.log(chalk`
-    //   userID: {green ${userID}}
-    //   pathname: {green ${pathname}}
+    //   emailConfirmationID: {green ${emailConfirmationID}}
     // `);
     
     // console.log(`
@@ -245,7 +212,6 @@ export default class extends React.Component {
       reqAcceptLanguage,
       pathArr,
       title,
-      userID,
       storesObj,
       propsObj,
       
@@ -415,22 +381,7 @@ export default class extends React.Component {
             >
               
               
-              {/* ユーザーページ設定 */}
-              <FormPage
-                pathArr={[...this.props.pathArr, 'formPageObj']}
-              />
-              
-              
-              {/* アカウント編集 */}
-              <FormAccount
-                pathArr={[...this.props.pathArr, 'formAccountObj']}
-              />
-              
-              
-              {/* E-Mail */}
-              <FormEmail
-                pathArr={[...this.props.pathArr, 'formEmailObj']}
-              />
+              <Success />
               
               
             </div>

@@ -289,13 +289,20 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
 
 /**
  * 挿入 / 更新する  アカウント情報編集用
- * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
- * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
+ * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
  * @return {Object} 
  */
-const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj, emailConfirmationsSaveObj, usersConditionObj, usersSaveObj }) => {
+const transactionForEmailConfirmation = async ({
+  
+  usersConditionObj,
+  usersSaveObj,
+  emailConfirmationsConditionObj,
+  emailConfirmationsSaveObj,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -327,13 +334,11 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
     
     
     // --------------------------------------------------
-    //   DB deleteOne & updateOne
+    //   DB updateOne
     // --------------------------------------------------
     
-    // await Schema.deleteMany(emailConfirmationsConditionObj, { session });
-    await Schema.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session });
-    // throw new Error();
     await SchemaUsers.updateOne(usersConditionObj, usersSaveObj, { session });
+    await Schema.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
     
     
     // --------------------------------------------------
@@ -353,18 +358,6 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- emailConfirmationsConditionObj -----\n
-    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsSaveObj -----\n
-    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
     //   ----- usersConditionObj -----\n
     //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -373,6 +366,18 @@ const transactionForEmailConfirmation = async ({ emailConfirmationsConditionObj,
     // console.log(`
     //   ----- usersSaveObj -----\n
     //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsConditionObj -----\n
+    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsSaveObj -----\n
+    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

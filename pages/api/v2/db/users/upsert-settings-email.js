@@ -15,7 +15,8 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
-const bcrypt = require('bcryptjs');
+const shortid = require('shortid');
+// const bcrypt = require('bcryptjs');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -25,6 +26,7 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
+const ModelEmailConfirmations = require('../../../../../app/@database/email-confirmations/model');
 
 
 // ---------------------------------------------
@@ -34,6 +36,8 @@ const ModelUsers = require('../../../../../app/@database/users/model');
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
+const { encrypt }  = require('../../../../../app/@modules/crypto');
+const { sendMailConfirmation } = require('../../../../../app/@modules/email');
 
 
 // ---------------------------------------------
@@ -41,14 +45,13 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsersLoginIDServer } = require('../../../../../app/@database/users/validations/login-id-server');
-const { validationUsersLoginPassword } = require('../../../../../app/@database/users/validations/login-password');
+const { validationUsersEmailServer } = require('../../../../../app/@database/users/validations/email-server');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: Du-wepXKb
+//   endpointID: WTuGEDQ-V
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -83,8 +86,7 @@ export default async (req, res) => {
     
     const { 
       
-      loginID,
-      loginPassword,
+      email,
       
     } = bodyObj;
     
@@ -94,8 +96,7 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['loginID'], loginID);
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword);
+    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
     
     
     
@@ -113,8 +114,17 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '9Y3ZUsWD6', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: '7dsG5-m_i', messageID: 'xLLNIpo6a' }] });
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Encrypt E-Mail
+    // --------------------------------------------------
+    
+    const encryptedEmail = email ? encrypt(email) : '';
     
     
     
@@ -124,40 +134,115 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
-    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
-    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
+    await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
     
     
     
     
     // --------------------------------------------------
-    //   Hash Password
+    //   Find One / DB email-confirmations
     // --------------------------------------------------
     
-    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
+    const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
+      
+      conditionObj: {
+        users_id: loginUsers_id
+      }
+      
+    });
+    
+    const emailConfirmations_id = lodashGet(docEmailConfirmationsObj, ['_id'], shortid.generate());
+    const emailConfirmationsCount = lodashGet(docEmailConfirmationsObj, ['count'], 0);
     
     
     
     
     // --------------------------------------------------
-    //   Update
+    //   メールを送れるのは1日に3回まで、それ以上はエラーにする
     // --------------------------------------------------
+    
+    if (emailConfirmationsCount >= 3) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XzR7k_Fh3', messageID: 'EAvJztLfH' }] });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Upsert 
+    //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   - Datetime
+    // ---------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
-    const conditionObj = {
+    
+    // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
+    
+    const usersConditionObj = {
       _id: loginUsers_id
     };
     
-    const saveObj = {
+    const usersSaveObj = {
       $set: {
         updatedDate: ISO8601,
-        loginID,
-        loginPassword: hashedPassword,
+        emailObj: {
+          value: encryptedEmail,
+          confirmation: false,
+        },
       }
     };
     
-    await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    // ---------------------------------------------
+    //   - email-confirmations
+    // ---------------------------------------------
+    
+    const emailConfirmationsConditionObj = {
+      _id: emailConfirmations_id
+    };
+    
+    const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
+    
+    const emailConfirmationsSaveObj = {
+      $set: {
+        createdDate: ISO8601,
+        users_id: loginUsers_id,
+        emailConfirmationID,
+        email: encryptedEmail,
+        count: emailConfirmationsCount + 1,
+        isSuccess: false,
+      }
+    };
+    
+    
+    // ---------------------------------------------
+    //   - transaction
+    // ---------------------------------------------
+    
+    await ModelUsers.transactionForEditAccount({
+      
+      usersConditionObj,
+      usersSaveObj,
+      emailConfirmationsConditionObj,
+      emailConfirmationsSaveObj,
+      
+    });
+    
+    
+    // --------------------------------------------------
+    //   確認メール送信
+    // --------------------------------------------------
+    
+    sendMailConfirmation({
+      to: email,
+      emailConfirmationID,
+    });
     
     
     
@@ -168,18 +253,35 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-settings-account.js
+    //   /pages/api/v2/db/users/upsert-settings-email.js
     // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
+    //   email: {green ${email}}
     // `);
     
     // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsConditionObj -----\n
+    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsSaveObj -----\n
+    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -202,7 +304,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'Du-wepXKb',
+      endpointID: 'WTuGEDQ-V',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

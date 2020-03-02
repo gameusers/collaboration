@@ -15,7 +15,6 @@ const util = require('util');
 // ---------------------------------------------
 
 const moment = require('moment');
-const bcrypt = require('bcryptjs');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -41,14 +40,12 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsersLoginIDServer } = require('../../../../../app/@database/users/validations/login-id-server');
-const { validationUsersLoginPassword } = require('../../../../../app/@database/users/validations/login-password');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: Du-wepXKb
+//   endpointID: SuOcX62Ln
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -79,14 +76,9 @@ export default async (req, res) => {
     //   POST Data
     // --------------------------------------------------
     
-    const bodyObj = JSON.parse(req.body);
+    // const bodyObj = JSON.parse(req.body);
     
-    const { 
-      
-      loginID,
-      loginPassword,
-      
-    } = bodyObj;
+    // const {} = bodyObj;
     
     
     // --------------------------------------------------
@@ -94,8 +86,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['loginID'], loginID);
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword);
     
     
     
@@ -113,7 +103,7 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '9Y3ZUsWD6', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'jUE7-ueei', messageID: 'xLLNIpo6a' }] });
     }
     
     
@@ -124,26 +114,24 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
-    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
-    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
     
     
     
     
     // --------------------------------------------------
-    //   Hash Password
+    //   Upsert 
     // --------------------------------------------------
     
-    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
+    // ---------------------------------------------
+    //   - Datetime
+    // ---------------------------------------------
     
     const ISO8601 = moment().toISOString();
+    
+    
+    // ---------------------------------------------
+    //   - users
+    // ---------------------------------------------
     
     const conditionObj = {
       _id: loginUsers_id
@@ -152,12 +140,24 @@ export default async (req, res) => {
     const saveObj = {
       $set: {
         updatedDate: ISO8601,
-        loginID,
-        loginPassword: hashedPassword,
+        emailObj: {
+          value: '',
+          confirmation: false,
+        },
       }
     };
     
-    await ModelUsers.upsert({ conditionObj, saveObj });
+    
+    // ---------------------------------------------
+    //   - upsert
+    // ---------------------------------------------
+    
+    await ModelUsers.upsert({
+      
+      conditionObj,
+      saveObj,
+      
+    });
     
     
     
@@ -168,18 +168,22 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-settings-account.js
+    //   /pages/api/v2/db/users/delete-settings-email.js
     // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
     // `);
     
     // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -202,7 +206,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'Du-wepXKb',
+      endpointID: 'SuOcX62Ln',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

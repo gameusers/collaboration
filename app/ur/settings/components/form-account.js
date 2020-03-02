@@ -30,12 +30,6 @@ import { css, jsx } from '@emotion/core';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
-// import InputLabel from '@material-ui/core/InputLabel';
-// import FormControl from '@material-ui/core/FormControl';
-// import MenuItem from '@material-ui/core/MenuItem';
-// import Select from '@material-ui/core/Select';
-// import FormControlLabel from '@material-ui/core/FormControlLabel';
-// import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -228,9 +222,9 @@ export default injectIntl(class extends React.Component {
         
         
         <Panel
-          heading="ログインID ＆ パスワード"
+          heading="ログインID ＆ パスワード変更"
           pathArr={pathArr}
-          defaultExpanded={true}
+          defaultExpanded={false}
         >
           
           

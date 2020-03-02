@@ -350,132 +350,132 @@ router.get('/common', upload.none(), async (req, res, next) => {
 //   endpointID: IXNCfSRLy
 // --------------------------------------------------
 
-router.get('/ur/settings', upload.none(), async (req, res, next) => {
+// router.get('/ur/settings', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  let returnObj = {
-    login: false
-  };
-  
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 401;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'eex48Zjee', messageID: 'xLLNIpo6a' }] });
-    }
-    
-    lodashSet(returnObj, ['loginUsersObj'], req.user);
-    lodashSet(returnObj, ['login'], true);
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Games
-    //   ヘッダーヒーローイメージ用
-    // --------------------------------------------------
-    
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      language: localeObj.language,
-      country: localeObj.country,
-    });
-    
-    
-    // --------------------------------------------------
-    //   データ取得 / Users
-    // --------------------------------------------------
-    
-    const usersObj = await ModelUsers.findOne({
-      conditionObj: {
-        _id: loginUsers_id,
-      }
-    });
-    
-    
-    // --------------------------------------------------
-    //   Decrypt E-Mail
-    // --------------------------------------------------
-    
-    const decryptedEmail = usersObj.emailObj.value ? decrypt(usersObj.emailObj.value) : '';
-    
-    
-    // --------------------------------------------------
-    //   Set Users Object
-    // --------------------------------------------------
-    
-    returnObj.usersObj = {
-      loginID: usersObj.loginID,
-      userID: usersObj.userID,
-      emailObj: {
-        secret: formatEmailSecret({ value: decryptedEmail }),
-        confirmation: usersObj.emailObj.confirmation,
-      },
-      pagesArr: usersObj.pagesArr,
-    };
-    
-    // console.log(chalk`
-    //   emailHidden: {green ${emailHidden}}
-    // `);
-    
-    // console.log(`\n---------- usersObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(usersObj)));
-    // console.log(`\n-----------------------------------\n`);
-    
-    
-    // ---------------------------------------------
-    //   Success
-    // ---------------------------------------------
-    
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'IXNCfSRLy',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
-    
-    
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
-    
-    return res.status(statusCode).json(resultErrorObj);
-    
-    
-  }
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
+  
+//   let returnObj = {
+//     login: false
+//   };
+  
+//   const requestParametersObj = {};
+//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
-});
+//   try {
+    
+    
+//     // --------------------------------------------------
+//     //   Login Check
+//     // --------------------------------------------------
+    
+//     if (!req.isAuthenticated()) {
+//       statusCode = 401;
+//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'eex48Zjee', messageID: 'xLLNIpo6a' }] });
+//     }
+    
+//     lodashSet(returnObj, ['loginUsersObj'], req.user);
+//     lodashSet(returnObj, ['login'], true);
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得 / Games
+//     //   ヘッダーヒーローイメージ用
+//     // --------------------------------------------------
+    
+//     returnObj.headerObj = await ModelGames.findForHeroImage({
+//       language: localeObj.language,
+//       country: localeObj.country,
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   データ取得 / Users
+//     // --------------------------------------------------
+    
+//     const usersObj = await ModelUsers.findOne({
+//       conditionObj: {
+//         _id: loginUsers_id,
+//       }
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   Decrypt E-Mail
+//     // --------------------------------------------------
+    
+//     const decryptedEmail = usersObj.emailObj.value ? decrypt(usersObj.emailObj.value) : '';
+    
+    
+//     // --------------------------------------------------
+//     //   Set Users Object
+//     // --------------------------------------------------
+    
+//     returnObj.usersObj = {
+//       loginID: usersObj.loginID,
+//       userID: usersObj.userID,
+//       emailObj: {
+//         secret: formatEmailSecret({ value: decryptedEmail }),
+//         confirmation: usersObj.emailObj.confirmation,
+//       },
+//       pagesArr: usersObj.pagesArr,
+//     };
+    
+//     // console.log(chalk`
+//     //   emailHidden: {green ${emailHidden}}
+//     // `);
+    
+//     // console.log(`\n---------- usersObj ----------\n`);
+//     // console.dir(JSON.parse(JSON.stringify(usersObj)));
+//     // console.log(`\n-----------------------------------\n`);
+    
+    
+//     // ---------------------------------------------
+//     //   Success
+//     // ---------------------------------------------
+    
+//     return res.status(200).json(returnObj);
+    
+    
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Log
+//     // ---------------------------------------------
+    
+//     const resultErrorObj = returnErrorsArr({
+//       errorObj,
+//       endpointID: 'IXNCfSRLy',
+//       users_id: loginUsers_id,
+//       ip: req.ip,
+//       requestParametersObj,
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
+  
+  
+// });
 
 
 
@@ -484,231 +484,231 @@ router.get('/ur/settings', upload.none(), async (req, res, next) => {
 //   endpointID: R9AFOxwEK
 // --------------------------------------------------
 
-router.get('/email/confirmation', upload.none(), async (req, res, next) => {
+// router.get('/email/confirmation', upload.none(), async (req, res, next) => {
   
   
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Locale
+//   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  const returnObj = {};
-  const requestParametersObj = {};
-  const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+//   const localeObj = locale({
+//     acceptLanguage: req.headers['accept-language']
+//   });
   
   
-  try {
+//   // --------------------------------------------------
+//   //   Property
+//   // --------------------------------------------------
+  
+//   const returnObj = {};
+//   const requestParametersObj = {};
+//   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+//   try {
     
     
-    // --------------------------------------------------
-    //   GET Data
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   GET Data
+//     // --------------------------------------------------
     
-    const emailConfirmationID = req.query.emailConfirmationID;
+//     const emailConfirmationID = req.query.emailConfirmationID;
     
-    lodashSet(requestParametersObj, ['emailConfirmationID'], emailConfirmationID);
-    // console.log(chalk`
-    //   emailConfirmationID: {green ${emailConfirmationID}}
-    // `);
+//     lodashSet(requestParametersObj, ['emailConfirmationID'], emailConfirmationID);
+//     // console.log(chalk`
+//     //   emailConfirmationID: {green ${emailConfirmationID}}
+//     // `);
     
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
+//     // ---------------------------------------------
+//     //   Verify CSRF
+//     // ---------------------------------------------
     
-    // verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login User Object
-    // --------------------------------------------------
-    
-    lodashSet(returnObj, ['loginUsersObj'], req.user);
+//     // verifyCsrfToken(req, res);
     
     
-    // --------------------------------------------------
-    //   データ取得 / Games
-    //   ヘッダーヒーローイメージ用
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Login User Object
+//     // --------------------------------------------------
     
-    returnObj.headerObj = await ModelGames.findForHeroImage({
-      language: localeObj.language,
-      country: localeObj.country,
-    });
+//     lodashSet(returnObj, ['loginUsersObj'], req.user);
     
     
-    // --------------------------------------------------
-    //   データ取得 / Email Confirmations
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   データ取得 / Games
+//     //   ヘッダーヒーローイメージ用
+//     // --------------------------------------------------
     
-    const emailConfirmationsObj = await ModelEmailConfirmations.findOne({
-      conditionObj: {
-        emailConfirmationID,
-      }
-    });
-    
-    const isSuccess = lodashGet(emailConfirmationsObj, ['isSuccess'], '');
-    const createdDate = lodashGet(emailConfirmationsObj, ['createdDate'], '');
-    const email = lodashGet(emailConfirmationsObj, ['email'], '');
-    const users_id = lodashGet(emailConfirmationsObj, ['users_id'], '');
+//     returnObj.headerObj = await ModelGames.findForHeroImage({
+//       language: localeObj.language,
+//       country: localeObj.country,
+//     });
     
     
-    // --------------------------------------------------
-    //   必要な情報がない場合、エラー
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   データ取得 / Email Confirmations
+//     // --------------------------------------------------
     
-    if (!createdDate || !email || !users_id) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '8JJ4_hJyz', messageID: 'Error' }] });
-    }
+//     const emailConfirmationsObj = await ModelEmailConfirmations.findOne({
+//       conditionObj: {
+//         emailConfirmationID,
+//       }
+//     });
     
-    
-    // --------------------------------------------------
-    //   24時間以内にアクセスしたかチェック
-    // --------------------------------------------------
-    
-    const dateTimeLimit = moment(createdDate).utc().add(1, 'day');
-    const dateTimeNow = moment().utc();
-    
-    if (dateTimeLimit.isBefore(dateTimeNow)) {
-      statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmu7nkZxS', messageID: 'Error' }] });
-    }
+//     const isSuccess = lodashGet(emailConfirmationsObj, ['isSuccess'], '');
+//     const createdDate = lodashGet(emailConfirmationsObj, ['createdDate'], '');
+//     const email = lodashGet(emailConfirmationsObj, ['email'], '');
+//     const users_id = lodashGet(emailConfirmationsObj, ['users_id'], '');
     
     
-    // --------------------------------------------------
-    //   DB Update
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   必要な情報がない場合、エラー
+//     // --------------------------------------------------
     
-    if (!isSuccess) {
+//     if (!createdDate || !email || !users_id) {
+//       statusCode = 404;
+//       throw new CustomError({ level: 'warn', errorsArr: [{ code: '8JJ4_hJyz', messageID: 'Error' }] });
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   24時間以内にアクセスしたかチェック
+//     // --------------------------------------------------
+    
+//     const dateTimeLimit = moment(createdDate).utc().add(1, 'day');
+//     const dateTimeNow = moment().utc();
+    
+//     if (dateTimeLimit.isBefore(dateTimeNow)) {
+//       statusCode = 404;
+//       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmu7nkZxS', messageID: 'Error' }] });
+//     }
+    
+    
+//     // --------------------------------------------------
+//     //   DB Update
+//     // --------------------------------------------------
+    
+//     if (!isSuccess) {
       
       
-      const ISO8601 = moment().toISOString();
+//       const ISO8601 = moment().toISOString();
     
-      const emailConfirmationsConditionObj = {
-        emailConfirmationID,
-      };
+//       const emailConfirmationsConditionObj = {
+//         emailConfirmationID,
+//       };
       
-      const emailConfirmationsSaveObj = {
-        $set: {
-          isSuccess: true,
-        }
-      };
+//       const emailConfirmationsSaveObj = {
+//         $set: {
+//           isSuccess: true,
+//         }
+//       };
       
-      const usersConditionObj = {
-        _id: users_id,
-        'emailObj.value': email,
-      };
+//       const usersConditionObj = {
+//         _id: users_id,
+//         'emailObj.value': email,
+//       };
       
-      const usersSaveObj = {
-        $set: {
-          updatedDate: ISO8601,
-          accessDate: ISO8601,
-          emailObj: {
-            value: email,
-            confirmation: true,
-          },
+//       const usersSaveObj = {
+//         $set: {
+//           updatedDate: ISO8601,
+//           accessDate: ISO8601,
+//           emailObj: {
+//             value: email,
+//             confirmation: true,
+//           },
           
-        }
-      };
+//         }
+//       };
       
       
-      await ModelEmailConfirmations.transactionForEmailConfirmation({
-        emailConfirmationsConditionObj,
-        emailConfirmationsSaveObj,
-        usersConditionObj,
-        usersSaveObj,
-      });
+//       await ModelEmailConfirmations.transactionForEmailConfirmation({
+//         emailConfirmationsConditionObj,
+//         emailConfirmationsSaveObj,
+//         usersConditionObj,
+//         usersSaveObj,
+//       });
       
       
-    }
+//     }
     
-    // const ISO8601 = moment().toISOString();
+//     // const ISO8601 = moment().toISOString();
     
-    // const emailConfirmationsConditionObj = {
-    //   emailConfirmationID,
-    // };
+//     // const emailConfirmationsConditionObj = {
+//     //   emailConfirmationID,
+//     // };
     
-    // const usersConditionObj = {
-    //   _id: users_id,
-    //   'emailObj.value': email,
-    // };
+//     // const usersConditionObj = {
+//     //   _id: users_id,
+//     //   'emailObj.value': email,
+//     // };
     
-    // const usersSaveObj = {
-    //   $set: {
-    //     updatedDate: ISO8601,
-    //     accessDate: ISO8601,
-    //     emailObj: {
-    //       value: email,
-    //       confirmation: true,
-    //     },
+//     // const usersSaveObj = {
+//     //   $set: {
+//     //     updatedDate: ISO8601,
+//     //     accessDate: ISO8601,
+//     //     emailObj: {
+//     //       value: email,
+//     //       confirmation: true,
+//     //     },
         
-    //   }
-    // };
+//     //   }
+//     // };
     
-    // await ModelEmailConfirmations.transactionForEmailConfirmation({
-    //   emailConfirmationsConditionObj,
-    //   usersConditionObj,
-    //   usersSaveObj,
-    // });
-    
-    
-    // console.log(chalk`
-    //   isSuccess: {green ${isSuccess}}
-    //   createdDate: {green ${createdDate}}
-    //   email: {green ${email}}
-    //   users_id: {green ${users_id}}
-    //   dateTimeLimit: {green ${dateTimeLimit}}
-    //   dateTimeNow: {green ${dateTimeNow}}
-    //   dateTimeLimit.isBefore(dateTimeNow): {green ${dateTimeLimit.isBefore(dateTimeNow)}}
-    // `);
-    
-    // console.log(`\n---------- emailConfirmationsObj ----------\n`);
-    // console.dir(JSON.parse(JSON.stringify(emailConfirmationsObj)));
-    // console.log(`\n-----------------------------------\n`);
+//     // await ModelEmailConfirmations.transactionForEmailConfirmation({
+//     //   emailConfirmationsConditionObj,
+//     //   usersConditionObj,
+//     //   usersSaveObj,
+//     // });
     
     
-    // ---------------------------------------------
-    //   Success
-    // ---------------------------------------------
+//     // console.log(chalk`
+//     //   isSuccess: {green ${isSuccess}}
+//     //   createdDate: {green ${createdDate}}
+//     //   email: {green ${email}}
+//     //   users_id: {green ${users_id}}
+//     //   dateTimeLimit: {green ${dateTimeLimit}}
+//     //   dateTimeNow: {green ${dateTimeNow}}
+//     //   dateTimeLimit.isBefore(dateTimeNow): {green ${dateTimeLimit.isBefore(dateTimeNow)}}
+//     // `);
     
-    return res.status(200).json(returnObj);
-    
-    
-  } catch (errorObj) {
-    
-    
-    // ---------------------------------------------
-    //   Log
-    // ---------------------------------------------
-    
-    const resultErrorObj = returnErrorsArr({
-      errorObj,
-      endpointID: 'R9AFOxwEK',
-      users_id: loginUsers_id,
-      ip: req.ip,
-      requestParametersObj,
-    });
+//     // console.log(`\n---------- emailConfirmationsObj ----------\n`);
+//     // console.dir(JSON.parse(JSON.stringify(emailConfirmationsObj)));
+//     // console.log(`\n-----------------------------------\n`);
     
     
-    // --------------------------------------------------
-    //   Return JSON Object / Error
-    // --------------------------------------------------
+//     // ---------------------------------------------
+//     //   Success
+//     // ---------------------------------------------
     
-    return res.status(statusCode).json(resultErrorObj);
+//     return res.status(200).json(returnObj);
     
     
-  }
+//   } catch (errorObj) {
+    
+    
+//     // ---------------------------------------------
+//     //   Log
+//     // ---------------------------------------------
+    
+//     const resultErrorObj = returnErrorsArr({
+//       errorObj,
+//       endpointID: 'R9AFOxwEK',
+//       users_id: loginUsers_id,
+//       ip: req.ip,
+//       requestParametersObj,
+//     });
+    
+    
+//     // --------------------------------------------------
+//     //   Return JSON Object / Error
+//     // --------------------------------------------------
+    
+//     return res.status(statusCode).json(resultErrorObj);
+    
+    
+//   }
   
   
-});
+// });
 
 
 

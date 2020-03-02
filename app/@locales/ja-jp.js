@@ -53,6 +53,8 @@ const ja_JP = {
   'DSRlEoL29': '編集権限がありません',
   
   
+  
+  
   // ---------------------------------------------
   //   Error / Validation / DB card-players
   // ---------------------------------------------
@@ -94,9 +96,13 @@ const ja_JP = {
   'CAhUTCx7B': 'URLを入力してください',
   
   
+  
+  
   // ---------------------------------------------
   //   Error / Validation / DB games
   // ---------------------------------------------
+  
+  
   
   
   // ---------------------------------------------
@@ -117,6 +123,8 @@ const ja_JP = {
   
   // /app/@database/ids/api.js
   'NRO3Y1hnC': 'IDの保存可能件数を超えています',
+  
+  
   
   
   // ---------------------------------------------
@@ -143,7 +151,7 @@ const ja_JP = {
   '5O4K1an7k': '正しいメールアドレスではありません',
   
   // /app/@database/users/validations/email-server.js
-  'FQgx7kEJN': '現在、利用中のメールアドレスです',
+  'FQgx7kEJN': '確認が必要のないメールアドレスです',
   '5H8rr53kE': '入力したメールアドレスは利用できません',
   
   // /app/@database/users/validations/player-id.js
@@ -153,9 +161,13 @@ const ja_JP = {
   'Xt11v41pR': '入力したURLは利用できません',
   
   
+  
+  
   // ---------------------------------------------
   //   Error / Validation / DB user-communities
   // ---------------------------------------------
+  
+  
   
   
   // ---------------------------------------------
@@ -201,8 +213,23 @@ const ja_JP = {
   // /app/ur/settings/stores/store.js
   '5o6-p-Pkz': 'ユーザーページ設定を編集しました',
   'nhn2yers2': 'ログイン情報を編集しました',
-  '84FmVC7RZ': 'E-Mailを登録しました',
-  'hbRy4HpaP': 'E-Mailの登録を解除しました',
+  
+  'CquCU7BtA': '確認メールを送信しました',
+  'DQrBNlhe4': '確認済みのメールアドレスです',
+  'hbRy4HpaP': 'メールアドレスを削除しました',
+  'a107F1Uxw': 'メールアドレスが登録されていないため、削除できません',
+  
+  // /pages/api/v2/db/users/upsert-settings-email.js
+  'EAvJztLfH': '確認メールは1日に何度も送信できません。また後日お試しください',
+  
+  
+  // ---------------------------------------------
+  //   E-mail / Confirmation
+  // ---------------------------------------------
+  
+  // /app/@database/email-confirmations/api.js
+  
+  // 'IDT_ufsFV': 'メールアドレスの確認はすでに完了しています',
   
   
   
@@ -234,16 +261,7 @@ const ja_JP = {
   
   
   
-  // ---------------------------------------------
-  //   E-mail / Confirmation
-  // ---------------------------------------------
   
-  // /app/@api/v1/initial-props.js - endpointID: R9AFOxwEK
-  'EAvJztLfH': '確認メールは何度も送信できません。また後日お試しください。',
-  
-  // /app/@database/email-confirmations/api.js
-  'CquCU7BtA': '確認メールを再送信しました',
-  'IDT_ufsFV': 'メールアドレスの確認はすでに完了しています',
   
   
   

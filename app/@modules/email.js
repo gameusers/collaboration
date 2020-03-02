@@ -14,7 +14,7 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const { IntlProvider } = require('react-intl');
+// const { IntlProvider } = require('react-intl');
 const nodemailer = require('nodemailer');
 const lodashGet = require('lodash/get');
 
@@ -23,12 +23,7 @@ const lodashGet = require('lodash/get');
 //   Locales
 // ---------------------------------------------
 
-// const { addLocaleData } = require('react-intl');
-// const en = require('react-intl/locale-data/en');
-// const ja = require('react-intl/locale-data/ja');
-// addLocaleData([...en, ...ja]);
-
-const { locale } = require('../@locales/locale');
+// const { locale } = require('../@locales/locale');
 
 
 
@@ -145,16 +140,16 @@ const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
   sendMail({
     from: process.env.EMAIL_MESSAGE_FROM,
     to,
-    subject: '[Game Users] E-Mailアドレス確認',
+    subject: '[Game Users] メールアドレス確認',
     text:
-    `Game Users - E-Mailアドレス確認
+    `Game Users - メールアドレス確認
 
-以下のURLにアクセスしてメールアドレスの確認を終了させてください。
-${process.env.URL_BASE}email/confirmation/${emailConfirmationID}
+以下のURLにアクセスしてメールアドレスの登録を完了してください。
+${process.env.URL_BASE}confirm/email/${emailConfirmationID}
 
-E-Mailの登録後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
+確認メールの受信後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
 
-こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。また同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡をいただけるとありがたいです。
+こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。覚えがないのに同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡ください。
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
 
@@ -170,10 +165,6 @@ E-Mailの登録後、24時間以内にアクセスしてください。それ以
   // --------------------------------------------------
   //   console.log
   // --------------------------------------------------
-  
-  // console.log(`\n---------- infoObj ----------\n`);
-  // console.dir(infoObj);
-  // console.log(`\n-----------------------------------\n`);
   
   // console.log(chalk`
   //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}

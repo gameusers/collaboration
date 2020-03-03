@@ -16,7 +16,6 @@ import util from 'util';
 
 import React from 'react';
 import { inject, observer } from 'mobx-react';
-import styled from 'styled-components';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
 
@@ -68,28 +67,6 @@ import TermsOfService from '../../../../app/common/layout/components/terms-of-se
 
 
 // --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-const cssDescription = css`
-  margin: 0 0 16px 0;
-`;
-
-const cssTextField = css`
-  && {
-    width: 400px;
-    
-    @media screen and (max-width: 480px) {
-      width: 100%;
-    }
-  }
-`;
-
-
-
-
-// --------------------------------------------------
 //   Class
 // --------------------------------------------------
 
@@ -103,7 +80,22 @@ export default injectIntl(class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    this.pathArr = ['formCreateAccount'];
+    
+    
   }
   
   
@@ -120,7 +112,7 @@ export default injectIntl(class extends React.Component {
     //   Button - Enable
     // --------------------------------------------------
     
-    this.props.stores.layout.handleButtonEnable({ _id: 'createAccount' });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
     
     
   }
@@ -154,11 +146,13 @@ export default injectIntl(class extends React.Component {
     } = storeLoginAccount;
     
     
+    
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
     
-    const buttonDisabled = lodashGet(stores, ['layout', 'buttonDisabledObj', 'createAccount'], true);
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
     
     
     
@@ -221,12 +215,6 @@ export default injectIntl(class extends React.Component {
       passwordStrength = ' -';
     }
     
-    const PasswordStrength = styled.div`
-      font-size: 12px;
-      margin: 4px 0 0 0;
-      color: ${passwordColor};
-    `;
-    
     
     
     
@@ -264,228 +252,278 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     return (
-      <Panel _id="panelCreateAccount" heading="アカウント作成">
+      <Panel
+        heading="アカウント作成"
+        pathArr={this.pathArr}
+      >
         
         
-        <p css={cssDescription}>
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
           アカウントを作成する場合は、こちらのフォームにIDとパスワードを入力して送信してください。
         </p>
         
-        <p css={cssDescription}>
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
           利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
         </p>
         
-        <p css={cssDescription}>
-          E-Mailの入力は任意ですが、登録しておくとパスワードを忘れたときにメールでパスワードを受け取ることができるようになります。
-        </p>
-        
-        <p css={cssDescription}>
-          ID、パスワード、E-Mailはアカウント作成後に変更することが可能です。
-        </p>
-        
-        
-        
-        
-        {/* Login ID */}
-        <div>
-          <TextField
-            css={cssTextField}
-            id="createAccountLoginID"
-            label="ID"
-            value={validationUsersLoginIDObj.value}
-            onChange={(eventObj) => handleEdit({
-              pathArr: ['createAccountLoginID'],
-              value: eventObj.target.value
-            })}
-            error={validationUsersLoginIDObj.error}
-            helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 32,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconID />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
-        
-        
-        
-        
-        {/* Login Password */}
-        <div>
-          <TextField
-            css={cssTextField}
-            id="createAccountLoginPassword"
-            label="パスワード"
-            type={createAccountLoginPasswordShow ? 'text' : 'password'}
-            value={validationUsersLoginPasswordObj.value}
-            onChange={(eventObj) => handleEdit({
-              pathArr: ['createAccountLoginPassword'],
-              value: eventObj.target.value
-            })}
-            error={validationUsersLoginPasswordObj.error}
-            helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 32,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconPassword />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Toggle password visibility"
-                    onClick={handlePasswordShow}
-                    onMouseDown={handlePasswordMouseDown}
-                  >
-                    {createAccountLoginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-        </div>
-        
-        <PasswordStrength>
-          パスワード強度：{passwordStrength}
-        </PasswordStrength>
-        
-        
-        
-        
-        {/* Login Password Confirmation */}
-        <div>
-          <TextField
-            css={cssTextField}
-            id="createAccountLoginPasswordConfirmation"
-            label="パスワード確認"
-            type={createAccountLoginPasswordConfirmationShow ? 'text' : 'password'}
-            value={validationUsersLoginPasswordConfirmationObj.value}
-            onChange={(eventObj) => handleEdit({
-              pathArr: ['createAccountLoginPasswordConfirmation'],
-              value: eventObj.target.value
-            })}
-            error={validationUsersLoginPasswordConfirmationObj.error}
-            helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 32,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconPasswordOutlined />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Toggle password visibility"
-                    onClick={handlePasswordConfirmationShow}
-                    onMouseDown={handlePasswordConfirmationMouseDown}
-                  >
-                    {createAccountLoginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-        </div>
-        
-        
-        
-        
-        {/* E-Mail */}
-        <div>
-          <TextField
-            css={cssTextField}
-            id="createAccountEmail"
-            label="E-Mail（任意）"
-            value={validationUsersEmailObj.value}
-            onChange={(eventObj) => handleEdit({
-              pathArr: ['createAccountEmail'],
-              value: eventObj.target.value
-            })}
-            error={validationUsersEmailObj.error}
-            helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
-            disabled={buttonDisabled}
-            margin="normal"
-            inputProps={{
-              maxLength: 100,
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconMailOutline />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </div>
-        
-        
-        
-        
-        {/* 利用規約 */}
-        <div
+        <p
           css={css`
-            display: flex;
-            flex-flow: row wrap;
+            margin: 0 0 16px 0;
           `}
         >
+          メールアドレスを登録しておくとパスワードを忘れたときに、メールを利用してパスワードを登録しなおせるようになります。ID、パスワード、メールアドレスはアカウント作成後に変更することが可能です。
+        </p>
+        
+        
+        
+        
+        {/* Form */}
+        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'createAccount' })}>
           
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={createAccountTermsOfService}
-                onChange={(eventObj) => handleEdit({
-                  pathArr: ['createAccountTermsOfService'],
-                  value: eventObj.target.checked
-                })}
-              />
-            }
-            label="利用規約に同意します"
-          />
           
-          <Button
-            color="primary"
-            onClick={stores.layout.handleTermsOfServiceDialogOpen}
+          {/* Login ID */}
+          <div>
+            <TextField
+              css={css`
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              `}
+              id="createAccountLoginID"
+              label="ID"
+              value={validationUsersLoginIDObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['createAccountLoginID'],
+                value: eventObj.target.value
+              })}
+              error={validationUsersLoginIDObj.error}
+              helperText={intl.formatMessage({ id: validationUsersLoginIDObj.messageID }, { numberOfCharacters: validationUsersLoginIDObj.numberOfCharacters })}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 32,
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconID />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+          
+          
+          
+          
+          {/* Login Password */}
+          <div>
+            <TextField
+              css={css`
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              `}
+              id="createAccountLoginPassword"
+              label="パスワード"
+              type={createAccountLoginPasswordShow ? 'text' : 'password'}
+              value={validationUsersLoginPasswordObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['createAccountLoginPassword'],
+                value: eventObj.target.value
+              })}
+              error={validationUsersLoginPasswordObj.error}
+              helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 32,
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconPassword />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={handlePasswordShow}
+                      onMouseDown={handlePasswordMouseDown}
+                    >
+                      {createAccountLoginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </div>
+          
+          
+          <div
+            css={css`
+              font-size: 12px;
+              margin: 4px 0 0 0;
+              color: ${passwordColor};
+            `}
           >
-            利用規約を表示
-          </Button>
+            パスワード強度：{passwordStrength}
+          </div>
           
-        </div>
-        
-        
-        
-        
-        {/* Submit Button */}
-        <div
-          css={css`
-            margin: 20px 0 0 0;
-          `}
-        >
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => handleRecaptchaReset({ formType: 'createAccount' })}
-            disabled={buttonDisabled}
+          
+          
+          
+          {/* Login Password Confirmation */}
+          <div>
+            <TextField
+              css={css`
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              `}
+              id="createAccountLoginPasswordConfirmation"
+              label="パスワード確認"
+              type={createAccountLoginPasswordConfirmationShow ? 'text' : 'password'}
+              value={validationUsersLoginPasswordConfirmationObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['createAccountLoginPasswordConfirmation'],
+                value: eventObj.target.value
+              })}
+              error={validationUsersLoginPasswordConfirmationObj.error}
+              helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 32,
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconPasswordOutlined />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={handlePasswordConfirmationShow}
+                      onMouseDown={handlePasswordConfirmationMouseDown}
+                    >
+                      {createAccountLoginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </div>
+          
+          
+          
+          
+          {/* メールアドレス */}
+          <div>
+            <TextField
+              css={css`
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              `}
+              id="createAccountEmail"
+              label="メールアドレス（任意）"
+              value={validationUsersEmailObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['createAccountEmail'],
+                value: eventObj.target.value
+              })}
+              error={validationUsersEmailObj.error}
+              helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 100,
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconMailOutline />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </div>
+          
+          
+          
+          
+          {/* 利用規約 */}
+          <div
+            css={css`
+              display: flex;
+              flex-flow: row wrap;
+            `}
           >
-            アカウント作成
-          </Button>
-        </div>
+            
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={createAccountTermsOfService}
+                  onChange={(eventObj) => handleEdit({
+                    pathArr: ['createAccountTermsOfService'],
+                    value: eventObj.target.checked
+                  })}
+                />
+              }
+              label="利用規約に同意します"
+            />
+            
+            <Button
+              color="primary"
+              onClick={stores.layout.handleTermsOfServiceDialogOpen}
+            >
+              利用規約を表示
+            </Button>
+            
+          </div>
+          
+          
+          
+          
+          {/* Submit Button */}
+          <div
+            css={css`
+              margin: 24px 0 0 0;
+            `}
+          >
+            <Button
+              type="submit"
+              variant="contained"
+              color="secondary"
+              // onClick={() => handleRecaptchaReset({ formType: 'createAccount' })}
+              disabled={buttonDisabled}
+            >
+              アカウント作成
+            </Button>
+          </div>
+          
+          
+        </form>
         
         
         

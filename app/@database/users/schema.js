@@ -36,19 +36,15 @@ const schema = mongoose.Schema({
   countriesArr: [String],
   termsOfServiceConfirmedDate: { type: Date, required: true },
   exp: { type: Number, default: 0, required: true },
-  // titleArr: [
-  //   {
-  //     _id: { type: String, required: true },
-  //     createdDate: { type: Date, required: true },
-  //     updatedDate: { type: Date, required: true },
-  //     titleID: { type: String, required: true },
-  //     count: { type: Number, default: 0, required: true },
-  //   },
-  // ],
-  // followArr: [String],
-  // followCount: { type: Number, default: 0, required: true },
-  // followedArr: [String],
-  // followedCount: { type: Number, default: 0, required: true },
+  achievementsArr: [
+    {
+      _id: { type: String, required: true },
+      createdDate: { type: Date, required: true },
+      updatedDate: { type: Date, required: true },
+      achievementID: { type: String, required: true },
+      count: { type: Number, default: 1, required: true },
+    },
+  ],
   role: { type: String, enum: ['user', 'administrator'], required: true },
   
 });

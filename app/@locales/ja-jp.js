@@ -188,7 +188,7 @@ const ja_JP = {
   '5Gf730Gmz': 'ログインしました',
   
   // /app/login/account/stores/store.js
-  'Jje25z6lV': 'アカウントを作成しました。プレイヤーページに移動します。',
+  'Jje25z6lV': 'アカウントを作成しました。ユーザーページに移動します。',
   
   // /app/@database/users/api.js
   'RIj4SCt_s': 'ID、またはパスワードが間違っています',

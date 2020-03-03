@@ -40,6 +40,7 @@ import { createCsrfToken } from '../../app/@modules/csrf';
 
 import initStoreRoot from '../../app/@stores/root';
 import initStoreLoginAccount from '../../app/login/account/stores/store';
+import initStoreFollow from '../../app/common/follow/stores/store';
 
 
 // ---------------------------------------------
@@ -47,6 +48,7 @@ import initStoreLoginAccount from '../../app/login/account/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
+import Sidebar from '../../app/common/layout/components/sidebar';
 import FormCreateAccount from '../../app/login/account/components/form-create-account';
 
 
@@ -66,6 +68,7 @@ const getOrCreateStore = ({ propsObj }) => {
   initStoreRoot({ propsObj });
   
   const storeLoginAccount = initStoreLoginAccount({});
+  const storeFollow = initStoreFollow({});
   
   
   // --------------------------------------------------
@@ -75,6 +78,7 @@ const getOrCreateStore = ({ propsObj }) => {
   return {
     
     storeLoginAccount,
+    storeFollow,
     
   };
   
@@ -107,6 +111,8 @@ export default class extends React.Component {
     createCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
@@ -114,7 +120,6 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const pathname = `/login/account`;
-    // const temporaryDataID = `/uc/${userCommunityID}`;
     
     
     // --------------------------------------------------
@@ -133,6 +138,8 @@ export default class extends React.Component {
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
     
+    
+    
     // --------------------------------------------------
     //   ログインしている場合はログアウトページにリダイレクト
     // --------------------------------------------------
@@ -142,15 +149,22 @@ export default class extends React.Component {
       const isServer = !process.browser;
       
       if (isServer && res) {
+        
         res.writeHead(302, {
           Location: '/logout'
         });
+        
         res.end();
+        
       } else {
+        
         Router.replace('/logout');
+        
       }
       
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -173,6 +187,8 @@ export default class extends React.Component {
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
+    
+    
     
     
     // --------------------------------------------------
@@ -200,6 +216,11 @@ export default class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -209,6 +230,10 @@ export default class extends React.Component {
     
     this.error = false;
     
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
     
     try {
       
@@ -281,6 +306,8 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -297,32 +324,86 @@ export default class extends React.Component {
           </Head>
           
           
-          {/* Contents */}
+          
+          
+          {/* 2 Column */}
           <div
             css={css`
-              padding: 12px;
+              display: flex;
+              flex-flow: row nowrap;
+              justify-content: center;
+              margin: 0 auto;
+              padding: 16px;
               
-              @media screen and (max-width: 480px) {
-                padding: 12px 0;
+              @media screen and (max-width: 947px) {
+                display: flex;
+                flex-flow: column nowrap;
+                padding: 10px 0 10px 0;
               }
             `}
           >
             
             
-            {/* reCAPTCHA */}
-            <ReCaptcha
-              ref={ref => this.recaptcha = ref}
-              sitekey={process.env.RECAPTCHA_SITE_KEY}
-              action='createAccount'
-              verifyCallback={(response) => this.storesObj.storeLoginAccount.handleRecaptchaResponse({
-                response,
-                ref: this.recaptcha,
-              })}
-            />
+            {/* Sidebar */}
+            <div
+              css={css`
+                width: 300px;
+                margin: 0 16px 0 0;
+                
+                @media screen and (max-width: 947px) {
+                  width: auto;
+                  margin: 0 0 16px 0;
+                }
+              `}
+            >
+              
+              
+              <Sidebar>
+                <img
+                  src="/img/common/advertisement/300x250.jpg"
+                  width="300"
+                  height="250"
+                />
+              </Sidebar>
+              
+              
+              Sidebar
+              
+            </div>
             
             
-            {/* アカウント作成 */}
-            <FormCreateAccount />
+            
+            
+            {/* Main */}
+            <div
+              css={css`
+                width: 100%;
+                max-width: 800px;
+                
+                @media screen and (max-width: 947px) {
+                  max-width: none;
+                }
+              `}
+            >
+              
+              
+              {/* reCAPTCHA */}
+              <ReCaptcha
+                ref={ref => this.recaptcha = ref}
+                sitekey={process.env.RECAPTCHA_SITE_KEY}
+                action='createAccount'
+                verifyCallback={(response) => this.storesObj.storeLoginAccount.handleRecaptchaResponse({
+                  response,
+                  ref: this.recaptcha,
+                })}
+              />
+              
+              
+              {/* Create Account */}
+              <FormCreateAccount />
+              
+              
+            </div>
             
             
           </div>

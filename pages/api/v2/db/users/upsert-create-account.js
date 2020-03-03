@@ -16,6 +16,7 @@ const util = require('util');
 
 const moment = require('moment');
 const shortid = require('shortid');
+const bcrypt = require('bcryptjs');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -25,7 +26,6 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
-const ModelEmailConfirmations = require('../../../../../app/@database/email-confirmations/model');
 
 
 // ---------------------------------------------
@@ -33,6 +33,7 @@ const ModelEmailConfirmations = require('../../../../../app/@database/email-conf
 // ---------------------------------------------
 
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
+const { verifyRecaptcha } = require('../../../../../app/@modules/recaptcha');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
 const { encrypt }  = require('../../../../../app/@modules/crypto');
@@ -44,13 +45,15 @@ const { sendMailConfirmation } = require('../../../../../app/@modules/email');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
+const { validationUsersLoginIDServer } = require('../../../../../app/@database/users/validations/login-id-server');
+const { validationUsersLoginPassword } = require('../../../../../app/@database/users/validations/login-password');
 const { validationUsersEmailServer } = require('../../../../../app/@database/users/validations/email-server');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: WTuGEDQ-V
+//   endpointID: fmVLqHFfj
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -85,7 +88,10 @@ export default async (req, res) => {
     
     const { 
       
+      loginID,
+      loginPassword,
       email,
+      response,
       
     } = bodyObj;
     
@@ -95,7 +101,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
+    lodashSet(requestParametersObj, ['loginID'], loginID);
+    lodashSet(requestParametersObj, ['loginPassword'], loginPassword);
+    lodashSet(requestParametersObj, ['email'], email);
+    lodashSet(requestParametersObj, ['response'], response);
     
     
     
@@ -107,13 +116,22 @@ export default async (req, res) => {
     verifyCsrfToken(req, res);
     
     
+    // ---------------------------------------------
+    //   Verify reCAPTCHA
+    // ---------------------------------------------
+    
+    await verifyRecaptcha({ response, remoteip: req.connection.remoteAddress });
+    
+    
+    
+    
     // --------------------------------------------------
-    //   Login Check
+    //   Login Check / ログイン状態ではアカウントを作成させない
     // --------------------------------------------------
     
-    if (!req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '7dsG5-m_i', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Pc90koKsJ', messageID: 'xLLNIpo6a' }] });
     }
     
     
@@ -133,50 +151,34 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
+    await validationUsersLoginIDServer({ value: loginID, loginUsers_id });
+    await validationUsersLoginPassword({ throwError: true, required: true, value: loginPassword, loginID });
     await validationUsersEmailServer({ value: email, loginUsers_id, encryptedEmail });
     
     
     
     
     // --------------------------------------------------
-    //   Find One / DB email-confirmations
+    //   Hash Password
     // --------------------------------------------------
     
-    const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
-      
-      conditionObj: {
-        users_id: loginUsers_id
-      }
-      
-    });
-    
-    const emailConfirmations_id = lodashGet(docEmailConfirmationsObj, ['_id'], shortid.generate());
-    const emailConfirmationsCount = lodashGet(docEmailConfirmationsObj, ['count'], 0);
+    const hashedPassword = bcrypt.hashSync(loginPassword, 10);
     
     
     
     
     // --------------------------------------------------
-    //   メールを送れるのは1日に3回まで、それ以上はエラーにする
-    // --------------------------------------------------
-    
-    if (emailConfirmationsCount >= 3) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XzR7k_Fh3', messageID: 'EAvJztLfH' }] });
-    }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Upsert 
-    //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
+    //   Update
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   - Datetime
+    //   - 
     // ---------------------------------------------
     
     const ISO8601 = moment().toISOString();
+    const users_id = shortid.generate();
+    const userID = shortid.generate();
+    const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
     
     
     // ---------------------------------------------
@@ -184,17 +186,176 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const usersConditionObj = {
-      _id: loginUsers_id
+      _id: users_id
     };
     
     const usersSaveObj = {
-      $set: {
-        updatedDate: ISO8601,
-        emailObj: {
-          value: encryptedEmail,
-          confirmation: false,
+      
+      // _id: users_id,
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      accessDate: ISO8601,
+      userID,
+      pagesObj: {
+        imagesAndVideos_id: '',
+        arr: [],
+      },
+      loginID,
+      loginPassword: hashedPassword,
+      emailObj: {
+        value: encryptedEmail,
+        confirmation: false,
+      },
+      countriesArr: ['JP'],
+      termsOfServiceConfirmedDate: ISO8601,
+      exp: 0,
+      achievementsArr: [],
+      role: 'user',
+      
+    };
+    
+    
+    // ---------------------------------------------
+    //   - card-players
+    // ---------------------------------------------
+    
+    const cardPlayersConditionObj = {
+      _id: shortid.generate()
+    };
+    
+    const cardPlayersSaveObj = {
+      
+      // _id: shortid.generate(),
+      createdDate: ISO8601,
+      updatedDate: ISO8601,
+      users_id,
+      language: 'ja',
+      nameObj: {
+        value: 'Name',
+        search: true,
+      },
+      statusObj: {
+        value: 'Status',
+        search: true,
+      },
+      imagesAndVideos_id: '',
+      imagesAndVideosThumbnail_id: '',
+      commentObj: {
+        value: '',
+        search: true,
+      },
+      ageObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      sexObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      addressObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      gamingExperienceObj: {
+        value: '',
+        alternativeText: '',
+        search: true,
+      },
+      hobbiesObj: {
+        valueArr: [],
+        search: true,
+      },
+      specialSkillsObj: {
+        valueArr: [],
+        search: true,
+      },
+      smartphoneObj: {
+        model: '',
+        comment: '',
+        search: true,
+      },
+      tabletObj: {
+        model: '',
+        comment: '',
+        search: true,
+      },
+      pcObj: {
+        model: '',
+        comment: '',
+        specsObj: {
+          os: '',
+          cpu: '',
+          cpuCooler: '',
+          motherboard: '',
+          memory: '',
+          storage: '',
+          graphicsCard: '',
+          opticalDrive: '',
+          powerSupply: '',
+          pcCase: '',
+          monitor: '',
+          mouse: '',
+          keyboard: ''
         },
-      }
+        search: true,
+      },
+      hardwareActiveObj: {
+        valueArr: [],
+        search: true,
+      },
+      hardwareInactiveObj: {
+        valueArr: [],
+        search: true,
+      },
+      ids_idArr: [],
+      activityTimeObj: {
+        valueArr: [],
+        search: true,
+      },
+      lookingForFriendsObj: {
+        value: true,
+        icon: 'emoji_u263a',
+        comment: '',
+        search: true,
+      },
+      voiceChatObj: {
+        value: true,
+        comment: '',
+        search: true,
+      },
+      linkArr: [],
+      
+    };
+    
+    
+    // ---------------------------------------------
+    //   - follows
+    // ---------------------------------------------
+    
+    const followsConditionObj = {
+      _id: shortid.generate()
+    };
+    
+    const followsSaveObj = {
+      
+      // _id: shortid.generate(),
+      updatedDate: ISO8601,
+      gameCommunities_id: '',
+      userCommunities_id: '',
+      users_id,
+      approval: false,
+      followArr: [],
+      followCount: 0,
+      followedArr: [],
+      followedCount: 0,
+      approvalArr: [],
+      approvalCount: 0,
+      blockArr: [],
+      blockCount: 0,
+      
     };
     
     
@@ -202,36 +363,48 @@ export default async (req, res) => {
     //   - email-confirmations
     // ---------------------------------------------
     
-    const emailConfirmationsConditionObj = {
-      _id: emailConfirmations_id
-    };
+    let emailConfirmationsConditionObj = {};
+    let emailConfirmationsSaveObj = {};
     
-    const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
-    
-    const emailConfirmationsSaveObj = {
-      $set: {
+    if (email) {
+      
+      emailConfirmationsConditionObj = {
+        _id: shortid.generate()
+      };
+      
+      emailConfirmationsSaveObj = {
+        
+        // _id: shortid.generate(),
         createdDate: ISO8601,
-        users_id: loginUsers_id,
+        users_id,
         emailConfirmationID,
         email: encryptedEmail,
-        count: emailConfirmationsCount + 1,
+        count: 1,
         isSuccess: false,
-      }
-    };
+        
+      };
+      
+    }
     
     
     // ---------------------------------------------
-    //   - transaction
+    //   Insert
     // ---------------------------------------------
     
-    await ModelUsers.transactionForEditAccount({
+    await ModelUsers.transactionForUpsert({
       
       usersConditionObj,
       usersSaveObj,
+      cardPlayersConditionObj,
+      cardPlayersSaveObj,
+      followsConditionObj,
+      followsSaveObj,
       emailConfirmationsConditionObj,
       emailConfirmationsSaveObj,
       
     });
+    
+    
     
     
     // --------------------------------------------------
@@ -252,35 +425,20 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-settings-email.js
+    //   /pages/api/v2/db/users/upsert-create-account.js
     // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
+    //   loginID: {green ${loginID}}
+    //   loginPassword: {green ${loginPassword}}
     //   email: {green ${email}}
+    //   response: {green ${response}}
     // `);
     
     // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsConditionObj -----\n
-    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsSaveObj -----\n
-    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
+    //   ----- imagesAndVideosObj -----\n
+    //   ${util.inspect(imagesAndVideosObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -303,7 +461,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'WTuGEDQ-V',
+      endpointID: 'fmVLqHFfj',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

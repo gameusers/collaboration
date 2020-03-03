@@ -174,15 +174,15 @@ router.post('/db', upload.none(), async (req, res, next) => {
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 999,
-        // achievementsArr: [// 実績用
-        //   {
-        //     _id: 'pFJEn_2MO',
-        //     createdDate: ISO8601,
-        //     updatedDate: ISO8601,
-        //     achievementID: 'MuK2dKVpn',
-        //     count: 0,
-        //   }
-        // ],
+        achievementsArr: [// 実績用
+          {
+            _id: 'pFJEn_2MO',
+            createdDate: ISO8601,
+            updatedDate: ISO8601,
+            achievementID: 'MuK2dKVpn',
+            count: 1,
+          }
+        ],
         role: 'user'
       },
       
@@ -206,6 +206,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
+        achievementsArr: [],
         role: 'user'
       },
       
@@ -229,6 +230,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         countriesArr: ['JP'],
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
+        achievementsArr: [],
         role: 'user'
       },
     ];

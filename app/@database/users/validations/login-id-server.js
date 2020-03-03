@@ -85,7 +85,10 @@ const validationUsersLoginIDServer = async ({ value, loginUsers_id }) => {
   //   データベースに存在しているかチェック
   // ---------------------------------------------
   
-  // 編集の場合
+  // ---------------------------------------------
+  //   - 編集の場合
+  // ---------------------------------------------
+  
   if (loginUsers_id) {
     
     const count = await Model.count({
@@ -99,7 +102,11 @@ const validationUsersLoginIDServer = async ({ value, loginUsers_id }) => {
       throw new CustomError({ level: 'warn', errorsArr: [{ code: '2R5M5lNLA', messageID: 'Y1J-vK0hW' }] });
     }
     
-  // 新規の場合
+    
+  // ---------------------------------------------
+  //   - 新規の場合
+  // ---------------------------------------------
+  
   } else {
     
     const count = await Model.count({

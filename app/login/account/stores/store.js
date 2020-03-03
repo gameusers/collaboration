@@ -141,7 +141,16 @@ class Store {
    * @param {string} type - フォームのタイプ
    */
   @action.bound
-  handleRecaptchaReset({ formType }) {
+  handleRecaptchaReset({ eventObj, formType }) {
+    
+    
+    // ---------------------------------------------
+    //   フォームの送信処理停止
+    // ---------------------------------------------
+    
+    eventObj.preventDefault();
+    
+    
     
     
     // ---------------------------------------------
@@ -156,6 +165,8 @@ class Store {
     // ---------------------------------------------
     
     storeLayout.handleButtonDisable({ _id: formType });
+    
+    
     
     
     // ---------------------------------------------
@@ -243,6 +254,8 @@ class Store {
       const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
       
       
+      
+      
       // ---------------------------------------------
       //   利用規約のチェック
       // ---------------------------------------------
@@ -250,6 +263,8 @@ class Store {
       if (createAccountTermsOfService === false) {
         throw new CustomError({ errorsArr: [{ code: 'qES1fpB_e', messageID: 'Gn_vVgSFY' }] });
       }
+      
+      
       
       
       // ---------------------------------------------
@@ -267,47 +282,52 @@ class Store {
       // ---------------------------------------------
       
       if (
+        
         validationUsersLoginIDObj.error ||
         validationUsersLoginPasswordObj.error ||
         validationUsersLoginPasswordConfirmationObj.error ||
         validationUsersEmailObj.error
+        
       ) {
+        
         throw new CustomError({ errorsArr: [{ code: 'UN26lgIXU', messageID: 'uwHIKBy7c' }] });
+        
       }
       
       
       
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/login/account/stores/store.js - handleCreateAccount
+      // `);
+      
       // console.log(chalk`
-      //   \n---------- handleCreateAccount ----------\n
       //   createAccountLoginID: {green ${createAccountLoginID}}
       //   createAccountLoginPassword: {green ${createAccountLoginPassword}}
       //   createAccountEmail: {green ${createAccountEmail}}
       //   recaptchaResponse: {green ${recaptchaResponse}}
       // `);
       
-      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      // console.log(`\n-----------------------------------\n`);
       
-      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(`\n---------- validationUsersEmailObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersEmailObj)));
-      // console.log(`\n-----------------------------------\n`);
       
       
       // ---------------------------------------------
       //   FormData - Create Account
       // ---------------------------------------------
       
-      let formData = new FormData();
-      
-      formData.append('loginID', createAccountLoginID);
-      formData.append('loginPassword', createAccountLoginPassword);
-      formData.append('email', createAccountEmail);
-      formData.append('response', recaptchaResponse);
+      const formDataObj = {
+        
+        loginID: createAccountLoginID,
+        loginPassword: createAccountLoginPassword,
+        email: createAccountEmail,
+        response: recaptchaResponse,
+        
+      };
       
       
       // ---------------------------------------------
@@ -315,9 +335,9 @@ class Store {
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/create-account`,
+        urlApi: `${process.env.URL_API}/v2/db/users/upsert-create-account`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj)
       });
       
       
@@ -337,13 +357,18 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
       //   Form Reset
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, 'loginID', '');
-      lodashSet(this.dataObj, 'loginPassword', '');
-      lodashSet(this.dataObj, 'email', '');
+      lodashSet(this.dataObj, 'createAccountLoginID', '');
+      lodashSet(this.dataObj, 'createAccountLoginPassword', '');
+      lodashSet(this.dataObj, 'createAccountLoginPasswordConfirmation', '');
+      lodashSet(this.dataObj, 'createAccountEmail', '');
+      
+      
       
       
       // ---------------------------------------------
@@ -362,7 +387,7 @@ class Store {
       //   FormData
       // ---------------------------------------------
       
-      formData = new FormData();
+      const formData = new FormData();
       
       formData.append('loginID', createAccountLoginID);
       formData.append('loginPassword', createAccountLoginPassword);
@@ -443,10 +468,21 @@ class Store {
 
 export default function initStoreLoginAccount({}) {
   
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
   if (storeLoginAccount === null) {
     storeLoginAccount = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeLoginAccount;
+  
   
 }

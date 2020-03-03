@@ -23,9 +23,9 @@ const lodashSet = require('lodash/set');
 // ---------------------------------------------
 
 const Schema = require('./schema');
-const SchemaEmailConfirmations = require('../email-confirmations/schema');
 const SchemaFollows = require('../follows/schema');
 const SchemaCardPlayers = require('../card-players/schema');
+const SchemaEmailConfirmations = require('../email-confirmations/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 
 
@@ -1369,11 +1369,15 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
 
 /**
  * Transaction 挿入 / 更新する
- * users, follows, imagesAndVideos を同時に更新する
+ * users, card-players, follows, imagesAndVideos を同時に更新する
  * 
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
+ * @param {Object} cardPlayersConditionObj - DB card-players 検索条件
+ * @param {Object} cardPlayersSaveObj - DB card-players 保存データ
  * @param {Object} followsConditionObj - DB follows 検索条件
+ * @param {Object} followsSaveObj - DB follows 保存データ
+ * @param {Object} emailConfirmationsConditionObj - DB follows 検索条件
  * @param {Object} followsSaveObj - DB follows 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
@@ -1383,8 +1387,12 @@ const transactionForUpsert = async ({
   
   usersConditionObj,
   usersSaveObj,
-  followsConditionObj,
-  followsSaveObj,
+  cardPlayersConditionObj = {},
+  cardPlayersSaveObj = {},
+  followsConditionObj = {},
+  followsSaveObj = {},
+  emailConfirmationsConditionObj = {},
+  emailConfirmationsSaveObj = {},
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
   
@@ -1424,7 +1432,7 @@ const transactionForUpsert = async ({
     
     
     // --------------------------------------------------
-    //   Users
+    //   users
     // --------------------------------------------------
     
     await Schema.updateOne(usersConditionObj, usersSaveObj, { session, upsert: true });
@@ -1433,7 +1441,18 @@ const transactionForUpsert = async ({
     
     
     // --------------------------------------------------
-    //   Follows
+    //   card-players
+    // --------------------------------------------------
+    
+    if (Object.keys(cardPlayersConditionObj).length !== 0 && Object.keys(cardPlayersSaveObj).length !== 0) {
+      await SchemaCardPlayers.updateOne(cardPlayersConditionObj, cardPlayersSaveObj, { session, upsert: true });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   follows
     // --------------------------------------------------
     
     if (Object.keys(followsConditionObj).length !== 0 && Object.keys(followsSaveObj).length !== 0) {
@@ -1444,7 +1463,18 @@ const transactionForUpsert = async ({
     
     
     // --------------------------------------------------
-    //   Images And Videos - メイン画像
+    //   email-confirmations
+    // --------------------------------------------------
+    
+    if (Object.keys(emailConfirmationsConditionObj).length !== 0 && Object.keys(emailConfirmationsSaveObj).length !== 0) {
+      await SchemaEmailConfirmations.updateOne(emailConfirmationsConditionObj, emailConfirmationsSaveObj, { session, upsert: true });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   images-and-videos - メイン画像
     // --------------------------------------------------
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
@@ -1505,6 +1535,18 @@ const transactionForUpsert = async ({
     // `);
     
     // console.log(`
+    //   ----- cardPlayersConditionObj -----\n
+    //   ${util.inspect(cardPlayersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- cardPlayersSaveObj -----\n
+    //   ${util.inspect(cardPlayersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
     //   ----- followsConditionObj -----\n
     //   ${util.inspect(followsConditionObj, { colors: true, depth: null })}\n
     //   --------------------\n
@@ -1513,6 +1555,18 @@ const transactionForUpsert = async ({
     // console.log(`
     //   ----- followsSaveObj -----\n
     //   ${util.inspect(followsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsConditionObj -----\n
+    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- emailConfirmationsSaveObj -----\n
+    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

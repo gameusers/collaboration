@@ -15,6 +15,7 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
+import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
@@ -75,6 +76,11 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -94,7 +100,7 @@ export default injectIntl(class extends React.Component {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount(){
+  componentDidMount() {
     
     
     // --------------------------------------------------
@@ -204,8 +210,10 @@ export default injectIntl(class extends React.Component {
         
         
         <p>
-          IDとパスワードでログインします。アカウントをお持ちでない場合は、こちらのページでアカウントを作成してください。
+          IDとパスワードでログインします。アカウントをお持ちでない場合は、<Link href="/login/account"><a>こちらのページ</a></Link>でアカウントを作成してください。
         </p>
+        
+        
         
         
         {/* Form */}
@@ -296,12 +304,22 @@ export default injectIntl(class extends React.Component {
           </div>
           
           
+          <p
+            css={css`
+              font-size: 12px;
+              margin: 6px 0 30px 0;
+            `}
+          >
+            <Link href="/login/password"><a>パスワードを忘れた方はこちら</a></Link>
+          </p>
+          
+          
           
           
           {/* Submit Button */}
           <div
             css={css`
-              margin: 20px 0 0 0;
+              margin: 24px 0 0 0;
             `}
           >
             <Button

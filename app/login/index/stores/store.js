@@ -129,6 +129,8 @@ class Store {
     eventObj.preventDefault();
     
     
+    
+    
     // ---------------------------------------------
     //   Loading 表示
     // ---------------------------------------------
@@ -141,6 +143,8 @@ class Store {
     // ---------------------------------------------
     
     storeLayout.handleButtonDisable({ _id: formType });
+    
+    
     
     
     // ---------------------------------------------
@@ -227,6 +231,8 @@ class Store {
       const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
       
       
+      
+      
       // ---------------------------------------------
       //   Validation
       // ---------------------------------------------
@@ -249,24 +255,6 @@ class Store {
       
       
       
-      // console.log(chalk`
-      //   \n---------- handleLogin ----------\n
-      //   loginID: {green ${loginID}}
-      //   loginPassword: {green ${loginPassword}}
-      //   recaptchaResponse: {green ${recaptchaResponse}}
-      // `);
-      
-      // console.log(`\n---------- validationUsersLoginIDObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginIDObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(`\n---------- validationUsersLoginPasswordObj ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(validationUsersLoginPasswordObj)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // return;
-      
-      
       // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
@@ -274,9 +262,19 @@ class Store {
       storeLayout.handleButtonDisable({ pathArr: ['formLogin'] });
       
       
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
+      
+      // const formDataObj = {
+        
+      //   loginID,
+      //   loginPassword,
+      //   response: recaptchaResponse,
+        
+      // };
       
       const formData = new FormData();
       
@@ -284,6 +282,11 @@ class Store {
       formData.append('loginPassword', loginPassword);
       formData.append('response', recaptchaResponse);
       
+      // console.log(`
+      //   ----- formDataObj -----\n
+      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       // ---------------------------------------------
       //   Fetch
@@ -291,10 +294,15 @@ class Store {
       
       const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v1/users/login`,
-        // urlApi: `${process.env.URL_API}/v2/db/users/login`,
         methodType: 'POST',
         formData
       });
+      
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${process.env.URL_API}/v2/db/users/upsert-create-account`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj)
+      // });
       
       
       // console.log(`
@@ -311,6 +319,8 @@ class Store {
       if ('errorsArr' in resultObj) {
         throw new CustomError({ errorsArr: resultObj.errorsArr });
       }
+      
+      
       
       
       // ---------------------------------------------

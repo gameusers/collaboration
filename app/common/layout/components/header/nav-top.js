@@ -124,6 +124,11 @@ export default class extends React.Component {
   
   constructor(props) {
     
+    
+    // ---------------------------------------------
+    //   super
+    // ---------------------------------------------
+    
     super(props);
     
     
@@ -392,6 +397,8 @@ export default class extends React.Component {
     const { classes, stores } = this.props;
     
     
+    
+    
     // --------------------------------------------------
     //   react-spring
     // --------------------------------------------------
@@ -403,9 +410,48 @@ export default class extends React.Component {
     //   loginUsersObj
     // --------------------------------------------------
     
-    const thumbnailSrc = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'src'], '/img/common/thumbnail/none.svg');
-    const thumbnailSrcSet = lodashGet(stores, ['data', 'loginUsersObj', 'thumbnailObj', 'srcSet'], '');
     const userID = lodashGet(stores, ['data', 'loginUsersObj', 'userID'], '');
+    
+    const imagesAndVideosThumbnailArr = lodashGet(stores, ['data', 'loginUsersObj', 'cardPlayerObj', 'imagesAndVideosThumbnailObj', 'arr'], []);
+    
+    let thumbnailSrc = '/img/common/thumbnail/none.svg';
+    let thumbnailSrcSet = '';
+    
+    if (imagesAndVideosThumbnailArr.length > 0) {
+      
+      thumbnailSrc = lodashGet(imagesAndVideosThumbnailArr, [0, 'src'], '/img/common/thumbnail/none.svg');
+      thumbnailSrcSet = lodashGet(imagesAndVideosThumbnailArr, [0, 'srcSet'], '');
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/layout/components/header/nav-top.js
+    // `);
+    
+    // console.log(chalk`
+    //   thumbnailSrc: {green ${thumbnailSrc} / ${typeof thumbnailSrc}}
+    //   thumbnailSrcSet: {green ${thumbnailSrcSet} / ${typeof thumbnailSrcSet}}
+    // `);
+    
+    // console.log(`
+    //   ----- stores.data.loginUsersObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(stores.data.loginUsersObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- imagesAndVideosThumbnailArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosThumbnailArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -504,6 +550,7 @@ export default class extends React.Component {
         
         {/* サムネイル */}
         {userID ? (
+        
           <IconButton
             css={css`
               && {
@@ -519,7 +566,9 @@ export default class extends React.Component {
               srcSet={thumbnailSrcSet}
             />
           </IconButton>
+          
         ) : (
+        
           <Link href="/login">
             <div
               css={css`
@@ -544,6 +593,7 @@ export default class extends React.Component {
               /> ログイン
             </div>
           </Link>
+          
         )}
         
         
@@ -564,11 +614,11 @@ export default class extends React.Component {
           <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
             
             <ListItemIcon
-              css={css`
-                && {
-                  margin: 0 8px 0 0;
-                }
-              `}
+              // css={css`
+              //   && {
+              //     margin: 0 8px 0 0;
+              //   }
+              // `}
             >
               <IconPerson />
             </ListItemIcon>
@@ -580,7 +630,7 @@ export default class extends React.Component {
                     margin: 0 8px 0 0;
                   }
                 `}
-                primary="プレイヤー"
+                primary="ユーザー"
               />
             </Link>
             
@@ -590,11 +640,11 @@ export default class extends React.Component {
           <MenuItem onClick={stores.layout.handleHeaderLoginMenuClose}>
             
             <ListItemIcon
-              css={css`
-                && {
-                  margin: 0 8px 0 0;
-                }
-              `}
+              // css={css`
+              //   && {
+              //     margin: 0 8px 0 0;
+              //   }
+              // `}
             >
               <IconEject />
             </ListItemIcon>

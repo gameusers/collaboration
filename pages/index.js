@@ -51,6 +51,7 @@ import IconChatBubble from '@material-ui/icons/ChatBubbleOutline';
 // ---------------------------------------------
 
 import { fetchWrapper } from '../app/@modules/fetch';
+import { createCsrfToken } from '../app/@modules/csrf';
 
 
 // ---------------------------------------------
@@ -246,7 +247,9 @@ export default class extends React.Component {
     //   CSRF
     // --------------------------------------------------
     
-    // createCsrfToken(req, res);
+    createCsrfToken(req, res);
+    
+    
     
     
     // --------------------------------------------------
@@ -256,7 +259,6 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const pathname = `/`;
-    // const temporaryDataID = `/uc/${userCommunityID}`;
     
     
     // --------------------------------------------------
@@ -273,6 +275,8 @@ export default class extends React.Component {
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
     // const login = lodashGet(resultObj, ['data', 'login'], false);
+    
+    
     
     
     // --------------------------------------------------
@@ -303,6 +307,7 @@ export default class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -328,6 +333,11 @@ export default class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -337,6 +347,10 @@ export default class extends React.Component {
     
     this.error = false;
     
+    
+    // --------------------------------------------------
+    //   Store
+    // --------------------------------------------------
     
     try {
       
@@ -389,6 +403,8 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Props
     // --------------------------------------------------
@@ -409,6 +425,8 @@ export default class extends React.Component {
         clickable: false,
       }
     };
+    
+    
     
     
     // --------------------------------------------------

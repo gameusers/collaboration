@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const shortid = require('shortid');
 const lodashGet = require('lodash/get');
 // const lodashSet = require('lodash/set');
 // const lodashHas = require('lodash/has');

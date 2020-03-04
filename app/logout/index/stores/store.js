@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -75,21 +75,24 @@ class Store {
       storeLayout.handleButtonDisable({ pathArr });
       
       
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
       
-      const formData = new FormData();
+      const formDataObj = {};
       
       
       // ---------------------------------------------
-      //   Fetch
+      //   Fetch - Create Account
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v1/users/logout`,
+        // urlApi: `${process.env.URL_API}/v2/logout/logout`,
         methodType: 'POST',
-        formData: formData
+        formData: JSON.stringify(formDataObj)
       });
       
       
@@ -124,6 +127,7 @@ class Store {
       // ---------------------------------------------
       
       window.location.href = process.env.URL_BASE;
+      // window.location.href = `${process.env.URL_BASE}login`;
       
       
     } catch (errorObj) {

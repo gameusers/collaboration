@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -39,6 +39,7 @@ import { createCsrfToken } from '../../app/@modules/csrf';
 
 import initStoreRoot from '../../app/@stores/root';
 import initStoreLogoutIndex from '../../app/logout/index/stores/store';
+import initStoreFollow from '../../app/common/follow/stores/store';
 
 
 // ---------------------------------------------
@@ -46,6 +47,7 @@ import initStoreLogoutIndex from '../../app/logout/index/stores/store';
 // ---------------------------------------------
 
 import Layout from '../../app/common/layout/components/layout';
+import Sidebar from '../../app/common/layout/components/sidebar';
 import FormLogout from '../../app/logout/index/components/form-logout';
 
 
@@ -65,6 +67,7 @@ const getOrCreateStore = ({ propsObj }) => {
   initStoreRoot({ propsObj });
   
   const storeLogoutIndex = initStoreLogoutIndex({});
+  const storeFollow = initStoreFollow({});
   
   
   // --------------------------------------------------
@@ -74,6 +77,7 @@ const getOrCreateStore = ({ propsObj }) => {
   return {
     
     storeLogoutIndex,
+    storeFollow,
     
   };
   
@@ -106,6 +110,8 @@ export default class extends React.Component {
     createCsrfToken(req, res);
     
     
+    
+    
     // --------------------------------------------------
     //   Property
     // --------------------------------------------------
@@ -113,7 +119,6 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const pathname = `/logout`;
-    // const temporaryDataID = `/uc/${userCommunityID}`;
     
     
     // --------------------------------------------------
@@ -132,6 +137,8 @@ export default class extends React.Component {
     const login = lodashGet(resultObj, ['data', 'login'], false);
     
     
+    
+    
     // --------------------------------------------------
     //   ログインしていない時はログインページにリダイレクト
     // --------------------------------------------------
@@ -141,15 +148,22 @@ export default class extends React.Component {
       const isServer = !process.browser;
       
       if (isServer && res) {
+        
         res.writeHead(302, {
           Location: '/login'
         });
+        
         res.end();
+        
       } else {
+        
         Router.replace('/login');
+        
       }
       
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -167,6 +181,8 @@ export default class extends React.Component {
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
+    
+    
     
     
     // --------------------------------------------------
@@ -193,6 +209,11 @@ export default class extends React.Component {
   // --------------------------------------------------
   
   constructor(props) {
+    
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
     
     super(props);
     
@@ -260,6 +281,8 @@ export default class extends React.Component {
     }
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -276,20 +299,74 @@ export default class extends React.Component {
           </Head>
           
           
-          {/* Contents */}
+          
+          
+          {/* 2 Column */}
           <div
             css={css`
-              padding: 12px;
+              display: flex;
+              flex-flow: row nowrap;
+              justify-content: center;
+              margin: 0 auto;
+              padding: 16px;
               
-              @media screen and (max-width: 480px) {
-                padding: 12px 0;
+              @media screen and (max-width: 947px) {
+                display: flex;
+                flex-flow: column nowrap;
+                padding: 10px 0 10px 0;
               }
             `}
           >
             
             
-            {/* ログアウト */}
-            <FormLogout />
+            {/* Sidebar */}
+            <div
+              css={css`
+                width: 300px;
+                margin: 0 16px 0 0;
+                
+                @media screen and (max-width: 947px) {
+                  width: auto;
+                  margin: 0 0 16px 0;
+                }
+              `}
+            >
+              
+              
+              <Sidebar>
+                <img
+                  src="/img/common/advertisement/300x250.jpg"
+                  width="300"
+                  height="250"
+                />
+              </Sidebar>
+              
+              
+              Sidebar
+              
+            </div>
+            
+            
+            
+            
+            {/* Main */}
+            <div
+              css={css`
+                width: 100%;
+                max-width: 800px;
+                
+                @media screen and (max-width: 947px) {
+                  max-width: none;
+                }
+              `}
+            >
+              
+              
+              {/* Logout */}
+              <FormLogout />
+              
+              
+            </div>
             
             
           </div>

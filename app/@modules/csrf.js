@@ -85,8 +85,17 @@ const verifyCsrfToken = (req, res) => {
     const secret = req.session._csrf;
     const token = req.cookies._csrf;
     
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/csrf.js - verifyCsrfToken
+    // `);
+    
     // console.log(chalk`
-    //   verifyCsrfToken
     //   session.secret: {green ${secret}}
     //   cookies.token: {green ${token}}
     //   tokens.verify(secret, token): {rgb(255,131,0) ${tokens.verify(secret, token)}}
@@ -95,7 +104,6 @@ const verifyCsrfToken = (req, res) => {
     
     // 秘密文字 と トークン の組み合わせが正しいか検証
     if (tokens.verify(secret, token) === false) {
-      // console.log(`Invalid Token`);
       throw new Error('CSRF: Invalid Token');
     }
     

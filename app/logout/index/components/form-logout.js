@@ -54,6 +54,11 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -109,6 +114,7 @@ export default injectIntl(class extends React.Component {
     
     
     
+    
     // --------------------------------------------------
     //   Button - Disabled
     // --------------------------------------------------
@@ -134,21 +140,30 @@ export default injectIntl(class extends React.Component {
         </p>
         
         
-        {/* Submit Button */}
-        <div
-          css={css`
-            margin: 20px 0 0 0;
-          `}
-        >
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleLogout({ pathArr: this.pathArr })}
-            disabled={buttonDisabled}
+        
+        
+        {/* Form */}
+        <form onSubmit={() => handleLogout({ pathArr: this.pathArr })}>
+          
+          
+          {/* Submit Button */}
+          <div
+            css={css`
+              margin: 20px 0 0 0;
+            `}
           >
-            ログアウト
-          </Button>
-        </div>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={buttonDisabled}
+            >
+              ログアウト
+            </Button>
+          </div>
+          
+          
+        </form>
         
         
       </Panel>

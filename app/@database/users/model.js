@@ -363,6 +363,10 @@ const findOneForUser = async ({
     const resultArr = await Schema.aggregate([
       
       
+      // --------------------------------------------------
+      //   Match Condition
+      // --------------------------------------------------
+      
       ...matchConditionArr,
       
       
@@ -590,13 +594,16 @@ const findOneForUser = async ({
 
 
 /**
- * ◆見直しが必要　検索してデータを取得する / ログインしているユーザーのデータ用（サムネイル・ハンドルネーム・ステータス）
- * @param {Object} localeObj - ロケール
- * @param {Object} conditionObj - 検索条件
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * 検索してデータを取得する / ログインしているユーザーのデータ用（サムネイル・ハンドルネーム・ステータス）
+ * 2020/3/4
+ * @param {string} users_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id }) => {
+const findOneForLoginUsersObj = async ({
+  
+  users_id,
+  
+}) => {
   
   
   // --------------------------------------------------
@@ -610,12 +617,17 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
     //   データ取得
     // --------------------------------------------------
     
-    let resultArr = await Schema.aggregate([
+    const docUsersArr = await Schema.aggregate([
+      
       
       {
-        $match : conditionObj
+        $match : { _id: users_id }
       },
       
+      
+      // --------------------------------------------------
+      //   card-players
+      // --------------------------------------------------
       
       {
         $lookup:
@@ -625,24 +637,68 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
             pipeline: [
               { $match:
                 { $expr:
-                  { $and:
-                    [
-                      { $eq: ['$users_id', '$$users_id'] }
-                    ]
-                  },
+                  { $eq: ['$users_id', '$$users_id'] },
                 }
               },
+              
+              
+              // --------------------------------------------------
+              //   card-players / images-and-videos / サムネイル用
+              // --------------------------------------------------
+              
+              {
+                $lookup:
+                  {
+                    from: 'images-and-videos',
+                    let: { cardPlayersImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
+                    pipeline: [
+                      { $match:
+                        { $expr:
+                          { $eq: ['$_id', '$$cardPlayersImagesAndVideosThumbnail_id'] },
+                        }
+                      },
+                      { $project:
+                        {
+                          createdDate: 0,
+                          updatedDate: 0,
+                          users_id: 0,
+                          __v: 0,
+                        }
+                      }
+                    ],
+                    as: 'imagesAndVideosThumbnailObj'
+                  }
+              },
+              
+              {
+                $unwind: {
+                  path: '$imagesAndVideosThumbnailObj',
+                  preserveNullAndEmptyArrays: true,
+                }
+              },
+              
+              
               { $project:
                 {
                   _id: 0,
                   nameObj: 1,
                   statusObj: 1,
-                  imagesAndVideosObj: 1,
+                  imagesAndVideosThumbnailObj: 1,
                 }
               }
+              
+              
             ],
-            as: 'cardPlayersArr'
+            as: 'cardPlayerObj'
           }
+      },
+      
+      
+      {
+        $unwind: {
+          path: '$cardPlayerObj',
+          preserveNullAndEmptyArrays: true,
+        }
       },
       
       
@@ -651,6 +707,11 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
           __v: 0,
           createdDate: 0,
           updatedDate: 0,
+          countriesArr: 0,
+          exp: 0,
+          pagesObj: 0,
+          termsOfServiceConfirmedDate: 0,
+          achievementsArr: 0,
           loginID: 0,
           loginPassword: 0,
           emailObj: 0,
@@ -658,14 +719,41 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
         }
       },
       
+      
     ]).exec();
     
     
+    
+    
     // --------------------------------------------------
-    //   フォーマット
+    //   returnObj
     // --------------------------------------------------
     
-    const returnObj = format({ arr: resultArr, loginUsers_id });
+    let returnObj = {};
+    
+    if (docUsersArr.length > 0) {
+      returnObj = docUsersArr[0];
+    }
+    
+    
+    // --------------------------------------------------
+    //   Format - Images And Videos
+    // --------------------------------------------------
+    
+    const imagesAndVideosThumbnailObj = lodashGet(returnObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj'], '');
+    
+    if (imagesAndVideosThumbnailObj) {
+      
+      const formattedImagesAndVideosThumbnailObj = formatImagesAndVideosObj({ obj: imagesAndVideosThumbnailObj });
+      lodashSet(returnObj, ['cardPlayerObj', 'imagesAndVideosThumbnailObj'], formattedImagesAndVideosThumbnailObj);
+      
+    } else {
+      
+      delete returnObj.imagesAndVideosThumbnailObj;
+      
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -673,15 +761,8 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- localeObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- conditionObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(conditionObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   ----------------------------------------\n
+    //   /app/@database/users/model.js - findOneForLoginUsersObj
     // `);
     
     // console.log(chalk`
@@ -689,8 +770,14 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
     // `);
     
     // console.log(`
-    //   ----- resultArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- formattedImagesAndVideosThumbnailObj -----\n
+    //   ${util.inspect(formattedImagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -726,92 +813,92 @@ const findOneForLoginUsersObj = async ({ localeObj, conditionObj, loginUsers_id 
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} 取得データ
  */
-const format = async ({ arr, loginUsers_id }) => {
+// const format = async ({ arr, loginUsers_id }) => {
   
   
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return Value
+//   // --------------------------------------------------
   
-  let returnObj = {};
+//   let returnObj = {};
   
   
-  // --------------------------------------------------
-  //   Loop
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Loop
+//   // --------------------------------------------------
   
-  for (let valueObj of arr.values()) {
+//   for (let valueObj of arr.values()) {
     
     
-    // --------------------------------------------------
-    //   _id
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   _id
+//     // --------------------------------------------------
     
-    const _id = lodashGet(valueObj, ['_id'], '');
-    
-    
-    // --------------------------------------------------
-    //   Return Object
-    // --------------------------------------------------
-    
-    returnObj[_id] = {
-      // _id,
-      name: lodashGet(valueObj, ['cardPlayersArr', 0, 'nameObj', 'value'], ''),
-      status: lodashGet(valueObj, ['cardPlayersArr', 0, 'statusObj', 'value'], ''),
-      exp: lodashGet(valueObj, ['exp'], 0),
-      followCount: lodashGet(valueObj, ['followCount'], 0),
-      followedCount: lodashGet(valueObj, ['followedCount'], 0),
-      followed: false,
-      accessDate: lodashGet(valueObj, ['accessDate'], ''),
-      userID: lodashGet(valueObj, ['userID'], ''),
-      role: lodashGet(valueObj, ['role'], 'User'),
-    };
+//     const _id = lodashGet(valueObj, ['_id'], '');
     
     
-    // --------------------------------------------------
-    //   Follow の処理
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   Return Object
+//     // --------------------------------------------------
     
-    if (loginUsers_id) {
+//     returnObj[_id] = {
+//       // _id,
+//       name: lodashGet(valueObj, ['cardPlayersArr', 0, 'nameObj', 'value'], ''),
+//       status: lodashGet(valueObj, ['cardPlayersArr', 0, 'statusObj', 'value'], ''),
+//       exp: lodashGet(valueObj, ['exp'], 0),
+//       followCount: lodashGet(valueObj, ['followCount'], 0),
+//       followedCount: lodashGet(valueObj, ['followedCount'], 0),
+//       followed: false,
+//       accessDate: lodashGet(valueObj, ['accessDate'], ''),
+//       userID: lodashGet(valueObj, ['userID'], ''),
+//       role: lodashGet(valueObj, ['role'], 'User'),
+//     };
+    
+    
+//     // --------------------------------------------------
+//     //   Follow の処理
+//     // --------------------------------------------------
+    
+//     if (loginUsers_id) {
       
-      const followedArr = lodashGet(valueObj, ['followedArr'], []);
+//       const followedArr = lodashGet(valueObj, ['followedArr'], []);
       
-      if (
-        loginUsers_id &&
-        _id !== loginUsers_id &&
-        followedArr.includes(loginUsers_id)
-      ) {
-        returnObj[_id].followed = true;
-      }
+//       if (
+//         loginUsers_id &&
+//         _id !== loginUsers_id &&
+//         followedArr.includes(loginUsers_id)
+//       ) {
+//         returnObj[_id].followed = true;
+//       }
       
-    }
+//     }
     
     
-    // --------------------------------------------------
-    //   画像の処理
-    // --------------------------------------------------
+//     // --------------------------------------------------
+//     //   画像の処理
+//     // --------------------------------------------------
     
-    const thumbnailArr = lodashGet(valueObj, ['cardPlayersArr', 0, 'imagesAndVideosObj', 'thumbnailArr'], []);
-    const formattedArr = formatImagesAndVideosArr({ arr: thumbnailArr });
+//     const thumbnailArr = lodashGet(valueObj, ['cardPlayersArr', 0, 'imagesAndVideosObj', 'thumbnailArr'], []);
+//     const formattedArr = formatImagesAndVideosArr({ arr: thumbnailArr });
     
-    if (formattedArr.length > 0) {
-      returnObj[_id].thumbnailObj = formattedArr[0];
-    }
+//     if (formattedArr.length > 0) {
+//       returnObj[_id].thumbnailObj = formattedArr[0];
+//     }
     
     
-    // console.log(valueObj);
+//     // console.log(valueObj);
     
-  }
+//   }
   
   
-  // --------------------------------------------------
-  //   Return
-  // --------------------------------------------------
+//   // --------------------------------------------------
+//   //   Return
+//   // --------------------------------------------------
   
-  return returnObj;
+//   return returnObj;
   
   
-};
+// };
 
 
 
@@ -931,300 +1018,6 @@ const findFormatted = async (conditionObj, loginUsers_id) => {
   
   
 };
-
-
-
-
-/**
- * フォローする
- * @param {string} loginUsers_id - フォローするユーザーの_id
- * @param {string} users_id - フォローされるユーザーの_id
- * @return {Object} 
- */
-const updateForFollow = async (loginUsers_id, users_id) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Transaction / Session
-  // --------------------------------------------------
-  
-  const session = await Schema.startSession();
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Start
-    // --------------------------------------------------
-    
-    await session.startTransaction();
-    
-    
-    // --------------------------------------------------
-    //   Find One
-    // --------------------------------------------------
-    
-    const conditionFindOne1Obj = { _id: loginUsers_id };
-    const users1Obj = await Schema.findOne(conditionFindOne1Obj).exec();
-    
-    const conditionFindOne2Obj = { _id: users_id };
-    const users2Obj = await Schema.findOne(conditionFindOne2Obj).exec();
-    
-    if (users1Obj === null || users2Obj === null) {
-      throw new Error('必要なユーザーが存在しません。');
-    }
-    
-    
-    // --------------------------------------------------
-    //   フォロー解除
-    // --------------------------------------------------
-    
-    if (users1Obj.followArr.includes(users_id)) {
-      
-      
-      // --------------------------------------------------
-      //   Update
-      // --------------------------------------------------
-      
-      const condition1Obj = { _id: loginUsers_id };
-      const save1Obj = { $pull: { followArr: users_id }, $inc: { followCount: -1 }  };
-      const option1Obj = { session: session };
-      await Schema.update(condition1Obj, save1Obj, option1Obj).exec();
-      
-      const condition2Obj = { _id: users_id };
-      const save2Obj = { $pull: { followedArr: loginUsers_id }, $inc: { followedCount: -1 }  };
-      const option2Obj = { session: session };
-      await Schema.update(condition2Obj, save2Obj, option2Obj).exec();
-      
-      
-    // --------------------------------------------------
-    //   フォロー
-    // --------------------------------------------------
-    
-    } else {
-      
-      
-      // --------------------------------------------------
-      //   Update
-      // --------------------------------------------------
-      
-      const condition1Obj = { _id: loginUsers_id };
-      const save1Obj = { $addToSet: { followArr: users_id }, $inc: { followCount: 1 } };
-      const option1Obj = { session: session };
-      await Schema.update(condition1Obj, save1Obj, option1Obj).exec();
-      
-      const condition2Obj = { _id: users_id };
-      const save2Obj = { $addToSet: { followedArr: loginUsers_id }, $inc: { followedCount: 1 }  };
-      const option2Obj = { session: session };
-      await Schema.update(condition2Obj, save2Obj, option2Obj).exec();
-      
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Commit
-    // --------------------------------------------------
-    
-    await session.commitTransaction(); // コミット
-    // console.log('--------コミット-----------');
-    
-    session.endSession();
-    
-    
-    
-    // --------------------------------------------------
-    //   Model / Users / データ取得
-    // --------------------------------------------------
-    
-    const conditionObj = { _id: { $in: [loginUsers_id, users_id]} };
-    returnObj.usersObj = await findFormatted(conditionObj, loginUsers_id);
-    
-    
-    
-    // --------------------------------------------------
-    //   Console 出力
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   usersObj.followArr.includes(users_id): {green ${usersObj.followArr.includes(users_id)}}
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Rollback
-    // --------------------------------------------------
-    
-    await session.abortTransaction();
-    // console.log('--------ロールバック-----------');
-    
-    session.endSession();
-    
-    
-    throw err;
-    
-  }
-  
-};
-
-
-
-
-/**
- * アカウントを作成する
- * @param {Array} usersSaveArr - 保存用配列 Users
- * @param {Array} cardPlayersSaveArr - 保存用配列 Card Players
- * @return {Object} 
- */
-const transactionForCreateAccount = async ({ usersSaveArr, cardPlayersSaveArr, emailConfirmationsSaveArr }) => {
-  
-  
-  // --------------------------------------------------
-  //   Property
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Transaction / Session
-  // --------------------------------------------------
-  
-  const session = await Schema.startSession();
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Start
-    // --------------------------------------------------
-    
-    await session.startTransaction();
-    
-    
-    // --------------------------------------------------
-    //   DB Insert
-    // --------------------------------------------------
-    
-    await Schema.create(usersSaveArr, { session: session });
-    await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
-    
-    // E-Mailが入力されたときだけ、メール確認データベースに挿入する
-    if (emailConfirmationsSaveArr.length > 0) {
-      await SchemaEmailConfirmations.create(emailConfirmationsSaveArr, { session: session });
-    }
-    
-    
-    
-    // await Schema.create(usersSaveArr, { session: session });
-    // await SchemaCardPlayers.create(cardPlayersSaveArr, { session: session });
-    // await SchemaEmailConfirmations.create(cardPlayersSaveArr, { session: session });
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Commit
-    // --------------------------------------------------
-    
-    await session.commitTransaction();
-    // console.log('--------コミット-----------');
-    
-    session.endSession();
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   console.log
-    // --------------------------------------------------
-    
-    // console.log(chalk`
-    //   loginID: {green ${loginID}}
-    //   loginPassword: {green ${loginPassword}}
-    //   email: {green ${email}}
-    // `);
-    
-    // console.log(`
-    //   ----- usersObj -----\n
-    //   ${util.inspect(usersObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (errorObj) {
-    
-    
-    // --------------------------------------------------
-    //   Transaction / Rollback
-    // --------------------------------------------------
-    
-    await session.abortTransaction();
-    // console.log('--------ロールバック-----------');
-    
-    session.endSession();
-    
-    
-    throw errorObj;
-    
-  }
-  
-};
-
 
 
 
@@ -1369,16 +1162,15 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
 
 /**
  * Transaction 挿入 / 更新する
- * users, card-players, follows, imagesAndVideos を同時に更新する
- * 
+ * 2020/3/4
  * @param {Object} usersConditionObj - DB users 検索条件
  * @param {Object} usersSaveObj - DB users 保存データ
  * @param {Object} cardPlayersConditionObj - DB card-players 検索条件
  * @param {Object} cardPlayersSaveObj - DB card-players 保存データ
  * @param {Object} followsConditionObj - DB follows 検索条件
  * @param {Object} followsSaveObj - DB follows 保存データ
- * @param {Object} emailConfirmationsConditionObj - DB follows 検索条件
- * @param {Object} followsSaveObj - DB follows 保存データ
+ * @param {Object} emailConfirmationsConditionObj - DB email-confirmations 検索条件
+ * @param {Object} emailConfirmationsSaveObj - DB email-confirmations 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
  * @return {Object} 
@@ -1642,8 +1434,8 @@ module.exports = {
   findOneForUser,
   findOneForLoginUsersObj,
   findFormatted,
-  updateForFollow,
-  transactionForCreateAccount,
+  // updateForFollow,
+  // transactionForCreateAccount,
   transactionForEditAccount,
   transactionForUpsert,
   

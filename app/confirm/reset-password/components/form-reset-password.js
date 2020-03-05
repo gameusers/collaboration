@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
@@ -32,6 +31,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -40,16 +41,19 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 
 import IconID from '@material-ui/icons/Person';
 import IconPassword from '@material-ui/icons/Lock';
+import IconPasswordOutlined from '@material-ui/icons/LockTwoTone';
 import IconVisibility from '@material-ui/icons/Visibility';
 import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
-const { validationUsersLoginPassword } = require('../../../../app/@database/users/validations/login-password');
+import { validationUsersLoginID } from '../../../../app/@database/users/validations/login-id';
+import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../../app/@database/users/validations/login-password';
+import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
 
 
 // ---------------------------------------------
@@ -57,6 +61,7 @@ const { validationUsersLoginPassword } = require('../../../../app/@database/user
 // ---------------------------------------------
 
 import Panel from '../../../../app/common/layout/components/panel';
+import TermsOfService from '../../../../app/common/layout/components/terms-of-service';
 
 
 
@@ -65,7 +70,7 @@ import Panel from '../../../../app/common/layout/components/panel';
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeLoginIndex')
+@inject('stores', 'storeConfirmResetPassword')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -88,7 +93,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = ['formLogin'];
+    this.pathArr = ['formResetPassword'];
     
     
   }
@@ -100,7 +105,7 @@ export default injectIntl(class extends React.Component {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount() {
+  componentDidMount(){
     
     
     // --------------------------------------------------
@@ -126,7 +131,7 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeLoginIndex, intl } = this.props;
+    const { stores, storeConfirmResetPassword, intl } = this.props;
     
     const {
       
@@ -135,8 +140,10 @@ export default injectIntl(class extends React.Component {
       handleRecaptchaReset,
       handlePasswordShow,
       handlePasswordMouseDown,
+      handlePasswordConfirmationShow,
+      handlePasswordConfirmationMouseDown,
       
-    } = storeLoginIndex;
+    } = storeConfirmResetPassword;
     
     
     
@@ -151,20 +158,47 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Login ID - Validation
+    //   Login ID
     // --------------------------------------------------
     
-    const loginID = lodashGet(dataObj, ['loginID'], '');
-    const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
+    const resetPasswordLoginID = lodashGet(dataObj, ['resetPasswordLoginID'], '');
+    const validationUsersLoginIDObj = validationUsersLoginID({ value: resetPasswordLoginID });
     
     
     // --------------------------------------------------
-    //   Login Password - Validation
+    //   Login Password
     // --------------------------------------------------
     
-    const loginPasswordShow = lodashGet(dataObj, ['loginPasswordShow'], false);
-    const loginPassword = lodashGet(dataObj, ['loginPassword'], '');
-    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
+    const resetPasswordLoginPasswordShow = lodashGet(dataObj, ['resetPasswordLoginPasswordShow'], false);
+    const resetPasswordLoginPassword = lodashGet(dataObj, ['resetPasswordLoginPassword'], '');
+    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: resetPasswordLoginPassword, loginID: resetPasswordLoginID });
+    
+    
+    // --------------------------------------------------
+    //   Login Password Confirmation
+    // --------------------------------------------------
+    
+    const resetPasswordLoginPasswordConfirmationShow = lodashGet(dataObj, ['resetPasswordLoginPasswordConfirmationShow'], false);
+    const resetPasswordLoginPasswordConfirmation = lodashGet(dataObj, ['resetPasswordLoginPasswordConfirmation'], '');
+    const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ value: resetPasswordLoginPasswordConfirmation, loginPassword: resetPasswordLoginPassword });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   パスワードの強度
+    // --------------------------------------------------
+    
+    const passwordColorArr = ['red', 'red', 'tomato', 'green', 'green'];
+    const passwordStrengthArr = ['とても危険', '危険', '普通', '安全', 'とても安全'];
+    
+    let passwordColor = passwordColorArr[validationUsersLoginPasswordObj.strengthScore];
+    let passwordStrength = passwordStrengthArr[validationUsersLoginPasswordObj.strengthScore];
+    
+    if (resetPasswordLoginPassword === '') {
+      passwordColor = '#848484';
+      passwordStrength = ' -';
+    }
     
     
     
@@ -172,12 +206,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- form-login.js / stores -----\n
-    //   ${util.inspect(stores, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(`
     //   ----- validationUsersLoginIDObj -----\n
@@ -191,8 +219,14 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- validationUsersLoginPasswordConfirmationObj -----\n
+    //   ${util.inspect(validationUsersLoginPasswordConfirmationObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
-    //   recaptchaRef: {green ${recaptchaRef}}
+    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
     // `);
     
     
@@ -204,20 +238,32 @@ export default injectIntl(class extends React.Component {
     
     return (
       <Panel
-        heading="ログイン - ID & パスワード"
+        heading="パスワード再設定"
         pathArr={this.pathArr}
       >
         
         
-        <p>
-          IDとパスワードでログインします。アカウントをお持ちでない場合は、<Link href="/login/account"><a>こちらのページ</a></Link>でアカウントを作成してください。
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
+          パスワードを変更するアカウントのログインIDと新しいパスワードを入力して送信してください。
+        </p>
+        
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
+          利用できる文字は半角英数字とハイフン( - )アンダースコア( _ )です。※ IDは6文字以上、32文字以内。パスワードは8文字以上、32文字以内。
         </p>
         
         
         
         
         {/* Form */}
-        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'login' })}>
+        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'resetPassword' })}>
           
           
           {/* Login ID */}
@@ -230,11 +276,11 @@ export default injectIntl(class extends React.Component {
                   width: 100%;
                 }
               `}
-              id="loginID"
+              id="resetPasswordLoginID"
               label="ID"
               value={validationUsersLoginIDObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: ['loginID'],
+                pathArr: ['resetPasswordLoginID'],
                 value: eventObj.target.value
               })}
               error={validationUsersLoginIDObj.error}
@@ -267,12 +313,12 @@ export default injectIntl(class extends React.Component {
                   width: 100%;
                 }
               `}
-              id="loginPassword"
+              id="resetPasswordLoginPassword"
               label="パスワード"
-              type={loginPasswordShow ? 'text' : 'password'}
+              type={resetPasswordLoginPasswordShow ? 'text' : 'password'}
               value={validationUsersLoginPasswordObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: ['loginPassword'],
+                pathArr: ['resetPasswordLoginPassword'],
                 value: eventObj.target.value
               })}
               error={validationUsersLoginPasswordObj.error}
@@ -295,7 +341,7 @@ export default injectIntl(class extends React.Component {
                       onClick={handlePasswordShow}
                       onMouseDown={handlePasswordMouseDown}
                     >
-                      {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
+                      {resetPasswordLoginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
                     </IconButton>
                   </InputAdornment>
                 )
@@ -304,14 +350,64 @@ export default injectIntl(class extends React.Component {
           </div>
           
           
-          <p
+          <div
             css={css`
               font-size: 12px;
-              margin: 6px 0 30px 0;
+              margin: 4px 0 0 0;
+              color: ${passwordColor};
             `}
           >
-            <Link href="/login/reset-password"><a>パスワードを忘れた方はこちら</a></Link>
-          </p>
+            パスワード強度：{passwordStrength}
+          </div>
+          
+          
+          
+          
+          {/* Login Password Confirmation */}
+          <div>
+            <TextField
+              css={css`
+                width: 400px;
+                
+                @media screen and (max-width: 480px) {
+                  width: 100%;
+                }
+              `}
+              id="resetPasswordLoginPasswordConfirmation"
+              label="パスワード確認"
+              type={resetPasswordLoginPasswordConfirmationShow ? 'text' : 'password'}
+              value={validationUsersLoginPasswordConfirmationObj.value}
+              onChange={(eventObj) => handleEdit({
+                pathArr: ['resetPasswordLoginPasswordConfirmation'],
+                value: eventObj.target.value
+              })}
+              error={validationUsersLoginPasswordConfirmationObj.error}
+              helperText={intl.formatMessage({ id: validationUsersLoginPasswordConfirmationObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordConfirmationObj.numberOfCharacters })}
+              disabled={buttonDisabled}
+              margin="normal"
+              inputProps={{
+                maxLength: 32,
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <IconPasswordOutlined />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="Toggle password visibility"
+                      onClick={handlePasswordConfirmationShow}
+                      onMouseDown={handlePasswordConfirmationMouseDown}
+                    >
+                      {resetPasswordLoginPasswordConfirmationShow ? <IconVisibilityOff /> : <IconVisibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </div>
           
           
           
@@ -325,15 +421,17 @@ export default injectIntl(class extends React.Component {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              color="secondary"
               disabled={buttonDisabled}
             >
-              ログイン
+              パスワードを再設定する
             </Button>
           </div>
           
           
         </form>
+        
+        
         
         
       </Panel>

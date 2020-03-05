@@ -36,10 +36,9 @@ const { CustomError } = require('../../../@modules/error/custom');
 /**
  * emailConfirmationID
  * @param {string} value - 値
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @return {Object} バリデーション結果
  */
-const validationEmailConfirmationsEmailConfirmationIDServer = async ({ value, loginUsers_id }) => {
+const validationEmailConfirmationsEmailConfirmationIDServer = async ({ value }) => {
   
   
   // ---------------------------------------------
@@ -87,7 +86,6 @@ const validationEmailConfirmationsEmailConfirmationIDServer = async ({ value, lo
   
   const count = await Model.count({
     conditionObj: {
-      users_id: loginUsers_id,
       emailConfirmationID: value,
     }
   });

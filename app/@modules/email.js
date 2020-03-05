@@ -126,7 +126,7 @@ const sendMail = async ({ from, to, bcc, subject, text }) => {
 
 
 /**
- * E-Mail確認メールを送信する
+ * メールアドレス確認メールを送信する
  * @param {string} to - 送信先のメールアドレス
  * @param {string} emailConfirmationID - メール確認ID
  */
@@ -147,7 +147,61 @@ const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
 以下のURLにアクセスしてメールアドレスの登録を完了してください。
 ${process.env.URL_BASE}confirm/email/${emailConfirmationID}
 
-確認メールの受信後、24時間以内にアクセスしてください。それ以降はURLが無効になります。
+メールを送信してから24時間以内にアクセスしてください。それ以降はURLが無効になります。
+
+こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。覚えがないのに同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡ください。
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/
+
+　Game Users
+
+　Email: mail@gameusers.org
+　URL: https://gameusers.org/
+
+＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
+  });
+  
+  
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(chalk`
+  //   process.env.EMAIL_MESSAGE_FROM: {green ${process.env.EMAIL_MESSAGE_FROM}}
+  //   to: {green ${to}}
+  //   emailConfirmationID: {green ${emailConfirmationID}}
+  // `);
+  
+  
+};
+
+
+
+
+/**
+ * パスワード再設定メールを送信する
+ * @param {string} to - 送信先のメールアドレス
+ * @param {string} emailConfirmationID - メール確認ID
+ */
+const sendMailResetPassword = async ({ to, emailConfirmationID }) => {
+  
+  
+  // --------------------------------------------------
+  //   Send Mail
+  // --------------------------------------------------
+  
+  sendMail({
+    from: process.env.EMAIL_MESSAGE_FROM,
+    to,
+    subject: '[Game Users] パスワード再設定',
+    text:
+    `Game Users - パスワード再設定
+
+以下のURLにアクセスしてパスワードの再設定を行ってください。
+${process.env.URL_BASE}confirm/reset-password/${emailConfirmationID}
+
+メールを送信してから30分以内にアクセスしてください。それ以降はURLが無効になります。
+このメールは他人に見せないようにしてください。アカウントのパスワードを無断で変更される可能性があります。
 
 こちらのメールに覚えのない方は、上記URLにアクセスしないようにしてください。覚えがないのに同じメールが何度も送られてくる場合は、以下のメールアドレスまでご連絡ください。
 
@@ -185,4 +239,5 @@ ${process.env.URL_BASE}confirm/email/${emailConfirmationID}
 module.exports = {
   sendMail,
   sendMailConfirmation,
+  sendMailResetPassword,
 };

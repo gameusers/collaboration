@@ -101,10 +101,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['loginID'], loginID);
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword);
-    lodashSet(requestParametersObj, ['email'], email);
-    lodashSet(requestParametersObj, ['response'], response);
+    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
+    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
+    lodashSet(requestParametersObj, ['email'], email ? '******' : '');
+    lodashSet(requestParametersObj, ['response'], response ? '******' : '');
     
     
     
@@ -378,9 +378,12 @@ export default async (req, res) => {
         createdDate: ISO8601,
         users_id,
         emailConfirmationID,
+        type: 'email',
         email: encryptedEmail,
         count: 1,
         isSuccess: false,
+        ip: req.ip,
+        userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
         
       };
       

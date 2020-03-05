@@ -190,6 +190,9 @@ const ja_JP = {
   // /app/login/account/stores/store.js
   'Jje25z6lV': 'アカウントを作成しました。ユーザーページに移動します。',
   
+  // /app/login/reset-password/stores/store.js
+  'WTynPDVob': 'パスワード再設定用のメールを送信しました',
+  
   // /app/@database/users/api.js
   'RIj4SCt_s': 'ID、またはパスワードが間違っています',
   
@@ -220,16 +223,15 @@ const ja_JP = {
   'a107F1Uxw': 'メールアドレスが登録されていないため、削除できません',
   
   // /pages/api/v2/db/users/upsert-settings-email.js
-  'EAvJztLfH': '確認メールは1日に何度も送信できません。また後日お試しください',
+  'EAvJztLfH': 'メールは1日に何度も送信できません。また後日お試しください',
   
   
   // ---------------------------------------------
   //   E-mail / Confirmation
   // ---------------------------------------------
   
-  // /app/@database/email-confirmations/api.js
-  
-  // 'IDT_ufsFV': 'メールアドレスの確認はすでに完了しています',
+  // /pages/api/v2/db/email-confirmations/reset-password.js
+  'rhU9utPzZ': 'パスワードの再設定用メールを送信できません',
   
   
   

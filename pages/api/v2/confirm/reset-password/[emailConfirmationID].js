@@ -137,125 +137,125 @@ export default async (req, res) => {
     //   DB findOne / Email Confirmations
     // --------------------------------------------------
     
-    const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
+    // const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
       
-      conditionObj: {
-        emailConfirmationID,
-        // isSuccess: false,
-      }
+    //   conditionObj: {
+    //     emailConfirmationID,
+    //     // isSuccess: false,
+    //   }
       
-    });
+    // });
     
-    const createdDate = lodashGet(docEmailConfirmationsObj, ['createdDate'], '');
-    const email = lodashGet(docEmailConfirmationsObj, ['email'], '');
-    const users_id = lodashGet(docEmailConfirmationsObj, ['users_id'], '');
-    const isSuccess = lodashGet(docEmailConfirmationsObj, ['isSuccess'], false);
+    // const createdDate = lodashGet(docEmailConfirmationsObj, ['createdDate'], '');
+    // const email = lodashGet(docEmailConfirmationsObj, ['email'], '');
+    // const users_id = lodashGet(docEmailConfirmationsObj, ['users_id'], '');
+    // const isSuccess = lodashGet(docEmailConfirmationsObj, ['isSuccess'], false);
     
     
-    // --------------------------------------------------
-    //   DB findOne / Users
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   DB findOne / Users
+    // // --------------------------------------------------
     
-    const docUsersCount = await ModelUsers.count({
+    // const docUsersCount = await ModelUsers.count({
       
-      conditionObj: {
-        // _id: loginUsers_id,
-        'emailObj.value': email,
-      }
+    //   conditionObj: {
+    //     // _id: loginUsers_id,
+    //     'emailObj.value': email,
+    //   }
       
-    });
+    // });
     
     
     
     
-    // --------------------------------------------------
-    //   必要な情報がない場合、エラー
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   必要な情報がない場合、エラー
+    // // --------------------------------------------------
     
-    if (!createdDate || !email || !users_id || docUsersCount === 0) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '8JJ4_hJyz', messageID: 'Error' }] });
-    }
-    
-    
-    // --------------------------------------------------
-    //   24時間以内にアクセスしたかチェック
-    // --------------------------------------------------
-    
-    const dateTimeLimit = moment(createdDate).utc().add(1, 'day');
-    const dateTimeNow = moment().utc();
-    
-    if (dateTimeLimit.isBefore(dateTimeNow)) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmu7nkZxS', messageID: 'Error' }] });
-    }
+    // if (!createdDate || !email || !users_id || docUsersCount === 0) {
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: '8JJ4_hJyz', messageID: 'Error' }] });
+    // }
     
     
+    // // --------------------------------------------------
+    // //   24時間以内にアクセスしたかチェック
+    // // --------------------------------------------------
+    
+    // const dateTimeLimit = moment(createdDate).utc().add(1, 'day');
+    // const dateTimeNow = moment().utc();
+    
+    // if (dateTimeLimit.isBefore(dateTimeNow)) {
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmu7nkZxS', messageID: 'Error' }] });
+    // }
     
     
-    // --------------------------------------------------
-    //   Update
-    // --------------------------------------------------
     
-    if (isSuccess === false) {
-      
-      
-      // ---------------------------------------------
-      //   - Datetime
-      // ---------------------------------------------
-      
-      const ISO8601 = moment().toISOString();
+    
+    // // --------------------------------------------------
+    // //   Update
+    // // --------------------------------------------------
+    
+    // if (isSuccess === false) {
       
       
-      // ---------------------------------------------
-      //   - users
-      // ---------------------------------------------
+    //   // ---------------------------------------------
+    //   //   - Datetime
+    //   // ---------------------------------------------
       
-      const usersConditionObj = {
-        _id: users_id,
-        'emailObj.value': email,
-      };
+    //   const ISO8601 = moment().toISOString();
       
-      const usersSaveObj = {
-        $set: {
-          updatedDate: ISO8601,
-          emailObj: {
-            value: email,
-            confirmation: true,
-          },
+      
+    //   // ---------------------------------------------
+    //   //   - users
+    //   // ---------------------------------------------
+      
+    //   const usersConditionObj = {
+    //     _id: users_id,
+    //     'emailObj.value': email,
+    //   };
+      
+    //   const usersSaveObj = {
+    //     $set: {
+    //       updatedDate: ISO8601,
+    //       emailObj: {
+    //         value: email,
+    //         confirmation: true,
+    //       },
           
-        }
-      };
+    //     }
+    //   };
       
       
-      // ---------------------------------------------
-      //   - email-confirmations
-      // ---------------------------------------------
+    //   // ---------------------------------------------
+    //   //   - email-confirmations
+    //   // ---------------------------------------------
       
-      const emailConfirmationsConditionObj = {
-        emailConfirmationID,
-      };
+    //   const emailConfirmationsConditionObj = {
+    //     emailConfirmationID,
+    //   };
       
-      const emailConfirmationsSaveObj = {
-        $set: {
-          isSuccess: true,
-        }
-      };
+    //   const emailConfirmationsSaveObj = {
+    //     $set: {
+    //       isSuccess: true,
+    //     }
+    //   };
       
       
-      // ---------------------------------------------
-      //   - transaction
-      // ---------------------------------------------
+    //   // ---------------------------------------------
+    //   //   - transaction
+    //   // ---------------------------------------------
       
-      await ModelEmailConfirmations.transactionForEmailConfirmation({
+    //   await ModelEmailConfirmations.transactionForEmailConfirmation({
         
-        usersConditionObj,
-        usersSaveObj,
-        emailConfirmationsConditionObj,
-        emailConfirmationsSaveObj,
+    //     usersConditionObj,
+    //     usersSaveObj,
+    //     emailConfirmationsConditionObj,
+    //     emailConfirmationsSaveObj,
         
-      });
+    //   });
       
       
-    }
+    // }
     
     
     

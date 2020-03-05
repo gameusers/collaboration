@@ -99,6 +99,11 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
     const score = lodashGet(resultObj, ['data', 'score'], false);
     const success = score >= 0.5 ? true : false;
     
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
     // console.log(chalk`
     //   score: {green ${score}}
     //   success: {green ${success}}

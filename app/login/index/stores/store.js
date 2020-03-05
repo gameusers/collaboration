@@ -142,7 +142,7 @@ class Store {
     //   Button Disable
     // ---------------------------------------------
     
-    storeLayout.handleButtonDisable({ _id: formType });
+    storeLayout.handleButtonDisable({ pathArr: ['formLogin'] });
     
     
     
@@ -192,10 +192,8 @@ class Store {
     // ---------------------------------------------
     
     const formType = lodashGet(this.dataObj, ['formType'], '');
-    // console.log(formType);
     
     if (formType === 'login' && response) {
-      // console.log('AAA');
       this.handleLogin();
     }
     
@@ -256,25 +254,8 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Button Disable
-      // ---------------------------------------------
-      
-      storeLayout.handleButtonDisable({ pathArr: ['formLogin'] });
-      
-      
-      
-      
-      // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
-      
-      // const formDataObj = {
-        
-      //   loginID,
-      //   loginPassword,
-      //   response: recaptchaResponse,
-        
-      // };
       
       const formData = new FormData();
       
@@ -282,11 +263,6 @@ class Store {
       formData.append('loginPassword', loginPassword);
       formData.append('response', recaptchaResponse);
       
-      // console.log(`
-      //   ----- formDataObj -----\n
-      //   ${util.inspect(formDataObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       // ---------------------------------------------
       //   Fetch
@@ -297,12 +273,6 @@ class Store {
         methodType: 'POST',
         formData
       });
-      
-      // const resultObj = await fetchWrapper({
-      //   urlApi: `${process.env.URL_API}/v2/db/users/upsert-create-account`,
-      //   methodType: 'POST',
-      //   formData: JSON.stringify(formDataObj)
-      // });
       
       
       // console.log(`

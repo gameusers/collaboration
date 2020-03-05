@@ -94,8 +94,8 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['loginID'], loginID);
-    lodashSet(requestParametersObj, ['loginPassword'], loginPassword);
+    lodashSet(requestParametersObj, ['loginID'], loginID ? '******' : '');
+    lodashSet(requestParametersObj, ['loginPassword'], loginPassword ? '******' : '');
     
     
     

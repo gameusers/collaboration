@@ -15,7 +15,6 @@ import util from 'util';
 // ---------------------------------------------
 
 import React from 'react';
-import Link from 'next/link';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import lodashGet from 'lodash/get';
@@ -32,6 +31,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 
 // ---------------------------------------------
@@ -39,17 +40,15 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 // ---------------------------------------------
 
 import IconID from '@material-ui/icons/Person';
-import IconPassword from '@material-ui/icons/Lock';
-import IconVisibility from '@material-ui/icons/Visibility';
-import IconVisibilityOff from '@material-ui/icons/VisibilityOff';
+import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-const { validationUsersLoginID } = require('../../../../app/@database/users/validations/login-id');
-const { validationUsersLoginPassword } = require('../../../../app/@database/users/validations/login-password');
+import { validationUsersLoginID } from '../../../../app/@database/users/validations/login-id';
+import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
 
 
 // ---------------------------------------------
@@ -65,7 +64,7 @@ import Panel from '../../../../app/common/layout/components/panel';
 //   Class
 // --------------------------------------------------
 
-@inject('stores', 'storeLoginIndex')
+@inject('stores', 'storeLoginResetPassword')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -88,7 +87,7 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = ['formLogin'];
+    this.pathArr = ['formResetPassword'];
     
     
   }
@@ -100,7 +99,7 @@ export default injectIntl(class extends React.Component {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount() {
+  componentDidMount(){
     
     
     // --------------------------------------------------
@@ -126,17 +125,15 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeLoginIndex, intl } = this.props;
+    const { stores, storeLoginResetPassword, intl } = this.props;
     
     const {
       
       dataObj,
       handleEdit,
       handleRecaptchaReset,
-      handlePasswordShow,
-      handlePasswordMouseDown,
       
-    } = storeLoginIndex;
+    } = storeLoginResetPassword;
     
     
     
@@ -151,20 +148,19 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Login ID - Validation
+    //   Login ID
     // --------------------------------------------------
     
-    const loginID = lodashGet(dataObj, ['loginID'], '');
-    const validationUsersLoginIDObj = validationUsersLoginID({ value: loginID });
+    const resetPasswordLoginID = lodashGet(dataObj, ['resetPasswordLoginID'], '');
+    const validationUsersLoginIDObj = validationUsersLoginID({ value: resetPasswordLoginID });
     
     
     // --------------------------------------------------
-    //   Login Password - Validation
+    //   E-Mail
     // --------------------------------------------------
     
-    const loginPasswordShow = lodashGet(dataObj, ['loginPasswordShow'], false);
-    const loginPassword = lodashGet(dataObj, ['loginPassword'], '');
-    const validationUsersLoginPasswordObj = validationUsersLoginPassword({ value: loginPassword, loginID });
+    const resetPasswordEmail = lodashGet(dataObj, ['resetPasswordEmail'], '');
+    const validationUsersEmailObj = validationUsersEmail({ value: resetPasswordEmail });
     
     
     
@@ -172,12 +168,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
-    
-    // console.log(`
-    //   ----- form-login.js / stores -----\n
-    //   ${util.inspect(stores, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     // console.log(`
     //   ----- validationUsersLoginIDObj -----\n
@@ -191,8 +181,14 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
+    // console.log(`
+    //   ----- validationUsersLoginPasswordConfirmationObj -----\n
+    //   ${util.inspect(validationUsersLoginPasswordConfirmationObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     // console.log(chalk`
-    //   recaptchaRef: {green ${recaptchaRef}}
+    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
     // `);
     
     
@@ -204,20 +200,41 @@ export default injectIntl(class extends React.Component {
     
     return (
       <Panel
-        heading="ログイン - ID & パスワード"
+        heading="パスワード再設定"
         pathArr={this.pathArr}
       >
         
         
-        <p>
-          IDとパスワードでログインします。アカウントをお持ちでない場合は、<Link href="/login/account"><a>こちらのページ</a></Link>でアカウントを作成してください。
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
+          パスワードを忘れた場合、こちらのフォームを利用してパスワードの再設定を行うことができます。
+        </p>
+        
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
+          パスワードを忘れてしまったアカウントのログインID、またはアカウントに登録済みのメールアドレスを入力して「パスワードを再設定する」ボタンを押してください。パスワードを再設定する方法が記載されたメールが届きます。30分以内にメールを受信してパスワードの再設定を行ってください。
+        </p>
+        
+        
+        <p
+          css={css`
+            margin: 0 0 16px 0;
+          `}
+        >
+          以前にメールアドレスの登録＆確認作業を済ませていない方は、こちらのページからパスワードの再設定を行うことはできません。Game Users 運営にご連絡ください。
         </p>
         
         
         
         
         {/* Form */}
-        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'login' })}>
+        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'resetPassword' })}>
           
           
           {/* Login ID */}
@@ -230,11 +247,11 @@ export default injectIntl(class extends React.Component {
                   width: 100%;
                 }
               `}
-              id="loginID"
+              id="resetPasswordLoginID"
               label="ID"
               value={validationUsersLoginIDObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: ['loginID'],
+                pathArr: ['resetPasswordLoginID'],
                 value: eventObj.target.value
               })}
               error={validationUsersLoginIDObj.error}
@@ -257,7 +274,7 @@ export default injectIntl(class extends React.Component {
           
           
           
-          {/* Login Password */}
+          {/* メールアドレス */}
           <div>
             <TextField
               css={css`
@@ -267,51 +284,29 @@ export default injectIntl(class extends React.Component {
                   width: 100%;
                 }
               `}
-              id="loginPassword"
-              label="パスワード"
-              type={loginPasswordShow ? 'text' : 'password'}
-              value={validationUsersLoginPasswordObj.value}
+              id="resetPasswordEmail"
+              label="メールアドレス"
+              value={validationUsersEmailObj.value}
               onChange={(eventObj) => handleEdit({
-                pathArr: ['loginPassword'],
+                pathArr: ['resetPasswordEmail'],
                 value: eventObj.target.value
               })}
-              error={validationUsersLoginPasswordObj.error}
-              helperText={intl.formatMessage({ id: validationUsersLoginPasswordObj.messageID }, { numberOfCharacters: validationUsersLoginPasswordObj.numberOfCharacters })}
+              error={validationUsersEmailObj.error}
+              helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
               disabled={buttonDisabled}
               margin="normal"
               inputProps={{
-                maxLength: 32,
+                maxLength: 100,
               }}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <IconPassword />
+                    <IconMailOutline />
                   </InputAdornment>
                 ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="Toggle password visibility"
-                      onClick={handlePasswordShow}
-                      onMouseDown={handlePasswordMouseDown}
-                    >
-                      {loginPasswordShow ? <IconVisibilityOff /> : <IconVisibility />}
-                    </IconButton>
-                  </InputAdornment>
-                )
               }}
             />
           </div>
-          
-          
-          <p
-            css={css`
-              font-size: 12px;
-              margin: 6px 0 30px 0;
-            `}
-          >
-            <Link href="/login/reset-password"><a>パスワードを忘れた方はこちら</a></Link>
-          </p>
           
           
           
@@ -325,10 +320,10 @@ export default injectIntl(class extends React.Component {
             <Button
               type="submit"
               variant="contained"
-              color="primary"
+              color="secondary"
               disabled={buttonDisabled}
             >
-              ログイン
+              パスワードを再設定する
             </Button>
           </div>
           

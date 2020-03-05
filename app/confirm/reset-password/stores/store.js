@@ -32,7 +32,6 @@ import { CustomError } from '../../../@modules/error/custom';
 // ---------------------------------------------
 
 const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
 const { validationUsersEmail } = require('../../../@database/users/validations/email');
 
 
@@ -49,7 +48,7 @@ import initStoreLayout from '../../../common/layout/stores/layout';
 //   Store
 // --------------------------------------------------
 
-let storeLoginAccount = null;
+let storeConfirmResetPassword = null;
 let storeLayout = initStoreLayout({});
 
 
@@ -87,7 +86,7 @@ class Store {
   
   
   // ---------------------------------------------
-  //   Create Account
+  //   Password
   // ---------------------------------------------
   
   /**
@@ -96,7 +95,7 @@ class Store {
    */
   @action.bound
   handlePasswordShow() {
-    this.dataObj['createAccountLoginPasswordShow'] = !this.dataObj['createAccountLoginPasswordShow'];
+    this.dataObj['resetPasswordLoginPasswordShow'] = !this.dataObj['resetPasswordLoginPasswordShow'];
   };
   
   
@@ -118,7 +117,7 @@ class Store {
    */
   @action.bound
   handlePasswordConfirmationShow() {
-    this.dataObj['createAccountLoginPasswordConfirmationShow'] = !this.dataObj['createAccountLoginPasswordConfirmationShow'];
+    this.dataObj['resetPasswordLoginPasswordConfirmationShow'] = !this.dataObj['resetPasswordLoginPasswordConfirmationShow'];
   };
   
   
@@ -164,7 +163,7 @@ class Store {
     //   Button Disable
     // ---------------------------------------------
     
-    storeLayout.handleButtonDisable({ pathArr: ['formCreateAccount'] });
+    storeLayout.handleButtonDisable({ pathArr: ['formResetPassword'] });
     
     
     
@@ -215,8 +214,8 @@ class Store {
     
     const formType = lodashGet(this.dataObj, ['formType'], '');
     
-    if (formType === 'createAccount' && response) {
-      this.handleCreateAccount();
+    if (formType === 'resetPassword' && response) {
+      this.handleResetPassword();
     }
     
     
@@ -226,10 +225,10 @@ class Store {
   
   
   /**
-   * アカウント作成フォームを送信する
+   * パスワードリセットフォームを送信する
    */
   @action.bound
-  async handleCreateAccount() {
+  async handleResetPassword() {
     
     
     try {
@@ -246,23 +245,9 @@ class Store {
       //   Property
       // ---------------------------------------------
       
-      const createAccountLoginID = lodashGet(this.dataObj, ['createAccountLoginID'], '');
-      const createAccountLoginPassword = lodashGet(this.dataObj, ['createAccountLoginPassword'], '');
-      const createAccountLoginPasswordConfirmation = lodashGet(this.dataObj, ['createAccountLoginPasswordConfirmation'], '');
-      const createAccountEmail = lodashGet(this.dataObj, ['createAccountEmail'], '');
-      const createAccountTermsOfService = lodashGet(this.dataObj, ['createAccountTermsOfService'], false);
+      const resetPasswordLoginID = lodashGet(this.dataObj, ['resetPasswordLoginID'], '');
+      const resetPasswordEmail = lodashGet(this.dataObj, ['resetPasswordEmail'], '');
       const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   利用規約のチェック
-      // ---------------------------------------------
-      
-      if (createAccountTermsOfService === false) {
-        throw new CustomError({ errorsArr: [{ code: 'qES1fpB_e', messageID: 'Gn_vVgSFY' }] });
-      }
       
       
       
@@ -271,10 +256,8 @@ class Store {
       //   Validation
       // ---------------------------------------------
       
-      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: createAccountLoginID });
-      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: createAccountLoginPassword, loginID: createAccountLoginID });
-      const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ required: true, value: createAccountLoginPasswordConfirmation, loginPassword: createAccountLoginPassword });
-      const validationUsersEmailObj = validationUsersEmail({ value: createAccountEmail });
+      const validationUsersLoginIDObj = validationUsersLoginID({ value: resetPasswordLoginID });
+      const validationUsersEmailObj = validationUsersEmail({ value: resetPasswordEmail });
       
       
       // ---------------------------------------------
@@ -284,13 +267,11 @@ class Store {
       if (
         
         validationUsersLoginIDObj.error ||
-        validationUsersLoginPasswordObj.error ||
-        validationUsersLoginPasswordConfirmationObj.error ||
         validationUsersEmailObj.error
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'UN26lgIXU', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'hoxenGFSj', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -301,41 +282,39 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/login/account/stores/store.js - handleCreateAccount
-      // `);
+      console.log(`
+        ----------------------------------------\n
+        /app/login/reset-password/stores/store.js - handleResetPassword
+      `);
       
-      // console.log(chalk`
-      //   createAccountLoginID: {green ${createAccountLoginID}}
-      //   createAccountLoginPassword: {green ${createAccountLoginPassword}}
-      //   createAccountEmail: {green ${createAccountEmail}}
-      //   recaptchaResponse: {green ${recaptchaResponse}}
-      // `);
+      console.log(chalk`
+        resetPasswordLoginID: {green ${resetPasswordLoginID}}
+        resetPasswordEmail: {green ${resetPasswordEmail}}
+        recaptchaResponse: {green ${recaptchaResponse}}
+      `);
       
       
       
       
       // ---------------------------------------------
-      //   FormData - Create Account
+      //   FormData
       // ---------------------------------------------
       
       const formDataObj = {
         
-        loginID: createAccountLoginID,
-        loginPassword: createAccountLoginPassword,
-        email: createAccountEmail,
+        loginID: resetPasswordLoginID,
+        email: resetPasswordEmail,
         response: recaptchaResponse,
         
       };
       
       
       // ---------------------------------------------
-      //   Fetch - Create Account
+      //   Fetch
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-create-account`,
+        urlApi: `${process.env.URL_API}/v2/db/email-confirmations/reset-password`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -363,10 +342,8 @@ class Store {
       //   Form Reset
       // ---------------------------------------------
       
-      lodashSet(this.dataObj, 'createAccountLoginID', '');
-      lodashSet(this.dataObj, 'createAccountLoginPassword', '');
-      lodashSet(this.dataObj, 'createAccountLoginPasswordConfirmation', '');
-      lodashSet(this.dataObj, 'createAccountEmail', '');
+      // lodashSet(this.dataObj, 'resetPasswordLoginID', '');
+      // lodashSet(this.dataObj, 'resetPasswordEmail', '');
       
       
       
@@ -377,48 +354,8 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: 'Jje25z6lV',
+        messageID: 'WTynPDVob',
       });
-      
-      
-      
-      
-      // ---------------------------------------------
-      //   FormData
-      // ---------------------------------------------
-      
-      const formData = new FormData();
-      
-      formData.append('loginID', createAccountLoginID);
-      formData.append('loginPassword', createAccountLoginPassword);
-      formData.append('response', recaptchaResponse);
-      
-      
-      // ---------------------------------------------
-      //   Fetch - Login
-      // ---------------------------------------------
-      
-      resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/login`,
-        methodType: 'POST',
-        formData: formData,
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      
-      // ---------------------------------------------
-      //   Page Transition
-      // ---------------------------------------------
-      
-      const userID = lodashGet(resultObj, ['data', 'userID'], '');
-      window.location.href = `${process.env.URL_BASE}ur/${userID}`;
       
       
     } catch (errorObj) {
@@ -441,7 +378,7 @@ class Store {
       //   Button Enable
       // ---------------------------------------------
       
-      storeLayout.handleButtonEnable({ pathArr: ['formCreateAccount'] });
+      storeLayout.handleButtonEnable({ pathArr: ['formResetPassword'] });
       
       
       // ---------------------------------------------
@@ -466,15 +403,15 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreLoginAccount({}) {
+export default function initStoreConfirmResetPassword({}) {
   
   
   // --------------------------------------------------
   //   Store
   // --------------------------------------------------
   
-  if (storeLoginAccount === null) {
-    storeLoginAccount = new Store();
+  if (storeConfirmResetPassword === null) {
+    storeConfirmResetPassword = new Store();
   }
   
   
@@ -482,7 +419,7 @@ export default function initStoreLoginAccount({}) {
   //   Return
   // --------------------------------------------------
   
-  return storeLoginAccount;
+  return storeConfirmResetPassword;
   
   
 }

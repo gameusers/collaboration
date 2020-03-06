@@ -231,7 +231,7 @@ export default injectIntl(class extends React.Component {
         <Panel
           heading="メールアドレス登録"
           pathArr={pathArr}
-          defaultExpanded={true}
+          defaultExpanded={false}
         >
           
           
@@ -240,7 +240,7 @@ export default injectIntl(class extends React.Component {
               margin: 0 0 12px 0;
             `}
           >
-            メールアドレスを登録しておくとパスワードを忘れたときに、メールを利用してパスワードを登録しなおせるようになります。
+            メールアドレスを登録しておくとパスワードを忘れたときに、メールを利用してパスワードを再設定できるようになります。
           </p>
           
           <p

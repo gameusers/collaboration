@@ -2308,7 +2308,7 @@ const findForFollowers = async ({
     //   Datetime
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     
     

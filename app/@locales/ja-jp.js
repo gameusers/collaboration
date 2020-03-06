@@ -193,6 +193,9 @@ const ja_JP = {
   // /app/login/reset-password/stores/store.js
   'WTynPDVob': 'パスワード再設定用のメールを送信しました',
   
+  // /app/login/reset-password/stores/store.js
+  'PFM5HPcyd': 'パスワードを再設定しました',
+  
   // /app/@database/users/api.js
   'RIj4SCt_s': 'ID、またはパスワードが間違っています',
   
@@ -223,7 +226,7 @@ const ja_JP = {
   'a107F1Uxw': 'メールアドレスが登録されていないため、削除できません',
   
   // /pages/api/v2/db/users/upsert-settings-email.js
-  'EAvJztLfH': 'メールは1日に何度も送信できません。また後日お試しください',
+  'EAvJztLfH': 'メールは何度も送信できません。また後日お試しください',
   
   
   // ---------------------------------------------

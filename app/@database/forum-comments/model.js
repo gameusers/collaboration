@@ -1804,7 +1804,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
   //   完成
   // --------------------------------------------------
   
-  const ISO8601 = moment().toISOString();
+  const ISO8601 = moment().utc().toISOString();
   
   const formattedCommentsObj = loopFormat({ arr: commentsArr, ISO8601 });
   const formattedRepliesObj = loopFormat({ arr: repliesArr, ISO8601 });
@@ -2102,7 +2102,7 @@ const getPage = async ({
 
 
 /**
- * コメント＆返信データを取得する　編集用
+ * コ���ント＆返信データを取得する　編集用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID

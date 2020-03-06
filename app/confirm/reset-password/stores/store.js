@@ -17,6 +17,7 @@ const util = require('util');
 import { action, observable } from 'mobx';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
+import lodashHas from 'lodash/has';
 
 
 // ---------------------------------------------
@@ -31,8 +32,8 @@ import { CustomError } from '../../../@modules/error/custom';
 //   Validation
 // ---------------------------------------------
 
-const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-const { validationUsersEmail } = require('../../../@database/users/validations/email');
+import { validationUsersLoginID } from '../../../@database/users/validations/login-id';
+import { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } from '../../../../app/@database/users/validations/login-password';
 
 
 // --------------------------------------------------
@@ -245,8 +246,10 @@ class Store {
       //   Property
       // ---------------------------------------------
       
+      const emailConfirmationID = lodashGet(this.dataObj, ['emailConfirmationID'], '');
       const resetPasswordLoginID = lodashGet(this.dataObj, ['resetPasswordLoginID'], '');
-      const resetPasswordEmail = lodashGet(this.dataObj, ['resetPasswordEmail'], '');
+      const resetPasswordLoginPassword = lodashGet(this.dataObj, ['resetPasswordLoginPassword'], '');
+      const resetPasswordLoginPasswordConfirmation = lodashGet(this.dataObj, ['resetPasswordLoginPasswordConfirmation'], '');
       const recaptchaResponse = lodashGet(this.dataObj, ['recaptchaResponse'], '');
       
       
@@ -256,8 +259,9 @@ class Store {
       //   Validation
       // ---------------------------------------------
       
-      const validationUsersLoginIDObj = validationUsersLoginID({ value: resetPasswordLoginID });
-      const validationUsersEmailObj = validationUsersEmail({ value: resetPasswordEmail });
+      const validationUsersLoginIDObj = validationUsersLoginID({ required: true, value: resetPasswordLoginID });
+      const validationUsersLoginPasswordObj = validationUsersLoginPassword({ required: true, value: resetPasswordLoginPassword, loginID: resetPasswordLoginID });
+      const validationUsersLoginPasswordConfirmationObj = validationUsersLoginPasswordConfirmation({ required: true, value: resetPasswordLoginPasswordConfirmation, loginPassword: resetPasswordLoginPassword });
       
       
       // ---------------------------------------------
@@ -267,11 +271,12 @@ class Store {
       if (
         
         validationUsersLoginIDObj.error ||
-        validationUsersEmailObj.error
+        validationUsersLoginPasswordObj.error ||
+        validationUsersLoginPasswordConfirmationObj.error
         
       ) {
         
-        throw new CustomError({ errorsArr: [{ code: 'hoxenGFSj', messageID: 'uwHIKBy7c' }] });
+        throw new CustomError({ errorsArr: [{ code: 'qopQI5Buk', messageID: 'uwHIKBy7c' }] });
         
       }
       
@@ -282,16 +287,18 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/login/reset-password/stores/store.js - handleResetPassword
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/login/reset-password/stores/store.js - handleResetPassword
+      // `);
       
-      console.log(chalk`
-        resetPasswordLoginID: {green ${resetPasswordLoginID}}
-        resetPasswordEmail: {green ${resetPasswordEmail}}
-        recaptchaResponse: {green ${recaptchaResponse}}
-      `);
+      // console.log(chalk`
+      //   emailConfirmationID: {green ${emailConfirmationID}}
+      //   resetPasswordLoginID: {green ${resetPasswordLoginID}}
+      //   resetPasswordLoginPassword: {green ${resetPasswordLoginPassword}}
+      //   resetPasswordLoginPasswordConfirmation: {green ${resetPasswordLoginPasswordConfirmation}}
+      //   recaptchaResponse: {green ${recaptchaResponse}}
+      // `);
       
       
       
@@ -302,8 +309,9 @@ class Store {
       
       const formDataObj = {
         
+        emailConfirmationID,
         loginID: resetPasswordLoginID,
-        email: resetPasswordEmail,
+        loginPassword: resetPasswordLoginPassword,
         response: recaptchaResponse,
         
       };
@@ -314,7 +322,7 @@ class Store {
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/email-confirmations/reset-password`,
+        urlApi: `${process.env.URL_API}/v2/db/users/upsert-reset-password`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -342,8 +350,9 @@ class Store {
       //   Form Reset
       // ---------------------------------------------
       
-      // lodashSet(this.dataObj, 'resetPasswordLoginID', '');
-      // lodashSet(this.dataObj, 'resetPasswordEmail', '');
+      lodashSet(this.dataObj, 'resetPasswordLoginID', '');
+      lodashSet(this.dataObj, 'resetPasswordLoginPassword', '');
+      lodashSet(this.dataObj, 'resetPasswordLoginPasswordConfirmation', '');
       
       
       
@@ -354,8 +363,48 @@ class Store {
       
       storeLayout.handleSnackbarOpen({
         variant: 'success',
-        messageID: 'WTynPDVob',
+        messageID: 'PFM5HPcyd',
       });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formData = new FormData();
+      
+      formData.append('loginID', resetPasswordLoginID);
+      formData.append('loginPassword', resetPasswordLoginPassword);
+      formData.append('response', recaptchaResponse);
+      
+      
+      // ---------------------------------------------
+      //   Fetch - Login
+      // ---------------------------------------------
+      
+      resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v1/users/login`,
+        methodType: 'POST',
+        formData: formData,
+      });
+      
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      
+      // ---------------------------------------------
+      //   Page Transition
+      // ---------------------------------------------
+      
+      const userID = lodashGet(resultObj, ['data', 'userID'], '');
+      window.location.href = `${process.env.URL_BASE}ur/${userID}`;
       
       
     } catch (errorObj) {
@@ -403,7 +452,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreConfirmResetPassword({}) {
+export default function initStoreConfirmResetPassword({ propsObj }) {
   
   
   // --------------------------------------------------
@@ -412,6 +461,49 @@ export default function initStoreConfirmResetPassword({}) {
   
   if (storeConfirmResetPassword === null) {
     storeConfirmResetPassword = new Store();
+  }
+  
+  
+  // --------------------------------------------------
+  //   Props
+  // --------------------------------------------------
+  
+  if (propsObj) {
+    
+    
+    // --------------------------------------------------
+    //   pathArr
+    // --------------------------------------------------
+    
+    // const pathArr = lodashGet(propsObj, ['pathArr'], []);
+    
+    
+    // --------------------------------------------------
+    //   emailConfirmationID
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['emailConfirmationID'])) {
+      lodashSet(storeConfirmResetPassword, ['dataObj', 'emailConfirmationID'], propsObj.emailConfirmationID);
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(chalk`
+    //   userCommunities_id: {green ${userCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- propsObj -----\n
+    //   ${util.inspect(propsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
   }
   
   

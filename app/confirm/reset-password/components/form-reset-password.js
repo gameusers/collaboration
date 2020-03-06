@@ -158,6 +158,13 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
+    //   emailConfirmationID
+    // --------------------------------------------------
+    
+    // const emailConfirmationID = lodashGet(dataObj, ['emailConfirmationID'], '');
+    
+    
+    // --------------------------------------------------
     //   Login ID
     // --------------------------------------------------
     

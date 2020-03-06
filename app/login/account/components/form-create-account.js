@@ -515,7 +515,6 @@ export default injectIntl(class extends React.Component {
               type="submit"
               variant="contained"
               color="secondary"
-              // onClick={() => handleRecaptchaReset({ formType: 'createAccount' })}
               disabled={buttonDisabled}
             >
               アカウント作成

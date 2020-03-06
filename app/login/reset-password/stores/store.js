@@ -237,16 +237,16 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/login/reset-password/stores/store.js - handleResetPassword
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/login/reset-password/stores/store.js - handleResetPassword
+      // `);
       
-      console.log(chalk`
-        resetPasswordLoginID: {green ${resetPasswordLoginID}}
-        resetPasswordEmail: {green ${resetPasswordEmail}}
-        recaptchaResponse: {green ${recaptchaResponse}}
-      `);
+      // console.log(chalk`
+      //   resetPasswordLoginID: {green ${resetPasswordLoginID}}
+      //   resetPasswordEmail: {green ${resetPasswordEmail}}
+      //   recaptchaResponse: {green ${recaptchaResponse}}
+      // `);
       
       
       
@@ -269,7 +269,7 @@ class Store {
       // ---------------------------------------------
       
       let resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/email-confirmations/reset-password`,
+        urlApi: `${process.env.URL_API}/v2/db/email-confirmations/upsert-reset-password`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)
       });
@@ -297,8 +297,8 @@ class Store {
       //   Form Reset
       // ---------------------------------------------
       
-      // lodashSet(this.dataObj, 'resetPasswordLoginID', '');
-      // lodashSet(this.dataObj, 'resetPasswordEmail', '');
+      lodashSet(this.dataObj, 'resetPasswordLoginID', '');
+      lodashSet(this.dataObj, 'resetPasswordEmail', '');
       
       
       

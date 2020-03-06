@@ -168,7 +168,7 @@ export default class extends React.Component {
       },  
     ];
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr, emailConfirmationID };
     
     const storesObj = getOrCreateStore({ propsObj });
     

@@ -126,7 +126,7 @@ export default async (req, res) => {
     
     if (req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M-Clzy2kt', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'M-Clzy2kt', messageID: 'V9vI1Cl1S' }] });
     }
     
     
@@ -172,13 +172,6 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       await validationUsersEmail({ throwError: true, required: true, value: email });
-      
-      
-      // --------------------------------------------------
-      //   Encrypt E-Mail
-      // --------------------------------------------------
-      
-      // const encryptedEmail = encrypt(email);
       
       
       // --------------------------------------------------
@@ -246,7 +239,7 @@ export default async (req, res) => {
     
     // --------------------------------------------------
     //   Upsert 
-    //   E-Mailアドレスを変更して、メール確認用データベースにも保存する
+    //   メール確認用データベースに保存する
     // --------------------------------------------------
     
     // ---------------------------------------------
@@ -319,23 +312,23 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/email-confirmations/reset-password.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/email-confirmations/reset-password.js
+    // `);
     
-    console.log(chalk`
-      loginID: {green ${loginID}}
-      email: {green ${email}}
-      response: {green ${response}}
+    // console.log(chalk`
+    //   loginID: {green ${loginID}}
+    //   email: {green ${email}}
+    //   response: {green ${response}}
       
-      users_id: {green ${users_id}}
-      encryptedEmail: {green ${encryptedEmail}}
-      decryptedEmail: {green ${decryptedEmail}}
+    //   users_id: {green ${users_id}}
+    //   encryptedEmail: {green ${encryptedEmail}}
+    //   decryptedEmail: {green ${decryptedEmail}}
       
-      emailConfirmations_id: {green ${emailConfirmations_id}}
-      emailConfirmationsCount: {green ${emailConfirmationsCount}}
-    `);
+    //   emailConfirmations_id: {green ${emailConfirmations_id}}
+    //   emailConfirmationsCount: {green ${emailConfirmationsCount}}
+    // `);
     
     // console.log(`
     //   ----- docUsersObj -----\n
@@ -343,17 +336,17 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- conditionObj -----\n
-      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- conditionObj -----\n
+    //   ${util.inspect(conditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- saveObj -----\n
-      ${util.inspect(saveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- saveObj -----\n
+    //   ${util.inspect(saveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

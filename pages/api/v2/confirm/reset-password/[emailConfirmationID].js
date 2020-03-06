@@ -61,7 +61,7 @@ const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 // --------------------------------------------------
-//   endpointID: YDW8_PLF3
+//   endpointID: pcxJ8fHJu
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -134,128 +134,35 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   30分前の時間を取得し、その時間内にアクセスしたかチェック
+    // --------------------------------------------------
+    
+    const dateTimeLimit = moment().utc().add(-30, 'minutes').toISOString();
+    
+    
+    // --------------------------------------------------
     //   DB findOne / Email Confirmations
     // --------------------------------------------------
     
-    // const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
+    const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
       
-    //   conditionObj: {
-    //     emailConfirmationID,
-    //     // isSuccess: false,
-    //   }
+      conditionObj: {
+        emailConfirmationID,
+        createdDate: { $gte: dateTimeLimit },
+        type: 'password',
+        isSuccess: false,
+      }
       
-    // });
-    
-    // const createdDate = lodashGet(docEmailConfirmationsObj, ['createdDate'], '');
-    // const email = lodashGet(docEmailConfirmationsObj, ['email'], '');
-    // const users_id = lodashGet(docEmailConfirmationsObj, ['users_id'], '');
-    // const isSuccess = lodashGet(docEmailConfirmationsObj, ['isSuccess'], false);
+    });
     
     
-    // // --------------------------------------------------
-    // //   DB findOne / Users
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   必要な情報がない場合、エラー
+    // --------------------------------------------------
     
-    // const docUsersCount = await ModelUsers.count({
-      
-    //   conditionObj: {
-    //     // _id: loginUsers_id,
-    //     'emailObj.value': email,
-    //   }
-      
-    // });
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   必要な情報がない場合、エラー
-    // // --------------------------------------------------
-    
-    // if (!createdDate || !email || !users_id || docUsersCount === 0) {
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: '8JJ4_hJyz', messageID: 'Error' }] });
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   24時間以内にアクセスしたかチェック
-    // // --------------------------------------------------
-    
-    // const dateTimeLimit = moment(createdDate).utc().add(1, 'day');
-    // const dateTimeNow = moment().utc();
-    
-    // if (dateTimeLimit.isBefore(dateTimeNow)) {
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'qmu7nkZxS', messageID: 'Error' }] });
-    // }
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   Update
-    // // --------------------------------------------------
-    
-    // if (isSuccess === false) {
-      
-      
-    //   // ---------------------------------------------
-    //   //   - Datetime
-    //   // ---------------------------------------------
-      
-    //   const ISO8601 = moment().toISOString();
-      
-      
-    //   // ---------------------------------------------
-    //   //   - users
-    //   // ---------------------------------------------
-      
-    //   const usersConditionObj = {
-    //     _id: users_id,
-    //     'emailObj.value': email,
-    //   };
-      
-    //   const usersSaveObj = {
-    //     $set: {
-    //       updatedDate: ISO8601,
-    //       emailObj: {
-    //         value: email,
-    //         confirmation: true,
-    //       },
-          
-    //     }
-    //   };
-      
-      
-    //   // ---------------------------------------------
-    //   //   - email-confirmations
-    //   // ---------------------------------------------
-      
-    //   const emailConfirmationsConditionObj = {
-    //     emailConfirmationID,
-    //   };
-      
-    //   const emailConfirmationsSaveObj = {
-    //     $set: {
-    //       isSuccess: true,
-    //     }
-    //   };
-      
-      
-    //   // ---------------------------------------------
-    //   //   - transaction
-    //   // ---------------------------------------------
-      
-    //   await ModelEmailConfirmations.transactionForEmailConfirmation({
-        
-    //     usersConditionObj,
-    //     usersSaveObj,
-    //     emailConfirmationsConditionObj,
-    //     emailConfirmationsSaveObj,
-        
-    //   });
-      
-      
-    // }
+    if (!docEmailConfirmationsObj) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'k2tZAvdLe', messageID: 'Error' }] });
+    }
     
     
     
@@ -264,45 +171,21 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/confirm/email/[emailConfirmationID].js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/confirm/reset-password/[emailConfirmationID].js
+    `);
     
-    // console.log(chalk`
-    //   emailConfirmationID: {green ${emailConfirmationID}}
-    //   docUsersCount: {green ${docUsersCount}}
-    // `);
+    console.log(chalk`
+      emailConfirmationID: {green ${emailConfirmationID}}
+      dateTimeLimit: {green ${dateTimeLimit}}
+    `);
     
-    // console.log(`
-    //   ----- docEmailConfirmationsObj -----\n
-    //   ${util.inspect(docEmailConfirmationsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersConditionObj -----\n
-    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- usersSaveObj -----\n
-    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsConditionObj -----\n
-    //   ${util.inspect(emailConfirmationsConditionObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- emailConfirmationsSaveObj -----\n
-    //   ${util.inspect(emailConfirmationsSaveObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docEmailConfirmationsObj -----\n
+      ${util.inspect(docEmailConfirmationsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -329,7 +212,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'YDW8_PLF3',
+      endpointID: 'pcxJ8fHJu',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

@@ -134,7 +134,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
     
     let returnObj = {};
     let saveArr = [];
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     
     

@@ -34,12 +34,12 @@ import Loading from './loading';
 //   CSS
 // ---------------------------------------------
 
-import '../../../../app/@css/reset.css';
-import 'react-id-swiper/src/styles/css/swiper.css';
-import 'rc-pagination/assets/index.css';
-import 'react-modal-video/css/modal-video.min.css';
-import 'nprogress/nprogress.css';
-import '../../../../app/@css/style.css';
+// import '../../../../app/@css/reset.css';
+// import 'react-id-swiper/src/styles/css/swiper.css';
+// import 'rc-pagination/assets/index.css';
+// import 'react-modal-video/css/modal-video.min.css';
+// import 'nprogress/nprogress.css';
+// import '../../../../app/@css/style.css';
 
 
 

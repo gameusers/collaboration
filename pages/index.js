@@ -289,16 +289,16 @@ export default class extends React.Component {
         href: '/',
         as: '/',
       },
-      {
-        name: 'ゲームコミュニティ',
-        href: '/gc',
-        as: '/gc',
-      },
-      {
-        name: 'ユーザーコミュニティ',
-        href: '/uc',
-        as: '/uc',
-      }
+      // {
+      //   name: 'ゲームコミュニティ',
+      //   href: '/gc',
+      //   as: '/gc',
+      // },
+      // {
+      //   name: 'ユーザーコミュニティ',
+      //   href: '/uc',
+      //   as: '/uc',
+      // }
     ];
     
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr };

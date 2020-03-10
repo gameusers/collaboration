@@ -6,7 +6,7 @@
 //   .env
 // ---------------------------------------------
 
-require('dotenv').config();
+// require('dotenv').config();
 
 
 // ---------------------------------------------
@@ -45,7 +45,7 @@ const mongoose = require('mongoose');
 //   Modules
 // ---------------------------------------------
 
-const { createCsrfToken } = require('./app/@modules/csrf');
+// const { createCsrfToken } = require('./app/@modules/csrf');
 
 
 // ---------------------------------------------
@@ -73,6 +73,11 @@ mobxReact.useStaticRendering(true);
 
 app.prepare().then(() => {
   
+  
+  // --------------------------------------------------
+  //   express
+  // --------------------------------------------------
+  
   const server = express();
   
   
@@ -91,12 +96,6 @@ app.prepare().then(() => {
     extended: true
   }));
   
-  // app.use(bodyParser.json({limit: '50mb'}));
-  // app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-  
-  // server.use(express.json({
-  //   limit: '50mb'
-  // }));
   
   server.use(cookieParser());
   
@@ -121,7 +120,8 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
   
-  
+  console.log('process.env.NODE_ENV2 = ' + process.env.NODE_ENV);
+  console.log('process.env.URL_AP2I = ' + process.env.URL_API);
   
   
   // --------------------------------------------------
@@ -170,10 +170,10 @@ app.prepare().then(() => {
   //   共通処理
   // ---------------------------------------------
   
-  const csrfToken = (req, res, next) => {
-    createCsrfToken(req, res);
-    next();
-  };
+  // const csrfToken = (req, res, next) => {
+  //   createCsrfToken(req, res);
+  //   next();
+  // };
   
   
   
@@ -182,13 +182,13 @@ app.prepare().then(() => {
   //   Login
   // ---------------------------------------------
   
-  server.get('/login', csrfToken, (req, res, next) => {
-    app.render(req, res, '/login', {});
-  });
+  // server.get('/login', csrfToken, (req, res, next) => {
+  //   app.render(req, res, '/login', {});
+  // });
   
-  server.get('/login/account', csrfToken, (req, res, next) => {
-    app.render(req, res, '/login/account', {});
-  });
+  // server.get('/login/account', csrfToken, (req, res, next) => {
+  //   app.render(req, res, '/login/account', {});
+  // });
   
   
   
@@ -197,166 +197,8 @@ app.prepare().then(() => {
   //   Logout
   // ---------------------------------------------
   
-  server.get('/logout', csrfToken, (req, res, next) => {
-    app.render(req, res, '/logout', {});
-  });
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Player
-  // ---------------------------------------------
-  
-  // server.get('/ur/:userID/settings', csrfToken, (req, res) => {
-  //   const { userID } = req.params;
-  //   app.render(req, res, '/ur/settings', { userID });
-  // });
-  
-  
-  // server.get('/ur/:userID*', csrfToken, (req, res) => {
-    
-  //   const { userID } = req.params;
-    
-  //   if (!userID) {
-  //     app.render(req, res, '/ur/index', req.query);
-  //   }
-    
-  //   app.render(req, res, '/ur/user', { userID });
-    
-  // });
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   E-Mail
-  // ---------------------------------------------
-  
-  server.get('/email/confirmation/:emailConfirmationID', csrfToken, (req, res) => {
-    const { emailConfirmationID } = req.params;
-    app.render(req, res, '/email/confirmation', { emailConfirmationID });
-  });
-  
-  
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   Game Community
-  // ---------------------------------------------
-  
-  // server.get('/gc/:param1', (req, res) => {
-    
-  //   // console.log(`req.url = ${req.url}`);
-  //   // console.log(`parse(req.url).pathname = ${parse(req.url).pathname}`);
-    
-  //   const { param1 } = req.params;
-    
-  //   if (!param1) {
-  //     app.render(req, res, '/gc/index', req.query);
-  //   }
-    
-  //   app.render(req, res, '/gc/community', { param1 });
-  // });
-  
-  // server.get('/gc/:param1/:param2', (req, res) => {
-  //   const { param1, param2 } = req.params;
-  //   app.render(req, res, '/gc/community', { param1, param2 });
-  // });
-  
-  // server.get('/gc/:param1/:param2/:param3', (req, res) => {
-  //   const { param1, param2, param3 } = req.params;
-  //   app.render(req, res, '/gc/community', { param1, param2, param3 });
-  // });
-  
-  
-  
-  
-  // ---------------------------------------------
-  //   User Community
-  // ---------------------------------------------
-  
-  // server.get('/uc/:userCommunityID*', csrfToken, (req, res) => {
-    
-  //   const { userCommunityID } = req.params;
-    
-  //   // console.log(chalk`
-  //   //   userCommunityID: {green ${userCommunityID}}
-  //   // `);
-    
-  //   // if (!userCommunities_id) {
-  //   //   app.render(req, res, '/uc/index', req.query);
-  //   // }
-    
-  //   app.render(req, res, '/uc/community', { userCommunityID });
-    
-  // });
-  
-  // server.get('/uc/:param1*', (req, res) => {
-    
-    
-  //   // --------------------------------------------------
-  //   //   Console 出力
-  //   // --------------------------------------------------
-    
-  //   // console.log(`
-  //   //   req.session: \n${util.inspect(req.session, { colors: true, depth: null })}
-  //   // `);
-    
-  //   // console.log(`
-  //   //   req.user: \n${util.inspect(req.user, { colors: true, depth: null })}
-  //   // `);
-    
-  //   // console.log(chalk`
-  //   //   req.isAuthenticated(): {green ${req.isAuthenticated()}}
-  //   // `);
-    
-    
-  //   const { param1 } = req.params;
-    
-  //   // if (!param1) {
-  //   //   app.render(req, res, '/uc/index', req.query);
-  //   // }
-    
-  //   const queryObj = {
-  //     param1
-  //   };
-    
-  //   app.render(req, res, '/uc/community', queryObj);
-    
-  // });
-  
-  // server.get('/uc/:param1/member', (req, res) => {
-  //   const { param1 } = req.params;
-  //   app.render(req, res, '/uc/community/member', { param1 });
-  // });
-  
-  
-  
-  // server.get('/uc/:param1/:param2', (req, res) => {
-  //   const { param1, param2 } = req.params;
-  //   return app.render(req, res, '/uc/community', { param1, param2 });
-  // });
-  
-  // server.get('/uc/:param1/:param2/:param3', (req, res) => {
-  //   const { param1, param2, param3 } = req.params;
-  //   return app.render(req, res, '/uc/community', { param1, param2, param3 });
-  // });
-  
-  
-  
-  // server.get('/a', (req, res) => {
-  //   return app.render(req, res, '/b', req.query);
-  // });
-
-  // server.get('/b', (req, res) => {
-  //   return app.render(req, res, '/a', req.query);
-  // });
-
-  // server.get('/test/:id', (req, res) => {
-  //   return app.render(req, res, '/test', { id: req.params.id });
+  // server.get('/logout', csrfToken, (req, res, next) => {
+  //   app.render(req, res, '/logout', {});
   // });
   
   

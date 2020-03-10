@@ -50,7 +50,7 @@ import { locale } from '../app/@locales/locale';
 //   Modules
 // ---------------------------------------------
 
-import { fetchWrapper } from '../app/@modules/fetch';
+// import { fetchWrapper } from '../app/@modules/fetch';
 
 
 // ---------------------------------------------
@@ -58,6 +58,18 @@ import { fetchWrapper } from '../app/@modules/fetch';
 // ---------------------------------------------
 
 import initStoreRoot from '../app/@stores/root';
+
+
+// ---------------------------------------------
+//   CSS
+// ---------------------------------------------
+
+import '../app/@css/reset.css';
+import 'react-id-swiper/src/styles/css/swiper.css';
+import 'rc-pagination/assets/index.css';
+import 'react-modal-video/css/modal-video.min.css';
+import 'nprogress/nprogress.css';
+import '../app/@css/style.css';
 
 
 

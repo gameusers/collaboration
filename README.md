@@ -2,7 +2,7 @@
 ![Game Users Banner](https://gameusers.org/assets/img/social/ogp_image.jpg)
 
 
-[![node](https://img.shields.io/badge/node-v12.16.0-lightgrey.svg)](https://nodejs.org/ja/)
+[![node](https://img.shields.io/badge/node-v12.16.1-lightgrey.svg)](https://nodejs.org/ja/)
 [![npm](https://img.shields.io/badge/npm-v6.13.4-blue.svg)](https://www.npmjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-v4.2.3-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
@@ -63,10 +63,10 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 
     # URL
-    URL_BASE=http://dev-1.gameusers.org:8080/
-    URL_API=http://dev-1.gameusers.org:8080/api
+    URL_BASE=https://dev-1.gameusers.org/
+    URL_API=https://dev-1.gameusers.org/api
 
-デフォルトでは上記の値に設定されていますが、例えば localhost でアクセスする場合は、以下のように変更してください。
+デフォルトでは上記の値に設定されていますが、例えば localhost でアクセスする場合は、以下のように変更してください（ポート番号は 8080 です）
 
 
     # URL

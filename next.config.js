@@ -1,20 +1,43 @@
-const withCSS = require('@zeit/next-css');
+// --------------------------------------------------
+//   Require
+// --------------------------------------------------
+
+require('dotenv').config();
 const webpack = require('webpack');
 
-module.exports = withCSS({
+
+module.exports = {
   
-  // https://github.com/oliver-moran/jimp/tree/master/packages/jimp
+  
+  // --------------------------------------------------
+  //   Webpack Config
+  // --------------------------------------------------
+  
   webpack: (config, options) => {
+    
+    
+    // --------------------------------------------------
+    //   https://github.com/oliver-moran/jimp/tree/master/packages/jimp
+    // --------------------------------------------------
+    
     config.plugins.push(new webpack.DefinePlugin({
       'process.browser': 'true'
     }));
+    
+    
+    // config.optimization.minimize = false;
+    
     return config;
+    
+    
   },
   
-  // https://github.com/zeit/next-plugins/tree/master/packages/next-css
-  // cssModules: true,
   
-  // https://github.com/zeit/next.js#exposing-configuration-to-the-server--client-side
+  // --------------------------------------------------
+  //   Environment Variables
+  //   https://nextjs.org/docs/api-reference/next.config.js/environment-variables
+  // --------------------------------------------------
+  
   env: {
     
     ENVIRONMENT: process.env.NODE_ENV,
@@ -56,4 +79,5 @@ module.exports = withCSS({
     
   }
   
-});
+  
+};

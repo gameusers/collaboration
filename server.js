@@ -120,8 +120,8 @@ app.prepare().then(() => {
   server.use(passport.initialize());
   server.use(passport.session());
   
-  console.log('process.env.NODE_ENV2 = ' + process.env.NODE_ENV);
-  console.log('process.env.URL_AP2I = ' + process.env.URL_API);
+  // console.log('process.env.NODE_ENV2 = ' + process.env.NODE_ENV);
+  // console.log('process.env.URL_AP2I = ' + process.env.URL_API);
   
   
   // --------------------------------------------------

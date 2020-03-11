@@ -867,7 +867,7 @@ export default class extends React.Component {
                   </CardMediaBox>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <StyledCardContent>
                       <CardTitle>アイスクライマー配信視聴者募集！</CardTitle>
                       <Typography component="p">
@@ -894,7 +894,7 @@ export default class extends React.Component {
                   </Link>
                   
                   
-                  <Link prefetch href="/test">
+                  <Link href="/test">
                     <CardActions>
                       <Button size="small" color="primary">
                         アイスクライマー

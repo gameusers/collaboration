@@ -3,7 +3,7 @@
 
 
 [![node](https://img.shields.io/badge/node-v12.16.1-lightgrey.svg)](https://nodejs.org/ja/)
-[![npm](https://img.shields.io/badge/npm-v6.13.4-blue.svg)](https://www.npmjs.com/)
+[![npm](https://img.shields.io/badge/npm-v6.14.2-blue.svg)](https://www.npmjs.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-v4.2.3-green.svg)](https://www.mongodb.com/)
 [![David](https://img.shields.io/david/expressjs/express.svg)]()
 [![license](https://img.shields.io/badge/license-Game%20Users%20Project-blue.svg)](https://github.com/gameusers/web/blob/master/LICENSE.txt)
@@ -149,13 +149,18 @@ Cloud9（IDE） を VPS 上に設定して、ブラウザさえあれば、み�
 
 
 ## 6. mongo-express
-データベースの中身を視覚的に把握できる GUI ツールも入っています。<br />
+データベースの中身を視覚的に把握できる GUI ツールも入っています。ターミナルを開いて、以下を入力してください。mongo-express が起動します。<br />
+
+    npm run mongo-express:start
+
+
+次に下記アドレスにアクセスすると、Basic 認証が起動します。
 
 
     http://（.env で設定したトップページのアドレス [ポート番号だけ変更]）:8081/
     
 
-上記アドレスにアクセスすると、Basic 認証が起動します。「ユーザー名：admin」「パスワード：pass」でログインしてください。データベースの構成などを確認する場合に利用すると便利です。<br />
+「ユーザー名：admin」「パスワード：pass」でログインしてください。データベースの構成などを確認する場合に利用すると便利です。<br />
 
 詳しくは [mongo-express](https://github.com/mongo-express/mongo-express) を確認してください。
 <br /><br />

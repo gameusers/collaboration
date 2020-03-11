@@ -17,7 +17,7 @@ import flush from 'styled-jsx/server';
 // import theme from '../app/@css/material-ui/theme';
 
 
-import '@formatjs/intl-relativetimeformat/polyfill';
+// import '@formatjs/intl-relativetimeformat/polyfill';
 // 以下のエラーが出るので入れている
 // Error: Intl.RelativeTimeFormat is not available in this environment.
 // Try polyfilling it using "@formatjs/intl-relativetimeformat"
@@ -30,20 +30,42 @@ class MyDocument extends Document {
     return (
       <html>
         <Head>
-          {/*<meta charSet="utf-8" />*/}
-          {/* Use minimum-scale=1 to enable GPU rasterization */}
-          {/*<meta
-            name="viewport"
-            content="minimum-scale=1.0, initial-scale=1.0, width=device-width, shrink-to-fit=no"
-          />*/}
-          {/*<meta name='viewport' content='initial-scale=1.0, width=device-width' />*/}
-          {/*<meta name="robots" content="noindex,nofollow" />*/}
-          {/* PWA primary color */}
-          {/*<meta name="theme-color" content={theme.palette.primary.main} />
-          <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
-          />*/}
+          <meta charSet='utf-8' />
+          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover' />
+          <meta name='description' content='Hello World!' />
+          <meta name='format-detection' content='telephone=no' />
+          
+          {/* iOS */}
+          <meta name='application-name' content='Game Users Dev' />
+          <meta name='apple-mobile-web-app-capable' content='yes' />
+          <meta name='apple-mobile-web-app-status-bar-style' content='default' />
+          <meta name='apple-mobile-web-app-title' content='Game Users Dev' />
+          
+          {/* Android */}
+          <meta name='mobile-web-app-capable' content='yes' />
+          <meta name='theme-color' content='#000000' />
+          
+          {/* OGP */}
+          <meta property='og:title' content='Game Users Dev' />
+          <meta property='og:type' content='website' />
+          <meta property='og:description' content='Hello World!' />
+          <meta property='og:url' content='https://dev-1.gameusers.org/' />
+          <meta property='og:image' content='/img/common/social/ogp_image.jpg' />
+          <meta property='og:site_name' content='Game Users Dev' />
+          
+          {/* Twitter */}
+          <meta name='twitter:card' content='summary' />
+          <meta name='twitter:site' content='@gameusersorg' />
+          <meta name='twitter:image' content='/img/common/social/ogp_twitter.png' />
+          <meta name='twitter:title' content='Game Users' />
+          
+          {/* Facebook */}
+          <meta property='fb:app_id' content='823267361107745' />
+          
+          {/* link */}
+          <link rel='manifest' href='/manifest.json' />
+          <link rel="icon" href="/favicon.ico" />
+          <link rel='apple-touch-icon' sizes='180x180' href='/img/common/icons/apple-touch-icon-180×180.png' />
         </Head>
         <body>
           <Main />
@@ -53,6 +75,7 @@ class MyDocument extends Document {
     );
   }
 }
+
 
 MyDocument.getInitialProps = async ctx => {
   // Resolution order
@@ -99,5 +122,6 @@ MyDocument.getInitialProps = async ctx => {
     ),
   };
 };
+
 
 export default MyDocument;

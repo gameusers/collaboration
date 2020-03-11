@@ -270,7 +270,7 @@ class MyApp extends App {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount() {
+  componentDidMount () {
     
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
@@ -281,6 +281,48 @@ class MyApp extends App {
     
     // console.log('_app.js / componentDidMount');
     window.addEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
+    
+    
+    
+    // --------------------------------------------------
+    //   Service Worker
+    // --------------------------------------------------
+    
+    if ('serviceWorker' in navigator) {
+      
+      navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then((registration) => {
+        console.log('serviceWorker registered: ', registration);
+      }).catch((registrationError) => {
+        console.log('serviceWorker registration failed: ', registrationError);
+      });
+      
+      // const registration = await navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
+      
+      // console.log(`
+      //   ----- registration -----\n
+      //   ${util.inspect(registration, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+    }
+    
+    // if ('serviceWorker' in navigator) {
+        
+    //   navigator.serviceWorker.register('service-worker.js')
+    //     .then((registration) => {
+          
+    //       return registration.pushManager.getSubscription()
+    //       .then(async (subscription) => {
+    //           // registration part
+    //       });
+          
+    //     })
+    //     .then(function(subscription) {
+    //         // subscription part
+    //     });
+        
+    // }
+    
     
   }
   

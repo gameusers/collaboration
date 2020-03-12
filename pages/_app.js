@@ -270,58 +270,39 @@ class MyApp extends App {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount () {
+  async componentDidMount () {
     
-    // Remove the server-side injected CSS.
+    
+    // --------------------------------------------------
+    //   Remove the server-side injected CSS.
+    // --------------------------------------------------
+    
     const jssStyles = document.querySelector('#jss-server-side');
     
     if (jssStyles) {
       jssStyles.parentNode.removeChild(jssStyles);
     }
     
-    // console.log('_app.js / componentDidMount');
+    
+    // --------------------------------------------------
+    //   現在の日時を定期的に更新する
+    // --------------------------------------------------
+    
     window.addEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
     
     
+    // --------------------------------------------------
+    //   Service Worker Register
+    // --------------------------------------------------
+    
+    await this.stores.webPush.serviceWorkerRegister();
+    
     
     // --------------------------------------------------
-    //   Service Worker
+    //   Web Push Subscribe
     // --------------------------------------------------
     
-    if ('serviceWorker' in navigator) {
-      
-      navigator.serviceWorker.register('/service-worker.js', { scope: '/' }).then((registration) => {
-        console.log('serviceWorker registered: ', registration);
-      }).catch((registrationError) => {
-        console.log('serviceWorker registration failed: ', registrationError);
-      });
-      
-      // const registration = await navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
-      
-      // console.log(`
-      //   ----- registration -----\n
-      //   ${util.inspect(registration, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-    }
-    
-    // if ('serviceWorker' in navigator) {
-        
-    //   navigator.serviceWorker.register('service-worker.js')
-    //     .then((registration) => {
-          
-    //       return registration.pushManager.getSubscription()
-    //       .then(async (subscription) => {
-    //           // registration part
-    //       });
-          
-    //     })
-    //     .then(function(subscription) {
-    //         // subscription part
-    //     });
-        
-    // }
+    // await this.stores.webPush.webPushSubscribe();
     
     
   }

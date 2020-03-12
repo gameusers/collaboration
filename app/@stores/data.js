@@ -232,7 +232,7 @@ class Store {
   
   
   /**
-   *ヘッダー情報オブジェクトを置き換える
+   * ヘッダー情報オブジェクトを置き換える
    * @param {Object} obj - 置き換えるオブジェクト
    */
   @action.bound
@@ -382,14 +382,14 @@ class Store {
   //   User Community
   // ---------------------------------------------
   
-  @observable userCommunityObj = {};
+  // @observable userCommunityObj = {};
   
-  @action.bound
-  insertUserCommunityObj(dataObj) {
-    this.userCommunityObj = Object.assign({}, dataObj, this.userCommunityObj);
-    // console.log(`User Community insertData`);
-    // console.dir(this.dataObj);
-  };
+  // @action.bound
+  // insertUserCommunityObj(dataObj) {
+  //   this.userCommunityObj = Object.assign({}, dataObj, this.userCommunityObj);
+  //   // console.log(`User Community insertData`);
+  //   // console.dir(this.dataObj);
+  // };
   
   
 }

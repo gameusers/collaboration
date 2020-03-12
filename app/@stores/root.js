@@ -4,6 +4,7 @@
 
 import initStoreLayout from '../common/layout/stores/layout';
 import initStoreData from './data';
+import initStoreWebPush from './web-push';
 
 
 // --------------------------------------------------
@@ -16,6 +17,7 @@ export default function initStoreRoot({ propsObj }) {
     
     layout: initStoreLayout({ propsObj }),
     data: initStoreData({ propsObj }),
+    webPush: initStoreWebPush({ propsObj }),
     
   };
   

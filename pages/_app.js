@@ -295,7 +295,7 @@ class MyApp extends App {
     //   Service Worker Register
     // --------------------------------------------------
     
-    await this.stores.webPush.serviceWorkerRegister();
+    await this.stores.webPush.handleServiceWorkerRegister();
     
     
     // --------------------------------------------------

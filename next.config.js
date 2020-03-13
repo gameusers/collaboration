@@ -114,6 +114,8 @@ module.exports = withOffline({
     URL_BASE: process.env.URL_BASE,
     URL_API: process.env.URL_API,
     
+    WEB_PUSH_VAPID_PUBLIC_KEY: process.env.WEB_PUSH_VAPID_PUBLIC_KEY,
+    
   }
   
   

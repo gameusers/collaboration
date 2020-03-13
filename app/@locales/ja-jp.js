@@ -360,7 +360,8 @@ const ja_JP = {
   
   // /app/@stores/web-push.js
   'b1_xylh7Y': '通知を許可しました',
-  'KkWs0oIKw': '通知を許可しませんでした',
+  'KkWs0oIKw': '通知を許可できませんでした',
+  'etyRC_hg3': 'すでに許可されています',
   
   
 };

@@ -92,7 +92,7 @@ export default class extends React.Component {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount(){
+  componentDidMount() {
     
     
     // --------------------------------------------------

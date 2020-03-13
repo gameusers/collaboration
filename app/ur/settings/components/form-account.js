@@ -100,7 +100,7 @@ export default injectIntl(class extends React.Component {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount(){
+  componentDidMount() {
     
     
     // --------------------------------------------------

@@ -238,14 +238,9 @@ class Store {
       
       
       // ---------------------------------------------
-      //   必要なデータがない場合は処理停止
+      //   購読済みかどうかをチェックする / 購読していない場合は null が返る
+      //   購読済みの場合、処理停止
       // ---------------------------------------------
-      
-      if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
-        return;
-      }
-      
-      
       
       
       // ---------------------------------------------
@@ -259,14 +254,83 @@ class Store {
       
       if (oldSubscriptionObj) {
         
-        // true 解除成功 / false 解除失敗
         const unsubscribe = await oldSubscriptionObj.unsubscribe();
         
         console.log(chalk`
           unsubscribe: {green ${unsubscribe}}
         `);
         
+        
+        // ---------------------------------------------
+        //   subscriptionObj を登録する
+        // ---------------------------------------------
+        
+        // const parsedSubscriptionObj = parse({ obj: subscriptionObj });
+        // this.webPushSubscriptionObj = parse({ obj: subscriptionObj });
+        
+        
+        // ---------------------------------------------
+        //   DB Users に登録する
+        // ---------------------------------------------
+        
+        // await this.handleUpdateUsersWebPushSubscriptionObj({ parsedSubscriptionObj });
+        
+        
+        // // ---------------------------------------------
+        // //   Snackbar: Success
+        // // ---------------------------------------------
+        
+        // storeLayout.handleSnackbarOpen({
+        //   variant: 'success',
+        //   messageID: 'etyRC_hg3',
+        // });
+        
+        // console.log('購読済み2');
+        
+        // // ---------------------------------------------
+        // //   Return
+        // // ---------------------------------------------
+        
+        // return;
+        
+        
       }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      // const formDataObj = {};
+      
+      
+      // // ---------------------------------------------
+      // //   Fetch
+      // // ---------------------------------------------
+      
+      // const resultObj = await fetchWrapper({
+      //   urlApi: `${process.env.URL_API}/v2/web-push/get-vapid-public-key`,
+      //   methodType: 'POST',
+      //   formData: JSON.stringify(formDataObj)
+      // });
+      
+      
+      // // console.log(`
+      // //   ----- resultObj -----\n
+      // //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      // //   --------------------\n
+      // // `);
+      
+      
+      // // ---------------------------------------------
+      // //   Error
+      // // ---------------------------------------------
+      
+      // if ('errorsArr' in resultObj) {
+      //   throw new CustomError({ errorsArr: resultObj.errorsArr });
+      // }
       
       
       
@@ -293,15 +357,21 @@ class Store {
         
       };
       
+      // const vapidPublicKey = lodashGet(resultObj, ['data', 'vapidPublicKey'], '');
+      // const convertedVapidKey = urlBase64ToUint8Array(vapidPublicKey);
+      
+      
       const convertedVapidKey = urlBase64ToUint8Array(process.env.WEB_PUSH_VAPID_PUBLIC_KEY);
       
-      // console.log(chalk`
-      //   process.env.WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.WEB_PUSH_VAPID_PUBLIC_KEY}}
-      //   convertedVapidKey: {green ${convertedVapidKey}}
-      // `);
+      console.log(chalk`
+        process.env.WEB_PUSH_VAPID_PUBLIC_KEY: {green ${process.env.WEB_PUSH_VAPID_PUBLIC_KEY}}
+        convertedVapidKey: {green ${convertedVapidKey}}
+      `);
       
       
-      
+      // ---------------------------------------------
+      //   購読済みかどうかをチェックする
+      // ---------------------------------------------
       
       // ---------------------------------------------
       //   購読する
@@ -320,10 +390,8 @@ class Store {
       //   通知を許可するかどうか尋ねるダイアログを表示する
       // ---------------------------------------------
       
-      // 'default', 'granted', 'denied' が返り値
       const permission = await Notification.requestPermission();
       
-      // 許可した場合
       if (permission === 'granted') {
         
         
@@ -343,7 +411,48 @@ class Store {
         }
         
         
+        
       }
+      
+      // Notification.requestPermission((permission) => {
+        
+        
+      //   // ---------------------------------------------
+      //   //   Granted
+      //   // ---------------------------------------------
+        
+      //   if (permission === 'granted') {
+          
+          
+      //     // ---------------------------------------------
+      //     //   subscriptionObj を登録する
+      //     // ---------------------------------------------
+          
+      //     this.webPushSubscriptionObj = parse({ obj: newSubscriptionObj });
+          
+          
+      //     // ---------------------------------------------
+      //     //   DB Users に登録する
+      //     // ---------------------------------------------
+          
+      //     this.handleUpdateUsersWebPushSubscriptionObj();
+          
+          
+      //     // ---------------------------------------------
+      //     //   Snackbar: Success
+      //     // ---------------------------------------------
+          
+      //     storeLayout.handleSnackbarOpen({
+      //       variant: 'success',
+      //       messageID: 'b1_xylh7Y',
+      //     });
+          
+          
+      //   }
+        
+        console.log(permission); // 'default', 'granted', 'denied'
+        
+      // });
       
       
       
@@ -357,10 +466,11 @@ class Store {
       //   /app/@stores/web-push.js - webPushSubscribe
       // `);
       
-      console.log(chalk`
-        convertedVapidKey: {green ${convertedVapidKey}}
-        permission: {green ${permission}}
-      `);
+      // console.log(chalk`
+      //   this.webPushSubscription: {green ${this.webPushSubscription}}
+      //   vapidPublicKey: {green ${vapidPublicKey}}
+      //   convertedVapidKey: {green ${convertedVapidKey}}
+      // `);
       
       // console.log(`
       //   ----- this.webPushRegistrationObj -----\n

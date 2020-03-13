@@ -183,6 +183,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
             count: 1,
           }
         ],
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
         role: 'user'
       },
       
@@ -207,6 +214,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         termsOfServiceConfirmedDate: ISO8601,
         exp: 10,
         achievementsArr: [],
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
         role: 'user'
       },
       
@@ -231,6 +245,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         termsOfServiceConfirmedDate: ISO8601,
         exp: 0,
         achievementsArr: [],
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
         role: 'user'
       },
     ];

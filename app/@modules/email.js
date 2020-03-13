@@ -138,7 +138,7 @@ const sendMailConfirmation = async ({ to, emailConfirmationID }) => {
   // --------------------------------------------------
   
   sendMail({
-    from: process.env.EMAIL_MESSAGE_FROM,
+    from: process.env.EMAIL_CONFIRMATION_ADDRESS,
     to,
     subject: '[Game Users] メールアドレス確認',
     text:
@@ -155,7 +155,7 @@ ${process.env.URL_BASE}confirm/email/${emailConfirmationID}
 
 　Game Users
 
-　Email: mail@gameusers.org
+　Email: ${process.env.EMAIL_CONTACT_ADDRESS}
 　URL: https://gameusers.org/
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,
@@ -191,7 +191,7 @@ const sendMailResetPassword = async ({ to, emailConfirmationID }) => {
   // --------------------------------------------------
   
   sendMail({
-    from: process.env.EMAIL_MESSAGE_FROM,
+    from: process.env.EMAIL_CONFIRMATION_ADDRESS,
     to,
     subject: '[Game Users] パスワード再設定',
     text:
@@ -209,7 +209,7 @@ ${process.env.URL_BASE}confirm/reset-password/${emailConfirmationID}
 
 　Game Users
 
-　Email: mail@gameusers.org
+　Email: ${process.env.EMAIL_CONTACT_ADDRESS}
 　URL: https://gameusers.org/
 
 ＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/＿/`,

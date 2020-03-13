@@ -35,6 +35,9 @@ desktop.ini
 /db/server3/log/*
 !/db/server3/log/.gitkeep
 
+# .env
+.env-dev
+
 # ファイル
 __*.
 

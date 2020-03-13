@@ -25,13 +25,6 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// import { locale } from '../../app/@locales/locale';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -60,6 +53,7 @@ import Drawer from '../../../app/common/layout/components/drawer';
 import FormPage from '../../../app/ur/settings/components/form-page';
 import FormAccount from '../../../app/ur/settings/components/form-account';
 import FormEmail from '../../../app/ur/settings/components/form-email';
+import FormWebPush from '../../../app/ur/settings/components/form-web-push';
 
 
 
@@ -430,6 +424,12 @@ export default class extends React.Component {
               {/* E-Mail */}
               <FormEmail
                 pathArr={[...this.props.pathArr, 'formEmailObj']}
+              />
+              
+              
+              {/* Web Push */}
+              <FormWebPush
+                pathArr={[...this.props.pathArr, 'formWebPushObj']}
               />
               
               

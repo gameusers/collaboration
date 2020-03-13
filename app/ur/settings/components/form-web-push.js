@@ -28,8 +28,7 @@ import { css, jsx } from '@emotion/core';
 // ---------------------------------------------
 
 import Button from '@material-ui/core/Button';
-// import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
+// import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -132,10 +131,16 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitEmail,
-      handleSubmitDeleteEmail,
+      handleSubmitWebPushSubscribe,
       
     } = storeUrSettings;
+    
+    const {
+      
+      handleWebPushSubscribe,
+      
+    } = stores.webPush;
+    
     
     
     
@@ -162,16 +167,16 @@ export default injectIntl(class extends React.Component {
     //   E-Mail Address
     // --------------------------------------------------
     
-    const email = lodashGet(dataObj, [...pathArr, 'email'], '');
-    const validationUsersEmailObj = validationUsersEmail({ value: email });
+    // const email = lodashGet(dataObj, [...pathArr, 'email'], '');
+    // const validationUsersEmailObj = validationUsersEmail({ value: email });
     
     
-    // --------------------------------------------------
-    //   E-Mail Confirmation
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   E-Mail Confirmation
+    // // --------------------------------------------------
     
-    const emailSource = lodashGet(dataObj, [...pathArr, 'emailSource'], '');
-    const emailConfirmation = lodashGet(dataObj, [...pathArr, 'emailConfirmation'], false);
+    // const emailSource = lodashGet(dataObj, [...pathArr, 'emailSource'], '');
+    // const emailConfirmation = lodashGet(dataObj, [...pathArr, 'emailConfirmation'], false);
     
     
     
@@ -180,21 +185,21 @@ export default injectIntl(class extends React.Component {
     //   Component - Confirmation
     // --------------------------------------------------
     
-    let componentConfirmation = '';
+    // let componentConfirmation = '';
     
-    if (email) {
+    // if (email) {
       
-      if (emailConfirmation && emailSource === email) {
+    //   if (emailConfirmation && emailSource === email) {
         
-        componentConfirmation = <span css={css` color: green`}>このメールアドレスは確認済みです</span>;
+    //     componentConfirmation = <span css={css` color: green`}>このメールアドレスは確認済みです</span>;
         
-      } else {
+    //   } else {
         
-        componentConfirmation = <span css={css` color: red`}>このメールアドレスは確認が必要です</span>;
+    //     componentConfirmation = <span css={css` color: red`}>このメールアドレスは確認が必要です</span>;
         
-      }
+    //   }
       
-    }
+    // }
     
     
     
@@ -229,9 +234,9 @@ export default injectIntl(class extends React.Component {
         
         
         <Panel
-          heading="メールアドレス登録"
+          heading="通知設定"
           pathArr={pathArr}
-          defaultExpanded={false}
+          defaultExpanded={true}
         >
           
           
@@ -240,10 +245,10 @@ export default injectIntl(class extends React.Component {
               margin: 0 0 12px 0;
             `}
           >
-            メールアドレスを登録しておくとパスワードを忘れたときに、メールを利用してパスワードを再設定できるようになります。
+            ブラウザで通知を受け取れるプッシュ通知の設定を行えます。
           </p>
           
-          <p
+          {/*<p
             css={css`
               margin: 0 0 12px 0;
             `}
@@ -253,7 +258,7 @@ export default injectIntl(class extends React.Component {
           
           <p>
             メールは confirmation@gameusers.org こちらのアドレスから届きます。ドメイン指定をされている方は @gameusers.org を受信できるように設定してください。
-          </p>
+          </p>*/}
           
           
           
@@ -261,63 +266,7 @@ export default injectIntl(class extends React.Component {
           {/* フォーム */}
           <form>
             
-            
-            {/*  */}
-            <div
-              css={css`
-                border-top: 1px dashed #848484;
-                margin: 36px 0 0 0;
-                padding: 24px 0 0 0;
-              `}
-            >
               
-              
-              {/* E-Mail Address */}
-              <div>
-                <TextField
-                  css={css`
-                    width: 400px;
-                    
-                    @media screen and (max-width: 480px) {
-                      width: 100%;
-                    }
-                  `}
-                  id="email"
-                  label="メールアドレス"
-                  value={validationUsersEmailObj.value}
-                  onChange={(eventObj) => handleEdit({
-                    pathArr: [...pathArr, 'email'],
-                    value: eventObj.target.value
-                  })}
-                  error={validationUsersEmailObj.error}
-                  helperText={intl.formatMessage({ id: validationUsersEmailObj.messageID }, { numberOfCharacters: validationUsersEmailObj.numberOfCharacters })}
-                  disabled={buttonDisabled}
-                  margin="normal"
-                  inputProps={{
-                    maxLength: 32,
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconMailOutline />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-              
-              
-              <div
-                css={css`
-                  margin: 0 0 0 0;
-                `}
-              >
-                {componentConfirmation}
-              </div>
-              
-              
-            </div>
-            
             
             
             
@@ -336,10 +285,10 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleSubmitEmail({ pathArr })}
+                onClick={() => handleWebPushSubscribe({ type: 'urSettings' })}
                 disabled={buttonDisabled}
               >
-                確認メールを送信
+                通知を許可する
               </Button>
               
               
@@ -399,9 +348,9 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                onClick={() => handleSubmitDeleteEmail({
-                  pathArr,
-                })}
+                // onClick={() => handleSubmitDeleteEmail({
+                //   pathArr,
+                // })}
                 color="primary"
                 autoFocus
               >

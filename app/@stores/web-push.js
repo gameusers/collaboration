@@ -132,7 +132,7 @@ class Store {
   @action.bound
   async handleServiceWorkerRegister() {
     
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       
       
       // ---------------------------------------------
@@ -198,22 +198,6 @@ class Store {
       }
       
       
-      // --------------------------------------------------
-      //   console.log
-      // --------------------------------------------------
-      
-      // console.log(`
-      //   ----------------------------------------\n
-      //   /app/@stores/web-push.js - handleUpdateUsersWebPushSubscriptionObj
-      // `);
-      
-      // console.log(chalk`
-      //   email: {green ${email}}
-      //   emailSource: {green ${emailSource}}
-      //   emailConfirmation: {green ${emailConfirmation}}
-      // `);
-      
-      
     } catch (errorObj) {
       
       throw errorObj;
@@ -262,9 +246,9 @@ class Store {
         // true 解除成功 / false 解除失敗
         const unsubscribe = await oldSubscriptionObj.unsubscribe();
         
-        console.log(chalk`
-          unsubscribe: {green ${unsubscribe}}
-        `);
+        // console.log(chalk`
+        //   unsubscribe: {green ${unsubscribe}}
+        // `);
         
       }
       
@@ -357,10 +341,10 @@ class Store {
       //   /app/@stores/web-push.js - webPushSubscribe
       // `);
       
-      console.log(chalk`
-        convertedVapidKey: {green ${convertedVapidKey}}
-        permission: {green ${permission}}
-      `);
+      // console.log(chalk`
+      //   convertedVapidKey: {green ${convertedVapidKey}}
+      //   permission: {green ${permission}}
+      // `);
       
       // console.log(`
       //   ----- this.webPushRegistrationObj -----\n
@@ -372,11 +356,11 @@ class Store {
     } catch (errorObj) {
       
       
-      console.log(`
-        ----- errorObj -----\n
-        ${util.inspect(errorObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- errorObj -----\n
+      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------

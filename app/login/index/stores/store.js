@@ -207,10 +207,21 @@ class Store {
    * ログインフォームを送信する
    */
   @action.bound
-  async handleLogin() {
+  async handleLogin({ eventObj }) {
     
     
     try {
+      
+      
+      // ---------------------------------------------
+      //   フォームの送信処理停止
+      // ---------------------------------------------
+      
+      if (eventObj) {
+        eventObj.preventDefault();
+      }
+      
+      
       
       
       // ---------------------------------------------

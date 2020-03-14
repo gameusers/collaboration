@@ -229,10 +229,21 @@ class Store {
    * アカウント作成フォームを送信する
    */
   @action.bound
-  async handleCreateAccount() {
+  async handleCreateAccount({ eventObj }) {
     
     
     try {
+      
+      
+      // ---------------------------------------------
+      //   フォームの送信処理停止
+      // ---------------------------------------------
+      
+      if (eventObj) {
+        eventObj.preventDefault();
+      }
+      
+      
       
       
       // ---------------------------------------------

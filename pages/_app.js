@@ -298,11 +298,9 @@ class MyApp extends App {
     await this.stores.webPush.handleServiceWorkerRegister();
     
     
-    // --------------------------------------------------
-    //   Web Push Subscribe
-    // --------------------------------------------------
-    
-    // await this.stores.webPush.webPushSubscribe();
+    // console.log(chalk`
+    //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
+    // `);
     
     
   }

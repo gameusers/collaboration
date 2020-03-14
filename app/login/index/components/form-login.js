@@ -135,6 +135,7 @@ export default injectIntl(class extends React.Component {
       handleRecaptchaReset,
       handlePasswordShow,
       handlePasswordMouseDown,
+      handleLogin,
       
     } = storeLoginIndex;
     
@@ -196,6 +197,10 @@ export default injectIntl(class extends React.Component {
     // `);
     
     
+    // console.log(chalk`
+    //   process.env.VERIFY_RECAPTCHA: {green ${process.env.VERIFY_RECAPTCHA} / ${typeof process.env.VERIFY_RECAPTCHA}}
+    //   process.env.VERIFY_RECAPTCHA === '0': {green ${process.env.VERIFY_RECAPTCHA === '0'}}
+    // `);
     
     
     // --------------------------------------------------
@@ -217,7 +222,9 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Form */}
-        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'login' })}>
+        <form
+          onSubmit={(eventObj) => process.env.VERIFY_RECAPTCHA === '1' ? handleRecaptchaReset({ eventObj, formType: 'login' }) : handleLogin({ eventObj })}
+        >
           
           
           {/* Login ID */}

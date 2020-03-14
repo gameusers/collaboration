@@ -281,7 +281,9 @@ export default class extends React.Component {
     //   https://github.com/codeep/react-recaptcha-v3
     // --------------------------------------------------
     
-    loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
+    if (process.env.VERIFY_RECAPTCHA === '1' && process.env.RECAPTCHA_SITE_KEY) {
+      loadReCaptcha(process.env.RECAPTCHA_SITE_KEY);
+    }
     
     
   }
@@ -388,15 +390,17 @@ export default class extends React.Component {
               
               
               {/* reCAPTCHA */}
-              <ReCaptcha
-                ref={ref => this.recaptcha = ref}
-                sitekey={process.env.RECAPTCHA_SITE_KEY}
-                action='createAccount'
-                verifyCallback={(response) => this.storesObj.storeLoginResetPassword.handleRecaptchaResponse({
-                  response,
-                  ref: this.recaptcha,
-                })}
-              />
+              {(process.env.VERIFY_RECAPTCHA === '1' && process.env.RECAPTCHA_SITE_KEY) &&
+                <ReCaptcha
+                  ref={ref => this.recaptcha = ref}
+                  sitekey={process.env.RECAPTCHA_SITE_KEY}
+                  action='createAccount'
+                  verifyCallback={(response) => this.storesObj.storeLoginResetPassword.handleRecaptchaResponse({
+                    response,
+                    ref: this.recaptcha,
+                  })}
+                />
+              }
               
               
               {/* Create Account */}

@@ -183,10 +183,21 @@ class Store {
    * パスワードリセットフォームを送信する
    */
   @action.bound
-  async handleResetPassword() {
+  async handleResetPassword({ eventObj }) {
     
     
     try {
+      
+      
+      // ---------------------------------------------
+      //   フォームの送信処理停止
+      // ---------------------------------------------
+      
+      if (eventObj) {
+        eventObj.preventDefault();
+      }
+      
+      
       
       
       // ---------------------------------------------

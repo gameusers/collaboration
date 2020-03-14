@@ -131,7 +131,7 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      handleSubmitWebPushSubscribe,
+      // handleSubmitWebPushSubscribe,
       
     } = storeUrSettings;
     
@@ -208,8 +208,13 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/ur/settings/components/form-web-push.js
+    // `);
+    
     // console.log(chalk`
-    //   topPageName: {green ${topPageName}}
+    //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
     // `);
     
     // console.log(`

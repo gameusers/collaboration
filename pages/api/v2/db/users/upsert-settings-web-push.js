@@ -35,7 +35,7 @@ const ModelUsers = require('../../../../../app/@database/users/model');
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { sendNotification }  = require('../../../../../app/@modules/web-push');
+const { sendNotifications }  = require('../../../../../app/@modules/web-push');
 
 
 // ---------------------------------------------
@@ -154,33 +154,6 @@ export default async (req, res) => {
     };
     
     
-    // --------------------------------------------------
-    //   Find One / DB email-confirmations
-    // --------------------------------------------------
-    
-    // const docEmailConfirmationsObj = await ModelEmailConfirmations.findOne({
-      
-    //   conditionObj: {
-    //     users_id: loginUsers_id
-    //   }
-      
-    // });
-    
-    // const emailConfirmations_id = lodashGet(docEmailConfirmationsObj, ['_id'], shortid.generate());
-    // const emailConfirmationsCount = lodashGet(docEmailConfirmationsObj, ['count'], 0);
-    
-    
-    
-    
-    // // --------------------------------------------------
-    // //   メールを送れるのは1日に3回まで、それ以上はエラーにする
-    // // --------------------------------------------------
-    
-    // if (emailConfirmationsCount >= 3) {
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XzR7k_Fh3', messageID: 'EAvJztLfH' }] });
-    // }
-    
-    
     
     
     // --------------------------------------------------
@@ -199,11 +172,11 @@ export default async (req, res) => {
     //   - users
     // ---------------------------------------------
     
-    const usersConditionObj = {
+    const conditionObj = {
       _id: loginUsers_id
     };
     
-    const usersSaveObj = {
+    const saveObj = {
       $set: {
         updatedDate: ISO8601,
         webPushSubscriptionObj,
@@ -211,59 +184,34 @@ export default async (req, res) => {
     };
     
     
-    // // ---------------------------------------------
-    // //   - email-confirmations
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - update
+    // ---------------------------------------------
     
-    // const emailConfirmationsConditionObj = {
-    //   _id: emailConfirmations_id
-    // };
-    
-    // const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
-    
-    // const emailConfirmationsSaveObj = {
-    //   $set: {
-    //     createdDate: ISO8601,
-    //     users_id: loginUsers_id,
-    //     emailConfirmationID,
-    //     type: 'email',
-    //     email: encryptedEmail,
-    //     count: emailConfirmationsCount + 1,
-    //     isSuccess: false,
-    //     ip: req.ip,
-    //     userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
-    //   }
-    // };
-    
-    
-    // // ---------------------------------------------
-    // //   - transaction
-    // // ---------------------------------------------
-    
-    // await ModelUsers.transactionForEditAccount({
+    await ModelUsers.upsert({
       
-    //   usersConditionObj,
-    //   usersSaveObj,
-    //   emailConfirmationsConditionObj,
-    //   emailConfirmationsSaveObj,
+      conditionObj,
+      saveObj,
       
-    // });
+    });
     
     
     // --------------------------------------------------
     //   確認用の通知送信
     // --------------------------------------------------
     
-    sendNotification({
+    const arr = [{
       
       subscriptionObj: webPushSubscriptionObj,
-      title: 'タイトル',
-      body: '本文',
+      title: 'Game Users',
+      body: '通知を許可しました',
       icon: '',
       tag: '',
       TTL: 120,
       
-    });
+    }];
+    
+    sendNotifications({ arr });
     
     
     
@@ -284,14 +232,14 @@ export default async (req, res) => {
     // `);
     
     console.log(`
-      ----- usersConditionObj -----\n
-      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+      ----- conditionObj -----\n
+      ${util.inspect(conditionObj, { colors: true, depth: null })}\n
       --------------------\n
     `);
     
     console.log(`
-      ----- usersSaveObj -----\n
-      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+      ----- saveObj -----\n
+      ${util.inspect(saveObj, { colors: true, depth: null })}\n
       --------------------\n
     `);
     

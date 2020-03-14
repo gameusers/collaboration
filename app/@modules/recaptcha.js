@@ -62,6 +62,7 @@ const verifyRecaptcha = async ({ response, remoteip }) => {
   // --------------------------------------------------
   
   // console.log(chalk`
+  //   process.env.VERIFY_RECAPTCHA: {green ${process.env.VERIFY_RECAPTCHA} / ${typeof process.env.VERIFY_RECAPTCHA}}
   //   process.env.RECAPTCHA_SECRET_KEY: {green ${process.env.RECAPTCHA_SECRET_KEY}}
   //   response: {green ${response}}
   //   remoteip: {green ${remoteip}}

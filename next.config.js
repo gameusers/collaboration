@@ -77,7 +77,7 @@ module.exports = withOffline({
   
   env: {
     
-    ENVIRONMENT: process.env.NODE_ENV,
+    // ENVIRONMENT: process.env.NODE_ENV,
     VERIFY_RECAPTCHA: process.env.VERIFY_RECAPTCHA,
     RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
     

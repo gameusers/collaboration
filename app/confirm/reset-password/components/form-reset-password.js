@@ -232,10 +232,6 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(chalk`
-    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
-    // `);
-    
     
     
     

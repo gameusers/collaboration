@@ -15,7 +15,6 @@ const util = require('util');
 // ---------------------------------------------
 
 const webpush = require('web-push');
-const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 
@@ -28,19 +27,9 @@ const lodashSet = require('lodash/set');
 
 /**
  * 通知を送信する
- * @param {Object} webPushSubscriptionObj - リクエスト
- * @param {string} _id - _id
+ * @param {Array} arr - 送信に必要なデータが入った配列
  */
-const sendNotification = ({
-  
-  subscriptionObj,
-  title,
-  body,
-  icon,
-  tag,
-  TTL,
-  
-}) => {
+const sendNotifications = async ({ arr }) => {
   
   
   // ---------------------------------------------
@@ -50,54 +39,6 @@ const sendNotification = ({
   if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY || !process.env.WEB_PUSH_VAPID_PRIVATE_KEY) {
     return;
   }
-  
-  
-  // --------------------------------------------------
-  //   オプション
-  //   参考：https://github.com/web-push-libs/web-push#sendnotificationpushsubscription-payload-options
-  // --------------------------------------------------
-  
-  const options = {
-    TTL
-  };
-  
-  
-  
-  
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  console.log(`
-    ----------------------------------------\n
-    /app/@modules/web-push.js - sendNotification
-  `);
-  
-  console.log(`
-    ----- subscriptionObj -----\n
-    ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
-  
-  console.log(chalk`
-    process.env.EMAIL_CONTACT_ADDRESS: {green ${process.env.EMAIL_CONTACT_ADDRESS}}
-    title: {green ${title}}
-    body: {green ${body}}
-    icon: {green ${icon}}
-    tag: {green ${tag}}
-    TTL: {green ${TTL}}
-  `);
-  
-  
-  
-  // const vapidKeys = webpush.generateVAPIDKeys();
-  
-  
-  // console.log(`
-  //   ----- vapidKeys -----\n
-  //   ${util.inspect(vapidKeys, { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
   
   
   // --------------------------------------------------
@@ -111,15 +52,104 @@ const sendNotification = ({
   );
   
   
+  
+  
   // --------------------------------------------------
-  //   送信
+  //   Loop
   // --------------------------------------------------
   
-  webpush.sendNotification(
-    subscriptionObj,
-    title,
-    options
-  );
+  for (let valueObj of arr.values()) {
+    
+    
+    // --------------------------------------------------
+    //   Property
+    // --------------------------------------------------
+    
+    const subscriptionObj = valueObj.subscriptionObj;
+    const title = valueObj.title;
+    const body = valueObj.body;
+    const icon = valueObj.icon;
+    const tag = valueObj.tag;
+    const TTL = valueObj.TTL;
+    
+    
+    // --------------------------------------------------
+    //   必要な情報がない場合は処理停止
+    // --------------------------------------------------
+    
+    if (!subscriptionObj || !title || !body || !TTL) {
+      return;
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Payload
+    // --------------------------------------------------
+    
+    const payloadObj = {
+      title,
+      body,
+      icon,
+      tag,
+    };
+    
+    const payload = JSON.stringify(payloadObj);
+    
+    
+    // --------------------------------------------------
+    //   オプション
+    //   参考：https://github.com/web-push-libs/web-push#sendnotificationpushsubscription-payload-options
+    // --------------------------------------------------
+    
+    const optionsObj = {
+      TTL
+    };
+    
+    
+    // --------------------------------------------------
+    //   送信
+    // --------------------------------------------------
+    
+    const resultObj = await webpush.sendNotification(
+      subscriptionObj,
+      payload,
+      optionsObj
+    );
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /app/@modules/web-push.js - sendNotifications
+    `);
+    
+    console.log(`
+      ----- subscriptionObj -----\n
+      ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    console.log(chalk`
+      title: {green ${title}}
+      body: {green ${body}}
+      icon: {green ${icon}}
+      tag: {green ${tag}}
+      TTL: {green ${TTL}}
+    `);
+    
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
+    
+    
+  }
   
   
 };
@@ -132,5 +162,5 @@ const sendNotification = ({
 // --------------------------------------------------
 
 module.exports = {
-  sendNotification,
+  sendNotifications,
 };

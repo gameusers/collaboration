@@ -142,6 +142,7 @@ export default injectIntl(class extends React.Component {
       handlePasswordMouseDown,
       handlePasswordConfirmationShow,
       handlePasswordConfirmationMouseDown,
+      handleCreateAccount,
       
     } = storeLoginAccount;
     
@@ -240,10 +241,6 @@ export default injectIntl(class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(chalk`
-    //   process.env.RECAPTCHA_SITE_KEY: {green ${process.env.RECAPTCHA_SITE_KEY}}
-    // `);
-    
     
     
     
@@ -286,7 +283,9 @@ export default injectIntl(class extends React.Component {
         
         
         {/* Form */}
-        <form onSubmit={(eventObj) => handleRecaptchaReset({ eventObj, formType: 'createAccount' })}>
+        <form
+          onSubmit={(eventObj) => process.env.VERIFY_RECAPTCHA === '1' ? handleRecaptchaReset({ eventObj, formType: 'createAccount' }) : handleCreateAccount({ eventObj })}
+        >
           
           
           {/* Login ID */}

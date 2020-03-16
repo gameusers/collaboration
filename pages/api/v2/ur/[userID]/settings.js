@@ -24,7 +24,6 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelUsers = require('../../../../../app/@database/users/model');
-// const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
 // ---------------------------------------------
@@ -208,7 +207,6 @@ export default async (req, res) => {
     
     
     
-    
     // --------------------------------------------------
     //   データ取得 / Users
     //   設定情報を取得するため
@@ -222,14 +220,34 @@ export default async (req, res) => {
       
     });
     
+    
+    // --------------------------------------------------
+    //   Login ID
+    // --------------------------------------------------
+    
     returnObj.loginID = lodashGet(usersSettingsObj, ['loginID'], '');
     
     
+    // --------------------------------------------------
+    //   E-Mail
+    // --------------------------------------------------
+    
     const emailValue = lodashGet(usersSettingsObj, ['emailObj', 'value'], '');
     returnObj.email = emailValue ? decrypt(emailValue) : '';
-    
-    // returnObj.emailValue = lodashGet(usersSettingsObj, ['emailObj', 'value'], '');
     returnObj.emailConfirmation = lodashGet(usersSettingsObj, ['emailObj', 'confirmation'], false);
+    
+    
+    // --------------------------------------------------
+    //   webPushSubscriptionObj / endpoint
+    // --------------------------------------------------
+    
+    returnObj.webPushPermission = false;
+    
+    const endpoint = lodashGet(usersSettingsObj, ['webPushSubscriptionObj', 'endpoint'], '');
+    
+    if (endpoint) {
+      returnObj.webPushPermission = true;
+    }
     
     
     // console.log(`

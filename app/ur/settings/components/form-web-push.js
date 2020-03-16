@@ -40,15 +40,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Material UI / Icons
 // ---------------------------------------------
 
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconMailOutline from '@material-ui/icons/MailOutline';
+// import InputAdornment from '@material-ui/core/InputAdornment';
+// import IconMailOutline from '@material-ui/icons/MailOutline';
 
 
 // ---------------------------------------------
 //   Validations
 // ---------------------------------------------
 
-import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
+// import { validationUsersEmail } from '../../../../app/@database/users/validations/email';
 
 
 // ---------------------------------------------
@@ -131,15 +131,17 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      // handleSubmitWebPushSubscribe,
+      handleSubmitWebPushSubscribe,
+      handleSubmitWebPushUnsubscribe,
       
     } = storeUrSettings;
     
-    const {
+    // const {
       
-      handleWebPushSubscribe,
+    //   // handleSubmitWebPushSubscribe,
+    //   handleWebPushUnsubscribe,
       
-    } = stores.webPush;
+    // } = stores.webPush;
     
     
     
@@ -164,42 +166,23 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   E-Mail Address
+    //   Web Push Permission
     // --------------------------------------------------
     
-    // const email = lodashGet(dataObj, [...pathArr, 'email'], '');
-    // const validationUsersEmailObj = validationUsersEmail({ value: email });
-    
-    
-    // // --------------------------------------------------
-    // //   E-Mail Confirmation
-    // // --------------------------------------------------
-    
-    // const emailSource = lodashGet(dataObj, [...pathArr, 'emailSource'], '');
-    // const emailConfirmation = lodashGet(dataObj, [...pathArr, 'emailConfirmation'], false);
-    
-    
+    const webPushPermission = lodashGet(dataObj, [...pathArr, 'webPushPermission'], false);
     
     
     // --------------------------------------------------
-    //   Component - Confirmation
+    //   Component - Permission
     // --------------------------------------------------
     
-    // let componentConfirmation = '';
+    let componentPermission = <span css={css` color: red`}>[現在、通知の許可は受けていません]</span>;
     
-    // if (email) {
+    if (webPushPermission) {
       
-    //   if (emailConfirmation && emailSource === email) {
-        
-    //     componentConfirmation = <span css={css` color: green`}>このメールアドレスは確認済みです</span>;
-        
-    //   } else {
-        
-    //     componentConfirmation = <span css={css` color: red`}>このメールアドレスは確認が必要です</span>;
-        
-    //   }
+      componentPermission = <span css={css` color: green`}>[通知は許可済みです]</span>;
       
-    // }
+    }
     
     
     
@@ -214,7 +197,7 @@ export default injectIntl(class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   process.env.NODE_ENV: {green ${process.env.NODE_ENV}}
+    //   webPushPermission: {green ${webPushPermission}}
     // `);
     
     // console.log(`
@@ -253,26 +236,30 @@ export default injectIntl(class extends React.Component {
             ブラウザで通知を受け取れるプッシュ通知の設定を行えます。
           </p>
           
-          {/*<p
+          <p
             css={css`
               margin: 0 0 12px 0;
             `}
           >
-            メールアドレスを入力して「確認メールを送信」ボタンを押すと、入力したメールアドレスに確認メールが届きます。24時間以内に表示されているURLにアクセスして登録を完了してください。24時間以内にアクセスできなかった場合は、再度ボタンを押してください。もう一度、確認メールが送信されます。
+            通知を受けたいデバイス（スマートフォン、タブレット、PCなど）で、このページにアクセスして「通知を許可する」ボタンを押してください。
           </p>
           
-          <p>
-            メールは confirmation@gameusers.org こちらのアドレスから届きます。ドメイン指定をされている方は @gameusers.org を受信できるように設定してください。
-          </p>*/}
+          <p
+            css={css`
+              margin: 0 0 12px 0;
+            `}
+          >
+            通知に対応しているブラウザは Chrome、Edge、Firefox、Opera になります。
+          </p>
+          
+          
+          <p>{componentPermission}</p>
           
           
           
           
           {/* フォーム */}
           <form>
-            
-              
-            
             
             
             {/* Submit Button */}
@@ -290,7 +277,9 @@ export default injectIntl(class extends React.Component {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleWebPushSubscribe({ type: 'urSettings' })}
+                onClick={() => handleSubmitWebPushSubscribe({
+                  pathArr,
+                })}
                 disabled={buttonDisabled}
               >
                 通知を許可する
@@ -311,7 +300,7 @@ export default injectIntl(class extends React.Component {
                   })}
                   disabled={buttonDisabled}
                 >
-                  削除する
+                  許可を取り消す
                 </Button>
               </div>
               
@@ -338,11 +327,11 @@ export default injectIntl(class extends React.Component {
           aria-describedby="alert-dialog-description1"
         >
           
-          <DialogTitle id="alert-dialog-title1">メールアドレス削除</DialogTitle>
+          <DialogTitle id="alert-dialog-title1">通知の許可取り消し</DialogTitle>
           
           <DialogContent>
             <DialogContentText id="alert-dialog-description1">
-              メールアドレスを削除しますか？
+              通知の許可を取り消しますか？
             </DialogContentText>
           </DialogContent>
           
@@ -353,9 +342,9 @@ export default injectIntl(class extends React.Component {
               `}
             >
               <Button
-                // onClick={() => handleSubmitDeleteEmail({
-                //   pathArr,
-                // })}
+                onClick={() => handleSubmitWebPushUnsubscribe({
+                  pathArr,
+                })}
                 color="primary"
                 autoFocus
               >

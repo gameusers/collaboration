@@ -314,7 +314,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/follow`,
+        urlApi: `${process.env.URL_API}/v1/login/follow`,
         methodType: 'POST',
         formData: formData
       });

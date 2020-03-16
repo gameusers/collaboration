@@ -28,10 +28,10 @@ import flush from 'styled-jsx/server';
 class MyDocument extends Document {
   render() {
     return (
-      <html>
+      <html lang='ja'>
         <Head>
           <meta charSet='utf-8' />
-          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover' />
+          <meta name='viewport' content='width=device-width, initial-scale=1.0' />
           <meta name='description' content='Hello World!' />
           <meta name='format-detection' content='telephone=no' />
           

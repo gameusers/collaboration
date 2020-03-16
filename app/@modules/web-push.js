@@ -70,6 +70,7 @@ const sendNotifications = async ({ arr }) => {
     const body = valueObj.body;
     const icon = valueObj.icon;
     const tag = valueObj.tag;
+    const url = valueObj.url;
     const TTL = valueObj.TTL;
     
     
@@ -93,6 +94,7 @@ const sendNotifications = async ({ arr }) => {
       body,
       icon,
       tag,
+      url,
     };
     
     const payload = JSON.stringify(payloadObj);
@@ -123,30 +125,31 @@ const sendNotifications = async ({ arr }) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@modules/web-push.js - sendNotifications
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@modules/web-push.js - sendNotifications
+    // `);
     
-    console.log(`
-      ----- subscriptionObj -----\n
-      ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- subscriptionObj -----\n
+    //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      title: {green ${title}}
-      body: {green ${body}}
-      icon: {green ${icon}}
-      tag: {green ${tag}}
-      TTL: {green ${TTL}}
-    `);
+    // console.log(chalk`
+    //   title: {green ${title}}
+    //   body: {green ${body}}
+    //   icon: {green ${icon}}
+    //   tag: {green ${tag}}
+    //   url: {green ${url}}
+    //   TTL: {green ${TTL}}
+    // `);
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
   }

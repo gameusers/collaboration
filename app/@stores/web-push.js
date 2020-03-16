@@ -75,16 +75,16 @@ const parse = ({ obj }) => {
   //   console.log
   // --------------------------------------------------
   
-  console.log(`
-    ----------------------------------------\n
-    /app/@modules/web-push.js - parse
-  `);
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/@modules/web-push.js - parse
+  // `);
   
-  console.log(`
-    ----- returnObj -----\n
-    ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    --------------------\n
-  `);
+  // console.log(`
+  //   ----- returnObj -----\n
+  //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   // --------------------------------------------------
@@ -121,7 +121,7 @@ class Store {
    * Subscription Object
    * @type {Object}
    */
-  webPushSubscriptionObj = {};
+  // webPushSubscriptionObj = {};
   
   
   
@@ -132,77 +132,38 @@ class Store {
   @action.bound
   async handleServiceWorkerRegister() {
     
-    if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-      
-      
-      // ---------------------------------------------
-      //   Service Worker を登録する
-      // ---------------------------------------------
-      
-      this.webPushRegistrationObj = await navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
-      // console.log('serviceWorkerRegister this.webPushRegistrationObj: ', this.webPushRegistrationObj);
-      // console.log(typeof this.webPushRegistrationObj);
-      
-      
-    }
     
-  };
-  
-  
-  
-  
-  /**
-   * DB Users に登録する 
-   */
-  async handleUpdateUsersWebPushSubscriptionObj({ subscriptionObj }) {
-    
-    
-    try {
+    if ('serviceWorker' in navigator) {
       
       
       // ---------------------------------------------
-      //   FormData
+      //   Service Worker を登録する - production
       // ---------------------------------------------
       
-      const formDataObj = {
+      if (process.env.NODE_ENV === 'production') {
         
-        subscriptionObj,
+        this.webPushRegistrationObj = await navigator.serviceWorker.register('/service-worker.js', { scope: '/' });
         
-      };
-      
-      
+        
       // ---------------------------------------------
-      //   Fetch
+      //   登録されている Service Worker を全て削除する
       // ---------------------------------------------
-      
-      const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-web-push`,
-        methodType: 'POST',
-        formData: JSON.stringify(formDataObj)
-      });
-      
-      
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Error
-      // ---------------------------------------------
-      
-      if ('errorsArr' in resultObj) {
-        throw new CustomError({ errorsArr: resultObj.errorsArr });
+        
+      } else {
+        
+        this.webPushRegistrationObj = await navigator.serviceWorker.getRegistrations();
+        
+        for(let registration of this.webPushRegistrationObj) {
+          registration.unregister();
+        }
+        
+        console.log('unregister');
+        
       }
       
       
-    } catch (errorObj) {
-      
-      throw errorObj;
-      
     }
+    
     
     
   };
@@ -213,9 +174,10 @@ class Store {
   /**
    * 購読する
    * 参考：https://github.com/web-push-libs/web-push
+   * @param {Array} pathArr - パス
    */
-  @action.bound
-  async handleWebPushSubscribe({ type }) {
+  // @action.bound
+  async handleWebPushSubscribe() {
     
     
     try {
@@ -312,19 +274,10 @@ class Store {
         
         
         // ---------------------------------------------
-        //   subscriptionObj を保存する
+        //   subscriptionObj を返す
         // ---------------------------------------------
         
-        this.webPushSubscriptionObj = parse({ obj: newSubscriptionObj });
-        
-        
-        // ---------------------------------------------
-        //   DB Users に登録する
-        // ---------------------------------------------
-        
-        if (type === 'urSettings') {
-          this.handleUpdateUsersWebPushSubscriptionObj({ subscriptionObj: this.webPushSubscriptionObj });
-        }
+        return parse({ obj: newSubscriptionObj });
         
         
       }
@@ -355,29 +308,91 @@ class Store {
       
     } catch (errorObj) {
       
-      
-      // console.log(`
-      //   ----- errorObj -----\n
-      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
-      // ---------------------------------------------
-      //   Snackbar: Error
-      // ---------------------------------------------
-      
-      storeLayout.handleSnackbarOpen({
-        variant: 'error',
-        messageID: 'KkWs0oIKw',
-      });
-      
+      throw errorObj;
       
     }
     
     
   };
   
+  
+  
+  
+  /**
+   * 購読を解除する
+   * @param {Array} pathArr - パス
+   */
+  // @action.bound
+  async handleWebPushUnsubscribe() {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   必要なデータがない場合は処理停止
+      // ---------------------------------------------
+      
+      if (!process.env.WEB_PUSH_VAPID_PUBLIC_KEY) {
+        return false;
+      }
+      
+      
+      // ---------------------------------------------
+      //   購読済みかどうかをチェックする / 購読していない場合は null が返る
+      //   購読済みの場合、購読を解除する
+      // ---------------------------------------------
+      
+      const oldSubscriptionObj = await this.webPushRegistrationObj.pushManager.getSubscription();
+      
+      if (oldSubscriptionObj) {
+        
+        // true 解除成功 / false 解除失敗
+        const unsubscribe = await oldSubscriptionObj.unsubscribe();
+        
+        // console.log(chalk`
+        //   unsubscribe: {green ${unsubscribe}}
+        // `);
+        
+        
+        // ---------------------------------------------
+        //   購読解除成功
+        // ---------------------------------------------
+        
+        return true;
+        
+      }
+      
+      
+      // ---------------------------------------------
+      //   購読解除失敗
+      // ---------------------------------------------
+      
+      return false;
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/@stores/web-push.js - webPushUnsubscribe
+      // `);
+      
+      // console.log(chalk`
+      //   unsubscribe: {green ${unsubscribe}}
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      throw errorObj;
+      
+    }
+    
+    
+  };
   
   
 }
@@ -414,51 +429,6 @@ export default function initStoreWebPush({ propsObj }) {
     
     // if (lodashHas(propsObj, ['cookie'])) {
     //   storeWebPush.cookie = propsObj.cookie;
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Header
-    // // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['headerObj'])) {
-    //   storeWebPush.headerObj = propsObj.headerObj;
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Login
-    // // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['login'])) {
-    //   storeWebPush.login = propsObj.login;
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Login Users
-    // // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['loginUsersObj'])) {
-    //   storeWebPush.loginUsersObj = propsObj.loginUsersObj;
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   Datetime Current
-    // // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['datetimeCurrent'])) {
-    //   storeWebPush.setDatetimeCurrent({ ISO8601: propsObj.datetimeCurrent });
-    // }
-    
-    
-    // // --------------------------------------------------
-    // //   cardPlayersObj
-    // // --------------------------------------------------
-    
-    // if (lodashHas(propsObj, ['cardPlayersObj'])) {
-    //   storeWebPush.cardPlayersObj = propsObj.cardPlayersObj;
     // }
     
     

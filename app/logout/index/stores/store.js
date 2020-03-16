@@ -89,7 +89,7 @@ class Store {
       // ---------------------------------------------
       
       const resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/logout`,
+        urlApi: `${process.env.URL_API}/v1/login/logout`,
         // urlApi: `${process.env.URL_API}/v2/logout/logout`,
         methodType: 'POST',
         formData: JSON.stringify(formDataObj)

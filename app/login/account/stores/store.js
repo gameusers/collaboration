@@ -410,7 +410,7 @@ class Store {
       // ---------------------------------------------
       
       resultObj = await fetchWrapper({
-        urlApi: `${process.env.URL_API}/v1/users/login`,
+        urlApi: `${process.env.URL_API}/v1/login/login`,
         methodType: 'POST',
         formData: formData,
       });

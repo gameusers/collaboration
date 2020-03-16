@@ -33,7 +33,6 @@ const ModelUsers = require('../../../../../app/@database/users/model');
 const { verifyCsrfToken } = require('../../../../../app/@modules/csrf');
 const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 const { CustomError } = require('../../../../../app/@modules/error/custom');
-const { sendNotifications }  = require('../../../../../app/@modules/web-push');
 
 
 // ---------------------------------------------
@@ -41,13 +40,12 @@ const { sendNotifications }  = require('../../../../../app/@modules/web-push');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUsersWebPushSubscriptionObjEndpointServer, validationUsersWebPushSubscriptionObjKeysP256dhServer, validationUsersWebPushSubscriptionObjKeysAuthServer } = require('../../../../../app/@database/users/validations/web-push-server');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: uVdh-Q9Y9
+//   endpointID: VfBJS7Mz2
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -75,24 +73,10 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   POST Data
-    // --------------------------------------------------
-    
-    const bodyObj = JSON.parse(req.body);
-    
-    const { 
-      
-      subscriptionObj,
-      
-    } = bodyObj;
-    
-    
-    // --------------------------------------------------
     //   Log Data
     // --------------------------------------------------
     
     lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
-    lodashSet(requestParametersObj, ['subscriptionObj'], subscriptionObj ? '******' : {});
     
     
     
@@ -110,19 +94,8 @@ export default async (req, res) => {
     
     if (!req.isAuthenticated()) {
       statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'R_M1YZU-c', messageID: 'xLLNIpo6a' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'ZvxgUyzpC', messageID: 'xLLNIpo6a' }] });
     }
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const endpoint = lodashGet(subscriptionObj, ['endpoint'], '');
-    const p256dh = lodashGet(subscriptionObj, ['keys', 'p256dh'], '');
-    const auth = lodashGet(subscriptionObj, ['keys', 'auth'], '');
     
     
     
@@ -132,9 +105,6 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     await validationIP({ throwError: true, value: req.ip });
-    await validationUsersWebPushSubscriptionObjEndpointServer({ value: endpoint });
-    await validationUsersWebPushSubscriptionObjKeysP256dhServer({ value: p256dh });
-    await validationUsersWebPushSubscriptionObjKeysAuthServer({ value: auth });
     
     
     
@@ -144,10 +114,10 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const webPushSubscriptionObj = {
-      endpoint,
+      endpoint: '',
       keys: {
-        p256dh,
-        auth,
+        p256dh: '',
+        auth: '',
       }
     };
     
@@ -196,39 +166,16 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   確認用の通知送信
-    // --------------------------------------------------
-    
-    const arr = [{
-      
-      subscriptionObj: webPushSubscriptionObj,
-      title: 'Game Users',
-      body: '通知を許可しました',
-      icon: '/img/common/icons/icon-128x128.png',
-      tag: 'web-push-subscription',
-      url: '',
-      TTL: 120,
-      
-    }];
-    
-    sendNotifications({ arr });
-    
-    
-    
-    
-    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/users/upsert-settings-web-push.js
+    //   /pages/api/v2/db/users/delete-settings-web-push.js
     // `);
     
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
-    //   email: {green ${email}}
-    //   emailConfirmationID: {green ${emailConfirmationID}}
     // `);
     
     // console.log(`
@@ -262,7 +209,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'uVdh-Q9Y9',
+      endpointID: 'VfBJS7Mz2',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

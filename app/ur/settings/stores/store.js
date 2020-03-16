@@ -42,6 +42,7 @@ import { validationUsersEmail } from '../../../@database/users/validations/email
 // --------------------------------------------------
 
 import initStoreData from '../../../@stores/data';
+import initStoreWebPush from '../../../@stores/web-push';
 import initStoreLayout from '../../../common/layout/stores/layout';
 import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/form';
 
@@ -52,6 +53,7 @@ import initStoreImageAndVideoForm from '../../../common/image-and-video/stores/f
 
 let storeUrSettings = null;
 let storeData = initStoreData({});
+let storeWebPush = initStoreWebPush({});
 let storeLayout = initStoreLayout({});
 let storeImageAndVideoForm = initStoreImageAndVideoForm({});
       
@@ -808,6 +810,297 @@ class Store {
   };
   
   
+  
+  
+  /**
+   * 通知設定 - 購読する
+   * @param {Array} pathArr - パス
+   */
+  @action.bound
+  async handleSubmitWebPushSubscribe({ pathArr }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Subscribe
+      // ---------------------------------------------
+      
+      const subscriptionObj = await storeWebPush.handleWebPushSubscribe();
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {
+        
+        subscriptionObj,
+        
+      };
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/users/upsert-settings-web-push`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj)
+      });
+      
+      
+      // ---------------------------------------------
+      //   Error
+      // ---------------------------------------------
+      
+      if ('errorsArr' in resultObj) {
+        throw new CustomError({ errorsArr: resultObj.errorsArr });
+      }
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Permission true
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'webPushPermission'], true);
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/ur/settings/stores/store.js - handleSubmitWebPushSubscribe
+      // `);
+      
+      // console.log(chalk`
+      //   resultSubscribe: {green ${resultSubscribe}}
+      // `);
+      
+      // console.log(`
+      //   ----- subscriptionObj -----\n
+      //   ${util.inspect(subscriptionObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // console.log(`
+      //   ----- errorObj -----\n
+      //   ${util.inspect(errorObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        messageID: 'KkWs0oIKw',
+      });
+      
+      
+    } finally {
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
+  
+  
+  /**
+   * 通知設定 - 購読解除する
+   * @param {Array} pathArr - パス
+   */
+  @action.bound
+  async handleSubmitWebPushUnsubscribe({ pathArr }) {
+    
+    
+    try {
+      
+      
+      // ---------------------------------------------
+      //   Loading 表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingShow({});
+      
+      
+      // ---------------------------------------------
+      //   Button Disable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonDisable({ pathArr });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Unsubscribe
+      // ---------------------------------------------
+      
+      const resultUnsubscribe = await storeWebPush.handleWebPushUnsubscribe();
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   FormData
+      // ---------------------------------------------
+      
+      const formDataObj = {};
+      
+      
+      // ---------------------------------------------
+      //   Fetch
+      // ---------------------------------------------
+      
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/users/delete-settings-web-push`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj)
+      });
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Permission false
+      // ---------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'webPushPermission'], false);
+      
+      
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Success
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'success',
+        messageID: 'lJRp1gpPT',
+      });
+      
+      
+      
+      
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/ur/settings/stores/store.js - handleSubmitWebPushUnsubscribe
+      // `);
+      
+      // console.log(chalk`
+      //   resultUnsubscribe: {green ${resultUnsubscribe}}
+      // `);
+      
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      
+    } catch (errorObj) {
+      
+      
+      // ---------------------------------------------
+      //   Snackbar: Error
+      // ---------------------------------------------
+      
+      storeLayout.handleSnackbarOpen({
+        variant: 'error',
+        errorObj,
+      });
+      
+      
+    } finally {
+      
+      
+      // --------------------------------------------------
+      //   ダイアログを非表示にする
+      // --------------------------------------------------
+      
+      lodashSet(this.dataObj, [...pathArr, 'showDialog'], false);
+      
+      
+      // ---------------------------------------------
+      //   Button Enable
+      // ---------------------------------------------
+      
+      storeLayout.handleButtonEnable({ pathArr });
+      
+      
+      // ---------------------------------------------
+      //   Loading 非表示
+      // ---------------------------------------------
+      
+      storeLayout.handleLoadingHide({});
+      
+      
+    }
+    
+    
+  };
+  
+  
 }
 
 
@@ -904,6 +1197,17 @@ export default function initStoreUrSettings({ propsObj }) {
     
     if (lodashHas(propsObj, ['emailConfirmation'])) {
       lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formEmailObj', 'emailConfirmation'], propsObj.emailConfirmation);
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Web Push Permission
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['webPushPermission'])) {
+      lodashSet(storeUrSettings, ['dataObj', ...pathArr, 'formWebPushObj', 'webPushPermission'], propsObj.webPushPermission);
     }
     
     

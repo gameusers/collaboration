@@ -157,7 +157,7 @@ class Store {
           registration.unregister();
         }
         
-        console.log('unregister');
+        // console.log('unregister');
         
       }
       

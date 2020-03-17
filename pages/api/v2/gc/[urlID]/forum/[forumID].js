@@ -1,5 +1,5 @@
 // --------------------------------------------------
-//   Require
+//   Import
 // --------------------------------------------------
 
 // ---------------------------------------------
@@ -14,44 +14,55 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-const lodashGet = require('lodash/get');
-const lodashSet = require('lodash/set');
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
+import ModelUserCommunities from '../../../../../../app/@database/user-communities/model';
+import ModelForumThreads from '../../../../../../app/@database/forum-threads/model';
+
+// const ModelUserCommunities = require('../../../../../../app/@database/user-communities/model');
+// const ModelForumThreads = require('../../../../../../app/@database/forum-threads/model');
 
 
 // ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
-const { verifyCsrfToken } = require('../../../../../../app/@modules/csrf');
-const { returnErrorsArr } = require('../../../../../../app/@modules/log/log');
-const { CustomError } = require('../../../../../../app/@modules/error/custom');
+import { returnErrorsArr } from '../../../../../../app/@modules/log/log';
+import { CustomError } from '../../../../../../app/@modules/error/custom';
+
+
+// const { returnErrorsArr } = require('../../../../../../app/@modules/log/log');
+// const { CustomError } = require('../../../../../../app/@modules/error/custom');
 
 
 // ---------------------------------------------
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../../app/@locales/locale');
+import { locale } from '../../../../../../app/@locales/locale';
+
+// const { locale } = require('../../../../../../app/@locales/locale');
 
 
 // ---------------------------------------------
 //   API
 // ---------------------------------------------
 
-const { initialProps } = require('../../../../../../app/@api/v2/common');
+import { initialProps } from '../../../../../../app/@api/v2/common';
+
+// const { initialProps } = require('../../../../../../app/@api/v2/common');
 
 
 
 
 // --------------------------------------------------
-//   endpointID: 5GMP5E__4
+//   endpointID: w4Dpv8Rf1
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -88,37 +99,19 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   POST Data
+    //   GET Data
     // --------------------------------------------------
     
-    const bodyObj = JSON.parse(req.body);
-    
-    const {
-      
-      userCommunityID
-      
-    } = bodyObj;
+    const userCommunityID = req.query.userCommunityID;
+    const forumID = req.query.forumID;
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
+    lodashSet(requestParametersObj, ['forumID'], forumID);
     
-    
-    
-    
-    // ---------------------------------------------
-    //   Verify CSRF
-    // ---------------------------------------------
-    
-    verifyCsrfToken(req, res);
-    
-    
-    // --------------------------------------------------
-    //   Login Check
-    // --------------------------------------------------
-    
-    if (!req.isAuthenticated()) {
-      statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'xWkmN-gAs', messageID: 'xLLNIpo6a' }] });
-    }
+    // console.log(chalk`
+    //   userCommunityID: {green ${userCommunityID}}
+    //   forumID: {green ${forumID}}
+    // `);
     
     
     
@@ -130,7 +123,6 @@ export default async (req, res) => {
     const commonInitialPropsObj = await initialProps({ req, res, localeObj });
     
     returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
     returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     
@@ -140,64 +132,66 @@ export default async (req, res) => {
     //   DB find / User Community
     // --------------------------------------------------
     
-    const userCommunityObj = await ModelUserCommunities.findForUserCommunitySettings({ localeObj, loginUsers_id, userCommunityID });
+    const userCommunityObj = await ModelUserCommunities.findForUserCommunity({
+      localeObj,
+      loginUsers_id,
+      userCommunityID,
+    });
     
-    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
-    const userCommunitiesUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
-    
-    
-    // --------------------------------------------------
-    //   コミュニティが存在しない場合はエラー
-    // --------------------------------------------------
-    
-    if (!userCommunities_id) {
+    if (Object.keys(userCommunityObj).length === 0) {
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'fppwXm8iV', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AULmon_4K', messageID: 'Error' }] });
     }
     
+    const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
     returnObj.userCommunityObj = userCommunityObj;
     
     
+    // const userCommunityArr = await ModelUserCommunities.findForUserCommunity({
+    //   localeObj,
+    //   loginUsers_id,
+    //   userCommunityID,
+    // });
+    
+    // if (userCommunityArr.length === 0) {
+    //   statusCode = 404;
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'AULmon_4K', messageID: 'Error' }] });
+    // }
+    
+    // const userCommunities_id = lodashGet(userCommunityArr, [0, '_id'], '');
+    // returnObj.userCommunityObj = userCommunityArr[0];
+    
+    
+    
+    
     // --------------------------------------------------
-    //   コミュニティのオーナーでない場合はエラー
+    //   DB find / Forum Threads For List
     // --------------------------------------------------
     
-    if (userCommunitiesUsers_id !== loginUsers_id) {
-      statusCode = 403;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '5rP5wjjRU', messageID: 'Error' }] });
-    }
-    
-    
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+      localeObj,
+      loginUsers_id,
+      userCommunities_id,
+    });
     
     
     // --------------------------------------------------
-    //   console.log
+    //   DB find / Forum
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
-    // `);
+    const forumObj = await ModelForumThreads.findForForumBy_forumID({
+      req,
+      localeObj,
+      loginUsers_id,
+      _id: forumID,
+      userCommunities_id,
+    });
     
-    // console.log(chalk`
-    //   /pages/api/v2/uc/[userCommunityID]/settings/index.js
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunitiesUsers_id: {green ${userCommunitiesUsers_id}}
-    //   userCommunityID: {green ${userCommunityID}}
-    //   userCommunities_id：{green ${userCommunities_id}}
-    // `);
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
     
-    // console.log(`
-    //   ----- userCommunityObj -----\n
-    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     // ---------------------------------------------
@@ -216,7 +210,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: '5GMP5E__4',
+      endpointID: 'w4Dpv8Rf1',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

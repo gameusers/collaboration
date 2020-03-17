@@ -114,7 +114,6 @@ export default injectIntl(class extends React.Component {
       
       stores,
       intl,
-      userCommunities_id,
       description,
       createdDate,
       followedCount,

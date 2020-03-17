@@ -6,8 +6,8 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
@@ -15,35 +15,10 @@ const util = require('util');
 // ---------------------------------------------
 
 import { action, observable } from 'mobx';
-import moment from 'moment';
 import lodashGet from 'lodash/get';
 import lodashSet from 'lodash/set';
 import lodashHas from 'lodash/has';
 import lodashMerge from 'lodash/merge';
-
-
-// ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-import { fetchWrapper } from '../../../@modules/fetch';
-import { CustomError } from '../../../@modules/error/custom';
-
-
-// ---------------------------------------------
-//   Validation
-// ---------------------------------------------
-
-// const { validationUsersLoginID } = require('../../../@database/users/validations/login-id');
-// const { validationUsersLoginPassword, validationUsersLoginPasswordConfirmation } = require('../../../@database/users/validations/login-password');
-// const { validationUsersEmail } = require('../../../@database/users/validations/email');
-
-
-// --------------------------------------------------
-//   Stores
-// --------------------------------------------------
-
-import initStoreLayout from '../../../common/layout/stores/layout';
 
 
 // --------------------------------------------------
@@ -51,7 +26,6 @@ import initStoreLayout from '../../../common/layout/stores/layout';
 // --------------------------------------------------
 
 let storeUcCommunity = null;
-let storeLayout = initStoreLayout({});
       
 
 
@@ -96,10 +70,21 @@ class Store {
 
 export default function initStoreUcCommunity({}) {
   
+  
+  // --------------------------------------------------
+  //   Store
+  // --------------------------------------------------
+  
   if (storeUcCommunity === null) {
     storeUcCommunity = new Store();
   }
   
+  
+  // --------------------------------------------------
+  //   Return
+  // --------------------------------------------------
+  
   return storeUcCommunity;
+  
   
 }

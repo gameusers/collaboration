@@ -40,12 +40,11 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreUcCommunity from '../../../app/uc/community/stores/store';
+import initStoreUcMembers from '../../../app/uc/members/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
-import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
-import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
+import initStoreFollowMembers from '../../../app/common/follow-members/stores/store';
 
 
 // ---------------------------------------------
@@ -55,11 +54,9 @@ import initStoreFollow from '../../../app/common/follow/stores/store';
 import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
-import ForumNavigation from '../../../app/common/forum/components/navigation';
-import ForumThread from '../../../app/common/forum/components/thread';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
+import FollowMembers from '../../../app/common/follow-members/components/followers';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
-import Abount from '../../../app/uc/community/components/about';
 
 
 
@@ -77,12 +74,11 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUcCommunity = initStoreUcCommunity({});
+  const storeUcMember = initStoreUcMembers({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
-  const storeForum = initStoreForum({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
-  const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
+  const storeFollowMembers = initStoreFollowMembers({ propsObj });
   
   
   // --------------------------------------------------
@@ -91,12 +87,11 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeUcCommunity,
+    storeUcMember,
     storeCardPlayer,
-    storeForum,
     storeImageAndVideo,
-    storeImageAndVideoForm,
     storeFollow,
+    storeFollowMembers,
     
   };
   
@@ -108,7 +103,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: https://dev-1.gameusers.org/uc/***
+//   URL: http://dev-1.gameusers.org:8080/uc/***/members
 // --------------------------------------------------
 
 @observer
@@ -138,8 +133,7 @@ export default class extends React.Component {
     const reqHeadersCookie = lodashGet(req, ['headers', 'cookie'], '');
     const reqAcceptLanguage = lodashGet(req, ['headers', 'accept-language'], '');
     const userCommunityID = query.userCommunityID;
-    const pathname = `/uc/${userCommunityID}`;
-    const temporaryDataID = `/uc/${userCommunityID}`;
+    const pathname = `/uc/${userCommunityID}/members`;
     
     
     // --------------------------------------------------
@@ -148,13 +142,10 @@ export default class extends React.Component {
     
     const stores = initStoreRoot({});
     
-    const forumThreadListPage = stores.data.getTemporaryDataForumThreadListPage({ temporaryDataID });
-    const forumThreadListLimit = stores.data.getCookie({ key: 'forumThreadListLimit' });
+    const page = stores.data.getTemporaryData({ pathname, key: 'followPage' });
+    const limit = stores.data.getCookie({ key: 'followLimit' });
     
-    const forumThreadPage = stores.data.getTemporaryDataForumThreadPage({ temporaryDataID });
-    const forumThreadLimit = stores.data.getCookie({ key: 'forumThreadLimit' });
-    const forumCommentLimit = stores.data.getCookie({ key: 'forumCommentLimit' });
-    const forumReplyLimit = stores.data.getCookie({ key: 'forumReplyLimit' });
+    
     
     
     // --------------------------------------------------
@@ -162,7 +153,7 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const resultObj = await fetchWrapper({
-      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}?forumThreadListPage=${forumThreadListPage}&forumThreadListLimit=${forumThreadListLimit}&forumThreadPage=${forumThreadPage}&forumThreadLimit=${forumThreadLimit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/uc/${userCommunityID}/members?page=${page}&limit=${limit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -174,7 +165,7 @@ export default class extends React.Component {
     const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
     const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
-    const accessRightRead = lodashGet(resultObj, ['data', 'accessRightRead'], false);
+    const communityType = lodashGet(resultObj, ['data', 'userCommunityObj', 'communityType'], 'open');
     
     
     
@@ -183,7 +174,14 @@ export default class extends React.Component {
     //   Title
     // --------------------------------------------------
     
-    const title = `${userCommunityName}`;
+    const title = `${userCommunityName}: メンバー`;
+    
+    
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const pathArr = [userCommunities_id, 'ucMember'];
     
     
     
@@ -197,10 +195,11 @@ export default class extends React.Component {
         name: 'トップ',
         href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}`,
-      }
+      },
+      
     ];
     
-    if (accessRightRead) {
+    if (communityType === 'open' || (communityType === 'closed' && accessLevel >= 3)) {
       headerNavMainArr.push(
         {
           name: 'メンバー',
@@ -220,7 +219,7 @@ export default class extends React.Component {
       );
     }
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -233,39 +232,18 @@ export default class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/uc/[userCommunityID]/index.js
+    //   /pages/uc/[userCommunityID]/members.js
     // `);
     
     // console.log(chalk`
-    //   forumThreadListLimit: {green ${forumThreadListLimit}}
-    //   forumThreadLimit: {green ${forumThreadLimit}}
-    //   forumCommentLimit: {green ${forumCommentLimit}}
-    //   forumReplyLimit: {green ${forumReplyLimit}}
-      
-    //   forumThreadListPage: {green ${forumThreadListPage}}
-    //   forumThreadPage: {green ${forumThreadPage}}
-    // `);
-    
-    // console.log(`
-    //   ----- reqHeadersCookie -----\n
-    //   ${util.inspect(reqHeadersCookie, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   userCommunityID: {green ${userCommunityID}}
-    //   userCommunityName: {green ${userCommunityName}}
-    //   author: {green ${author}}
+    //   memberPage: {green ${memberPage}}
+    //   memberLimit: {green ${memberLimit}}
     // `);
     
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----------------------------------------
     // `);
     
     
@@ -279,9 +257,9 @@ export default class extends React.Component {
       
       statusCode,
       reqAcceptLanguage,
-      temporaryDataID,
       userCommunityID,
       userCommunities_id,
+      accessLevel,
       title,
       storesObj,
       propsObj,
@@ -306,19 +284,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     super(props);
-    
-    
-    // const isServer = !process.browser;
-    
-    // if (isServer) {
-      
-    //   console.log('Server: constructor');
-      
-    // } else {
-      
-    //   console.log('Client: constructor');
-      
-    // }
     
     
     // --------------------------------------------------
@@ -383,53 +348,16 @@ export default class extends React.Component {
     }
     
     
-    // --------------------------------------------------
-    //   Setting
-    // --------------------------------------------------
-    
-    const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
-    const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
     
     
     // --------------------------------------------------
-    //   About
+    //   path
     // --------------------------------------------------
     
-    const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
-    const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
-    const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
-    const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
-    const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
-    const followedCount = lodashGet(this.props, ['propsObj', 'headerObj', 'followedCount'], 1);
-    const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
+    const pathArr = lodashGet(this.props, ['propsObj', 'pathArr'], []);
+    const pathname = lodashGet(this.props, ['propsObj', 'pathname'], '');
     
     
-    // console.log(`
-    //   ----- this.props -----\n
-    //   ${util.inspect(this.props, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(chalk`
-    //   createdDate: {green ${createdDate}}
-    //   description: {green ${description}}
-    //   followedCount: {green ${followedCount}}
-    // `);
-    
-    // console.log(`
-    //   ----- gamesArr -----\n
-    //   ${util.inspect(gamesArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    
-    
-    // console.log(chalk`
-    //   this.props.settingAnonymity: {green ${this.props.settingAnonymity}}
-    //   this.settingAnonymity: {green ${this.settingAnonymity}}
-    //   this.props.userCommunities_id: {green ${this.props.userCommunities_id}}
-    // `);
     
     
     // --------------------------------------------------
@@ -482,13 +410,7 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                {accessRightRead &&
-                  <ForumNavigation
-                    temporaryDataID={this.props.temporaryDataID}
-                    userCommunityID={this.props.userCommunityID}
-                    userCommunities_id={this.props.userCommunities_id}
-                  />
-                }
+                
               </Sidebar>
               
               
@@ -510,39 +432,18 @@ export default class extends React.Component {
             >
               
               
-              {/* フォーラム */}
-              {accessRightRead &&
-                <Element
-                  name="forumThreads"
-                >
-                  <ForumThread
-                    temporaryDataID={this.props.temporaryDataID}
-                    userCommunityID={this.props.userCommunityID}
-                    userCommunities_id={this.props.userCommunities_id}
-                    settingAnonymity={settingAnonymity}
-                  />
-                </Element>
-              }
-              
-              
-              {/* About Community */}
-              <div
-                css={css`
-                  ${accessRightRead ? 'margin: 32px 0 0 0' : 'margin: 0 0 0 0'};
-                `}
+              {/* Follow Members */}
+              <Element
+                name="followMembers"
               >
-                <Abount
-                  pathArr={[this.props.userCommunities_id, 'about']}
-                  description={description}
-                  createdDate={createdDate}
-                  followedCount={followedCount}
-                  communityType={communityType}
-                  approval={approval}
-                  anonymity={anonymity}
-                  gamesArr={gamesArr}
-                  accessRightRead={accessRightRead}
+                <FollowMembers
+                  pageType="uc"
+                  userCommunities_id={this.props.userCommunities_id}
+                  pathArr={pathArr}
+                  pathname={pathname}
+                  accessLevel={this.props.accessLevel}
                 />
-              </div>
+              </Element>
               
               
             </div>

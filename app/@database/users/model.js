@@ -716,6 +716,7 @@ const findOneForLoginUsersObj = async ({
           loginPassword: 0,
           emailObj: 0,
           country: 0,
+          webPushSubscriptionObj: 0,
         }
       },
       
@@ -775,231 +776,6 @@ const findOneForLoginUsersObj = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- formattedImagesAndVideosThumbnailObj -----\n
-    //   ${util.inspect(formattedImagesAndVideosThumbnailObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return returnObj;
-    
-    
-  } catch (err) {
-    
-    throw err;
-    
-  }
-  
-  
-};
-
-
-
-
-/**
- * フォーマットする / 現状、多言語に対応していない。localeObjを使用していない。
- * @param {Array} arr - 配列
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @return {Object} 取得データ
- */
-// const format = async ({ arr, loginUsers_id }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnObj = {};
-  
-  
-//   // --------------------------------------------------
-//   //   Loop
-//   // --------------------------------------------------
-  
-//   for (let valueObj of arr.values()) {
-    
-    
-//     // --------------------------------------------------
-//     //   _id
-//     // --------------------------------------------------
-    
-//     const _id = lodashGet(valueObj, ['_id'], '');
-    
-    
-//     // --------------------------------------------------
-//     //   Return Object
-//     // --------------------------------------------------
-    
-//     returnObj[_id] = {
-//       // _id,
-//       name: lodashGet(valueObj, ['cardPlayersArr', 0, 'nameObj', 'value'], ''),
-//       status: lodashGet(valueObj, ['cardPlayersArr', 0, 'statusObj', 'value'], ''),
-//       exp: lodashGet(valueObj, ['exp'], 0),
-//       followCount: lodashGet(valueObj, ['followCount'], 0),
-//       followedCount: lodashGet(valueObj, ['followedCount'], 0),
-//       followed: false,
-//       accessDate: lodashGet(valueObj, ['accessDate'], ''),
-//       userID: lodashGet(valueObj, ['userID'], ''),
-//       role: lodashGet(valueObj, ['role'], 'User'),
-//     };
-    
-    
-//     // --------------------------------------------------
-//     //   Follow の処理
-//     // --------------------------------------------------
-    
-//     if (loginUsers_id) {
-      
-//       const followedArr = lodashGet(valueObj, ['followedArr'], []);
-      
-//       if (
-//         loginUsers_id &&
-//         _id !== loginUsers_id &&
-//         followedArr.includes(loginUsers_id)
-//       ) {
-//         returnObj[_id].followed = true;
-//       }
-      
-//     }
-    
-    
-//     // --------------------------------------------------
-//     //   画像の処理
-//     // --------------------------------------------------
-    
-//     const thumbnailArr = lodashGet(valueObj, ['cardPlayersArr', 0, 'imagesAndVideosObj', 'thumbnailArr'], []);
-//     const formattedArr = formatImagesAndVideosArr({ arr: thumbnailArr });
-    
-//     if (formattedArr.length > 0) {
-//       returnObj[_id].thumbnailObj = formattedArr[0];
-//     }
-    
-    
-//     // console.log(valueObj);
-    
-//   }
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return returnObj;
-  
-  
-// };
-
-
-
-
-/**
- * 検索してデータを取得する / 1件だけ
- * @param {Object} conditionObj - 検索条件
- * @param {String} select - 必要な情報を選択
- * @return {Object} 取得データ
- */
-const findFormatted = async (conditionObj, loginUsers_id) => {
-  
-  
-  // --------------------------------------------------
-  //   Return Value
-  // --------------------------------------------------
-  
-  let returnObj = {};
-  
-  
-  // --------------------------------------------------
-  //   Database
-  // --------------------------------------------------
-  
-  try {
-    
-    
-    // --------------------------------------------------
-    //   FindOne
-    // --------------------------------------------------
-    
-    const docArr = await Schema.find(conditionObj).select('_id accessDate name status playerId exp followArr followCount followedArr followedCount role').exec();
-    
-    if (docArr === null) {
-      return returnObj;
-    }
-    
-    
-    // --------------------------------------------------
-    //   Loop
-    // --------------------------------------------------
-    
-    for (let value of docArr.values()) {
-      
-      
-      // --------------------------------------------------
-      //   コピー
-      // --------------------------------------------------
-      
-      const copiedObj = JSON.parse(JSON.stringify(value));
-      
-      
-      // --------------------------------------------------
-      //   Follow の処理
-      // --------------------------------------------------
-      
-      if (loginUsers_id) {
-        
-        copiedObj.followed = false;
-        
-        if (
-          loginUsers_id &&
-          copiedObj._id !== loginUsers_id &&
-          copiedObj.followedArr.includes(loginUsers_id)
-        ) {
-          copiedObj.followed = true;
-        }
-        
-      }
-      
-      
-      // --------------------------------------------------
-      //   _id をキーにして削除する
-      // --------------------------------------------------
-      
-      delete copiedObj._id;
-      delete copiedObj.followArr;
-      delete copiedObj.followedArr;
-      returnObj[value._id] = copiedObj;
-      
-    }
-    
-    
-    
-    
-    
-    // console.log(chalk`
-    //   loginUsers_id: {green ${loginUsers_id}}
-    // `);
-    
-    // console.log(`
-    //   ----- docArr -----\n
-    //   ${util.inspect(docArr, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
     
     
     
@@ -1154,8 +930,6 @@ const transactionForEditAccount = async ({ usersConditionObj, usersSaveObj, emai
   }
   
 };
-
-
 
 
 
@@ -1433,9 +1207,6 @@ module.exports = {
   
   findOneForUser,
   findOneForLoginUsersObj,
-  findFormatted,
-  // updateForFollow,
-  // transactionForCreateAccount,
   transactionForEditAccount,
   transactionForUpsert,
   

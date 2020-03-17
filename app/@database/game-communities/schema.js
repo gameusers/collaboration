@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   createdDate: { type: Date, required: true },
   updatedDate: { type: Date, required: true },
@@ -21,6 +22,7 @@ const schema = mongoose.Schema({
     forum: { type: Date, required: true },
   },
   anonymity: { type: Boolean, required: true }
+  
 });
 
 

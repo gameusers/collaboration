@@ -6,14 +6,15 @@
 //   Console
 // ---------------------------------------------
 
-const chalk = require('chalk');
-const util = require('util');
+import chalk from 'chalk';
+import util from 'util';
 
 
 // ---------------------------------------------
 //   Node Packages
 // ---------------------------------------------
 
+// const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -24,7 +25,8 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
+// const ModelFollows = require('../../../../../app/@database/follows/model');
+const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
 // ---------------------------------------------
@@ -40,8 +42,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
-const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
+const { validationFollowLimit } = require('../../../../../app/@database/follows/validations/follow-limit');
 
 
 // ---------------------------------------------
@@ -61,7 +62,7 @@ const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 // --------------------------------------------------
-//   endpointID: R8-TcJ2vj
+//   endpointID: K3yzgjQpD
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -93,6 +94,11 @@ export default async (req, res) => {
   const loginUsersRole = lodashGet(req, ['user', 'role'], '');
   
   
+  // console.log(`
+  //   ----- req.user -----\n
+  //   ${util.inspect(req.user, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   try {
@@ -103,20 +109,22 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const userCommunityID = req.query.userCommunityID;
-    const forumThreadListPage = parseInt(req.query.forumThreadListPage, 10);
-    const forumThreadListLimit = parseInt(req.query.forumThreadListLimit, 10);
-    const forumThreadPage = parseInt(req.query.forumThreadPage, 10);
-    const forumThreadLimit = parseInt(req.query.forumThreadLimit, 10);
-    const forumCommentLimit = parseInt(req.query.forumCommentLimit, 10);
-    const forumReplyLimit = parseInt(req.query.forumReplyLimit, 10);
+    const page = parseInt(req.query.page, 10);
+    const limit = parseInt(req.query.limit, 10);
     
     lodashSet(requestParametersObj, ['userCommunityID'], userCommunityID);
-    lodashSet(requestParametersObj, ['forumThreadListPage'], forumThreadListPage);
-    lodashSet(requestParametersObj, ['forumThreadListLimit'], forumThreadListLimit);
-    lodashSet(requestParametersObj, ['forumThreadPage'], forumThreadPage);
-    lodashSet(requestParametersObj, ['forumThreadLimit'], forumThreadLimit);
-    lodashSet(requestParametersObj, ['forumCommentLimit'], forumCommentLimit);
-    lodashSet(requestParametersObj, ['forumReplyLimit'], forumReplyLimit);
+    lodashSet(requestParametersObj, ['page'], page);
+    lodashSet(requestParametersObj, ['limit'], limit);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Validations
+    // --------------------------------------------------
+    
+    await validationInteger({ throwError: true, value: page });
+    await validationFollowLimit({ throwError: true, value: limit });
     
     
     
@@ -146,6 +154,12 @@ export default async (req, res) => {
       
     });
     
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     // ---------------------------------------------
     //   - コミュニティのデータがない場合はエラー
@@ -153,15 +167,16 @@ export default async (req, res) => {
     
     if (Object.keys(userCommunityObj).length === 0) {
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'X0Y2qe9V8', messageID: 'Error' }] });
     }
     
     
     // ---------------------------------------------
-    //   - userCommunities_id
+    //   - userCommunities_id & adminUsers_id
     // ---------------------------------------------
     
     const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
+    const adminUsers_id = lodashGet(userCommunityObj, ['users_id'], '');
     
     
     // ---------------------------------------------
@@ -191,11 +206,42 @@ export default async (req, res) => {
     const followsFollow = lodashGet(returnObj, ['headerObj', 'followsObj', 'follow'], false);
     const followsBlocked = lodashGet(returnObj, ['headerObj', 'followsObj', 'followBlocked'], false);
     
-    returnObj.accessRightRead = false;
-    
-    if (communityType === 'open' || (communityType === 'closed' && followsFollow)) {
-      returnObj.accessRightRead = true;
+    if (communityType === 'closed' && !followsFollow) {
+      statusCode = 403;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zoqcOuILt', messageID: 'Error' }] });
     }
+    
+    // console.log(`
+    //   ----- returnObj.headerObj -----\n
+    //   ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(chalk`
+    //   followsAdmin: {green ${followsAdmin}}
+    //   followsFollow: {green ${followsFollow}}
+    //   followsBlocked: {green ${followsBlocked}}
+    // `);
+    
+    
+    // --------------------------------------------------
+    //    DB find / Card Players
+    // --------------------------------------------------
+    
+    const resultFollowersObj = await ModelCardPlayers.findForFollowers({
+      
+      localeObj,
+      loginUsers_id,
+      adminUsers_id,
+      userCommunities_id,
+      controlType: 'followed',
+      page,
+      limit,
+      
+    });
+    
+    returnObj.cardPlayersObj = resultFollowersObj.cardPlayersObj;
+    returnObj.followMembersObj = resultFollowersObj.followMembersObj;
     
     
     
@@ -263,90 +309,51 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   権限
+    //   0: ブロックしているユーザー
+    //   1: 非ログインユーザー
+    //   2: ログインユーザー（以下ログイン済みユーザー）
+    //   3: 自分のことをフォローしているユーザー
+    //   4: 自分がフォローしているユーザー
+    //   5: 相互フォロー状態のユーザー
+    //   50: 自分自身（コミュニティの管理者）
+    //   100: サイト管理者
+    // --------------------------------------------------
+    
+    
+    
+    
+    // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/uc/[userCommunityID]/index.js
+    //   /pages/api/v2/uc/[userCommunityID]/members.js
     // `);
     
     // console.log(chalk`
+    //   userCommunityID: {green ${userCommunityID}}
+    //   userCommunities_id: {green ${userCommunities_id}}
     //   communityType: {green ${communityType}}
     //   member: {green ${member}}
-    //   returnObj.accessRightRead: {green ${returnObj.accessRightRead}}
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
     //   ----------------------------------------
     // `);
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   コンテンツを表示していい場合はフォーラムのデータを取得
-    // --------------------------------------------------
-    
-    if (returnObj.accessRightRead) {
-      
-      
-      // --------------------------------------------------
-      //   DB find / Forum Threads For List
-      // --------------------------------------------------
-      
-      let argumentsObj = {
-        localeObj,
-        loginUsers_id,
-        userCommunities_id,
-      };
-      
-      if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
-        argumentsObj.page = forumThreadListPage;
-      }
-      
-      if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
-        argumentsObj.limit = forumThreadListLimit;
-      }
-      
-      returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
-      
-      
-      // --------------------------------------------------
-      //   DB find / Forum
-      // --------------------------------------------------
-      
-      argumentsObj = {
-        req,
-        localeObj,
-        loginUsers_id,
-        userCommunities_id,
-      };
-      
-      if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
-        argumentsObj.threadPage = forumThreadPage;
-      }
-      
-      if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
-        argumentsObj.threadLimit = forumThreadLimit;
-      }
-      
-      if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
-        argumentsObj.commentLimit = forumCommentLimit;
-      }
-      
-      if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
-        argumentsObj.replyLimit = forumReplyLimit;
-      }
-      
-      const forumObj = await ModelForumThreads.findForForum(argumentsObj);
-      
-      returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-      returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-      returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-      
-      
-    }
     
     
     
@@ -367,7 +374,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'R8-TcJ2vj',
+      endpointID: 'K3yzgjQpD',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

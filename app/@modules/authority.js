@@ -26,7 +26,7 @@ const lodashSet = require('lodash/set');
 // --------------------------------------------------
 
 /**
- * 権限をセット / _idを配列に追加してセッションに格納する
+ * 権限をセット / _id を配列に追加してセッションに格納する
  * @param {Object} req - リクエスト
  * @param {string} _id - _id
  */
@@ -69,7 +69,9 @@ const setAuthority = ({ req, _id }) => {
 
 
 /**
- * 権限を確認 / セッションに格納されている配列に _id が含まれているかチェックする
+ * 権限を確認
+ * ログインユーザーの場合、管理者＝ログインユーザーで権限あり
+ * 非ログインユーザーの場合、セッションに格納されている配列に _id が含まれているかチェックする
  * @param {Object} req - リクエスト
  * @param {string} users_id - 作者のユーザーID
  * @param {string} loginUsers_id - ログインしているユーザーID

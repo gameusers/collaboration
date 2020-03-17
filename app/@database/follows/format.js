@@ -90,6 +90,21 @@ const formatFollowsObj = ({ followsObj, adminUsers_id, loginUsers_id }) => {
   
   
   // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/@database/follows/format.js
+  // `);
+  
+  // console.log(chalk`
+  //   adminUsers_id: {green ${adminUsers_id}}
+  //   loginUsers_id: {green ${loginUsers_id}}
+  // `);
+  
+  
+  // --------------------------------------------------
   //   Return Value
   // --------------------------------------------------
   

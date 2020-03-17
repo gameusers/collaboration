@@ -43,6 +43,7 @@ import IconKeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown';
 // ---------------------------------------------
 
 import LinkIcons from './link-icons';
+import FollowButton from '../../../follow/components/gc-button';
 
 
 
@@ -129,12 +130,18 @@ export default class extends React.Component {
     const { stores, heroImage } = this.props;
     
     
+    
+    
     // --------------------------------------------------
     //   Data
     // --------------------------------------------------
     
     const headerDataOpen = lodashGet(stores, ['layout', 'headerDataOpen'], false);
     const name = lodashGet(stores, ['data', 'headerObj', 'name'], '');
+    const gameCommunities_id = lodashGet(stores, ['data', 'headerObj', 'gameCommunities_id'], '');
+    const followsObj = lodashGet(stores, ['data', 'headerObj', 'followsObj'], {});
+    
+    
     
     
     // --------------------------------------------------
@@ -275,13 +282,6 @@ export default class extends React.Component {
               right: 15px;
               bottom: 15px;
               padding: 0 0 6px 0;
-              
-              // @media screen and (max-width: 480px) {
-              //   position: static;
-              //   right: auto;
-              //   bottom: auto;
-              //   margin: 10px auto;
-              // }
             `}
           >
             
@@ -313,6 +313,13 @@ export default class extends React.Component {
             <p css={cssInfo}>開発 | {developer}</p>
             
             <LinkIcons linkArr={linkArr} />
+            
+            
+            <FollowButton
+              gameCommunities_id={gameCommunities_id}
+              followsObj={followsObj}
+            />
+          
             
           </div>
         ;

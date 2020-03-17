@@ -363,7 +363,10 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
       ...matchConditionArr,
       
       
-      // 関連するゲーム
+      // --------------------------------------------------
+      //   games - 関連するゲーム
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -384,7 +387,10 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
               },
               
               
-              // 画像と動画を取得
+              // --------------------------------------------------
+              //   games / images-and-videos / サムネイル用
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
@@ -431,7 +437,10 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
       },
       
       
-      // 画像と動画を取得 - トップ画像
+      // --------------------------------------------------
+      //   images-and-videos / トップ画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -464,7 +473,10 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
       },
       
       
-      // Follows
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -624,6 +636,11 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/user-communities/model.js - findForUserCommunity
+    // `);
+    
     // console.log(chalk`
     //   loginUsers_id: {green ${loginUsers_id}}
     //   userCommunityID: {green ${userCommunityID}}
@@ -651,136 +668,6 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
   
   
 };
-
-
-
-
-/**
-* DBから取得した情報をフォーマットする
-* @param {Object} localeObj - ロケール
-* @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
-* @param {Array} arr - 配列
-* @return {Array}フォーマット後のデータ
-*/
-// const format = ({ localeObj, loginUsers_id, arr }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   console.log
-//   // --------------------------------------------------
-  
-//   // console.log(`
-//   //   ----- localeObj -----\n
-//   //   ${util.inspect(JSON.parse(JSON.stringify(localeObj)), { colors: true, depth: null })}\n
-//   //   --------------------\n
-//   // `);
-  
-//   // console.log(chalk`
-//   //   loginUsers_id: {green ${loginUsers_id}}
-//   // `);
-  
-//   // console.log(`
-//   //   ----- arr -----\n
-//   //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-//   //   --------------------\n
-//   // `);
-  
-  
-//   // --------------------------------------------------
-//   //   Return Value
-//   // --------------------------------------------------
-  
-//   let returnArr = [];
-  
-  
-//   // --------------------------------------------------
-//   //   Loop
-//   // --------------------------------------------------
-  
-//   for (let valueObj of arr.values()) {
-    
-    
-//     // --------------------------------------------------
-//     //   toJSON
-//     // --------------------------------------------------
-    
-//     // let valueObj = obj.toJSON();
-    
-    
-//     // --------------------------------------------------
-//     //   Datetime
-//     // --------------------------------------------------
-    
-//     // cloneObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
-    
-    
-//     // --------------------------------------------------
-//     //   画像の処理
-//     // --------------------------------------------------
-//     // とりあえず画像の処理はしない
-//     // valueObj.imagesAndVideosObj.thumbnailArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.thumbnailArr });
-//     // valueObj.imagesAndVideosObj.mainArr = formatImagesAndVideosArr({ arr: valueObj.imagesAndVideosObj.mainArr });
-    
-    
-//     // --------------------------------------------------
-//     //   Locale
-//     // --------------------------------------------------
-    
-//     const filteredArr = valueObj.localesArr.filter((filterObj) => {
-//       return filterObj.language === localeObj.language;
-//     });
-    
-    
-//     if (lodashHas(filteredArr, [0])) {
-      
-//       valueObj.name = lodashGet(filteredArr, [0, 'name'], '');;
-//       valueObj.description = lodashGet(filteredArr, [0, 'description'], '');
-      
-//     } else {
-      
-//       valueObj.name = lodashGet(valueObj, ['localesArr', 0, 'name'], '');
-//       valueObj.description = lodashGet(valueObj, ['localesArr', 0, 'description'], '');
-      
-//     }
-    
-    
-//     // console.log(`
-//     //   ----- filteredArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(filteredArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-    
-//     // --------------------------------------------------
-//     //   不要な項目を削除する
-//     // --------------------------------------------------
-    
-//     delete valueObj.localesArr;
-//     delete valueObj.__v;
-    
-//     // console.log(`\n---------- valueObj ----------\n`);
-//     // console.dir(valueObj);
-//     // console.log(`\n-----------------------------------\n`);
-    
-    
-//     // --------------------------------------------------
-//     //   push
-//     // --------------------------------------------------
-    
-//     returnArr.push(valueObj);
-    
-    
-//   }
-  
-  
-//   // --------------------------------------------------
-//   //   Return
-//   // --------------------------------------------------
-  
-//   return returnArr;
-  
-  
-// };
 
 
 
@@ -842,7 +729,10 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
       ...matchConditionArr,
       
       
-      // 関連するゲーム
+      // --------------------------------------------------
+      //   games - 関連するゲーム
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -863,7 +753,10 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
               },
               
               
-              // 画像と動画を取得
+              // --------------------------------------------------
+              //   games / images-and-videos / サムネイル用
+              // --------------------------------------------------
+              
               {
                 $lookup:
                   {
@@ -916,7 +809,10 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
       // },
       
       
-      // 画像と動画を取得 - トップ画像
+      // --------------------------------------------------
+      //   images-and-videos / トップ画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -949,7 +845,10 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
       },
       
       
-      // 画像と動画を取得 - サムネイル画像
+      // --------------------------------------------------
+      //   images-and-videos / サムネイル画像
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -982,7 +881,10 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
       },
       
       
-      // Follows
+      // --------------------------------------------------
+      //   follows
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -1029,6 +931,8 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
       
       
     ]).exec();
+    
+    
     
     
     // --------------------------------------------------
@@ -1092,245 +996,6 @@ const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userComm
   
   
 };
-
-
-
-
-
-
-/**
- * ユーザーコミュニティ設定用のデータを取得する
- * @param {Object} localeObj - ロケール
- * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
- * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
- * @param {string} userCommunities_id - DB user-communities _id / _id
- * @return {Array}取得データ
- */
-// const findForUserCommunityHeroImage = async ({ localeObj, loginUsers_id, userCommunityID }) => {
-  
-  
-//   // --------------------------------------------------
-//   //   Database
-//   // --------------------------------------------------
-  
-//   try {
-    
-    
-//     // --------------------------------------------------
-//     //   Property
-//     // --------------------------------------------------
-    
-//     const language = lodashGet(localeObj, ['language'], '');
-//     const country = lodashGet(localeObj, ['country'], '');
-    
-    
-//     // --------------------------------------------------
-//     //   Aggregation
-//     // --------------------------------------------------
-    
-//     const resultArr = await Schema.aggregate([
-      
-      
-//       {
-//         $match : { userCommunityID }
-//       },
-      
-      
-//       // 関連するゲーム
-//       {
-//         $lookup:
-//           {
-//             from: 'games',
-//             let: { gameCommunities_idsArr: '$gameCommunities_idsArr' },
-//             pipeline: [
-              
-//               { $match:
-//                 { $expr:
-//                   { $and:
-//                     [
-//                       { $eq: ['$language', language] },
-//                       { $eq: ['$country', country] },
-//                       { $in: ['$gameCommunities_id', '$$gameCommunities_idsArr'] },
-//                     ]
-//                   },
-//                 }
-//               },
-              
-              
-//               // 画像と動画を取得
-//               {
-//                 $lookup:
-//                   {
-//                     from: 'images-and-videos',
-//                     let: { gamesImagesAndVideosThumbnail_id: '$imagesAndVideosThumbnail_id' },
-//                     pipeline: [
-//                       { $match:
-//                         { $expr:
-//                           { $eq: ['$_id', '$$gamesImagesAndVideosThumbnail_id'] },
-//                         }
-//                       },
-//                       { $project:
-//                         {
-//                           createdDate: 0,
-//                           updatedDate: 0,
-//                           users_id: 0,
-//                           __v: 0,
-//                         }
-//                       }
-//                     ],
-//                     as: 'imagesAndVideosObj'
-//                   }
-//               },
-              
-//               {
-//                 $unwind: {
-//                   path: '$imagesAndVideosObj',
-//                   preserveNullAndEmptyArrays: true,
-//                 }
-//               },
-              
-              
-//               { $project:
-//                 {
-//                   gameCommunities_id: 1,
-//                   name: 1,
-//                   imagesAndVideosObj: 1,
-//                 }
-//               },
-//             ],
-//             as: 'gamesArr'
-//           }
-//       },
-      
-      
-//       // 画像と動画を取得 - トップ画像
-//       {
-//         $lookup:
-//           {
-//             from: 'images-and-videos',
-//             let: { imagesAndVideos_id: '$imagesAndVideos_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$_id', '$$imagesAndVideos_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   createdDate: 0,
-//                   updatedDate: 0,
-//                   users_id: 0,
-//                   __v: 0,
-//                 }
-//               }
-//             ],
-//             as: 'imagesAndVideosObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$imagesAndVideosObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       // Follows
-//       {
-//         $lookup:
-//           {
-//             from: 'follows',
-//             let: { uc_id: '$_id' },
-//             pipeline: [
-//               { $match:
-//                 { $expr:
-//                   { $eq: ['$userCommunities_id', '$$uc_id'] },
-//                 }
-//               },
-//               { $project:
-//                 {
-//                   _id: 0,
-//                   approval: 1,
-//                 }
-//               }
-//             ],
-//             as: 'followsObj'
-//           }
-//       },
-      
-//       {
-//         $unwind: {
-//           path: '$followsObj',
-//           preserveNullAndEmptyArrays: true,
-//         }
-//       },
-      
-      
-//       { $project:
-//         {
-//           userCommunityID: 1,
-//           users_id: 1,
-//           localesArr: 1,
-//           communityType: 1,
-//           anonymity: 1,
-//           imagesAndVideosObj: 1,
-//           imagesAndVideosThumbnailObj: 1,
-//           gamesArr: 1,
-//           followsObj: 1,
-//         }
-//       },
-      
-      
-//     ]).exec();
-    
-    
-//     // --------------------------------------------------
-//     //   Format
-//     // --------------------------------------------------
-    
-//     const returnObj = lodashGet(resultArr, [0], {});
-    
-    
-//     // --------------------------------------------------
-//     //   console.log
-//     // --------------------------------------------------
-    
-//     // console.log(chalk`
-//     //   loginUsers_id: {green ${loginUsers_id}}
-//     //   userCommunityID: {green ${userCommunityID}}
-//     // `);
-    
-//     // console.log(`
-//     //   ----- resultArr -----\n
-//     //   ${util.inspect(JSON.parse(JSON.stringify(resultArr)), { colors: true, depth: null })}\n
-//     //   --------------------\n
-//     // `);
-    
-//     console.log(`
-//       ----- returnObj -----\n
-//       ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-//       --------------------\n
-//     `);
-    
-    
-//     // --------------------------------------------------
-//     //   Return
-//     // --------------------------------------------------
-    
-//     return returnObj;
-    
-    
-//   } catch (err) {
-    
-//     throw err;
-    
-//   }
-  
-  
-// };
-
-
 
 
 
@@ -1593,7 +1258,6 @@ module.exports = {
   
   findForUserCommunity,
   findForUserCommunitySettings,
-  // findForUserCommunityHeroImage,
   
   transactionForUpsertSettings,
   

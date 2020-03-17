@@ -834,7 +834,7 @@ class Store {
 //   Initialize Store
 // --------------------------------------------------
 
-export default function initStoreUcMember({ propsObj }) {
+export default function initStoreUcMembers({ propsObj }) {
   
   
   // --------------------------------------------------
@@ -844,7 +844,7 @@ export default function initStoreUcMember({ propsObj }) {
   if (storeUcMember === null) {
     storeUcMember = new Store();
   }
-  // console.log('initStoreUcMember');
+  // console.log('initStoreUcMembers');
   
   // --------------------------------------------------
   //   Props

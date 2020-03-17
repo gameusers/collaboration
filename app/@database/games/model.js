@@ -28,15 +28,10 @@ const Schema = require('./schema');
 
 
 // ---------------------------------------------
-//   Modules
-// ---------------------------------------------
-
-// const { formatImagesAndVideosObj } = require('../../@modules/image/format');
-// ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
 
@@ -483,6 +478,7 @@ const findForHeroImage = async ({ localeObj }) => {
       {
         $project: {
           // __v: 0,
+          gameCommunities_id: 1,
           urlID: 1,
           imagesAndVideosObj: 1,
           name: 1,

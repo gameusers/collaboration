@@ -104,6 +104,8 @@ class Store {
       storeLayout.handleButtonDisable({ pathArr });
       
       
+      
+      
       // ---------------------------------------------
       //   FormData
       // ---------------------------------------------
@@ -144,6 +146,8 @@ class Store {
       }
       
       
+      
+      
       // ---------------------------------------------
       //   メンバーかどうか、メンバー数を変更
       // ---------------------------------------------
@@ -159,6 +163,8 @@ class Store {
       if (lodashHas(resultObj, ['data', 'followedCount'])) {
         lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
       }
+      
+      
       
       
       // ---------------------------------------------

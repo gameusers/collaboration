@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-// const shortid = require('shortid');
 const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
@@ -163,7 +162,9 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     if (gameCommunities_id) {
+      
       await validationGameCommunities_idServer({ throwError: true, value: gameCommunities_id });
+      
     }
     
     
@@ -250,11 +251,11 @@ export default async (req, res) => {
     const resultObj = await ModelFollows.findOne({ conditionObj });
     
     
-    console.log(`
-      ----- resultObj -----\n
-      ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- resultObj -----\n
+    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------

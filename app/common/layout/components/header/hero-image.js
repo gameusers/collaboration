@@ -146,7 +146,7 @@ export default class extends React.Component {
           
           <img
             css={css`
-              min-height: 220px;
+              min-height: 300px;
               max-width: 100%;
               max-height: 640px;
               object-fit: cover;

@@ -14,7 +14,7 @@ import util from 'util';
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
+// const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -25,7 +25,7 @@ const lodashHas = require('lodash/has');
 // ---------------------------------------------
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-const ModelFollows = require('../../../../../app/@database/follows/model');
+// const ModelFollows = require('../../../../../app/@database/follows/model');
 const ModelCardPlayers = require('../../../../../app/@database/card-players/model');
 
 
@@ -91,8 +91,14 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  const loginUsersRole = lodashGet(req, ['user', 'role'], '');
   
   
+  // console.log(`
+  //   ----- req.user -----\n
+  //   ${util.inspect(req.user, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
   
   
   try {
@@ -148,11 +154,11 @@ export default async (req, res) => {
       
     });
     
-    console.log(`
-      ----- userCommunityObj -----\n
-      ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- userCommunityObj -----\n
+    //   ${util.inspect(userCommunityObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // ---------------------------------------------
@@ -196,14 +202,26 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
-    const member = lodashGet(userCommunityObj, ['member'], false);
+    const followsAdmin = lodashGet(returnObj, ['headerObj', 'followsObj', 'admin'], false);
+    const followsFollow = lodashGet(returnObj, ['headerObj', 'followsObj', 'follow'], false);
+    const followsBlocked = lodashGet(returnObj, ['headerObj', 'followsObj', 'followBlocked'], false);
     
-    if (communityType === 'closed' && !member) {
+    if (communityType === 'closed' && !followsFollow) {
       statusCode = 403;
       throw new CustomError({ level: 'warn', errorsArr: [{ code: 'zoqcOuILt', messageID: 'Error' }] });
     }
     
+    // console.log(`
+    //   ----- returnObj.headerObj -----\n
+    //   ${util.inspect(returnObj.headerObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
+    // console.log(chalk`
+    //   followsAdmin: {green ${followsAdmin}}
+    //   followsFollow: {green ${followsFollow}}
+    //   followsBlocked: {green ${followsBlocked}}
+    // `);
     
     
     // --------------------------------------------------
@@ -233,23 +251,74 @@ export default async (req, res) => {
     //   0: ブロックしているユーザー
     //   1: 非ログインユーザー
     //   2: ログインユーザー（以下ログイン済みユーザー）
-    //   3: 自分のことをフォローしているユーザー
-    //   4: 自分がフォローしているユーザー
-    //   5: 相互フォロー状態のユーザー
-    //   50: 自分自身（コミュニティの管理者）
-    //   100: サイト管理者
+    //   3: コミュニティのメンバー
+    //   50: コミュニティの管理者
+    //   100: サイト運営
     // --------------------------------------------------
     
     returnObj.accessLevel = 1;
     
     
     // ---------------------------------------------
+    //   - サイト運営
+    // ---------------------------------------------
+    
+    if (loginUsersRole === 'administrator') {
+      
+      returnObj.accessLevel = 100;
+      
+      
+    // ---------------------------------------------
     //   - コミュニティの管理者
     // ---------------------------------------------
     
-    if (adminUsers_id === loginUsers_id) {
+    } else if (followsAdmin) {
+      
       returnObj.accessLevel = 50;
+      
+      
+    // ---------------------------------------------
+    //   - コミュニティのメンバー
+    // ---------------------------------------------
+    
+    } else if (followsFollow) {
+      
+      returnObj.accessLevel = 3;
+      
+      
+    // ---------------------------------------------
+    //   - ブロックしているユーザー
+    // ---------------------------------------------
+    
+    } else if (followsBlocked) {
+      
+      returnObj.accessLevel = 0;
+      
+      
+    // ---------------------------------------------
+    //   - ログインユーザー
+    // ---------------------------------------------
+    
+    } else if (loginUsersRole === 'user') {
+      
+      returnObj.accessLevel = 2;
+      
     }
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   権限
+    //   0: ブロックしているユーザー
+    //   1: 非ログインユーザー
+    //   2: ログインユーザー（以下ログイン済みユーザー）
+    //   3: 自分のことをフォローしているユーザー
+    //   4: 自分がフォローしているユーザー
+    //   5: 相互フォロー状態のユーザー
+    //   50: 自分自身（コミュニティの管理者）
+    //   100: サイト管理者
+    // --------------------------------------------------
     
     
     
@@ -260,7 +329,7 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/uc/[userCommunityID]/member.js
+    //   /pages/api/v2/uc/[userCommunityID]/members.js
     // `);
     
     // console.log(chalk`

@@ -59,7 +59,7 @@ import { createCsrfToken } from '../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../app/@stores/root';
-import initStoreIndex from '../app/index/stores/store';
+import initStoreFollow from '../app/common/follow/stores/store';
 
 
 // ---------------------------------------------
@@ -205,21 +205,23 @@ const getOrCreateStore = ({ propsObj }) => {
   // const storeForum = initStoreForum({ propsObj });
   // const storeImageAndVideo = initStoreImageAndVideo({});
   // const storeImageAndVideoForm = initStoreImageAndVideoForm({});
+  const storeFollow = initStoreFollow({});
   
   
   // --------------------------------------------------
   //   Return
   // --------------------------------------------------
   
-  // return {
+  return {
     
-  //   storeUcCommunity,
-  //   storeCardPlayer,
-  //   storeForum,
-  //   storeImageAndVideo,
-  //   storeImageAndVideoForm,
+    // storeUcCommunity,
+    // storeCardPlayer,
+    // storeForum,
+    // storeImageAndVideo,
+    // storeImageAndVideoForm,
+    storeFollow,
     
-  // };
+  };
   
   
 };

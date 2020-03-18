@@ -231,10 +231,10 @@ export default class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
-    // console.log(`
-    //   ----------------------------------------\n
-    //   /pages/gc/[urlID]/index.js
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /pages/gc/[urlID]/index.js
+    `);
     
     // console.log(chalk`
     //   forumThreadListLimit: {green ${forumThreadListLimit}}
@@ -252,11 +252,11 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- resultObj -----\n
-    //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- resultObj -----\n
+      ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

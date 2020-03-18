@@ -41,17 +41,9 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-// const { validationBoolean } = require('../../../../../app/@validations/boolean');
 const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationUsers_idServer } = require('../../../../../app/@database/users/validations/_id-server');
-
-
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../../../../../app/@locales/locale');
 
 
 
@@ -68,15 +60,6 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   let statusCode = 400;
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
   
   
   // --------------------------------------------------
@@ -288,17 +271,27 @@ export default async (req, res) => {
     
     if (approval) {
       
-      // 承認申請がすでに行われている場合は、配列から削除する
+      
+      // ---------------------------------------------
+      //   フォロー申請取り消し
+      //   承認申請がすでに行われている場合は、配列から削除する
+      // ---------------------------------------------
+      
       if (approvalArr.includes(loginUsers_id)) {
         
         approvalArr = approvalArr.filter(value => value !== loginUsers_id);
-        returnObj.memberApproval = false;
+        returnObj.followApproval = false;
         
-      // 承認申請がまだ行われていない場合は、配列に追加する
+        
+      // ---------------------------------------------
+      //   フォロー申請
+      //   承認申請がまだ行われていない場合は、配列に追加する
+      // ---------------------------------------------
+      
       } else {
         
         approvalArr.push(loginUsers_id);
-        returnObj.memberApproval = true;
+        returnObj.followApproval = true;
         
       }
       
@@ -311,17 +304,27 @@ export default async (req, res) => {
       
     } else {
       
-      // すでにメンバーである場合は、配列から削除する
+      
+      // ---------------------------------------------
+      //   フォロー解除
+      //   すでにメンバーである場合は、配列から削除する
+      // ---------------------------------------------
+      
       if (followedArr.includes(loginUsers_id)) {
         
         followedArr = followedArr.filter(value => value !== loginUsers_id);
-        returnObj.member = false;
+        returnObj.follow = false;
         
-      // まだメンバーでない場合は、配列に追加する
+      
+      // ---------------------------------------------
+      //   フォロー
+      //   まだメンバーでない場合は、配列に追加する
+      // ---------------------------------------------
+      
       } else {
         
         followedArr.push(loginUsers_id);
-        returnObj.member = true;
+        returnObj.follow = true;
         
       }
       

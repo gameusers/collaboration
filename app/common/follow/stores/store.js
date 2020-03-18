@@ -83,15 +83,14 @@ class Store {
   // ---------------------------------------------
   
   /**
-   * フォロー / フォロー解除
+   * フォロー / フォロー解除 - ゲームコミュニティ or ユーザーコミュニティ
    * @param {Array} pathArr - パス
-   * @param {string} type - フォロー follow / 
+   * @param {string} type - [followGc / unfollowGc] [followUc / unfollowUc / followApprovalUc / unfollowApprovalUc]
    * @param {string} gameCommunities_id - フォローするゲームコミュニティの _id
    * @param {string} userCommunities_id - フォローするユーザーコミュニティの _id
-   * @param {string} users_id - フォローする相手の _id
    */
   @action.bound
-  async handleFollow({ pathArr, type, gameCommunities_id, userCommunities_id, users_id }) {
+  async handleFollow({ pathArr, type, gameCommunities_id, userCommunities_id }) {
     
     
     try {
@@ -114,7 +113,6 @@ class Store {
         
         gameCommunities_id,
         userCommunities_id,
-        users_id,
         
       };
       
@@ -130,11 +128,11 @@ class Store {
       });
       
       
-      // console.log(`
-      //   ----- resultObj -----\n
-      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
+      console.log(`
+        ----- resultObj -----\n
+        ${util.inspect(resultObj, { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
@@ -146,22 +144,38 @@ class Store {
       }
       
       
+      // --------------------------------------------------
+      //   console.log
+      // --------------------------------------------------
+      
+      console.log(`
+        ----------------------------------------\n
+        /app/common/follow/stores/store.js - handleFollow
+      `);
+      
+      console.log(chalk`
+        type: {green ${type}}
+        gameCommunities_id: {green ${gameCommunities_id}}
+        userCommunities_id: {green ${userCommunities_id}}
+      `);
+      
+      console.log(`
+        ----- storeData.headerObj -----\n
+        ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
+        --------------------\n
+      `);
       
       
       // ---------------------------------------------
       //   メンバーかどうか、メンバー数を変更
       // ---------------------------------------------
       
-      if (lodashHas(resultObj, ['data', 'member'])) {
-        lodashSet(storeData, ['headerObj', 'member'], resultObj.data.member);
-      }
-      
-      if (lodashHas(resultObj, ['data', 'memberApproval'])) {
-        lodashSet(storeData, ['headerObj', 'memberApproval'], resultObj.data.memberApproval);
+      if (lodashHas(resultObj, ['data', 'follow'])) {
+        lodashSet(storeData, ['headerObj', 'followsObj', 'follow'], resultObj.data.follow);
       }
       
       if (lodashHas(resultObj, ['data', 'followedCount'])) {
-        lodashSet(storeData, ['headerObj', 'followedCount'], resultObj.data.followedCount);
+        lodashSet(storeData, ['headerObj', 'followsObj', 'followedCount'], resultObj.data.followedCount);
       }
       
       
@@ -174,6 +188,15 @@ class Store {
       let messageID = 'RTsMTGw-1';
       
       switch (type) {
+        
+        case 'followGc':
+          messageID = 'RTsMTGw-1';
+          break;
+          
+        case 'unfollowGc':
+          messageID = '1z127R0YE';
+          break;
+          
         
         case 'followUc':
           messageID = 'SY6WWDyxQ';
@@ -197,6 +220,8 @@ class Store {
         variant: 'success',
         messageID,
       });
+      
+      
       
       
       // ---------------------------------------------
@@ -277,6 +302,7 @@ class Store {
       
       
       
+      
       // --------------------------------------------------
       //   console.log
       // --------------------------------------------------
@@ -296,6 +322,8 @@ class Store {
       //   type: {green ${type}}
       //   users_id: {green ${users_id} / ${typeof users_id}}
       // `);
+      
+      
       
       
       // ---------------------------------------------

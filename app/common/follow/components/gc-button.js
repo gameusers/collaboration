@@ -35,6 +35,13 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 
+// ---------------------------------------------
+//   Material UI / Icons
+// ---------------------------------------------
+
+import IconPermIdentity from '@material-ui/icons/PermIdentity';
+
+
 // --------------------------------------------------
 //   Stores
 // --------------------------------------------------
@@ -121,6 +128,7 @@ export default class extends React.Component {
     
     const admin = lodashGet(followsObj, ['admin'], false);
     const follow = lodashGet(followsObj, ['follow'], false);
+    const followedCount = lodashGet(followsObj, ['followedCount'], 0);
     const followBlocked = lodashGet(followsObj, ['followBlocked'], false);
     
     
@@ -135,8 +143,8 @@ export default class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    // const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
-    const buttonDisabled = false;
+    const buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    
     
     
     
@@ -145,6 +153,17 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const showDialogUnfollow = lodashGet(dataObj, [...this.pathArr, 'showDialogUnfollow'], false);
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   - 作者またはブロックされている場合
+    // ---------------------------------------------
+    
+    if (admin || followBlocked) {
+      return null;
+    }
     
     
     
@@ -188,12 +207,22 @@ export default class extends React.Component {
           variant="contained"
           color="secondary"
           size="small"
-          onClick={() => handleFollow({
-            pathArr: this.pathArr,
-            type: 'followGc',
-            gameCommunities_id
-          })}
-          disabled={buttonDisabled}
+          onClick={
+            buttonDisabled === false ?
+              () => handleFollow({
+                pathArr: this.pathArr,
+                type: 'followGc',
+                gameCommunities_id
+              })
+            :
+              () => {}
+          }
+          // onClick={() => handleFollow({
+          //   pathArr: this.pathArr,
+          //   type: 'followGc',
+          //   gameCommunities_id
+          // })}
+          // disabled={buttonDisabled}
         >
           フォローする
         </Button>
@@ -213,11 +242,20 @@ export default class extends React.Component {
           variant="contained"
           color="primary"
           size="small"
-          onClick={() => handleEdit({
-            pathArr: [...this.pathArr, 'showDialogUnfollow'],
-            value: true,
-          })}
-          disabled={buttonDisabled}
+          onClick={
+            buttonDisabled === false ?
+              () => handleEdit({
+                pathArr: [...this.pathArr, 'showDialogUnfollow'],
+                value: true,
+              })
+            :
+              () => {}
+          }
+          // onClick={() => handleEdit({
+          //   pathArr: [...this.pathArr, 'showDialogUnfollow'],
+          //   value: true,
+          // })}
+          // disabled={buttonDisabled}
         >
           フォロー中
         </Button>
@@ -226,13 +264,32 @@ export default class extends React.Component {
     }
     
     
-    // ---------------------------------------------
-    //   - 作者またはブロックされている場合
-    // ---------------------------------------------
     
-    if (admin || followBlocked) {
-      return null;
-    }
+    
+    // --------------------------------------------------
+    //   Component - Number of People
+    // --------------------------------------------------
+    
+    let componentNumberOfPeople =  '';
+    
+    componentNumberOfPeople = 
+      <div
+        css={css`
+          display: flex;
+          flex-flow: row wrap;
+          align-items: center;
+          margin: 0 0 0 10px;
+        `}
+      >
+        <IconPermIdentity
+          css={css`
+            font-size: 24px;
+            padding: 0;
+          `}
+        />
+        {followedCount} 人
+      </div>
+    ;
     
     
     
@@ -274,7 +331,22 @@ export default class extends React.Component {
       >
         
         
-        {component}
+        {/* Button */}
+        <div
+          css={css`
+            display: flex;
+            flex-flow: row wrap;
+            align-items: center;
+          `}
+        >
+          
+          {component}
+          
+          {componentNumberOfPeople}
+          
+        </div>
+        
+        
         
         
         {/* フォローを解除するか尋ねるダイアログ */}

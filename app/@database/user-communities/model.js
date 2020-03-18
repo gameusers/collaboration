@@ -611,8 +611,8 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
     headerObj.type = 'uc';
     headerObj.createdDate = returnObj.createdDate;
     headerObj.name = returnObj.name;
-    headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
-    headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
+    // headerObj.approval = lodashGet(returnObj, ['followsObj', 'approval'], false);
+    // headerObj.followedCount = lodashGet(returnObj, ['followsObj', 'followedCount'], 0);
     
     returnObj.headerObj = headerObj;
     

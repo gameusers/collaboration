@@ -148,117 +148,90 @@ export default async (req, res) => {
     });
     
     
-    // // ---------------------------------------------
-    // //   - コミュニティのデータがない場合はエラー
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - コミュニティのデータがない場合はエラー
+    // ---------------------------------------------
     
-    // if (Object.keys(userCommunityObj).length === 0) {
-    //   statusCode = 404;
-    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'retRq6eFo', messageID: 'Error' }] });
-    // }
-    
-    
-    // // ---------------------------------------------
-    // //   - userCommunities_id
-    // // ---------------------------------------------
-    
-    // const userCommunities_id = lodashGet(userCommunityObj, ['_id'], '');
+    if (Object.keys(gameCommunityObj).length === 0) {
+      statusCode = 404;
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
+    }
     
     
-    // // ---------------------------------------------
-    // //   - headerObj
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - gameCommunities_id
+    // ---------------------------------------------
     
-    // if (lodashHas(userCommunityObj, ['headerObj', 'imagesAndVideosObj'])) {
-    //   returnObj.headerObj = userCommunityObj.headerObj;
-    // }
-    
-    // delete userCommunityObj.headerObj;
+    const gameCommunities_id = lodashGet(gameCommunityObj, ['_id'], '');
     
     
-    // // ---------------------------------------------
-    // //   - userCommunityObj
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - headerObj
+    // ---------------------------------------------
     
-    // returnObj.userCommunityObj = userCommunityObj;
+    returnObj.headerObj = gameCommunityObj.headerObj;
     
     
-    // // ---------------------------------------------
-    // //   - コンテンツを表示するかどうか
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - gameCommunityObj
+    // ---------------------------------------------
     
-    // const communityType = lodashGet(userCommunityObj, ['communityType'], 'open');
-    // const followsAdmin = lodashGet(returnObj, ['headerObj', 'followsObj', 'admin'], false);
-    // const followsFollow = lodashGet(returnObj, ['headerObj', 'followsObj', 'follow'], false);
-    // const followsBlocked = lodashGet(returnObj, ['headerObj', 'followsObj', 'followBlocked'], false);
-    
-    // returnObj.accessRightRead = false;
-    
-    // if (communityType === 'open' || (communityType === 'closed' && followsFollow)) {
-    //   returnObj.accessRightRead = true;
-    // }
+    returnObj.gameCommunityObj = gameCommunityObj.gameCommunitiesObj;
     
     
     
     
-    // // --------------------------------------------------
-    // //   権限
-    // //   0: ブロックしているユーザー
-    // //   1: 非ログインユーザー
-    // //   2: ログインユーザー（以下ログイン済みユーザー）
-    // //   3: コミュニティのメンバー
-    // //   50: コミュニティの管理者
-    // //   100: サイト運営
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   権限
+    //   0: ブロックしているユーザー
+    //   1: 非ログインユーザー
+    //   2: ログインユーザー（以下ログイン済みユーザー）
+    //   3: コミュニティのメンバー
+    //   100: サイト運営
+    // --------------------------------------------------
     
-    // returnObj.accessLevel = 1;
+    const followsFollow = lodashGet(returnObj, ['headerObj', 'followsObj', 'follow'], false);
+    const followsBlocked = lodashGet(returnObj, ['headerObj', 'followsObj', 'followBlocked'], false);
+    
+    returnObj.accessLevel = 1;
     
     
-    // // ---------------------------------------------
-    // //   - サイト運営
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - サイト運営
+    // ---------------------------------------------
     
-    // if (loginUsersRole === 'administrator') {
+    if (loginUsersRole === 'administrator') {
       
-    //   returnObj.accessLevel = 100;
+      returnObj.accessLevel = 100;
       
       
-    // // ---------------------------------------------
-    // //   - コミュニティの管理者
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - フォロワー
+    // ---------------------------------------------
     
-    // } else if (followsAdmin) {
+    } else if (followsFollow) {
       
-    //   returnObj.accessLevel = 50;
+      returnObj.accessLevel = 3;
       
       
-    // // ---------------------------------------------
-    // //   - コミュニティのメンバー
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - ブロックしているユーザー
+    // ---------------------------------------------
     
-    // } else if (followsFollow) {
+    } else if (followsBlocked) {
       
-    //   returnObj.accessLevel = 3;
+      returnObj.accessLevel = 0;
       
       
-    // // ---------------------------------------------
-    // //   - ブロックしているユーザー
-    // // ---------------------------------------------
+    // ---------------------------------------------
+    //   - ログインユーザー
+    // ---------------------------------------------
     
-    // } else if (followsBlocked) {
+    } else if (loginUsersRole === 'user') {
       
-    //   returnObj.accessLevel = 0;
+      returnObj.accessLevel = 2;
       
-      
-    // // ---------------------------------------------
-    // //   - ログインユーザー
-    // // ---------------------------------------------
-    
-    // } else if (loginUsersRole === 'user') {
-      
-    //   returnObj.accessLevel = 2;
-      
-    // }
+    }
     
     
     

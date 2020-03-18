@@ -264,10 +264,6 @@ export default class extends React.Component {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----------------------------------------
-    // `);
-    
     
     
     

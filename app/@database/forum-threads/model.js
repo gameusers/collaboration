@@ -31,6 +31,7 @@ const SchemaImagesAndVideos = require('../images-and-videos/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 
 const ModelForumComments = require('../forum-comments/model');
+const ModelGameCommunities = require('../game-communities/model');
 const ModelUserCommunities = require('../user-communities/model');
 
 
@@ -318,15 +319,17 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * スレッド一覧を取得する
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
  * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
  * @param {number} page - ページ
  * @param {number} limit - 1ページに表示する件数
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForThreadsList = async ({
   
   localeObj,
   loginUsers_id,
+  gameCommunities_id,
   userCommunities_id,
   page = 1,
   limit = process.env.FORUM_THREAD_LIST_LIMIT
@@ -341,9 +344,73 @@ const findForThreadsList = async ({
     //   Condition
     // --------------------------------------------------
     
-    const conditionObj = {
-      userCommunities_id,
-    };
+    const conditionObj = {};
+    let count = 0;
+    
+    
+    // --------------------------------------------------
+    //   Game Community
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+      
+      // --------------------------------------------------
+      //   Condition Object
+      // --------------------------------------------------
+      
+      conditionObj.gameCommunities_id = gameCommunities_id;
+      
+      
+      // --------------------------------------------------
+      //   Count
+      // --------------------------------------------------
+      
+      const gameCommunityArr = await ModelGameCommunities.find({
+        
+        conditionObj: {
+          _id: gameCommunities_id
+        }
+        
+      });
+      
+      count = lodashGet(gameCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+      
+      
+    // --------------------------------------------------
+    //   User Community
+    // --------------------------------------------------
+    
+    } else if (userCommunities_id) {
+      
+      
+      // --------------------------------------------------
+      //   Condition Object
+      // --------------------------------------------------
+      
+      conditionObj.userCommunities_id = userCommunities_id;
+      
+      
+      // --------------------------------------------------
+      //   Count
+      // --------------------------------------------------
+      
+      const userCommunityArr = await ModelUserCommunities.find({
+        
+        conditionObj: {
+          _id: userCommunities_id
+        }
+        
+      });
+      
+      count = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+      
+      
+    } else {
+      
+      return;
+      
+    }
     
     
     // --------------------------------------------------
@@ -433,24 +500,13 @@ const findForThreadsList = async ({
     
     
     // --------------------------------------------------
-    //   Get Count
-    // --------------------------------------------------
-    
-    const userCommunityArr = await ModelUserCommunities.find({
-      conditionObj: {
-        _id: userCommunities_id
-      }
-    });
-    
-    
-    // --------------------------------------------------
     //   Return Object
     // --------------------------------------------------
     
     const ISO8601 = moment().toISOString();
     
     const returnObj = {
-      count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
+      count,
       page,
     };
     
@@ -459,20 +515,6 @@ const findForThreadsList = async ({
     lodashSet(returnObj, [`page${page}Obj`, 'loadedDate'], ISO8601);
     lodashSet(returnObj, [`page${page}Obj`, 'arr'], arr);
     
-    // const returnObj = {
-    //   count: lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0),
-    //   page,
-    //   limit: intLimit,
-    // };
-    
-    // lodashSet(returnObj, ['dataObj'], dataObj);
-    
-    // lodashSet(returnObj, [`page${page}Obj`, 'loadedDate'], ISO8601);
-    // lodashSet(returnObj, [`page${page}Obj`, 'arr'], arr);
-    
-    // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'loadedDate'], ISO8601);
-    // lodashSet(returnObj, ['dataObj', `page${page}Obj`, 'arr'], arr);
-    
     
     
     
@@ -480,14 +522,18 @@ const findForThreadsList = async ({
     //   console.log
     // --------------------------------------------------
     
-    // console.log(chalk`
-    //   /app/@database/forum-threads/model.js - findForThreadsList
-      
-    //   loginUsers_id: {green ${loginUsers_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   page: {green ${page}}
-    //   limit: {green ${limit}}
-    // `);
+    console.log(`
+      ----------------------------------------\n
+      /app/@database/forum-threads/model.js - findForThreadsList
+    `);
+    
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      gameCommunities_id: {green ${gameCommunities_id}}
+      userCommunities_id: {green ${userCommunities_id}}
+      page: {green ${page}}
+      limit: {green ${limit}}
+    `);
     
     // console.log(`
     //   ----- resultArr -----\n
@@ -495,23 +541,11 @@ const findForThreadsList = async ({
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- dataObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- returnObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     
@@ -546,6 +580,7 @@ const findForThreadsList = async ({
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティID
  * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティID
  * @param {number} threadPage - スレッドのページ
  * @param {number} threadLimit - スレッドのリミット
@@ -553,13 +588,14 @@ const findForThreadsList = async ({
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForForum = async ({
   
   req,
   localeObj,
   loginUsers_id,
+  gameCommunities_id,
   userCommunities_id,
   forumThreads_idArr = [],
   threadPage = 1,
@@ -585,29 +621,106 @@ const findForForum = async ({
     
     
     // --------------------------------------------------
+    //   threadCount
+    // --------------------------------------------------
+    
+    let threadCount = 0;
+    
+    
+    // --------------------------------------------------
     //   Match Condition Array
     // --------------------------------------------------
     
-    let matchConditionArr = [
-      {
-        $match : { userCommunities_id }
-      },
-    ];
+    let matchConditionArr = [];
     
-    if (forumThreads_idArr.length > 0) {
+    
+    // --------------------------------------------------
+    //   Game Community
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
       
       matchConditionArr = [
         {
-          $match: {
-            $and: [
-              { _id: { $in: forumThreads_idArr } },
-              { userCommunities_id },
-            ]
-          },
-        }
+          $match : { gameCommunities_id }
+        },
       ];
       
+      if (forumThreads_idArr.length > 0) {
+        
+        matchConditionArr = [
+          {
+            $match: {
+              $and: [
+                { _id: { $in: forumThreads_idArr } },
+                { gameCommunities_id },
+              ]
+            },
+          }
+        ];
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   Count
+      // --------------------------------------------------
+      
+      const gameCommunityArr = await ModelGameCommunities.find({
+        
+        conditionObj: {
+          _id: gameCommunities_id
+        }
+        
+      });
+      
+      threadCount = lodashGet(gameCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+      
+      
+    // --------------------------------------------------
+    //   User Community
+    // --------------------------------------------------
+    
+    } else if (userCommunities_id) {
+    
+      matchConditionArr = [
+        {
+          $match : { userCommunities_id }
+        },
+      ];
+      
+      if (forumThreads_idArr.length > 0) {
+        
+        matchConditionArr = [
+          {
+            $match: {
+              $and: [
+                { _id: { $in: forumThreads_idArr } },
+                { userCommunities_id },
+              ]
+            },
+          }
+        ];
+        
+      }
+      
+      
+      // --------------------------------------------------
+      //   Count
+      // --------------------------------------------------
+      
+      const userCommunityArr = await ModelUserCommunities.find({
+        
+        conditionObj: {
+          _id: userCommunities_id
+        }
+        
+      });
+      
+      threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
+      
     }
+    
     
     // console.log(`
     //   ----- matchConditionArr -----\n
@@ -625,7 +738,10 @@ const findForForum = async ({
       ...matchConditionArr,
       
       
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -677,21 +793,8 @@ const findForForum = async ({
     
     
     // --------------------------------------------------
-    //   コミュニティデータ取得 - コミュニティのスレッド数取得用
-    // --------------------------------------------------
-    
-    const userCommunityArr = await ModelUserCommunities.find({
-      conditionObj: {
-        _id: userCommunities_id
-      }
-    });
-    
-    
-    // --------------------------------------------------
     //   Format
     // --------------------------------------------------
-    
-    const threadCount = lodashGet(userCommunityArr, [0, 'forumObj', 'threadCount'], 0);
     
     const formattedThreadsObj = formatVer2({
       req,
@@ -785,9 +888,11 @@ const findForForum = async ({
     // --------------------------------------------------
     
     return {
+      
       forumThreadsObj,
       forumCommentsObj,
       forumRepliesObj,
+      
     };
     
     
@@ -815,7 +920,7 @@ const findForForum = async ({
  * @param {number} commentLimit - コメントのリミット
  * @param {number} replyPage - 返信のページ
  * @param {number} replyLimit - 返信のリミット
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForForumBy_forumID = async ({
   
@@ -1419,7 +1524,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCoun
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForDeleteThread = async ({
   
@@ -1604,7 +1709,7 @@ const findForDeleteThread = async ({
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} forumThreads_id - DB forum-threads _id / スレッドID
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForEdit = async ({
   

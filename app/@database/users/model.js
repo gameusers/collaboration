@@ -309,7 +309,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} userID - DB users userID / ユーザーID
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findOneForUser = async ({
   

@@ -128,11 +128,11 @@ class Store {
       });
       
       
-      console.log(`
-        ----- resultObj -----\n
-        ${util.inspect(resultObj, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------
@@ -148,22 +148,22 @@ class Store {
       //   console.log
       // --------------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/follow/stores/store.js - handleFollow
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/follow/stores/store.js - handleFollow
+      // `);
       
-      console.log(chalk`
-        type: {green ${type}}
-        gameCommunities_id: {green ${gameCommunities_id}}
-        userCommunities_id: {green ${userCommunities_id}}
-      `);
+      // console.log(chalk`
+      //   type: {green ${type}}
+      //   gameCommunities_id: {green ${gameCommunities_id}}
+      //   userCommunities_id: {green ${userCommunities_id}}
+      // `);
       
-      console.log(`
-        ----- storeData.headerObj -----\n
-        ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- storeData.headerObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(storeData.headerObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // ---------------------------------------------

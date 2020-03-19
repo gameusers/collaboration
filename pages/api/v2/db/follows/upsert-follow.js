@@ -146,7 +146,7 @@ export default async (req, res) => {
     
     if (gameCommunities_id) {
       
-      await validationGameCommunities_idServer({ throwError: true, value: gameCommunities_id });
+      await validationGameCommunities_idServer({ value: gameCommunities_id });
       
     }
     

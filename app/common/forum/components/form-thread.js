@@ -41,7 +41,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
+import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
+// const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
 
 
 // ---------------------------------------------
@@ -121,7 +122,16 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id } = this.props;
+    const {
+      
+      stores,
+      storeForum,
+      intl,
+      gameCommunities_id,
+      userCommunities_id,
+      forumThreads_id,
+      
+    } = this.props;
     
     
     
@@ -183,6 +193,11 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/forum/components/form-thread.js
+    // `);
     
     // console.log(`
     //   ----- validationForumThreadsNameObj -----\n

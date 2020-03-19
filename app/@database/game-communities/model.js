@@ -14,7 +14,6 @@ const util = require('util');
 //   Node Packages
 // ---------------------------------------------
 
-const moment = require('moment');
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
 const lodashHas = require('lodash/has');
@@ -27,16 +26,13 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 
 const Schema = require('./schema');
 const SchemaGames = require('../games/schema');
-// const SchemaImagesAndVideos = require('../images-and-videos/schema');
-// 
-const ModelGames = require('../games/model');
 
 
 // ---------------------------------------------
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosArr, formatImagesAndVideosObj } = require('../images-and-videos/format');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 const { formatFollowsObj } = require('../follows/format');
 
 
@@ -688,7 +684,7 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
       hardwaresArr: docGamesObj.hardwaresArr,
       gameGenresArr: docGamesObj.gameGenresArr,
       developersPublishersArr: docGamesObj.developersPublishersArr,
-      followedCount: lodashGet(docGamesObj, ['followsObj', 'followedCount'], 0),
+      // followedCount: lodashGet(docGamesObj, ['followsObj', 'followedCount'], 0),
       imagesAndVideosObj: formatImagesAndVideosObj({ localeObj, obj: docGamesObj.imagesAndVideosObj }),
       imagesAndVideosThumbnailObj: formatImagesAndVideosObj({ localeObj, obj: docGamesObj.imagesAndVideosThumbnailObj }),
       followsObj,
@@ -720,13 +716,22 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
     
     
     // --------------------------------------------------
+    //   不要な項目を削除する
+    // --------------------------------------------------
+    
+    // delete docGamesObj.followsObj;
+    
+    
+    
+    
+    // --------------------------------------------------
     //   returnObj
     // --------------------------------------------------
     
     const returnObj = {
       
       gameCommunitiesObj: docGamesObj.gameCommunitiesObj,
-      followsObj,
+      // followsObj,
       headerObj,
       
     };
@@ -751,6 +756,12 @@ const findForGameCommunity = async ({ localeObj, loginUsers_id, urlID }) => {
     // console.log(`
     //   ----- docGamesArr -----\n
     //   ${util.inspect(docGamesArr, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- docGamesObj -----\n
+    //   ${util.inspect(docGamesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

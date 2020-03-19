@@ -202,10 +202,10 @@ export default injectIntl(class extends React.Component {
       storeForum,
       intl,
       temporaryDataID,
-      userCommunityID,
+      urlID,
       gameCommunities_id,
+      userCommunityID,
       userCommunities_id,
-      // sidebar
       
     } = this.props;
     
@@ -279,31 +279,28 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     // console.log(`
-    //   ----- validationForumThreadsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(validationForumThreadsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
-    
-    // console.log(`
-    //   ----- forumThreadsArr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   ----------------------------------------\n
+    //   /app/common/forum/components/navigation.js
     // `);
     
     // console.log(chalk`
-    //   navigation.js
-    //   _id: {green ${_id}}
-    //   openedTabNo  : {green ${openedTabNo}}
-    // `);
-    
-    // console.log(chalk`
-    //   createThreadName: {green ${createThreadName} / ${typeof createThreadName}}
+    //   temporaryDataID: {green ${temporaryDataID}}
+    //   urlID  : {green ${urlID}}
+    //   gameCommunities_id  : {green ${gameCommunities_id}}
+    //   userCommunityID  : {green ${userCommunityID}}
+    //   userCommunities_id  : {green ${userCommunities_id}}
     // `);
     
     // console.log(chalk`
     //   threadListCount: {green ${threadListCount}}
     //   threadListPage: {green ${threadListPage}}
     //   threadListLimit: {green ${threadListLimit}}
+    // `);
+    
+    // console.log(`
+    //   ----- forumThreadsArr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(forumThreadsArr)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -461,9 +458,16 @@ export default injectIntl(class extends React.Component {
         let linkHref = '';
         let linkAs = '';
         
-        if (userCommunityID) {
+        if (urlID) {
+          
+          linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
+          linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
+          
+        } else if (userCommunityID) {
+          
           linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
           linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
+          
         }
         
         // console.log(userCommunityID);

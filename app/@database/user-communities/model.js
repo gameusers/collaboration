@@ -312,7 +312,7 @@ const deleteMany = async ({ conditionObj, reset = false }) => {
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} userCommunities_id - DB user-communities _id
  * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_id, userCommunityID }) => {
   
@@ -678,7 +678,7 @@ const findForUserCommunity = async ({ localeObj, loginUsers_id, userCommunities_
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
  * @param {string} userCommunityID - DB user-communities userCommunityID / コミュニティID
  * @param {string} userCommunities_id - DB user-communities _id / _id
- * @return {Array}取得データ
+ * @return {Array} 取得データ
  */
 const findForUserCommunitySettings = async ({ localeObj, loginUsers_id, userCommunityID, userCommunities_id }) => {
   

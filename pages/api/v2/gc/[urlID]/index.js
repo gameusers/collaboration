@@ -162,7 +162,7 @@ export default async (req, res) => {
     //   - gameCommunities_id
     // ---------------------------------------------
     
-    const gameCommunities_id = lodashGet(gameCommunityObj, ['_id'], '');
+    const gameCommunities_id = lodashGet(gameCommunityObj, ['gameCommunitiesObj', '_id'], '');
     
     
     // ---------------------------------------------
@@ -186,7 +186,7 @@ export default async (req, res) => {
     //   0: ブロックしているユーザー
     //   1: 非ログインユーザー
     //   2: ログインユーザー（以下ログイン済みユーザー）
-    //   3: コミュニティのメンバー
+    //   3: フォロワー
     //   100: サイト運営
     // --------------------------------------------------
     
@@ -236,91 +236,86 @@ export default async (req, res) => {
     
     
     
-    // // --------------------------------------------------
-    // //   console.log
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB find / Forum Threads For List
+    // --------------------------------------------------
     
-    // // console.log(`
-    // //   ----------------------------------------\n
-    // //   /pages/api/v2/uc/[userCommunityID]/index.js
-    // // `);
+    let argumentsObj = {
+      
+      localeObj,
+      loginUsers_id,
+      gameCommunities_id,
+      
+    };
     
-    // // console.log(chalk`
-    // //   communityType: {green ${communityType}}
-    // //   member: {green ${member}}
-    // //   returnObj.accessRightRead: {green ${returnObj.accessRightRead}}
-    // // `);
+    if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
+      argumentsObj.page = forumThreadListPage;
+    }
     
-    // // console.log(`
-    // //   ----------------------------------------
-    // // `);
+    if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
+      argumentsObj.limit = forumThreadListLimit;
+    }
     
-    
+    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
     
     
-    // // --------------------------------------------------
-    // //   コンテンツを表示していい場合はフォーラムのデータを取得
-    // // --------------------------------------------------
+    // --------------------------------------------------
+    //   DB find / Forum
+    // --------------------------------------------------
     
-    // if (returnObj.accessRightRead) {
+    argumentsObj = {
+      
+      req,
+      localeObj,
+      loginUsers_id,
+      gameCommunities_id,
+      
+    };
+    
+    if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
+      argumentsObj.threadPage = forumThreadPage;
+    }
+    
+    if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
+      argumentsObj.threadLimit = forumThreadLimit;
+    }
+    
+    if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
+      argumentsObj.commentLimit = forumCommentLimit;
+    }
+    
+    if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
+      argumentsObj.replyLimit = forumReplyLimit;
+    }
+    
+    const forumObj = await ModelForumThreads.findForForum(argumentsObj);
+    
+    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
       
       
-    //   // --------------------------------------------------
-    //   //   DB find / Forum Threads For List
-    //   // --------------------------------------------------
-      
-    //   let argumentsObj = {
-    //     localeObj,
-    //     loginUsers_id,
-    //     userCommunities_id,
-    //   };
-      
-    //   if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
-    //     argumentsObj.page = forumThreadListPage;
-    //   }
-      
-    //   if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
-    //     argumentsObj.limit = forumThreadListLimit;
-    //   }
-      
-    //   returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
-      
-      
-    //   // --------------------------------------------------
-    //   //   DB find / Forum
-    //   // --------------------------------------------------
-      
-    //   argumentsObj = {
-    //     req,
-    //     localeObj,
-    //     loginUsers_id,
-    //     userCommunities_id,
-    //   };
-      
-    //   if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
-    //     argumentsObj.threadPage = forumThreadPage;
-    //   }
-      
-    //   if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
-    //     argumentsObj.threadLimit = forumThreadLimit;
-    //   }
-      
-    //   if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
-    //     argumentsObj.commentLimit = forumCommentLimit;
-    //   }
-      
-    //   if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
-    //     argumentsObj.replyLimit = forumReplyLimit;
-    //   }
-      
-    //   const forumObj = await ModelForumThreads.findForForum(argumentsObj);
-      
-    //   returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    //   returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    //   returnObj.forumRepliesObj = forumObj.forumRepliesObj;
-      
-      
-    // }
+    
+    
+    // --------------------------------------------------
+    //   console.log
+    // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/gc/[urlID]/index.js
+    // `);
+    
+    // console.log(chalk`
+    //   urlID: {green ${urlID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     

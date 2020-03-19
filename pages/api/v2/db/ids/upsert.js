@@ -158,11 +158,15 @@ export default async (req, res) => {
     await validationBoolean({ throwError: true, value: search });
     
     if (_id) {
+      
       await validationIDs_idServer({ value: _id, loginUsers_id });
+      
     }
     
     if (gameCommunities_id) {
-      await validationGameCommunities_idServer({ throwError: true, value: gameCommunities_id });
+      
+      await validationGameCommunities_idServer({ value: gameCommunities_id });
+      
     }
     
     

@@ -166,8 +166,9 @@ export default injectIntl(class extends React.Component {
       stores,
       storeForum,
       intl,
-      userCommunityID,
+      urlID,
       gameCommunities_id,
+      userCommunityID,
       userCommunities_id,
       forumThreads_id,
       settingAnonymity,
@@ -206,6 +207,8 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'count'], 0);
     const limit = parseInt((stores.data.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
+    
+    
     
     
     // --------------------------------------------------
@@ -329,7 +332,12 @@ export default injectIntl(class extends React.Component {
       let linkHref = '';
       let linkAs = '';
       
-      if (userCommunityID) {
+      if (urlID) {
+        
+        linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumComments_id}`;
+        linkAs = `/gc/${urlID}/forum/${forumComments_id}`;
+        
+      } else if (userCommunityID) {
         
         linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumComments_id}`;
         linkAs = `/uc/${userCommunityID}/forum/${forumComments_id}`;
@@ -692,8 +700,9 @@ export default injectIntl(class extends React.Component {
               
               {/* Reply */}
               <Reply
-                userCommunityID={userCommunityID}
+                urlID={urlID}
                 gameCommunities_id={gameCommunities_id}
+                userCommunityID={userCommunityID}
                 userCommunities_id={userCommunities_id}
                 forumThreads_id={forumThreads_id}
                 forumComments_id={forumComments_id}

@@ -162,8 +162,9 @@ export default injectIntl(class extends React.Component {
       storeForum,
       intl,
       temporaryDataID,
-      userCommunityID,
+      urlID,
       gameCommunities_id,
+      userCommunityID,
       userCommunities_id,
       settingAnonymity,
       individual,
@@ -171,10 +172,6 @@ export default injectIntl(class extends React.Component {
     } = this.props;
     
     
-    // console.log(chalk`
-    //   /app/common/forum/components/thread.js
-    //   settingAnonymity: {green ${settingAnonymity}}
-    // `);
     
     
     // --------------------------------------------------
@@ -224,7 +221,13 @@ export default injectIntl(class extends React.Component {
     let linkReturnTopHref = '';
     let linkReturnTopAs = '';
     
-    if (userCommunityID) {
+    
+    if (urlID) {
+      
+      linkReturnTopHref = `/gc/[urlID]?urlID=${urlID}`;
+      linkReturnTopAs = `/gc/${urlID}`;
+      
+    } else if (userCommunityID) {
       
       linkReturnTopHref = `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`;
       linkReturnTopAs = `/uc/${userCommunityID}`;
@@ -236,12 +239,26 @@ export default injectIntl(class extends React.Component {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/forum/components/thread.js
+    // `);
+    
     // console.log(chalk`
     //   /app/common/forum/components/thread.js
     //   page: {green ${page}}
     //   count: {green ${count}}
     //   limit: {green ${limit}}
+    //   urlID: {green ${urlID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   userCommunityID: {green ${userCommunityID}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- dataObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`
@@ -288,7 +305,12 @@ export default injectIntl(class extends React.Component {
       let linkHref = '';
       let linkAs = '';
       
-      if (userCommunityID) {
+      if (urlID) {
+        
+        linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
+        linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
+        
+      } else if (userCommunityID) {
         
         linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
         linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
@@ -651,8 +673,9 @@ export default injectIntl(class extends React.Component {
                 
                 {/* Comment */}
                 <Comment
-                  userCommunityID={userCommunityID}
+                  urlID={urlID}
                   gameCommunities_id={gameCommunities_id}
+                  userCommunityID={userCommunityID}
                   userCommunities_id={userCommunities_id}
                   forumThreads_id={forumThreads_id}
                   comments={comments}

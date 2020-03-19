@@ -40,7 +40,7 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreUcCommunity from '../../../app/uc/community/stores/store';
+import initStoreGcCommunity from '../../../app/uc/community/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
@@ -59,7 +59,7 @@ import ForumNavigation from '../../../app/common/forum/components/navigation';
 import ForumThread from '../../../app/common/forum/components/thread';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
-import Abount from '../../../app/uc/community/components/about';
+// import Abount from '../../../app/uc/community/components/about';
 
 
 
@@ -77,7 +77,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeUcCommunity = initStoreUcCommunity({});
+  const storeGcCommunity = initStoreGcCommunity({});
   const storeCardPlayer = initStoreCardPlayer({});
   const storeForum = initStoreForum({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
@@ -91,7 +91,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeUcCommunity,
+    storeGcCommunity,
     storeCardPlayer,
     storeForum,
     storeImageAndVideo,
@@ -171,10 +171,9 @@ export default class extends React.Component {
     const statusCode = lodashGet(resultObj, ['statusCode'], 400);
     let propsObj = lodashGet(resultObj, ['data'], {});
     
-    const userCommunities_id = lodashGet(resultObj, ['data', 'userCommunityObj', '_id'], '');
-    const userCommunityName = lodashGet(resultObj, ['data', 'userCommunityObj', 'name'], '');
+    const gameCommunities_id = lodashGet(resultObj, ['data', 'gameCommunityObj', '_id'], '');
+    const gameName = lodashGet(resultObj, ['data', 'headerObj', 'name'], '');
     const accessLevel = lodashGet(resultObj, ['data', 'accessLevel'], 1);
-    const accessRightRead = lodashGet(resultObj, ['data', 'accessRightRead'], false);
     
     
     
@@ -183,7 +182,7 @@ export default class extends React.Component {
     //   Title
     // --------------------------------------------------
     
-    const title = `${userCommunityName}`;
+    const title = `${gameName}`;
     
     
     
@@ -197,20 +196,15 @@ export default class extends React.Component {
         name: 'トップ',
         href: `/gc/[urlID]?urlID=${urlID}`,
         as: `/gc/${urlID}`,
+      },
+      {
+        name: 'フォロワー',
+        href: `/gc/[urlID]/followers?urlID=${urlID}`,
+        as: `/gc/${urlID}/followers`,
       }
     ];
     
-    if (accessRightRead) {
-      headerNavMainArr.push(
-        {
-          name: 'フォロワー',
-          href: `/gc/[urlID]/followers?urlID=${urlID}`,
-          as: `/gc/${urlID}/followers`,
-        }
-      );
-    }
-    
-    if (accessLevel >= 50) {
+    if (accessLevel === 100) {
       headerNavMainArr.push(
         {
           name: '設定',
@@ -220,7 +214,7 @@ export default class extends React.Component {
       );
     }
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, userCommunities_id };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, gameCommunities_id };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -271,7 +265,7 @@ export default class extends React.Component {
       reqAcceptLanguage,
       temporaryDataID,
       urlID,
-      userCommunities_id,
+      gameCommunities_id,
       title,
       storesObj,
       propsObj,
@@ -365,21 +359,21 @@ export default class extends React.Component {
     //   Setting
     // --------------------------------------------------
     
-    const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
-    const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
+    // const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
+    // const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
     
     
     // --------------------------------------------------
     //   About
     // --------------------------------------------------
     
-    const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
-    const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
-    const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
-    const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
-    const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
-    const followedCount = lodashGet(this.props, ['propsObj', 'headerObj', 'followedCount'], 1);
-    const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
+    // const description = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'description'], '');
+    // const communityType = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'communityType'], 'open');
+    // const anonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], true);
+    // const createdDate = lodashGet(this.props, ['propsObj', 'headerObj', 'createdDate'], '');
+    // const approval = lodashGet(this.props, ['propsObj', 'headerObj', 'approval'], false);
+    // const followedCount = lodashGet(this.props, ['propsObj', 'headerObj', 'followedCount'], 1);
+    // const gamesArr = lodashGet(this.props, ['propsObj', 'headerObj', 'gamesArr'], []);
     
     
     
@@ -461,13 +455,11 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                {accessRightRead &&
-                  {/*<ForumNavigation
-                    temporaryDataID={this.props.temporaryDataID}
-                    userCommunityID={this.props.userCommunityID}
-                    userCommunities_id={this.props.userCommunities_id}
-                  />*/}
-                }
+                <ForumNavigation
+                  temporaryDataID={this.props.temporaryDataID}
+                  urlID={this.props.urlID}
+                  gameCommunities_id={this.props.gameCommunities_id}
+                />
               </Sidebar>
               
               
@@ -490,18 +482,16 @@ export default class extends React.Component {
               
               
               {/* フォーラム */}
-              {accessRightRead &&
-                {/*<Element
-                  name="forumThreads"
-                >
-                  <ForumThread
-                    temporaryDataID={this.props.temporaryDataID}
-                    userCommunityID={this.props.userCommunityID}
-                    userCommunities_id={this.props.userCommunities_id}
-                    settingAnonymity={settingAnonymity}
-                  />
-                </Element>*/}
-              }
+              <Element
+                name="forumThreads"
+              >
+                <ForumThread
+                  temporaryDataID={this.props.temporaryDataID}
+                  urlID={this.props.urlID}
+                  gameCommunities_id={this.props.gameCommunities_id}
+                  settingAnonymity={true}
+                />
+              </Element>
               
               
               {/* About Community */}

@@ -163,14 +163,16 @@ export default injectIntl(class extends React.Component {
       stores,
       storeForum,
       intl,
-      userCommunityID,
+      urlID,
       gameCommunities_id,
+      userCommunityID,
       userCommunities_id,
       forumThreads_id,
       forumComments_id,
       settingAnonymity,
       
     } = this.props;
+    
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -332,7 +334,12 @@ export default injectIntl(class extends React.Component {
       let linkHref = '';
       let linkAs = '';
       
-      if (userCommunityID) {
+      if (urlID) {
+        
+        linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumReplies_id}`;
+        linkAs = `/gc/${urlID}/forum/${forumReplies_id}`;
+        
+      } else if (userCommunityID) {
         
         linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumReplies_id}`;
         linkAs = `/uc/${userCommunityID}/forum/${forumReplies_id}`;

@@ -22,6 +22,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
+const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
 
@@ -39,6 +40,7 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
+const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
 const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
@@ -87,43 +89,6 @@ export default async (req, res) => {
   
   
   
-  // --------------------------------------------------
-  //   console.log
-  // --------------------------------------------------
-  
-  // console.log(`
-  //   ----- req.cookies -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(req.cookies)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- req.query -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(req.query)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`
-  //   ----- req.body -----\n
-  //   ${util.inspect(JSON.parse(JSON.stringify(req.body)), { colors: true, depth: null })}\n
-  //   --------------------\n
-  // `);
-  
-  // console.log(`\n---------- req ----------\n`);
-  // console.dir(req);
-  // console.log(`\n-----------------------------------\n`);
-  
-  // const encrypted = encrypt('AAA');
-  // const decrypted = decrypt(encrypted);
-  
-  // console.log(chalk`
-  //   encrypted: {green ${encrypted}}
-  //   decrypted: {green ${decrypted}}
-  // `);
-  
-  
-  
-  
   try {
     
     
@@ -160,28 +125,6 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   console.log
-    // ---------------------------------------------
-    
-    // console.log(chalk`
-    //   /pages/api/v2/db/forum-threads/read-threads.js
-      
-    //   loginUsers_id: {green ${loginUsers_id}}
-      
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   userCommunities_id: {green ${userCommunities_id}}
-    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
-    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
-    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
-    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    // `);
-    
-    
-    
-    
-    // ---------------------------------------------
     //   Verify CSRF
     // ---------------------------------------------
     
@@ -191,12 +134,12 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Validation
+    //   Validations
     // --------------------------------------------------
     
     if (gameCommunities_id) {
       
-      
+      await validationGameCommunities_idServer({ value: gameCommunities_id });
       
     } else {
       
@@ -228,6 +171,7 @@ export default async (req, res) => {
       req,
       localeObj,
       loginUsers_id,
+      gameCommunities_id,
       userCommunities_id,
       threadPage,
       threadLimit,
@@ -246,16 +190,68 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / User Communities
+    //   updatedDateObj
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.find({
-      conditionObj: {
-        _id: userCommunities_id
-      }
-    });
+    let updatedDateObj = {};
     
-    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    if (gameCommunities_id) {
+      
+      const gameCommunityArr = await ModelGameCommunities.find({
+        
+        conditionObj: {
+          _id: gameCommunities_id
+        }
+        
+      });
+      
+      updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+      
+    } else {
+      
+      const userCommunityArr = await ModelUserCommunities.find({
+        
+        conditionObj: {
+          _id: userCommunities_id
+        }
+        
+      });
+      
+      updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+      
+    }
+    
+    returnObj.updatedDateObj = updatedDateObj;
+    
+    
+    
+    
+    // ---------------------------------------------
+    //   console.log
+    // ---------------------------------------------
+    
+    console.log(`
+      ----------------------------------------\n
+      /pages/api/v2/db/forum-threads/read-threads.js
+    `);
+    
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      gameCommunities_id: {green ${gameCommunities_id}}
+      userCommunities_id: {green ${userCommunities_id}}
+      threadPage: {green ${threadPage} / ${typeof threadPage}}
+      threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+      commentPage: {green ${commentPage} / ${typeof commentPage}}
+      commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+      replyPage: {green ${replyPage} / ${typeof replyPage}}
+      replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    `);
+    
+    console.log(`
+      ----- returnObj -----\n
+      ${util.inspect(returnObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
     
     

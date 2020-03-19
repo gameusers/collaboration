@@ -3285,7 +3285,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         forumObj: {
-          threadCount: 0,
+          threadCount: 2,
         },
         updatedDateObj: {
           notification: ISO8601,
@@ -3442,6 +3442,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         replies: 3,
         images: 7,
         videos: 2,
+        main: false,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3469,6 +3470,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         replies: 2,
         images: 0,
         videos: 0,
+        main: false,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3494,6 +3496,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         replies: 0,
         images: 0,
         videos: 0,
+        main: false,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3523,6 +3526,7 @@ Material UI にスタイルを当てる場合、Material UI がデフォルト�
         replies: 0,
         images: 0,
         videos: 0,
+        main: false,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
@@ -3550,39 +3554,68 @@ emotion: https://emotion.sh/docs/introduction`,
         replies: 0,
         images: 0,
         videos: 0,
+        main: false,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
       },
       
       
-      // {
-      //   _id: 'IjE8qr-Mh',
-      //   createdDate: '2019-01-06T00:00:00Z',
-      //   updatedDate: '2019-01-06T00:00:00Z',
-      //   gameCommunities_id: '',
-      //   userCommunities_id: 'cxO8tEGty',
-      //   users_id: '',
-      //   localesArr: [
-      //     {
-      //       _id: 'ANCAagCg-',
-      //       language: 'ja',
-      //       name: 'スレッド6: 日本語',
-      //       comment: `Thread 6`,
-      //     },
-      //     {
-      //       _id: 'PiTg1YYCR',
-      //       language: 'en',
-      //       name: 'Thread 6: English',
-      //       comment: `Thread 6`,
-      //     },
-      //   ],
-      //   imagesAndVideos_id: '',
-      //   comments: 0,
-      //   images: 0,
-      //   videos: 0,
-      //   ip: '192.168.1.0',
-      //   userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
-      // },
+      {
+        _id: 'H6pB91tMq',
+        createdDate: '2019-01-06T00:00:00Z',
+        updatedDate: '2019-01-06T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        userCommunities_id: '',
+        users_id: '',
+        localesArr: [
+          {
+            _id: 'O3B0mpAxO',
+            language: 'ja',
+            name: 'GC Thread 1',
+            comment: `昔、しなの都に、ムスタフという貧乏びんぼうな仕立屋が住んでいました。このムスタフには、おかみさんと、アラジンと呼ぶたった一人の息子むすことがありました。
+
+　この仕立屋は大へん心がけのよい人で、一生けんめいに働きました。けれども、悲しいことには、息子が大だいのなまけ者で、年が年じゅう、町へ行って、なまけ者の子供たちと遊びくらしていました。何か仕事をおぼえなければならない年頃になっても、そんなことはまっぴらだと言ってはねつけますので、ほんとうにこの子のことをどうしたらいいのか、両親もとほうにくれているありさまでした。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        comments: 0,
+        replies: 0,
+        images: 0,
+        videos: 0,
+        main: true,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      {
+        _id: 'OE5OhVudP',
+        createdDate: '2019-01-07T00:00:00Z',
+        updatedDate: '2019-01-07T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        userCommunities_id: '',
+        users_id: '',
+        localesArr: [
+          {
+            _id: 'NW63d-U-C',
+            language: 'ja',
+            name: 'GC Thread 2',
+            comment: `それでも、お父さんのムスタフは、せめて仕立屋にでもしようと思いました。それである日、アラジンを仕事場へつれて入って、仕立物を教おしえようとしましたが、アラジンは、ばかにして笑っているばかりでした。そして、お父さんのゆだんを見すまして、いち早くにげ出してしまいました。お父さんとお母さんは、すぐに追っかけて出たのですけれど、アラジンの走り方があんまり早いので、もうどこへ行ったのか、かいもく、姿は見えませんでした。
+
+「ああ、わしには、このなまけ者をどうすることもできないのか。」
+
+　ムスタフは、なげきました。そして、まもなく、子供のことを心配のあまり、病気になって、死んでしまいました。こうなると、アラジンのお母さんは、少しばかりあった仕立物に使う道具どうぐを売りはらって、それから後は、糸をつむいでくらしを立てていました。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        comments: 0,
+        replies: 0,
+        images: 0,
+        videos: 0,
+        main: true,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
       
     ];
     

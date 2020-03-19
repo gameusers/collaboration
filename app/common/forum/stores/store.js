@@ -463,14 +463,18 @@ class Store {
       
       const loadedDate = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumThreadsObj', `page${page}Obj`, 'arr'], []);
+      const reloadThreads = lodashGet(forumObj, ['reloadThreads'], false);
       
       let threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
       const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
-      // let limit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
+      
+      
+      
+      // ---------------------------------------------
+      //   Change Limit
+      // ---------------------------------------------
       
       if (changeLimit) {
         
@@ -487,14 +491,17 @@ class Store {
         
       }
       
-      const reloadThreads = lodashGet(forumObj, ['reloadThreads'], false);
-      // const reloadComments = lodashGet(forumObj, ['reloadComments'], false);
       
       
       
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/stores/store.js - handleReadThreads
+      // `);
       
       // console.log(`
       //   ----- forumObj -----\n
@@ -513,12 +520,8 @@ class Store {
       //   userCommunities_id: {green ${userCommunities_id}}
       //   page: {green ${page}}
       //   threadLimit: {green ${threadLimit}}
-      //   commentPage: {green ${commentPage}}
       //   commentLimit: {green ${commentLimit}}
-      //   replyPage: {green ${replyPage}}
       //   replyLimit: {green ${replyLimit}}
-        
-      //   limit: {green ${limit}}
       //   loadedDate: {green ${loadedDate}}
       // `);
       
@@ -671,26 +674,33 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
+      // let resultObj = {};
       
-      if (gameCommunities_id) {
+      // if (gameCommunities_id) {
         
         
         
-      } else {
+      // } else {
         
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
+      //   resultObj = await fetchWrapper({
+      //     urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads`,
+      //     methodType: 'POST',
+      //     formData: JSON.stringify(formDataObj),
+      //   });
         
-      }
+      // }
       
+      const resultObj = await fetchWrapper({
+        urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
+      });
       
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
+      // console.log(`
+      //   ----- resultObj -----\n
+      //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       
@@ -4134,27 +4144,46 @@ export default function initStoreForum({ propsObj }) {
     
     
     // --------------------------------------------------
-    //   userCommunities_id
+    //   Property
     // --------------------------------------------------
     
-    const userCommunities_id = lodashGet(propsObj, ['userCommunities_id'], '');
+    let communities_id = '';
+    let updatedDateObj = {};
     
     
-    // console.log(`
-    //   ----- propsObj -----\n
-    //   ${util.inspect(propsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
+    
+    // --------------------------------------------------
+    //   gameCommunities_id
+    // --------------------------------------------------
+    
+    if (lodashHas(propsObj, ['gameCommunities_id'])) {
+      
+      communities_id = lodashGet(propsObj, ['gameCommunities_id'], '');
+      updatedDateObj = lodashGet(propsObj, ['gameCommunityObj', 'updatedDateObj'], null);
+      
+      
+    // --------------------------------------------------
+    //   userCommunities_id
+    // --------------------------------------------------
+      
+    } else {
+      
+      communities_id = lodashGet(propsObj, ['userCommunities_id'], '');
+      updatedDateObj = lodashGet(propsObj, ['userCommunityObj', 'updatedDateObj'], null);
+      
+    }
+    
     
     // --------------------------------------------------
     //   UpdatedDateObj
     // --------------------------------------------------
     
-    const updatedDateObj = lodashGet(propsObj, ['userCommunityObj', 'updatedDateObj'], null);
-    
     if (updatedDateObj) {
-      lodashSet(storeForum.dataObj, [userCommunities_id, 'updatedDateObj'], updatedDateObj);
+      lodashSet(storeForum, ['dataObj', communities_id, 'updatedDateObj'], updatedDateObj);
     }
+    
+    
     
     
     // --------------------------------------------------
@@ -4164,7 +4193,7 @@ export default function initStoreForum({ propsObj }) {
     const forumThreadsForListObj = lodashGet(propsObj, ['forumThreadsForListObj'], null);
     
     if (forumThreadsForListObj) {
-      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumThreadsForListObj'], forumThreadsForListObj);
+      lodashSet(storeForum, ['dataObj', communities_id, 'forumThreadsForListObj'], forumThreadsForListObj);
     }
     
     
@@ -4175,7 +4204,7 @@ export default function initStoreForum({ propsObj }) {
     const forumThreadsObj = lodashGet(propsObj, ['forumThreadsObj'], null);
     
     if (forumThreadsObj) {
-      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumThreadsObj'], forumThreadsObj);
+      lodashSet(storeForum, ['dataObj', communities_id, 'forumThreadsObj'], forumThreadsObj);
     }
     
     
@@ -4186,7 +4215,7 @@ export default function initStoreForum({ propsObj }) {
     const forumCommentsObj = lodashGet(propsObj, ['forumCommentsObj'], null);
     
     if (forumCommentsObj) {
-      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumCommentsObj'], forumCommentsObj);
+      lodashSet(storeForum, ['dataObj', communities_id, 'forumCommentsObj'], forumCommentsObj);
     }
     
     
@@ -4197,7 +4226,7 @@ export default function initStoreForum({ propsObj }) {
     const forumRepliesObj = lodashGet(propsObj, ['forumRepliesObj'], null);
     
     if (forumRepliesObj) {
-      lodashSet(storeForum.dataObj, [userCommunities_id, 'forumRepliesObj'], forumRepliesObj);
+      lodashSet(storeForum, ['dataObj', communities_id, 'forumRepliesObj'], forumRepliesObj);
     }
     
     
@@ -4207,8 +4236,19 @@ export default function initStoreForum({ propsObj }) {
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/common/forum/stores/store.js - initStoreForum
+    // `);
+    
     // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
+    //   communities_id: {green ${communities_id}}
+    // `);
+    
+    // console.log(`
+    //   ----- propsObj -----\n
+    //   ${util.inspect(propsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
     // `);
     
     // console.log(`

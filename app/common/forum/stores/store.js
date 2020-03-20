@@ -38,7 +38,7 @@ import { CustomError } from '../../../@modules/error/custom';
 // ---------------------------------------------
 
 import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
-import { validationForumThreadsComment } from '../../../@database/forum-threads/validations/name';
+import { validationForumThreadsComment } from '../../../@database/forum-threads/validations/comment';
 
 import { validationForumCommentsName } from '../../../@database/forum-comments/validations/name';
 import { validationForumCommentsComment } from '../../../@database/forum-comments/validations/comment';
@@ -112,7 +112,16 @@ class Store {
    * @param {number} changeLimit - スレッド一覧の1ページの表示件数を変更する場合に入力する
    */
   @action.bound
-  async handleReadThreadsList({ pathArr, temporaryDataID, gameCommunities_id, userCommunities_id, page, changeLimit }) {
+  async handleReadThreadsList({
+    
+    pathArr,
+    temporaryDataID,
+    gameCommunities_id,
+    userCommunities_id,
+    page,
+    changeLimit
+    
+  }) {
     
     
     try {
@@ -130,8 +139,15 @@ class Store {
       const loadedDate = lodashGet(forumObj, ['forumThreadsForListObj', `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumThreadsForListObj', `page${page}Obj`, 'arr'], []);
       
-      let limit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      // let limit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      let limit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.FORUM_THREAD_LIST_LIMIT), 10);
       
+      
+      
+      
+      // ---------------------------------------------
+      //   Change Limit
+      // ---------------------------------------------
       
       if (changeLimit) {
         
@@ -148,10 +164,7 @@ class Store {
         
       }
       
-      // console.log(chalk`
-      //   handleReadThreadsList
-      //   limit: {green ${limit}}
-      // `);
+      
       
       
       // ---------------------------------------------
@@ -211,7 +224,7 @@ class Store {
         
         
         // ---------------------------------------------
-        //  Page 更新
+        //   Page 更新
         // ---------------------------------------------
         
         clonedObj.forumThreadsForListObj.page = page;
@@ -237,7 +250,6 @@ class Store {
         
         
       }
-      
       
       console.log('fetch');
       
@@ -294,26 +306,13 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
+      const resultObj = await fetchWrapper({
         
+        urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads-list`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-        
-      } else {
-        
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads-list`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
-        
-      }
-      
-      
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
+      });
       
       
       // ---------------------------------------------
@@ -383,11 +382,6 @@ class Store {
       // ---------------------------------------------
       
       storeData.setTemporaryDataForumThreadListPage({ temporaryDataID, value: page });
-      
-      // console.log(chalk`
-      //   temporaryDataID: {green ${temporaryDataID}}
-      //   page: {green ${storeData.getTemporaryDataForumThreadListPage({ temporaryDataID })}}
-      // `);
       
       
     } catch (errorObj) {
@@ -604,7 +598,7 @@ class Store {
         console.log('store');
         
         // ---------------------------------------------
-        //  Page 更新
+        //   Page 更新
         // ---------------------------------------------
         
         clonedObj.forumThreadsObj.page = page;
@@ -637,13 +631,6 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
-      
-      
-      // ---------------------------------------------
       //   Button Disable
       // ---------------------------------------------
       
@@ -673,22 +660,6 @@ class Store {
       // ---------------------------------------------
       //   Fetch
       // ---------------------------------------------
-      
-      // let resultObj = {};
-      
-      // if (gameCommunities_id) {
-        
-        
-        
-      // } else {
-        
-      //   resultObj = await fetchWrapper({
-      //     urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads`,
-      //     methodType: 'POST',
-      //     formData: JSON.stringify(formDataObj),
-      //   });
-        
-      // }
       
       const resultObj = await fetchWrapper({
         urlApi: `${process.env.URL_API}/v2/db/forum-threads/read-threads`,
@@ -832,20 +803,13 @@ class Store {
       
       
     } finally {
-      // console.log('finally');
+      
       
       // ---------------------------------------------
       //   Button Enable
       // ---------------------------------------------
       
       storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
       
       
       // ---------------------------------------------
@@ -1035,7 +999,7 @@ class Store {
    * @param {Array} pathArr - パス
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
-   * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
+   * @param {string} forumThreads_id - DB forum-threads _id / 編集するスレッドのID
    */
   @action.bound
   async handleSubmitFormThread({ eventObj, pathArr, gameCommunities_id, userCommunities_id, forumThreads_id }) {
@@ -1063,14 +1027,19 @@ class Store {
       const comment = lodashGet(this.dataObj, [...pathArr, 'comment'], '');
       const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj', ...pathArr, 'imagesAndVideosObj'], {});
       
-      
       const forumObj = lodashGet(this.dataObj, [communities_id], {});
       const clonedObj = lodashCloneDeep(forumObj);
       
-      const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-      const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      const threadListLimit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.FORUM_THREAD_LIST_LIMIT), 10);
+      const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+      const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+      const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+      
+      // const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+      // const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+      // // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+      // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+      // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
       
       
       
@@ -1125,6 +1094,11 @@ class Store {
       // ---------------------------------------------
       //   console.log
       // ---------------------------------------------
+      
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/forum/stores/store.js - handleSubmitFormThread
+      // `);
       
       // console.log(`
       //   ----- pathArr -----\n
@@ -1185,7 +1159,11 @@ class Store {
       
       if (gameCommunities_id) {
         
-        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-threads/upsert-gc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
         
       } else {
         
@@ -1203,8 +1181,6 @@ class Store {
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      
       
       
       // ---------------------------------------------
@@ -1359,7 +1335,6 @@ class Store {
    * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
    * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
    * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
-   * @param {string} forumComments_id - DB forum-comments _id / コメントのID
    */
   @action.bound
   async handleDeleteThread({
@@ -1381,10 +1356,16 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.FORUM_THREAD_LIST_LIMIT), 10);
+    const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+    const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+    const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+    
+    // const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    // const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+    // // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -1477,7 +1458,11 @@ class Store {
       
       if (gameCommunities_id) {
         
-        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-threads/delete-gc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
         
       } else if (userCommunities_id) {
         
@@ -1673,14 +1658,18 @@ class Store {
       
       const loadedDate = lodashGet(forumObj, ['forumCommentsObj ', forumThreads_id, `page${page}Obj`, 'loadedDate'], '');
       const arr = lodashGet(forumObj, ['forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
+      const reloadComments = lodashGet(forumObj, ['reloadComments'], false);
       
       const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
       let commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
       const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
       
-      // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-      // let limit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-      // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+      
+      
+      
+      // ---------------------------------------------
+      //   Change Limit
+      // ---------------------------------------------
       
       if (changeLimit) {
         
@@ -1696,8 +1685,6 @@ class Store {
         
         
       }
-      
-      const reloadComments = lodashGet(forumObj, ['reloadComments'], false);
       
       
       
@@ -1804,9 +1791,9 @@ class Store {
       //   --------------------\n
       // `);
       
-      console.log(chalk`
-        reload: {green ${reload}}
-      `);
+      // console.log(chalk`
+      //   reload: {green ${reload}}
+      // `);
       
       
       
@@ -1833,13 +1820,6 @@ class Store {
       console.log('fetch');
       
       
-      
-      
-      // ---------------------------------------------
-      //   Loading 表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingShow({});
       
       
       // ---------------------------------------------
@@ -1873,12 +1853,13 @@ class Store {
       }
       
       
-      
       // console.log(`
       //   ----- forumThreads_idArr -----\n
       //   ${util.inspect(JSON.parse(JSON.stringify(forumThreads_idArr)), { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
+      
+      
       
       
       // ---------------------------------------------
@@ -1904,30 +1885,13 @@ class Store {
       //   Fetch
       // ---------------------------------------------
       
-      let resultObj = {};
-      
-      if (gameCommunities_id) {
+      const resultObj = await fetchWrapper({
         
+        urlApi: `${process.env.URL_API}/v2/db/forum-comments/read-comments`,
+        methodType: 'POST',
+        formData: JSON.stringify(formDataObj),
         
-        
-      } else {
-        
-        resultObj = await fetchWrapper({
-          urlApi: `${process.env.URL_API}/v2/db/forum-comments/read-comments`,
-          methodType: 'POST',
-          formData: JSON.stringify(formDataObj),
-        });
-        
-      }
-      
-      
-      // console.log(`\n---------- resultObj ----------\n`);
-      // console.dir(resultObj);
-      // console.log(`\n-----------------------------------\n`);
-      
-      // return;
-      
-      
+      });
       
       
       // ---------------------------------------------
@@ -2069,14 +2033,6 @@ class Store {
       // ---------------------------------------------
       
       storeLayout.handleButtonEnable({ pathArr });
-      
-      
-      // ---------------------------------------------
-      //   Loading 非表示
-      // ---------------------------------------------
-      
-      storeLayout.handleLoadingHide({});
-      
       
       
       // ---------------------------------------------
@@ -2314,14 +2270,18 @@ class Store {
     
     const imagesAndVideosObj = lodashGet(storeImageAndVideoForm, ['dataObj',  ...pathArr, 'imagesAndVideosObj'], {});
     
-    
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.FORUM_THREAD_LIST_LIMIT), 10);
+    const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+    const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+    const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+    
+    // const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -2417,6 +2377,7 @@ class Store {
       // ---------------------------------------------
       
       const formDataObj = {
+        
         gameCommunities_id,
         userCommunities_id,
         forumThreads_id,
@@ -2426,6 +2387,7 @@ class Store {
         threadLimit,
         commentLimit,
         replyLimit,
+        
       };
       
       if (forumComments_id) {
@@ -2433,9 +2395,6 @@ class Store {
       }
       
       formDataObj.anonymity = anonymity;
-      // if (anonymity) {
-      //   formDataObj.anonymity = anonymity;
-      // }
       
       if (Object.keys(imagesAndVideosObj).length !== 0) {
         formDataObj.imagesAndVideosObj = imagesAndVideosObj;
@@ -2452,7 +2411,11 @@ class Store {
       
       if (gameCommunities_id) {
         
-        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-comments/upsert-comment-gc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
         
       } else if (userCommunities_id) {
         
@@ -2642,10 +2605,15 @@ class Store {
     const forumObj = lodashGet(this.dataObj, [communities_id], {});
     const clonedObj = lodashCloneDeep(forumObj);
     
-    const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
-    const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
-    const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
-    const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
+    const threadListLimit = parseInt((storeData.getCookie({ key: 'forumThreadListLimit' }) || process.env.FORUM_THREAD_LIST_LIMIT), 10);
+    const threadLimit = parseInt((storeData.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+    const commentLimit = parseInt((storeData.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
+    const replyLimit = parseInt((storeData.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
+    
+    // const threadListLimit = lodashGet(this.dataObj, ['forumThreadListLimit'], parseInt(process.env.FORUM_THREAD_LIST_LIMIT, 10));
+    // const threadLimit = lodashGet(this.dataObj, ['forumThreadLimit'], parseInt(process.env.FORUM_THREAD_LIMIT, 10));
+    // const commentLimit = lodashGet(this.dataObj, ['forumCommentLimit'], parseInt(process.env.FORUM_COMMENT_LIMIT, 10));
+    // const replyLimit = lodashGet(this.dataObj, ['forumReplyLimit'], parseInt(process.env.FORUM_REPLY_LIMIT, 10));
     
     
     
@@ -2741,7 +2709,11 @@ class Store {
       
       if (gameCommunities_id) {
         
-        
+        resultObj = await fetchWrapper({
+          urlApi: `${process.env.URL_API}/v2/db/forum-comments/delete-comment-gc`,
+          methodType: 'POST',
+          formData: JSON.stringify(formDataObj),
+        });
         
       } else if (userCommunities_id) {
         

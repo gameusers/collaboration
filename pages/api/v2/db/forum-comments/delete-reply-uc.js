@@ -204,7 +204,7 @@ export default async (req, res) => {
     //   Datetime
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     
     
@@ -306,7 +306,7 @@ export default async (req, res) => {
     //   画像を削除する
     // ---------------------------------------------
     
-    const dirPath = `img/forum/${imagesAndVideos_id}`;
+    const dirPath = `public/img/forum/${imagesAndVideos_id}`;
     
     if (imagesAndVideos_id && images !== 0) {
       

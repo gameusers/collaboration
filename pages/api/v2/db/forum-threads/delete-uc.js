@@ -26,7 +26,6 @@ const lodashSet = require('lodash/set');
 
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
 const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
-const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
 
 // ---------------------------------------------
@@ -43,7 +42,7 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
 const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
@@ -88,6 +87,13 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP: Remote Client Address
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   
   
   
@@ -136,16 +142,14 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    await validationUserCommunities_idServer({ value: userCommunities_id });
+    await validationIP({ throwError: true, value: ip });
     
+    await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
-    
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
     await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
     await validationForumRepliesLimit({ throwError: true, required: true, value: replyLimit });
-    
-    await validationIP({ throwError: true, value: req.ip });
     
     
     
@@ -173,7 +177,7 @@ export default async (req, res) => {
     //   Datetime
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     
     
@@ -264,7 +268,7 @@ export default async (req, res) => {
     
     for (let value of imagesAndVideos_idsArr.values()) {
       
-      const dirPath = `img/forum/${value}`;
+      const dirPath = `public/img/forum/${value}`;
       // console.log(dirPath);
       
       rimraf(dirPath, (err) => {
@@ -341,7 +345,7 @@ export default async (req, res) => {
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
     //   anonymity: {green ${anonymity} / ${typeof anonymity}}
-    //   IP: {green ${req.ip}}
+    //   IP: {green ${ip}}
     //   User Agent: {green ${req.headers['user-agent']}}
     // `);
     
@@ -353,7 +357,6 @@ export default async (req, res) => {
     // ---------------------------------------------
     
     return res.status(200).json(returnObj);
-    // return res.status(200).json({});
     
     
   } catch (errorObj) {
@@ -367,7 +370,7 @@ export default async (req, res) => {
       errorObj,
       endpointID: 'W1ND-2YO2',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
       requestParametersObj,
     });
     

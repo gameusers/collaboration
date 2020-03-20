@@ -194,7 +194,7 @@ const imageSave = async ({ newObj, oldObj, directoryPath, minSize, square }) => 
       //   ディレクトリ作成
       // ---------------------------------------------
       
-      const dirPath = `img/${type}/${_id}/${_id2}`;
+      const dirPath = `public/img/${type}/${_id}/${_id2}`;
       
       // mkdirp.sync(dirPath, (err) => {
       //   if (err) {

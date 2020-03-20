@@ -106,7 +106,7 @@ const returnErrorsArr = ({ errorObj = {}, endpointID, users_id, ip, requestParam
   
   const logObj = {
     logID,
-    date: moment().toISOString(),
+    date: moment().utc().toISOString(),
     endpointID,
     users_id,
     ip,

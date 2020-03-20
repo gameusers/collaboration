@@ -143,7 +143,7 @@ export default async (req, res) => {
     //   Update
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     const conditionObj = {
       _id: loginUsers_id

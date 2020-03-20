@@ -82,13 +82,41 @@ const setAuthority = ({ req, _id }) => {
 const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
   
   
+  // --------------------------------------------------
+  //   console.log
+  // --------------------------------------------------
+  
+  // console.log(`
+  //   ----------------------------------------\n
+  //   /app/@modules/authority.js - verifyAuthority
+  // `);
+  
+  // console.log(`
+  //   ----- req.user -----\n
+  //   ${util.inspect(req.user, { colors: true, depth: null })}\n
+  //   --------------------\n
+  // `);
+  
   // console.log(chalk`
   //   users_id: {green ${users_id}}
   //   loginUsers_id: {green ${loginUsers_id}}
   //   ISO8601: {green ${ISO8601}}
   //   _id: {green ${_id}}
   // `);
-
+  
+  
+  
+  
+  // --------------------------------------------------
+  //   Role - サイト運営
+  // --------------------------------------------------
+  
+  const role = lodashGet(req, ['user', 'role'], 'user');
+  
+  if (role === 'administrator') {
+    return true;
+  }
+  
   
   // --------------------------------------------------
   //   ログイン中
@@ -173,6 +201,8 @@ const verifyAuthority = ({ req, users_id, loginUsers_id, ISO8601, _id }) => {
 // --------------------------------------------------
 
 module.exports = {
+  
   setAuthority,
   verifyAuthority
+  
 };

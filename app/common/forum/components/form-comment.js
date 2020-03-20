@@ -43,7 +43,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 //   Validations
 // ---------------------------------------------
 
-const { validationForumCommentsName } = require('../../../@database/forum-comments/validations/form');
+import { validationForumCommentsName } from '../../../@database/forum-comments/validations/form';
 
 
 // ---------------------------------------------
@@ -121,7 +121,19 @@ export default injectIntl(class extends React.Component {
     //   Props
     // --------------------------------------------------
     
-    const { classes, stores, storeForum, intl, gameCommunities_id, userCommunities_id, forumThreads_id, forumComments_id, settingAnonymity } = this.props;
+    const {
+      
+      classes,
+      stores,
+      storeForum,
+      intl,
+      gameCommunities_id,
+      userCommunities_id,
+      forumThreads_id,
+      forumComments_id,
+      settingAnonymity
+      
+    } = this.props;
     
     // const { loginUsersObj } = stores.data;
     

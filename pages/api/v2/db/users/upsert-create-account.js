@@ -175,7 +175,7 @@ export default async (req, res) => {
     //   - 
     // ---------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     const users_id = shortid.generate();
     const userID = shortid.generate();
     const emailConfirmationID = `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;

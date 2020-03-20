@@ -41,7 +41,7 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
 const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
@@ -85,6 +85,13 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP: Remote Client Address
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   
   
   
@@ -143,7 +150,7 @@ export default async (req, res) => {
       
     } else {
       
-      await validationUserCommunities_idServer({ value: userCommunities_id });
+      await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
       
     }
     
@@ -230,28 +237,28 @@ export default async (req, res) => {
     //   console.log
     // ---------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/forum-threads/read-threads.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/forum-threads/read-threads.js
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      threadPage: {green ${threadPage} / ${typeof threadPage}}
-      threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
-      commentPage: {green ${commentPage} / ${typeof commentPage}}
-      commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
-      replyPage: {green ${replyPage} / ${typeof replyPage}}
-      replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   threadPage: {green ${threadPage} / ${typeof threadPage}}
+    //   threadLimit: {green ${threadLimit} / ${typeof threadLimit}}
+    //   commentPage: {green ${commentPage} / ${typeof commentPage}}
+    //   commentLimit: {green ${commentLimit} / ${typeof commentLimit}}
+    //   replyPage: {green ${replyPage} / ${typeof replyPage}}
+    //   replyLimit: {green ${replyLimit} / ${typeof replyLimit}}
+    // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(returnObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(returnObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -274,7 +281,7 @@ export default async (req, res) => {
       errorObj,
       endpointID: 'SR-1hVpJ_',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
       requestParametersObj,
     });
     

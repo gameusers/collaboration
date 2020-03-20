@@ -319,7 +319,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   コンポーネント作成 - Tab
+    //   Component - Tab
     // --------------------------------------------------
     
     let componentTabs = '';
@@ -328,7 +328,7 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* PC＆タブレット用 - タブをテキストで表示する */}
+        {/* ブラウザの横幅が大きい場合 - タブをテキストで表示する */}
         <Tabs
           css={css`
             && {
@@ -359,7 +359,7 @@ export default injectIntl(class extends React.Component {
         
         
         
-        {/* スマートフォン用 - タブをアイコンで表示する */}
+        {/* ブラウザの横幅が小さい場合 - タブをアイコンで表示する */}
         <Tabs
           css={css`
             && {
@@ -431,7 +431,7 @@ export default injectIntl(class extends React.Component {
     
     
     // --------------------------------------------------
-    //   コンポーネント作成 - スレッド一覧
+    //   Component - スレッド一覧
     // --------------------------------------------------
     
     let componentThreadList = '';
@@ -469,10 +469,6 @@ export default injectIntl(class extends React.Component {
           linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
           
         }
-        
-        // console.log(userCommunityID);
-        // console.log(forumThreads_id);
-        // console.log(pathname);
         
         
         // --------------------------------------------------
@@ -808,7 +804,7 @@ export default injectIntl(class extends React.Component {
             
             
             
-            {/* Thread Form */}
+            {/* スレッド作成フォーム */}
             {openedTabNo === 1 &&
               <div
                 css={css`

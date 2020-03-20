@@ -176,7 +176,7 @@ export default async (req, res) => {
     //   Save Object
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     let saveObj = {
       

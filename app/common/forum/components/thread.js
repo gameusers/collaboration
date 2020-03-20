@@ -281,7 +281,7 @@ export default injectIntl(class extends React.Component {
       
       
       // --------------------------------------------------
-      //   Property
+      //   data
       // --------------------------------------------------
       
       const threadsDataObj = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', forumThreads_id], {});

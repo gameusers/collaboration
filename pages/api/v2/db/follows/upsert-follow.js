@@ -359,7 +359,7 @@ export default async (req, res) => {
         approvalArr,
         approvalCount,
         blockArr,
-        updatedDate: moment().toISOString(),
+        updatedDate: moment().utc().toISOString(),
         
       }
       

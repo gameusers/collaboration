@@ -126,11 +126,23 @@ export default async (req, res) => {
     //   Common Initial Props
     // --------------------------------------------------
     
-    const commonInitialPropsObj = await initialProps({ req, res, localeObj });
+    // const commonInitialPropsObj = await initialProps({ req, res, localeObj });
     
-    returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    // returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
+    // returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
+    // returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
+    
+    
+    // --------------------------------------------------
+    //   ログインしているユーザー情報＆ログインチェック
+    // --------------------------------------------------
+    
+    returnObj.login = false;
+    
+    if (req.isAuthenticated() && req.user) {
+      returnObj.loginUsersObj = req.user;
+      returnObj.login = true;
+    }
     
     
     

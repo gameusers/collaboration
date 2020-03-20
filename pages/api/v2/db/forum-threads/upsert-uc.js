@@ -44,7 +44,7 @@ const { setAuthority } = require('../../../../../app/@modules/authority');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreadsName } = require('../../../../../app/@database/forum-threads/validations/name');
 const { validationForumThreadsComment } = require('../../../../../app/@database/forum-threads/validations/comment');
 const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
@@ -90,6 +90,13 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP: Remote Client Address
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   
   
   
@@ -144,20 +151,11 @@ export default async (req, res) => {
     //   Validation
     // --------------------------------------------------
     
-    if (userCommunities_id) {
-      
-      await validationUserCommunities_idServer({ value: userCommunities_id });
-      
-    } else {
-      
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'WNajTF52g', messageID: '1YJnibkmh' }] });
-      
-    }
+    await validationIP({ throwError: true, value: ip });
     
+    await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
     await validationForumThreadsName({ throwError: true, value: name });
     await validationForumThreadsComment({ throwError: true, value: comment });
-    await validationIP({ throwError: true, value: req.ip });
-    
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
     await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -167,19 +165,30 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads / スレッドが存在するかチェック
+    //   スレッドが存在するかチェック
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
     
+    
+    // --------------------------------------------------
+    //   編集の場合
+    // --------------------------------------------------
+    
     if (forumThreads_id) {
       
-      // データが存在しない、編集権限がない場合はエラーが投げられる
+      
+      // --------------------------------------------------
+      //   データが存在しない、編集権限がない場合はエラーが投げられる
+      // --------------------------------------------------
+      
       const tempOldObj = await ModelForumThreads.findForEdit({
+        
         req,
         localeObj,
         loginUsers_id,
         forumThreads_id,
+        
       });
       
       // console.log(`
@@ -190,22 +199,26 @@ export default async (req, res) => {
       
       oldImagesAndVideosObj = lodashGet(tempOldObj, ['imagesAndVideosObj'], {});
       
-      // if (Object.keys(tempOldObj).length === 0) {
-      //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'ERb2Rej4K', messageID: 'cvS0qSAlE' }] });
-      // }
-      
       
     // --------------------------------------------------
-    //   DB find / Forum Threads / 同じ名前のスレッドが存在するかチェック
+    //   新規の場合
     // --------------------------------------------------
       
     } else {
       
+      
+      // --------------------------------------------------
+      //   同じ名前のスレッドが存在するかチェック
+      //   count が 0 の場合は、同じ名前のスレッドは存在しない
+      // --------------------------------------------------
+      
       const count = await ModelForumThreads.count({
+        
         conditionObj: {
           userCommunities_id,
           'localesArr.name': name,
         }
+        
       });
       
       // console.log(chalk`
@@ -216,6 +229,7 @@ export default async (req, res) => {
         throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
       }
       
+      
     }
     
     
@@ -225,17 +239,13 @@ export default async (req, res) => {
     //   Datetime
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
-    // console.log(`
-    //   ----- imagesAndVideosObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    
     
     
     // --------------------------------------------------
-    //   画像を保存する
+    //   画像と動画の処理
     // --------------------------------------------------
     
     let imagesAndVideosConditionObj = {};
@@ -246,19 +256,40 @@ export default async (req, res) => {
     
     if (imagesAndVideosObj) {
       
+      
+      // --------------------------------------------------
+      //   画像を保存する
+      // --------------------------------------------------
+      
       const formatAndSaveObj = await formatAndSave({
+        
         newObj: imagesAndVideosObj,
         oldObj: oldImagesAndVideosObj,
         loginUsers_id,
         ISO8601,
+        
       });
       
+      
+      // --------------------------------------------------
+      //   imagesAndVideosSaveObj
+      // --------------------------------------------------
+      
       imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   画像数＆動画数
+      // --------------------------------------------------
+      
       images = lodashGet(formatAndSaveObj, ['images'], 0);
       videos = lodashGet(formatAndSaveObj, ['videos'], 0);
       
       
-      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      // --------------------------------------------------
+      //   画像＆動画がすべて削除されている場合は imagesAndVideos_id を空にする
+      // --------------------------------------------------
+      
       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
       
       if (arr.length === 0) {
@@ -268,16 +299,14 @@ export default async (req, res) => {
       }
       
       
+      // --------------------------------------------------
+      //   imagesAndVideosConditionObj
+      // --------------------------------------------------
+      
       imagesAndVideosConditionObj = {
         _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
       };
       
-      
-      // console.log(`
-      //   ----- imagesAndVideosSaveObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
     }
     
@@ -315,7 +344,7 @@ export default async (req, res) => {
       replies: 0,
       images,
       videos,
-      ip: req.ip,
+      ip,
       userAgent: lodashGet(req, ['headers', 'user-agent'], '')
     };
     
@@ -335,10 +364,7 @@ export default async (req, res) => {
       $inc: { 'forumObj.threadCount': 1 }
     };
     
-    // console.log(chalk`
-    //   images: {green ${images}}
-    //   videos: {green ${videos}}
-    // `);
+    
     
     
     // --------------------------------------------------
@@ -395,7 +421,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Set Authority
+    //   Set Authority / 非ログインユーザーに時間制限のある編集権限を与える
     // --------------------------------------------------
     
     if (!loginUsers_id) {
@@ -459,11 +485,6 @@ export default async (req, res) => {
     
     
     
-    
-    
-    
-    
-    
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
@@ -504,7 +525,7 @@ export default async (req, res) => {
       errorObj,
       endpointID: 'XfDc_r3br',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
       requestParametersObj,
     });
     

@@ -42,7 +42,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 // ---------------------------------------------
 
 import { validationForumThreadsName } from '../../../@database/forum-threads/validations/name';
-// const { validationForumThreadsName } = require('../../../@database/forum-threads/validations/name');
 
 
 // ---------------------------------------------

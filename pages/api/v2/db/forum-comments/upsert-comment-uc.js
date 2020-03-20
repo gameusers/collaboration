@@ -46,7 +46,7 @@ const { setAuthority } = require('../../../../../app/@modules/authority');
 
 const { validationIP } = require('../../../../../app/@validations/ip');
 const { validationBoolean } = require('../../../../../app/@validations/boolean');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
 const { validationForumCommentsName } = require('../../../../../app/@database/forum-comments/validations/name');
 const { validationForumCommentsComment } = require('../../../../../app/@database/forum-comments/validations/comment');
@@ -153,7 +153,7 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: req.ip });
     
-    await validationUserCommunities_idServer({ value: userCommunities_id });
+    await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
     await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
     await validationForumCommentsName({ throwError: true, value: name });
     await validationForumCommentsComment({ throwError: true, value: comment });
@@ -168,14 +168,18 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   編集 - 編集するコメントが存在していない場合はエラー
+    //   編集の場合 - 編集するコメントが存在していない場合はエラー
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
     
     if (forumComments_id) {
       
-      // データが存在しない、編集権限がない場合はエラーが投げられる
+      
+      // --------------------------------------------------
+      //   データが存在しない、編集権限がない場合はエラーが投げられる
+      // --------------------------------------------------
+      
       const forumCommentsObj = await ModelForumComments.findForEdit({
         req,
         localeObj,
@@ -193,7 +197,7 @@ export default async (req, res) => {
       
       
     // --------------------------------------------------
-    //   新規投稿 - 同じIPで、同じコメントが10分以内に投稿されている場合はエラー
+    //   新規の場合 - 同じIPで、同じコメントが10分以内に投稿されている場合はエラー
     // --------------------------------------------------
       
     } else {
@@ -228,7 +232,7 @@ export default async (req, res) => {
     //   Datetime
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     
     
@@ -237,13 +241,15 @@ export default async (req, res) => {
     //   DB findOne / User Communities / 匿名
     // --------------------------------------------------
     
-    const resultUserCommunityObj = await ModelUserCommunities.findOne({
+    const docUserCommunitiesObj = await ModelUserCommunities.findOne({
+      
       conditionObj: {
         _id: userCommunities_id
       }
+      
     });
     
-    const settingAnonymity = lodashGet(resultUserCommunityObj, ['anonymity'], false);
+    const settingAnonymity = lodashGet(docUserCommunitiesObj, ['anonymity'], false);
     
     // 匿名での投稿ができないのに匿名にしようとした場合、エラー
     if (!settingAnonymity && anonymity) {
@@ -257,15 +263,16 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- resultUserCommunityObj -----\n
-    //   ${util.inspect(resultUserCommunityObj, { colors: true, depth: null })}\n
+    //   ----- docUserCommunitiesObj -----\n
+    //   ${util.inspect(docUserCommunitiesObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
     
     
+    
     // --------------------------------------------------
-    //   画像を保存する
+    //   画像と動画の処理
     // --------------------------------------------------
     
     let imagesAndVideosConditionObj = {};
@@ -276,6 +283,11 @@ export default async (req, res) => {
     
     if (imagesAndVideosObj) {
       
+      
+      // --------------------------------------------------
+      //   画像を保存する
+      // --------------------------------------------------
+      
       const formatAndSaveObj = await formatAndSave({
         newObj: imagesAndVideosObj,
         oldObj: oldImagesAndVideosObj,
@@ -283,12 +295,26 @@ export default async (req, res) => {
         ISO8601,
       });
       
+      
+      // --------------------------------------------------
+      //   imagesAndVideosSaveObj
+      // --------------------------------------------------
+      
       imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   画像数＆動画数
+      // --------------------------------------------------
+      
       images = lodashGet(formatAndSaveObj, ['images'], 0);
       videos = lodashGet(formatAndSaveObj, ['videos'], 0);
       
       
-      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      // --------------------------------------------------
+      //   画像＆動画がすべて削除されている場合は imagesAndVideos_id を空にする
+      // --------------------------------------------------
+      
       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
       
       if (arr.length === 0) {
@@ -298,16 +324,14 @@ export default async (req, res) => {
       }
       
       
+      // --------------------------------------------------
+      //   imagesAndVideosConditionObj
+      // --------------------------------------------------
+      
       imagesAndVideosConditionObj = {
         _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
       };
       
-      
-      // console.log(`
-      //   ----- imagesAndVideosSaveObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
     }
     
@@ -430,10 +454,10 @@ export default async (req, res) => {
     
     await ModelForumComments.transactionForUpsert({
       
-      forumCommentsConditionObj,
-      forumCommentsSaveObj,
       forumThreadsConditionObj,
       forumThreadsSaveObj,
+      forumCommentsConditionObj,
+      forumCommentsSaveObj,
       imagesAndVideosConditionObj,
       imagesAndVideosSaveObj,
       userCommunitiesConditionObj,

@@ -74,7 +74,7 @@ const errorCodeIntoErrorObj = ({ fileID, functionID, messageCode, errorCodeArr, 
     //   Log Array
     // ---------------------------------------------
     
-    logArr.push(`${moment().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${loginUsers_id}\nMessage: ${errorObj.message}`);
+    logArr.push(`${moment().utc().toISOString()}\nCode: ${tempObj.code}\nLogin User: ${loginUsers_id}\nMessage: ${errorObj.message}`);
     
     
   }

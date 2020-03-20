@@ -106,14 +106,16 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Comments
+    //   DB find / Forum Comments / 権限チェック含む
     // --------------------------------------------------
     
     const returnObj = await ModelForumComments.findForEdit({
+      
       req,
       localeObj,
       loginUsers_id,
       forumComments_id,
+      
     });
     
     

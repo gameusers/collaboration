@@ -60,7 +60,7 @@ class Store {
     let datetimeCurrent = ISO8601;
     
     if (!ISO8601) {
-      datetimeCurrent = moment().toISOString();
+      datetimeCurrent = moment().utc().toISOString();
     }
     
     this.datetimeCurrent = datetimeCurrent;

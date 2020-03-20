@@ -28,6 +28,7 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 const Schema = require('./schema');
 const SchemaForumComments = require('../forum-comments/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
+const SchemaGameCommunities = require('../game-communities/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 
 const ModelForumComments = require('../forum-comments/model');
@@ -446,7 +447,7 @@ const findForThreadsList = async ({
       //   Datetime
       // --------------------------------------------------
       
-      clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD HH:mm');
+      clonedObj.updatedDate = moment(valueObj.updatedDate).utc().format('YYYY/MM/DD HH:mm');
       
       
       // --------------------------------------------------
@@ -503,7 +504,7 @@ const findForThreadsList = async ({
     //   Return Object
     // --------------------------------------------------
     
-    const ISO8601 = moment().toISOString();
+    const ISO8601 = moment().utc().toISOString();
     
     const returnObj = {
       count,
@@ -522,18 +523,18 @@ const findForThreadsList = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/forum-threads/model.js - findForThreadsList
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/forum-threads/model.js - findForThreadsList
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      gameCommunities_id: {green ${gameCommunities_id}}
-      userCommunities_id: {green ${userCommunities_id}}
-      page: {green ${page}}
-      limit: {green ${limit}}
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunities_id: {green ${userCommunities_id}}
+    //   page: {green ${page}}
+    //   limit: {green ${limit}}
+    // `);
     
     // console.log(`
     //   ----- resultArr -----\n
@@ -541,11 +542,11 @@ const findForThreadsList = async ({
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- returnObj -----\n
-      ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- returnObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(returnObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     
@@ -1335,7 +1336,7 @@ const findForForumBy_forumID = async ({
 * @param {Object} localeObj - ロケール
 * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
 * @param {Array} arr - 配列
-* @return {Array}フォーマット後のデータ
+* @return {Array} フォーマット後のデータ
 */
 const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCount }) => {
   
@@ -1351,7 +1352,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCoun
     dataObj: {},
   };
   
-  const ISO8601 = moment().toISOString();
+  const ISO8601 = moment().utc().toISOString();
   
   const dataObj = {};
   const forumThreads_idsForCommentArr = [];
@@ -1364,9 +1365,12 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCoun
   
   for (let valueObj of arr.values()) {
     
-    // console.log(`\n---------- valueObj ----------\n`);
-    // console.dir(valueObj);
-    // console.log(`\n-----------------------------------\n`);
+    
+    // console.log(`
+    //   ----- valueObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     
     // --------------------------------------------------
@@ -1380,7 +1384,7 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, threadPage, threadCoun
     //   Datetime
     // --------------------------------------------------
     
-    clonedObj.updatedDate = moment(valueObj.updatedDate).format('YYYY/MM/DD hh:mm');
+    clonedObj.updatedDate = moment(valueObj.updatedDate).utc().format('YYYY/MM/DD hh:mm');
     
     
     // --------------------------------------------------
@@ -1704,7 +1708,7 @@ const findForDeleteThread = async ({
 
 
 /**
- * スレッドを取得する / 編集用
+ * スレッドを取得する / 編集用（権限もチェック）
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -1904,6 +1908,8 @@ const findForEdit = async ({
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object} 
@@ -1914,8 +1920,10 @@ const transactionForUpsertThread = async ({
   forumThreadsSaveObj,
   imagesAndVideosConditionObj = {},
   imagesAndVideosSaveObj = {},
-  userCommunitiesConditionObj,
-  userCommunitiesSaveObj,
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  userCommunitiesConditionObj = {},
+  userCommunitiesSaveObj = {},
   
 }) => {
   
@@ -1934,6 +1942,8 @@ const transactionForUpsertThread = async ({
   const session = await Schema.startSession();
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -1948,12 +1958,18 @@ const transactionForUpsertThread = async ({
     await session.startTransaction();
     
     
-    // --------------------------------------------------
-    //   DB updateOne
-    // --------------------------------------------------
+    
+    
+    // ---------------------------------------------
+    //   - forum-threads
+    // ---------------------------------------------
     
     await Schema.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
     
+    
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
       
@@ -1982,7 +1998,28 @@ const transactionForUpsertThread = async ({
     }
     
     
-    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+      
+    }
+    
+    
+    // ---------------------------------------------
+    //   - user-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
+      
+      await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+      
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -2001,41 +2038,53 @@ const transactionForUpsertThread = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----- forumThreadsConditionObj -----\n
-      ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsConditionObj -----\n
+    //   ${util.inspect(forumThreadsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumThreadsSaveObj -----\n
-      ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumThreadsSaveObj -----\n
+    //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosConditionObj -----\n
-      ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosConditionObj -----\n
+    //   ${util.inspect(imagesAndVideosConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- imagesAndVideosSaveObj -----\n
-      ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- imagesAndVideosSaveObj -----\n
+    //   ${util.inspect(imagesAndVideosSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- userCommunitiesConditionObj -----\n
-      ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- userCommunitiesSaveObj -----\n
-      ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunitiesConditionObj -----\n
+    //   ${util.inspect(userCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- userCommunitiesSaveObj -----\n
+    //   ${util.inspect(userCommunitiesSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n
@@ -2088,6 +2137,8 @@ const transactionForUpsertThread = async ({
  * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object} 
@@ -2098,8 +2149,10 @@ const transactionForDeleteThread = async ({
   forumCommentsConditionObj,
   forumThreadsConditionObj,
   imagesAndVideosConditionObj = {},
-  userCommunitiesConditionObj,
-  userCommunitiesSaveObj,
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  userCommunitiesConditionObj = {},
+  userCommunitiesSaveObj = {},
   
 }) => {
   
@@ -2118,6 +2171,8 @@ const transactionForDeleteThread = async ({
   const session = await Schema.startSession();
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -2132,6 +2187,8 @@ const transactionForDeleteThread = async ({
     await session.startTransaction();
     
     
+    
+    
     // --------------------------------------------------
     //   DB updateOne
     // --------------------------------------------------
@@ -2140,11 +2197,34 @@ const transactionForDeleteThread = async ({
     await SchemaForumComments.deleteMany(forumCommentsConditionObj, { session });
     await Schema.deleteOne(forumThreadsConditionObj, { session });
     
+    
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
+    
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
       await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
     }
     
-    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - user-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
+      await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    }
+    
+    
     
     
     // --------------------------------------------------

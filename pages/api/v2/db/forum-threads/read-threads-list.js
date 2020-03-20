@@ -38,7 +38,8 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
+const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
+const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumThreadsListLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 
 
@@ -81,6 +82,13 @@ export default async (req, res) => {
   const returnObj = {};
   const requestParametersObj = {};
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
+  
+  
+  // --------------------------------------------------
+  //   IP: Remote Client Address
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   
   
   
@@ -145,11 +153,11 @@ export default async (req, res) => {
     
     if (gameCommunities_id) {
       
-      
+      await validationGameCommunities_idServer({ value: gameCommunities_id });
       
     } else {
       
-      await validationUserCommunities_idServer({ value: userCommunities_id });
+      await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
       
     }
     
@@ -164,11 +172,14 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList({
+      
       localeObj,
       loginUsers_id,
+      gameCommunities_id,
       userCommunities_id,
       page,
       limit,
+      
     });
     
     
@@ -192,7 +203,7 @@ export default async (req, res) => {
       errorObj,
       endpointID: 'WqUdtMoNi',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
       requestParametersObj,
     });
     

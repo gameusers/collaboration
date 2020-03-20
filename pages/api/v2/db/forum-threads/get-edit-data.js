@@ -73,6 +73,13 @@ export default async (req, res) => {
   const loginUsers_id = lodashGet(req, ['user', '_id'], '');
   
   
+  // --------------------------------------------------
+  //   IP: Remote Client Address
+  // --------------------------------------------------
+  
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  
+  
   
   
   try {
@@ -106,7 +113,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / Forum Threads
+    //   DB find / Forum Threads / 権限チェック含む
     // --------------------------------------------------
     
     const returnObj = await ModelForumThreads.findForEdit({
@@ -154,7 +161,7 @@ export default async (req, res) => {
       errorObj,
       endpointID: 'XcNLlVj1X',
       users_id: loginUsers_id,
-      ip: req.ip,
+      ip,
       requestParametersObj,
     });
     

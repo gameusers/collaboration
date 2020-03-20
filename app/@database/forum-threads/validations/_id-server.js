@@ -108,6 +108,82 @@ const validationForumThreads_idServer = async ({ value }) => {
 
 
 /**
+ * _id - ゲームコミュニティ用
+ * @param {string} forumThreads_id - DB forum-threads _id
+ * @param {string} gameCommunities_id - DB game-community _id
+ * @return {Object} バリデーション結果
+ */
+const validationForumThreads_idServerGC = async ({ forumThreads_id, gameCommunities_id }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 7;
+  const maxLength = 14;
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const data = String(forumThreads_id);
+  const numberOfCharacters = data ? data.length : 0;
+  
+  let resultObj = {
+    value: data,
+    numberOfCharacters,
+  };
+  
+  
+  // ---------------------------------------------
+  //   文字数チェック
+  // ---------------------------------------------
+  
+  if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Xu4I4IL7X', messageID: 'Pp_CFyt_3' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   英数と -_ のみ
+  // ---------------------------------------------
+  
+  if (data.match(/^[\w\-]+$/) === null) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'YBJPxLPBx', messageID: 'JBkjlGQMh' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   データベースに存在していない場合はエラー
+  // ---------------------------------------------
+  
+  const count = await Model.count({
+    conditionObj: {
+      _id: forumThreads_id,
+      gameCommunities_id,
+    }
+  });
+  
+  if (count !== 1) {
+    throw new CustomError({ level: 'warn', errorsArr: [{ code: 'pfjs12P_v', messageID: 'cvS0qSAlE' }] });
+  }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
+  
+  
+};
+
+
+
+
+/**
  * _id - ユーザーコミュニティ用
  * @param {string} forumThreads_id - DB forum-threads _id
  * @param {string} userCommunities_id - DB user-community _id
@@ -188,6 +264,9 @@ const validationForumThreads_idServerUC = async ({ forumThreads_id, userCommunit
 // --------------------------------------------------
 
 module.exports = {
+  
   validationForumThreads_idServer,
+  validationForumThreads_idServerGC,
   validationForumThreads_idServerUC,
+  
 };

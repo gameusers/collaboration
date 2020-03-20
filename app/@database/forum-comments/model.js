@@ -28,6 +28,7 @@ const lodashMerge = require('lodash/merge');
 
 const Schema = require('./schema');
 const SchemaForumThreads = require('../forum-threads/schema');
+const SchemaGameCommunities = require('../game-communities/schema');
 const SchemaUserCommunities = require('../user-communities/schema');
 const SchemaImagesAndVideos = require('../images-and-videos/schema');
 
@@ -791,7 +792,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
         
         { $project:
           {
-            createdDate: 0,
+            // createdDate: 0,
             imagesAndVideos_id: 0,
             __v: 0,
           }
@@ -1360,7 +1361,7 @@ const findRepliesByForumComments_idArr = async ({
       
       { $project:
         {
-          createdDate: 0,
+          // createdDate: 0,
           imagesAndVideos_id: 0,
           __v: 0,
         }
@@ -1532,9 +1533,11 @@ const formatVer2 = ({ req, localeObj, loginUsers_id, arr, forumThreadsObj, comme
     for (let valueObj of arr.values()) {
       
       
-      // console.log(`\n---------- valueObj ----------\n`);
-      // console.dir(valueObj);
-      // console.log(`\n-----------------------------------\n`);
+      // console.log(`
+      //   ----- valueObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(valueObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // --------------------------------------------------
@@ -2102,7 +2105,7 @@ const getPage = async ({
 
 
 /**
- * コ���ント＆返信データを取得する　編集用
+ * コメント＆返信データを取得する　編集用
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
@@ -2169,13 +2172,13 @@ const findForEdit = async ({
       },
       
       
-      { $project:
-        {
-          createdDate: 0,
-          imagesAndVideos_id: 0,
-          __v: 0,
-        }
-      },
+      // { $project:
+      //   {
+      //     // createdDate: 0,
+      //     imagesAndVideos_id: 0,
+      //     __v: 0,
+      //   }
+      // },
       
       
     ]).exec();
@@ -2196,17 +2199,23 @@ const findForEdit = async ({
     //   編集権限がない場合は処理停止
     // --------------------------------------------------
     
-    // const editable = verifyAuthority({
-    //   req,
-    //   users_id: lodashGet(resultArr, [0, 'users_id'], ''),
-    //   loginUsers_id,
-    //   ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
-    //   _id: lodashGet(resultArr, [0, '_id'], ''),
-    // });
+    const editable = verifyAuthority({
+      
+      req,
+      users_id: lodashGet(resultArr, [0, 'users_id'], ''),
+      loginUsers_id,
+      ISO8601: lodashGet(resultArr, [0, 'createdDate'], ''),
+      _id: lodashGet(resultArr, [0, '_id'], ''),
+      
+    });
     
-    // if (!editable) {
-    //   throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
-    // }
+    // console.log(chalk`
+    //   editable: {green ${editable}}
+    // `);
+    
+    if (!editable) {
+      throw new CustomError({ level: 'error', errorsArr: [{ code: 'IRZhSgQnt', messageID: 'DSRlEoL29' }] });
+    }
     
     
     
@@ -2243,11 +2252,19 @@ const findForEdit = async ({
     }
     
     
+    
+    
+    // --------------------------------------------------
+    //   returnObj
+    // --------------------------------------------------
+    
     const returnObj = {
+      
       _id,
       name,
       comment,
       imagesAndVideosObj,
+      
     };
     
     
@@ -2256,6 +2273,11 @@ const findForEdit = async ({
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/forum-comments/model.js - findForEdit
+    // `);
     
     // console.log(chalk`
     //   forumComments_id: {green ${forumComments_id}}
@@ -2326,7 +2348,7 @@ const findForDeleteComment = async ({
     const resultArr = await Schema.aggregate([
       
       
-      // スレッドを取得
+      // コメントを取得
       {
         $match:
           { $or:
@@ -2694,32 +2716,36 @@ const findForDeleteReply = async ({
 
 /**
  * Transaction 挿入 / 更新する
- * コメント、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
+ * コメント、スレッド、画像＆動画、コミュニティを同時に更新する
  * 
- * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
- * @param {Object} forumRepliesSaveObj - DB forum-comments 保存データ
- * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
- * @param {Object} forumCommentsSaveObj - DB forum-comments 保存データ
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumCommentsSaveObj - DB forum-comments 保存データ
+ * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumRepliesSaveObj - DB forum-comments 保存データ
  * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
  * @param {Object} imagesAndVideosSaveObj - DB images-and-videos 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object} 
  */
 const transactionForUpsert = async ({
   
-  forumRepliesConditionObj,
-  forumRepliesSaveObj,
-  forumCommentsConditionObj,
-  forumCommentsSaveObj,
-  forumThreadsConditionObj,
-  forumThreadsSaveObj,
-  imagesAndVideosConditionObj,
-  imagesAndVideosSaveObj,
-  userCommunitiesConditionObj,
-  userCommunitiesSaveObj,
+  forumThreadsConditionObj = {},
+  forumThreadsSaveObj = {},
+  forumCommentsConditionObj = {},
+  forumCommentsSaveObj = {},
+  forumRepliesConditionObj = {},
+  forumRepliesSaveObj = {},
+  imagesAndVideosConditionObj = {},
+  imagesAndVideosSaveObj = {},
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  userCommunitiesConditionObj = {},
+  userCommunitiesSaveObj = {},
   
 }) => {
   
@@ -2738,6 +2764,8 @@ const transactionForUpsert = async ({
   const session = await SchemaForumThreads.startSession();
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -2752,18 +2780,38 @@ const transactionForUpsert = async ({
     await session.startTransaction();
     
     
-    // --------------------------------------------------
-    //   DB updateOne
-    // --------------------------------------------------
     
-    if (forumRepliesConditionObj && forumRepliesSaveObj) {
+    
+    // ---------------------------------------------
+    //   - forum-threads / Thread
+    // ---------------------------------------------
+    
+    if (Object.keys(forumThreadsConditionObj).length !== 0 && Object.keys(forumThreadsSaveObj).length !== 0) {
+      await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - forum-comments / Comment
+    // ---------------------------------------------
+    
+    if (Object.keys(forumCommentsConditionObj).length !== 0 && Object.keys(forumCommentsSaveObj).length !== 0) {
+      await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - forum-comments / Reply
+    // ---------------------------------------------
+    
+    if (Object.keys(forumRepliesConditionObj).length !== 0 && Object.keys(forumRepliesSaveObj).length !== 0) {
       await Schema.updateOne(forumRepliesConditionObj, forumRepliesSaveObj, { session, upsert: true });
     }
     
     
-    await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session, upsert: true });
-    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session, upsert: true });
-    
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0 && Object.keys(imagesAndVideosSaveObj).length !== 0) {
       
@@ -2792,8 +2840,24 @@ const transactionForUpsert = async ({
     }
     
     
-    // throw new Error();
-    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - user-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
+      await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -2918,24 +2982,29 @@ const transactionForUpsert = async ({
 
 /**
  * Transaction コメントを削除する
- * コメントと返信を削除して、スレッド、画像＆動画、ユーザーコミュニティを同時に更新する
- * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
- * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * コメントと返信を削除して、スレッド、画像＆動画、コミュニティを同時に更新する
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} forumCommentsConditionObj - DB forum-comments 検索条件
+ * @param {Object} forumRepliesConditionObj - DB forum-comments 検索条件
+ * @param {Object} imagesAndVideosConditionObj - DB images-and-videos 検索条件
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object}
  */
 const transactionForDeleteComment = async ({
   
-  forumRepliesConditionObj,
-  forumCommentsConditionObj,
-  imagesAndVideosConditionObj,
   forumThreadsConditionObj,
   forumThreadsSaveObj,
-  userCommunitiesConditionObj,
-  userCommunitiesSaveObj,
+  forumCommentsConditionObj,
+  forumRepliesConditionObj,
+  imagesAndVideosConditionObj,
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  userCommunitiesConditionObj = {},
+  userCommunitiesSaveObj = {},
   
 }) => {
   
@@ -2954,6 +3023,8 @@ const transactionForDeleteComment = async ({
   const session = await SchemaForumThreads.startSession();
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -2968,19 +3039,46 @@ const transactionForDeleteComment = async ({
     await session.startTransaction();
     
     
+    
+    
     // --------------------------------------------------
     //   DB
     // --------------------------------------------------
     
     await Schema.deleteMany(forumRepliesConditionObj, { session });
     await Schema.deleteOne(forumCommentsConditionObj, { session });
+    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - images-and-videos
+    // ---------------------------------------------
     
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
       await SchemaImagesAndVideos.deleteMany(imagesAndVideosConditionObj, { session });
     }
     
-    await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
-    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    // ---------------------------------------------
+    //   - game-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - user-communities
+    // ---------------------------------------------
+    
+    if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
+      await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    }
+    
+    // await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    
     
     
     // --------------------------------------------------

@@ -274,7 +274,7 @@ export default async (req, res) => {
         approvalCount,
         blockArr,
         blockCount,
-        updatedDate: moment().toISOString(),
+        updatedDate: moment().utc().toISOString(),
         
       }
       

@@ -2190,7 +2190,7 @@ const transactionForDeleteThread = async ({
     
     
     // --------------------------------------------------
-    //   DB updateOne
+    //   DB deleteOne
     // --------------------------------------------------
     
     await SchemaForumComments.deleteMany(forumRepliesConditionObj, { session });

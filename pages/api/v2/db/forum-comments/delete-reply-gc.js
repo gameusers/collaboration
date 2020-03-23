@@ -24,7 +24,7 @@ const lodashSet = require('lodash/set');
 //   Model
 // ---------------------------------------------
 
-const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
+const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
 const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
 const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
@@ -43,8 +43,8 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 // ---------------------------------------------
 
 const { validationIP } = require('../../../../../app/@validations/ip');
-const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-const { validationForumThreads_idServerUC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
+const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
+const { validationForumThreads_idServerGC } = require('../../../../../app/@database/forum-threads/validations/_id-server');
 const { validationForumThreadsListLimit, validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
@@ -59,7 +59,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: diXcNSat_
+//   endpointID: R2LO0M-Ru
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -110,7 +110,7 @@ export default async (req, res) => {
     
     const {
       
-      userCommunities_id,
+      gameCommunities_id,
       forumThreads_id,
       forumComments_id,
       forumReplies_id,
@@ -122,7 +122,7 @@ export default async (req, res) => {
     } = bodyObj;
     
     
-    lodashSet(requestParametersObj, ['userCommunities_id'], userCommunities_id);
+    lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
     lodashSet(requestParametersObj, ['forumReplies_id'], forumReplies_id);
@@ -149,8 +149,8 @@ export default async (req, res) => {
     
     await validationIP({ throwError: true, value: ip });
     
-    await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
-    await validationForumThreads_idServerUC({ forumThreads_id, userCommunities_id });
+    await validationGameCommunities_idServer({ value: gameCommunities_id });
+    await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
     
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
@@ -170,7 +170,7 @@ export default async (req, res) => {
       req,
       localeObj,
       loginUsers_id,
-      userCommunities_id,
+      gameCommunities_id,
       forumThreads_id,
       forumComments_id,
       forumReplies_id,
@@ -195,24 +195,32 @@ export default async (req, res) => {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /pages/api/v2/db/forum-comments/delete-reply-uc.js
-    // `);
-    
-    // console.log(`
-    //   ----- forumCommentsObj -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(forumCommentsObj)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   /pages/api/v2/db/forum-comments/delete-reply-gc.js
     // `);
     
     // console.log(chalk`
-    //   userCommunities_id: {green ${userCommunities_id}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
     //   forumThreads_id: {green ${forumThreads_id}}
     //   forumComments_id: {green ${forumComments_id}}
     //   forumReplies_id: {green ${forumReplies_id}}
+      
+    //   threadListLimit: {green ${threadListLimit}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
+      
     //   imagesAndVideos_id: {green ${imagesAndVideos_id}}
     //   images: {green ${images}}
     //   videos: {green ${videos}}
     // `);
+    
+    // console.log(`
+    //   ----- docForumCommentsObj -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(docForumCommentsObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    
     
     
     
@@ -283,15 +291,15 @@ export default async (req, res) => {
     
     
     // ---------------------------------------------
-    //   - user-communities / 更新日時の変更
+    //   - game-communities / 更新日時の変更
     // ---------------------------------------------
     
-    const userCommunitiesConditionObj = {
-      _id: userCommunities_id,
+    const gameCommunitiesConditionObj = {
+      _id: gameCommunities_id,
     };
     
     
-    const userCommunitiesSaveObj = {
+    const gameCommunitiesSaveObj = {
       updatedDate: ISO8601,
       'updatedDateObj.forum': ISO8601,
     };
@@ -311,8 +319,8 @@ export default async (req, res) => {
       forumCommentsSaveObj,
       forumThreadsConditionObj,
       forumThreadsSaveObj,
-      userCommunitiesConditionObj,
-      userCommunitiesSaveObj,
+      gameCommunitiesConditionObj,
+      gameCommunitiesSaveObj,
       
     });
     
@@ -346,7 +354,7 @@ export default async (req, res) => {
       
       localeObj,
       loginUsers_id,
-      userCommunities_id,
+      gameCommunities_id,
       page: 1,
       limit: threadListLimit,
       
@@ -362,7 +370,7 @@ export default async (req, res) => {
       req,
       localeObj,
       loginUsers_id,
-      userCommunities_id,
+      gameCommunities_id,
       threadPage: 1,
       threadLimit,
       commentPage: 1,
@@ -378,18 +386,18 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
+    //   DB find / Game Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.find({
+    const gameCommunityArr = await ModelGameCommunities.find({
       
       conditionObj: {
-        _id: userCommunities_id
+        _id: gameCommunities_id
       }
       
     });
     
-    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    returnObj.updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
     
     
     
@@ -426,7 +434,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'diXcNSat_',
+      endpointID: 'R2LO0M-Ru',
       users_id: loginUsers_id,
       ip,
       requestParametersObj,

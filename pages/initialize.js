@@ -145,7 +145,10 @@ class Component extends React.Component {
         <p>ログアウト<br />
         <a href={`${this.urlBase}logout`} target="_blank">{`${this.urlBase}logout`}</a></p>
         
-        <p>ユーザーコミュニティ（現在はこのページを作成中）<br />
+        <p>ゲームコミュニティ（現在はこのページを作成中）<br />
+        <a href={`${this.urlBase}gc/Dead-by-Daylight`} target="_blank">{`${this.urlBase}gc/Dead-by-Daylight`}</a></p>
+        
+        <p>ユーザーコミュニティ<br />
         <a href={`${this.urlBase}uc/community1`} target="_blank">{`${this.urlBase}uc/community1`}</a></p>
         
         <p>ユーザー<br />

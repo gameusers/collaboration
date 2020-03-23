@@ -224,12 +224,12 @@ export default injectIntl(class extends React.Component {
     
     if (urlID) {
       
-      linkReturnTopHref = `/gc/[urlID]?urlID=${urlID}`;
+      linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
       linkReturnTopAs = `/gc/${urlID}`;
       
     } else if (userCommunityID) {
       
-      linkReturnTopHref = `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`;
+      linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
       linkReturnTopAs = `/uc/${userCommunityID}`;
       
     }

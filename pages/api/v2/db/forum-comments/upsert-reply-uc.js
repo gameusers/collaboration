@@ -180,21 +180,28 @@ export default async (req, res) => {
     
     if (forumReplies_id) {
       
-      // データが存在しない、編集権限がない場合はエラーが投げられる
+      
+      // --------------------------------------------------
+      //   データが存在しない、編集権限がない場合はエラーが投げられる
+      // --------------------------------------------------
+      
       const forumCommentsObj = await ModelForumComments.findForEdit({
+        
         req,
         localeObj,
         loginUsers_id,
         forumComments_id: forumReplies_id,
+        
       });
+      
+      oldImagesAndVideosObj = lodashGet(forumCommentsObj, ['imagesAndVideosObj'], {});
+      
       
       // console.log(`
       //   ----- forumCommentsObj -----\n
       //   ${util.inspect(forumCommentsObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      oldImagesAndVideosObj = lodashGet(forumCommentsObj, ['imagesAndVideosObj'], {});
       
       
     // --------------------------------------------------
@@ -206,13 +213,17 @@ export default async (req, res) => {
       const dateTimeLimit = moment().utc().add(-10, 'minutes');
       
       const count = await ModelForumComments.count({
+        
         conditionObj: {
+          
           userCommunities_id,
           forumThreads_id,
           'localesArr.comment': comment,
           'createdDate': { '$gt': dateTimeLimit },
           ip: req.ip,
+          
         }
+        
       });
       
       // console.log(chalk`
@@ -271,7 +282,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   画像を保存する
+    //   画像と動画の処理
     // --------------------------------------------------
     
     let imagesAndVideosConditionObj = {};
@@ -282,19 +293,40 @@ export default async (req, res) => {
     
     if (imagesAndVideosObj) {
       
+      
+      // --------------------------------------------------
+      //   画像を保存する
+      // --------------------------------------------------
+      
       const formatAndSaveObj = await formatAndSave({
+        
         newObj: imagesAndVideosObj,
         oldObj: oldImagesAndVideosObj,
         loginUsers_id,
         ISO8601,
+        
       });
       
+      
+      // --------------------------------------------------
+      //   imagesAndVideosSaveObj
+      // --------------------------------------------------
+      
       imagesAndVideosSaveObj = lodashGet(formatAndSaveObj, ['imagesAndVideosObj'], {});
+      
+      
+      // --------------------------------------------------
+      //   画像数＆動画数
+      // --------------------------------------------------
+      
       images = lodashGet(formatAndSaveObj, ['images'], 0);
       videos = lodashGet(formatAndSaveObj, ['videos'], 0);
       
       
-      // 画像＆動画がすべて削除されている場合は、imagesAndVideos_idを空にする
+      // --------------------------------------------------
+      //   画像＆動画がすべて削除されている場合は imagesAndVideos_id を空にする
+      // --------------------------------------------------
+      
       const arr = lodashGet(imagesAndVideosSaveObj, ['arr'], []);
       
       if (arr.length === 0) {
@@ -304,16 +336,14 @@ export default async (req, res) => {
       }
       
       
+      // --------------------------------------------------
+      //   imagesAndVideosConditionObj
+      // --------------------------------------------------
+      
       imagesAndVideosConditionObj = {
         _id: lodashGet(imagesAndVideosSaveObj, ['_id'], ''),
       };
       
-      
-      // console.log(`
-      //   ----- imagesAndVideosSaveObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(imagesAndVideosSaveObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
     }
     

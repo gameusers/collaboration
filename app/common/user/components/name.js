@@ -174,19 +174,19 @@ export default class extends React.Component {
   //   componentDidMount
   // --------------------------------------------------
   
-  componentDidMount() {
+  // componentDidMount() {
     
     
-    // --------------------------------------------------
-    //   Button - Enable
-    // --------------------------------------------------
+  //   // --------------------------------------------------
+  //   //   Button - Enable
+  //   // --------------------------------------------------
     
-    if (this.props.cardPlayers_id) {
-      this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    }
+  //   if (this.props.cardPlayers_id) {
+  //     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+  //   }
     
     
-  }
+  // }
   
   
   
@@ -229,11 +229,11 @@ export default class extends React.Component {
     //   Button - Disabled
     // --------------------------------------------------
     
-    let buttonDisabled = true;
+    // let buttonDisabled = true;
     
-    if (cardPlayers_id) {
-      buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
-    }
+    // if (cardPlayers_id) {
+    //   buttonDisabled = stores.layout.handleGetButtonDisabled({ pathArr: this.pathArr });
+    // }
     
     
     
@@ -249,7 +249,7 @@ export default class extends React.Component {
       componentName =
         <div css={cssNameNoColor}>
           <Link
-            href={`/ur/user?userID=${userID}`}
+            href={`/ur/[userID]/index?userID=${userID}`}
             as={`/ur/${userID}`}
           >
             <a>{name}</a>
@@ -418,7 +418,7 @@ export default class extends React.Component {
             css={cssButton}
             variant="outlined"
             onClick={() => handleCardPlayerDialogOpen({ cardPlayers_id })}
-            disabled={buttonDisabled}
+            // disabled={buttonDisabled}
             key="cardPlayersButton"
           >
             <IconLayers css={cssIconLayers} />

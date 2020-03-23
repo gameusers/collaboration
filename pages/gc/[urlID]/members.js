@@ -193,7 +193,7 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'トップ',
-        href: `/uc/[userCommunityID]?userCommunityID=${userCommunityID}`,
+        href: `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`,
         as: `/uc/${userCommunityID}`,
       },
       

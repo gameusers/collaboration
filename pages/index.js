@@ -914,6 +914,34 @@ export default class extends React.Component {
           </Container>
           
           
+          
+          
+          <div style={{ margin: '36px 24px' }}>
+            
+            <p>------------------------------</p>
+            
+            <p style={{ margin: '0 0 24px 0', fontWeight: 'bold' }}>[現在、作成中のページ]</p>
+            
+            <p>ログイン<br />
+            <a href={`/login`} target="_blank">{`/login`}</a></p>
+            
+            <p>ログアウト<br />
+            <a href={`/logout`} target="_blank">{`/logout`}</a></p>
+            
+            <p>ゲームコミュニティ<br />
+            <a href={`/gc/Dead-by-Daylight`} target="_blank">{`/gc/Dead-by-Daylight`}</a></p>
+            
+            <p>ユーザーコミュニティ<br />
+            <a href={`/uc/community1`} target="_blank">{`/uc/community1`}</a></p>
+            
+            <p>ユーザー<br />
+            <a href={`/ur/user1`} target="_blank">{`/ur/user1`}</a></p>
+            
+            <p>------------------------------</p>
+            
+          </div>
+          
+          
         </Layout>
         
       </Provider>

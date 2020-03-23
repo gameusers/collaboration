@@ -273,7 +273,7 @@ export default async (req, res) => {
       
       rimraf(dirPath, (err) => {
         if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+          throw new CustomError({ level: 'error', errorsArr: [{ code: 'dol1oZT5-', messageID: 'Error' }] });
         }
       });
       

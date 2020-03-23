@@ -191,21 +191,29 @@ export default class extends React.Component {
     //   Stores
     // --------------------------------------------------
     
+    // const headerNavMainArr = [];
+    
     const headerNavMainArr = [
       {
         name: 'トップ',
-        href: `/gc/[urlID]?urlID=${urlID}`,
+        // href: '',
+        // as: '',
+        href: `/gc/[urlID]/index?urlID=${urlID}`,
         as: `/gc/${urlID}`,
       },
       {
         name: '募集',
-        href: `/gc/[urlID]/rec?urlID=${urlID}`,
-        as: `/gc/${urlID}/rec`,
+        href: '/',
+        as: '/',
+        // href: `/gc/[urlID]/rec?urlID=${urlID}`,
+        // as: `/gc/${urlID}/rec`,
       },
       {
         name: 'フォロワー',
-        href: `/gc/[urlID]/followers?urlID=${urlID}`,
-        as: `/gc/${urlID}/followers`,
+        href: '/',
+        as: '/',
+        // href: `/gc/[urlID]/followers?urlID=${urlID}`,
+        // as: `/gc/${urlID}/followers`,
       }
     ];
     

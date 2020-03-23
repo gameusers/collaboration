@@ -772,7 +772,7 @@ const findCommentsAndRepliesByForumThreads_idsArr = async ({
                 
                 { $project:
                   {
-                    createdDate: 0,
+                    // createdDate: 0,
                     imagesAndVideos_id: 0,
                     __v: 0,
                   }
@@ -918,8 +918,8 @@ const findRepliesByForumComments_idArr = async ({
   req,
   localeObj,
   loginUsers_id,
+  gameCommunities_id,
   userCommunities_id,
-  // forumComments_id,
   forumComments_idArr = [],
   commentPage = 1,
   commentLimit = process.env.FORUM_COMMENT_LIMIT,
@@ -946,6 +946,53 @@ const findRepliesByForumComments_idArr = async ({
     
     
     // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [];
+    
+    
+    // --------------------------------------------------
+    //   Game Community
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+      matchConditionArr = [
+        {
+          $match: {
+            $and: [
+              { _id: { $in: forumComments_idArr } },
+              { gameCommunities_id },
+            ]
+          },
+        },
+      ];
+      
+      
+    // --------------------------------------------------
+    //   User Community
+    // --------------------------------------------------
+    
+    } else if (userCommunities_id) {
+    
+      matchConditionArr = [
+        {
+          $match: {
+            $and: [
+              { _id: { $in: forumComments_idArr } },
+              { userCommunities_id },
+            ]
+          },
+        },
+      ];
+      
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   Aggregation
     // --------------------------------------------------
     
@@ -953,20 +1000,27 @@ const findRepliesByForumComments_idArr = async ({
       
       
       // --------------------------------------------------
-      //   コメント
+      //   matchConditionArr
       // --------------------------------------------------
       
-      {
-        $match: {
-          $and: [
-            { _id: { $in: forumComments_idArr } },
-            { userCommunities_id },
-          ]
-        },
-      },
+      ...matchConditionArr,
       
       
-      // プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+      
+      // {
+      //   $match: {
+      //     $and: [
+      //       { _id: { $in: forumComments_idArr } },
+      //       { userCommunities_id },
+      //     ]
+      //   },
+      // },
+      
+      
+      // --------------------------------------------------
+      //   card-players - プレイヤーカードを取得（名前＆ステータス＆サムネイル用）
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -1038,7 +1092,10 @@ const findRepliesByForumComments_idArr = async ({
       },
       
       
-      // ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
+      // --------------------------------------------------
+      //   users - ユーザーを取得（アクセス日時＆経験値＆プレイヤーID用）
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -1071,7 +1128,10 @@ const findRepliesByForumComments_idArr = async ({
       },
       
       
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos - 画像と動画を取得
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -1341,7 +1401,7 @@ const findRepliesByForumComments_idArr = async ({
               
               { $project:
                 {
-                  createdDate: 0,
+                  // createdDate: 0,
                   imagesAndVideos_id: 0,
                   __v: 0,
                 }
@@ -1401,9 +1461,12 @@ const findRepliesByForumComments_idArr = async ({
     //   console.log
     // --------------------------------------------------
     
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/forum-comments/model.js - findRepliesByForumComments_idArr
+    // `);
+    
     // console.log(chalk`
-    //   ----- model / findRepliesByForumComments_idArr -----
-      
     //   userCommunities_id: {green ${userCommunities_id}}
     //   commentPage: {green ${commentPage}}
     //   commentLimit: {green ${commentLimit}}
@@ -2527,6 +2590,7 @@ const findForDeleteComment = async ({
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID
+ * @param {string} gameCommunities_id - DB game-communities _id / ゲームコミュニティのID
  * @param {string} userCommunities_id - DB user-communities _id / ユーザーコミュニティのID
  * @param {string} forumThreads_id - DB forum-threads _id / スレッドのID
  * @param {string} forumComments_id - DB forum-comments _id / コメントのID
@@ -2538,6 +2602,7 @@ const findForDeleteReply = async ({
   req,
   localeObj,
   loginUsers_id,
+  gameCommunities_id,
   userCommunities_id,
   forumThreads_id,
   forumComments_id,
@@ -2550,24 +2615,69 @@ const findForDeleteReply = async ({
     
     
     // --------------------------------------------------
+    //   Match Condition Array
+    // --------------------------------------------------
+    
+    let matchConditionArr = [];
+    
+    
+    // --------------------------------------------------
+    //   Game Community
+    // --------------------------------------------------
+    
+    if (gameCommunities_id) {
+      
+      matchConditionArr = [
+        {
+          $match: {
+            _id: forumReplies_id,
+            gameCommunities_id,
+            forumThreads_id,
+            forumComments_id,
+          },
+        },
+      ];
+      
+      
+    // --------------------------------------------------
+    //   User Community
+    // --------------------------------------------------
+    
+    } else if (userCommunities_id) {
+    
+      matchConditionArr = [
+        {
+          $match: {
+            _id: forumReplies_id,
+            userCommunities_id,
+            forumThreads_id,
+            forumComments_id,
+          },
+        },
+      ];
+      
+    }
+    
+    
+    
+    // --------------------------------------------------
     //   Aggregate
     // --------------------------------------------------
     
     const resultArr = await Schema.aggregate([
       
       
-      // スレッドを取得
-      {
-        $match : {
-          _id: forumReplies_id,
-          userCommunities_id,
-          forumThreads_id,
-          forumComments_id,
-        }
-      },
+      // --------------------------------------------------
+      //   matchConditionArr
+      // --------------------------------------------------
+      
+      ...matchConditionArr,
       
       
-      // 画像と動画を取得
+      // --------------------------------------------------
+      //   images-and-videos - 画像と動画を取得
+      // --------------------------------------------------
+      
       {
         $lookup:
           {
@@ -2824,7 +2934,7 @@ const transactionForUpsert = async ({
       
       if (arr.length === 0) {
         
-        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
+        await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
         
         
       // --------------------------------------------------
@@ -3076,8 +3186,6 @@ const transactionForDeleteComment = async ({
       await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
     }
     
-    // await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
-    
     
     
     
@@ -3187,6 +3295,8 @@ const transactionForDeleteComment = async ({
  * @param {Object} forumCommentsSaveObj - DB forum-comments 保存データ
  * @param {Object} forumThreadsConditionObj - DB forum-threads 検索条件
  * @param {Object} forumThreadsSaveObj - DB forum-threads 保存データ
+ * @param {Object} gameCommunitiesConditionObj - DB game-communities 検索条件
+ * @param {Object} gameCommunitiesSaveObj - DB game-communities 保存データ
  * @param {Object} userCommunitiesConditionObj - DB user-communities 検索条件
  * @param {Object} userCommunitiesSaveObj - DB user-communities 保存データ
  * @return {Object} 
@@ -3199,8 +3309,10 @@ const transactionForDeleteReply = async ({
   forumCommentsSaveObj,
   forumThreadsConditionObj,
   forumThreadsSaveObj,
-  userCommunitiesConditionObj,
-  userCommunitiesSaveObj,
+  gameCommunitiesConditionObj = {},
+  gameCommunitiesSaveObj = {},
+  userCommunitiesConditionObj = {},
+  userCommunitiesSaveObj = {},
   
 }) => {
   
@@ -3219,6 +3331,8 @@ const transactionForDeleteReply = async ({
   const session = await SchemaForumThreads.startSession();
   
   
+  
+  
   // --------------------------------------------------
   //   Database
   // --------------------------------------------------
@@ -3233,19 +3347,50 @@ const transactionForDeleteReply = async ({
     await session.startTransaction();
     
     
+    
+    
     // --------------------------------------------------
-    //   DB updateOne
+    //   - forum-comments (reply) / Delete
     // --------------------------------------------------
     
-    await Schema.deleteOne(forumRepliesConditionObj);
+    await Schema.deleteOne(forumRepliesConditionObj, { session });
+    
+    
+    // ---------------------------------------------
+    //   - forum-comments & forum-threads / Update
+    // ---------------------------------------------
+    
     await Schema.updateOne(forumCommentsConditionObj, forumCommentsSaveObj, { session });
     await SchemaForumThreads.updateOne(forumThreadsConditionObj, forumThreadsSaveObj, { session });
     
+    
+    // ---------------------------------------------
+    //   - images-and-videos / Delete
+    // ---------------------------------------------
+    
     if (Object.keys(imagesAndVideosConditionObj).length !== 0) {
-      await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj);
+      await SchemaImagesAndVideos.deleteOne(imagesAndVideosConditionObj, { session });
     }
     
-    await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    
+    // ---------------------------------------------
+    //   - game-communities / Update
+    // ---------------------------------------------
+    
+    if (Object.keys(gameCommunitiesConditionObj).length !== 0 && Object.keys(gameCommunitiesSaveObj).length !== 0) {
+      await SchemaGameCommunities.updateOne(gameCommunitiesConditionObj, gameCommunitiesSaveObj, { session });
+    }
+    
+    
+    // ---------------------------------------------
+    //   - user-communities / Update
+    // ---------------------------------------------
+    
+    if (Object.keys(userCommunitiesConditionObj).length !== 0 && Object.keys(userCommunitiesSaveObj).length !== 0) {
+      await SchemaUserCommunities.updateOne(userCommunitiesConditionObj, userCommunitiesSaveObj, { session });
+    }
+    
+    
     
     
     // --------------------------------------------------
@@ -3263,6 +3408,11 @@ const transactionForDeleteReply = async ({
     // --------------------------------------------------
     //   console.log
     // --------------------------------------------------
+    
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/forum-comments/model.js - transactionForDeleteReply
+    // `);
     
     // console.log(`
     //   ----- forumRepliesConditionObj -----\n
@@ -3297,6 +3447,18 @@ const transactionForDeleteReply = async ({
     // console.log(`
     //   ----- forumThreadsSaveObj -----\n
     //   ${util.inspect(forumThreadsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gameCommunitiesConditionObj -----\n
+    //   ${util.inspect(gameCommunitiesConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- gameCommunitiesSaveObj -----\n
+    //   ${util.inspect(gameCommunitiesSaveObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     

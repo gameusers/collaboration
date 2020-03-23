@@ -168,7 +168,7 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'トップ',
-        href: `/ur/[userID]?userID=${userID}`,
+        href: `/ur/[userID]/index?userID=${userID}`,
         as: `/ur/${userID}`,
       },
       {

@@ -149,6 +149,7 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
+    
     await validationForumThreadsListLimit({ throwError: true, required: true, value: threadListLimit });
     await validationForumThreadsLimit({ throwError: true, required: true, value: threadLimit });
     await validationForumCommentsLimit({ throwError: true, required: true, value: commentLimit });
@@ -285,7 +286,7 @@ export default async (req, res) => {
       
       rimraf(dirPath, (err) => {
         if (err) {
-          throw new CustomError({ level: 'error', errorsArr: [{ code: 'av6kp9HZf', messageID: 'Error' }] });
+          throw new CustomError({ level: 'error', errorsArr: [{ code: '9Nv0_OQQG', messageID: 'Error' }] });
         }
       });
       
@@ -334,7 +335,7 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   DB find / User Communities / 最新の更新日時情報を取得する
+    //   DB find / Game Communities / 最新の更新日時情報を取得する
     // --------------------------------------------------
     
     const gameCommunityArr = await ModelGameCommunities.find({

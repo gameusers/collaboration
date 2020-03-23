@@ -489,7 +489,7 @@ export default class extends React.Component {
         
         
         {/* ベル・通知 */}
-        {userID &&
+        {/*{userID &&
           <IconButton
             css={css`
               && {
@@ -513,11 +513,11 @@ export default class extends React.Component {
               <IconNotifications />
             </Badge>
           </IconButton>
-        }
+        }*/}
         
         
         {/* 検索フォーム */}
-        <div
+        {/*<div
           css={css`
             display: flex;
             flex-grow: 1;
@@ -543,59 +543,72 @@ export default class extends React.Component {
               autoComplete: "off"
             }}
           />
-        </div>
+        </div>*/}
         
         
         
         
-        {/* サムネイル */}
-        {userID ? (
-        
-          <IconButton
-            css={css`
-              && {
-                margin: 0 8px 0 auto;
-                padding: 0;
-              }
-            `}
-            onClick={stores.layout.handleHeaderLoginMenuOpen}
-          >
-            <Avatar
-              alt="ログインメニュー"
-              src={thumbnailSrc}
-              srcSet={thumbnailSrcSet}
-            />
-          </IconButton>
+        {/* 右寄せ（検索フォームを非表示にした場合、代わりにこのタグで右寄せにする） */}
+        <div
+          css={css`
+            display: flex;
+            // flex-grow: 1;
+            justify-content: flex-end;
+            margin-left: auto;
+          `}
+        >
           
-        ) : (
-        
-          <Link href="/login">
-            <div
+          
+          {/* サムネイル */}
+          {userID ? (
+          
+            <IconButton
               css={css`
-                display: flex;
-                flex-direction: row;
-                color: #4000FF;
-                cursor: pointer;
-                white-space: nowrap;
-                margin: 0 16px 0 0;
-                
-                @media screen and (max-width: 480px) {
-                  margin: 0 10px 0 0;
+                && {
+                  margin: 0 8px 0 auto;
+                  padding: 0;
                 }
               `}
+              onClick={stores.layout.handleHeaderLoginMenuOpen}
             >
-              <IconLogin
+              <Avatar
+                alt="ログインメニュー"
+                src={thumbnailSrc}
+                srcSet={thumbnailSrcSet}
+              />
+            </IconButton>
+            
+          ) : (
+          
+            <Link href="/login">
+              <div
                 css={css`
-                  && {
-                    margin: 0 6px 0 0;
+                  display: flex;
+                  flex-direction: row;
+                  color: #4000FF;
+                  cursor: pointer;
+                  white-space: nowrap;
+                  margin: 0 16px 0 0;
+                  
+                  @media screen and (max-width: 480px) {
+                    margin: 0 10px 0 0;
                   }
                 `}
-              /> ログイン
-            </div>
-          </Link>
+              >
+                <IconLogin
+                  css={css`
+                    && {
+                      margin: 0 6px 0 0;
+                    }
+                  `}
+                /> ログイン
+              </div>
+            </Link>
+            
+          )}
           
-        )}
-        
+          
+        </div>
         
         
         
@@ -623,7 +636,7 @@ export default class extends React.Component {
               <IconPerson />
             </ListItemIcon>
             
-            <Link href={`/ur/${userID}`}>
+            <Link href={`/ur/[userID]/index?userID=${userID}`} as={`/ur/${userID}`}>
               <ListItemText
                 css={css`
                   && {

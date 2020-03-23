@@ -16,15 +16,14 @@ const util = require('util');
 
 const lodashGet = require('lodash/get');
 const lodashSet = require('lodash/set');
-// const lodashMerge = require('lodash/merge');
 
 
 // ---------------------------------------------
 //   Model
 // ---------------------------------------------
 
+const ModelGameCommunities = require('../../../../../app/@database/game-communities/model');
 const ModelUserCommunities = require('../../../../../app/@database/user-communities/model');
-// const ModelForumThreads = require('../../../../../app/@database/forum-threads/model');
 const ModelForumComments = require('../../../../../app/@database/forum-comments/model');
 
 
@@ -41,8 +40,8 @@ const { returnErrorsArr } = require('../../../../../app/@modules/log/log');
 // ---------------------------------------------
 
 const { validationInteger } = require('../../../../../app/@validations/integer');
-const { validationUserCommunities_idServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
-// const { validationForumThreadsLimit } = require('../../../../../app/@database/forum-threads/validations/limit');
+const { validationGameCommunities_idServer } = require('../../../../../app/@database/game-communities/validations/_id-server');
+const { validationUserCommunities_idAndAuthorityServer } = require('../../../../../app/@database/user-communities/validations/_id-server');
 const { validationForumCommentsLimit, validationForumRepliesLimit } = require('../../../../../app/@database/forum-comments/validations/limit');
 
 
@@ -137,11 +136,11 @@ export default async (req, res) => {
     
     if (gameCommunities_id) {
       
-      
+      await validationGameCommunities_idServer({ value: gameCommunities_id });
       
     } else {
       
-      await validationUserCommunities_idServer({ value: userCommunities_id });
+      await validationUserCommunities_idAndAuthorityServer({ value: userCommunities_id, loginUsers_id });
       
     }
     
@@ -179,13 +178,39 @@ export default async (req, res) => {
     //   DB find / User Communities
     // --------------------------------------------------
     
-    const userCommunityArr = await ModelUserCommunities.find({
-      conditionObj: {
-        _id: userCommunities_id
-      }
-    });
+    // --------------------------------------------------
+    //   updatedDateObj
+    // --------------------------------------------------
     
-    returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+    let updatedDateObj = {};
+    
+    if (gameCommunities_id) {
+      
+      const gameCommunityArr = await ModelGameCommunities.find({
+        
+        conditionObj: {
+          _id: gameCommunities_id
+        }
+        
+      });
+      
+      updatedDateObj = lodashGet(gameCommunityArr, [0, 'updatedDateObj'], {});
+      
+    } else {
+      
+      const userCommunityArr = await ModelUserCommunities.find({
+        
+        conditionObj: {
+          _id: userCommunities_id
+        }
+        
+      });
+      
+      updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
+      
+    }
+    
+    returnObj.updatedDateObj = updatedDateObj;
     
     
     

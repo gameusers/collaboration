@@ -370,6 +370,19 @@ export default injectIntl(class extends React.Component {
       const replyTo = `${replyToName} | ${replyToForumComments_id}`;
       
       
+      // --------------------------------------------------
+      //   編集権限 - 編集ボタンを表示する
+      // --------------------------------------------------
+      
+      // console.log(`
+      //   ----- repliesDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
+      
+      const editable = lodashGet(repliesDataObj, ['editable'], false);
+      
+      
       
       
       // --------------------------------------------------
@@ -677,43 +690,46 @@ export default injectIntl(class extends React.Component {
                     </Button>
                     
                     
-                    <Button
-                      css={css`
-                        && {
-                          font-size: 12px;
-                          height: 22px;
-                          min-width: 54px;
-                          min-height: 22px;
-                          margin: 4px 0 0 0;
-                          padding: 0 4px;
-                          
-                          @media screen and (max-width: 480px) {
-                            min-width: 36px;
-                            min-height: 22px;
-                          }
-                        }
-                      `}
-                      variant="outlined"
-                      color="primary"
-                      onClick={() => handleShowFormReply({
-                        pathArr: this.pathArr,
-                        forumReplies_id,
-                      })}
-                    >
-                      <IconEdit
+                    {/* Edit Button */}
+                    {editable &&
+                      <Button
                         css={css`
                           && {
-                            font-size: 16px;
-                            margin: 0 2px 3px 0;
+                            font-size: 12px;
+                            height: 22px;
+                            min-width: 54px;
+                            min-height: 22px;
+                            margin: 4px 0 0 0;
+                            padding: 0 4px;
                             
                             @media screen and (max-width: 480px) {
-                              display: none;
+                              min-width: 36px;
+                              min-height: 22px;
                             }
                           }
                         `}
-                      />
-                      編集
-                    </Button>
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => handleShowFormReply({
+                          pathArr: this.pathArr,
+                          forumReplies_id,
+                        })}
+                      >
+                        <IconEdit
+                          css={css`
+                            && {
+                              font-size: 16px;
+                              margin: 0 2px 3px 0;
+                              
+                              @media screen and (max-width: 480px) {
+                                display: none;
+                              }
+                            }
+                          `}
+                        />
+                        編集
+                      </Button>
+                    }
                     
                   </div>
                     

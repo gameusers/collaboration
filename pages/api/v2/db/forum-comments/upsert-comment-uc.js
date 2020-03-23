@@ -469,6 +469,17 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
+    //   Set Authority
+    // --------------------------------------------------
+    
+    if (!loginUsers_id && !forumComments_id) {
+      setAuthority({ req, _id: forumCommentsConditionObj._id });
+    }
+    
+    
+    
+    
+    // --------------------------------------------------
     //   DB find / Forum Threads List
     // --------------------------------------------------
     
@@ -518,17 +529,6 @@ export default async (req, res) => {
     });
     
     returnObj.updatedDateObj = lodashGet(userCommunityArr, [0, 'updatedDateObj'], {});
-    
-    
-    
-    
-    // --------------------------------------------------
-    //   Set Authority
-    // --------------------------------------------------
-    
-    if (!loginUsers_id && !forumComments_id) {
-      setAuthority({ req, _id: forumCommentsConditionObj._id });
-    }
     
     
     

@@ -64,7 +64,7 @@ const { locale } = require('../../../../../app/@locales/locale');
 
 
 // --------------------------------------------------
-//   endpointID: ViCtroXyq
+//   endpointID: EXVmnpmJu
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -118,6 +118,8 @@ export default async (req, res) => {
       gameCommunities_id,
       forumThreads_id,
       forumComments_id,
+      forumReplies_id,
+      replyToForumComments_id,
       name,
       comment,
       anonymity,
@@ -133,6 +135,8 @@ export default async (req, res) => {
     lodashSet(requestParametersObj, ['gameCommunities_id'], gameCommunities_id);
     lodashSet(requestParametersObj, ['forumThreads_id'], forumThreads_id);
     lodashSet(requestParametersObj, ['forumComments_id'], forumComments_id);
+    lodashSet(requestParametersObj, ['forumReplies_id'], forumReplies_id);
+    lodashSet(requestParametersObj, ['replyToForumComments_id'], replyToForumComments_id);
     lodashSet(requestParametersObj, ['name'], name);
     lodashSet(requestParametersObj, ['comment'], comment);
     lodashSet(requestParametersObj, ['anonymity'], anonymity);
@@ -162,6 +166,7 @@ export default async (req, res) => {
     
     await validationGameCommunities_idServer({ value: gameCommunities_id });
     await validationForumThreads_idServerGC({ forumThreads_id, gameCommunities_id });
+    
     await validationForumCommentsName({ throwError: true, value: name });
     await validationForumCommentsComment({ throwError: true, value: comment });
     await validationBoolean({ throwError: true, value: anonymity });
@@ -174,13 +179,15 @@ export default async (req, res) => {
     
     
     
+    
+    
     // --------------------------------------------------
-    //   編集の場合 - 編集するコメントが存在していない場合はエラー
+    //   編集 - 編集するコメントが存在していない場合はエラー
     // --------------------------------------------------
     
     let oldImagesAndVideosObj = {};
     
-    if (forumComments_id) {
+    if (forumReplies_id) {
       
       
       // --------------------------------------------------
@@ -188,11 +195,16 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       const forumCommentsObj = await ModelForumComments.findForEdit({
+        
         req,
         localeObj,
         loginUsers_id,
-        forumComments_id,
+        forumComments_id: forumReplies_id,
+        
       });
+      
+      oldImagesAndVideosObj = lodashGet(forumCommentsObj, ['imagesAndVideosObj'], {});
+      
       
       // console.log(`
       //   ----- forumCommentsObj -----\n
@@ -200,11 +212,9 @@ export default async (req, res) => {
       //   --------------------\n
       // `);
       
-      oldImagesAndVideosObj = lodashGet(forumCommentsObj, ['imagesAndVideosObj'], {});
-      
       
     // --------------------------------------------------
-    //   新規の場合 - 同じIPで、同じコメントが10分以内に投稿されている場合はエラー
+    //   新規投稿 - 同じIPで、同じコメントが10分以内に投稿されている場合はエラー
     // --------------------------------------------------
       
     } else {
@@ -212,13 +222,17 @@ export default async (req, res) => {
       const dateTimeLimit = moment().utc().add(-10, 'minutes');
       
       const count = await ModelForumComments.count({
+        
         conditionObj: {
+          
           gameCommunities_id,
           forumThreads_id,
           'localesArr.comment': comment,
           'createdDate': { '$gt': dateTimeLimit },
           ip,
+          
         }
+        
       });
       
       // console.log(chalk`
@@ -227,7 +241,7 @@ export default async (req, res) => {
       // `);
       
       if (count > 0) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GhO9a3n1M', messageID: 'ffNAq3wYT' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'GGx6QGEIK', messageID: 'ffNAq3wYT' }] });
       }
       
     }
@@ -248,20 +262,20 @@ export default async (req, res) => {
     //   DB findOne / User Communities / 匿名
     // --------------------------------------------------
     
-    const docGameCommunitiesObj = await ModelGameCommunities.findOne({
+    // const resultUserCommunityObj = await ModelUserCommunities.findOne({
       
-      conditionObj: {
-        _id: gameCommunities_id
-      }
+    //   conditionObj: {
+    //     _id: gameCommunities_id
+    //   }
       
-    });
+    // });
     
-    const settingAnonymity = lodashGet(docGameCommunitiesObj, ['anonymity'], false);
+    // const settingAnonymity = lodashGet(resultUserCommunityObj, ['anonymity'], false);
     
-    // 匿名での投稿ができないのに匿名にしようとした場合、エラー
-    if (!settingAnonymity && anonymity) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'A2aYwNx-X', messageID: 'qnWsuPcrJ' }] });
-    }
+    // // 匿名での投稿ができないのに匿名にしようとした場合、エラー
+    // if (!settingAnonymity && anonymity) {
+    //   throw new CustomError({ level: 'warn', errorsArr: [{ code: '_TiwS7HD1-X', messageID: 'qnWsuPcrJ' }] });
+    // }
     
     
     // console.log(chalk`
@@ -270,8 +284,8 @@ export default async (req, res) => {
     // `);
     
     // console.log(`
-    //   ----- docGameCommunitiesObj -----\n
-    //   ${util.inspect(docGameCommunitiesObj, { colors: true, depth: null })}\n
+    //   ----- resultUserCommunityObj -----\n
+    //   ${util.inspect(resultUserCommunityObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -296,10 +310,12 @@ export default async (req, res) => {
       // --------------------------------------------------
       
       const formatAndSaveObj = await formatAndSave({
+        
         newObj: imagesAndVideosObj,
         oldObj: oldImagesAndVideosObj,
         loginUsers_id,
         ISO8601,
+        
       });
       
       
@@ -350,22 +366,22 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     // ---------------------------------------------
-    //   - forum-comments
+    //   - forum-comments / 返信
     // ---------------------------------------------
     
-    const forumCommentsConditionObj = {
+    const forumRepliesConditionObj = {
       _id: shortid.generate(),
     };
     
     
-    const forumCommentsSaveObj = {
+    const forumRepliesSaveObj = {
       createdDate: ISO8601,
       updatedDate: ISO8601,
       gameCommunities_id,
       userCommunities_id: '',
       forumThreads_id,
-      forumComments_id: '',
-      replyToForumComments_id: '',
+      forumComments_id,
+      replyToForumComments_id,
       users_id: loginUsers_id,
       localesArr: [
         {
@@ -376,16 +392,16 @@ export default async (req, res) => {
         }
       ],
       imagesAndVideos_id,
-      anonymity,
+      anonymity: anonymity ? true : false,
       goods: 0,
       replies: 0,
       ip,
-      userAgent: lodashGet(req, ['headers', 'user-agent'], '')
+      userAgent: lodashGet(req, ['headers', 'user-agent'], ''),
     };
     
     
     // ---------------------------------------------
-    //   - forum-threads / コメント数 + 1
+    //   - forum-threads / 更新日時の変更 & 返信数 + 1 & 画像数と動画数の変更
     // ---------------------------------------------
     
     const forumThreadsConditionObj = {
@@ -395,7 +411,22 @@ export default async (req, res) => {
     
     let forumThreadsSaveObj = {
       updatedDate: ISO8601,
-      $inc: { comments: 1, images, videos }
+      $inc: { replies: 1, images, videos }
+    };
+    
+    
+    // ---------------------------------------------
+    //   - forum-comments / 更新日時の変更 & 返信数 + 1
+    // ---------------------------------------------
+    
+    const forumCommentsConditionObj = {
+      _id: forumComments_id,
+    };
+    
+    
+    let forumCommentsSaveObj = {
+      updatedDate: ISO8601,
+      $inc: { replies: 1 }
     };
     
     
@@ -420,33 +451,42 @@ export default async (req, res) => {
     //   Update
     // --------------------------------------------------
     
-    if (forumComments_id) {
+    if (forumReplies_id) {
       
       
       // ---------------------------------------------
-      //   - forum-comments
+      //   - forum-comments / 返信
       // ---------------------------------------------
       
-      forumCommentsConditionObj._id = forumComments_id;
+      forumRepliesConditionObj._id = forumReplies_id;
       
-      delete forumCommentsSaveObj.createdDate;
-      delete forumCommentsSaveObj.gameCommunities_id;
-      delete forumCommentsSaveObj.userCommunities_id;
-      delete forumCommentsSaveObj.forumThreads_id;
-      delete forumCommentsSaveObj.forumComments_id;
-      delete forumCommentsSaveObj.replyToForumComments_id;
-      delete forumCommentsSaveObj.users_id;
-      delete forumCommentsSaveObj.goods;
-      delete forumCommentsSaveObj.replies;
+      delete forumRepliesSaveObj.createdDate;
+      delete forumRepliesSaveObj.gameCommunities_id;
+      delete forumRepliesSaveObj.userCommunities_id;
+      delete forumRepliesSaveObj.forumThreads_id;
+      delete forumRepliesSaveObj.forumComments_id;
+      delete forumRepliesSaveObj.replyToForumComments_id;
+      delete forumRepliesSaveObj.users_id;
+      delete forumRepliesSaveObj.goods;
+      delete forumRepliesSaveObj.replies;
       
       
       // ---------------------------------------------
-      //   - forum-threads / 更新日時の変更 & 画像数と動画数の変更
+      //   - forum-threads / 編集の場合は返信数に +1 させない
       // ---------------------------------------------
       
       forumThreadsSaveObj = {
         updatedDate: ISO8601,
         $inc: { images, videos }
+      };
+      
+      
+      // ---------------------------------------------
+      //   - forum-comments / 編集の場合は返信数に +1 させない
+      // ---------------------------------------------
+      
+      forumCommentsSaveObj = {
+        updatedDate: ISO8601,
       };
       
       
@@ -461,10 +501,12 @@ export default async (req, res) => {
     
     await ModelForumComments.transactionForUpsert({
       
-      forumThreadsConditionObj,
-      forumThreadsSaveObj,
+      forumRepliesConditionObj,
+      forumRepliesSaveObj,
       forumCommentsConditionObj,
       forumCommentsSaveObj,
+      forumThreadsConditionObj,
+      forumThreadsSaveObj,
       imagesAndVideosConditionObj,
       imagesAndVideosSaveObj,
       gameCommunitiesConditionObj,
@@ -479,8 +521,8 @@ export default async (req, res) => {
     //   Set Authority
     // --------------------------------------------------
     
-    if (!loginUsers_id && !forumComments_id) {
-      setAuthority({ req, _id: forumCommentsConditionObj._id });
+    if (!loginUsers_id) {
+      setAuthority({ req, _id: forumRepliesConditionObj._id });
     }
     
     
@@ -582,7 +624,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: 'ViCtroXyq',
+      endpointID: 'EXVmnpmJu',
       users_id: loginUsers_id,
       ip,
       requestParametersObj,

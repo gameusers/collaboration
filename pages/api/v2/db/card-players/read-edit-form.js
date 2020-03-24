@@ -101,7 +101,6 @@ export default async (req, res) => {
     } = bodyObj;
     
     
-    lodashSet(requestParametersObj, ['loginUsers_id'], loginUsers_id);
     lodashSet(requestParametersObj, ['cardPlayers_id'], cardPlayers_id);
     
     

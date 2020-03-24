@@ -46,6 +46,7 @@ import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
+import initStoreGood from '../../../app/common/good/stores/store';
 
 
 // ---------------------------------------------
@@ -83,6 +84,7 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeImageAndVideo = initStoreImageAndVideo({});
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
+  const storeGood = initStoreGood({});
   
   
   // --------------------------------------------------
@@ -97,6 +99,7 @@ const getOrCreateStore = ({ propsObj }) => {
     storeImageAndVideo,
     storeImageAndVideoForm,
     storeFollow,
+    storeGood,
     
   };
   
@@ -196,8 +199,6 @@ export default class extends React.Component {
     const headerNavMainArr = [
       {
         name: 'トップ',
-        // href: '',
-        // as: '',
         href: `/gc/[urlID]/index?urlID=${urlID}`,
         as: `/gc/${urlID}`,
       },
@@ -217,15 +218,15 @@ export default class extends React.Component {
       }
     ];
     
-    if (accessLevel === 100) {
-      headerNavMainArr.push(
-        {
-          name: '設定',
-          href: `/gc/[urlID]/settings?urlID=${urlID}`,
-          as: `/gc/${urlID}/settings`,
-        }
-      );
-    }
+    // if (accessLevel === 100) {
+    //   headerNavMainArr.push(
+    //     {
+    //       name: '設定',
+    //       href: `/gc/[urlID]/settings?urlID=${urlID}`,
+    //       as: `/gc/${urlID}/settings`,
+    //     }
+    //   );
+    // }
     
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, gameCommunities_id };
     
@@ -550,6 +551,7 @@ export default class extends React.Component {
           
           
           <VideoModal />
+          
           
           
           

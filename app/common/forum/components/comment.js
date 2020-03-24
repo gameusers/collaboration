@@ -104,7 +104,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeForum')
+@inject('stores', 'storeForum', 'storeGood')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -165,6 +165,7 @@ export default injectIntl(class extends React.Component {
       classes,
       stores,
       storeForum,
+      storeGood,
       intl,
       urlID,
       gameCommunities_id,
@@ -207,6 +208,19 @@ export default injectIntl(class extends React.Component {
     const count = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, 'count'], 0);
     const limit = parseInt((stores.data.getCookie({ key: 'forumCommentLimit' }) || process.env.FORUM_COMMENT_LIMIT), 10);
     const arr = lodashGet(dataObj, [communities_id, 'forumCommentsObj', forumThreads_id, `page${page}Obj`, 'arr'], []);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Good
+    // --------------------------------------------------
+    
+    const {
+      
+      handleSubmitGood,
+      
+    } = storeGood;
     
     
     
@@ -259,6 +273,12 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const commentsDataObj = lodashGet(dataObj, [communities_id, 'forumCommentsObj', 'dataObj', forumComments_id], {});
+      
+      // console.log(`
+      //   ----- commentsDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(commentsDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // --------------------------------------------------
@@ -356,12 +376,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       //   編集権限 - 編集ボタンを表示する
       // --------------------------------------------------
-      
-      // console.log(`
-      //   ----- commentsDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(commentsDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       const editable = lodashGet(commentsDataObj, ['editable'], false);
       
@@ -524,7 +538,12 @@ export default injectIntl(class extends React.Component {
                   `}
                   
                   variant="outlined"
-                  // onClick={() => handleCommentGood(communityId, threadId, value.id)}
+                  onClick={() => handleSubmitGood({
+                    pathArr: this.pathArr,
+                    goodsPathArr: [communities_id, 'forumCommentsObj', 'dataObj', forumComments_id],
+                    type: 'forumComment',
+                    target_id: forumComments_id,
+                  })}
                 >
                   <IconThumbUp
                     css={css`

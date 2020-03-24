@@ -90,10 +90,11 @@ export default async (req, res) => {
   
   
   // --------------------------------------------------
-  //   IP: Remote Client Address
+  //   IP & User Agent
   // --------------------------------------------------
   
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const userAgent = lodashGet(req, ['headers', 'user-agent'], '');
   
   
   
@@ -371,6 +372,7 @@ export default async (req, res) => {
       endpointID: 'W1ND-2YO2',
       users_id: loginUsers_id,
       ip,
+      userAgent,
       requestParametersObj,
     });
     

@@ -51,6 +51,7 @@ const SchemaUserCommunities = require('../@database/user-communities/model');
 const SchemaForumThreads = require('../@database/forum-threads/model');
 const SchemaForumComments = require('../@database/forum-comments/model');
 const SchemaFollows = require('../@database/follows/model');
+const SchemaGoods = require('../@database/goods/model');
 
 
 // ---------------------------------------------
@@ -4100,6 +4101,19 @@ emotion: https://emotion.sh/docs/introduction`,
     
     await SchemaFollows.deleteMany({ reset: true });
     returnObj = await SchemaFollows.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Goods
+    // --------------------------------------------------
+    
+    // --------------------------------------------------
+    //   deleteMany
+    // --------------------------------------------------
+    
+    await SchemaGoods.deleteMany({ reset: true });
     
     
     

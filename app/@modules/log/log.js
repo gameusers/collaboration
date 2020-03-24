@@ -45,10 +45,20 @@ const logger = require('./logger');
  * @param {string} endpointID - エンドポイントを特定するID
  * @param {string} users_id - ログインしていユーザーの DB users _id
  * @param {string} ip - アクセスしたクライアントのIP
+ * @param {string} userAgent - アクセスしたクライアントのユーザーエージェント
  * @param {Object} requestParametersObj - GET / POSTのリクエストパラメーター
  * @return {Object} エラーオブジェクト
  */
-const returnErrorsArr = ({ errorObj = {}, endpointID, users_id, ip, requestParametersObj }) => {
+const returnErrorsArr = ({
+  
+  errorObj = {},
+  endpointID,
+  users_id,
+  ip,
+  userAgent = '',
+  requestParametersObj,
+  
+}) => {
   
   
   // ---------------------------------------------
@@ -110,6 +120,7 @@ const returnErrorsArr = ({ errorObj = {}, endpointID, users_id, ip, requestParam
     endpointID,
     users_id,
     ip,
+    userAgent,
     requestParametersObj,
     errorsArr
   };

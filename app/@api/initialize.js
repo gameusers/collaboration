@@ -3601,8 +3601,8 @@ emotion: https://emotion.sh/docs/introduction`,
           },
         ],
         imagesAndVideos_id: '',
-        comments: 0,
-        replies: 0,
+        comments: 1,
+        replies: 1,
         images: 0,
         videos: 0,
         main: true,
@@ -3920,6 +3920,64 @@ emotion: https://emotion.sh/docs/introduction`,
         imagesAndVideos_id: '',
         anonymity: false,
         goods: 2,
+        replies: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      
+      
+      // GC コメント1
+      {
+        _id: 'q8KUQI6xk',
+        createdDate: '2020-03-24T00:00:00Z',
+        updatedDate: '2020-02-24T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        userCommunities_id: '',
+        forumThreads_id: 'H6pB91tMq',
+        forumComments_id: '',
+        replyToForumComments_id: '',
+        users_id: 'jun-deE4J',
+        localesArr: [
+          {
+            _id: 'RNTC-Jsel',
+            language: 'ja',
+            name: '',
+            comment: `GC / No.1 / Comment 1`,
+          }
+        ],
+        imagesAndVideos_id: '',
+        anonymity: false,
+        goods: 0,
+        replies: 1,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+      // GC 返信1
+      {
+        _id: 'gocEJSDyv',
+        createdDate: '2020-03-25T00:00:00Z',
+        updatedDate: '2020-03-25T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        userCommunities_id: '',
+        forumThreads_id: 'H6pB91tMq',
+        forumComments_id: 'q8KUQI6xk',
+        replyToForumComments_id: '',
+        users_id: 'jun-deE4J',
+        localesArr: [
+          {
+            _id: 'dxmmzQA50',
+            language: 'ja',
+            name: '',
+            comment: `GC / No.1 / Reply 1`,
+          }
+        ],
+        imagesAndVideos_id: '',
+        anonymity: false,
+        goods: 0,
         replies: 0,
         ip: '192.168.1.0',
         userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',

@@ -110,6 +110,10 @@ module.exports = withOffline({
     FORUM_RELOAD_MINUTES: process.env.FORUM_RELOAD_MINUTES,
     
     
+    EXP_GOOD_BUTTON: process.env.EXP_GOOD_BUTTON,
+    EXP_GOOD_BUTTON_LOGIN_USER: process.env.EXP_GOOD_BUTTON_LOGIN_USER,
+    
+    
     URL_BASE: process.env.URL_BASE,
     URL_API: process.env.URL_API,
     

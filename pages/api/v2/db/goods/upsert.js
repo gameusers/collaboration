@@ -49,7 +49,7 @@ const { validationIP } = require('../../../../../app/@validations/ip');
 //   Locales
 // ---------------------------------------------
 
-const { locale } = require('../../../../../app/@locales/locale');
+// const { locale } = require('../../../../../app/@locales/locale');
 
 
 
@@ -72,9 +72,9 @@ export default async (req, res) => {
   //   Locale
   // --------------------------------------------------
   
-  const localeObj = locale({
-    acceptLanguage: req.headers['accept-language']
-  });
+  // const localeObj = locale({
+  //   acceptLanguage: req.headers['accept-language']
+  // });
   
   
   // --------------------------------------------------
@@ -143,7 +143,6 @@ export default async (req, res) => {
     
     let docObj = {};
     let targetUsers_id = '';
-    let targetIP = '';
     
     
     // --------------------------------------------------
@@ -161,37 +160,15 @@ export default async (req, res) => {
       });
       
       targetUsers_id = lodashGet(docObj, ['users_id'], '');
-      targetIP = lodashGet(docObj, ['ip'], '');
       
       
     // --------------------------------------------------
-    //   新規の場合
+    //   
     // --------------------------------------------------
       
     } else {
       
       
-      // --------------------------------------------------
-      //   同じ名前のスレッドが存在するかチェック
-      //   count が 0 の場合は、同じ名前のスレッドは存在しない
-      // --------------------------------------------------
-      
-      // const count = await ModelForumThreads.count({
-        
-      //   conditionObj: {
-      //     userCommunities_id,
-      //     'localesArr.name': name,
-      //   }
-        
-      // });
-      
-      // // console.log(chalk`
-      // //   count: {green ${count}}
-      // // `);
-      
-      // if (count > 0) {
-      //   throw new CustomError({ level: 'warn', errorsArr: [{ code: 'SLheO9BQf', messageID: '8ObqNYJ85' }] });
-      // }
       
       
     }
@@ -212,46 +189,27 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   Forum Comment
+    //   すでに Good ボタンを押しているかチェックする
     // --------------------------------------------------
     
     let docGoodsObj = {};
     
-    
-    // --------------------------------------------------
-    //   ログインユーザー
-    // --------------------------------------------------
-    
-    if (loginUsers_id) {
+    docGoodsObj = await ModelGoods.findOne({
       
-      docGoodsObj = await ModelGoods.findOne({
-        
-        conditionObj: {
-          target_id,
-          users_id: loginUsers_id,
-        }
-        
-      });
+      conditionObj: {
+        $and: [
+          { target_id },
+          { $or: [
+            { users_id: loginUsers_id },
+            { ip }
+          ] }
+        ]
+      }
       
-      
-    // --------------------------------------------------
-    //   非ログインユーザー
-    // --------------------------------------------------
-      
-    } else {
-      
-      docGoodsObj = await ModelGoods.findOne({
-        
-        conditionObj: {
-          target_id,
-          ip: targetIP,
-        }
-        
-      });
-      
-    }
+    });
     
     const goods_id = lodashGet(docGoodsObj, ['_id'], '');
+    const users_id = lodashGet(docGoodsObj, ['users_id'], '');
     
     
     
@@ -276,13 +234,11 @@ export default async (req, res) => {
     let usersConditionObj = {};
     let usersSaveObj = {};
     
-    // let resultObj = {};
-    
     returnObj.result = true;
     
     
     // --------------------------------------------------
-    //   減算
+    //   減算 - delete
     // --------------------------------------------------
     
     if (docGoodsObj) {
@@ -325,7 +281,7 @@ export default async (req, res) => {
         };
         
         usersSaveObj = {
-          $inc: { exp: - 1 }
+          $inc: { exp: - parseInt((users_id ? process.env.EXP_GOOD_BUTTON_LOGIN_USER : process.env.EXP_GOOD_BUTTON), 10) }
         };
         
       }
@@ -339,7 +295,7 @@ export default async (req, res) => {
       
       
     // --------------------------------------------------
-    //   加算
+    //   加算 - insert
     // --------------------------------------------------
       
     } else {
@@ -393,12 +349,11 @@ export default async (req, res) => {
         };
         
         usersSaveObj = {
-          $inc: { exp: + 1 }
+          $inc: { exp: + parseInt((loginUsers_id ? process.env.EXP_GOOD_BUTTON_LOGIN_USER : process.env.EXP_GOOD_BUTTON), 10) }
         };
         
       }
       
-      // resultObj = await ModelGoods.upsert({ conditionObj, saveObj });
       
     }
     
@@ -436,21 +391,19 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    // console.log(`
-    //   ----- docGoodsObj -----\n
-    //   ${util.inspect(docGoodsObj, { colors: true, depth: null })}\n
-    //   --------------------\n
-    // `);
+    console.log(`
+      ----- docGoodsObj -----\n
+      ${util.inspect(docGoodsObj, { colors: true, depth: null })}\n
+      --------------------\n
+    `);
     
-    // console.log(chalk`
-    //   type: {green ${type}}
-    //   target_id: {green ${target_id}}
-    //   targetUsers_id: {green ${targetUsers_id}}
-    //   targetIP: {green ${targetIP}}
-    //   goods_id: {green ${goods_id}}
-    // `);
-    
-    
+    console.log(chalk`
+      loginUsers_id: {green ${loginUsers_id}}
+      type: {green ${type}}
+      target_id: {green ${target_id}}
+      targetUsers_id: {green ${targetUsers_id}}
+      goods_id: {green ${goods_id}}
+    `);
     
     // console.log(`
     //   ----- resultObj -----\n

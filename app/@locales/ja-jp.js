@@ -309,6 +309,7 @@ const ja_JP = {
   
   // /app/common/good/stores/store.js
   'x-g8kaDr7': '自分を評価することはできません',
+  // 'E7WQGs6wF': 'ログインする必要があります',
   
   
   

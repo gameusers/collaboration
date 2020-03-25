@@ -175,6 +175,10 @@ class Store {
       
       
       
+      // ---------------------------------------------
+      //   Good
+      // ---------------------------------------------
+      
       let goods = 0;
       
       if (result) {
@@ -190,12 +194,6 @@ class Store {
       lodashSet(storeForum, ['dataObj', ...goodsPathArr, 'goods'], goods);
       
       
-      
-      // 
-        
-      //   console.log(chalk`
-      //     good  : {green ${good}}
-      //   `);
       
       
       // ---------------------------------------------

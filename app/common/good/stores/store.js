@@ -104,6 +104,7 @@ class Store {
   /**
    * Good ボタンを押したときの処理
    * @param {Array} pathArr - パス
+   * @param {Array} goodsPathArr - グッド数を更新するためのパス
    * @param {string} type - タイプ
    * @param {string} target_id - Goodボタンを押したコンテンツのID
    */
@@ -176,7 +177,7 @@ class Store {
       
       
       // ---------------------------------------------
-      //   Good
+      //   Good 数更新
       // ---------------------------------------------
       
       let goods = 0;
@@ -200,43 +201,35 @@ class Store {
       //   console.log
       // ---------------------------------------------
       
-      console.log(`
-        ----------------------------------------\n
-        /app/common/good/stores/store.js - handleSubmitGood
-      `);
+      // console.log(`
+      //   ----------------------------------------\n
+      //   /app/common/good/stores/store.js - handleSubmitGood
+      // `);
       
-      console.log(`
-        ----- pathArr -----\n
-        ${util.inspect(pathArr, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- pathArr -----\n
+      //   ${util.inspect(pathArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(`
-        ----- goodsPathArr -----\n
-        ${util.inspect(goodsPathArr, { colors: true, depth: null })}\n
-        --------------------\n
-      `);
+      // console.log(`
+      //   ----- goodsPathArr -----\n
+      //   ${util.inspect(goodsPathArr, { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
-      console.log(chalk`
-        type  : {green ${type}}
-        target_id  : {green ${target_id}}
-        result  : {green ${result}}
-        goods  : {green ${goods}}
-      `);
+      // console.log(chalk`
+      //   type  : {green ${type}}
+      //   target_id  : {green ${target_id}}
+      //   result  : {green ${result}}
+      //   goods  : {green ${goods}}
+      // `);
       
       // console.log(`
       //   ----- resultObj -----\n
       //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
       //   --------------------\n
       // `);
-      
-      // console.log(`
-      //   ----- lodashGet(storeForum, ['dataObj', ...goodsPathArr], 'AAA') -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(lodashGet(storeForum, ['dataObj', ...goodsPathArr], 'AAA'))), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
-      
-      
       
       
     } catch (errorObj) {

@@ -101,7 +101,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeForum')
+@inject('stores', 'storeForum', 'storeGood')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -162,6 +162,7 @@ export default injectIntl(class extends React.Component {
       classes,
       stores,
       storeForum,
+      storeGood,
       intl,
       urlID,
       gameCommunities_id,
@@ -172,7 +173,6 @@ export default injectIntl(class extends React.Component {
       settingAnonymity,
       
     } = this.props;
-    
     
     const communities_id = gameCommunities_id || userCommunities_id;
     
@@ -201,11 +201,25 @@ export default injectIntl(class extends React.Component {
       
     } = storeForum;
     
-    
     const page = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, 'page'], 1);
     const count = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, 'count'], 0);
     const limit = parseInt((stores.data.getCookie({ key: 'forumReplyLimit' }) || process.env.FORUM_REPLY_LIMIT), 10);
     const arr = lodashGet(dataObj, [communities_id, 'forumRepliesObj', forumComments_id, `page${page}Obj`, 'arr'], []);
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   Good
+    // --------------------------------------------------
+    
+    const {
+      
+      handleSubmitGood,
+      
+    } = storeGood;
+    
+    
     
     
     // --------------------------------------------------
@@ -268,6 +282,12 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const repliesDataObj = lodashGet(dataObj, [communities_id, 'forumRepliesObj', 'dataObj', forumReplies_id], {});
+      
+      // console.log(`
+      //   ----- repliesDataObj -----\n
+      //   ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
+      //   --------------------\n
+      // `);
       
       
       // --------------------------------------------------
@@ -373,12 +393,6 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       //   編集権限 - 編集ボタンを表示する
       // --------------------------------------------------
-      
-      // console.log(`
-      //   ----- repliesDataObj -----\n
-      //   ${util.inspect(JSON.parse(JSON.stringify(repliesDataObj)), { colors: true, depth: null })}\n
-      //   --------------------\n
-      // `);
       
       const editable = lodashGet(repliesDataObj, ['editable'], false);
       
@@ -566,7 +580,12 @@ export default injectIntl(class extends React.Component {
                     `}
                     
                     variant="outlined"
-                    // onClick={() => handleCommentGood(communityId, threadId, value.id)}
+                    onClick={() => handleSubmitGood({
+                      pathArr: this.pathArr,
+                      goodsPathArr: [communities_id, 'forumRepliesObj', 'dataObj', forumReplies_id],
+                      type: 'forumReply',
+                      target_id: forumReplies_id,
+                    })}
                   >
                     <IconThumbUp
                       css={css`

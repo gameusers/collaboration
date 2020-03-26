@@ -45,13 +45,6 @@ const { CustomError } = require('../../../../../app/@modules/error/custom');
 const { validationIP } = require('../../../../../app/@validations/ip');
 
 
-// ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-// const { locale } = require('../../../../../app/@locales/locale');
-
-
 
 
 // --------------------------------------------------
@@ -66,15 +59,6 @@ export default async (req, res) => {
   // --------------------------------------------------
   
   let statusCode = 400;
-  
-  
-  // --------------------------------------------------
-  //   Locale
-  // --------------------------------------------------
-  
-  // const localeObj = locale({
-  //   acceptLanguage: req.headers['accept-language']
-  // });
   
   
   // --------------------------------------------------
@@ -143,13 +127,14 @@ export default async (req, res) => {
     
     let docObj = {};
     let targetUsers_id = '';
+    let targetIP = '';
     
     
     // --------------------------------------------------
     //   Forum Comment
     // --------------------------------------------------
     
-    if (type === 'forumComment') {
+    if (type === 'forumComment' || type === 'forumReply') {
       
       docObj = await ModelForumComments.findOne({
         
@@ -160,16 +145,16 @@ export default async (req, res) => {
       });
       
       targetUsers_id = lodashGet(docObj, ['users_id'], '');
+      targetIP = lodashGet(docObj, ['ip'], '');
       
       
     // --------------------------------------------------
-    //   
+    //   type が指定以外の値である場合、エラー
     // --------------------------------------------------
       
     } else {
       
-      
-      
+      throw new CustomError({ level: 'info', errorsArr: [{ code: 'Scx7-g2EE', messageID: '3mDvfqZHV' }] });
       
     }
     
@@ -177,13 +162,13 @@ export default async (req, res) => {
     
     
     // --------------------------------------------------
-    //   自分を評価しようとした場合
+    //   自分を評価しようとした場合、エラー
     // --------------------------------------------------
     
-    // if (targetUsers_id === loginUsers_id || targetIP === ip) {
-    //   statusCode = 403;
-    //   throw new CustomError({ level: 'info', errorsArr: [{ code: 'MX3nsHgs6', messageID: 'x-g8kaDr7' }] });
-    // }
+    if (targetUsers_id === loginUsers_id || targetIP === ip) {
+      statusCode = 403;
+      throw new CustomError({ level: 'info', errorsArr: [{ code: 'MX3nsHgs6', messageID: 'x-g8kaDr7' }] });
+    }
     
     
     
@@ -257,7 +242,7 @@ export default async (req, res) => {
       //   - forum-comments
       // ---------------------------------------------
       
-      if (type === 'forumComment') {
+      if (type === 'forumComment' || type === 'forumReply') {
         
         forumCommentsConditionObj = {
           _id: target_id,
@@ -312,6 +297,7 @@ export default async (req, res) => {
       goodsSaveObj = {
         
         createdDate: ISO8601,
+        type,
         target_id,
         targetUsers_id,
         users_id: loginUsers_id,
@@ -325,7 +311,7 @@ export default async (req, res) => {
       //   - forum-comments
       // ---------------------------------------------
       
-      if (type === 'forumComment') {
+      if (type === 'forumComment' || type === 'forumReply') {
         
         forumCommentsConditionObj = {
           _id: target_id,
@@ -380,10 +366,10 @@ export default async (req, res) => {
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /pages/api/v2/db/goods/upsert.js
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /pages/api/v2/db/goods/upsert.js
+    // `);
     
     // console.log(`
     //   ----- docObj -----\n
@@ -391,27 +377,26 @@ export default async (req, res) => {
     //   --------------------\n
     // `);
     
-    console.log(`
-      ----- docGoodsObj -----\n
-      ${util.inspect(docGoodsObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- docGoodsObj -----\n
+    //   ${util.inspect(docGoodsObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(chalk`
-      loginUsers_id: {green ${loginUsers_id}}
-      type: {green ${type}}
-      target_id: {green ${target_id}}
-      targetUsers_id: {green ${targetUsers_id}}
-      goods_id: {green ${goods_id}}
-    `);
+    // console.log(chalk`
+    //   loginUsers_id: {green ${loginUsers_id}}
+    //   type: {green ${type}}
+    //   target_id: {green ${target_id}}
+    //   targetUsers_id: {green ${targetUsers_id}}
+    //   targetIP: {green ${targetIP}}
+    //   goods_id: {green ${goods_id}}
+    // `);
     
     // console.log(`
     //   ----- resultObj -----\n
     //   ${util.inspect(resultObj, { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
-    
-    
     
     
     // ---------------------------------------------

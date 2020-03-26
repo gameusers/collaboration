@@ -12,7 +12,8 @@ const mongoose = require('mongoose');
 const schema = mongoose.Schema({
   
   _id: { type: String, required: true },
-  createdDate: { type: Date, required: true, expires: 31536000 },
+  createdDate: { type: Date, required: true, expires: 94608000 },// 3年
+  type: { type: String, enum: ['forumComment', 'forumReply'], required: true },
   target_id: { type: String, required: true },
   targetUsers_id: { type: String },
   users_id: { type: String },

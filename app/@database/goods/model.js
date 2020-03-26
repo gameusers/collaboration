@@ -460,46 +460,46 @@ const transaction = async ({
     //   console.log
     // --------------------------------------------------
     
-    console.log(`
-      ----------------------------------------\n
-      /app/@database/goods/model.js - transactionForUpsert
-    `);
+    // console.log(`
+    //   ----------------------------------------\n
+    //   /app/@database/goods/model.js - transactionForUpsert
+    // `);
     
-    console.log(`
-      ----- goodsConditionObj -----\n
-      ${util.inspect(goodsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- goodsConditionObj -----\n
+    //   ${util.inspect(goodsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- goodsSaveObj -----\n
-      ${util.inspect(goodsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- goodsSaveObj -----\n
+    //   ${util.inspect(goodsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumCommentsConditionObj -----\n
-      ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumCommentsConditionObj -----\n
+    //   ${util.inspect(forumCommentsConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- forumCommentsSaveObj -----\n
-      ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- forumCommentsSaveObj -----\n
+    //   ${util.inspect(forumCommentsSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- usersConditionObj -----\n
-      ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersConditionObj -----\n
+    //   ${util.inspect(usersConditionObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
-    console.log(`
-      ----- usersSaveObj -----\n
-      ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
-      --------------------\n
-    `);
+    // console.log(`
+    //   ----- usersSaveObj -----\n
+    //   ${util.inspect(usersSaveObj, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
     
     // console.log(`
     //   ----- returnObj -----\n

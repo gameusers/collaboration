@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   createdDate: { type: Date, default: Date.now, required: true },
   updatedDate: { type: Date, default: Date.now, required: true },
@@ -20,6 +21,7 @@ const schema = mongoose.Schema({
   id: { type: String, required: true },
   publicSetting: { type: Number, min: 1, max: 5, required: true },
   search: { type: Boolean, required: true },
+  
 });
 
 

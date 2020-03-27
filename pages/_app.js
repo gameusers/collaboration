@@ -26,6 +26,7 @@ import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
 import { observer, Provider } from 'mobx-react';
+import { IntlProvider } from 'react-intl';
 import moment from 'moment';
 import lodashGet from 'lodash/get';
 
@@ -42,7 +43,6 @@ import theme from '../app/@css/material-ui/theme';
 //   Locales
 // ---------------------------------------------
 
-import { IntlProvider } from 'react-intl';
 import { locale } from '../app/@locales/locale';
 
 
@@ -81,89 +81,6 @@ import '../app/@css/style.css';
 @observer
 class MyApp extends App {
   
-  static async getInitialProps({ Component, ctx, query }) {
-    
-    
-    // const isServer = !process.browser;
-    
-    // if (isServer) {
-      
-    //   console.log('_app.js / Server: getInitialProps');
-      
-    // } else {
-      
-    //   console.log('_app.js / Client: getInitialProps');
-      
-    // }
-    
-    
-    // --------------------------------------------------
-    //   Property
-    // --------------------------------------------------
-    
-    const reqHeadersCookie = lodashGet(ctx, ['req', 'headers', 'cookie'], '');
-    const reqAcceptLanguage = lodashGet(ctx, ['req', 'headers', 'accept-language'], '');
-    
-    
-    // --------------------------------------------------
-    //   Stores
-    // --------------------------------------------------
-    
-    // Set Cookie Data
-    const propsObj = {
-      cookie: reqHeadersCookie
-    };
-    
-    const stores = initStoreRoot({ propsObj });
-    
-    
-    // --------------------------------------------------
-    //   Data - Locale
-    // --------------------------------------------------
-    
-    if (Object.keys(stores.data.localeObj).length === 0) {
-      
-      const localeObj = locale({
-        acceptLanguage: reqAcceptLanguage
-      });
-      
-      stores.data.replaceLocaleObj(localeObj);
-      
-    }
-    
-    
-    // --------------------------------------------------
-    //   Datetime Current
-    //   サーバー側とクライアント側の日時の表示に差が生まれてしまう問題を解決するためにctxを利用する
-    //   サーバー側でctxの中に入れた値は、クライアント側でも利用できるようになる
-    //   これによってアクセス日時（20分前など）の表示に差が生まれないようにする
-    // --------------------------------------------------
-    
-    ctx.datetimeCurrent = moment().toISOString();
-    
-    
-    // --------------------------------------------------
-    //   pageProps
-    // --------------------------------------------------
-    
-    let pageProps = {};
-
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
-    
-    
-    // --------------------------------------------------
-    //   Return
-    // --------------------------------------------------
-    
-    return { pageProps, reqAcceptLanguage, stores };
-    
-    
-  }
-  
-  
-  
   
   // --------------------------------------------------
   //   constructor
@@ -171,7 +88,14 @@ class MyApp extends App {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
+    
+    
     
     
     // const isServer = !process.browser;
@@ -185,6 +109,13 @@ class MyApp extends App {
     //   console.log('_app.js / Client: constructor');
       
     // }
+    
+    // console.log(`
+    //   ----- props -----\n
+    //   ${util.inspect(props, { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
     
     
     
@@ -206,31 +137,33 @@ class MyApp extends App {
       //   Store
       // --------------------------------------------------
       
-      const isServer = !process.browser;
+      this.stores = initStoreRoot({});
       
-      if (isServer) {
+      
+      // --------------------------------------------------
+      //   Data - Set Datetime Current
+      // --------------------------------------------------
+      
+      this.stores.data.setDatetimeCurrent({});
+      
+      
+      // --------------------------------------------------
+      //   Data - Locale
+      // --------------------------------------------------
+      
+      if (Object.keys(this.stores.data.localeObj).length === 0) {
         
-        this.stores = props.stores;
+        const reqAcceptLanguage = lodashGet(props, ['pageProps', 'reqAcceptLanguage'], '');
         
-      } else {
+        // console.log(chalk`
+        //   reqAcceptLanguage: {green ${reqAcceptLanguage}}
+        // `);
         
-        this.stores = initStoreRoot({});
+        const localeObj = locale({
+          acceptLanguage: reqAcceptLanguage
+        });
         
-        
-        // --------------------------------------------------
-        //   Data - Locale
-        // --------------------------------------------------
-        
-        if (Object.keys(this.stores.data.localeObj).length === 0) {
-          
-          const localeObj = locale({
-            acceptLanguage: props.reqAcceptLanguage
-          });
-          
-          this.stores.data.replaceLocaleObj(localeObj);
-          
-        }
-        
+        this.stores.data.replaceLocaleObj(localeObj);
         
       }
       
@@ -285,7 +218,7 @@ class MyApp extends App {
     
     
     // --------------------------------------------------
-    //   現在の日時を定期的に更新する
+    //   現在の日時を定期的に更新する / イベント追加
     // --------------------------------------------------
     
     window.addEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
@@ -313,7 +246,15 @@ class MyApp extends App {
   // --------------------------------------------------
   
   componentWillUnmount() {
+    
+    
+    // --------------------------------------------------
+    //   現在の日時を定期的に更新する / イベント削除
+    // --------------------------------------------------
+    
     window.removeEventListener('load', this.stores.data.setIntervalDatetimeCurrent);
+    
+    
   }
   
   
@@ -343,6 +284,8 @@ class MyApp extends App {
     const { Component, pageProps } = this.props;
     
     
+    
+    
     // --------------------------------------------------
     //   Return
     // --------------------------------------------------
@@ -358,12 +301,15 @@ class MyApp extends App {
         {/* Mobx Provider */}
         <Provider stores={this.stores}>
           
+          
           {/* react-intl(i18n) Provider */}
           <IntlProvider 
             locale={this.stores.data.localeObj.languageArr[0]}
             // locale="en"
+            // locale="ja"
             messages={this.stores.data.localeObj.dataObj}
           >
+            
             
             {/* Material UI Theme Provider */}
             <ThemeProvider theme={theme}>
@@ -372,9 +318,12 @@ class MyApp extends App {
               
             </ThemeProvider>
             
+            
           </IntlProvider>
           
+          
         </Provider>
+        
         
       </React.Fragment>
     );

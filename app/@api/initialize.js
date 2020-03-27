@@ -50,6 +50,7 @@ const SchemaGameCommunities = require('../@database/game-communities/model');
 const SchemaUserCommunities = require('../@database/user-communities/model');
 const SchemaForumThreads = require('../@database/forum-threads/model');
 const SchemaForumComments = require('../@database/forum-comments/model');
+const SchemaRecruitmentThreads = require('../@database/recruitment-threads/model');
 const SchemaFollows = require('../@database/follows/model');
 const SchemaGoods = require('../@database/goods/model');
 
@@ -3959,8 +3960,8 @@ emotion: https://emotion.sh/docs/introduction`,
       // GC 返信1
       {
         _id: 'gocEJSDyv',
-        createdDate: '2020-03-25T00:00:00Z',
-        updatedDate: '2020-03-25T00:00:00Z',
+        createdDate: '2020-03-27T07:35:00Z',
+        updatedDate: '2020-03-27T07:35:00Z',
         gameCommunities_id: 'Jk92aglWl',
         userCommunities_id: '',
         forumThreads_id: 'H6pB91tMq',
@@ -3995,6 +3996,71 @@ emotion: https://emotion.sh/docs/introduction`,
     
     await SchemaForumComments.deleteMany({ reset: true });
     returnObj = await SchemaForumComments.insertMany({ saveArr });
+    
+    
+    
+    
+    // --------------------------------------------------
+    //   DB / Recruitment Threads
+    // --------------------------------------------------
+    
+    // ---------------------------------------------
+    //   Save Object
+    // ---------------------------------------------
+    
+    // スレッド　gameCommunities_id: 'Jk92aglWl'
+    saveArr = [
+      
+      {
+        _id: 'qNiOLKdRt',
+        createdDate: '2020-03-27T00:00:00Z',
+        updatedDate: '2020-03-27T00:00:00Z',
+        gameCommunities_id: 'Jk92aglWl',
+        users_id: 'jun-deE4J',
+        hardwareIDsArr: ['TdK3Oc-yV', 'uPqoiXA_8', 'Zd_Ia4Hwm'],
+        category: 1,
+        localesArr: [
+          {
+            _id: 'mlHfW2oMv',
+            language: 'ja',
+            title: 'イベントを一緒にプレイしてくれる方募集！',
+            name: '',
+            comment: `ずゐぶん遠いむかしの話だけれど、由はうどんやの女中をした事がありました。短いあひだではありましたが、はじめての奉公なので、これがお前の寝るところだと云はれた暗い納戸のやうな部屋へ這入りますと、いつぺんに涙が噴きあげて体がちつとも動かないのです。
+
+　そのうどんやは尾道と云ふ港町から船に乗つて小一時間位ありました。みんな「いんのしま」と云つてをりましたので、由は「犬の島」とでも書くのかと思つてをりましたところ、買つて貰つた切符には「因ノ島」と書いてありました。由は此島で短いながら淋しい三週間を過しました。`,
+          },
+        ],
+        imagesAndVideos_id: '',
+        ids_idArr: ['GcymNACvc', 'mDuSVm6S7', 'n4I1BDtxH', 'L00bEpD46', '8bJV9G6MU', 'UVOFSNbXR'],
+        idsArr: [],
+        informationsArr: [],
+        deadlineDate: '2020-03-31T00:00:00Z',
+        close: false,
+        webPushSubscriptionObj: {
+          endpoint: '',
+          keys: {
+            p256dh: '',
+            auth: ''
+          }
+        },
+        comments: 0,
+        replies: 0,
+        images: 0,
+        videos: 0,
+        ip: '192.168.1.0',
+        userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
+      },
+      
+      
+    ];
+    
+    
+    // ---------------------------------------------
+    //   Insert
+    // ---------------------------------------------
+    
+    await SchemaRecruitmentThreads.deleteMany({ reset: true });
+    returnObj = await SchemaRecruitmentThreads.insertMany({ saveArr });
     
     
     

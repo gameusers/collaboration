@@ -79,7 +79,7 @@ class Store {
     setInterval(() => {
       
       // const datetimeCurrent = moment().utcOffset(0);
-      this.datetimeCurrent = moment().toISOString();
+      this.datetimeCurrent = moment().utc().toISOString();
       // this.datetimeCurrent = datetimeCurrent;
       
       // console.log(`setIntervalDatetimeCurrent - ${this.datetimeCurrent}`);

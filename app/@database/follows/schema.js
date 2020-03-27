@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 // --------------------------------------------------
 
 const schema = mongoose.Schema({
+  
   _id: { type: String, required: true },
   updatedDate: { type: Date, required: true },
   gameCommunities_id: { type: String },
@@ -24,6 +25,7 @@ const schema = mongoose.Schema({
   approvalCount: { type: Number, default: 0, required: true },
   blockArr: [String],
   blockCount: { type: Number, default: 0, required: true },
+  
 });
 
 

@@ -16,13 +16,14 @@ const schema = mongoose.Schema({
   updatedDate: { type: Date, required: true },
   gameCommunities_id: { type: String, required: true },
   users_id: { type: String },
+  hardwareIDsArr: [String],
   category: { type: Number, default: 1, required: true },
   localesArr: [
     {
       _id: { type: String, required: true },
       language: { type: String, enum: ['en', 'ja'] },
       title: { type: String, required: true },
-      name: { type: String, required: true },
+      name: { type: String },
       comment: { type: String, required: true },
     }
   ],
@@ -31,7 +32,7 @@ const schema = mongoose.Schema({
   idsArr: [
     {
       _id: { type: String, required: true },
-      hardwares_id: { type: String, required: true },
+      hardwareID: { type: String, required: true },
       id: { type: String, required: true },
     }
   ],
@@ -42,6 +43,15 @@ const schema = mongoose.Schema({
       information: { type: String, required: true },
     }
   ],
+  deadlineDate: { type: Date },
+  close: { type: Boolean, required: true },
+  webPushSubscriptionObj: {
+    endpoint: { type: String },
+    keys: {
+      p256dh: { type: String },
+      auth: { type: String },
+    },
+  },
   comments: { type: Number, default: 0, required: true },
   replies: { type: Number, default: 0, required: true },
   images: { type: Number, default: 0, required: true },
@@ -58,10 +68,10 @@ const schema = mongoose.Schema({
 
 let model = '';
 
-if (mongoose.models['forum-threads']) {
-  model = mongoose.model('forum-threads');
+if (mongoose.models['recruitment-threads']) {
+  model = mongoose.model('recruitment-threads');
 } else {
-  model = mongoose.model('forum-threads', schema);
+  model = mongoose.model('recruitment-threads', schema);
 }
 
 module.exports = model;

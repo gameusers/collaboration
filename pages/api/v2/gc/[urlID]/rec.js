@@ -62,7 +62,7 @@ const { initialProps } = require('../../../../../app/@api/v2/common');
 
 
 // --------------------------------------------------
-//   endpointID: 9aMdtckoT
+//   endpointID: t22TWi-ct
 // --------------------------------------------------
 
 export default async (req, res) => {
@@ -166,7 +166,7 @@ export default async (req, res) => {
     
     if (Object.keys(gameCommunityObj).length === 0) {
       statusCode = 404;
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'mb7-816Fu', messageID: 'Error' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'cHpRTr4cy', messageID: 'Error' }] });
     }
     
     
@@ -252,59 +252,59 @@ export default async (req, res) => {
     //   DB find / Forum Threads For List
     // --------------------------------------------------
     
-    let argumentsObj = {
+    // let argumentsObj = {
       
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
+    //   localeObj,
+    //   loginUsers_id,
+    //   gameCommunities_id,
       
-    };
+    // };
     
-    if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
-      argumentsObj.page = forumThreadListPage;
-    }
+    // if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
+    //   argumentsObj.page = forumThreadListPage;
+    // }
     
-    if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
-      argumentsObj.limit = forumThreadListLimit;
-    }
+    // if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
+    //   argumentsObj.limit = forumThreadListLimit;
+    // }
     
-    returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
+    // returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
     
     
-    // --------------------------------------------------
-    //   DB find / Forum
-    // --------------------------------------------------
+    // // --------------------------------------------------
+    // //   DB find / Forum
+    // // --------------------------------------------------
     
-    argumentsObj = {
+    // argumentsObj = {
       
-      req,
-      localeObj,
-      loginUsers_id,
-      gameCommunities_id,
+    //   req,
+    //   localeObj,
+    //   loginUsers_id,
+    //   gameCommunities_id,
       
-    };
+    // };
     
-    if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
-      argumentsObj.threadPage = forumThreadPage;
-    }
+    // if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
+    //   argumentsObj.threadPage = forumThreadPage;
+    // }
     
-    if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
-      argumentsObj.threadLimit = forumThreadLimit;
-    }
+    // if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
+    //   argumentsObj.threadLimit = forumThreadLimit;
+    // }
     
-    if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
-      argumentsObj.commentLimit = forumCommentLimit;
-    }
+    // if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
+    //   argumentsObj.commentLimit = forumCommentLimit;
+    // }
     
-    if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
-      argumentsObj.replyLimit = forumReplyLimit;
-    }
+    // if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
+    //   argumentsObj.replyLimit = forumReplyLimit;
+    // }
     
-    const forumObj = await ModelForumThreads.findForForum(argumentsObj);
+    // const forumObj = await ModelForumThreads.findForForum(argumentsObj);
     
-    returnObj.forumThreadsObj = forumObj.forumThreadsObj;
-    returnObj.forumCommentsObj = forumObj.forumCommentsObj;
-    returnObj.forumRepliesObj = forumObj.forumRepliesObj;
+    // returnObj.forumThreadsObj = forumObj.forumThreadsObj;
+    // returnObj.forumCommentsObj = forumObj.forumCommentsObj;
+    // returnObj.forumRepliesObj = forumObj.forumRepliesObj;
       
       
     
@@ -348,7 +348,7 @@ export default async (req, res) => {
     
     const resultErrorObj = returnErrorsArr({
       errorObj,
-      endpointID: '9aMdtckoT',
+      endpointID: 't22TWi-ct',
       users_id: loginUsers_id,
       ip: req.ip,
       requestParametersObj,

@@ -164,6 +164,7 @@ export default async (req, res) => {
       req,
       localeObj,
       loginUsers_id,
+      gameCommunities_id,
       userCommunities_id,
       forumComments_idArr,
       commentPage,

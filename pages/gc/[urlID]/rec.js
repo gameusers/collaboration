@@ -117,7 +117,7 @@ const getOrCreateStore = ({ propsObj }) => {
 
 // --------------------------------------------------
 //   Class
-//   URL: https://dev-1.gameusers.org/gc/***
+//   URL: https://dev-1.gameusers.org/gc/***/rec
 // --------------------------------------------------
 
 @observer
@@ -163,8 +163,8 @@ export default class extends React.Component {
     // --------------------------------------------------
     
     const urlID = query.urlID;
-    const pathname = `/gc/${urlID}`;
-    const temporaryDataID = `/gc/${urlID}`;
+    const pathname = `/gc/${urlID}/rec`;
+    const temporaryDataID = `/gc/${urlID}/rec`;
     
     
     // --------------------------------------------------
@@ -186,7 +186,7 @@ export default class extends React.Component {
     
     const resultObj = await fetchWrapper({
       
-      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}?forumThreadListPage=${forumThreadListPage}&forumThreadListLimit=${forumThreadListLimit}&forumThreadPage=${forumThreadPage}&forumThreadLimit=${forumThreadLimit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}/rec?forumThreadListPage=${forumThreadListPage}&forumThreadListLimit=${forumThreadListLimit}&forumThreadPage=${forumThreadPage}&forumThreadLimit=${forumThreadLimit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -215,8 +215,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     //   Stores
     // --------------------------------------------------
-    
-    // const headerNavMainArr = [];
     
     const headerNavMainArr = [
       {
@@ -493,11 +491,11 @@ export default class extends React.Component {
               
               {/* フォーラムのナビゲーション */}
               <Sidebar>
-                <ForumNavigation
+                {/*<ForumNavigation
                   temporaryDataID={this.props.temporaryDataID}
                   urlID={this.props.urlID}
                   gameCommunities_id={this.props.gameCommunities_id}
-                />
+                />*/}
               </Sidebar>
               
               
@@ -521,14 +519,14 @@ export default class extends React.Component {
               
               {/* フォーラム */}
               <Element
-                name="forumThreads"
+                name="recruitmentThreads"
               >
-                <ForumThread
+                {/*<ForumThread
                   temporaryDataID={this.props.temporaryDataID}
                   urlID={this.props.urlID}
                   gameCommunities_id={this.props.gameCommunities_id}
                   settingAnonymity={true}
-                />
+                />*/}
               </Element>
               
               

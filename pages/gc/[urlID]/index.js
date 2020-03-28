@@ -47,7 +47,7 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreGcCommunity from '../../../app/uc/community/stores/store';
+import initStoreGcCommunity from '../../../app/gc/community/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
@@ -171,13 +171,13 @@ export default class extends React.Component {
     //   Get Cookie Data & Temporary Data for Fetch
     // --------------------------------------------------
     
-    const forumThreadListPage = stores.data.getTemporaryDataForumThreadListPage({ temporaryDataID });
-    const forumThreadListLimit = stores.data.getCookie({ key: 'forumThreadListLimit' });
+    const threadListPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadListPage' });
+    const threadListLimit = stores.data.getCookie({ key: 'threadListLimit' });
     
-    const forumThreadPage = stores.data.getTemporaryDataForumThreadPage({ temporaryDataID });
-    const forumThreadLimit = stores.data.getCookie({ key: 'forumThreadLimit' });
-    const forumCommentLimit = stores.data.getCookie({ key: 'forumCommentLimit' });
-    const forumReplyLimit = stores.data.getCookie({ key: 'forumReplyLimit' });
+    const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'threadPage' });
+    const threadLimit = stores.data.getCookie({ key: 'threadLimit' });
+    const commentLimit = stores.data.getCookie({ key: 'commentLimit' });
+    const replyLimit = stores.data.getCookie({ key: 'replyLimit' });
     
     
     // --------------------------------------------------
@@ -186,7 +186,7 @@ export default class extends React.Component {
     
     const resultObj = await fetchWrapper({
       
-      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}?forumThreadListPage=${forumThreadListPage}&forumThreadListLimit=${forumThreadListLimit}&forumThreadPage=${forumThreadPage}&forumThreadLimit=${forumThreadLimit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}?threadListPage=${threadListPage}&threadListLimit=${threadListLimit}&threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -215,8 +215,6 @@ export default class extends React.Component {
     // --------------------------------------------------
     //   Stores
     // --------------------------------------------------
-    
-    // const headerNavMainArr = [];
     
     const headerNavMainArr = [
       {
@@ -265,13 +263,13 @@ export default class extends React.Component {
     // `);
     
     // console.log(chalk`
-    //   forumThreadListLimit: {green ${forumThreadListLimit}}
-    //   forumThreadLimit: {green ${forumThreadLimit}}
-    //   forumCommentLimit: {green ${forumCommentLimit}}
-    //   forumReplyLimit: {green ${forumReplyLimit}}
+    //   threadListLimit: {green ${threadListLimit}}
+    //   threadLimit: {green ${threadLimit}}
+    //   commentLimit: {green ${commentLimit}}
+    //   replyLimit: {green ${replyLimit}}
       
-    //   forumThreadListPage: {green ${forumThreadListPage}}
-    //   forumThreadPage: {green ${forumThreadPage}}
+    //   threadListPage: {green ${threadListPage}}
+    //   threadPage: {green ${threadPage}}
     // `);
     
     // console.log(`

@@ -28,13 +28,6 @@ import { css, jsx } from '@emotion/core';
 
 
 // ---------------------------------------------
-//   Locales
-// ---------------------------------------------
-
-import { locale } from '../../../app/@locales/locale';
-
-
-// ---------------------------------------------
 //   Modules
 // ---------------------------------------------
 
@@ -47,7 +40,7 @@ import { createCsrfToken } from '../../../app/@modules/csrf';
 // ---------------------------------------------
 
 import initStoreRoot from '../../../app/@stores/root';
-import initStoreGcCommunity from '../../../app/uc/community/stores/store';
+import initStoreGcRecruitment from '../../../app/gc/rec/stores/store';
 import initStoreCardPlayer from '../../../app/common/card/player/stores/player';
 import initStoreForum from '../../../app/common/forum/stores/store';
 import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/image-and-video';
@@ -63,8 +56,8 @@ import initStoreGood from '../../../app/common/good/stores/store';
 import Layout from '../../../app/common/layout/components/layout';
 import Sidebar from '../../../app/common/layout/components/sidebar';
 import Drawer from '../../../app/common/layout/components/drawer';
-import ForumNavigation from '../../../app/common/forum/components/navigation';
-import ForumThread from '../../../app/common/forum/components/thread';
+// import ForumNavigation from '../../../app/common/forum/components/navigation';
+import RecruitmentThread from '../../../app/gc/rec/components/recruitment-thread';
 import VideoModal from '../../../app/common/image-and-video/components/video-modal';
 import CardPlayerDialog from '../../../app/common/card/player/components/dialog';
 
@@ -84,7 +77,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   initStoreRoot({ propsObj });
   
-  const storeGcCommunity = initStoreGcCommunity({});
+  const storeGcRecruitment = initStoreGcRecruitment({ propsObj });
   const storeCardPlayer = initStoreCardPlayer({});
   const storeForum = initStoreForum({ propsObj });
   const storeImageAndVideo = initStoreImageAndVideo({});
@@ -99,7 +92,7 @@ const getOrCreateStore = ({ propsObj }) => {
   
   return {
     
-    storeGcCommunity,
+    storeGcRecruitment,
     storeCardPlayer,
     storeForum,
     storeImageAndVideo,
@@ -171,13 +164,10 @@ export default class extends React.Component {
     //   Get Cookie Data & Temporary Data for Fetch
     // --------------------------------------------------
     
-    const forumThreadListPage = stores.data.getTemporaryDataForumThreadListPage({ temporaryDataID });
-    const forumThreadListLimit = stores.data.getCookie({ key: 'forumThreadListLimit' });
-    
-    const forumThreadPage = stores.data.getTemporaryDataForumThreadPage({ temporaryDataID });
-    const forumThreadLimit = stores.data.getCookie({ key: 'forumThreadLimit' });
-    const forumCommentLimit = stores.data.getCookie({ key: 'forumCommentLimit' });
-    const forumReplyLimit = stores.data.getCookie({ key: 'forumReplyLimit' });
+    const threadPage = stores.data.getTemporaryData({ pathname: temporaryDataID, key: 'recruitmentThreadPage' });
+    const threadLimit = stores.data.getCookie({ key: 'recruitmentThreadLimit' });
+    const commentLimit = stores.data.getCookie({ key: 'recruitmentCommentLimit' });
+    const replyLimit = stores.data.getCookie({ key: 'recruitmentReplyLimit' });
     
     
     // --------------------------------------------------
@@ -186,7 +176,7 @@ export default class extends React.Component {
     
     const resultObj = await fetchWrapper({
       
-      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}/rec?forumThreadListPage=${forumThreadListPage}&forumThreadListLimit=${forumThreadListLimit}&forumThreadPage=${forumThreadPage}&forumThreadLimit=${forumThreadLimit}&forumCommentLimit=${forumCommentLimit}&forumReplyLimit=${forumReplyLimit}`),
+      urlApi: encodeURI(`${process.env.URL_API}/v2/gc/${urlID}/rec?threadPage=${threadPage}&threadLimit=${threadLimit}&commentLimit=${commentLimit}&replyLimit=${replyLimit}`),
       methodType: 'GET',
       reqHeadersCookie,
       reqAcceptLanguage,
@@ -236,15 +226,15 @@ export default class extends React.Component {
       }
     ];
     
-    // if (accessLevel === 100) {
-    //   headerNavMainArr.push(
-    //     {
-    //       name: '設定',
-    //       href: `/gc/[urlID]/settings?urlID=${urlID}`,
-    //       as: `/gc/${urlID}/settings`,
-    //     }
-    //   );
-    // }
+    if (accessLevel === 100) {
+      headerNavMainArr.push(
+        {
+          name: '設定',
+          href: `/gc/[urlID]/settings?urlID=${urlID}`,
+          as: `/gc/${urlID}/settings`,
+        }
+      );
+    }
     
     propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, gameCommunities_id };
     
@@ -521,12 +511,12 @@ export default class extends React.Component {
               <Element
                 name="recruitmentThreads"
               >
-                {/*<ForumThread
+                <RecruitmentThread
                   temporaryDataID={this.props.temporaryDataID}
                   urlID={this.props.urlID}
                   gameCommunities_id={this.props.gameCommunities_id}
                   settingAnonymity={true}
-                />*/}
+                />
               </Element>
               
               

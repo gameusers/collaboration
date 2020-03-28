@@ -40,9 +40,16 @@ const ModelUserCommunities = require('../user-communities/model');
 //   Modules
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../../@modules/image/format');
+// const { formatImagesAndVideosObj } = require('../../@modules/image/format');
 const { CustomError } = require('../../@modules/error/custom');
 const { verifyAuthority } = require('../../@modules/authority');
+
+
+// ---------------------------------------------
+//   Format
+// ---------------------------------------------
+
+const { formatImagesAndVideosObj } = require('../../@format/image');
 
 
 
@@ -577,7 +584,7 @@ const findForThreadsList = async ({
 // --------------------------------------------------
 
 /**
- * スレッドを取得する - userCommunities_id で検索
+ * スレッドを取得する
  * @param {Object} req - リクエスト
  * @param {Object} localeObj - ロケール
  * @param {string} loginUsers_id - DB users _id / ログイン中のユーザーID

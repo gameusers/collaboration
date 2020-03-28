@@ -118,6 +118,10 @@ class Store {
   //   Cookie
   // ---------------------------------------------
   
+  /**
+   * Cookie
+   * @type {string}
+   */
   cookie = '';
   
   
@@ -145,16 +149,11 @@ class Store {
   //   Temporary Data Object / リロードした際に消えてもいいような情報を入れる　現在表示してるページNoなど
   // ---------------------------------------------
   
+  /**
+   * Temporary Data Object
+   * @type {Object}
+   */
   temporaryDataObj = {};
-  
-  // temporaryDataObj = {
-    
-  //   '/uc/community1': {
-  //     forumNavigationPage: 1,
-  //     forumPage: 1,
-  //   }
-    
-  // };
   
   
   /**
@@ -175,46 +174,6 @@ class Store {
    */
   setTemporaryData({ pathname, key, value }) {
     lodashSet(this.temporaryDataObj, [pathname, key], value);
-  };
-  
-  
-  
-  
-  /**
-   * Get Forum Thread List Page
-   * @type {string} temporaryDataID
-   */
-  getTemporaryDataForumThreadListPage({ temporaryDataID }) {
-    return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadListPage'], 1);
-  };
-  
-  
-  /**
-   * Set Forum Thread List Page
-   * @type {string} temporaryDataID
-   * @type {string} value - 値
-   */
-  setTemporaryDataForumThreadListPage({ temporaryDataID, value }) {
-    lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadListPage'], value);
-  };
-  
-  
-  /**
-   * Get Forum Thread Page
-   * @type {string} temporaryDataID
-   */
-  getTemporaryDataForumThreadPage({ temporaryDataID }) {
-    return lodashGet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], 1);
-  };
-  
-  
-  /**
-   * Set Forum Thread Page
-   * @type {string} temporaryDataID
-   * @type {string} value - 値
-   */
-  setTemporaryDataForumThreadPage({ temporaryDataID, value }) {
-    lodashSet(this.temporaryDataObj, [temporaryDataID, 'forumThreadPage'], value);
   };
   
   

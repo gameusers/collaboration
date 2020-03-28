@@ -3289,9 +3289,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         forumObj: {
           threadCount: 2,
         },
+        recruitmentObj: {
+          threadCount: 1,
+        },
         updatedDateObj: {
           notification: ISO8601,
           forum: ISO8601,
+          recruitment: ISO8601,
         },
         anonymity: true,
       },
@@ -3304,9 +3308,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         forumObj: {
           threadCount: 0,
         },
+        recruitmentObj: {
+          threadCount: 0,
+        },
         updatedDateObj: {
           notification: ISO8601,
           forum: ISO8601,
+          recruitment: ISO8601,
         },
         anonymity: true,
       },
@@ -3319,9 +3327,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         forumObj: {
           threadCount: 0,
         },
+        recruitmentObj: {
+          threadCount: 0,
+        },
         updatedDateObj: {
           notification: ISO8601,
           forum: ISO8601,
+          recruitment: ISO8601,
         },
         anonymity: true,
       },
@@ -3334,9 +3346,13 @@ router.post('/db', upload.none(), async (req, res, next) => {
         forumObj: {
           threadCount: 0,
         },
+        recruitmentObj: {
+          threadCount: 0,
+        },
         updatedDateObj: {
           notification: ISO8601,
           forum: ISO8601,
+          recruitment: ISO8601,
         },
         anonymity: true,
       },
@@ -4012,7 +4028,7 @@ emotion: https://emotion.sh/docs/introduction`,
     saveArr = [
       
       {
-        _id: 'qNiOLKdRt',
+        _id: 'nEQMNMWDy',
         createdDate: '2020-03-27T00:00:00Z',
         updatedDate: '2020-03-27T00:00:00Z',
         gameCommunities_id: 'Jk92aglWl',

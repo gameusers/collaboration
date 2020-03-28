@@ -238,7 +238,7 @@ class Store {
         //   Set Temporary Data - ForumThreadListPage
         // ---------------------------------------------
         
-        storeData.setTemporaryDataForumThreadListPage({ temporaryDataID, value: page });
+        storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadListPage', value: page });
         
         
         // ---------------------------------------------
@@ -386,7 +386,7 @@ class Store {
       //   Set Temporary Data - ForumThreadListPage
       // ---------------------------------------------
       
-      storeData.setTemporaryDataForumThreadListPage({ temporaryDataID, value: page });
+      storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadListPage', value: page });
       
       
     } catch (errorObj) {
@@ -618,7 +618,7 @@ class Store {
         //   Set Temporary Data - ForumThreadPage
         // ---------------------------------------------
         
-        storeData.setTemporaryDataForumThreadPage({ temporaryDataID, value: page });
+        storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadPage', value: page });
         
         
         // ---------------------------------------------
@@ -791,7 +791,7 @@ class Store {
       //   Set Temporary Data - ForumThreadPage
       // ---------------------------------------------
       
-      storeData.setTemporaryDataForumThreadPage({ temporaryDataID, value: page });
+      storeData.setTemporaryData({ pathname: temporaryDataID, key: 'forumThreadPage', value: page });
       
       
     } catch (errorObj) {

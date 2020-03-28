@@ -104,33 +104,22 @@ export default async (req, res) => {
     // --------------------------------------------------
     
     const urlID = req.query.urlID;
-    const forumThreadListPage = parseInt(req.query.forumThreadListPage, 10);
-    const forumThreadListLimit = parseInt(req.query.forumThreadListLimit, 10);
-    const forumThreadPage = parseInt(req.query.forumThreadPage, 10);
-    const forumThreadLimit = parseInt(req.query.forumThreadLimit, 10);
-    const forumCommentLimit = parseInt(req.query.forumCommentLimit, 10);
-    const forumReplyLimit = parseInt(req.query.forumReplyLimit, 10);
+    const threadListPage = parseInt(req.query.threadListPage, 10);
+    const threadListLimit = parseInt(req.query.threadListLimit, 10);
+    const threadPage = parseInt(req.query.threadPage, 10);
+    const threadLimit = parseInt(req.query.threadLimit, 10);
+    const commentLimit = parseInt(req.query.commentLimit, 10);
+    const replyLimit = parseInt(req.query.replyLimit, 10);
     
     lodashSet(requestParametersObj, ['urlID'], urlID);
-    lodashSet(requestParametersObj, ['forumThreadListPage'], forumThreadListPage);
-    lodashSet(requestParametersObj, ['forumThreadListLimit'], forumThreadListLimit);
-    lodashSet(requestParametersObj, ['forumThreadPage'], forumThreadPage);
-    lodashSet(requestParametersObj, ['forumThreadLimit'], forumThreadLimit);
-    lodashSet(requestParametersObj, ['forumCommentLimit'], forumCommentLimit);
-    lodashSet(requestParametersObj, ['forumReplyLimit'], forumReplyLimit);
+    lodashSet(requestParametersObj, ['threadListPage'], threadListPage);
+    lodashSet(requestParametersObj, ['threadListLimit'], threadListLimit);
+    lodashSet(requestParametersObj, ['threadPage'], threadPage);
+    lodashSet(requestParametersObj, ['threadLimit'], threadLimit);
+    lodashSet(requestParametersObj, ['commentLimit'], commentLimit);
+    lodashSet(requestParametersObj, ['replyLimit'], replyLimit);
     
     
-    
-    
-    // --------------------------------------------------
-    //   Common Initial Props
-    // --------------------------------------------------
-    
-    // const commonInitialPropsObj = await initialProps({ req, res, localeObj });
-    
-    // returnObj.login = lodashGet(commonInitialPropsObj, ['login'], false);
-    // returnObj.loginUsersObj = lodashGet(commonInitialPropsObj, ['loginUsersObj'], {});
-    // returnObj.headerObj = lodashGet(commonInitialPropsObj, ['headerObj'], {});
     
     
     // --------------------------------------------------
@@ -260,12 +249,12 @@ export default async (req, res) => {
       
     };
     
-    if (await validationInteger({ throwError: false, required: true, value: forumThreadListPage }).error === false) {
-      argumentsObj.page = forumThreadListPage;
+    if (await validationInteger({ throwError: false, required: true, value: threadListPage }).error === false) {
+      argumentsObj.page = threadListPage;
     }
     
-    if (await validationForumThreadsListLimit({ throwError: false, required: true, value: forumThreadListLimit }).error === false) {
-      argumentsObj.limit = forumThreadListLimit;
+    if (await validationForumThreadsListLimit({ throwError: false, required: true, value: threadListLimit }).error === false) {
+      argumentsObj.limit = threadListLimit;
     }
     
     returnObj.forumThreadsForListObj = await ModelForumThreads.findForThreadsList(argumentsObj);
@@ -284,20 +273,20 @@ export default async (req, res) => {
       
     };
     
-    if (await validationInteger({ throwError: false, required: true, value: forumThreadPage }).error === false) {
-      argumentsObj.threadPage = forumThreadPage;
+    if (await validationInteger({ throwError: false, required: true, value: threadPage }).error === false) {
+      argumentsObj.threadPage = threadPage;
     }
     
-    if (await validationForumThreadsLimit({ throwError: false, required: true, value: forumThreadLimit }).error === false) {
-      argumentsObj.threadLimit = forumThreadLimit;
+    if (await validationForumThreadsLimit({ throwError: false, required: true, value: threadLimit }).error === false) {
+      argumentsObj.threadLimit = threadLimit;
     }
     
-    if (await validationForumCommentsLimit({ throwError: false, required: true, value: forumCommentLimit }).error === false) {
-      argumentsObj.commentLimit = forumCommentLimit;
+    if (await validationForumCommentsLimit({ throwError: false, required: true, value: commentLimit }).error === false) {
+      argumentsObj.commentLimit = commentLimit;
     }
     
-    if (await validationForumRepliesLimit({ throwError: false, required: true, value: forumReplyLimit }).error === false) {
-      argumentsObj.replyLimit = forumReplyLimit;
+    if (await validationForumRepliesLimit({ throwError: false, required: true, value: replyLimit }).error === false) {
+      argumentsObj.replyLimit = replyLimit;
     }
     
     const forumObj = await ModelForumThreads.findForForum(argumentsObj);

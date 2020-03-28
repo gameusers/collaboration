@@ -17,9 +17,13 @@ const schema = mongoose.Schema({
   forumObj: {
     threadCount: { type: Number, default: 0, required: true },
   },
+  recruitmentObj: {
+    threadCount: { type: Number, default: 0, required: true },
+  },
   updatedDateObj: {
     notification: { type: Date, required: true },
     forum: { type: Date, required: true },
+    recruitment: { type: Date, required: true },
   },
   anonymity: { type: Boolean, required: true }
   

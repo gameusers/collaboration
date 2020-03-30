@@ -28,12 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Name
+ * Title
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsName = ({ throwError = false, value }) => {
+const validationRecruitmentThreadsTitle = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -41,7 +41,7 @@ const validationRecruitmentThreadsName = ({ throwError = false, value }) => {
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 50;
+  const maxLength = 100;
   
   
   // ---------------------------------------------
@@ -54,7 +54,7 @@ const validationRecruitmentThreadsName = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'yhgyXHqZu',
+    messageID: '5v_7KvIq1',
     error: false,
   };
   
@@ -67,7 +67,7 @@ const validationRecruitmentThreadsName = ({ throwError = false, value }) => {
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'LSgw4s1GV', messageID: 'yhgyXHqZu' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Nr97bD2Xt', messageID: 'Uh3rnK7Dk' }] });
     }
     
     
@@ -117,6 +117,6 @@ const validationRecruitmentThreadsName = ({ throwError = false, value }) => {
 
 module.exports = {
   
-  validationRecruitmentThreadsName,
+  validationRecruitmentThreadsTitle,
   
 };

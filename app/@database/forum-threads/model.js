@@ -40,7 +40,6 @@ const ModelUserCommunities = require('../user-communities/model');
 //   Modules
 // ---------------------------------------------
 
-// const { formatImagesAndVideosObj } = require('../../@modules/image/format');
 const { CustomError } = require('../../@modules/error/custom');
 const { verifyAuthority } = require('../../@modules/authority');
 
@@ -49,7 +48,7 @@ const { verifyAuthority } = require('../../@modules/authority');
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj } = require('../../@format/image');
+const { formatImagesAndVideosObj } = require('../images-and-videos/format');
 
 
 

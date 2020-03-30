@@ -73,10 +73,11 @@ import SimpleIcons from 'simple-icons-react-component';
 // ---------------------------------------------
 
 import Paragraph from '../../../common/layout/components/paragraph';
-// import FormThread from './form-thread';
+import FormThread from './form/thread';
 // import FormComment from './form-comment';
 // import Comment from './comment';
 import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
+import Panel from '../../../common/layout/components/panel';
 
 
 
@@ -136,6 +137,11 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
+    
+    // --------------------------------------------------
+    //   super
+    // --------------------------------------------------
+    
     super(props);
     
     
@@ -144,6 +150,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.pathArr = [this.props.gameCommunities_id, 'recruitmentThreadsObj'];
+    this.pathFormThreadArr = [this.props.gameCommunities_id, 'recruitmentFormThreadsObj'];
     
     
   }
@@ -163,6 +170,7 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
+    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathFormThreadArr });
     
     
   }
@@ -324,7 +332,6 @@ export default injectIntl(class extends React.Component {
       //   Show
       // --------------------------------------------------
       
-      // const showComment = lodashGet(dataObj, [...this.pathArr, recruitmentThreads_id, 'showComment'], true);
       const showForm = lodashGet(dataObj, [recruitmentThreads_id, 'showForm'], false);
       
       
@@ -333,6 +340,7 @@ export default injectIntl(class extends React.Component {
       // --------------------------------------------------
       
       const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, recruitmentThreads_id] });
+      
       
       
       
@@ -421,8 +429,8 @@ export default injectIntl(class extends React.Component {
           
         }
         
+        
       }
-      
       
       
       
@@ -452,7 +460,6 @@ export default injectIntl(class extends React.Component {
                 && {
                   cursor: default !important;
                   background-color: white !important;
-                  // margin: 0 0 20px 0 !important; 
                   
                   @media screen and (max-width: 480px) {
                     padding: 0 16px;
@@ -468,17 +475,16 @@ export default injectIntl(class extends React.Component {
               {/* Form */}
               {showForm ? (
                 
-                {/*<div
+                <div
                   css={css`
                     width: 100%;
                   `}
                 >
                   <FormThread
                     gameCommunities_id={gameCommunities_id}
-                    userCommunities_id={userCommunities_id}
                     recruitmentThreads_id={recruitmentThreads_id}
                   />
-                </div>*/}
+                </div>
                 
               // Thread
               ) : (
@@ -575,31 +581,35 @@ export default injectIntl(class extends React.Component {
                   <div
                     css={css`
                       display: flex;
-                      flex-flow: row wrap;
+                      flex-flow: row nowrap;
+                      align-items: center;
                       font-size: 12px;
-                      margin: 0 0 0 0;
+                      // margin: 0;
                       // background-color: pink;
                     `}
                   >
                     
                     
-                    {/* Show Thread Description */}
+                    {/* Hardwares & recruitmentThreads_id */}
                     <div
                       css={css`
                         display: flex;
                         flex-flow: row wrap;
                         align-items: center;
-                        margin: 0 0 0 0;
+                        margin: 0;
                       `}
                     >
                       
                       
+                      
+                      
+                      {/* Hardware Chips */}
                       {componentHardwareChipsArr}
                       
                       
                       
                       
-                      {/* Thread _id */}
+                      {/* recruitmentThreads_id */}
                       <div
                         css={css`
                           display: flex;
@@ -644,7 +654,9 @@ export default injectIntl(class extends React.Component {
                         css={css`
                           display: flex;
                           flex-flow: row nowrap;
-                          margin-left: auto;
+                          margin: 8px 0 0 auto;
+                          // margin-left: auto;
+                          // background-color: green;
                         `}
                       >
                         <Button
@@ -781,7 +793,34 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
+        {/* Recruitment Post Form */}
+        <div
+          css={css`
+            margin: 0 0 12px 0;
+          `}
+        >
+          
+          <Panel
+            heading="募集投稿フォーム"
+            pathArr={this.pathFormThreadArr}
+            defaultExpanded={true}
+          >
+            
+            <FormThread
+              gameCommunities_id={gameCommunities_id}
+            />
+            
+          </Panel>
+          
+        </div>
+        
+        
+        
+        
+        {/* Recruitment */}
         {componentArr}
+        
+        
         
         
         {/* Pagination */}

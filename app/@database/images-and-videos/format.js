@@ -193,6 +193,7 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
     // console.log(chalk`
     //   _id2: {green ${_id2}}
     //   type2: {green ${type2}}
+    //   imageType: {green ${imageType}}
     // `);
     
     
@@ -209,14 +210,6 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
       
       const localesArr = lodashGet(valueObj, ['localesArr'], []);
       const srcSetArr = lodashGet(valueObj, ['srcSetArr'], []);
-      
-      // console.log(`\n---------- localesArr ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(localesArr)));
-      // console.log(`\n-----------------------------------\n`);
-      
-      // console.log(`\n---------- srcSetArr ----------\n`);
-      // console.dir(JSON.parse(JSON.stringify(srcSetArr)));
-      // console.log(`\n-----------------------------------\n`);
       
       
       // --------------------------------------------------
@@ -260,11 +253,13 @@ const formatImagesAndVideosObj = ({ localeObj, obj }) => {
       const srcSet2Arr = [];
       
       for (let value2Obj of srcSetArr.values()) {
-//         console.log(`
-//   ----- value2Obj -----\n
-//   ${util.inspect(JSON.parse(JSON.stringify(value2Obj)), { colors: true, depth: null })}\n
-//   --------------------\n
-// `);
+        
+        // console.log(`
+        //   ----- value2Obj -----\n
+        //   ${util.inspect(JSON.parse(JSON.stringify(value2Obj)), { colors: true, depth: null })}\n
+        //   --------------------\n
+        // `);
+        
         
         // --------------------------------------------------
         //   Upload 画像の場合

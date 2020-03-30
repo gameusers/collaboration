@@ -37,7 +37,6 @@ const SchemaImagesAndVideos = require('../images-and-videos/schema');
 //   Modules
 // ---------------------------------------------
 
-// const { formatImagesAndVideosObj } = require('../../@modules/image/format');
 const { CustomError } = require('../../@modules/error/custom');
 const { verifyAuthority } = require('../../@modules/authority');
 
@@ -46,7 +45,7 @@ const { verifyAuthority } = require('../../@modules/authority');
 //   Format
 // ---------------------------------------------
 
-const { formatImagesAndVideosObj, formatImagesAndVideosArr } = require('../../@format/image');
+const { formatImagesAndVideosObj, formatImagesAndVideosArr } = require('../images-and-videos/format');
 
 
 

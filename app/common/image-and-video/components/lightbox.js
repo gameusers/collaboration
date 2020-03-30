@@ -20,13 +20,6 @@ import Lightbox from 'react-images';
 import lodashGet from 'lodash/get';
 
 
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { formatImagesAndVideosArr } = require('../../../@format/image');
-
-
 
 
 // --------------------------------------------------

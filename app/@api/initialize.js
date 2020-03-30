@@ -2575,7 +2575,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: '',
-        type: 'game',
+        type: 'gc',
         images: 2,
         videos: 0,
         arr: [
@@ -2663,7 +2663,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: '',
-        type: 'game',
+        type: 'gc',
         images: 1,
         videos: 0,
         arr: [
@@ -2696,7 +2696,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: '',
-        type: 'game',
+        type: 'gc',
         images: 2,
         videos: 0,
         arr: [
@@ -2797,7 +2797,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: '',
-        type: 'game',
+        type: 'gc',
         images: 1,
         videos: 0,
         arr: [
@@ -2830,7 +2830,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: '',
-        type: 'game',
+        type: 'gc',
         images: 1,
         videos: 0,
         arr: [
@@ -2863,7 +2863,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        type: 'user',
+        type: 'ur',
         images: 1,
         videos: 0,
         arr: [
@@ -2912,7 +2912,7 @@ router.post('/db', upload.none(), async (req, res, next) => {
         createdDate: ISO8601,
         updatedDate: ISO8601,
         users_id: 'jun-deE4J',
-        type: 'user',
+        type: 'ur',
         images: 1,
         videos: 0,
         arr: [

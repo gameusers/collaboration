@@ -28,13 +28,6 @@ const lodashCloneDeep = require('lodash/cloneDeep');
 const Schema = require('./schema');
 
 
-// ---------------------------------------------
-//   Format
-// ---------------------------------------------
-
-// const { formatImagesAndVideosArr } = require('../../@format/image');
-
-
 
 
 // --------------------------------------------------

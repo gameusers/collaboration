@@ -116,7 +116,7 @@ const ja_JP = {
   'ZlyG1tegW': 'IDの左側に太字で表示されます ({ numberOfCharacters }文字)',
   
   // /app/@database/ids/validations/id.js
-  'oWwTCtWxC': 'IDを入力してください ({ numberOfCharacters }文字)',
+  // 'oWwTCtWxC': 'IDを入力してください ({ numberOfCharacters }文字)',
   
   // /app/@database/ids/validations/public-setting.js
   'TogSfI8lD': 'IDを公開する相手を選んでください',

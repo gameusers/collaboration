@@ -28,13 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * ハードウェアを検索する際のキーワード
+ * ID
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
- * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationHardwaresSuggestionKeyword = ({ throwError = false, required = false, value }) => {
+const validationRecruitmentThreadsID = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -42,7 +41,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 50;
+  const maxLength = 100;
   
   
   // ---------------------------------------------
@@ -55,7 +54,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'cFbXmuFVh',
+    messageID: 'Uh3rnK7Dk',
     error: false,
   };
   
@@ -64,26 +63,11 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
     
     
     // ---------------------------------------------
-    //   空の場合、処理停止
-    // ---------------------------------------------
-    
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'vNZu8yejc', messageID: 'cFbXmuFVh' }] });
-      }
-      
-      return resultObj;
-      
-    }
-    
-    
-    // ---------------------------------------------
     //   文字数チェック
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '4GrvGYhYB', messageID: 'yhgyXHqZu' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FDilfB6Tt', messageID: 'Uh3rnK7Dk' }] });
     }
     
     
@@ -133,6 +117,6 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
 
 module.exports = {
   
-  validationHardwaresSuggestionKeyword
+  validationRecruitmentThreadsID,
   
 };

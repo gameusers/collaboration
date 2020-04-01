@@ -41,7 +41,7 @@ const validationIDsID = ({ throwError = false, value }) => {
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 128;
+  const maxLength = 100;
   
   
   // ---------------------------------------------
@@ -54,7 +54,7 @@ const validationIDsID = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'oWwTCtWxC',
+    messageID: 'Uh3rnK7Dk',
     error: false,
   };
   
@@ -67,7 +67,7 @@ const validationIDsID = ({ throwError = false, value }) => {
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'nkIty98Qk', messageID: 'oWwTCtWxC' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'nkIty98Qk', messageID: 'Uh3rnK7Dk' }] });
     }
     
     

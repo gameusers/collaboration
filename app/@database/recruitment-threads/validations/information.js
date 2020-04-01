@@ -28,13 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * ハードウェアを検索する際のキーワード
+ * Information Title
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
- * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationHardwaresSuggestionKeyword = ({ throwError = false, required = false, value }) => {
+const validationRecruitmentThreadsInformationTitle = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -42,7 +41,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 50;
+  const maxLength = 30;
   
   
   // ---------------------------------------------
@@ -55,7 +54,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'cFbXmuFVh',
+    messageID: '9c6Lprg6n',
     error: false,
   };
   
@@ -64,18 +63,87 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
     
     
     // ---------------------------------------------
-    //   空の場合、処理停止
+    //   文字数チェック
     // ---------------------------------------------
     
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'vNZu8yejc', messageID: 'cFbXmuFVh' }] });
-      }
-      
-      return resultObj;
-      
+    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'kFHeTpmGB', messageID: '9c6Lprg6n' }] });
     }
+    
+    
+  } catch (errorObj) {
+    
+    
+    // ---------------------------------------------
+    //   Throw Error
+    // ---------------------------------------------
+    
+    if (throwError) {
+      throw errorObj;
+    }
+    
+    
+    // ---------------------------------------------
+    //   Result Error
+    // ---------------------------------------------
+    
+    resultObj.error = true;
+    
+    if (errorObj instanceof CustomError) {
+      resultObj.messageID = lodashGet(errorObj, ['errorsArr', 0, 'messageID'], 'Error');
+    } else {
+      resultObj.messageID = 'qnWsuPcrJ';
+    }
+    
+    
+  }
+  
+  
+  // ---------------------------------------------
+  //   Return
+  // ---------------------------------------------
+  
+  return resultObj;
+  
+  
+};
+
+
+
+
+/**
+ * Information
+ * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {string} value - 値
+ * @return {Object} バリデーション結果
+ */
+const validationRecruitmentThreadsInformation = ({ throwError = false, value }) => {
+  
+  
+  // ---------------------------------------------
+  //   Config
+  // ---------------------------------------------
+  
+  const minLength = 1;
+  const maxLength = 100;
+  
+  
+  // ---------------------------------------------
+  //   Result Object
+  // ---------------------------------------------
+  
+  const data = value ? String(value) : '';
+  const numberOfCharacters = data ? data.length : 0;
+  
+  let resultObj = {
+    value: data,
+    numberOfCharacters,
+    messageID: 'Uh3rnK7Dk',
+    error: false,
+  };
+  
+  
+  try {
     
     
     // ---------------------------------------------
@@ -83,7 +151,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '4GrvGYhYB', messageID: 'yhgyXHqZu' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HMDTXZsOe', messageID: 'Uh3rnK7Dk' }] });
     }
     
     
@@ -133,6 +201,7 @@ const validationHardwaresSuggestionKeyword = ({ throwError = false, required = f
 
 module.exports = {
   
-  validationHardwaresSuggestionKeyword
+  validationRecruitmentThreadsInformationTitle,
+  validationRecruitmentThreadsInformation,
   
 };

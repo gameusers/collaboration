@@ -40,9 +40,6 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Paper from '@material-ui/core/Paper';
 
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
-
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -62,39 +59,14 @@ import IconDoubleArrow from '@material-ui/icons/DoubleArrow';
 
 
 // ---------------------------------------------
-//   Simple Icons
-// ---------------------------------------------
-
-import SimpleIcons from 'simple-icons-react-component';
-
-
-// ---------------------------------------------
 //   Components
 // ---------------------------------------------
 
-import Paragraph from '../../../common/layout/components/paragraph';
-import FormThread from './form/thread';
-// import FormComment from './form-comment';
-// import Comment from './comment';
-import ImageAndVideo from '../../../common/image-and-video/components/image-and-video';
-import Panel from '../../../common/layout/components/panel';
-
-
-
-
-// --------------------------------------------------
-//   Emotion
-//   https://emotion.sh/docs/composition
-// --------------------------------------------------
-
-// const cssAvatar = css`
-//   && {
-//     width: 32px;
-//     height: 32px;
-//     line-height: 1;
-//     background-color: #003791;
-//   }
-// `;
+import Paragraph from '../../layout/components/paragraph';
+import FormThread from './form-thread';
+import FormComment from './form-comment';
+import Comment from './comment';
+import ImageAndVideo from '../../image-and-video/components/image-and-video';
 
 
 
@@ -126,7 +98,7 @@ const stylesObj = {
 // --------------------------------------------------
 
 @withStyles(stylesObj)
-@inject('stores', 'storeGcRecruitment')
+@inject('stores', 'storeForum')
 @observer
 export default injectIntl(class extends React.Component {
   
@@ -137,11 +109,6 @@ export default injectIntl(class extends React.Component {
   
   constructor(props) {
     
-    
-    // --------------------------------------------------
-    //   super
-    // --------------------------------------------------
-    
     super(props);
     
     
@@ -149,8 +116,8 @@ export default injectIntl(class extends React.Component {
     //   Path Array
     // --------------------------------------------------
     
-    this.pathArr = [this.props.gameCommunities_id, 'recruitmentThreadsObj'];
-    this.pathFormThreadArr = [this.props.gameCommunities_id, 'recruitmentFormThreadsObj'];
+    this.communities_id = this.props.gameCommunities_id || this.props.userCommunities_id;
+    this.pathArr = [this.communities_id, 'threadObj'];
     
     
   }
@@ -170,7 +137,6 @@ export default injectIntl(class extends React.Component {
     // --------------------------------------------------
     
     this.props.stores.layout.handleButtonEnable({ pathArr: this.pathArr });
-    this.props.stores.layout.handleButtonEnable({ pathArr: this.pathFormThreadArr });
     
     
   }
@@ -193,11 +159,13 @@ export default injectIntl(class extends React.Component {
       
       classes,
       stores,
-      storeGcRecruitment,
+      storeForum,
       intl,
       temporaryDataID,
       urlID,
       gameCommunities_id,
+      userCommunityID,
+      userCommunities_id,
       settingAnonymity,
       individual,
       
@@ -230,30 +198,41 @@ export default injectIntl(class extends React.Component {
       
       dataObj,
       handleEdit,
-      // handleReadThreads,
-      // handleShowFormThread,
+      handleReadThreads,
+      handleShowFormThread,
       
-    } = storeGcRecruitment;
+    } = storeForum;
     
     
     // --------------------------------------------------
     //   Thread
     // --------------------------------------------------
     
-    const page = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'page'], 1);
-    const count = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'count'], 0);
-    const limit = parseInt((stores.data.getCookie({ key: 'recruitmentThreadsObj' }) || process.env.RECRUITMENT_THREAD_LIMIT), 10);
-    const arr = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', `page${page}Obj`, 'arr'], []);
+    const page = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'page'], 1);
+    const count = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'count'], 0);
+    const limit = parseInt((stores.data.getCookie({ key: 'forumThreadLimit' }) || process.env.FORUM_THREAD_LIMIT), 10);
+    const arr = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', `page${page}Obj`, 'arr'], []);
     
     
     // --------------------------------------------------
     //   Link Return Top
     // --------------------------------------------------
     
-    const linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
-    const linkReturnTopAs = `/gc/${urlID}`;
+    let linkReturnTopHref = '';
+    let linkReturnTopAs = '';
     
     
+    if (urlID) {
+      
+      linkReturnTopHref = `/gc/[urlID]/index?urlID=${urlID}`;
+      linkReturnTopAs = `/gc/${urlID}`;
+      
+    } else if (userCommunityID) {
+      
+      linkReturnTopHref = `/uc/[userCommunityID]/index?userCommunityID=${userCommunityID}`;
+      linkReturnTopAs = `/uc/${userCommunityID}`;
+      
+    }
     
     
     // --------------------------------------------------
@@ -262,29 +241,29 @@ export default injectIntl(class extends React.Component {
     
     // console.log(`
     //   ----------------------------------------\n
-    //   /app/gc/rec/components/recruitment-thread.js
+    //   /app/common/forum/components/thread.js
     // `);
     
     // console.log(chalk`
-    //   temporaryDataID: {green ${temporaryDataID}}
-    //   urlID: {green ${urlID}}
-    //   gameCommunities_id: {green ${gameCommunities_id}}
-    //   settingAnonymity: {green ${settingAnonymity}}
-      
+    //   /app/common/forum/components/thread.js
     //   page: {green ${page}}
     //   count: {green ${count}}
     //   limit: {green ${limit}}
-    // `);
-    
-    // console.log(`
-    //   ----- arr -----\n
-    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
-    //   --------------------\n
+    //   urlID: {green ${urlID}}
+    //   gameCommunities_id: {green ${gameCommunities_id}}
+    //   userCommunityID: {green ${userCommunityID}}
+    //   userCommunities_id: {green ${userCommunities_id}}
     // `);
     
     // console.log(`
     //   ----- dataObj -----\n
     //   ${util.inspect(JSON.parse(JSON.stringify(dataObj)), { colors: true, depth: null })}\n
+    //   --------------------\n
+    // `);
+    
+    // console.log(`
+    //   ----- arr -----\n
+    //   ${util.inspect(JSON.parse(JSON.stringify(arr)), { colors: true, depth: null })}\n
     //   --------------------\n
     // `);
     
@@ -298,16 +277,15 @@ export default injectIntl(class extends React.Component {
     const componentArr = [];
     
     
-    for (const [index, recruitmentThreads_id] of arr.entries()) {
+    for (const [index, forumThreads_id] of arr.entries()) {
       
       
       // --------------------------------------------------
       //   data
       // --------------------------------------------------
       
-      const threadsDataObj = lodashGet(dataObj, [gameCommunities_id, 'recruitmentThreadsObj', 'dataObj', recruitmentThreads_id], {});
+      const threadsDataObj = lodashGet(dataObj, [this.communities_id, 'forumThreadsObj', 'dataObj', forumThreads_id], {});
       
-      const title = lodashGet(threadsDataObj, ['title'], '');
       const name = lodashGet(threadsDataObj, ['name'], '');
       const comment = lodashGet(threadsDataObj, ['comment'], '');
       
@@ -324,124 +302,46 @@ export default injectIntl(class extends React.Component {
       //   Link
       // --------------------------------------------------
       
-      let linkHref = `/gc/[urlID]/rec/[recruitmentID]?urlID=${urlID}&recruitmentID=${recruitmentThreads_id}`;
-      let linkAs = `/gc/${urlID}/rec/${recruitmentThreads_id}`;
+      let linkHref = '';
+      let linkAs = '';
+      
+      if (urlID) {
+        
+        linkHref = `/gc/[urlID]/forum/[forumID]?urlID=${urlID}&forumID=${forumThreads_id}`;
+        linkAs = `/gc/${urlID}/forum/${forumThreads_id}`;
+        
+      } else if (userCommunityID) {
+        
+        linkHref = `/uc/[userCommunityID]/forum/[forumID]?userCommunityID=${userCommunityID}&forumID=${forumThreads_id}`;
+        linkAs = `/uc/${userCommunityID}/forum/${forumThreads_id}`;
+        
+      }
       
       
       // --------------------------------------------------
       //   Show
       // --------------------------------------------------
       
-      const showForm = lodashGet(dataObj, [recruitmentThreads_id, 'showForm'], false);
+      const showComment = lodashGet(dataObj, [...this.pathArr, forumThreads_id, 'showComment'], true);
+      const showForm = lodashGet(dataObj, [forumThreads_id, 'showForm'], false);
       
+      // console.log(chalk`
+      //   forumThreads_id: {green ${forumThreads_id}}
+      //   showComment: {green ${showComment}}
+      // `);
       
       // --------------------------------------------------
       //   Panel
       // --------------------------------------------------
       
-      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, recruitmentThreads_id] });
+      const panelExpanded = stores.layout.handleGetPanelExpanded({ pathArr: [...this.pathArr, forumThreads_id] });
       
       
       
-      
-      // --------------------------------------------------
-      //   Component - Hardware Chips
-      // --------------------------------------------------
-      
-      const hardwaresArr = lodashGet(threadsDataObj, ['hardwaresArr'], []);
-      
-      const componentHardwareChipsArr = [];
-      
-      for (const [index2, value2Obj] of hardwaresArr.entries()) {
-        
-        
-        if (value2Obj.hardwareID === 'TdK3Oc-yV') {
-          
-          componentHardwareChipsArr.push(
-            <div
-              key={`hardwareChips-${index2}`}
-              css={css`
-                margin: 8px 8px 0 0;
-              `}
-            >
-              <Chip
-                avatar={
-                  <Avatar alt="PlayStation" style={{ 'backgroundColor': '#003791' }}>
-                    <div style={{ 'width': '80%', 'marginTop': '4px' }}>
-                      <SimpleIcons name="PlayStation" color="white" />
-                    </div>
-                  </Avatar>
-                }
-                label={value2Obj.name}
-                color="primary"
-                variant="outlined"
-              />
-            </div>
-          );
-          
-        } else if (value2Obj.hardwareID === 'uPqoiXA_8') {
-          
-          componentHardwareChipsArr.push(
-            <div
-              key={`hardwareChips-${index2}`}
-              css={css`
-                margin: 8px 8px 0 0;
-              `}
-            >
-              <Chip
-                avatar={
-                  <Avatar alt="Xbox" style={{ 'backgroundColor': '#107C10' }}>
-                    <div style={{ 'width': '75%', 'marginTop': '4px' }}>
-                      <SimpleIcons name="Xbox" color="white" />
-                    </div>
-                  </Avatar>
-                }
-                label={value2Obj.name}
-                color="primary"
-                variant="outlined"
-              />
-            </div>
-          );
-          
-        } else if (value2Obj.hardwareID === 'Zd_Ia4Hwm') {
-          
-          componentHardwareChipsArr.push(
-            <div
-              key={`hardwareChips-${index2}`}
-              css={css`
-                margin: 8px 8px 0 0;
-              `}
-            >
-              <Chip
-                avatar={
-                  <Avatar alt="Nintendo" style={{ 'backgroundColor': '#e60012' }}>
-                    <div style={{ 'width': '55%', 'marginTop': '4px' }}>
-                      <SimpleIcons name="Nintendo" color="white" />
-                    </div>
-                  </Avatar>
-                }
-                label={value2Obj.name}
-                color="primary"
-                variant="outlined"
-              />
-            </div>
-          );
-          
-        }
-        
-        
-      }
-      
-      
-      
-      
-      // --------------------------------------------------
-      //   componentArr.push
-      // --------------------------------------------------
       
       componentArr.push(
         <Element
-          name={recruitmentThreads_id}
+          name={forumThreads_id}
           key={index}
         >
           
@@ -460,6 +360,7 @@ export default injectIntl(class extends React.Component {
                 && {
                   cursor: default !important;
                   background-color: white !important;
+                  // margin: 0 0 20px 0 !important; 
                   
                   @media screen and (max-width: 480px) {
                     padding: 0 16px;
@@ -482,7 +383,8 @@ export default injectIntl(class extends React.Component {
                 >
                   <FormThread
                     gameCommunities_id={gameCommunities_id}
-                    recruitmentThreads_id={recruitmentThreads_id}
+                    userCommunities_id={userCommunities_id}
+                    forumThreads_id={forumThreads_id}
                   />
                 </div>
                 
@@ -520,7 +422,7 @@ export default injectIntl(class extends React.Component {
                         }
                       `}
                     >
-                      {title}
+                      {name}
                     </h2>
                     
                     
@@ -540,7 +442,7 @@ export default injectIntl(class extends React.Component {
                             padding: 4px;
                           }
                         `}
-                        onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, recruitmentThreads_id] })}
+                        onClick={() => handlePanelExpand({ pathArr: [...this.pathArr, forumThreads_id] })}
                         aria-expanded={panelExpanded}
                         aria-label="Show more"
                         disabled={buttonDisabled}
@@ -568,7 +470,7 @@ export default injectIntl(class extends React.Component {
                       `}
                     >
                       <ImageAndVideo
-                        pathArr={[...this.pathArr, recruitmentThreads_id, 'imagesAndVideosObj']}
+                        pathArr={[...this.pathArr, forumThreads_id, 'imagesAndVideosObj']}
                         imagesAndVideosObj={imagesAndVideosObj}
                       />
                     </div>
@@ -581,71 +483,82 @@ export default injectIntl(class extends React.Component {
                   <div
                     css={css`
                       display: flex;
-                      flex-flow: row nowrap;
-                      align-items: center;
+                      flex-flow: row wrap;
                       font-size: 12px;
-                      // margin: 0;
+                      margin: 6px 0 0 0;
                       // background-color: pink;
                     `}
                   >
                     
                     
-                    {/* Hardwares & recruitmentThreads_id */}
+                    {/* Show Thread Description */}
                     <div
                       css={css`
                         display: flex;
-                        flex-flow: row wrap;
-                        align-items: center;
-                        margin: 0;
+                        flex-flow: row nowrap;
+                        margin: 0 6px 0 0;
                       `}
                     >
                       
+                      <IconAssignment
+                        css={css`
+                          && {
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
                       
-                      
-                      
-                      {/* Hardware Chips */}
-                      {componentHardwareChipsArr}
-                      
-                      
-                      
-                      
-                      {/* recruitmentThreads_id */}
                       <div
                         css={css`
-                          display: flex;
-                          flex-flow: row nowrap;
-                          margin: 8px 0 0 0;
+                          font-size: 12px;
+                          color: #009933;
+                          cursor: pointer;
+                          margin: 2px 0 0 0;
                         `}
+                        onClick={() => handleEdit({
+                          pathArr: [...this.pathArr, forumThreads_id, 'showComment'],
+                          value: !showComment
+                        })}
                       >
-                        
-                        <IconPublic
-                          css={css`
-                            && {
-                              font-size: 24px;
-                              margin: 0 2px 0 0;
-                            }
-                          `}
-                        />
-                        
-                        <div
-                          css={css`
-                            font-size: 12px;
-                            color: #009933;
-                            cursor: pointer;
-                            margin: 2px 0 0 0;
-                          `}
-                        >
-                          <Link href={linkHref} as={linkAs}>
-                            <a>{recruitmentThreads_id}</a>
-                          </Link>
-                        </div>
-                        
+                        スレッドについて
                       </div>
-                      
                       
                     </div>
                     
                     
+                    {/* Thread _id */}
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-flow: row nowrap;
+                      `}
+                    >
+                      
+                      <IconPublic
+                        css={css`
+                          && {
+                            font-size: 24px;
+                            margin: 0 2px 0 0;
+                          }
+                        `}
+                      />
+                      
+                      <div
+                        css={css`
+                          font-size: 12px;
+                          color: #009933;
+                          cursor: pointer;
+                          margin: 2px 0 0 0;
+                        `}
+                      >
+                        
+                        <Link href={linkHref} as={linkAs}>
+                          <a>{forumThreads_id}</a>
+                        </Link>
+                      </div>
+                      
+                    </div>
                     
                     
                     {/* Edit Button */}
@@ -654,9 +567,7 @@ export default injectIntl(class extends React.Component {
                         css={css`
                           display: flex;
                           flex-flow: row nowrap;
-                          margin: 8px 0 0 auto;
-                          // margin-left: auto;
-                          // background-color: green;
+                          margin-left: auto;
                         `}
                       >
                         <Button
@@ -678,10 +589,10 @@ export default injectIntl(class extends React.Component {
                           variant="outlined"
                           color="primary"
                           disabled={buttonDisabled}
-                          // onClick={() => handleShowFormThread({
-                          //   pathArr: this.pathArr,
-                          //   recruitmentThreads_id
-                          // })}
+                          onClick={() => handleShowFormThread({
+                            pathArr: this.pathArr,
+                            forumThreads_id
+                          })}
                         >
                           <IconEdit
                             css={css`
@@ -702,6 +613,26 @@ export default injectIntl(class extends React.Component {
                     
                     
                   </div>
+                  
+                  
+                  {/* Comment */}
+                  {showComment &&
+                    <div
+                      css={css`
+                        font-size: 14px;
+                        line-height: 1.6em;
+                        border-left: 4px solid #A4A4A4;
+                        margin: 12px 0 10px 3px;
+                        padding: 0 0 0 16px;
+                        
+                        @media screen and (max-width: 480px) {
+                          padding: 0 0 0 12px;
+                        }
+                      `}
+                    >
+                      <Paragraph text={comment} />
+                    </div>
+                  }
                   
                   
                 </div>
@@ -726,48 +657,30 @@ export default injectIntl(class extends React.Component {
               <div
                 css={css`
                   width: 100%;
-                  margin: 4px 0 0 0;
+                  margin: 12px 0 0 0;
                 `}
               >
                 
                 
-                {/* Comment */}
-                <div
-                  css={css`
-                    font-size: 14px;
-                    line-height: 1.6em;
-                    border-left: 4px solid #A4A4A4;
-                    margin: 12px 0 10px 3px;
-                    padding: 0 0 0 16px;
-                    
-                    @media screen and (max-width: 480px) {
-                      padding: 0 0 0 12px;
-                    }
-                  `}
-                >
-                  <Paragraph text={comment} />
-                </div>
-                
-                
                 {/* Form Comment */}
-                {/*<FormComment
+                <FormComment
                   gameCommunities_id={gameCommunities_id}
                   userCommunities_id={userCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
+                  forumThreads_id={forumThreads_id}
                   settingAnonymity={settingAnonymity}
-                />*/}
+                />
                 
                 
                 {/* Comment */}
-                {/*<Comment
+                <Comment
                   urlID={urlID}
                   gameCommunities_id={gameCommunities_id}
                   userCommunityID={userCommunityID}
                   userCommunities_id={userCommunities_id}
-                  recruitmentThreads_id={recruitmentThreads_id}
+                  forumThreads_id={forumThreads_id}
                   comments={comments}
                   settingAnonymity={settingAnonymity}
-                />*/}
+                />
                 
                 
               </div>
@@ -793,34 +706,7 @@ export default injectIntl(class extends React.Component {
       <React.Fragment>
         
         
-        {/* Recruitment Post Form */}
-        <div
-          css={css`
-            margin: 0 0 12px 0;
-          `}
-        >
-          
-          <Panel
-            heading="募集投稿フォーム"
-            pathArr={this.pathFormThreadArr}
-            defaultExpanded={true}
-          >
-            
-            <FormThread
-              gameCommunities_id={gameCommunities_id}
-            />
-            
-          </Panel>
-          
-        </div>
-        
-        
-        
-        
-        {/* Recruitment */}
         {componentArr}
-        
-        
         
         
         {/* Pagination */}
@@ -868,7 +754,7 @@ export default injectIntl(class extends React.Component {
             
             
             {/* Pagination */}
-            {/*<div
+            <div
               css={css`
                 margin: 8px 24px 0 0;
               `}
@@ -880,6 +766,7 @@ export default injectIntl(class extends React.Component {
                   pathArr: this.pathArr,
                   temporaryDataID,
                   gameCommunities_id,
+                  userCommunities_id,
                   page,
                 })}
                 pageSize={limit}
@@ -888,11 +775,11 @@ export default injectIntl(class extends React.Component {
                 locale={localeInfo}
               />
               
-            </div>*/}
+            </div>
             
             
             {/* Rows Per Page */}
-            {/*<FormControl
+            <FormControl
               css={css`
                 margin: 8px 0 0 0 !important;
               `}
@@ -905,6 +792,7 @@ export default injectIntl(class extends React.Component {
                   pathArr: this.pathArr,
                   temporaryDataID,
                   gameCommunities_id,
+                  userCommunities_id,
                   page: 1,
                   changeLimit: eventObj.target.value,
                 })}
@@ -926,7 +814,7 @@ export default injectIntl(class extends React.Component {
                 <MenuItem value={50}>50</MenuItem>
               </Select>
               
-            </FormControl>*/}
+            </FormControl>
             
             
           </Paper>

@@ -405,7 +405,7 @@ export default injectIntl(class extends React.Component {
             helperText={intl.formatMessage({ id: validationIDObj.messageID }, { numberOfCharacters: validationIDObj.numberOfCharacters })}
             margin="normal"
             inputProps={{
-              maxLength: 128,
+              maxLength: 100,
             }}
           />
         </div>

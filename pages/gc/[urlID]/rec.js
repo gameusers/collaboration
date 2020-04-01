@@ -47,6 +47,7 @@ import initStoreImageAndVideo from '../../../app/common/image-and-video/stores/i
 import initStoreImageAndVideoForm from '../../../app/common/image-and-video/stores/form';
 import initStoreFollow from '../../../app/common/follow/stores/store';
 import initStoreGood from '../../../app/common/good/stores/store';
+import initStoreForm from '../../../app/common/form/stores/store';
 
 
 // ---------------------------------------------
@@ -84,6 +85,7 @@ const getOrCreateStore = ({ propsObj }) => {
   const storeImageAndVideoForm = initStoreImageAndVideoForm({});
   const storeFollow = initStoreFollow({});
   const storeGood = initStoreGood({});
+  const storeForm = initStoreForm({});
   
   
   // --------------------------------------------------
@@ -99,6 +101,7 @@ const getOrCreateStore = ({ propsObj }) => {
     storeImageAndVideoForm,
     storeFollow,
     storeGood,
+    storeForm,
     
   };
   
@@ -200,6 +203,13 @@ export default class extends React.Component {
     const title = `${gameName}`;
     
     
+    // --------------------------------------------------
+    //   Path Array
+    // --------------------------------------------------
+    
+    const pathArr = ['gc', urlID];
+    
+    
     
     
     // --------------------------------------------------
@@ -236,7 +246,7 @@ export default class extends React.Component {
       );
     }
     
-    propsObj = { ...propsObj, datetimeCurrent, pathname, headerNavMainArr, gameCommunities_id };
+    propsObj = { ...propsObj, datetimeCurrent, pathname, pathArr, headerNavMainArr, gameCommunities_id };
     
     const storesObj = getOrCreateStore({ propsObj });
     
@@ -382,11 +392,10 @@ export default class extends React.Component {
     
     
     // --------------------------------------------------
-    //   Setting
+    //   path
     // --------------------------------------------------
     
-    // const settingAnonymity = lodashGet(this.props, ['propsObj', 'userCommunityObj', 'anonymity'], false);
-    // const accessRightRead = lodashGet(this.props, ['propsObj', 'accessRightRead'], false);
+    // const pathArr = lodashGet(this.props, ['propsObj', 'pathArr'], []);
     
     
     // --------------------------------------------------

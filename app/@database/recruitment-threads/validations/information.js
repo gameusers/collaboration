@@ -30,10 +30,11 @@ const { CustomError } = require('../../../@modules/error/custom');
 /**
  * Information Title
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsInformationTitle = ({ throwError = false, value }) => {
+const validationRecruitmentThreadsInformationTitle = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -60,6 +61,21 @@ const validationRecruitmentThreadsInformationTitle = ({ throwError = false, valu
   
   
   try {
+    
+    
+    // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'XG0sSWCpC', messageID: 'cFbXmuFVh' }] });
+      }
+      
+      return resultObj;
+      
+    }
     
     
     // ---------------------------------------------
@@ -114,10 +130,11 @@ const validationRecruitmentThreadsInformationTitle = ({ throwError = false, valu
 /**
  * Information
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
+ * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsInformation = ({ throwError = false, value }) => {
+const validationRecruitmentThreadsInformation = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -125,7 +142,7 @@ const validationRecruitmentThreadsInformation = ({ throwError = false, value }) 
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 100;
+  const maxLength = 50;
   
   
   // ---------------------------------------------
@@ -138,7 +155,7 @@ const validationRecruitmentThreadsInformation = ({ throwError = false, value }) 
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Uh3rnK7Dk',
+    messageID: 'yhgyXHqZu',
     error: false,
   };
   
@@ -147,11 +164,26 @@ const validationRecruitmentThreadsInformation = ({ throwError = false, value }) 
     
     
     // ---------------------------------------------
+    //   空の場合、処理停止
+    // ---------------------------------------------
+    
+    if (validator.isEmpty(data)) {
+      
+      if (required) {
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: '1VFK0gLto', messageID: 'cFbXmuFVh' }] });
+      }
+      
+      return resultObj;
+      
+    }
+    
+    
+    // ---------------------------------------------
     //   文字数チェック
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HMDTXZsOe', messageID: 'Uh3rnK7Dk' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'HMDTXZsOe', messageID: 'yhgyXHqZu' }] });
     }
     
     

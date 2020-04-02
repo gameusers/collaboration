@@ -187,6 +187,9 @@ const ja_JP = {
   // /app/@database/recruitment-threads/validations/name.js
   '5v_7KvIq1': '募集タイトルを入力してください',
   
+  // /app/@database/recruitment-threads/validations/deadline.js
+  'SFC7guhlr': '募集の締切日を選んでください',
+  
   
   
   

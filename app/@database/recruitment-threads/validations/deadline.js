@@ -28,21 +28,13 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * ID
+ * 募集の締め切り日
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsID = ({ throwError = false, required = false, value }) => {
-  
-  
-  // ---------------------------------------------
-  //   Config
-  // ---------------------------------------------
-  
-  const minLength = 1;
-  const maxLength = 100;
+const validationRecruitmentThreadsDeadlineDate = ({ throwError = false, required = false, value }) => {
   
   
   // ---------------------------------------------
@@ -55,7 +47,7 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Uh3rnK7Dk',
+    messageID: 'SFC7guhlr',
     error: false,
   };
   
@@ -70,7 +62,7 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
     if (validator.isEmpty(data)) {
       
       if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '1OpNxeIMP', messageID: 'cFbXmuFVh' }] });
+        throw new CustomError({ level: 'warn', errorsArr: [{ code: 'tQGCaPEVr', messageID: 'cFbXmuFVh' }] });
       }
       
       return resultObj;
@@ -79,11 +71,11 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
     
     
     // ---------------------------------------------
-    //   文字数チェック
+    //   日付チェック
     // ---------------------------------------------
     
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FDilfB6Tt', messageID: 'Uh3rnK7Dk' }] });
+    if (!validator.isISO8601(data)) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'N-xewnatz', messageID: 'bT9TGtVck' }] });
     }
     
     
@@ -133,6 +125,6 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
 
 module.exports = {
   
-  validationRecruitmentThreadsID,
+  validationRecruitmentThreadsDeadlineDate
   
 };

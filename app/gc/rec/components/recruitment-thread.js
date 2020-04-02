@@ -796,7 +796,7 @@ export default injectIntl(class extends React.Component {
         {/* Recruitment Post Form */}
         <div
           css={css`
-            margin: 0 0 12px 0;
+            margin: 0 0 16px 0;
           `}
         >
           

@@ -28,20 +28,20 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * Name
+ * Category
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationForumThreadsComment = ({ throwError = false, value }) => {
+const validationRecruitmentThreadsCategory = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
   //   Config
   // ---------------------------------------------
   
-  const minLength = 1;
-  const maxLength = 3000;
+  const minNumber = 1;
+  const maxNumber = 3;
   
   
   // ---------------------------------------------
@@ -54,7 +54,7 @@ const validationForumThreadsComment = ({ throwError = false, value }) => {
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Error',
+    messageID: 'Nbu_IqorV',
     error: false,
   };
   
@@ -63,11 +63,11 @@ const validationForumThreadsComment = ({ throwError = false, value }) => {
     
     
     // ---------------------------------------------
-    //   文字数チェック
+    //   数字が範囲内に収まっているかチェック
     // ---------------------------------------------
     
-    if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: '0aDGHCQw8', messageID: 'pLES2ZGM2' }] });
+    if (!validator.isInt(data, { min: minNumber, max: maxNumber })) {
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'v2Ns_ue8Z', messageID: 'Nbu_IqorV' }] });
     }
     
     
@@ -116,5 +116,7 @@ const validationForumThreadsComment = ({ throwError = false, value }) => {
 // --------------------------------------------------
 
 module.exports = {
-  validationForumThreadsComment,
+  
+  validationRecruitmentThreadsCategory,
+  
 };

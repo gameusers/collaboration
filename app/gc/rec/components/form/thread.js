@@ -18,6 +18,7 @@ import React from 'react';
 import { inject, observer } from 'mobx-react';
 import { injectIntl } from 'react-intl';
 import TextareaAutosize from 'react-autosize-textarea';
+
 import lodashGet from 'lodash/get';
 
 /** @jsx jsx */
@@ -31,7 +32,7 @@ import { css, jsx } from '@emotion/core';
 import { withStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+// import ButtonGroup from '@material-ui/core/ButtonGroup';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -207,7 +208,7 @@ export default injectIntl(class extends React.Component {
     //   Form Data
     // --------------------------------------------------
     
-    const category = lodashGet(dataObj, [...this.pathArr, 'category'], 1);
+    const category = lodashGet(dataObj, [...this.pathArr, 'category'], '');
     const title = lodashGet(dataObj, [...this.pathArr, 'title'], '');
     const name = lodashGet(dataObj, [...this.pathArr, 'name'], '');
     const comment = lodashGet(dataObj, [...this.pathArr, 'comment'], '');
@@ -342,10 +343,10 @@ export default injectIntl(class extends React.Component {
                 value: eventObj.target.value
               })}
             >
-              <MenuItem value={1}>なし</MenuItem>
-              <MenuItem value={2}>フレンド募集</MenuItem>
-              <MenuItem value={3}>メンバー募集</MenuItem>
-              <MenuItem value={4}>売買・交換相手募集</MenuItem>
+              <MenuItem value="">なし</MenuItem>
+              <MenuItem value={1}>フレンド募集</MenuItem>
+              <MenuItem value={2}>メンバー募集</MenuItem>
+              <MenuItem value={3}>売買・交換相手募集</MenuItem>
             </Select>
             
           </FormControl>
@@ -459,7 +460,7 @@ export default injectIntl(class extends React.Component {
             
             <ImageAndVideoForm
               pathArr={this.pathArr}
-              type="forum"
+              type="recruitment"
               descriptionImage="募集に表示する画像をアップロードできます。"
               descriptionVideo="募集に表示する動画を登録できます。"
               showImageCaption={true}

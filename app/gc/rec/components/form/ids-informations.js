@@ -40,8 +40,7 @@ import Select from '@material-ui/core/Select';
 //   Validations
 // ---------------------------------------------
 
-import { validationRecruitmentThreadsID } from '../../../../@database/recruitment-threads/validations/id';
-import { validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation } from '../../../../@database/recruitment-threads/validations/information';
+import { validationRecruitmentThreadsID, validationRecruitmentThreadsInformationTitle, validationRecruitmentThreadsInformation } from '../../../../@database/recruitment-threads/validations/ids-informations';
 
 
 
@@ -128,9 +127,9 @@ export default injectIntl(class extends React.Component {
     //   Form Data
     // --------------------------------------------------
     
-    const hardware1 = lodashGet(dataObj, [...pathArr, 'hardware1'], 'none');
-    const hardware2 = lodashGet(dataObj, [...pathArr, 'hardware2'], 'none');
-    const hardware3 = lodashGet(dataObj, [...pathArr, 'hardware3'], 'none');
+    const hardware1 = lodashGet(dataObj, [...pathArr, 'hardware1'], '');
+    const hardware2 = lodashGet(dataObj, [...pathArr, 'hardware2'], '');
+    const hardware3 = lodashGet(dataObj, [...pathArr, 'hardware3'], '');
     
     const id1 = lodashGet(dataObj, [...pathArr, 'id1'], '');
     const id2 = lodashGet(dataObj, [...pathArr, 'id2'], '');
@@ -305,7 +304,7 @@ export default injectIntl(class extends React.Component {
                     value: eventObj.target.value
                   })}
                 >
-                  <MenuItem value="none">ID</MenuItem>
+                  <MenuItem value="">ID</MenuItem>
                   <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
                   <MenuItem value="TdK3Oc-yV">PS4</MenuItem>
                   <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
@@ -376,7 +375,7 @@ export default injectIntl(class extends React.Component {
                     value: eventObj.target.value
                   })}
                 >
-                  <MenuItem value="none">ID</MenuItem>
+                  <MenuItem value="">ID</MenuItem>
                   <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
                   <MenuItem value="TdK3Oc-yV">PS4</MenuItem>
                   <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>
@@ -447,7 +446,7 @@ export default injectIntl(class extends React.Component {
                     value: eventObj.target.value
                   })}
                 >
-                  <MenuItem value="none">ID</MenuItem>
+                  <MenuItem value="">ID</MenuItem>
                   <MenuItem value="Zd_Ia4Hwm">Nintendo Switch</MenuItem>
                   <MenuItem value="TdK3Oc-yV">PS4</MenuItem>
                   <MenuItem value="uPqoiXA_8">Xbox One</MenuItem>

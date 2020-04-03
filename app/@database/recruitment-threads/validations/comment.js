@@ -28,13 +28,12 @@ const { CustomError } = require('../../../@modules/error/custom');
 
 
 /**
- * ID
+ * コメント
  * @param {boolean} throwError - エラーを投げる true / resultObjを返す false
- * @param {boolean} required - 必須 true / 必須でない false
  * @param {string} value - 値
  * @return {Object} バリデーション結果
  */
-const validationRecruitmentThreadsID = ({ throwError = false, required = false, value }) => {
+const validationRecruitmentThreadsComment = ({ throwError = false, value }) => {
   
   
   // ---------------------------------------------
@@ -42,7 +41,7 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
   // ---------------------------------------------
   
   const minLength = 1;
-  const maxLength = 100;
+  const maxLength = 3000;
   
   
   // ---------------------------------------------
@@ -55,7 +54,7 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
   let resultObj = {
     value: data,
     numberOfCharacters,
-    messageID: 'Uh3rnK7Dk',
+    messageID: 'Error',
     error: false,
   };
   
@@ -64,26 +63,11 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
     
     
     // ---------------------------------------------
-    //   空の場合、処理停止
-    // ---------------------------------------------
-    
-    if (validator.isEmpty(data)) {
-      
-      if (required) {
-        throw new CustomError({ level: 'warn', errorsArr: [{ code: '1OpNxeIMP', messageID: 'cFbXmuFVh' }] });
-      }
-      
-      return resultObj;
-      
-    }
-    
-    
-    // ---------------------------------------------
     //   文字数チェック
     // ---------------------------------------------
     
     if (!validator.isLength(data, { min: minLength, max: maxLength })) {
-      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'FDilfB6Tt', messageID: 'Uh3rnK7Dk' }] });
+      throw new CustomError({ level: 'warn', errorsArr: [{ code: 'Bhhy95tyt', messageID: 'pLES2ZGM2' }] });
     }
     
     
@@ -133,6 +117,6 @@ const validationRecruitmentThreadsID = ({ throwError = false, required = false, 
 
 module.exports = {
   
-  validationRecruitmentThreadsID,
+  validationRecruitmentThreadsComment
   
 };

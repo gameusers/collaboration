@@ -155,7 +155,7 @@ export default injectIntl(class extends React.Component {
             margin: 0 0 2px 0;
           `}
         >
-          募集の締切日 （未記入でもOK）
+          募集の期限 （未記入でもOK）
         </h3>
         
         <p
